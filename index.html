@@ -274,7 +274,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 19:46</b></span>
+      <span>Mis à jour le <b>22/05/2026 20:08</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24288,7 +24288,7 @@ function equipementsBlock(d){
 
 function panelHtml(v, nCols){
   if (!v.details) {
-    return '<tr class="details" data-for="'+v.lien+'"><td colspan="'+nCols+'"><div class="panel"><div class="no-details">Détails non encore récupérés pour cette annonce — relance l\\'enrichissement.</div></div></td></tr>';
+    return '<tr class="details" data-for="'+v.lien+'"><td colspan="'+nCols+'"><div class="panel"><div class="no-details">Détails non encore récupérés pour cette annonce — relance l’enrichissement.</div></div></td></tr>';
   }
   const inner = [];
   inner.push('<div class="meta-detail"><b>📍</b> '+escapeHtml(v.lieu)+' · <b>Source</b> : '+escapeHtml(v.details.source || '?')+' · <b>Score</b> : '+v.score+'/100</div>');
