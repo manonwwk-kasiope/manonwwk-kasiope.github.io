@@ -165,6 +165,52 @@
   .opt-chip.bool{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
   .opt-chip.muted{background:#f1ede3;color:var(--ink-soft);border-color:var(--line)}
 
+  /* ─── Drag-and-drop colonnes (appui long) ─────────────── */
+  thead th:not([data-fixed]){
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  thead th.col-dragging{
+    opacity:.25;
+    background:var(--accent-soft);
+  }
+  .col-ghost{
+    position:fixed;
+    pointer-events:none;
+    z-index:9999;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+    padding:14px 18px;border-radius:10px;
+    border:2px solid var(--accent);
+    box-shadow:0 12px 40px -8px rgba(0,0,0,.4);
+    opacity:.95;
+    white-space:nowrap;
+    transform:translate(-50%,-50%) scale(1.05) rotate(-1.5deg);
+    transition:transform .12s;
+  }
+  .col-drop-marker{
+    position:fixed;
+    width:4px;
+    background:var(--accent);
+    box-shadow:0 0 8px var(--accent);
+    z-index:9998;
+    pointer-events:none;
+    border-radius:2px;
+    animation:dropPulse .8s ease-in-out infinite;
+  }
+  @keyframes dropPulse{0%,100%{opacity:1}50%{opacity:.5}}
+  body.col-dragging-active{
+    cursor:grabbing!important;
+    user-select:none!important;
+    -webkit-user-select:none!important;
+  }
+  body.col-dragging-active *{
+    cursor:grabbing!important;
+  }
+
   /* ─── Réorganisation des colonnes ────────────────────── */
   .btn-cols{
     font-family:inherit;font-size:.78rem;font-weight:600;
@@ -300,7 +346,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 21:02</b></span>
+      <span>Mis à jour le <b>22/05/2026 21:19</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24133,6 +24179,149 @@ function saveColOrder() {
   localStorage.setItem(COLS_KEY, JSON.stringify(colOrder));
 }
 
+/* ---------- Drag-and-drop colonnes (appui long, touch+desktop) ---------- */
+const LONG_PRESS_MS = 320;
+let suppressNextClick = false;  // empêche le tri après un drag
+
+function initColDrag(th) {
+  if (th.dataset.fixed) return;
+  let pressTimer = null;
+  let dragging = false;
+  let ghost = null;
+  let dropMarker = null;
+  let dropTarget = null;  // {col, before}
+  let startPoint = null;
+
+  const cancelTimer = () => {
+    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+  };
+
+  const startDrag = (point) => {
+    dragging = true;
+    try { if (navigator.vibrate) navigator.vibrate(20); } catch(e) {}
+
+    const rect = th.getBoundingClientRect();
+    th.classList.add('col-dragging');
+    document.body.classList.add('col-dragging-active');
+
+    ghost = document.createElement('div');
+    ghost.className = 'col-ghost';
+    ghost.textContent = (th.dataset.label || th.textContent).replace(/[↕↑↓]/g, '').trim();
+    ghost.style.left = point.clientX + 'px';
+    ghost.style.top = point.clientY + 'px';
+    document.body.appendChild(ghost);
+
+    dropMarker = document.createElement('div');
+    dropMarker.className = 'col-drop-marker';
+    document.body.appendChild(dropMarker);
+
+    document.addEventListener('touchmove', onTouchMove, { passive: false });
+    document.addEventListener('touchend', endDrag);
+    document.addEventListener('touchcancel', endDrag);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', endDrag);
+  };
+
+  const updateDrop = (point) => {
+    ghost.style.left = point.clientX + 'px';
+    ghost.style.top = point.clientY + 'px';
+
+    ghost.style.display = 'none';
+    dropMarker.style.display = 'none';
+    const el = document.elementFromPoint(point.clientX, point.clientY);
+    ghost.style.display = '';
+
+    const thOver = el?.closest('thead th');
+    if (!thOver || thOver.dataset.col === 'expand' || thOver === th) {
+      dropTarget = null;
+      return;
+    }
+
+    const r = thOver.getBoundingClientRect();
+    const isLeft = point.clientX < r.left + r.width / 2;
+    const dropX = isLeft ? r.left : r.right;
+
+    dropMarker.style.left = (dropX - 2) + 'px';
+    dropMarker.style.top = r.top + 'px';
+    dropMarker.style.height = (r.bottom - r.top) + 'px';
+    dropMarker.style.display = '';
+
+    dropTarget = { col: thOver.dataset.col, before: isLeft };
+  };
+
+  const endDrag = () => {
+    cancelTimer();
+    if (!dragging) return;
+    dragging = false;
+
+    th.classList.remove('col-dragging');
+    document.body.classList.remove('col-dragging-active');
+    if (ghost) { ghost.remove(); ghost = null; }
+    if (dropMarker) { dropMarker.remove(); dropMarker = null; }
+
+    document.removeEventListener('touchmove', onTouchMove);
+    document.removeEventListener('touchend', endDrag);
+    document.removeEventListener('touchcancel', endDrag);
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', endDrag);
+
+    if (dropTarget && dropTarget.col !== th.dataset.col) {
+      // Calcule la nouvelle position dans colOrder
+      const fromCol = th.dataset.col;
+      colOrder = colOrder.filter(c => c !== fromCol);
+      let toIdx = colOrder.indexOf(dropTarget.col);
+      if (!dropTarget.before) toIdx++;
+      colOrder.splice(toIdx, 0, fromCol);
+      saveColOrder();
+      applyColOrder();
+      try { if (navigator.vibrate) navigator.vibrate([10, 30, 10]); } catch(e) {}
+      suppressNextClick = true;
+      setTimeout(() => suppressNextClick = false, 250);
+    }
+    dropTarget = null;
+  };
+
+  const onTouchMove = (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    updateDrop(e.touches[0]);
+  };
+  const onMouseMove = (e) => {
+    if (!dragging) return;
+    updateDrop(e);
+  };
+
+  // Touch
+  th.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    startPoint = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    const point = e.touches[0];
+    cancelTimer();
+    pressTimer = setTimeout(() => { pressTimer = null; startDrag(point); }, LONG_PRESS_MS);
+  }, { passive: true });
+  th.addEventListener('touchmove', (e) => {
+    if (dragging) return;
+    if (startPoint) {
+      const dx = Math.abs(e.touches[0].clientX - startPoint.x);
+      const dy = Math.abs(e.touches[0].clientY - startPoint.y);
+      if (dx > 8 || dy > 8) cancelTimer();  // l'utilisateur scrolle, on annule
+    }
+  }, { passive: true });
+  th.addEventListener('touchend', () => { if (!dragging) cancelTimer(); }, { passive: true });
+  th.addEventListener('touchcancel', () => cancelTimer(), { passive: true });
+
+  // Mouse (desktop)
+  th.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    startPoint = { x: e.clientX, y: e.clientY };
+    const point = { clientX: e.clientX, clientY: e.clientY };
+    cancelTimer();
+    pressTimer = setTimeout(() => { pressTimer = null; startDrag(point); }, LONG_PRESS_MS);
+  });
+}
+
+document.querySelectorAll('thead tr th').forEach(initColDrag);
+
 // LocalStorage : timestamp de la dernière visite
 const STORAGE_KEY = 'veille_id4_lastVisit';
 const lastVisit = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
@@ -24443,7 +24632,9 @@ document.getElementById('filters').addEventListener('click',e=>{
 /* tri */
 const labels={prix:'prix',km:'kilométrage',annee:'année',score:'score',garkm:'garantie batterie',parution_sort:'parution'};
 document.querySelectorAll('th.sortable').forEach(th=>{
-  th.addEventListener('click',()=>{
+  th.addEventListener('click',(e)=>{
+    // Si on vient de drag-and-drop la colonne, on bloque le tri
+    if (suppressNextClick) { suppressNextClick = false; return; }
     const k=th.dataset.k;
     if(sortKey===k){sortDir*=-1;}else{sortKey=k;sortDir=1;}
     document.querySelectorAll('th.sortable').forEach(t=>{t.classList.remove('activesort');t.querySelector('.arr').textContent='↕';});
