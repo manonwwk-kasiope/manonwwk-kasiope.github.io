@@ -170,57 +170,99 @@
     touch-action: manipulation;
     user-select: none !important;
     -webkit-user-select: none !important;
-    -webkit-touch-callout: none !important;  /* bloque la popup iOS long-press */
+    -webkit-touch-callout: none !important;
+    -webkit-tap-highlight-color: transparent !important;  /* pas de surbrillance grise iOS */
     cursor: grab;
   }
   thead th:not([data-fixed]) *{
     user-select: none !important;
     -webkit-user-select: none !important;
     -webkit-touch-callout: none !important;
-    pointer-events: none;  /* le span .arr ne capture pas les touch */
+    pointer-events: none;
   }
-  thead th:not([data-fixed]):active{
-    background:var(--accent-soft);
+  /* Indicateur léger SEULEMENT pour le tri : couleur du texte change brièvement */
+  thead th.sortable:active{
+    color: var(--accent);
   }
-  thead th.col-dragging{
-    opacity:.25;
-    background:var(--accent-soft);
+
+  /* Colonne en cours de drag : on cache TOUT (th + tous les td correspondants) */
+  thead th.col-dragging,
+  tbody tr.main td.col-dragging-cell{
+    opacity:0;
+    transition:opacity .15s;
   }
+  /* Colonnes voisines qui s'écartent pour faire place */
+  thead th.col-shift-r,
+  tbody tr.main td.col-shift-r{
+    transform: translateX(40px);
+    transition: transform .22s cubic-bezier(.4,1.4,.6,1);
+  }
+  /* Limiter l'animation aux ~30 premières lignes pour rester fluide sur iPhone */
+  tbody tr.main:nth-child(n+60) td.col-shift-r{
+    transform: none;  /* hors viewport, pas d'animation */
+    transition: none;
+  }
+
+  /* Ghost : mini-colonne flottante qui affiche le th + les 5 premières valeurs */
   .col-ghost{
     position:fixed;
     pointer-events:none;
     z-index:9999;
     background:var(--paper);
-    color:var(--ink);
-    font-family:'Bricolage Grotesque',sans-serif;
-    font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
-    padding:14px 18px;border-radius:10px;
     border:2px solid var(--accent);
-    box-shadow:0 12px 40px -8px rgba(0,0,0,.4);
-    opacity:.95;
-    white-space:nowrap;
-    transform:translate(-50%,-50%) scale(1.05) rotate(-1.5deg);
+    border-radius:12px;
+    box-shadow:0 24px 60px -8px rgba(15,110,79,.45), 0 8px 16px -4px rgba(0,0,0,.2);
+    min-width:90px;max-width:220px;
+    overflow:hidden;
+    transform:translate(-50%,-30%) rotate(-2deg);
     transition:transform .12s;
   }
+  .col-ghost .gh-th{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;
+    padding:12px 14px;
+    background:#f4f1ea;
+    border-bottom:2px solid var(--ink);
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .col-ghost .gh-td{
+    font-size:.78rem;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    background:var(--paper);
+  }
+  .col-ghost .gh-td:last-child{border-bottom:none}
+  .col-ghost::after{
+    content:'';
+    position:absolute;
+    bottom:0;left:0;right:0;height:40px;
+    background:linear-gradient(180deg,transparent,var(--paper));
+    pointer-events:none;
+  }
+
   .col-drop-marker{
     position:fixed;
     width:4px;
     background:var(--accent);
-    box-shadow:0 0 8px var(--accent);
+    box-shadow:0 0 12px var(--accent), 0 0 4px var(--accent);
     z-index:9998;
     pointer-events:none;
     border-radius:2px;
     animation:dropPulse .8s ease-in-out infinite;
   }
-  @keyframes dropPulse{0%,100%{opacity:1}50%{opacity:.5}}
+  @keyframes dropPulse{0%,100%{opacity:1;box-shadow:0 0 12px var(--accent)}50%{opacity:.6;box-shadow:0 0 24px var(--accent)}}
   body.col-dragging-active{
     cursor:grabbing!important;
     user-select:none!important;
     -webkit-user-select:none!important;
+    overflow-x: hidden;
   }
-  body.col-dragging-active *{
-    cursor:grabbing!important;
-  }
+  body.col-dragging-active *{cursor:grabbing!important}
 
   /* ─── Réorganisation des colonnes ────────────────────── */
   .btn-cols{
@@ -357,7 +399,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 21:23</b></span>
+      <span>Mis à jour le <b>22/05/2026 21:29</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24212,13 +24254,32 @@ function initColDrag(th) {
     dragging = true;
     try { if (navigator.vibrate) navigator.vibrate(20); } catch(e) {}
 
-    const rect = th.getBoundingClientRect();
+    const colKey = th.dataset.col;
     th.classList.add('col-dragging');
+    // Cache aussi tous les <td> de cette colonne
+    document.querySelectorAll(`tbody tr.main td[data-col="${colKey}"]`).forEach(td => {
+      td.classList.add('col-dragging-cell');
+    });
     document.body.classList.add('col-dragging-active');
 
+    // Construit un ghost en forme de mini-colonne (th + 5 premiers td)
     ghost = document.createElement('div');
     ghost.className = 'col-ghost';
-    ghost.textContent = (th.dataset.label || th.textContent).replace(/[↕↑↓]/g, '').trim();
+    const ghTh = document.createElement('div');
+    ghTh.className = 'gh-th';
+    ghTh.textContent = (th.dataset.label || th.textContent).replace(/[↕↑↓]/g, '').trim();
+    ghost.appendChild(ghTh);
+    // Récupère les 5 premiers td (avant qu'ils ne soient cachés visuellement)
+    const tds = Array.from(document.querySelectorAll(
+      `tbody tr.main td[data-col="${colKey}"]`
+    )).slice(0, 5);
+    tds.forEach(td => {
+      const ghTd = document.createElement('div');
+      ghTd.className = 'gh-td';
+      // On copie le HTML interne (badges, etc.) — texte uniquement, pas d'images
+      ghTd.innerHTML = td.innerHTML.replace(/<img[^>]*>/g, '');
+      ghost.appendChild(ghTd);
+    });
     ghost.style.left = point.clientX + 'px';
     ghost.style.top = point.clientY + 'px';
     document.body.appendChild(ghost);
@@ -24246,6 +24307,7 @@ function initColDrag(th) {
     const thOver = el?.closest('thead th');
     if (!thOver || thOver.dataset.col === 'expand' || thOver === th) {
       dropTarget = null;
+      clearShift();
       return;
     }
 
@@ -24259,6 +24321,30 @@ function initColDrag(th) {
     dropMarker.style.display = '';
 
     dropTarget = { col: thOver.dataset.col, before: isLeft };
+
+    // Animation : on écarte les colonnes qui sont APRÈS le point de drop
+    applyShiftEffect(thOver.dataset.col, isLeft);
+  };
+
+  const clearShift = () => {
+    document.querySelectorAll('.col-shift-r').forEach(el => el.classList.remove('col-shift-r'));
+  };
+
+  const applyShiftEffect = (targetCol, before) => {
+    clearShift();
+    // Position dans colOrder où la colonne dragguée sera insérée
+    const draggingCol = th.dataset.col;
+    // Calcule l'ordre HYPOTHETIQUE après le drop
+    const newOrder = colOrder.filter(c => c !== draggingCol);
+    let insertIdx = newOrder.indexOf(targetCol);
+    if (!before) insertIdx++;
+    // Colonnes qui doivent shift à droite : toutes celles à partir de insertIdx
+    const colsToShift = newOrder.slice(insertIdx);
+    if (!colsToShift.length) return;
+    const selector = colsToShift
+      .map(c => `thead th[data-col="${c}"], tbody tr.main td[data-col="${c}"]`)
+      .join(', ');
+    document.querySelectorAll(selector).forEach(el => el.classList.add('col-shift-r'));
   };
 
   const endDrag = () => {
@@ -24267,6 +24353,12 @@ function initColDrag(th) {
     dragging = false;
 
     th.classList.remove('col-dragging');
+    // Reset les cellules cachées de la colonne dragguée
+    document.querySelectorAll(`tbody tr.main td.col-dragging-cell`).forEach(td => {
+      td.classList.remove('col-dragging-cell');
+    });
+    // Reset le shift des autres colonnes
+    clearShift();
     document.body.classList.remove('col-dragging-active');
     if (ghost) { ghost.remove(); ghost = null; }
     if (dropMarker) { dropMarker.remove(); dropMarker = null; }
@@ -24278,7 +24370,6 @@ function initColDrag(th) {
     document.removeEventListener('mouseup', endDrag);
 
     if (dropTarget && dropTarget.col !== th.dataset.col) {
-      // Calcule la nouvelle position dans colOrder
       const fromCol = th.dataset.col;
       colOrder = colOrder.filter(c => c !== fromCol);
       let toIdx = colOrder.indexOf(dropTarget.col);
