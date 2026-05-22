@@ -191,23 +191,18 @@
     opacity:0;
     transition:opacity .15s;
   }
-  /* Colonnes voisines qui s'écartent pour faire place */
+  /* Colonnes voisines qui s'écartent — transition uniquement pendant un drag actif
+     pour ne pas plomber les events touch sur les 1495 cellules de la table */
+  body.col-dragging-active thead th,
+  body.col-dragging-active tbody tr.main:nth-child(-n+50) td{
+    transition: transform .32s cubic-bezier(.16,1,.3,1);
+  }
   thead th.col-shift-r,
   tbody tr.main td.col-shift-r{
     transform: translateX(70px);
-    transition: transform .35s cubic-bezier(.16,1,.3,1);  /* easeOutExpo, très souple */
   }
-  /* Toutes les cellules ont une transition par défaut pour le retour à zéro fluide */
-  thead th,
-  tbody tr.main td{
-    transition: transform .28s cubic-bezier(.22,1,.36,1);
-  }
-  /* Hors des 80 premières lignes : pas d'anim (perf iPhone) */
-  tbody tr.main:nth-child(n+80) td{
-    transition: none;
-  }
-  tbody tr.main:nth-child(n+80) td.col-shift-r{
-    transform: none;
+  tbody tr.main:nth-child(n+50) td.col-shift-r{
+    transform: none;  /* hors 50 premières lignes : pas d'animation (perf) */
   }
 
   /* Ghost : mini-colonne flottante qui affiche le th + les 5 premières valeurs */
@@ -406,7 +401,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 21:36</b></span>
+      <span>Mis à jour le <b>22/05/2026 23:52</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
