@@ -341,7 +341,6 @@
             <th class="sortable" data-k="prix">Prix <span class="arr">↕</span></th>
             <th class="sortable activesort" data-k="km">Km <span class="arr">↑</span></th>
             <th class="sortable" data-k="annee">Année <span class="arr">↕</span></th>
-            <th class="sortable" data-k="ch">ch <span class="arr">↕</span></th>
             <th class="sortable" data-k="score">Score <span class="arr">↕</span></th>
             <th>SoH</th>
             <th>⭐ Options</th>
@@ -24313,7 +24312,7 @@ function render(){
     if(x==null)return 1; if(y==null)return -1;
     return (x-y)*sortDir;
   });
-  const N_COLS = 14;
+  const N_COLS = 13;
   tbody.innerHTML=rows.map((v,i)=>{
     const cls=['main', v.fav?'fav':'', v.statut==='vendu'?'sold':'', v.statut==='eviter'?'avoid':'', v.prix_en_baisse?'baisse':''].filter(Boolean).join(' ');
     const scoreClass = v.score >= 70 ? 'b-green' : v.score >= 50 ? 'b-yellow' : 'b-gray';
@@ -24323,7 +24322,6 @@ function render(){
       <td class="keepcolor">${prixCell(v)}</td>
       <td class="num keepcolor">${km(v.km)}</td>
       <td class="num">${escapeHtml(v.annee)}</td>
-      <td class="num">${v.ch}</td>
       <td><span class="badge ${scoreClass}">${v.score}</span></td>
       <td>${sohCell(v)}</td>
       <td>${optionsCell(v)}</td>
@@ -24363,7 +24361,7 @@ document.getElementById('filters').addEventListener('click',e=>{
 });
 
 /* tri */
-const labels={prix:'prix',km:'kilométrage',annee:'année',ch:'puissance',score:'score',garkm:'garantie batterie',parution_sort:'parution'};
+const labels={prix:'prix',km:'kilométrage',annee:'année',score:'score',garkm:'garantie batterie',parution_sort:'parution'};
 document.querySelectorAll('th.sortable').forEach(th=>{
   th.addEventListener('click',()=>{
     const k=th.dataset.k;
