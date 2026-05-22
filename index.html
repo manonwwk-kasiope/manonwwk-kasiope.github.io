@@ -165,6 +165,78 @@
   .opt-chip.bool{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
   .opt-chip.muted{background:#f1ede3;color:var(--ink-soft);border-color:var(--line)}
 
+  /* ─── Onglets Annonces / Stats ─────────────────────────── */
+  .page-tabs{
+    display:flex;gap:4px;margin:14px 0 0;border-bottom:2px solid var(--line);
+  }
+  .page-tab{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:.92rem;font-weight:700;letter-spacing:-.01em;
+    background:none;border:none;cursor:pointer;
+    padding:12px 18px;color:var(--ink-soft);
+    border-bottom:3px solid transparent;margin-bottom:-2px;
+    transition:.18s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .page-tab:hover{color:var(--accent)}
+  .page-tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+  /* ─── Page Stats ──────────────────────────────────────── */
+  .stats-section{margin:24px 0}
+  .stats-section h2{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:1.6rem;letter-spacing:-.01em;margin-bottom:10px;
+  }
+  .stats-intro{
+    color:var(--ink-soft);font-size:.92rem;margin-bottom:24px;
+  }
+  .stats-card{
+    background:var(--paper);
+    border:1.5px solid var(--line);border-radius:14px;
+    padding:20px 24px;margin-bottom:18px;
+    box-shadow:0 8px 24px -16px rgba(0,0,0,.15);
+  }
+  .stats-card-header{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid var(--ink);
+  }
+  .stats-card-header h3{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:1.4rem;letter-spacing:-.01em;flex:1;
+  }
+  .stats-total{
+    font-size:.86rem;font-weight:700;
+    background:var(--accent-soft);color:var(--accent);
+    padding:6px 14px;border-radius:99px;
+  }
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+  }
+  .stats-block h4{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:10px;
+  }
+  .stats-criteres, .stats-detail{
+    width:100%;border-collapse:collapse;
+    font-size:.86rem;
+  }
+  .stats-criteres tr, .stats-detail tr{
+    border-bottom:1px dashed var(--line);
+  }
+  .stats-criteres td, .stats-detail td{padding:8px 0;color:var(--ink-soft)}
+  .stats-criteres td:first-child{width:50%}
+  .stats-criteres b, .stats-detail b{color:var(--ink);font-weight:600}
+  .stats-detail thead th{
+    text-align:left;padding:6px 0;
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;
+    color:var(--ink-soft);font-weight:600;
+    border-bottom:1px solid var(--ink);
+  }
+  .stats-detail tbody td small{color:var(--ink-soft);font-size:.78rem}
+
   /* ─── Badge modèle dans cellule vendeur ────────────────── */
   .badge-marque{
     display:inline-block;font-size:.6rem;font-weight:800;
@@ -486,13 +558,20 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>23/05/2026 00:23</b></span>
+      <span>Mis à jour le <b>23/05/2026 00:29</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
       <span><b>143</b> annonces · <b>17</b> 🔥 pépites · <b id="nv-since">0</b> 🆕 depuis ta dernière visite</span>
     </div>
   </header>
+
+  <div class="page-tabs">
+    <button class="page-tab on" data-page="annonces" type="button">🚗 Annonces</button>
+    <button class="page-tab" data-page="stats" type="button">📊 Critères & couverture</button>
+  </div>
+
+  <div id="page-annonces">
 
   <div class="modeles-selector" id="modeles-selector">
     
@@ -609,6 +688,210 @@
     <div class="item"><span class="star" style="font-size:1rem">★</span> Finaliste</div>
   </div>
   <p class="legendkey"><b>Équipement :</b> M = Matrix LED · H = HUD · 360 = caméra 360° · AM = angle mort (Side Assist) · P = pompe à chaleur · T = toit pano · Mas = sièges massants · TA = Travel Assist (changement de voie auto)</p>
+
+  </div><!-- /page-annonces -->
+
+  <div id="page-stats" hidden>
+    <section class="stats-section">
+      <h2>📊 Critères de recherche &amp; couverture</h2>
+      <p class="stats-intro">
+        Cette page récapitule pour chaque modèle surveillé : les <b>critères de filtrage</b>
+        appliqués, et le <b>nombre d'annonces trouvées</b> par site et par pays.
+        Mis à jour : <b>23/05/2026 00:29</b>
+      </p>
+
+      
+      <div class="stats-card">
+        <div class="stats-card-header">
+          <span class="badge-marque marque-id4">VW</span>
+          <h3>VW ID.4</h3>
+          <span class="stats-total">116 annonce(s)</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stats-block">
+            <h4>🎯 Critères appliqués</h4>
+            <table class="stats-criteres">
+              
+              <tr><td>Prix max</td><td><b>≤ 26 000 €</b></td></tr>
+              
+              <tr><td>Kilométrage max</td><td><b>≤ 170 000 km</b></td></tr>
+              
+              <tr><td>Année min</td><td><b>≥ 2021</b></td></tr>
+              
+              <tr><td>Pays scannés</td><td><b>DE · BE · NL · FR</b></td></tr>
+              
+              <tr><td>Spécificité batterie</td><td><b>Grosse batterie 77 kWh uniquement</b></td></tr>
+              
+            </table>
+          </div>
+
+          <div class="stats-block">
+            <h4>📡 Couverture par site</h4>
+            <table class="stats-detail">
+              <thead><tr><th>Site</th><th>Statut</th><th>Annonces</th></tr></thead>
+              <tbody>
+                
+                <tr>
+                  <td>🤖 Autoscout24</td>
+                  <td><small>auto</small></td>
+                  <td><b>89</b></td>
+                </tr>
+                
+                <tr>
+                  <td>🖐 leboncoin</td>
+                  <td><small>manuel (Chrome MCP)</small></td>
+                  <td><b>27</b></td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+
+          <div class="stats-block">
+            <h4>🌍 Répartition par pays</h4>
+            <table class="stats-detail">
+              <thead><tr><th>Pays</th><th>Annonces</th></tr></thead>
+              <tbody>
+                
+                <tr>
+                  <td>BE</td>
+                  <td><b>12</b></td>
+                </tr>
+                
+                <tr>
+                  <td>DE</td>
+                  <td><b>33</b></td>
+                </tr>
+                
+                <tr>
+                  <td>FR</td>
+                  <td><b>30</b></td>
+                </tr>
+                
+                <tr>
+                  <td>NL</td>
+                  <td><b>41</b></td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="stats-card">
+        <div class="stats-card-header">
+          <span class="badge-marque marque-atto3">BYD</span>
+          <h3>BYD Atto 3</h3>
+          <span class="stats-total">27 annonce(s)</span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stats-block">
+            <h4>🎯 Critères appliqués</h4>
+            <table class="stats-criteres">
+              
+              <tr><td>Prix max</td><td><b>≤ 26 000 €</b></td></tr>
+              
+              <tr><td>Kilométrage max</td><td><b>≤ 170 000 km</b></td></tr>
+              
+              <tr><td>Année min</td><td><b>≥ 2021</b></td></tr>
+              
+              <tr><td>Pays scannés</td><td><b>DE · BE · NL · FR</b></td></tr>
+              
+              <tr><td>Spécificité batterie</td><td><b>Toutes versions (mono-batterie)</b></td></tr>
+              
+            </table>
+          </div>
+
+          <div class="stats-block">
+            <h4>📡 Couverture par site</h4>
+            <table class="stats-detail">
+              <thead><tr><th>Site</th><th>Statut</th><th>Annonces</th></tr></thead>
+              <tbody>
+                
+                <tr>
+                  <td>🤖 Autoscout24</td>
+                  <td><small>auto</small></td>
+                  <td><b>27</b></td>
+                </tr>
+                
+                <tr>
+                  <td>🖐 leboncoin</td>
+                  <td><small>manuel (Chrome MCP)</small></td>
+                  <td><b>0</b></td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+
+          <div class="stats-block">
+            <h4>🌍 Répartition par pays</h4>
+            <table class="stats-detail">
+              <thead><tr><th>Pays</th><th>Annonces</th></tr></thead>
+              <tbody>
+                
+                <tr>
+                  <td>BE</td>
+                  <td><b>9</b></td>
+                </tr>
+                
+                <tr>
+                  <td>DE</td>
+                  <td><b>6</b></td>
+                </tr>
+                
+                <tr>
+                  <td>FR</td>
+                  <td><b>0</b></td>
+                </tr>
+                
+                <tr>
+                  <td>NL</td>
+                  <td><b>12</b></td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="stats-card">
+        <div class="stats-card-header">
+          <h3>ℹ️ Sites scannés</h3>
+        </div>
+        <table class="stats-detail">
+          <thead><tr><th>Site</th><th>Statut</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>🤖 Autoscout24</td>
+              <td><b style="color:var(--green)">Automatique</b></td>
+              <td>Scrape Playwright headless sur 4 pays (DE/BE/NL/FR), 2× par jour</td>
+            </tr>
+            <tr>
+              <td>🖐 leboncoin</td>
+              <td><b style="color:var(--orange)">Manuel</b></td>
+              <td>DataDome anti-bot agressif → scrape via Claude in Chrome (ton vrai navigateur), one-shot</td>
+            </tr>
+            <tr>
+              <td>🔴 Mobile.de</td>
+              <td><b style="color:var(--gray)">Non implémenté</b></td>
+              <td>Akamai Bot Manager bloque le headless (idem leboncoin, nécessite Chrome MCP ou proxy)</td>
+            </tr>
+            <tr>
+              <td>🔴 LaCentrale.fr</td>
+              <td><b style="color:var(--gray)">Non implémenté</b></td>
+              <td>DataDome bloque le headless</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
   <section class="notes">
     <h2>Repères techniques</h2>
@@ -30919,6 +31202,19 @@ document.getElementById('copy-cmd').addEventListener('click', async () => {
   } catch (e) {
     alert('Impossible de copier — sélectionne la commande manuellement.');
   }
+});
+
+/* Onglets Annonces / Stats */
+document.querySelectorAll('.page-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+    const target = tab.dataset.page;
+    document.getElementById('page-annonces').hidden = (target !== 'annonces');
+    document.getElementById('page-stats').hidden = (target !== 'stats');
+    // Scroll en haut pour éviter de rester perdu
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 });
 
 /* Modal réorganisation des colonnes */
