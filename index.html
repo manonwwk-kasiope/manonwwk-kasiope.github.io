@@ -168,8 +168,19 @@
   /* ─── Drag-and-drop colonnes (appui long) ─────────────── */
   thead th:not([data-fixed]){
     touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;  /* bloque la popup iOS long-press */
+    cursor: grab;
+  }
+  thead th:not([data-fixed]) *{
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -webkit-touch-callout: none !important;
+    pointer-events: none;  /* le span .arr ne capture pas les touch */
+  }
+  thead th:not([data-fixed]):active{
+    background:var(--accent-soft);
   }
   thead th.col-dragging{
     opacity:.25;
@@ -346,7 +357,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 21:19</b></span>
+      <span>Mis à jour le <b>22/05/2026 21:23</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24180,8 +24191,9 @@ function saveColOrder() {
 }
 
 /* ---------- Drag-and-drop colonnes (appui long, touch+desktop) ---------- */
-const LONG_PRESS_MS = 320;
-let suppressNextClick = false;  // empêche le tri après un drag
+const LONG_PRESS_MS = 300;
+const MOVE_TOLERANCE = 12;  // px — si on bouge plus que ça avant le long press, on annule
+let suppressNextClick = false;
 
 function initColDrag(th) {
   if (th.dataset.fixed) return;
@@ -24304,7 +24316,7 @@ function initColDrag(th) {
     if (startPoint) {
       const dx = Math.abs(e.touches[0].clientX - startPoint.x);
       const dy = Math.abs(e.touches[0].clientY - startPoint.y);
-      if (dx > 8 || dy > 8) cancelTimer();  // l'utilisateur scrolle, on annule
+      if (dx > MOVE_TOLERANCE || dy > MOVE_TOLERANCE) cancelTimer();
     }
   }, { passive: true });
   th.addEventListener('touchend', () => { if (!dragging) cancelTimer(); }, { passive: true });
