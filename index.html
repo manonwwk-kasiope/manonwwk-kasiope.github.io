@@ -165,6 +165,25 @@
   .opt-chip.bool{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
   .opt-chip.muted{background:#f1ede3;color:var(--ink-soft);border-color:var(--line)}
 
+  /* ─── Critères éditables (page Stats) ──────────────────── */
+  .critere-editable{
+    color:var(--accent);cursor:pointer;text-decoration:underline dotted;
+    text-underline-offset:3px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .critere-editable:hover{color:var(--ink);text-decoration:underline}
+  .critere-editable.modified{
+    color:var(--red);
+    text-decoration:underline solid;
+    font-weight:700;
+  }
+  .critere-editable.modified::after{
+    content:' ●';
+    font-size:.6em;
+    color:var(--red);
+    vertical-align:super;
+  }
+
   /* ─── SoH saisi manuel ─────────────────────────────────── */
   .soh-wrap{display:inline-flex;align-items:center;gap:5px}
   .soh-edit{
@@ -189,6 +208,19 @@
   .badge.score-bonus{
     box-shadow:0 0 0 2px rgba(15,110,79,.4);
   }
+
+  /* ─── Chip Site (provenance annonce) ──────────────────── */
+  .site-chip{
+    display:inline-block;font-size:.72rem;font-weight:600;
+    padding:3px 9px;border-radius:99px;
+    background:var(--gray-bg);color:var(--ink);
+    white-space:nowrap;border:1px solid transparent;
+  }
+  .site-autoscout24{background:#fff3cd;color:#856404;border-color:#ffeaa7}
+  .site-leboncoin{background:#ffe6cc;color:#c2410c;border-color:#fed7aa}
+  .site-mobile_de{background:#e0e7ff;color:#3730a3;border-color:#c7d2fe}
+  .site-lacentrale{background:#fce7f3;color:#9d174d;border-color:#fbcfe8}
+  .site-gaspedaal{background:#d1fae5;color:#065f46;border-color:#a7f3d0}
 
   /* ─── Onglets Annonces / Stats ─────────────────────────── */
   .page-tabs{
@@ -239,6 +271,10 @@
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
     gap:18px;
   }
+  .stats-block{
+    min-width:0;  /* permet le shrink en grid */
+    overflow-x:auto;
+  }
   .stats-block h4{
     font-family:'Bricolage Grotesque',sans-serif;
     font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;
@@ -261,6 +297,15 @@
     border-bottom:1px solid var(--ink);
   }
   .stats-detail tbody td small{color:var(--ink-soft);font-size:.78rem}
+  @media(max-width:640px){
+    .stats-section h2{font-size:1.3rem}
+    .stats-card{padding:16px 14px}
+    .stats-card-header h3{font-size:1.15rem}
+    .stats-grid{grid-template-columns:1fr;gap:14px}
+    .stats-criteres td,.stats-detail td{padding:7px 4px;font-size:.78rem}
+    .stats-card-header{flex-wrap:wrap;gap:8px}
+    .stats-total{font-size:.78rem}
+  }
 
   /* ─── Badge modèle dans cellule vendeur ────────────────── */
   .badge-marque{
@@ -583,7 +628,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>23/05/2026 00:33</b></span>
+      <span>Mis à jour le <b>23/05/2026 00:37</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -690,6 +735,7 @@
             <th data-col="prix" data-label="Prix" class="sortable" data-k="prix">Prix <span class="arr">↕</span></th>
             <th data-col="km" data-label="Km" class="sortable activesort" data-k="km">Km <span class="arr">↑</span></th>
             <th data-col="annee" data-label="Année" class="sortable" data-k="annee">Année <span class="arr">↕</span></th>
+            <th data-col="site" data-label="Site" class="sortable" data-k="source">Site <span class="arr">↕</span></th>
             <th data-col="score" data-label="Score" class="sortable" data-k="score">Score <span class="arr">↕</span></th>
             <th data-col="soh" data-label="SoH">SoH</th>
             <th data-col="options" data-label="Options">⭐ Options</th>
@@ -722,7 +768,13 @@
       <p class="stats-intro">
         Cette page récapitule pour chaque modèle surveillé : les <b>critères de filtrage</b>
         appliqués, et le <b>nombre d'annonces trouvées</b> par site et par pays.
-        Mis à jour : <b>23/05/2026 00:33</b>
+        Mis à jour : <b>23/05/2026 00:37</b>
+      </p>
+      <p class="stats-intro" style="background:#fef3c7;color:#92400e;padding:10px 14px;border-radius:8px;border:1px solid #fde68a">
+        💡 Tu peux <b>ajuster les critères localement</b> en cliquant sur une valeur en bleu.
+        Les valeurs <span style="color:var(--red);font-weight:700">en rouge</span> indiquent une modification
+        non encore propagée au scraper (config.py côté serveur — sera appliqué au prochain run).
+        Les filtres ajustés filtrent <b>immédiatement</b> les annonces affichées.
       </p>
 
       
@@ -735,19 +787,35 @@
 
         <div class="stats-grid">
           <div class="stats-block">
-            <h4>🎯 Critères appliqués</h4>
+            <h4>🎯 Critères appliqués <small style="color:var(--ink-soft);font-weight:400">(cliquer pour modifier)</small></h4>
             <table class="stats-criteres">
               
-              <tr><td>Prix max</td><td><b>≤ 26 000 €</b></td></tr>
+              <tr>
+                <td>Prix max</td>
+                <td><b class="critere-editable" data-key="Prix max" data-modele="ID.4" data-orig="≤ 26 000 €">≤ 26 000 €</b></td>
+              </tr>
               
-              <tr><td>Kilométrage max</td><td><b>≤ 170 000 km</b></td></tr>
+              <tr>
+                <td>Kilométrage max</td>
+                <td><b class="critere-editable" data-key="Kilométrage max" data-modele="ID.4" data-orig="≤ 170 000 km">≤ 170 000 km</b></td>
+              </tr>
               
-              <tr><td>Année min</td><td><b>≥ 2021</b></td></tr>
+              <tr>
+                <td>Année min</td>
+                <td><b class="critere-editable" data-key="Année min" data-modele="ID.4" data-orig="≥ 2021">≥ 2021</b></td>
+              </tr>
               
-              <tr><td>Pays scannés</td><td><b>DE · BE · NL · FR</b></td></tr>
+              <tr>
+                <td>Pays scannés</td>
+                <td><b class="critere-editable" data-key="Pays scannés" data-modele="ID.4" data-orig="DE · BE · NL · FR · ES · PT · IT · AT · LU">DE · BE · NL · FR · ES · PT · IT · AT · LU</b></td>
+              </tr>
               
-              <tr><td>Spécificité batterie</td><td><b>Grosse batterie 77 kWh uniquement</b></td></tr>
+              <tr>
+                <td>Spécificité batterie</td>
+                <td><b class="critere-editable" data-key="Spécificité batterie" data-modele="ID.4" data-orig="Grosse batterie 77 kWh uniquement">Grosse batterie 77 kWh uniquement</b></td>
+              </tr>
               
+              <tr><td colspan="2" style="padding-top:10px"><button class="fbtn critere-reset" data-modele="ID.4" type="button" style="font-size:.74rem">↻ Réinitialiser</button></td></tr>
             </table>
           </div>
 
@@ -814,19 +882,35 @@
 
         <div class="stats-grid">
           <div class="stats-block">
-            <h4>🎯 Critères appliqués</h4>
+            <h4>🎯 Critères appliqués <small style="color:var(--ink-soft);font-weight:400">(cliquer pour modifier)</small></h4>
             <table class="stats-criteres">
               
-              <tr><td>Prix max</td><td><b>≤ 26 000 €</b></td></tr>
+              <tr>
+                <td>Prix max</td>
+                <td><b class="critere-editable" data-key="Prix max" data-modele="Atto 3" data-orig="≤ 26 000 €">≤ 26 000 €</b></td>
+              </tr>
               
-              <tr><td>Kilométrage max</td><td><b>≤ 170 000 km</b></td></tr>
+              <tr>
+                <td>Kilométrage max</td>
+                <td><b class="critere-editable" data-key="Kilométrage max" data-modele="Atto 3" data-orig="≤ 170 000 km">≤ 170 000 km</b></td>
+              </tr>
               
-              <tr><td>Année min</td><td><b>≥ 2021</b></td></tr>
+              <tr>
+                <td>Année min</td>
+                <td><b class="critere-editable" data-key="Année min" data-modele="Atto 3" data-orig="≥ 2021">≥ 2021</b></td>
+              </tr>
               
-              <tr><td>Pays scannés</td><td><b>DE · BE · NL · FR</b></td></tr>
+              <tr>
+                <td>Pays scannés</td>
+                <td><b class="critere-editable" data-key="Pays scannés" data-modele="Atto 3" data-orig="DE · BE · NL · FR · ES · PT · IT · AT · LU">DE · BE · NL · FR · ES · PT · IT · AT · LU</b></td>
+              </tr>
               
-              <tr><td>Spécificité batterie</td><td><b>Toutes versions (mono-batterie)</b></td></tr>
+              <tr>
+                <td>Spécificité batterie</td>
+                <td><b class="critere-editable" data-key="Spécificité batterie" data-modele="Atto 3" data-orig="Toutes versions (mono-batterie)">Toutes versions (mono-batterie)</b></td>
+              </tr>
               
+              <tr><td colspan="2" style="padding-top:10px"><button class="fbtn critere-reset" data-modele="Atto 3" type="button" style="font-size:.74rem">↻ Réinitialiser</button></td></tr>
             </table>
           </div>
 
@@ -946,6 +1030,7 @@ const vehicules = [
     "cle": "autoscout24:dfbb5842-42e7-47df-9439-0b911b78213d",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Louwman Dreams Rotterdam",
     "lieu": "NP ROTTERDAM, NL",
     "prix": 25450,
@@ -971,7 +1056,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -1180,6 +1264,7 @@ const vehicules = [
     "cle": "autoscout24:ca5fed65-43b9-4365-8a45-90f570dcbcbf",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "8930",
     "lieu": "8930, BE",
     "prix": 24000,
@@ -1205,7 +1290,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -1341,6 +1425,7 @@ const vehicules = [
     "cle": "autoscout24:3b942c24-bc6d-46ab-a3f2-40755dfb8b90",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "auto:mobil GmbH",
     "lieu": "Hainburg, DE",
     "prix": 25980,
@@ -1366,7 +1451,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Pano",
@@ -1551,6 +1635,7 @@ const vehicules = [
     "cle": "autoscout24:a56c20c9-9f13-492d-bbde-0ef6f2c87a83",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Yaans",
     "lieu": "Pinneberg, DE",
     "prix": 24789,
@@ -1576,7 +1661,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -1729,6 +1813,7 @@ const vehicules = [
     "cle": "autoscout24:690ff781-4c67-4764-96d7-4a08b1afddc6",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "J.W. Handelsgesellschaft mbH",
     "lieu": "Herges-Hallenberg, DE",
     "prix": 25450,
@@ -1754,7 +1839,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -1917,6 +2001,7 @@ const vehicules = [
     "cle": "autoscout24:48eac05a-8387-4182-93a3-3e26c1ee57d9",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "5552BB",
     "lieu": "5552BB, NL",
     "prix": 24500,
@@ -1942,7 +2027,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -2113,6 +2197,7 @@ const vehicules = [
     "cle": "autoscout24:c1574135-5068-4f90-9622-a7979ddd7f18",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "AutoScout24 Smyle GmbH - Partners (Sa.)",
     "lieu": "Grünwald, DE",
     "prix": 25700,
@@ -2138,7 +2223,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Pano",
@@ -2398,6 +2482,7 @@ const vehicules = [
     "cle": "autoscout24:a34c6203-240c-42f4-b602-8a12f543105c",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "ASL Auto-Service Lichtblau GmbH",
     "lieu": "Potsdam, DE",
     "prix": 24990,
@@ -2423,7 +2508,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -2562,6 +2646,7 @@ const vehicules = [
     "cle": "autoscout24:8edacad2-80f3-4456-94d2-b8679886fabc",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Bravoauto Woluwe",
     "lieu": "Woluwe-Saint-Lambert, BE",
     "prix": 25990,
@@ -2587,7 +2672,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -2747,6 +2831,7 @@ const vehicules = [
     "cle": "autoscout24:88d794e1-f874-495d-8455-18f915976ed8",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Rotterdam ",
     "lieu": "Rotterdam , NL",
     "prix": 25800,
@@ -2772,7 +2857,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -2920,6 +3004,7 @@ const vehicules = [
     "cle": "leboncoin:3201846695",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "VOLKSWAGEN BYmyCAR EPINAL",
     "lieu": "Épinal, FR",
     "prix": 25533,
@@ -2945,7 +3030,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 60,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -3111,6 +3195,7 @@ const vehicules = [
     "cle": "autoscout24:26bf2294-c172-43d3-860f-21a16c317bb3",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Bravoauto Woluwe",
     "lieu": "Woluwe-Saint-Lambert, BE",
     "prix": 25990,
@@ -3136,7 +3221,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -3296,6 +3380,7 @@ const vehicules = [
     "cle": "autoscout24:b6711656-e6c2-4ea7-bdbc-7ba5f1da05d8",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf A. van Rijswijk",
     "lieu": "KH VEEN, NL",
     "prix": 25900,
@@ -3321,7 +3406,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 57,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -3517,6 +3601,7 @@ const vehicules = [
     "cle": "autoscout24:09be0e14-0c8c-48cf-9341-9b675d153b70",
     "modele": "Atto 3",
     "soh_pct_raw": 94.0,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Used Cars Center Hasselt",
     "lieu": "Hasselt, BE",
     "prix": 25845,
@@ -3542,7 +3627,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 75,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -3746,6 +3830,7 @@ const vehicules = [
     "cle": "autoscout24:92a8fe40-13fc-47b9-a5fe-81e545feae72",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf A. van Rijswijk",
     "lieu": "KH VEEN, NL",
     "prix": 25900,
@@ -3771,7 +3856,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 57,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -3967,6 +4051,7 @@ const vehicules = [
     "cle": "leboncoin:3202143358",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "Jeanne",
     "lieu": "Toulouse, FR",
     "prix": 23100,
@@ -3992,7 +4077,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 70,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -4114,6 +4198,7 @@ const vehicules = [
     "cle": "autoscout24:85ed41f3-740d-413f-942d-c7793c0149d1",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "L'agence automobile de Bierghes",
     "lieu": "BIERGHES, BE",
     "prix": 24490,
@@ -4139,7 +4224,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -4278,6 +4362,7 @@ const vehicules = [
     "cle": "autoscout24:dfa75239-e597-4b02-8853-0f2bf9085df1",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Used Cars Center Antwerpen",
     "lieu": "Antwerpen, BE",
     "prix": 24995,
@@ -4303,7 +4388,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -4507,6 +4591,7 @@ const vehicules = [
     "cle": "autoscout24:7b16d7b2-3380-4f27-8246-8f1d3ea428b1",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Automobile Bebra OHG",
     "lieu": "Bebra, DE",
     "prix": 25490,
@@ -4545,7 +4630,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -4777,6 +4861,7 @@ const vehicules = [
     "cle": "autoscout24:5faa0977-7fef-42b6-bac4-717be9908b27",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "35037",
     "lieu": "35037, DE",
     "prix": 23800,
@@ -4802,7 +4887,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 76,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -4950,6 +5034,7 @@ const vehicules = [
     "cle": "leboncoin:3154321378",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "KIA TOULOUSE MONTAUDRAN",
     "lieu": "Toulouse, FR",
     "prix": 23500,
@@ -4988,7 +5073,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 83,
     "finition": "1st",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -5153,6 +5237,7 @@ const vehicules = [
     "cle": "autoscout24:5e6e7cb0-7e56-4378-96b3-41ab1b66bbd4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "3191",
     "lieu": "3191, BE",
     "prix": 24200,
@@ -5191,7 +5276,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -5319,6 +5403,7 @@ const vehicules = [
     "cle": "autoscout24:cc95ab00-0e8f-413c-886d-25019dd354da",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Bravoauto Woluwe",
     "lieu": "Woluwe-Saint-Lambert, BE",
     "prix": 25490,
@@ -5344,7 +5429,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 68,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -5505,6 +5589,7 @@ const vehicules = [
     "cle": "autoscout24:977c16e1-c184-45f6-bd97-522fde16a8b7",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "23879",
     "lieu": "23879, DE",
     "prix": 23690,
@@ -5530,7 +5615,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 76,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Pano",
@@ -5677,6 +5761,7 @@ const vehicules = [
     "cle": "autoscout24:6e90c8e0-2f2a-4ccf-908b-525ff6271e1b",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Gerrit Boks B.V.",
     "lieu": "AB APELDOORN, NL",
     "prix": 23950,
@@ -5702,7 +5787,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -5906,6 +5990,7 @@ const vehicules = [
     "cle": "leboncoin:3088237812",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "AUTOSTRADE MILLAU",
     "lieu": "Millau, FR",
     "prix": 25490,
@@ -5931,7 +6016,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 60,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -6096,6 +6180,7 @@ const vehicules = [
     "cle": "autoscout24:c968c6bc-882c-4074-81b7-bac365c3a279",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Best GmbH",
     "lieu": "Mühlheim a. Main, DE",
     "prix": 24499,
@@ -6121,7 +6206,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -6354,6 +6438,7 @@ const vehicules = [
     "cle": "leboncoin:3183457013",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "Volkswagen Compiègne-Jaux - Courtoise Motors",
     "lieu": "Jaux, FR",
     "prix": 25880,
@@ -6392,7 +6477,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 67,
     "finition": "Life Plus",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -6564,6 +6648,7 @@ const vehicules = [
     "cle": "leboncoin:3191845904",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "SCALA AUCH",
     "lieu": "Auch, FR",
     "prix": 25990,
@@ -6589,7 +6674,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 60,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -6755,6 +6839,7 @@ const vehicules = [
     "cle": "autoscout24:05daeaa2-33e5-4bcc-8a3e-e4291c89cb69",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "1363BB",
     "lieu": "1363BB, NL",
     "prix": 23750,
@@ -6780,7 +6865,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -6879,6 +6963,7 @@ const vehicules = [
     "cle": "autoscout24:b1d85f42-68c0-4f57-84e7-71eb55b55175",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Garage Lavens",
     "lieu": "Pittem-Egem, BE",
     "prix": 23900,
@@ -6904,7 +6989,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -7065,6 +7149,7 @@ const vehicules = [
     "cle": "autoscout24:9cea9f0c-4d20-4f9c-9998-b9a87d9cd7cc",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Scherer GmbH & Co. KG",
     "lieu": "Mayen, DE",
     "prix": 23890,
@@ -7090,7 +7175,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -7314,6 +7398,7 @@ const vehicules = [
     "cle": "leboncoin:3199482698",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "VOLKSWAGEN NICE OUEST",
     "lieu": "Nice, FR",
     "prix": 24990,
@@ -7339,7 +7424,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 64,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "Pano",
@@ -7511,6 +7595,7 @@ const vehicules = [
     "cle": "autoscout24:1f2a7a5d-6ee2-474d-82a1-cbf169bd176b",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Florijn Motion B.V.",
     "lieu": "AP ASSEN, NL",
     "prix": 24488,
@@ -7536,7 +7621,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -7690,6 +7774,7 @@ const vehicules = [
     "cle": "leboncoin:3128563217",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "ALTACAMA",
     "lieu": "Trégueux, FR",
     "prix": 24600,
@@ -7715,7 +7800,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 62,
     "finition": "",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -7816,6 +7900,7 @@ const vehicules = [
     "cle": "autoscout24:4ceac0d8-9905-4bd3-b6e0-e2cffbc319e1",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "85072",
     "lieu": "85072, DE",
     "prix": 24400,
@@ -7841,7 +7926,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -7989,6 +8073,7 @@ const vehicules = [
     "cle": "autoscout24:44474976-617e-4f69-9ae4-bfadba72d292",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Marnet GmbH & Co. KG",
     "lieu": "Mainz-Kastell (Wiesbaden), DE",
     "prix": 25890,
@@ -8014,7 +8099,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -8248,6 +8332,7 @@ const vehicules = [
     "cle": "autoscout24:c54f82ea-6da2-4f77-ba81-dcb4ac757de4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "DR Motors",
     "lieu": "Brugge, BE",
     "prix": 25995,
@@ -8273,7 +8358,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -8443,6 +8527,7 @@ const vehicules = [
     "cle": "autoscout24:999573dd-66f1-47c5-9405-5d96aefda30e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "DR Motors",
     "lieu": "Lille, FR",
     "prix": 25995,
@@ -8468,7 +8553,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -8637,6 +8721,7 @@ const vehicules = [
     "cle": "leboncoin:3202037570",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "VOLKSWAGEN GUINGAMP",
     "lieu": "Guingamp, FR",
     "prix": 25990,
@@ -8662,7 +8747,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 49,
     "finition": "Life Plus",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -8835,6 +8919,7 @@ const vehicules = [
     "cle": "leboncoin:3188932744",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "GROUPE LECLUSE AUTOMOBILES",
     "lieu": "Laval, FR",
     "prix": 25500,
@@ -8860,7 +8945,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 49,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -9026,6 +9110,7 @@ const vehicules = [
     "cle": "autoscout24:56e9c75d-86d5-464a-aa0c-116f610e910e",
     "modele": "Atto 3",
     "soh_pct_raw": 93.5,
+    "source": "autoscout24",
     "vendeur": "Van Leeuwen Auto`s",
     "lieu": "CR KESTEREN, NL",
     "prix": 25495,
@@ -9051,7 +9136,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -9263,6 +9347,7 @@ const vehicules = [
     "cle": "autoscout24:f180d7da-0a8e-482d-8a33-7aeba5dc0ec9",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 24980,
@@ -9288,7 +9373,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Pano",
@@ -9518,6 +9602,7 @@ const vehicules = [
     "cle": "autoscout24:75cf513f-27d3-4c36-b855-f38db98fc017",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "7040",
     "lieu": "7040, BE",
     "prix": 24000,
@@ -9543,7 +9628,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -9669,6 +9753,7 @@ const vehicules = [
     "cle": "autoscout24:8aedc9af-ac48-4516-a378-c6322faa6b81",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "7040",
     "lieu": "7040, BE",
     "prix": 24000,
@@ -9694,7 +9779,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -9815,6 +9899,7 @@ const vehicules = [
     "cle": "autoscout24:2408d2ad-3be8-489a-bfaf-0850dc274f91",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "7040",
     "lieu": "7040, BE",
     "prix": 24000,
@@ -9840,7 +9925,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -9970,6 +10054,7 @@ const vehicules = [
     "cle": "autoscout24:9ac0f7b6-b25c-4119-b068-66254f39a047",
     "modele": "Atto 3",
     "soh_pct_raw": 92.7,
+    "source": "autoscout24",
     "vendeur": "Autogroep Twente Hengelo",
     "lieu": "BS HENGELO OV, NL",
     "prix": 22900,
@@ -9995,7 +10080,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -10199,6 +10283,7 @@ const vehicules = [
     "cle": "autoscout24:bbb2434f-ae7f-498f-a542-3c511565fea3",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autogroep Twente Almelo",
     "lieu": "NA HARBRINKHOEK, NL",
     "prix": 22900,
@@ -10224,7 +10309,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 63,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -10422,6 +10506,7 @@ const vehicules = [
     "cle": "leboncoin:3194916748",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "VOLKSWAGEN METZ",
     "lieu": "Metz, FR",
     "prix": 26000,
@@ -10447,7 +10532,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 45,
     "finition": "Base",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -10626,6 +10710,7 @@ const vehicules = [
     "cle": "autoscout24:bddbf882-f501-4eed-b577-a1542962fc67",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Dumane Supercar",
     "lieu": "Auderghem - Bruxelles, BE",
     "prix": 24490,
@@ -10651,7 +10736,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -10824,6 +10908,7 @@ const vehicules = [
     "cle": "leboncoin:3177714812",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "AUTO FESTIVAL",
     "lieu": "Trans-en-Provence, FR",
     "prix": 24980,
@@ -10849,7 +10934,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "Base",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -11008,6 +11092,7 @@ const vehicules = [
     "cle": "autoscout24:68d0cad6-6989-408f-a4d2-6435ce0a6188",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Emil Frey EF S Automobile",
     "lieu": "Stuttgart, DE",
     "prix": 23490,
@@ -11033,7 +11118,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 63,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -11129,6 +11213,7 @@ const vehicules = [
     "cle": "autoscout24:5436bafe-b922-46ef-9448-7db6f7ad0fc6",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohuis Salland B.V.",
     "lieu": "BH LEMELERVELD, NL",
     "prix": 24850,
@@ -11154,7 +11239,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -11301,6 +11385,7 @@ const vehicules = [
     "cle": "leboncoin:3196545446",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "C.A.R VOLKSWAGEN",
     "lieu": "La Rochelle, FR",
     "prix": 24900,
@@ -11326,7 +11411,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 49,
     "finition": "Life Plus",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -11490,6 +11574,7 @@ const vehicules = [
     "cle": "autoscout24:0d26e8f9-fe24-49a7-87ff-748c8df38a5a",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Daburger e.K.",
     "lieu": "Ruhpolding, DE",
     "prix": 24990,
@@ -11515,7 +11600,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 48,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -11727,6 +11811,7 @@ const vehicules = [
     "cle": "autoscout24:053f587a-0f98-49ca-a223-430089adce37",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23449,
@@ -11752,7 +11837,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 56,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -12004,6 +12088,7 @@ const vehicules = [
     "cle": "autoscout24:98cdc9ad-818a-4e59-8615-8677f6109fbe",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Eccasion Nederland B.V.",
     "lieu": "AB AMSTERDAM, NL",
     "prix": 24900,
@@ -12029,7 +12114,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -12202,6 +12286,7 @@ const vehicules = [
     "cle": "autoscout24:4fd4a443-3457-4c4a-8fd7-d59fc1ad4004",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "4707",
     "lieu": "4707, NL",
     "prix": 22500,
@@ -12227,7 +12312,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 48,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -12402,6 +12486,7 @@ const vehicules = [
     "cle": "leboncoin:3196756990",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "GROUPE LECLUSE AUTOMOBILES",
     "lieu": "Laval, FR",
     "prix": 25990,
@@ -12427,7 +12512,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 49,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -12591,6 +12675,7 @@ const vehicules = [
     "cle": "autoscout24:043920d1-0311-4765-a45d-2be90b3cc1f4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "1083",
     "lieu": "1083, BE",
     "prix": 23000,
@@ -12616,7 +12701,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 63,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -12764,6 +12848,7 @@ const vehicules = [
     "cle": "autoscout24:913d7b53-ad10-4483-b7d2-d37792ba5ab4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 25990,
@@ -12789,7 +12874,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -12983,6 +13067,7 @@ const vehicules = [
     "cle": "autoscout24:0a622a6e-6810-43f8-b8c1-88c0074e4cb7",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23248,
@@ -13008,7 +13093,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 56,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -13259,6 +13343,7 @@ const vehicules = [
     "cle": "autoscout24:a62bce78-796c-4d4f-86c9-90027386421e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Car Alliance",
     "lieu": "Eupen - Verviers - Liège - Sint-Niklaas - Comines, BE",
     "prix": 25990,
@@ -13284,7 +13369,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 57,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -13471,6 +13555,7 @@ const vehicules = [
     "cle": "autoscout24:76f87e76-04aa-4200-b246-1baf340f833b",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "EF S Automobile GmbH",
     "lieu": "Stuttgart, DE",
     "prix": 25890,
@@ -13496,7 +13581,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -13592,6 +13676,7 @@ const vehicules = [
     "cle": "leboncoin:3180407096",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "SCALA NARBONNE",
     "lieu": "Narbonne, FR",
     "prix": 24990,
@@ -13617,7 +13702,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 56,
     "finition": "Life",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -13783,6 +13867,7 @@ const vehicules = [
     "cle": "autoscout24:f016f91d-04c8-40e5-aab9-90bf65a80edb",
     "modele": "ID.4",
     "soh_pct_raw": 91.0,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf P. Martens",
     "lieu": "TC HOLLANDSCHEVELD, NL",
     "prix": 24949,
@@ -13808,7 +13893,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -14004,6 +14088,7 @@ const vehicules = [
     "cle": "leboncoin:3192843277",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "Alturfe",
     "lieu": "Wervicq-Sud, FR",
     "prix": 23000,
@@ -14029,7 +14114,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 61,
     "finition": "",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -14161,6 +14245,7 @@ const vehicules = [
     "cle": "leboncoin:3192551092",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "BRIOCAR",
     "lieu": "Bruz, FR",
     "prix": 25990,
@@ -14186,7 +14271,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "Life Plus",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -14369,6 +14453,7 @@ const vehicules = [
     "cle": "leboncoin:3194939712",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "Volkswagen Sartrouville - Dacy Motors",
     "lieu": "Sartrouville, FR",
     "prix": 22979,
@@ -14394,7 +14479,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 69,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "Pano",
@@ -14566,6 +14650,7 @@ const vehicules = [
     "cle": "autoscout24:104d69f9-35a6-46ab-a13f-997c261b11d7",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 25194,
@@ -14591,7 +14676,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -14831,6 +14915,7 @@ const vehicules = [
     "cle": "autoscout24:a758aad5-0184-4e3b-96b9-80afef40717e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23594,
@@ -14856,7 +14941,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 56,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -15110,6 +15194,7 @@ const vehicules = [
     "cle": "leboncoin:3184605593",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "EUROPE AUTO",
     "lieu": "Perpignan, FR",
     "prix": 23490,
@@ -15135,7 +15220,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 58,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -15301,6 +15385,7 @@ const vehicules = [
     "cle": "autoscout24:5c0e36e0-9d0e-424c-a333-5c1700a0b202",
     "modele": "Atto 3",
     "soh_pct_raw": 92.1,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf J. van Dreven",
     "lieu": "ZG LUNTEREN, NL",
     "prix": 22950,
@@ -15326,7 +15411,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 73,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -15589,6 +15673,7 @@ const vehicules = [
     "cle": "autoscout24:a1f071ae-37b4-408f-85ba-d964ca154702",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Elektrischeautorijden.nl",
     "lieu": "BG ALMERE, NL",
     "prix": 22911,
@@ -15627,7 +15712,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 71,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -15822,6 +15906,7 @@ const vehicules = [
     "cle": "leboncoin:3188336408",
     "modele": "ID.4",
     "soh_pct_raw": 91.0,
+    "source": "leboncoin",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 24990,
@@ -15847,7 +15932,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 66,
     "finition": "1st",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -15963,6 +16047,7 @@ const vehicules = [
     "cle": "autoscout24:e23addd9-0231-41f7-b9fa-b0a48b5369ab",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Vakgarage Heije",
     "lieu": "XJ EDE GLD, NL",
     "prix": 23995,
@@ -16001,7 +16086,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 71,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -16193,6 +16277,7 @@ const vehicules = [
     "cle": "autoscout24:48877289-c331-4b03-b319-bc2b0f265a15",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Hahn Automobile GmbH + Co. KG",
     "lieu": "Wendlingen, DE",
     "prix": 25930,
@@ -16218,7 +16303,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 57,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -16446,6 +16530,7 @@ const vehicules = [
     "cle": "autoscout24:856c5cf8-fadc-4219-a895-d9b1a164d4d8",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Auto Schneider GmbH",
     "lieu": "Timmendorfer Strand, DE",
     "prix": 22790,
@@ -16471,7 +16556,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 56,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -16735,6 +16819,7 @@ const vehicules = [
     "cle": "autoscout24:2d0b0bb0-de1f-4013-ab8c-e9630bffe9e0",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Hardy Automotive",
     "lieu": "MD HARMELEN, NL",
     "prix": 25880,
@@ -16760,7 +16845,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -16930,6 +17014,7 @@ const vehicules = [
     "cle": "autoscout24:a660f5c7-d403-4a2e-958a-ee0a2ea96dec",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Motorhuis Den Haag",
     "lieu": "BA 'S-GRAVENHAGE, NL",
     "prix": 24945,
@@ -16955,7 +17040,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -17141,6 +17225,7 @@ const vehicules = [
     "cle": "leboncoin:3180972346",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "SODIFAV",
     "lieu": "Vannes, FR",
     "prix": 24990,
@@ -17166,7 +17251,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 48,
     "finition": "Business",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -17314,6 +17398,7 @@ const vehicules = [
     "cle": "leboncoin:3201917737",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "C.A.R VOLKSWAGEN",
     "lieu": "Tonnay-Charente, FR",
     "prix": 24900,
@@ -17339,7 +17424,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 49,
     "finition": "Life Plus",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -17506,6 +17590,7 @@ const vehicules = [
     "cle": "autoscout24:202648f7-d875-44f7-b2f6-267b2e98cc29",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Auto Grieb",
     "lieu": "Miesitz, DE",
     "prix": 24750,
@@ -17531,7 +17616,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -17764,6 +17848,7 @@ const vehicules = [
     "cle": "autoscout24:edf89d0c-276d-4d19-912b-3194bf85d48f",
     "modele": "Atto 3",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Nissan Amsterdam",
     "lieu": "AS AMSTERDAM, NL",
     "prix": 23440,
@@ -17789,7 +17874,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 63,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Ouvrant",
@@ -17995,6 +18079,7 @@ const vehicules = [
     "cle": "autoscout24:af11f0ba-51f6-4fcb-b1c5-4b4d2516f381",
     "modele": "ID.4",
     "soh_pct_raw": 91.9,
+    "source": "autoscout24",
     "vendeur": "Van der Linden Auto's B.V.",
     "lieu": "SE HOOGEVEEN, NL",
     "prix": 25950,
@@ -18020,7 +18105,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -18223,6 +18307,7 @@ const vehicules = [
     "cle": "autoscout24:959147ec-8b8a-4c36-9f08-3c62f85c85e6",
     "modele": "ID.4",
     "soh_pct_raw": 92.3,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 23600,
@@ -18261,7 +18346,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 81,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -18438,6 +18522,7 @@ const vehicules = [
     "cle": "autoscout24:920e1108-9a51-4cf4-b8ca-bd2b14b1e6bc",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Used Cars Center Lokeren",
     "lieu": "Lokeren, BE",
     "prix": 25445,
@@ -18463,7 +18548,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -18643,6 +18727,7 @@ const vehicules = [
     "cle": "leboncoin:3127238788",
     "modele": "ID.4",
     "soh_pct_raw": 89.0,
+    "source": "leboncoin",
     "vendeur": "PORCHER AUTOMOBILE",
     "lieu": "Orléans, FR",
     "prix": 21990,
@@ -18681,7 +18766,6 @@ const vehicules = [
     "nick": "🔥 nouvelle pépite",
     "score": 87,
     "finition": "Base",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -18837,6 +18921,7 @@ const vehicules = [
     "cle": "autoscout24:8847c7a6-dd69-4c99-b0d0-93be448adc93",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 25700,
@@ -18862,7 +18947,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 55,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -19054,6 +19138,7 @@ const vehicules = [
     "cle": "autoscout24:3cb0cc1d-bc4b-4644-8825-97d7eb41750c",
     "modele": "ID.4",
     "soh_pct_raw": 92.7,
+    "source": "autoscout24",
     "vendeur": "IKRIJ.NL",
     "lieu": "BX DEN HOORN, NL",
     "prix": 24150,
@@ -19079,7 +19164,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 65,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -19260,6 +19344,7 @@ const vehicules = [
     "cle": "autoscout24:b1606d5d-b1eb-40a1-ae7c-1a1758773206",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Volkswagen Skoda Dendermonde",
     "lieu": "Dendermonde, BE",
     "prix": 23740,
@@ -19285,7 +19370,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 63,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -19425,6 +19509,7 @@ const vehicules = [
     "cle": "autoscout24:6e7044f9-0766-4a41-ac26-465082e5ad6d",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Motorhuis Haarlem",
     "lieu": "KX HAARLEM, NL",
     "prix": 23945,
@@ -19450,7 +19535,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -19657,6 +19741,7 @@ const vehicules = [
     "cle": "leboncoin:3200613723",
     "modele": "ID.4",
     "soh_pct_raw": 91.0,
+    "source": "leboncoin",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 22990,
@@ -19682,7 +19767,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 47,
     "finition": "Base",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -19789,6 +19873,7 @@ const vehicules = [
     "cle": "autoscout24:45e2a33a-4a0d-46e6-9e80-98e53f0ecee4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Volkswagen Automobile Hannover GmbH",
     "lieu": "Hannover, DE",
     "prix": 24990,
@@ -19814,7 +19899,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 37,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -20044,6 +20128,7 @@ const vehicules = [
     "cle": "autoscout24:10722314-16bc-4476-8250-1d8a5f6bf966",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "AutoXL",
     "lieu": "XX ALPHEN AAN DE RIJN, NL",
     "prix": 23940,
@@ -20069,7 +20154,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -20256,6 +20340,7 @@ const vehicules = [
     "cle": "autoscout24:311fe5f5-1d92-45fc-89f8-b5a970766444",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mourik Geldermalsen",
     "lieu": "CL GELDERMALSEN, NL",
     "prix": 23750,
@@ -20281,7 +20366,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -20478,6 +20562,7 @@ const vehicules = [
     "cle": "autoscout24:c6e145fe-52b3-4479-997e-a4754cc5f182",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "DAT AUTOHUS AG",
     "lieu": "Gyhum, DE",
     "prix": 25980,
@@ -20503,7 +20588,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 39,
     "finition": "Gtx",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -20781,6 +20865,7 @@ const vehicules = [
     "cle": "autoscout24:3e234754-484b-4512-b591-4676efb4f869",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autogroep Ursem Barten Amsterdam Zuid Oost",
     "lieu": "AE AMSTERDAM ZUID-OOST, NL",
     "prix": 24445,
@@ -20806,7 +20891,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -20979,6 +21063,7 @@ const vehicules = [
     "cle": "autoscout24:a501c6c4-0ec0-4e75-bbec-e159a0240991",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "DR Motors",
     "lieu": "Brugge, BE",
     "prix": 24495,
@@ -21004,7 +21089,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -21169,6 +21253,7 @@ const vehicules = [
     "cle": "autoscout24:e595402b-2791-4f66-aad2-9a95cc07ac0b",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "DR Motors",
     "lieu": "Lille, FR",
     "prix": 24495,
@@ -21194,7 +21279,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -21358,6 +21442,7 @@ const vehicules = [
     "cle": "autoscout24:d923373e-88b3-4c65-bbe9-4510076fc0e9",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Volkswagen Zentrum Osnabrück GmbH & Co. KG",
     "lieu": "Osnabrück, DE",
     "prix": 25830,
@@ -21383,7 +21468,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "Pano",
@@ -21645,6 +21729,7 @@ const vehicules = [
     "cle": "autoscout24:9d9f21f5-8fc9-443a-9b98-ec4effa1e5f4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 23790,
@@ -21670,7 +21755,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 45,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -21876,6 +21960,7 @@ const vehicules = [
     "cle": "autoscout24:47c5e6aa-81db-4f87-a869-f17c398f0458",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Waalwijk",
     "lieu": "PB Waalwijk, NL",
     "prix": 25900,
@@ -21901,7 +21986,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -22090,6 +22174,7 @@ const vehicules = [
     "cle": "autoscout24:2fa4c5ea-1f2d-4faf-84f7-d87441bf7f19",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Volkswagen Zentrum Uelzen",
     "lieu": "Uelzen, DE",
     "prix": 24870,
@@ -22115,7 +22200,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 39,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -22410,6 +22494,7 @@ const vehicules = [
     "cle": "autoscout24:71746fa5-d41b-4b30-a401-eb99caeb131e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "2161hm",
     "lieu": "2161hm, NL",
     "prix": 25000,
@@ -22435,7 +22520,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -22529,6 +22613,7 @@ const vehicules = [
     "cle": "autoscout24:821ecfb2-2cf8-40ea-bd53-9052593000b2",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "G AUTO",
     "lieu": "Kolbermoor, DE",
     "prix": 25489,
@@ -22554,7 +22639,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -22794,6 +22878,7 @@ const vehicules = [
     "cle": "autoscout24:d1d2500a-de01-4ad3-bf9d-20c0dfb34893",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Glinicke GmbH & Co. Vertriebs KG",
     "lieu": "Erfurt, DE",
     "prix": 24980,
@@ -22819,7 +22904,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -23049,6 +23133,7 @@ const vehicules = [
     "cle": "autoscout24:2221846b-78fe-4777-abb4-36b254aea041",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Volkswagen Skoda Dendermonde",
     "lieu": "Dendermonde, BE",
     "prix": 23490,
@@ -23074,7 +23159,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -23216,6 +23300,7 @@ const vehicules = [
     "cle": "autoscout24:ba1dabda-f07f-441c-ad26-00afb0459f56",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf van Schie",
     "lieu": "CG HAZERSWOUDE RIJNDIJK, NL",
     "prix": 24400,
@@ -23241,7 +23326,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -23381,6 +23465,7 @@ const vehicules = [
     "cle": "autoscout24:9de95d1a-d584-45b5-936f-770181fd5624",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -23406,7 +23491,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -23588,6 +23672,7 @@ const vehicules = [
     "cle": "autoscout24:a73a0fa8-ed7c-476b-a687-64f0cfe76e45",
     "modele": "ID.4",
     "soh_pct_raw": 91.0,
+    "source": "autoscout24",
     "vendeur": "Vakgarage Straathof",
     "lieu": "BJ NIEUWE WETERING, NL",
     "prix": 23950,
@@ -23613,7 +23698,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 53,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -23801,6 +23885,7 @@ const vehicules = [
     "cle": "autoscout24:67bad94a-1631-4dee-85cc-cc0dd42644bc",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Volkswagen Automobile Berlin GmbH",
     "lieu": "Berlin, DE",
     "prix": 24930,
@@ -23826,7 +23911,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -24039,6 +24123,7 @@ const vehicules = [
     "cle": "autoscout24:1e131d77-3d43-4c49-9f34-d9726e1fc047",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Vakgarage Heije",
     "lieu": "XJ EDE GLD, NL",
     "prix": 23995,
@@ -24064,7 +24149,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -24261,6 +24345,7 @@ const vehicules = [
     "cle": "leboncoin:3196236974",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "leboncoin",
     "vendeur": "Volkswagen DBF Montpellier - Tournezy",
     "lieu": "Montpellier, FR",
     "prix": 23480,
@@ -24286,7 +24371,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 41,
     "finition": "Base",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -24450,6 +24534,7 @@ const vehicules = [
     "cle": "autoscout24:581c681b-787e-4714-b198-e757a8a73137",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 23980,
@@ -24475,7 +24560,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -24728,6 +24812,7 @@ const vehicules = [
     "cle": "autoscout24:42673a36-9df4-491e-8b45-e47ec23f2681",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 21980,
@@ -24753,7 +24838,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -24983,6 +25067,7 @@ const vehicules = [
     "cle": "autoscout24:2fc77540-1f2b-4a3e-9dba-04ac1dba81cc",
     "modele": "ID.4",
     "soh_pct_raw": 90.0,
+    "source": "autoscout24",
     "vendeur": "Willems Automobielen",
     "lieu": "PK DRONTEN, NL",
     "prix": 22950,
@@ -25008,7 +25093,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 53,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -25196,6 +25280,7 @@ const vehicules = [
     "cle": "autoscout24:3467c63b-3091-46e3-8d02-bbb6f8d4e86d",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autogroep Ursem Barten Zwaag",
     "lieu": "AG ZWAAG, NL",
     "prix": 23930,
@@ -25221,7 +25306,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -25410,6 +25494,7 @@ const vehicules = [
     "cle": "autoscout24:542a1f80-b94e-40b8-bc8f-cdd6ca2c2052",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "66123",
     "lieu": "66123, DE",
     "prix": 22555,
@@ -25435,7 +25520,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -25594,6 +25678,7 @@ const vehicules = [
     "cle": "autoscout24:9db0c681-6c68-4da2-aae0-746ce7f5b7ca",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -25619,7 +25704,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -25832,6 +25916,7 @@ const vehicules = [
     "cle": "autoscout24:bc312f48-6831-40f7-9819-280c72bee31e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -25857,7 +25942,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -26039,6 +26123,7 @@ const vehicules = [
     "cle": "leboncoin:3191708510",
     "modele": "ID.4",
     "soh_pct_raw": 90.0,
+    "source": "leboncoin",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 22690,
@@ -26064,7 +26149,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 54,
     "finition": "1st",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -26181,6 +26265,7 @@ const vehicules = [
     "cle": "autoscout24:776290e8-b759-405a-9822-4e9a78ca2fd6",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Used Cars Center Lokeren",
     "lieu": "Lokeren, BE",
     "prix": 23745,
@@ -26206,7 +26291,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 43,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -26394,6 +26478,7 @@ const vehicules = [
     "cle": "autoscout24:d6cc2d0d-be39-419f-a993-177f892ecb6e",
     "modele": "ID.4",
     "soh_pct_raw": 91.7,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 22900,
@@ -26419,7 +26504,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 53,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -26603,6 +26687,7 @@ const vehicules = [
     "cle": "autoscout24:e0739586-3c2c-46a7-8501-f915a07012d6",
     "modele": "ID.4",
     "soh_pct_raw": 83.0,
+    "source": "autoscout24",
     "vendeur": "Eurocars",
     "lieu": "KK Oss, NL",
     "prix": 20990,
@@ -26628,7 +26713,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -26820,6 +26904,7 @@ const vehicules = [
     "cle": "leboncoin:3155931062",
     "modele": "ID.4",
     "soh_pct_raw": 73.9,
+    "source": "leboncoin",
     "vendeur": "TRANSAKAUTO EAUNES",
     "lieu": "Eaunes, FR",
     "prix": 15490,
@@ -26845,7 +26930,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 21,
     "finition": "Tech",
-    "source": "leboncoin",
     "options": {
       "toit": {
         "value": "—",
@@ -27030,6 +27114,7 @@ const vehicules = [
     "cle": "autoscout24:665fbecf-622d-4f98-b01b-3d929ba282bb",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Garage Groenouwe",
     "lieu": "BE BATHMEN, NL",
     "prix": 21745,
@@ -27055,7 +27140,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -27192,6 +27276,7 @@ const vehicules = [
     "cle": "autoscout24:564893a0-742c-4fad-a5c5-0323ed6b722e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Hazet Ochten B.V.",
     "lieu": "CA OCHTEN, NL",
     "prix": 24900,
@@ -27217,7 +27302,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 25,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -27403,6 +27487,7 @@ const vehicules = [
     "cle": "autoscout24:3d2f0a0e-f6de-46c8-b743-72b619700b4e",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "TRANSAKAUTO L'ISLE SUR LA SORGUE",
     "lieu": "L'ISLE SUR LA SORGUE, FR",
     "prix": 18990,
@@ -27428,7 +27513,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -27537,6 +27621,7 @@ const vehicules = [
     "cle": "autoscout24:38145d0b-194c-449f-a2c4-d0ab81bd2940",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Van Mossel Tilburg",
     "lieu": "AA Tilburg, NL",
     "prix": 24900,
@@ -27562,7 +27647,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 25,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -27760,6 +27844,7 @@ const vehicules = [
     "cle": "autoscout24:a0f798ca-2b93-4bfd-a8e5-0e0ab336cbf3",
     "modele": "ID.4",
     "soh_pct_raw": 90.3,
+    "source": "autoscout24",
     "vendeur": "IKRIJ.NL",
     "lieu": "BX DEN HOORN, NL",
     "prix": 18500,
@@ -27785,7 +27870,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -27966,6 +28050,7 @@ const vehicules = [
     "cle": "autoscout24:5e5c5d22-d84d-41ac-bdab-9842d10101ce",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Broekhuis Alkmaar Occasioncentrum",
     "lieu": "RJ ALKMAAR, NL",
     "prix": 22700,
@@ -27991,7 +28076,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 33,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -28182,6 +28266,7 @@ const vehicules = [
     "cle": "autoscout24:23b875d2-4673-4d32-bdf0-5e916c77d9fa",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Jan van Veen Auto's B.V.",
     "lieu": "EE ZUILICHEM, NL",
     "prix": 20950,
@@ -28207,7 +28292,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -28387,6 +28471,7 @@ const vehicules = [
     "cle": "autoscout24:a8d19d4b-5bb6-43c0-a527-46e7331fa81f",
     "modele": "ID.4",
     "soh_pct_raw": 92.0,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Wesselink Deventer B.V.",
     "lieu": "ZN DEVENTER, NL",
     "prix": 21900,
@@ -28412,7 +28497,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 50,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -28593,6 +28677,7 @@ const vehicules = [
     "cle": "autoscout24:4b20aae4-985b-49e4-8298-7e26b6567c30",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Braunöhler GmbH",
     "lieu": "Salzgitter, DE",
     "prix": 25750,
@@ -28618,7 +28703,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 25,
     "finition": "Gtx",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -28864,6 +28948,7 @@ const vehicules = [
     "cle": "autoscout24:f391610b-fc7e-4ced-ace2-a5d14819cfe4",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Timcars B.V.",
     "lieu": "HC JOURE, NL",
     "prix": 23450,
@@ -28889,7 +28974,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 29,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -29043,6 +29127,7 @@ const vehicules = [
     "cle": "autoscout24:72d3265f-9019-40d0-aa85-9825698bd787",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autohaus Braunöhler GmbH",
     "lieu": "Salzgitter, DE",
     "prix": 24950,
@@ -29068,7 +29153,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 27,
     "finition": "Gtx",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -29316,6 +29400,7 @@ const vehicules = [
     "cle": "autoscout24:8fa7c221-7767-4428-830b-736a889ac8e3",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 19900,
@@ -29341,7 +29426,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "Pro Performance",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -29534,6 +29618,7 @@ const vehicules = [
     "cle": "autoscout24:49643b93-a76c-4946-abe8-947edf8fc222",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Wesselink Emst B.V.",
     "lieu": "AE EMST, NL",
     "prix": 23800,
@@ -29559,7 +29644,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 33,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -29752,6 +29836,7 @@ const vehicules = [
     "cle": "autoscout24:cb17a644-9eba-4e13-b012-4519a4b3c003",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Linker V.O.F.",
     "lieu": "TB MARUM, NL",
     "prix": 18950,
@@ -29777,7 +29862,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -29931,6 +30015,7 @@ const vehicules = [
     "cle": "autoscout24:621c6838-c283-4175-b054-b31c4a62b45d",
     "modele": "ID.4",
     "soh_pct_raw": null,
+    "source": "autoscout24",
     "vendeur": "E. van Boxtel Auto`s B.V.",
     "lieu": "EE SCHIJNDEL, NL",
     "prix": 19750,
@@ -29956,7 +30041,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 40,
     "finition": "Pro",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -30152,6 +30236,7 @@ const vehicules = [
     "cle": "autoscout24:a75feedc-7678-4a24-aea4-1ceda866d858",
     "modele": "ID.4",
     "soh_pct_raw": 90.0,
+    "source": "autoscout24",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 24900,
@@ -30177,7 +30262,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 35,
     "finition": "Gtx",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -30401,6 +30485,7 @@ const vehicules = [
     "cle": "autoscout24:8d19a535-55ac-4c42-8b83-31025f3afb88",
     "modele": "ID.4",
     "soh_pct_raw": 89.4,
+    "source": "autoscout24",
     "vendeur": "Auto Corsten B.V.",
     "lieu": "AK MARIAHOUT, NL",
     "prix": 20895,
@@ -30426,7 +30511,6 @@ const vehicules = [
     "nick": "🆕 nouveau",
     "score": 45,
     "finition": "",
-    "source": "autoscout24",
     "options": {
       "toit": {
         "value": "—",
@@ -31107,6 +31191,17 @@ function statutCell(v){
   return '<span class="statustag '+c+'">'+t+'</span>';
 }
 
+const SITE_LABELS = {
+  'autoscout24': 'Autoscout24',
+  'leboncoin': 'leboncoin',
+  'mobile_de': 'Mobile.de',
+  'lacentrale': 'LaCentrale',
+  'gaspedaal': 'Gaspedaal',
+};
+function siteLabel(src){
+  return SITE_LABELS[src] || (src || '?');
+}
+
 function optionsCell(v) {
   const o = v.options;
   if (!o) return '<span class="opt-chip muted">détails non récupérés</span>';
@@ -31312,6 +31407,7 @@ function render(){
     if (curFilter !== 'all' && curFilter !== 'fav' && curFilter !== 'favori'
         && curFilter !== 'nouveau' && curFilter !== 'baisse' && v.statut !== curFilter) return false;
     if (!passOptions(v)) return false;
+    if (!passCriteresLocaux(v)) return false;
     return true;
   });
   rows.sort((a,b)=>{
@@ -31319,7 +31415,7 @@ function render(){
     if(x==null)return 1; if(y==null)return -1;
     return (x-y)*sortDir;
   });
-  const N_COLS = 14;
+  const N_COLS = 15;
   tbody.innerHTML=rows.map((v,i)=>{
     const cls=['main', v.fav?'fav':'', v.favori?'is-favori':'', v.statut==='vendu'?'sold':'', v.statut==='eviter'?'avoid':'', v.prix_en_baisse?'baisse':''].filter(Boolean).join(' ');
     const scoreClass = v.score >= 70 ? 'b-green' : v.score >= 50 ? 'b-yellow' : 'b-gray';
@@ -31331,6 +31427,7 @@ function render(){
       <td data-col="prix" class="keepcolor">${prixCell(v)}</td>
       <td data-col="km" class="num keepcolor">${km(v.km)}</td>
       <td data-col="annee" class="num">${escapeHtml(v.annee)}</td>
+      <td data-col="site"><span class="site-chip site-${v.source||'?'}">${siteLabel(v.source)}</span></td>
       <td data-col="score"><span class="badge ${scoreClass}${scoreModified}" title="${scoreModified ? 'Score ajusté par SoH manuel (orig: '+v.score_orig+')' : ''}">${v.score}</span></td>
       <td data-col="soh">${sohCell(v)}</td>
       <td data-col="options">${optionsCell(v)}</td>
@@ -31449,6 +31546,96 @@ document.getElementById('copy-cmd').addEventListener('click', async () => {
     alert('Impossible de copier — sélectionne la commande manuellement.');
   }
 });
+
+/* ---------- Critères ajustables (page Stats) ---------- */
+const CRIT_KEY = 'veille_id4_criteres_user';
+let criteresUser = (() => {
+  try { return JSON.parse(localStorage.getItem(CRIT_KEY) || '{}') || {}; }
+  catch (e) { return {}; }
+})();
+
+function saveCriteres() {
+  localStorage.setItem(CRIT_KEY, JSON.stringify(criteresUser));
+}
+
+// Affiche les valeurs modifiées en rouge dans le tableau Stats
+function appliquerStyleCriteres() {
+  document.querySelectorAll('.critere-editable').forEach(el => {
+    const modele = el.dataset.modele;
+    const key = el.dataset.key;
+    const userVal = criteresUser[modele]?.[key];
+    const orig = el.dataset.orig;
+    if (userVal !== undefined && userVal !== orig) {
+      el.textContent = userVal;
+      el.classList.add('modified');
+    } else {
+      el.textContent = orig;
+      el.classList.remove('modified');
+    }
+  });
+}
+
+// Parse "≤ 26 000 €" → 26000 ; "≥ 2021" → 2021 ; "≤ 170 000 km" → 170000
+function parseValeurNumeric(s) {
+  if (s == null) return null;
+  const m = String(s).match(/(\d[\d  \s.,]*)/);
+  if (!m) return null;
+  return parseFloat(m[1].replace(/[ \s.,]/g, ''));
+}
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('.critere-editable');
+  if (el) {
+    const modele = el.dataset.modele;
+    const key = el.dataset.key;
+    const orig = el.dataset.orig;
+    const cur = criteresUser[modele]?.[key] || orig;
+    const v = prompt(`Modifier "${key}" pour ${modele}\n(valeur actuelle : ${cur})\nLaisse vide pour réinitialiser.`, cur);
+    if (v === null) return;
+    if (v.trim() === '' || v.trim() === orig) {
+      if (criteresUser[modele]) delete criteresUser[modele][key];
+    } else {
+      criteresUser[modele] = criteresUser[modele] || {};
+      criteresUser[modele][key] = v.trim();
+    }
+    saveCriteres();
+    appliquerStyleCriteres();
+    render();  // filtre live
+    return;
+  }
+  const reset = e.target.closest('.critere-reset');
+  if (reset) {
+    const modele = reset.dataset.modele;
+    delete criteresUser[modele];
+    saveCriteres();
+    appliquerStyleCriteres();
+    render();
+  }
+});
+
+// Filtre client basé sur les critères modifiés par l'user
+function passCriteresLocaux(v) {
+  const u = criteresUser[v.modele];
+  if (!u) return true;
+  // Prix max
+  if (u['Prix max']) {
+    const max = parseValeurNumeric(u['Prix max']);
+    if (max && v.prix && v.prix > max) return false;
+  }
+  if (u['Kilométrage max']) {
+    const max = parseValeurNumeric(u['Kilométrage max']);
+    if (max && v.km && v.km > max) return false;
+  }
+  if (u['Année min']) {
+    const min = parseValeurNumeric(u['Année min']);
+    const an = parseInt(String(v.annee).match(/\d{4}/)?.[0] || '0', 10);
+    if (min && an && an < min) return false;
+  }
+  return true;
+}
+
+// Applique le style au load
+appliquerStyleCriteres();
 
 /* Onglets Annonces / Stats */
 document.querySelectorAll('.page-tab').forEach(tab => {
