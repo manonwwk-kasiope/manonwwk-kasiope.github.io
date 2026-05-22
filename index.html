@@ -194,13 +194,20 @@
   /* Colonnes voisines qui s'écartent pour faire place */
   thead th.col-shift-r,
   tbody tr.main td.col-shift-r{
-    transform: translateX(40px);
-    transition: transform .22s cubic-bezier(.4,1.4,.6,1);
+    transform: translateX(70px);
+    transition: transform .35s cubic-bezier(.16,1,.3,1);  /* easeOutExpo, très souple */
   }
-  /* Limiter l'animation aux ~30 premières lignes pour rester fluide sur iPhone */
-  tbody tr.main:nth-child(n+60) td.col-shift-r{
-    transform: none;  /* hors viewport, pas d'animation */
+  /* Toutes les cellules ont une transition par défaut pour le retour à zéro fluide */
+  thead th,
+  tbody tr.main td{
+    transition: transform .28s cubic-bezier(.22,1,.36,1);
+  }
+  /* Hors des 80 premières lignes : pas d'anim (perf iPhone) */
+  tbody tr.main:nth-child(n+80) td{
     transition: none;
+  }
+  tbody tr.main:nth-child(n+80) td.col-shift-r{
+    transform: none;
   }
 
   /* Ghost : mini-colonne flottante qui affiche le th + les 5 premières valeurs */
@@ -399,7 +406,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 21:29</b></span>
+      <span>Mis à jour le <b>22/05/2026 21:36</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24234,8 +24241,55 @@ function saveColOrder() {
 
 /* ---------- Drag-and-drop colonnes (appui long, touch+desktop) ---------- */
 const LONG_PRESS_MS = 300;
-const MOVE_TOLERANCE = 12;  // px — si on bouge plus que ça avant le long press, on annule
+const MOVE_TOLERANCE = 12;
+const EDGE_THRESHOLD = 80;     // distance du bord à partir de laquelle on auto-scroll
+const MAX_SCROLL_SPEED = 18;   // px par frame max
 let suppressNextClick = false;
+
+/* Auto-scroll horizontal du tableau pendant un drag de colonne */
+const scrollerEl = document.querySelector('.scroller');
+let scrollVelocity = 0;
+let scrollRAF = null;
+let lastDragPoint = null;
+let lastDragUpdateDrop = null;  // référence vers updateDrop courant
+
+const autoScrollStep = () => {
+  if (Math.abs(scrollVelocity) < 0.3 || !scrollerEl) {
+    scrollRAF = null;
+    return;
+  }
+  const before = scrollerEl.scrollLeft;
+  scrollerEl.scrollLeft += scrollVelocity;
+  // Si on a vraiment bougé, re-déclencher updateDrop avec le dernier point pour
+  // recalculer la cible de drop (sinon le marker reste figé)
+  if (scrollerEl.scrollLeft !== before && lastDragPoint && lastDragUpdateDrop) {
+    lastDragUpdateDrop(lastDragPoint);
+  }
+  scrollRAF = requestAnimationFrame(autoScrollStep);
+};
+
+const updateAutoScroll = (clientX) => {
+  const w = window.innerWidth;
+  if (clientX < EDGE_THRESHOLD) {
+    const dist = EDGE_THRESHOLD - clientX;
+    scrollVelocity = -Math.min(MAX_SCROLL_SPEED, dist / 4);
+  } else if (clientX > w - EDGE_THRESHOLD) {
+    const dist = clientX - (w - EDGE_THRESHOLD);
+    scrollVelocity = Math.min(MAX_SCROLL_SPEED, dist / 4);
+  } else {
+    scrollVelocity = 0;
+  }
+  if (scrollVelocity !== 0 && !scrollRAF) {
+    scrollRAF = requestAnimationFrame(autoScrollStep);
+  }
+};
+
+const stopAutoScroll = () => {
+  scrollVelocity = 0;
+  if (scrollRAF) { cancelAnimationFrame(scrollRAF); scrollRAF = null; }
+  lastDragPoint = null;
+  lastDragUpdateDrop = null;
+};
 
 function initColDrag(th) {
   if (th.dataset.fixed) return;
@@ -24296,6 +24350,12 @@ function initColDrag(th) {
   };
 
   const updateDrop = (point) => {
+    // Mémorise pour l'auto-scroll
+    lastDragPoint = { clientX: point.clientX, clientY: point.clientY };
+    lastDragUpdateDrop = updateDrop;
+    // Auto-scroll horizontal si on est près d'un bord de l'écran
+    updateAutoScroll(point.clientX);
+
     ghost.style.left = point.clientX + 'px';
     ghost.style.top = point.clientY + 'px';
 
@@ -24353,12 +24413,11 @@ function initColDrag(th) {
     dragging = false;
 
     th.classList.remove('col-dragging');
-    // Reset les cellules cachées de la colonne dragguée
     document.querySelectorAll(`tbody tr.main td.col-dragging-cell`).forEach(td => {
       td.classList.remove('col-dragging-cell');
     });
-    // Reset le shift des autres colonnes
     clearShift();
+    stopAutoScroll();
     document.body.classList.remove('col-dragging-active');
     if (ghost) { ghost.remove(); ghost = null; }
     if (dropMarker) { dropMarker.remove(); dropMarker = null; }
