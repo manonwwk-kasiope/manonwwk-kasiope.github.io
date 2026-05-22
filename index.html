@@ -165,6 +165,59 @@
   .opt-chip.bool{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
   .opt-chip.muted{background:#f1ede3;color:var(--ink-soft);border-color:var(--line)}
 
+  /* ─── Badge modèle dans cellule vendeur ────────────────── */
+  .badge-marque{
+    display:inline-block;font-size:.6rem;font-weight:800;
+    padding:2px 6px;border-radius:4px;margin-right:6px;
+    vertical-align:middle;letter-spacing:.02em;
+  }
+  .marque-id4{background:var(--ink);color:#fff}
+  .marque-atto3{background:#e60012;color:#fff}
+
+  /* ─── Sélecteur de modèle ──────────────────────────────── */
+  .modeles-selector{
+    display:flex;flex-wrap:wrap;gap:10px;
+    margin:18px 0 0;padding:14px;
+    background:linear-gradient(135deg,#fefcf6 0%,var(--paper) 100%);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 4px 16px -8px rgba(15,110,79,.1);
+  }
+  .modele-btn{
+    flex:1;min-width:140px;
+    font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:14px 16px;border-radius:10px;
+    background:var(--paper);
+    border:2px solid var(--line);
+    color:var(--ink-soft);
+    cursor:pointer;transition:.2s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .modele-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .modele-btn.on{
+    background:linear-gradient(135deg,var(--accent) 0%,#0d5a40 100%);
+    color:#fff;
+    border-color:var(--accent);
+    box-shadow:0 4px 14px -4px rgba(15,110,79,.4);
+    transform:translateY(-1px);
+  }
+  .modele-btn .modele-label{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:700;font-size:1.05rem;letter-spacing:-.01em;
+  }
+  .modele-btn .modele-count{
+    font-size:.78rem;font-weight:600;opacity:.85;
+    font-variant-numeric:tabular-nums;
+  }
+  .modele-btn.on .modele-count{
+    background:rgba(255,255,255,.2);padding:1px 8px;border-radius:99px;
+  }
+  @media(max-width:640px){
+    .modele-btn{padding:10px 12px;min-width:0}
+    .modele-btn .modele-label{font-size:.92rem}
+  }
+
   /* ─── Colonne Favoris (étoile cliquable) ──────────────── */
   td.favori-cell{
     width:42px;text-align:center;padding:8px 6px;
@@ -433,13 +486,31 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>23/05/2026 00:07</b></span>
+      <span>Mis à jour le <b>23/05/2026 00:19</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
-      <span><b>115</b> annonces · <b>11</b> 🔥 pépites · <b id="nv-since">0</b> 🆕 depuis ta dernière visite</span>
+      <span><b>143</b> annonces · <b>17</b> 🔥 pépites · <b id="nv-since">0</b> 🆕 depuis ta dernière visite</span>
     </div>
   </header>
+
+  <div class="modeles-selector" id="modeles-selector">
+    
+    <button class="modele-btn" data-modele="ID.4" type="button">
+      <span class="modele-label">VW ID.4</span>
+      <span class="modele-count">116</span>
+    </button>
+    
+    <button class="modele-btn" data-modele="Atto 3" type="button">
+      <span class="modele-label">BYD Atto 3</span>
+      <span class="modele-count">27</span>
+    </button>
+    
+    <button class="modele-btn on" data-modele="__all__" type="button">
+      <span class="modele-label">⚡ Les deux</span>
+      <span class="modele-count">143</span>
+    </button>
+  </div>
 
   <div class="toolbar">
     <div class="filters" id="filters">
@@ -564,7 +635,209 @@
    ==================================================================== */
 const vehicules = [
   {
+    "cle": "autoscout24:dfbb5842-42e7-47df-9439-0b911b78213d",
+    "modele": "Atto 3",
+    "vendeur": "Louwman Dreams Rotterdam",
+    "lieu": "NP ROTTERDAM, NL",
+    "prix": 25450,
+    "prix_initial": 25450,
+    "prix_min": 25450,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 5259,
+    "annee": "12/2022",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 154741,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/dfbb5842-42e7-47df-9439-0b911b78213d",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:ca5fed65-43b9-4365-8a45-90f570dcbcbf",
+    "modele": "Atto 3",
+    "vendeur": "8930",
+    "lieu": "8930, BE",
+    "prix": 24000,
+    "prix_initial": 24000,
+    "prix_min": 24000,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 16000,
+    "annee": "08/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 144000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/ca5fed65-43b9-4365-8a45-90f570dcbcbf",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:3b942c24-bc6d-46ab-a3f2-40755dfb8b90",
+    "modele": "Atto 3",
+    "vendeur": "auto:mobil GmbH",
+    "lieu": "Hainburg, DE",
+    "prix": 25980,
+    "prix_initial": 25980,
+    "prix_min": 25980,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 16200,
+    "annee": "12/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 143800,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/3b942c24-bc6d-46ab-a3f2-40755dfb8b90",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:a56c20c9-9f13-492d-bbde-0ef6f2c87a83",
+    "modele": "ID.4",
     "vendeur": "Autohaus Yaans",
     "lieu": "Pinneberg, DE",
     "prix": 24789,
@@ -588,7 +861,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 67,
+    "score": 65,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -740,7 +1013,343 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:690ff781-4c67-4764-96d7-4a08b1afddc6",
+    "modele": "Atto 3",
+    "vendeur": "J.W. Handelsgesellschaft mbH",
+    "lieu": "Herges-Hallenberg, DE",
+    "prix": 25450,
+    "prix_initial": 25450,
+    "prix_min": 25450,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 22958,
+    "annee": "12/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 137042,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/690ff781-4c67-4764-96d7-4a08b1afddc6",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:48eac05a-8387-4182-93a3-3e26c1ee57d9",
+    "modele": "Atto 3",
+    "vendeur": "5552BB",
+    "lieu": "5552BB, NL",
+    "prix": 24500,
+    "prix_initial": 24500,
+    "prix_min": 24500,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 23500,
+    "annee": "12/2022",
+    "ch": 0,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 136500,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/48eac05a-8387-4182-93a3-3e26c1ee57d9",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 50,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:c1574135-5068-4f90-9622-a7979ddd7f18",
+    "modele": "Atto 3",
+    "vendeur": "AutoScout24 Smyle GmbH - Partners (Sa.)",
+    "lieu": "Grünwald, DE",
+    "prix": 25700,
+    "prix_initial": 25700,
+    "prix_min": 25700,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 27400,
+    "annee": "12/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 132600,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/c1574135-5068-4f90-9622-a7979ddd7f18",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:a34c6203-240c-42f4-b602-8a12f543105c",
+    "modele": "Atto 3",
+    "vendeur": "ASL Auto-Service Lichtblau GmbH",
+    "lieu": "Potsdam, DE",
+    "prix": 24990,
+    "prix_initial": 24990,
+    "prix_min": 24990,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 28087,
+    "annee": "07/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 131913,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/a34c6203-240c-42f4-b602-8a12f543105c",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:8edacad2-80f3-4456-94d2-b8679886fabc",
+    "modele": "Atto 3",
+    "vendeur": "Bravoauto Woluwe",
+    "lieu": "Woluwe-Saint-Lambert, BE",
+    "prix": 25990,
+    "prix_initial": 25990,
+    "prix_min": 25990,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 30364,
+    "annee": "03/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 129636,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/8edacad2-80f3-4456-94d2-b8679886fabc",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:88d794e1-f874-495d-8455-18f915976ed8",
+    "modele": "ID.4",
     "vendeur": "Rotterdam ",
     "lieu": "Rotterdam , NL",
     "prix": 25800,
@@ -762,9 +1371,9 @@ const vehicules = [
     "tel": "",
     "lien": "https://www.autoscout24.com/offers/88d794e1-f874-495d-8455-18f915976ed8",
     "statut": "dispo",
-    "fav": true,
-    "nick": "🔥 nouvelle pépite",
-    "score": 81,
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -912,6 +1521,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3201846695",
+    "modele": "ID.4",
     "vendeur": "VOLKSWAGEN BYmyCAR EPINAL",
     "lieu": "Épinal, FR",
     "prix": 25533,
@@ -1100,7 +1710,276 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:26bf2294-c172-43d3-860f-21a16c317bb3",
+    "modele": "Atto 3",
+    "vendeur": "Bravoauto Woluwe",
+    "lieu": "Woluwe-Saint-Lambert, BE",
+    "prix": 25990,
+    "prix_initial": 25990,
+    "prix_min": 25990,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 38260,
+    "annee": "08/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 121740,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/26bf2294-c172-43d3-860f-21a16c317bb3",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:b6711656-e6c2-4ea7-bdbc-7ba5f1da05d8",
+    "modele": "Atto 3",
+    "vendeur": "Autobedrijf A. van Rijswijk",
+    "lieu": "KH VEEN, NL",
+    "prix": 25900,
+    "prix_initial": 25900,
+    "prix_min": 25900,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 38774,
+    "annee": "06/2024",
+    "ch": 0,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "360",
+    "garkm": 121226,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/b6711656-e6c2-4ea7-bdbc-7ba5f1da05d8",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 57,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:09be0e14-0c8c-48cf-9341-9b675d153b70",
+    "modele": "Atto 3",
+    "vendeur": "Van Mossel Used Cars Center Hasselt",
+    "lieu": "Hasselt, BE",
+    "prix": 25845,
+    "prix_initial": 25845,
+    "prix_min": 25845,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 38901,
+    "annee": "12/2022",
+    "ch": 204,
+    "soh": "94 %",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 121099,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/09be0e14-0c8c-48cf-9341-9b675d153b70",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 75,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:92a8fe40-13fc-47b9-a5fe-81e545feae72",
+    "modele": "Atto 3",
+    "vendeur": "Autobedrijf A. van Rijswijk",
+    "lieu": "KH VEEN, NL",
+    "prix": 25900,
+    "prix_initial": 25900,
+    "prix_min": 25900,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 39535,
+    "annee": "06/2024",
+    "ch": 0,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "360",
+    "garkm": 120465,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/92a8fe40-13fc-47b9-a5fe-81e545feae72",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 57,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3202143358",
+    "modele": "ID.4",
     "vendeur": "Jeanne",
     "lieu": "Toulouse, FR",
     "prix": 23100,
@@ -1246,6 +2125,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:85ed41f3-740d-413f-942d-c7793c0149d1",
+    "modele": "ID.4",
     "vendeur": "L'agence automobile de Bierghes",
     "lieu": "BIERGHES, BE",
     "prix": 24490,
@@ -1407,7 +2287,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:dfa75239-e597-4b02-8853-0f2bf9085df1",
+    "modele": "Atto 3",
+    "vendeur": "Van Mossel Used Cars Center Antwerpen",
+    "lieu": "Antwerpen, BE",
+    "prix": 24995,
+    "prix_initial": 24995,
+    "prix_min": 24995,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 44620,
+    "annee": "12/2022",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 115380,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/dfa75239-e597-4b02-8853-0f2bf9085df1",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:7b16d7b2-3380-4f27-8246-8f1d3ea428b1",
+    "modele": "ID.4",
     "vendeur": "Automobile Bebra OHG",
     "lieu": "Bebra, DE",
     "prix": 25490,
@@ -1444,7 +2392,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 77,
+    "score": 73,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -1675,7 +2623,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:5faa0977-7fef-42b6-bac4-717be9908b27",
+    "modele": "Atto 3",
+    "vendeur": "35037",
+    "lieu": "35037, DE",
+    "prix": 23800,
+    "prix_initial": 23800,
+    "prix_min": 23800,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 45000,
+    "annee": "12/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 115000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/5faa0977-7fef-42b6-bac4-717be9908b27",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 76,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3154321378",
+    "modele": "ID.4",
     "vendeur": "KIA TOULOUSE MONTAUDRAN",
     "lieu": "Toulouse, FR",
     "prix": 23500,
@@ -1877,6 +2893,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:5e6e7cb0-7e56-4378-96b3-41ab1b66bbd4",
+    "modele": "ID.4",
     "vendeur": "3191",
     "lieu": "3191, BE",
     "prix": 24200,
@@ -1913,7 +2930,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 76,
+    "score": 73,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -2040,7 +3057,209 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:cc95ab00-0e8f-413c-886d-25019dd354da",
+    "modele": "Atto 3",
+    "vendeur": "Bravoauto Woluwe",
+    "lieu": "Woluwe-Saint-Lambert, BE",
+    "prix": 25490,
+    "prix_initial": 25490,
+    "prix_min": 25490,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 56368,
+    "annee": "08/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 103632,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/cc95ab00-0e8f-413c-886d-25019dd354da",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 68,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:977c16e1-c184-45f6-bd97-522fde16a8b7",
+    "modele": "Atto 3",
+    "vendeur": "23879",
+    "lieu": "23879, DE",
+    "prix": 23690,
+    "prix_initial": 23690,
+    "prix_min": 23690,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 56400,
+    "annee": "11/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 103600,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/977c16e1-c184-45f6-bd97-522fde16a8b7",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 76,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:6e90c8e0-2f2a-4ccf-908b-525ff6271e1b",
+    "modele": "Atto 3",
+    "vendeur": "Autobedrijf Gerrit Boks B.V.",
+    "lieu": "AB APELDOORN, NL",
+    "prix": 23950,
+    "prix_initial": 23950,
+    "prix_min": 23950,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 57110,
+    "annee": "11/2022",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 102890,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/6e90c8e0-2f2a-4ccf-908b-525ff6271e1b",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 73,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3088237812",
+    "modele": "ID.4",
     "vendeur": "AUTOSTRADE MILLAU",
     "lieu": "Millau, FR",
     "prix": 25490,
@@ -2228,7 +3447,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:c968c6bc-882c-4074-81b7-bac365c3a279",
+    "modele": "ID.4",
+    "vendeur": "Autohaus Best GmbH",
+    "lieu": "Mühlheim a. Main, DE",
+    "prix": 24499,
+    "prix_initial": 24499,
+    "prix_min": 24499,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 60000,
+    "annee": "03/2022",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 100000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/c968c6bc-882c-4074-81b7-bac365c3a279",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
+    "finition": "Pro Performance",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3183457013",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Compiègne-Jaux - Courtoise Motors",
     "lieu": "Jaux, FR",
     "prix": 25880,
@@ -2437,6 +3724,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3191845904",
+    "modele": "ID.4",
     "vendeur": "SCALA AUCH",
     "lieu": "Auch, FR",
     "prix": 25990,
@@ -2625,7 +3913,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:05daeaa2-33e5-4bcc-8a3e-e4291c89cb69",
+    "modele": "Atto 3",
+    "vendeur": "1363BB",
+    "lieu": "1363BB, NL",
+    "prix": 23750,
+    "prix_initial": 23750,
+    "prix_min": 23750,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 64000,
+    "annee": "02/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 96000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/05daeaa2-33e5-4bcc-8a3e-e4291c89cb69",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 73,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:b1d85f42-68c0-4f57-84e7-71eb55b55175",
+    "modele": "ID.4",
     "vendeur": "Garage Lavens",
     "lieu": "Pittem-Egem, BE",
     "prix": 23900,
@@ -2810,6 +4166,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:9cea9f0c-4d20-4f9c-9998-b9a87d9cd7cc",
+    "modele": "ID.4",
     "vendeur": "Scherer GmbH & Co. KG",
     "lieu": "Mayen, DE",
     "prix": 23890,
@@ -2833,7 +4190,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 75,
+    "score": 73,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -3057,6 +4414,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3199482698",
+    "modele": "ID.4",
     "vendeur": "VOLKSWAGEN NICE OUEST",
     "lieu": "Nice, FR",
     "prix": 24990,
@@ -3252,6 +4610,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:1f2a7a5d-6ee2-474d-82a1-cbf169bd176b",
+    "modele": "ID.4",
     "vendeur": "Florijn Motion B.V.",
     "lieu": "AP ASSEN, NL",
     "prix": 24488,
@@ -3275,7 +4634,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 69,
+    "score": 65,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -3429,6 +4788,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3128563217",
+    "modele": "ID.4",
     "vendeur": "ALTACAMA",
     "lieu": "Trégueux, FR",
     "prix": 24600,
@@ -3553,6 +4913,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:4ceac0d8-9905-4bd3-b6e0-e2cffbc319e1",
+    "modele": "ID.4",
     "vendeur": "85072",
     "lieu": "85072, DE",
     "prix": 24400,
@@ -3576,7 +4937,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 55,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -3724,6 +5085,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:44474976-617e-4f69-9ae4-bfadba72d292",
+    "modele": "ID.4",
     "vendeur": "Autohaus Marnet GmbH & Co. KG",
     "lieu": "Mainz-Kastell (Wiesbaden), DE",
     "prix": 25890,
@@ -3747,7 +5109,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 67,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -3981,6 +5343,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:c54f82ea-6da2-4f77-ba81-dcb4ac757de4",
+    "modele": "ID.4",
     "vendeur": "DR Motors",
     "lieu": "Brugge, BE",
     "prix": 25995,
@@ -4004,7 +5367,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 66,
+    "score": 55,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -4174,6 +5537,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:999573dd-66f1-47c5-9405-5d96aefda30e",
+    "modele": "ID.4",
     "vendeur": "DR Motors",
     "lieu": "Lille, FR",
     "prix": 25995,
@@ -4197,7 +5561,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 66,
+    "score": 55,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -4366,6 +5730,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3202037570",
+    "modele": "ID.4",
     "vendeur": "VOLKSWAGEN GUINGAMP",
     "lieu": "Guingamp, FR",
     "prix": 25990,
@@ -4562,6 +5927,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3188932744",
+    "modele": "ID.4",
     "vendeur": "GROUPE LECLUSE AUTOMOBILES",
     "lieu": "Laval, FR",
     "prix": 25500,
@@ -4750,7 +6116,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:56e9c75d-86d5-464a-aa0c-116f610e910e",
+    "modele": "Atto 3",
+    "vendeur": "Van Leeuwen Auto`s",
+    "lieu": "CR KESTEREN, NL",
+    "prix": 25495,
+    "prix_initial": 25495,
+    "prix_min": 25495,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 73972,
+    "annee": "03/2023",
+    "ch": 204,
+    "soh": "93,5 %",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 86028,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/56e9c75d-86d5-464a-aa0c-116f610e910e",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 65,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:f180d7da-0a8e-482d-8a33-7aeba5dc0ec9",
+    "modele": "ID.4",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 24980,
@@ -4774,7 +6208,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 67,
+    "score": 55,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -5003,7 +6437,343 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:75cf513f-27d3-4c36-b855-f38db98fc017",
+    "modele": "Atto 3",
+    "vendeur": "7040",
+    "lieu": "7040, BE",
+    "prix": 24000,
+    "prix_initial": 24000,
+    "prix_min": 24000,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 75000,
+    "annee": "02/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 85000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/75cf513f-27d3-4c36-b855-f38db98fc017",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 55,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:8aedc9af-ac48-4516-a378-c6322faa6b81",
+    "modele": "Atto 3",
+    "vendeur": "7040",
+    "lieu": "7040, BE",
+    "prix": 24000,
+    "prix_initial": 24000,
+    "prix_min": 24000,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 75000,
+    "annee": "02/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 85000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/8aedc9af-ac48-4516-a378-c6322faa6b81",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 55,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:2408d2ad-3be8-489a-bfaf-0850dc274f91",
+    "modele": "Atto 3",
+    "vendeur": "7040",
+    "lieu": "7040, BE",
+    "prix": 24000,
+    "prix_initial": 24000,
+    "prix_min": 24000,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 75000,
+    "annee": "02/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 85000,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/2408d2ad-3be8-489a-bfaf-0850dc274f91",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 55,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:9ac0f7b6-b25c-4119-b068-66254f39a047",
+    "modele": "Atto 3",
+    "vendeur": "Autogroep Twente Hengelo",
+    "lieu": "BS HENGELO OV, NL",
+    "prix": 22900,
+    "prix_initial": 22900,
+    "prix_min": 22900,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 75175,
+    "annee": "09/2022",
+    "ch": 204,
+    "soh": "92,7 %",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 84825,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/9ac0f7b6-b25c-4119-b068-66254f39a047",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 73,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
+    "cle": "autoscout24:bbb2434f-ae7f-498f-a542-3c511565fea3",
+    "modele": "Atto 3",
+    "vendeur": "Autogroep Twente Almelo",
+    "lieu": "NA HARBRINKHOEK, NL",
+    "prix": 22900,
+    "prix_initial": 22900,
+    "prix_min": 22900,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 75890,
+    "annee": "11/2022",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 84110,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/bbb2434f-ae7f-498f-a542-3c511565fea3",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 63,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3194916748",
+    "modele": "ID.4",
     "vendeur": "VOLKSWAGEN METZ",
     "lieu": "Metz, FR",
     "prix": 26000,
@@ -5206,6 +6976,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:bddbf882-f501-4eed-b577-a1542962fc67",
+    "modele": "ID.4",
     "vendeur": "Dumane Supercar",
     "lieu": "Auderghem - Bruxelles, BE",
     "prix": 24490,
@@ -5229,7 +7000,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 59,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -5402,6 +7173,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3177714812",
+    "modele": "ID.4",
     "vendeur": "AUTO FESTIVAL",
     "lieu": "Trans-en-Provence, FR",
     "prix": 24980,
@@ -5584,6 +7356,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:68d0cad6-6989-408f-a4d2-6435ce0a6188",
+    "modele": "ID.4",
     "vendeur": "Emil Frey EF S Automobile",
     "lieu": "Stuttgart, DE",
     "prix": 23490,
@@ -5607,7 +7380,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 68,
+    "score": 63,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -5703,6 +7476,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:5436bafe-b922-46ef-9448-7db6f7ad0fc6",
+    "modele": "ID.4",
     "vendeur": "Autohuis Salland B.V.",
     "lieu": "BH LEMELERVELD, NL",
     "prix": 24850,
@@ -5726,7 +7500,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 57,
+    "score": 55,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -5873,6 +7647,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3196545446",
+    "modele": "ID.4",
     "vendeur": "C.A.R VOLKSWAGEN",
     "lieu": "La Rochelle, FR",
     "prix": 24900,
@@ -6060,6 +7835,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:0d26e8f9-fe24-49a7-87ff-748c8df38a5a",
+    "modele": "ID.4",
     "vendeur": "Autohaus Daburger e.K.",
     "lieu": "Ruhpolding, DE",
     "prix": 24990,
@@ -6083,7 +7859,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 53,
+    "score": 48,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -6295,6 +8071,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:053f587a-0f98-49ca-a223-430089adce37",
+    "modele": "ID.4",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23449,
@@ -6318,7 +8095,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 56,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -6570,6 +8347,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:98cdc9ad-818a-4e59-8615-8677f6109fbe",
+    "modele": "ID.4",
     "vendeur": "Eccasion Nederland B.V.",
     "lieu": "AB AMSTERDAM, NL",
     "prix": 24900,
@@ -6593,7 +8371,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 62,
+    "score": 55,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -6765,7 +8543,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:4fd4a443-3457-4c4a-8fd7-d59fc1ad4004",
+    "modele": "Atto 3",
+    "vendeur": "4707",
+    "lieu": "4707, NL",
+    "prix": 22500,
+    "prix_initial": 22500,
+    "prix_min": 22500,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 81450,
+    "annee": "11/2022",
+    "ch": 0,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 78550,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/4fd4a443-3457-4c4a-8fd7-d59fc1ad4004",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 48,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "leboncoin:3196756990",
+    "modele": "ID.4",
     "vendeur": "GROUPE LECLUSE AUTOMOBILES",
     "lieu": "Laval, FR",
     "prix": 25990,
@@ -6953,6 +8799,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:043920d1-0311-4765-a45d-2be90b3cc1f4",
+    "modele": "ID.4",
     "vendeur": "1083",
     "lieu": "1083, BE",
     "prix": 23000,
@@ -6976,7 +8823,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 67,
+    "score": 63,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -7124,6 +8971,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:913d7b53-ad10-4483-b7d2-d37792ba5ab4",
+    "modele": "ID.4",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 25990,
@@ -7147,7 +8995,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 63,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -7341,6 +9189,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:0a622a6e-6810-43f8-b8c1-88c0074e4cb7",
+    "modele": "ID.4",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23248,
@@ -7364,7 +9213,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 56,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -7615,6 +9464,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a62bce78-796c-4d4f-86c9-90027386421e",
+    "modele": "ID.4",
     "vendeur": "Car Alliance",
     "lieu": "Eupen - Verviers - Liège - Sint-Niklaas - Comines, BE",
     "prix": 25990,
@@ -7638,7 +9488,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 66,
+    "score": 57,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -7825,6 +9675,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:76f87e76-04aa-4200-b246-1baf340f833b",
+    "modele": "ID.4",
     "vendeur": "EF S Automobile GmbH",
     "lieu": "Stuttgart, DE",
     "prix": 25890,
@@ -7848,7 +9699,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 57,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -7944,6 +9795,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3180407096",
+    "modele": "ID.4",
     "vendeur": "SCALA NARBONNE",
     "lieu": "Narbonne, FR",
     "prix": 24990,
@@ -8133,6 +9985,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:f016f91d-04c8-40e5-aab9-90bf65a80edb",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf P. Martens",
     "lieu": "TC HOLLANDSCHEVELD, NL",
     "prix": 24949,
@@ -8156,7 +10009,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 68,
+    "score": 65,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -8352,6 +10205,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3192843277",
+    "modele": "ID.4",
     "vendeur": "Alturfe",
     "lieu": "Wervicq-Sud, FR",
     "prix": 23000,
@@ -8507,6 +10361,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3192551092",
+    "modele": "ID.4",
     "vendeur": "BRIOCAR",
     "lieu": "Bruz, FR",
     "prix": 25990,
@@ -8713,6 +10568,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3194939712",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Sartrouville - Dacy Motors",
     "lieu": "Sartrouville, FR",
     "prix": 22979,
@@ -8908,6 +10764,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:104d69f9-35a6-46ab-a13f-997c261b11d7",
+    "modele": "ID.4",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 25194,
@@ -8931,7 +10788,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 62,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -9171,6 +11028,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a758aad5-0184-4e3b-96b9-80afef40717e",
+    "modele": "ID.4",
     "vendeur": "auto mega store gmbh",
     "lieu": "Ergolding, DE",
     "prix": 23594,
@@ -9194,7 +11052,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 56,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -9448,6 +11306,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3184605593",
+    "modele": "ID.4",
     "vendeur": "EUROPE AUTO",
     "lieu": "Perpignan, FR",
     "prix": 23490,
@@ -9636,7 +11495,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:5c0e36e0-9d0e-424c-a333-5c1700a0b202",
+    "modele": "Atto 3",
+    "vendeur": "Autobedrijf J. van Dreven",
+    "lieu": "ZG LUNTEREN, NL",
+    "prix": 22950,
+    "prix_initial": 22950,
+    "prix_min": 22950,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 91045,
+    "annee": "01/2023",
+    "ch": 204,
+    "soh": "92,1 %",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 68955,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/5c0e36e0-9d0e-424c-a333-5c1700a0b202",
+    "statut": "dispo",
+    "fav": true,
+    "nick": "🔥 nouvelle pépite",
+    "score": 73,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:a1f071ae-37b4-408f-85ba-d964ca154702",
+    "modele": "ID.4",
     "vendeur": "Elektrischeautorijden.nl",
     "lieu": "BG ALMERE, NL",
     "prix": 22911,
@@ -9673,7 +11600,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 80,
+    "score": 71,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -9868,6 +11795,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3188336408",
+    "modele": "ID.4",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 24990,
@@ -10007,6 +11935,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:e23addd9-0231-41f7-b9fa-b0a48b5369ab",
+    "modele": "ID.4",
     "vendeur": "Vakgarage Heije",
     "lieu": "XJ EDE GLD, NL",
     "prix": 23995,
@@ -10043,7 +11972,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 74,
+    "score": 71,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -10235,6 +12164,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:48877289-c331-4b03-b319-bc2b0f265a15",
+    "modele": "ID.4",
     "vendeur": "Hahn Automobile GmbH + Co. KG",
     "lieu": "Wendlingen, DE",
     "prix": 25930,
@@ -10258,7 +12188,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 68,
+    "score": 57,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -10486,6 +12416,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:856c5cf8-fadc-4219-a895-d9b1a164d4d8",
+    "modele": "ID.4",
     "vendeur": "Auto Schneider GmbH",
     "lieu": "Timmendorfer Strand, DE",
     "prix": 22790,
@@ -10509,7 +12440,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 56,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -10773,6 +12704,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:2d0b0bb0-de1f-4013-ab8c-e9630bffe9e0",
+    "modele": "ID.4",
     "vendeur": "Hardy Automotive",
     "lieu": "MD HARMELEN, NL",
     "prix": 25880,
@@ -10796,7 +12728,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 56,
+    "score": 55,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -10966,6 +12898,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a660f5c7-d403-4a2e-958a-ee0a2ea96dec",
+    "modele": "ID.4",
     "vendeur": "Motorhuis Den Haag",
     "lieu": "BA 'S-GRAVENHAGE, NL",
     "prix": 24945,
@@ -10989,7 +12922,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 57,
+    "score": 55,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -11175,6 +13108,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3180972346",
+    "modele": "ID.4",
     "vendeur": "SODIFAV",
     "lieu": "Vannes, FR",
     "prix": 24990,
@@ -11346,6 +13280,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3201917737",
+    "modele": "ID.4",
     "vendeur": "C.A.R VOLKSWAGEN",
     "lieu": "Tonnay-Charente, FR",
     "prix": 24900,
@@ -11536,6 +13471,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:202648f7-d875-44f7-b2f6-267b2e98cc29",
+    "modele": "ID.4",
     "vendeur": "Auto Grieb",
     "lieu": "Miesitz, DE",
     "prix": 24750,
@@ -11559,7 +13495,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -11791,7 +13727,75 @@ const vehicules = [
     }
   },
   {
+    "cle": "autoscout24:edf89d0c-276d-4d19-912b-3194bf85d48f",
+    "modele": "Atto 3",
+    "vendeur": "Van Mossel Nissan Amsterdam",
+    "lieu": "AS AMSTERDAM, NL",
+    "prix": 23440,
+    "prix_initial": 23440,
+    "prix_min": 23440,
+    "prix_delta_eur": 0,
+    "prix_delta_pct": 0.0,
+    "prix_en_baisse": false,
+    "prix_baisse_max_eur": 0,
+    "prix_baisse_max_pct": 0,
+    "prix_historique": [],
+    "km": 98331,
+    "annee": "02/2023",
+    "ch": 204,
+    "soh": "n/c",
+    "sohCert": false,
+    "equip": "—",
+    "garkm": 61669,
+    "tel": "",
+    "lien": "https://www.autoscout24.com/offers/edf89d0c-276d-4d19-912b-3194bf85d48f",
+    "statut": "dispo",
+    "fav": false,
+    "nick": "🆕 nouveau",
+    "score": 63,
+    "finition": "",
+    "source": "autoscout24",
+    "options": {
+      "toit": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "sellerie": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "camera": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "hud": false,
+      "matrix_led": false,
+      "pompe_chaleur": false,
+      "attelage": false,
+      "massants": false,
+      "sieges_elec": {
+        "value": "—",
+        "present": false,
+        "level": null
+      },
+      "travel_assist": false,
+      "side_assist": false,
+      "volant_chauffant": false,
+      "jantes": null,
+      "pack_hiver": false,
+      "carplay": false
+    },
+    "parution": "2026-05-22",
+    "parution_iso": "2026-05-22",
+    "firstSeenTs": 1779488330086,
+    "details": null
+  },
+  {
     "cle": "autoscout24:af11f0ba-51f6-4fcb-b1c5-4b4d2516f381",
+    "modele": "ID.4",
     "vendeur": "Van der Linden Auto's B.V.",
     "lieu": "SE HOOGEVEEN, NL",
     "prix": 25950,
@@ -11815,7 +13819,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 69,
+    "score": 65,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -12018,6 +14022,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:959147ec-8b8a-4c36-9f08-3c62f85c85e6",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 23600,
@@ -12054,7 +14059,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": true,
     "nick": "🔥 nouvelle pépite",
-    "score": 85,
+    "score": 81,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -12231,6 +14236,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:920e1108-9a51-4cf4-b8ca-bd2b14b1e6bc",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Used Cars Center Lokeren",
     "lieu": "Lokeren, BE",
     "prix": 25445,
@@ -12434,6 +14440,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3127238788",
+    "modele": "ID.4",
     "vendeur": "PORCHER AUTOMOBILE",
     "lieu": "Orléans, FR",
     "prix": 21990,
@@ -12626,6 +14633,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:8847c7a6-dd69-4c99-b0d0-93be448adc93",
+    "modele": "ID.4",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 25700,
@@ -12649,7 +14657,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 63,
+    "score": 55,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -12841,6 +14849,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:3cb0cc1d-bc4b-4644-8825-97d7eb41750c",
+    "modele": "ID.4",
     "vendeur": "IKRIJ.NL",
     "lieu": "BX DEN HOORN, NL",
     "prix": 24150,
@@ -12864,7 +14873,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 66,
+    "score": 65,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -13045,6 +15054,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:b1606d5d-b1eb-40a1-ae7c-1a1758773206",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Volkswagen Skoda Dendermonde",
     "lieu": "Dendermonde, BE",
     "prix": 23740,
@@ -13068,7 +15078,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 64,
+    "score": 63,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -13208,6 +15218,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:6e7044f9-0766-4a41-ac26-465082e5ad6d",
+    "modele": "ID.4",
     "vendeur": "Motorhuis Haarlem",
     "lieu": "KX HAARLEM, NL",
     "prix": 23945,
@@ -13231,7 +15242,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 58,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -13438,6 +15449,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3200613723",
+    "modele": "ID.4",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 22990,
@@ -13568,6 +15580,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:45e2a33a-4a0d-46e6-9e80-98e53f0ecee4",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Automobile Hannover GmbH",
     "lieu": "Hannover, DE",
     "prix": 24990,
@@ -13591,7 +15604,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 48,
+    "score": 37,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -13821,6 +15834,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:10722314-16bc-4476-8250-1d8a5f6bf966",
+    "modele": "ID.4",
     "vendeur": "AutoXL",
     "lieu": "XX ALPHEN AAN DE RIJN, NL",
     "prix": 23940,
@@ -13844,7 +15858,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 49,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -14031,6 +16045,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:311fe5f5-1d92-45fc-89f8-b5a970766444",
+    "modele": "ID.4",
     "vendeur": "Van Mourik Geldermalsen",
     "lieu": "CL GELDERMALSEN, NL",
     "prix": 23750,
@@ -14054,7 +16069,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 48,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -14251,6 +16266,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:c6e145fe-52b3-4479-997e-a4754cc5f182",
+    "modele": "ID.4",
     "vendeur": "DAT AUTOHUS AG",
     "lieu": "Gyhum, DE",
     "prix": 25980,
@@ -14274,7 +16290,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 56,
+    "score": 39,
     "finition": "Gtx",
     "source": "autoscout24",
     "options": {
@@ -14552,6 +16568,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:3e234754-484b-4512-b591-4676efb4f869",
+    "modele": "ID.4",
     "vendeur": "Autogroep Ursem Barten Amsterdam Zuid Oost",
     "lieu": "AE AMSTERDAM ZUID-OOST, NL",
     "prix": 24445,
@@ -14748,6 +16765,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a501c6c4-0ec0-4e75-bbec-e159a0240991",
+    "modele": "ID.4",
     "vendeur": "DR Motors",
     "lieu": "Brugge, BE",
     "prix": 24495,
@@ -14771,7 +16789,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 47,
+    "score": 35,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -14936,6 +16954,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:e595402b-2791-4f66-aad2-9a95cc07ac0b",
+    "modele": "ID.4",
     "vendeur": "DR Motors",
     "lieu": "Lille, FR",
     "prix": 24495,
@@ -14959,7 +16978,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 47,
+    "score": 35,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -15123,6 +17142,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:d923373e-88b3-4c65-bbe9-4510076fc0e9",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Zentrum Osnabrück GmbH & Co. KG",
     "lieu": "Osnabrück, DE",
     "prix": 25830,
@@ -15146,7 +17166,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 54,
+    "score": 35,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -15408,6 +17428,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:9d9f21f5-8fc9-443a-9b98-ec4effa1e5f4",
+    "modele": "ID.4",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 23790,
@@ -15431,7 +17452,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 50,
+    "score": 45,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -15637,6 +17658,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:47c5e6aa-81db-4f87-a869-f17c398f0458",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Waalwijk",
     "lieu": "PB Waalwijk, NL",
     "prix": 25900,
@@ -15660,7 +17682,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 41,
+    "score": 35,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -15849,6 +17871,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:2fa4c5ea-1f2d-4faf-84f7-d87441bf7f19",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Zentrum Uelzen",
     "lieu": "Uelzen, DE",
     "prix": 24870,
@@ -15872,7 +17895,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 53,
+    "score": 39,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -16167,6 +18190,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:71746fa5-d41b-4b30-a401-eb99caeb131e",
+    "modele": "ID.4",
     "vendeur": "2161hm",
     "lieu": "2161hm, NL",
     "prix": 25000,
@@ -16284,6 +18308,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:821ecfb2-2cf8-40ea-bd53-9052593000b2",
+    "modele": "ID.4",
     "vendeur": "G AUTO",
     "lieu": "Kolbermoor, DE",
     "prix": 25489,
@@ -16307,7 +18332,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 42,
+    "score": 35,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -16547,6 +18572,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:d1d2500a-de01-4ad3-bf9d-20c0dfb34893",
+    "modele": "ID.4",
     "vendeur": "Autohaus Glinicke GmbH & Co. Vertriebs KG",
     "lieu": "Erfurt, DE",
     "prix": 24980,
@@ -16570,7 +18596,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 48,
+    "score": 35,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -16800,6 +18826,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:2221846b-78fe-4777-abb4-36b254aea041",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Volkswagen Skoda Dendermonde",
     "lieu": "Dendermonde, BE",
     "prix": 23490,
@@ -16823,7 +18850,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 44,
+    "score": 43,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -16965,6 +18992,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:ba1dabda-f07f-441c-ad26-00afb0459f56",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf van Schie",
     "lieu": "CG HAZERSWOUDE RIJNDIJK, NL",
     "prix": 24400,
@@ -16988,7 +19016,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 39,
+    "score": 35,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -17128,6 +19156,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:9de95d1a-d584-45b5-936f-770181fd5624",
+    "modele": "ID.4",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -17151,7 +19180,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 46,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -17333,6 +19362,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a73a0fa8-ed7c-476b-a687-64f0cfe76e45",
+    "modele": "ID.4",
     "vendeur": "Vakgarage Straathof",
     "lieu": "BJ NIEUWE WETERING, NL",
     "prix": 23950,
@@ -17356,7 +19386,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 55,
+    "score": 53,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -17544,6 +19574,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:67bad94a-1631-4dee-85cc-cc0dd42644bc",
+    "modele": "ID.4",
     "vendeur": "Volkswagen Automobile Berlin GmbH",
     "lieu": "Berlin, DE",
     "prix": 24930,
@@ -17567,7 +19598,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 54,
+    "score": 35,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -17780,6 +19811,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:1e131d77-3d43-4c49-9f34-d9726e1fc047",
+    "modele": "ID.4",
     "vendeur": "Vakgarage Heije",
     "lieu": "XJ EDE GLD, NL",
     "prix": 23995,
@@ -17803,7 +19835,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 50,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -18000,6 +20032,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3196236974",
+    "modele": "ID.4",
     "vendeur": "Volkswagen DBF Montpellier - Tournezy",
     "lieu": "Montpellier, FR",
     "prix": 23480,
@@ -18187,6 +20220,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:581c681b-787e-4714-b198-e757a8a73137",
+    "modele": "ID.4",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 23980,
@@ -18210,7 +20244,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 61,
+    "score": 43,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -18463,6 +20497,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:42673a36-9df4-491e-8b45-e47ec23f2681",
+    "modele": "ID.4",
     "vendeur": "Autohaus Glinicke GmbH & Co.Vertriebs KG",
     "lieu": "Weimar, DE",
     "prix": 21980,
@@ -18486,7 +20521,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 61,
+    "score": 50,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -18716,6 +20751,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:2fc77540-1f2b-4a3e-9dba-04ac1dba81cc",
+    "modele": "ID.4",
     "vendeur": "Willems Automobielen",
     "lieu": "PK DRONTEN, NL",
     "prix": 22950,
@@ -18739,7 +20775,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 57,
+    "score": 53,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -18927,6 +20963,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:3467c63b-3091-46e3-8d02-bbb6f8d4e86d",
+    "modele": "ID.4",
     "vendeur": "Autogroep Ursem Barten Zwaag",
     "lieu": "AG ZWAAG, NL",
     "prix": 23930,
@@ -18950,7 +20987,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 58,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -19139,6 +21176,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:542a1f80-b94e-40b8-bc8f-cdd6ca2c2052",
+    "modele": "ID.4",
     "vendeur": "66123",
     "lieu": "66123, DE",
     "prix": 22555,
@@ -19162,7 +21200,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 55,
+    "score": 43,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -19321,6 +21359,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:9db0c681-6c68-4da2-aae0-746ce7f5b7ca",
+    "modele": "ID.4",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -19344,7 +21383,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -19557,6 +21596,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:bc312f48-6831-40f7-9819-280c72bee31e",
+    "modele": "ID.4",
     "vendeur": "Hinderks Auto’s",
     "lieu": "AB EMMEN, NL",
     "prix": 23995,
@@ -19580,7 +21620,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 46,
+    "score": 43,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -19762,6 +21802,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3191708510",
+    "modele": "ID.4",
     "vendeur": "VO-ELEC",
     "lieu": "Perpignan, FR",
     "prix": 22690,
@@ -19902,6 +21943,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:776290e8-b759-405a-9822-4e9a78ca2fd6",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Used Cars Center Lokeren",
     "lieu": "Lokeren, BE",
     "prix": 23745,
@@ -19925,7 +21967,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 52,
+    "score": 43,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -20113,6 +22155,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:d6cc2d0d-be39-419f-a993-177f892ecb6e",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 22900,
@@ -20136,7 +22179,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 59,
+    "score": 53,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -20320,6 +22363,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:e0739586-3c2c-46a7-8501-f915a07012d6",
+    "modele": "ID.4",
     "vendeur": "Eurocars",
     "lieu": "KK Oss, NL",
     "prix": 20990,
@@ -20343,7 +22387,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 58,
+    "score": 50,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -20535,6 +22579,7 @@ const vehicules = [
   },
   {
     "cle": "leboncoin:3155931062",
+    "modele": "ID.4",
     "vendeur": "TRANSAKAUTO EAUNES",
     "lieu": "Eaunes, FR",
     "prix": 15490,
@@ -20743,6 +22788,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:665fbecf-622d-4f98-b01b-3d929ba282bb",
+    "modele": "ID.4",
     "vendeur": "Garage Groenouwe",
     "lieu": "BE BATHMEN, NL",
     "prix": 21745,
@@ -20766,7 +22812,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 45,
+    "score": 40,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -20903,6 +22949,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:564893a0-742c-4fad-a5c5-0323ed6b722e",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Hazet Ochten B.V.",
     "lieu": "CA OCHTEN, NL",
     "prix": 24900,
@@ -20926,7 +22973,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 26,
+    "score": 25,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -21112,6 +23159,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:3d2f0a0e-f6de-46c8-b743-72b619700b4e",
+    "modele": "ID.4",
     "vendeur": "TRANSAKAUTO L'ISLE SUR LA SORGUE",
     "lieu": "L'ISLE SUR LA SORGUE, FR",
     "prix": 18990,
@@ -21135,7 +23183,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 42,
+    "score": 40,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -21244,6 +23292,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:38145d0b-194c-449f-a2c4-d0ab81bd2940",
+    "modele": "ID.4",
     "vendeur": "Van Mossel Tilburg",
     "lieu": "AA Tilburg, NL",
     "prix": 24900,
@@ -21267,7 +23316,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 29,
+    "score": 25,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -21465,6 +23514,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a0f798ca-2b93-4bfd-a8e5-0e0ab336cbf3",
+    "modele": "ID.4",
     "vendeur": "IKRIJ.NL",
     "lieu": "BX DEN HOORN, NL",
     "prix": 18500,
@@ -21488,7 +23538,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 51,
+    "score": 50,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -21669,6 +23719,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:5e5c5d22-d84d-41ac-bdab-9842d10101ce",
+    "modele": "ID.4",
     "vendeur": "Broekhuis Alkmaar Occasioncentrum",
     "lieu": "RJ ALKMAAR, NL",
     "prix": 22700,
@@ -21692,7 +23743,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 36,
+    "score": 33,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -21883,6 +23934,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:23b875d2-4673-4d32-bdf0-5e916c77d9fa",
+    "modele": "ID.4",
     "vendeur": "Jan van Veen Auto's B.V.",
     "lieu": "EE ZUILICHEM, NL",
     "prix": 20950,
@@ -21906,7 +23958,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 42,
+    "score": 40,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -22086,6 +24138,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a8d19d4b-5bb6-43c0-a527-46e7331fa81f",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Wesselink Deventer B.V.",
     "lieu": "ZN DEVENTER, NL",
     "prix": 21900,
@@ -22109,7 +24162,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 52,
+    "score": 50,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -22290,6 +24343,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:4b20aae4-985b-49e4-8298-7e26b6567c30",
+    "modele": "ID.4",
     "vendeur": "Autohaus Braunöhler GmbH",
     "lieu": "Salzgitter, DE",
     "prix": 25750,
@@ -22313,7 +24367,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 44,
+    "score": 25,
     "finition": "Gtx",
     "source": "autoscout24",
     "options": {
@@ -22559,6 +24613,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:f391610b-fc7e-4ced-ace2-a5d14819cfe4",
+    "modele": "ID.4",
     "vendeur": "Timcars B.V.",
     "lieu": "HC JOURE, NL",
     "prix": 23450,
@@ -22582,7 +24637,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 31,
+    "score": 29,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -22736,6 +24791,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:72d3265f-9019-40d0-aa85-9825698bd787",
+    "modele": "ID.4",
     "vendeur": "Autohaus Braunöhler GmbH",
     "lieu": "Salzgitter, DE",
     "prix": 24950,
@@ -22759,7 +24815,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 43,
+    "score": 27,
     "finition": "Gtx",
     "source": "autoscout24",
     "options": {
@@ -23007,6 +25063,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:8fa7c221-7767-4428-830b-736a889ac8e3",
+    "modele": "ID.4",
     "vendeur": "Nord-Automobile",
     "lieu": "Rastede, DE",
     "prix": 19900,
@@ -23030,7 +25087,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 48,
+    "score": 40,
     "finition": "Pro Performance",
     "source": "autoscout24",
     "options": {
@@ -23223,6 +25280,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:49643b93-a76c-4946-abe8-947edf8fc222",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Wesselink Emst B.V.",
     "lieu": "AE EMST, NL",
     "prix": 23800,
@@ -23246,7 +25304,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 37,
+    "score": 33,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -23439,6 +25497,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:cb17a644-9eba-4e13-b012-4519a4b3c003",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Linker V.O.F.",
     "lieu": "TB MARUM, NL",
     "prix": 18950,
@@ -23462,7 +25521,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 43,
+    "score": 40,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -23616,6 +25675,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:621c6838-c283-4175-b054-b31c4a62b45d",
+    "modele": "ID.4",
     "vendeur": "E. van Boxtel Auto`s B.V.",
     "lieu": "EE SCHIJNDEL, NL",
     "prix": 19750,
@@ -23639,7 +25699,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 48,
+    "score": 40,
     "finition": "Pro",
     "source": "autoscout24",
     "options": {
@@ -23835,6 +25895,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:a75feedc-7678-4a24-aea4-1ceda866d858",
+    "modele": "ID.4",
     "vendeur": "Autobedrijf Favoriet",
     "lieu": "KH VAASSEN, NL",
     "prix": 24900,
@@ -23858,7 +25919,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 54,
+    "score": 35,
     "finition": "Gtx",
     "source": "autoscout24",
     "options": {
@@ -24082,6 +26143,7 @@ const vehicules = [
   },
   {
     "cle": "autoscout24:8d19a535-55ac-4c42-8b83-31025f3afb88",
+    "modele": "ID.4",
     "vendeur": "Auto Corsten B.V.",
     "lieu": "AK MARIAHOUT, NL",
     "prix": 20895,
@@ -24105,7 +26167,7 @@ const vehicules = [
     "statut": "dispo",
     "fav": false,
     "nick": "🆕 nouveau",
-    "score": 60,
+    "score": 45,
     "finition": "",
     "source": "autoscout24",
     "options": {
@@ -24342,7 +26404,24 @@ const vehicules = [
 /* ---------- rendu ---------- */
 const tbody=document.getElementById('tbody');
 let curFilter='all', sortKey='km', sortDir=1;
-let activeOpts = new Set();  // options cochées
+let activeOpts = new Set();
+
+/* ---------- sélecteur de modèle (ID.4 / Atto 3 / Les deux) ---------- */
+const MODELE_KEY = 'veille_id4_modele_actif';
+let curModele = localStorage.getItem(MODELE_KEY) || '__all__';
+// Met le bon bouton en "on" au démarrage
+document.querySelectorAll('.modele-btn').forEach(btn => {
+  btn.classList.toggle('on', btn.dataset.modele === curModele);
+});
+document.getElementById('modeles-selector').addEventListener('click', e => {
+  const btn = e.target.closest('.modele-btn');
+  if (!btn) return;
+  curModele = btn.dataset.modele;
+  localStorage.setItem(MODELE_KEY, curModele);
+  document.querySelectorAll('.modele-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+});
 
 /* ---------- ordre des colonnes ---------- */
 const COLS_KEY = 'veille_id4_colorder';
@@ -24896,6 +26975,8 @@ function panelHtml(v, nCols){
 
 function render(){
   let rows=vehicules.filter(v=>{
+    // Filtre modèle (sélecteur du haut)
+    if (curModele !== '__all__' && v.modele !== curModele) return false;
     // Filtre statut/préset
     if (curFilter === 'fav' && !v.fav) return false;
     if (curFilter === 'favori' && !v.favori) return false;
@@ -24918,7 +26999,7 @@ function render(){
     return `<tr class="${cls}" data-row="${i}">
       <td data-col="expand" class="expand"><span>▶</span></td>
       <td data-col="favori" class="favori-cell"><span class="fav-toggle ${v.favori?'on':''}" data-cle="${escapeHtml(v.cle||'')}" role="button" aria-label="Marquer comme favori">${v.favori?'★':'☆'}</span></td>
-      <td data-col="vendeur" class="vendeur keepcolor"><b>${escapeHtml(v.vendeur)}${v.fav?'<span class="star">★</span>':''}${v.isNew?'<span class="badge-new">🆕</span>':''}</b><small>${escapeHtml(v.lieu)}</small>${v.nick?`<br><span class="nick">${escapeHtml(v.nick)}</span>`:''}</td>
+      <td data-col="vendeur" class="vendeur keepcolor"><b><span class="badge-marque ${v.modele==='Atto 3'?'marque-atto3':'marque-id4'}">${v.modele==='Atto 3'?'BYD':'VW'}</span>${escapeHtml(v.vendeur)}${v.fav?'<span class="star">★</span>':''}${v.isNew?'<span class="badge-new">🆕</span>':''}</b><small>${escapeHtml(v.lieu)}</small>${v.nick?`<br><span class="nick">${escapeHtml(v.nick)}</span>`:''}</td>
       <td data-col="prix" class="keepcolor">${prixCell(v)}</td>
       <td data-col="km" class="num keepcolor">${km(v.km)}</td>
       <td data-col="annee" class="num">${escapeHtml(v.annee)}</td>
