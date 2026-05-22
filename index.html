@@ -165,6 +165,32 @@
   .opt-chip.bool{background:#eef2ff;color:#3730a3;border-color:#c7d2fe}
   .opt-chip.muted{background:#f1ede3;color:var(--ink-soft);border-color:var(--line)}
 
+  /* ─── Réorganisation des colonnes ────────────────────── */
+  .btn-cols{
+    font-family:inherit;font-size:.78rem;font-weight:600;
+    background:var(--paper);color:var(--ink);
+    border:1.5px solid var(--line);padding:7px 14px;border-radius:999px;cursor:pointer;
+    transition:.18s;display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn-cols:hover{border-color:var(--accent);color:var(--accent)}
+  #cols-modal .modal-card{max-width:480px}
+  .cols-list{display:flex;flex-direction:column;gap:6px;margin:10px 0 18px}
+  .cols-list .col-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;
+    background:#fbf8f0;border:1px solid var(--line);border-radius:8px;
+  }
+  .cols-list .col-item.fixed{opacity:.5;background:var(--gray-bg)}
+  .cols-list .col-label{flex:1;font-weight:600;font-size:.88rem}
+  .cols-list .col-btns{display:flex;gap:4px}
+  .cols-list .col-btns button{
+    background:var(--paper);border:1px solid var(--line);border-radius:6px;
+    width:32px;height:32px;font-size:.9rem;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:.15s;
+  }
+  .cols-list .col-btns button:hover:not(:disabled){background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .cols-list .col-btns button:disabled{opacity:.3;cursor:not-allowed}
+
   /* ─── Tracker prix : badges baisse + historique ──────── */
   .prix-baisse{
     display:inline-block;font-size:.72rem;font-weight:700;
@@ -274,7 +300,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 20:26</b></span>
+      <span>Mis à jour le <b>22/05/2026 21:02</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -292,7 +318,20 @@
       <button class="fbtn" data-f="nouveau">🆕 Nouveaux</button>
       <button class="fbtn" data-f="baisse">📉 En baisse</button>
     </div>
+    <button class="btn-cols" id="btn-cols" type="button" title="Réorganiser les colonnes">⚙ Colonnes</button>
     <div class="sortnote">Tri : <b id="sortlabel">kilométrage ↑</b> · <span id="visible-count">—</span> visible(s)</div>
+  </div>
+
+  <div id="cols-modal" class="modal" hidden>
+    <div class="modal-card">
+      <h3>⚙ Réorganiser les colonnes</h3>
+      <p class="muted">Utilise ↑↓ pour réordonner. L'ordre est sauvegardé sur ton appareil.</p>
+      <div class="cols-list" id="cols-list"></div>
+      <div class="modal-actions">
+        <button class="fbtn" id="cols-reset" type="button">Réinitialiser</button>
+        <button class="fbtn on" id="cols-close" type="button">Fermer</button>
+      </div>
+    </div>
   </div>
 
   <details class="optfilters" id="optfilters">
@@ -336,19 +375,19 @@
       <table>
         <thead>
           <tr>
-            <th></th>
-            <th>Vendeur / Lieu</th>
-            <th class="sortable" data-k="prix">Prix <span class="arr">↕</span></th>
-            <th class="sortable activesort" data-k="km">Km <span class="arr">↑</span></th>
-            <th class="sortable" data-k="annee">Année <span class="arr">↕</span></th>
-            <th class="sortable" data-k="score">Score <span class="arr">↕</span></th>
-            <th>SoH</th>
-            <th>⭐ Options</th>
-            <th class="sortable" data-k="garkm">Garantie batterie <span class="arr">↕</span></th>
-            <th class="sortable" data-k="parution_sort">Parution <span class="arr">↕</span></th>
-            <th>Contact</th>
-            <th>Annonce</th>
-            <th>Statut</th>
+            <th data-col="expand" data-fixed="1"></th>
+            <th data-col="vendeur" data-label="Vendeur / Lieu">Vendeur / Lieu</th>
+            <th data-col="prix" data-label="Prix" class="sortable" data-k="prix">Prix <span class="arr">↕</span></th>
+            <th data-col="km" data-label="Km" class="sortable activesort" data-k="km">Km <span class="arr">↑</span></th>
+            <th data-col="annee" data-label="Année" class="sortable" data-k="annee">Année <span class="arr">↕</span></th>
+            <th data-col="score" data-label="Score" class="sortable" data-k="score">Score <span class="arr">↕</span></th>
+            <th data-col="soh" data-label="SoH">SoH</th>
+            <th data-col="options" data-label="Options">⭐ Options</th>
+            <th data-col="garkm" data-label="Garantie batterie" class="sortable" data-k="garkm">Garantie batterie <span class="arr">↕</span></th>
+            <th data-col="parution" data-label="Parution" class="sortable" data-k="parution_sort">Parution <span class="arr">↕</span></th>
+            <th data-col="contact" data-label="Contact">Contact</th>
+            <th data-col="annonce" data-label="Annonce">Annonce</th>
+            <th data-col="statut" data-label="Statut">Statut</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
@@ -24055,6 +24094,45 @@ const tbody=document.getElementById('tbody');
 let curFilter='all', sortKey='km', sortDir=1;
 let activeOpts = new Set();  // options cochées
 
+/* ---------- ordre des colonnes ---------- */
+const COLS_KEY = 'veille_id4_colorder';
+// Ordre par défaut (= ordre dans le thead)
+const defaultColOrder = Array.from(
+  document.querySelectorAll('thead tr th')
+).map(th => th.dataset.col);
+// Ordre actif : restauré depuis localStorage si présent
+let colOrder = (() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(COLS_KEY) || 'null');
+    if (Array.isArray(saved) && saved.length === defaultColOrder.length &&
+        defaultColOrder.every(c => saved.includes(c))) {
+      return saved;
+    }
+  } catch (e) {}
+  return [...defaultColOrder];
+})();
+
+function applyColOrder() {
+  // Réordonne chaque <tr> (thead + tbody.main) selon colOrder
+  const reorderRow = (row) => {
+    const byCol = {};
+    Array.from(row.children).forEach(c => { byCol[c.dataset.col] = c; });
+    const ordered = colOrder.map(c => byCol[c]).filter(Boolean);
+    if (ordered.length === colOrder.length) {
+      // Détache et ré-attache (évite reflow inutile)
+      const frag = document.createDocumentFragment();
+      ordered.forEach(c => frag.appendChild(c));
+      row.appendChild(frag);
+    }
+  };
+  reorderRow(document.querySelector('thead tr'));
+  document.querySelectorAll('tbody tr.main').forEach(reorderRow);
+}
+
+function saveColOrder() {
+  localStorage.setItem(COLS_KEY, JSON.stringify(colOrder));
+}
+
 // LocalStorage : timestamp de la dernière visite
 const STORAGE_KEY = 'veille_id4_lastVisit';
 const lastVisit = parseInt(localStorage.getItem(STORAGE_KEY) || '0', 10);
@@ -24317,19 +24395,19 @@ function render(){
     const cls=['main', v.fav?'fav':'', v.statut==='vendu'?'sold':'', v.statut==='eviter'?'avoid':'', v.prix_en_baisse?'baisse':''].filter(Boolean).join(' ');
     const scoreClass = v.score >= 70 ? 'b-green' : v.score >= 50 ? 'b-yellow' : 'b-gray';
     return `<tr class="${cls}" data-row="${i}">
-      <td class="expand"><span>▶</span></td>
-      <td class="vendeur keepcolor"><b>${escapeHtml(v.vendeur)}${v.fav?'<span class="star">★</span>':''}${v.isNew?'<span class="badge-new">🆕</span>':''}</b><small>${escapeHtml(v.lieu)}</small>${v.nick?`<br><span class="nick">${escapeHtml(v.nick)}</span>`:''}</td>
-      <td class="keepcolor">${prixCell(v)}</td>
-      <td class="num keepcolor">${km(v.km)}</td>
-      <td class="num">${escapeHtml(v.annee)}</td>
-      <td><span class="badge ${scoreClass}">${v.score}</span></td>
-      <td>${sohCell(v)}</td>
-      <td>${optionsCell(v)}</td>
-      <td class="keepcolor">${garBadge(v.garkm)}</td>
-      <td>${parutionCell(v)}</td>
-      <td>${contactCell(v)}</td>
-      <td>${lienCell(v)}</td>
-      <td class="keepcolor">${statutCell(v)}</td>
+      <td data-col="expand" class="expand"><span>▶</span></td>
+      <td data-col="vendeur" class="vendeur keepcolor"><b>${escapeHtml(v.vendeur)}${v.fav?'<span class="star">★</span>':''}${v.isNew?'<span class="badge-new">🆕</span>':''}</b><small>${escapeHtml(v.lieu)}</small>${v.nick?`<br><span class="nick">${escapeHtml(v.nick)}</span>`:''}</td>
+      <td data-col="prix" class="keepcolor">${prixCell(v)}</td>
+      <td data-col="km" class="num keepcolor">${km(v.km)}</td>
+      <td data-col="annee" class="num">${escapeHtml(v.annee)}</td>
+      <td data-col="score"><span class="badge ${scoreClass}">${v.score}</span></td>
+      <td data-col="soh">${sohCell(v)}</td>
+      <td data-col="options">${optionsCell(v)}</td>
+      <td data-col="garkm" class="keepcolor">${garBadge(v.garkm)}</td>
+      <td data-col="parution">${parutionCell(v)}</td>
+      <td data-col="contact">${contactCell(v)}</td>
+      <td data-col="annonce">${lienCell(v)}</td>
+      <td data-col="statut" class="keepcolor">${statutCell(v)}</td>
     </tr>` + panelHtml(v, N_COLS);
   }).join('');
   // Mise à jour compteurs
@@ -24337,6 +24415,8 @@ function render(){
   const nNew = vehicules.filter(v => v.isNew).length;
   const elNv = document.getElementById('nv-since');
   if (elNv) elNv.textContent = nNew;
+  // Applique l'ordre des colonnes (au cas où sauvé en localStorage)
+  applyColOrder();
 }
 
 // Toggle expand au clic sur ligne main (sauf clic sur lien)
@@ -24409,6 +24489,64 @@ document.getElementById('copy-cmd').addEventListener('click', async () => {
   } catch (e) {
     alert('Impossible de copier — sélectionne la commande manuellement.');
   }
+});
+
+/* Modal réorganisation des colonnes */
+const colsModal = document.getElementById('cols-modal');
+const colsList = document.getElementById('cols-list');
+
+function rebuildColsModal() {
+  // Récupère le label de chaque colonne depuis les th
+  const labels = {};
+  document.querySelectorAll('thead tr th').forEach(th => {
+    labels[th.dataset.col] = th.dataset.label || th.dataset.col;
+  });
+  colsList.innerHTML = colOrder.map((col, i) => {
+    const isFixed = col === 'expand';
+    const isFirst = i === 0 || (i === 1 && colOrder[0] === 'expand');
+    const isLast = i === colOrder.length - 1;
+    return `<div class="col-item ${isFixed?'fixed':''}" data-col="${col}">
+      <div class="col-label">${i+1}. ${labels[col] || col}${isFixed?' <small>(fixe)</small>':''}</div>
+      <div class="col-btns">
+        <button type="button" data-action="up" data-col="${col}" ${isFirst||isFixed?'disabled':''} title="Monter">↑</button>
+        <button type="button" data-action="down" data-col="${col}" ${isLast||isFixed?'disabled':''} title="Descendre">↓</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('btn-cols').addEventListener('click', () => {
+  rebuildColsModal();
+  colsModal.hidden = false;
+});
+document.getElementById('cols-close').addEventListener('click', () => colsModal.hidden = true);
+colsModal.addEventListener('click', e => { if (e.target === colsModal) colsModal.hidden = true; });
+
+document.getElementById('cols-reset').addEventListener('click', () => {
+  colOrder = [...defaultColOrder];
+  saveColOrder();
+  rebuildColsModal();
+  applyColOrder();
+});
+
+colsList.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
+  const col = btn.dataset.col;
+  const action = btn.dataset.action;
+  const idx = colOrder.indexOf(col);
+  if (idx < 0) return;
+  if (action === 'up' && idx > 0) {
+    // Ne pas déplacer avant la colonne 'expand'
+    const above = colOrder[idx - 1];
+    if (above === 'expand') return;
+    [colOrder[idx], colOrder[idx-1]] = [colOrder[idx-1], colOrder[idx]];
+  } else if (action === 'down' && idx < colOrder.length - 1) {
+    [colOrder[idx], colOrder[idx+1]] = [colOrder[idx+1], colOrder[idx]];
+  }
+  saveColOrder();
+  rebuildColsModal();
+  applyColOrder();
 });
 
 render();
