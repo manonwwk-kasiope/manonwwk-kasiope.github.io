@@ -274,7 +274,7 @@
       <button class="btn-scan" id="btn-scan" title="Relancer un scan">🔄 Scanner</button>
     </div>
     <div class="meta">
-      <span>Mis à jour le <b>22/05/2026 20:08</b></span>
+      <span>Mis à jour le <b>22/05/2026 20:26</b></span>
       <span>Budget cible <b>23 500 €</b></span>
       <span>Sources <b>Autoscout24 + leboncoin</b></span>
       <span>Filtres <b>≤ 26 000 € · ≤ 170 000 km · ≥ 2021 · 77 kWh</b></span>
@@ -24109,13 +24109,8 @@ function statutCell(v){
 
 function optionsCell(v) {
   const o = v.options;
+  if (!o) return '<span class="opt-chip muted">détails non récupérés</span>';
   const chips = [];
-  // Confirmation grosse batterie 77 kWh (toujours présent — filtre dur)
-  chips.push('<span class="opt-chip lvl3" title="Grosse batterie 77 kWh net (82 brut)">🔋 77 kWh</span>');
-  if (!o) {
-    chips.push('<span class="opt-chip muted">détails non récupérés</span>');
-    return '<div class="opt-chips">' + chips.join('') + '</div>';
-  }
   // Toit (niveau)
   if (o.toit?.present) {
     const lvl = o.toit.level === 'panoramique' ? 'lvl3' : 'lvl2';
@@ -24164,17 +24159,18 @@ function parutionCell(v) {
 }
 
 function passOptions(v) {
+  // OR logique : il suffit qu'AU MOINS UNE des options cochées soit présente.
   if (!activeOpts.size) return true;
   const opts = v.options || {};
   for (const k of activeOpts) {
     const val = opts[k];
     if (val && typeof val === 'object') {
-      if (!val.present) return false;
-    } else if (val !== true) {
-      return false;
+      if (val.present) return true;
+    } else if (val === true) {
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 function prixCell(v) {
