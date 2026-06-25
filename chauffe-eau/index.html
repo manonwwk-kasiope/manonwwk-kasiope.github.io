@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chauffe-eau instantané vs Cumulus — Simulateur de coût (douches)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1116; --panel:#171c24; --panel-2:#1f2632; --line:#2a3340;
+    --txt:#e7edf5; --muted:#94a3b8; --muted-2:#64748b;
+    --inst:#38bdf8; --inst-soft:rgba(56,189,248,.14);
+    --cum:#fb923c;  --cum-soft:rgba(251,146,60,.14);
+    --good:#34d399; --warn:#fbbf24;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Hanken Grotesk',system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%, #16202c 0%, var(--bg) 55%);
+    color:var(--txt); line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:32px 20px 80px}
+  h1,h2,h3{font-family:'Bricolage Grotesque',sans-serif;margin:0;line-height:1.1}
+  h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em}
+  .lead{color:var(--muted);max-width:680px;margin-top:10px;font-size:16px}
+  .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);margin-bottom:8px}
+
+  .grid{display:grid;grid-template-columns:360px 1fr;gap:22px;margin-top:28px;align-items:start}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .card h2{font-size:18px;font-weight:700}
+  .card .sub{color:var(--muted);font-size:13px;margin-top:2px}
+
+  .field{margin-top:18px}
+  .field:first-of-type{margin-top:14px}
+  .field label{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:600;color:var(--muted)}
+  .field label .val{color:var(--txt);font-variant-numeric:tabular-nums;font-weight:700}
+  .field input[type=range]{width:100%;margin-top:10px;accent-color:var(--inst);height:4px}
+  .field .hint{font-size:11.5px;color:var(--muted-2);margin-top:6px}
+  .field input[type=number]{
+    width:100%;margin-top:8px;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--txt);border-radius:10px;padding:9px 11px;font:inherit;font-weight:600;font-variant-numeric:tabular-nums;
+  }
+  .field input[type=number]:focus{outline:none;border-color:var(--inst)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  .seg{display:flex;gap:6px;margin-top:10px;background:var(--panel-2);padding:5px;border-radius:12px}
+  .seg button{flex:1;border:none;background:transparent;color:var(--muted);font:inherit;font-weight:700;
+    padding:9px 0;border-radius:8px;cursor:pointer;transition:.15s}
+  .seg button.on{background:var(--inst);color:#04222e}
+
+  details.adv{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  details.adv summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--muted);list-style:none}
+  details.adv summary::-webkit-details-marker{display:none}
+  details.adv summary::before{content:"▸ ";color:var(--muted-2)}
+  details.adv[open] summary::before{content:"▾ "}
+
+  /* results */
+  .verdict{background:linear-gradient(180deg,var(--panel-2),var(--panel));border:1px solid var(--line);
+    border-radius:var(--radius);padding:24px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between}
+  .verdict .big{font-family:'Bricolage Grotesque';font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1}
+  .verdict .big.win-inst{color:var(--inst)} .verdict .big.win-cum{color:var(--cum)}
+  .verdict .vtxt{font-size:15px;color:var(--muted);margin-top:8px;max-width:420px}
+  .verdict .winner-badge{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;
+    padding:6px 12px;border-radius:999px;margin-bottom:10px}
+  .badge-inst{background:var(--inst-soft);color:var(--inst)} .badge-cum{background:var(--cum-soft);color:var(--cum)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  @media(max-width:560px){.cols{grid-template-columns:1fr}}
+  .device{border-radius:var(--radius);padding:18px;border:1px solid var(--line)}
+  .device.inst{background:var(--inst-soft);border-color:rgba(56,189,248,.35)}
+  .device.cum{background:var(--cum-soft);border-color:rgba(251,146,60,.35)}
+  .device h3{font-size:16px;display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%}
+  .dot.inst{background:var(--inst)} .dot.cum{background:var(--cum)}
+  .device .price{font-family:'Bricolage Grotesque';font-size:30px;font-weight:800;margin:10px 0 2px;font-variant-numeric:tabular-nums}
+  .device .price small{font-size:14px;font-weight:600;color:var(--muted)}
+  .lines{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  .lines .li{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted)}
+  .lines .li b{color:var(--txt);font-variant-numeric:tabular-nums;font-weight:700}
+
+  .chartcard{margin-top:16px}
+  .chartcard h2{font-size:16px;font-weight:700}
+  .legend{display:flex;gap:18px;margin:10px 0 4px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .chart-wrap{position:relative;width:100%;overflow:hidden}
+  svg{display:block;width:100%;height:auto}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+  @media(max-width:640px){.kpis{grid-template-columns:1fr 1fr}}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi .k{font-size:11.5px;color:var(--muted-2);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .kpi .v{font-family:'Bricolage Grotesque';font-size:22px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+
+  .note{margin-top:26px;font-size:12.5px;color:var(--muted-2);line-height:1.65}
+  .note b{color:var(--muted)}
+  .foot{margin-top:30px;border-top:1px solid var(--line);padding-top:16px;font-size:12px;color:var(--muted-2)}
+  a{color:var(--inst)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">Simulateur · Eau chaude sanitaire · Usage douche</span>
+  <h1>Chauffe-eau instantané <span style="color:var(--muted-2)">vs</span> Cumulus</h1>
+  <p class="lead">Comparez le coût <b style="color:var(--txt)">électricité + entretien</b> de deux solutions pour produire l'eau chaude des douches d'un petit immeuble. Tous les paramètres sont modifiables : les résultats se recalculent en direct.</p>
+
+  <div class="grid">
+    <!-- ============ PARAMÈTRES ============ -->
+    <div class="card">
+      <h2>Paramètres</h2>
+      <div class="sub">On se concentre uniquement sur les douches.</div>
+
+      <div class="field">
+        <label>Nombre d'appartements <span class="val" id="vApp">4</span></label>
+        <input type="range" id="app" min="1" max="12" step="1" value="4">
+        <div class="hint">1 chauffe-eau par appartement.</div>
+      </div>
+
+      <div class="field">
+        <label>Douches / jour / appartement <span class="val" id="vDou">3</span></label>
+        <input type="range" id="dou" min="1" max="8" step="1" value="3">
+        <div class="hint">Énoncé : 2 à 4 douches quotidiennes. Glissez pour tester chaque cas.</div>
+      </div>
+
+      <div class="field">
+        <label>Volume d'eau par douche <span class="val"><span id="vLit">50</span> L</span></label>
+        <input type="range" id="lit" min="25" max="90" step="5" value="50">
+        <div class="hint">Pommeau standard ≈ 8–10 L/min · douche de 5–6 min.</div>
+      </div>
+
+      <div class="field">
+        <label>Prix de l'électricité <span class="val"><span id="vKwh">0,25</span> €/kWh</span></label>
+        <input type="range" id="kwh" min="0.10" max="0.45" step="0.005" value="0.25">
+        <div class="hint">Tarif réglementé France ≈ 0,25 €/kWh (2025).</div>
+      </div>
+
+      <div class="field">
+        <label>Durée d'analyse <span class="val"><span id="vYrs">10</span> ans</span></label>
+        <input type="range" id="yrs" min="1" max="20" step="1" value="10">
+      </div>
+
+      <details class="adv">
+        <summary>Hypothèses avancées (températures, pertes, entretien)</summary>
+
+        <div class="field two" style="margin-top:14px">
+          <div>
+            <label style="display:block">Eau froide (°C)</label>
+            <input type="number" id="tcold" value="15" step="1">
+          </div>
+          <div>
+            <label style="display:block">Eau à la douche (°C)</label>
+            <input type="number" id="tshow" value="40" step="1">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Pertes à l'arrêt — par cumulus <span class="val"><span id="vLoss">1,4</span> kWh/j</span></label>
+          <input type="range" id="loss" min="0.4" max="3" step="0.1" value="1.4">
+          <div class="hint">Le ballon maintient ~60 °C en permanence (anti-légionellose) → il se refroidit et chauffe à vide. L'instantané n'a aucune perte à l'arrêt.</div>
+        </div>
+
+        <div class="field two">
+          <div>
+            <label style="display:block">Rendement instantané (%)</label>
+            <input type="number" id="effI" value="99" step="1">
+          </div>
+          <div>
+            <label style="display:block">Rendement cumulus (%)</label>
+            <input type="number" id="effC" value="98" step="1">
+          </div>
+        </div>
+
+        <div class="field two">
+          <div>
+            <label style="display:block">Entretien instantané (€/an/appart.)</label>
+            <input type="number" id="maintI" value="40" step="5">
+          </div>
+          <div>
+            <label style="display:block">Entretien cumulus (€/an/appart.)</label>
+            <input type="number" id="maintC" value="90" step="5">
+          </div>
+        </div>
+        <div class="hint" style="margin-top:6px">Cumulus : détartrage + remplacement anode (eau calcaire). Instantané : détartrage du corps de chauffe, pas d'anode ni de cuve.</div>
+      </details>
+    </div>
+
+    <!-- ============ RÉSULTATS ============ -->
+    <div>
+      <div class="verdict">
+        <div>
+          <div class="winner-badge" id="winBadge">—</div>
+          <div class="big" id="bigNum">—</div>
+          <div class="vtxt" id="vTxt">—</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:12px;color:var(--muted-2);font-weight:700;text-transform:uppercase;letter-spacing:.05em">Sur <span id="vYrs2">10</span> ans</div>
+          <div style="font-family:'Bricolage Grotesque';font-size:30px;font-weight:800" id="cumGap">—</div>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="device inst">
+          <h3><span class="dot inst"></span> Instantané (mural)</h3>
+          <div class="price"><span id="iYear">—</span><small> €/an</small></div>
+          <div class="lines">
+            <div class="li">Électricité <b id="iElec">—</b></div>
+            <div class="li">Pertes à l'arrêt <b id="iLoss">0 €</b></div>
+            <div class="li">Entretien <b id="iMaint">—</b></div>
+            <div class="li">Consommation <b id="iKwh">—</b></div>
+          </div>
+        </div>
+        <div class="device cum">
+          <h3><span class="dot cum"></span> Cumulus (ballon)</h3>
+          <div class="price"><span id="cYear">—</span><small> €/an</small></div>
+          <div class="lines">
+            <div class="li">Électricité (douches) <b id="cElec">—</b></div>
+            <div class="li">Pertes à l'arrêt <b id="cLoss">—</b></div>
+            <div class="li">Entretien <b id="cMaint">—</b></div>
+            <div class="li">Consommation <b id="cKwh">—</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="k">Douches / jour</div><div class="v" id="kShow">—</div></div>
+        <div class="kpi"><div class="k">Énergie utile / douche</div><div class="v" id="kEps">—</div></div>
+        <div class="kpi"><div class="k">Écart / mois</div><div class="v" id="kMonth" style="color:var(--cum)">—</div></div>
+        <div class="kpi"><div class="k">Part des pertes (cumulus)</div><div class="v" id="kLossPct" style="color:var(--cum)">—</div></div>
+      </div>
+
+      <div class="card chartcard">
+        <h2>Coût cumulé dans le temps</h2>
+        <div class="legend">
+          <span><i style="background:var(--inst)"></i> Instantané</span>
+          <span><i style="background:var(--cum)"></i> Cumulus</span>
+          <span><i style="background:var(--good)"></i> Économie réalisée</span>
+        </div>
+        <div class="chart-wrap"><svg id="chart" viewBox="0 0 720 320" preserveAspectRatio="xMidYMid meet"></svg></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Méthode de calcul.</b> Énergie utile d'une douche = Volume × (T<sub>douche</sub> − T<sub>froide</sub>) × 1,163 Wh/L/°C.
+    Cette énergie est <b>identique</b> pour les deux appareils — c'est le bras de levier de la comparaison.
+    L'<b>instantané</b> ne chauffe que l'eau réellement tirée (aucune perte à l'arrêt).
+    Le <b>cumulus</b> ajoute, par appareil, des <b>pertes à l'arrêt</b> permanentes (maintien à 60 °C) qui tombent que l'eau soit utilisée ou non — c'est là que se creuse l'écart, multiplié par le nombre d'appartements.
+    Côté <b>entretien</b>, le cumulus demande un détartrage et le remplacement périodique de l'anode magnésium (cuve sous pression), généralement plus coûteux que l'entretien d'un instantané.
+    <br><br>
+    <b>Limites.</b> Modèle volontairement simplifié, douches uniquement (ni vaisselle, ni lavabos). Les chauffe-eau instantanés électriques capables d'alimenter une douche confortable demandent une <b>forte puissance instantanée</b> (souvent 18–24 kW) : vérifiez l'abonnement/le tableau électrique avant tout choix. Les valeurs par défaut sont des ordres de grandeur — ajustez-les à votre situation réelle.
+  </div>
+
+  <div class="foot">Simulateur indicatif — ne remplace pas un devis d'installateur. Recalcul en direct, aucune donnée envoyée.</div>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const fmtE = n => Math.round(n).toLocaleString('fr-FR') + ' €';
+  const fmtE1 = n => n.toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:0}) + ' €';
+  const fmtK = n => n.toLocaleString('fr-FR',{maximumFractionDigits:0}) + ' kWh';
+  const C = 1.163/1000; // kWh per L per °C
+
+  const inputs = ['app','dou','lit','kwh','yrs','tcold','tshow','loss','effI','effC','maintI','maintC'];
+  inputs.forEach(id => $(id).addEventListener('input', render));
+
+  function render(){
+    const app   = +$('app').value;
+    const dou   = +$('dou').value;
+    const lit   = +$('lit').value;
+    const price = +$('kwh').value;
+    const yrs   = +$('yrs').value;
+    const tcold = +$('tcold').value;
+    const tshow = +$('tshow').value;
+    const loss  = +$('loss').value;       // kWh/j par cumulus
+    const effI  = Math.max(50,+$('effI').value)/100;
+    const effC  = Math.max(50,+$('effC').value)/100;
+    const maintI= +$('maintI').value;
+    const maintC= +$('maintC').value;
+
+    // labels
+    $('vApp').textContent = app;
+    $('vDou').textContent = dou;
+    $('vLit').textContent = lit;
+    $('vKwh').textContent = price.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:3});
+    $('vYrs').textContent = yrs; $('vYrs2').textContent = yrs;
+    $('vLoss').textContent = loss.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});
+
+    const dT = Math.max(1, tshow - tcold);
+    const Epershower = lit * dT * C;            // kWh utiles / douche
+    const showersDay = app * dou;
+    const usefulDay  = showersDay * Epershower; // kWh utiles / jour (total immeuble)
+
+    // consommations annuelles (kWh)
+    const inst_kwh = usefulDay/effI * 365;
+    const cum_kwh  = usefulDay/effC * 365 + loss * app * 365;
+    const cumLossKwh = loss * app * 365;
+
+    // coûts annuels
+    const iElec = inst_kwh * price, iMaint = maintI * app, iYear = iElec + iMaint;
+    const cElec = (usefulDay/effC*365) * price, cLoss = cumLossKwh * price, cMaint = maintC * app;
+    const cYear = cElec + cLoss + cMaint;
+
+    const gapYear = cYear - iYear;             // >0 => cumulus plus cher
+    const gapTotal = gapYear * yrs;
+
+    // verdict
+    const cumWins = gapYear < 0;
+    $('winBadge').className = 'winner-badge ' + (cumWins?'badge-cum':'badge-inst');
+    $('winBadge').textContent = (cumWins?'✓ Cumulus le moins cher':'✓ Instantané le moins cher');
+    const big = $('bigNum');
+    big.className = 'big ' + (cumWins?'win-cum':'win-inst');
+    big.textContent = fmtE(Math.abs(gapYear)) + ' / an';
+    $('vTxt').innerHTML = cumWins
+      ? `Dans ce scénario, le cumulus revient <b style="color:var(--txt)">moins cher</b>. Augmentez l'usage ou les pertes pour voir l'instantané repasser devant.`
+      : `L'instantané évite les <b style="color:var(--txt)">pertes à l'arrêt</b> des ${app} ballon${app>1?'s':''} et un entretien plus lourd, d'où l'économie.`;
+    $('cumGap').textContent = (gapTotal>=0?'−':'+') + fmtE(Math.abs(gapTotal));
+    $('cumGap').style.color = gapTotal>=0 ? 'var(--good)' : 'var(--cum)';
+
+    // cartes
+    $('iYear').textContent = fmtE(iYear);
+    $('iElec').textContent = fmtE(iElec);
+    $('iMaint').textContent= fmtE(iMaint);
+    $('iKwh').textContent  = fmtK(inst_kwh)+'/an';
+    $('cYear').textContent = fmtE(cYear);
+    $('cElec').textContent = fmtE(cElec);
+    $('cLoss').textContent = fmtE(cLoss);
+    $('cMaint').textContent= fmtE(cMaint);
+    $('cKwh').textContent  = fmtK(cum_kwh)+'/an';
+
+    // KPIs
+    $('kShow').textContent = showersDay;
+    $('kEps').textContent  = Epershower.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:2})+' kWh';
+    $('kMonth').textContent= (gapYear>=0?'':'−')+fmtE(Math.abs(gapYear/12));
+    $('kLossPct').textContent = Math.round(cLoss/cYear*100)+' %';
+
+    drawChart(iYear, cYear, yrs);
+  }
+
+  function drawChart(iYear, cYear, yrs){
+    const W=720,H=320, pad={l:58,r:16,t:14,b:34};
+    const plotW=W-pad.l-pad.r, plotH=H-pad.t-pad.b;
+    const maxV = Math.max(iYear,cYear)*yrs*1.08 || 1;
+    const x = y => pad.l + (y/yrs)*plotW;
+    const yv = v => pad.t + plotH - (v/maxV)*plotH;
+    const NS='http://www.w3.org/2000/svg';
+    const svg=$('chart'); svg.innerHTML='';
+    const add=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e;};
+
+    // gridlines + y labels
+    const steps=4;
+    for(let i=0;i<=steps;i++){
+      const v=maxV*i/steps, yy=yv(v);
+      add('line',{x1:pad.l,y1:yy,x2:W-pad.r,y2:yy,stroke:'#2a3340','stroke-width':1});
+      const t=add('text',{x:pad.l-8,y:yy+4,'text-anchor':'end',fill:'#64748b','font-size':11,'font-family':'Hanken Grotesk'});
+      t.textContent=Math.round(v/1000).toLocaleString('fr-FR')+'k €';
+    }
+    // x labels
+    for(let yr=0;yr<=yrs;yr+=Math.max(1,Math.round(yrs/8))){
+      const xx=x(yr);
+      const t=add('text',{x:xx,y:H-12,'text-anchor':'middle',fill:'#64748b','font-size':11,'font-family':'Hanken Grotesk'});
+      t.textContent=yr+(yr===0?'':'');
+    }
+    const t=add('text',{x:W-pad.r,y:H-12,'text-anchor':'end',fill:'#64748b','font-size':11});
+    t.textContent='années';
+
+    // economie area (between lines), cumulus assumed >= inst when gap>0
+    const lo = Math.min(iYear,cYear), hi=Math.max(iYear,cYear);
+    const areaPts=`${x(0)},${yv(0)} ${x(yrs)},${yv(hi*yrs)} ${x(yrs)},${yv(lo*yrs)} ${x(0)},${yv(0)}`;
+    add('polygon',{points:areaPts,fill:'rgba(52,211,153,.12)'});
+
+    const line=(rate,color)=>{
+      add('line',{x1:x(0),y1:yv(0),x2:x(yrs),y2:yv(rate*yrs),stroke:color,'stroke-width':3,'stroke-linecap':'round'});
+      add('circle',{cx:x(yrs),cy:yv(rate*yrs),r:4.5,fill:color});
+    };
+    line(iYear,'#38bdf8');
+    line(cYear,'#fb923c');
+
+    // end labels
+    const lbl=(rate,color,txt)=>{
+      const yy=yv(rate*yrs);
+      const g=add('text',{x:x(yrs)-8,y:yy-9,'text-anchor':'end',fill:color,'font-size':12,'font-weight':700,'font-family':'Bricolage Grotesque'});
+      g.textContent=txt;
+    };
+    lbl(cYear,'#fb923c',Math.round(cYear*yrs/1000*10)/10+'k €');
+    lbl(iYear,'#38bdf8',Math.round(iYear*yrs/1000*10)/10+'k €');
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
