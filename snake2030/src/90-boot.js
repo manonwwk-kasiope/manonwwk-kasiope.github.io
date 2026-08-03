@@ -409,8 +409,13 @@ function syncControls() {}
 /* ---------------------------------------------------------- qualité adaptative */
 var _qLow = 0;
 function autoQuality() {
-  if (fps < 42) { _qLow++; if (_qLow > 2 && S.opt.particles > 0.4) { S.opt.particles = 0.4; } }
-  else if (fps > 55) { _qLow = 0; }
+  if (fps < 42) {
+    _qLow++;
+    if (_qLow > 2 && S.opt.particles > 0.4) S.opt.particles = 0.4;
+    // en dessous de 34 images/s le fil audio commence à se vider : on allège
+    // les couches synthétisées plutôt que de laisser la musique hoqueter
+    if (_qLow > 4 && fps < 34) S.opt.audioLite = true;
+  } else if (fps > 55) { _qLow = 0; }
 }
 
 /* ------------------------------------------------------------ cartes / niveaux */

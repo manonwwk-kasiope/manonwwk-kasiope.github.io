@@ -344,6 +344,11 @@ function _audStepDur(){
 
 /* pose les notes du pas i à l'instant t */
 function _audStep(i, t, sd){
+  /* Mode allégé : quand le téléphone peine, chaque note synthétisée coûte
+     plusieurs noeuds WebAudio et c'est ce qui fait hoqueter le fil audio.
+     On ne joue plus qu'une croche sur deux et on coupe les couches les plus
+     denses. La piste enregistrée, elle, n'est pas concernée. */
+  if (typeof S !== 'undefined' && S && S.opt && S.opt.audioLite && (i & 1)) return;
   var s = i & 15;
   var bar = (i >> 4) & 3;
   var chord = _audCHORDS[bar], root = _audROOTS[bar];
@@ -449,10 +454,10 @@ function _audTick(){
   if(!_audMusicOn) return;
 
   var sd = _audStepDur();
-  var horizon = now + 0.20;
+  var horizon = now + 0.60;
   if(_audNextT < now) _audNextT = now + 0.03;
   var guard = 0;
-  while(_audNextT < horizon && guard++ < 48){
+  while(_audNextT < horizon && guard++ < 160){
     _audStep(_audStepI, _audNextT, sd);
     _audNextT += sd;
     _audStepI++;
@@ -587,7 +592,8 @@ S2030.audio = {
     if(_audCtx) return _audOk;
     var AC = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
     if(!AC) return false;
-    try{ _audCtx = new AC(); }catch(e){ _audCtx = null; return false; }
+    try{ _audCtx = new AC({ latencyHint: 'playback' }); }
+    catch(e){ try{ _audCtx = new AC(); }catch(e2){ _audCtx = null; return false; } }
 
     /* graine locale dérivée de la graine du jeu, sans la consommer */
     if(typeof S !== 'undefined' && S && S.seed) _audSeed = (S.seed >>> 0) ^ 0x9e3779b9;
@@ -721,7 +727,7 @@ S2030.audio = {
         _audNextT = now + 0.08;
       }
     }
-    if(!_audTimer) _audTimer = setInterval(_audTick, 25);
+    if(!_audTimer) _audTimer = setInterval(_audTick, 45);
   },
 
   stop: function(){
@@ -745,7 +751,7 @@ S2030.audio = {
     if(_audCtx.state === 'suspended'){ try{ _audCtx.resume(); }catch(e){} }
     if(_audPlaying){
       if(_audStopTO){ clearTimeout(_audStopTO); _audStopTO = null; }
-      if(!_audTimer) _audTimer = setInterval(_audTick, 25);
+      if(!_audTimer) _audTimer = setInterval(_audTick, 45);
     }
   },
 
@@ -778,7 +784,7 @@ S2030.audio = {
           _audStepI = 0;
           _audNextT = now + 0.08;
         }
-        if(!_audTimer) _audTimer = setInterval(_audTick, 25);
+        if(!_audTimer) _audTimer = setInterval(_audTick, 45);
       }
       _audIntApplied = -1; _audIntT = -9;
       _audApplyInt(_audInt, 0.5);
