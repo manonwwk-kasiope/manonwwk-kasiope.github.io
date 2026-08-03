@@ -50,8 +50,12 @@ body{
   font-family:var(--font-ui);
   overflow:hidden;
   overscroll-behavior:none;
+  /* le doigt pilote le jeu : aucun geste ne doit être interprété comme
+     un défilement, sinon le navigateur reprend la main en plein virage */
+  touch-action:none;
   user-select:none;
   -webkit-user-select:none;
+  -webkit-touch-callout:none;
   background-image:
     radial-gradient(120% 70% at 50% -10%, rgba(227,178,90,.10), transparent 60%),
     radial-gradient(90% 60% at 50% 110%, rgba(63,203,146,.07), transparent 60%);
@@ -60,6 +64,7 @@ body{
 .app{
   position:fixed;
   inset:0;
+  touch-action:none;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -177,7 +182,7 @@ body{
 .joy{
   position:absolute;
   left:0; top:0; width:0; height:0;
-  z-index:3;
+  z-index:20;
   pointer-events:none;
   opacity:0;
   transition:opacity .12s;
@@ -538,12 +543,6 @@ body{
     <span class="corner tl"></span><span class="corner tr"></span>
     <span class="corner bl"></span><span class="corner br"></span>
 
-    <div class="joy" id="joy" aria-hidden="true">
-      <span class="joy-base"></span>
-      <span class="joy-ring"></span>
-      <span class="joy-knob"></span>
-    </div>
-
     <!-- Menu -->
     <section class="screen on" id="screen-menu">
       <h1 class="wordmark">Ser<span class="s">p</span>ent</h1>
@@ -568,7 +567,7 @@ body{
       </div>
 
       <button class="btn" type="button" id="btn-play">Jouer</button>
-      <p class="hint" id="menu-hint">Garde le doigt posé sur le plateau : il fait joystick. <b>Record : 0</b></p>
+      <p class="hint" id="menu-hint">Garde le doigt posé n’importe où sur l’écran : il fait joystick. <b>Record : 0</b></p>
     </section>
 
     <!-- Pause -->
@@ -628,6 +627,14 @@ body{
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- hors du plateau : le manche ne doit pas être rogné quand le doigt
+       se pose près d'un bord -->
+  <div class="joy" id="joy" aria-hidden="true">
+    <span class="joy-base"></span>
+    <span class="joy-ring"></span>
+    <span class="joy-knob"></span>
   </div>
 
 </div>
@@ -2247,7 +2254,8 @@ function updateMenuHint(){
   const b = getBest();
   const d = DIFFS[G.diff].label;
   $('menu-hint').innerHTML =
-    'Garde le doigt posé sur le plateau : il fait joystick. <b>Record ' + d.toLowerCase() + ' : ' + b + '</b>';
+    'Garde le doigt posé n’importe où sur l’écran : il fait joystick. <b>Record '
+    + d.toLowerCase() + ' : ' + b + '</b>';
   G.best = b;
   syncHUD();
 }
@@ -2307,35 +2315,41 @@ document.getElementById('dpad').addEventListener('pointerdown', e=>{
 });
 
 /* ---- joystick virtuel ----
-   Le doigt se pose n'importe où sur le plateau : le manche apparaît sous
-   lui et le serpent suit la direction tant que l'appui dure. Un appui
-   bref, sans dépasser la zone morte, met en pause. */
+   Le doigt se pose n'importe où sur l'écran : le manche apparaît sous lui
+   et le serpent suit la direction tant que l'appui dure. Un appui bref,
+   sans dépasser la zone morte, met en pause.
+
+   Le tactile est traité par les événements Touch et non par les Pointer
+   Events : sur iOS le navigateur envoie un pointercancel dès qu'il croit
+   reconnaître un défilement, ce qui coupait le geste en plein milieu.
+   Un preventDefault sur touchstart et touchmove lui retire la main. */
 const stage = $('stage');
+const surface = document.querySelector('.app');
 const joyEl = $('joy');
 const joyKnob = joyEl.querySelector('.joy-knob');
 const joyRing = joyEl.querySelector('.joy-ring');
 
-const JOY_DEAD = 16;   // zone morte, en pixels
+const JOY_DEAD = 12;   // zone morte, en pixels
 const JOY_MAX  = 52;   // amplitude visuelle du manche
 
 const joy = { active:false, id:null, ox:0, oy:0, dx:0, dy:0, axis:null, engaged:false };
 
-function joyStart(e){
-  const r = stage.getBoundingClientRect();
+function joyStart(x, y, id){
+  const r = surface.getBoundingClientRect();
   joy.active = true;
-  joy.id = e.pointerId;
-  joy.ox = e.clientX; joy.oy = e.clientY;
+  joy.id = id;
+  joy.ox = x; joy.oy = y;
   joy.dx = 0; joy.dy = 0;
   joy.axis = null; joy.engaged = false;
-  joyEl.style.transform = 'translate(' + (e.clientX - r.left) + 'px,' + (e.clientY - r.top) + 'px)';
+  joyEl.style.transform = 'translate(' + (x - r.left) + 'px,' + (y - r.top) + 'px)';
   joyKnob.style.transform = 'translate(0px,0px)';
+  joyRing.style.opacity = '1';
   joyEl.classList.add('on');
-  try{ stage.setPointerCapture(e.pointerId); }catch(err){}
 }
 
-function joyMove(e){
-  joy.dx = e.clientX - joy.ox;
-  joy.dy = e.clientY - joy.oy;
+function joyMove(x, y){
+  joy.dx = x - joy.ox;
+  joy.dy = y - joy.oy;
   const mag = Math.hypot(joy.dx, joy.dy);
   if(mag > JOY_DEAD) joy.engaged = true;
   const k = mag > JOY_MAX ? JOY_MAX / mag : 1;
@@ -2382,39 +2396,90 @@ function joyDir(){
   return d;
 }
 
-stage.addEventListener('pointerdown', e=>{
+function joySteer(flash){
+  if(G.phase !== 'play') return;
+  const d = joyDir();
+  if(d){ pushDir(d); if(flash) flashKey(d); }
+}
+
+function joyRelease(){
+  const tap = !joy.engaged;
+  joyEnd();
+  if(!tap) return;
+  if(G.phase === 'play') pauseGame();
+  else if(G.phase === 'pause') resumeGame();
+}
+
+/* --- tactile --- */
+function pickTouch(list, id){
+  for(let i=0;i<list.length;i++) if(list[i].identifier === id) return list[i];
+  return null;
+}
+
+surface.addEventListener('touchstart', e=>{
+  A.resume();
+  if(e.target.closest('button')) return;
+  e.preventDefault();
+  if(joy.active) return;
+  const t = e.changedTouches[0];
+  joyStart(t.clientX, t.clientY, t.identifier);
+  joySteer(false);
+}, { passive:false });
+
+surface.addEventListener('touchmove', e=>{
+  if(!joy.active) return;
+  const t = pickTouch(e.changedTouches, joy.id);
+  if(!t) return;
+  e.preventDefault();
+  joyMove(t.clientX, t.clientY);
+  joySteer(true);
+}, { passive:false });
+
+surface.addEventListener('touchend', e=>{
+  if(!joy.active) return;
+  const t = pickTouch(e.changedTouches, joy.id);
+  if(!t) return;
+  e.preventDefault();
+  joyRelease();
+}, { passive:false });
+
+// iOS coupe parfois le geste : on referme proprement, sans le prendre
+// pour un appui bref qui mettrait en pause
+surface.addEventListener('touchcancel', e=>{
+  if(joy.active && pickTouch(e.changedTouches, joy.id)) joyEnd();
+}, { passive:false });
+
+/* --- souris, pour le bureau --- */
+surface.addEventListener('pointerdown', e=>{
+  if(e.pointerType === 'touch') return;   // déjà traité par les Touch Events
   A.resume();
   if(e.target.closest('button')) return;
   if(joy.active) return;
-  joyStart(e);
-  if(G.phase === 'play'){
-    const d = joyDir();
-    if(d) pushDir(d);
-  }
+  joyStart(e.clientX, e.clientY, e.pointerId);
+  try{ surface.setPointerCapture(e.pointerId); }catch(err){}
+  joySteer(false);
 });
 
-stage.addEventListener('pointermove', e=>{
+surface.addEventListener('pointermove', e=>{
+  if(e.pointerType === 'touch') return;
   if(!joy.active || e.pointerId !== joy.id) return;
-  joyMove(e);
-  if(G.phase === 'play'){
-    const d = joyDir();
-    if(d){ pushDir(d); flashKey(d); }
-  }
+  joyMove(e.clientX, e.clientY);
+  joySteer(true);
 });
 
-stage.addEventListener('pointerup', e=>{
+surface.addEventListener('pointerup', e=>{
+  if(e.pointerType === 'touch') return;
   if(!joy.active || e.pointerId !== joy.id) return;
-  const tap = !joy.engaged;
-  joyEnd();
-  if(!tap || e.target.closest('button')) return;
-  if(G.phase === 'play') pauseGame();
-  else if(G.phase === 'pause') resumeGame();
+  if(e.target.closest('button')){ joyEnd(); return; }
+  joyRelease();
 });
 
-stage.addEventListener('pointercancel', e=>{
+surface.addEventListener('pointercancel', e=>{
+  if(e.pointerType === 'touch') return;
   if(joy.active && e.pointerId === joy.id) joyEnd();
 });
-stage.addEventListener('contextmenu', e=>e.preventDefault());
+
+surface.addEventListener('contextmenu', e=>e.preventDefault());
 
 // boutons
 $('btn-play').addEventListener('click', ()=>{ A.sClick(); startGame(); });
