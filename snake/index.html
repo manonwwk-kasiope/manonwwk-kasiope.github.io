@@ -173,6 +173,41 @@ body{
 .corner.bl{bottom:7px;left:7px;border-right:0;border-top:0}
 .corner.br{bottom:7px;right:7px;border-left:0;border-top:0}
 
+/* ---------- Joystick ---------- */
+.joy{
+  position:absolute;
+  left:0; top:0; width:0; height:0;
+  z-index:3;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s;
+}
+/* discret : le plateau doit rester lisible au travers, et la teinte
+   laiton évite de le confondre avec le serpent */
+.joy.on{opacity:.6}
+.joy-base,.joy-ring,.joy-knob{position:absolute;border-radius:50%}
+.joy-base{
+  width:104px;height:104px;margin:-52px 0 0 -52px;
+  border:1px solid rgba(227,178,90,.34);
+  background:radial-gradient(circle,
+    rgba(227,178,90,.09) 0%,
+    rgba(227,178,90,.03) 58%,
+    rgba(227,178,90,0) 74%);
+}
+.joy-ring{
+  width:38px;height:38px;margin:-19px 0 0 -19px;
+  border:1px dashed rgba(227,178,90,.3);
+  transition:opacity .12s;
+}
+.joy-knob{
+  width:40px;height:40px;margin:-20px 0 0 -20px;
+  background:radial-gradient(circle at 34% 28%,
+    rgba(242,214,155,.88) 0%, rgba(227,178,90,.72) 46%, rgba(168,124,46,.62) 100%);
+  border:1px solid rgba(239,230,210,.42);
+  box-shadow:inset 0 -2px 6px rgba(0,0,0,.3);
+  will-change:transform;
+}
+
 /* ---------- Écrans superposés ---------- */
 .screen{
   position:absolute;
@@ -503,6 +538,12 @@ body{
     <span class="corner tl"></span><span class="corner tr"></span>
     <span class="corner bl"></span><span class="corner br"></span>
 
+    <div class="joy" id="joy" aria-hidden="true">
+      <span class="joy-base"></span>
+      <span class="joy-ring"></span>
+      <span class="joy-knob"></span>
+    </div>
+
     <!-- Menu -->
     <section class="screen on" id="screen-menu">
       <h1 class="wordmark">Ser<span class="s">p</span>ent</h1>
@@ -527,7 +568,7 @@ body{
       </div>
 
       <button class="btn" type="button" id="btn-play">Jouer</button>
-      <p class="hint" id="menu-hint">Glisse le doigt sur le plateau ou utilise la croix. <b>Record : 0</b></p>
+      <p class="hint" id="menu-hint">Garde le doigt posé sur le plateau : il fait joystick. <b>Record : 0</b></p>
     </section>
 
     <!-- Pause -->
@@ -1296,6 +1337,12 @@ function step(now){
   G.prev = G.snake.map(s=>({...s}));
 
   if(G.attract) aiChoose();
+  else if(joy.active){
+    // le manche est tenu : on relit sa direction à chaque pas, ce qui
+    // permet de diriger sans jamais bouger le doigt
+    const jd = joyDir();
+    if(jd) pushDir(jd);
+  }
   if(G.queue.length) G.dir = G.queue.shift();
 
   const head = G.snake[0];
@@ -1479,6 +1526,7 @@ function die(cause, hx, hy){
   G.deathCause = cause;
   G.elapsed = G.deathAt - G.startedAt;
   G.shake = 24; G.flash = 1;
+  joyEnd();
 
   const cx = (hx ?? G.snake[0].x) + .5, cy = (hy ?? G.snake[0].y) + .5;
 
@@ -2116,6 +2164,7 @@ function startGame(){
 
 function toMenu(){
   A.stopMusic();
+  joyEnd();
   releaseWake();
   G.phase = 'menu';
   G.diff = store.diff; G.walls = store.walls;
@@ -2128,6 +2177,7 @@ function toMenu(){
 function pauseGame(){
   if(G.phase !== 'play') return;
   G.phase = 'pause';
+  joyEnd();
   A.stopMusic();
   showScreen('pause');
   setPauseIcon(false);
@@ -2169,7 +2219,7 @@ function updateMenuHint(){
   const b = getBest();
   const d = DIFFS[G.diff].label;
   $('menu-hint').innerHTML =
-    'Glisse le doigt sur le plateau ou utilise la croix. <b>Record ' + d.toLowerCase() + ' : ' + b + '</b>';
+    'Garde le doigt posé sur le plateau : il fait joystick. <b>Record ' + d.toLowerCase() + ' : ' + b + '</b>';
   G.best = b;
   syncHUD();
 }
@@ -2228,40 +2278,114 @@ document.getElementById('dpad').addEventListener('pointerdown', e=>{
   vibrate(8);
 });
 
-// glissé sur le plateau
+/* ---- joystick virtuel ----
+   Le doigt se pose n'importe où sur le plateau : le manche apparaît sous
+   lui et le serpent suit la direction tant que l'appui dure. Un appui
+   bref, sans dépasser la zone morte, met en pause. */
 const stage = $('stage');
-let sw = null;
+const joyEl = $('joy');
+const joyKnob = joyEl.querySelector('.joy-knob');
+const joyRing = joyEl.querySelector('.joy-ring');
+
+const JOY_DEAD = 16;   // zone morte, en pixels
+const JOY_MAX  = 52;   // amplitude visuelle du manche
+
+const joy = { active:false, id:null, ox:0, oy:0, dx:0, dy:0, axis:null, engaged:false };
+
+function joyStart(e){
+  const r = stage.getBoundingClientRect();
+  joy.active = true;
+  joy.id = e.pointerId;
+  joy.ox = e.clientX; joy.oy = e.clientY;
+  joy.dx = 0; joy.dy = 0;
+  joy.axis = null; joy.engaged = false;
+  joyEl.style.transform = 'translate(' + (e.clientX - r.left) + 'px,' + (e.clientY - r.top) + 'px)';
+  joyKnob.style.transform = 'translate(0px,0px)';
+  joyEl.classList.add('on');
+  try{ stage.setPointerCapture(e.pointerId); }catch(err){}
+}
+
+function joyMove(e){
+  joy.dx = e.clientX - joy.ox;
+  joy.dy = e.clientY - joy.oy;
+  const mag = Math.hypot(joy.dx, joy.dy);
+  if(mag > JOY_DEAD) joy.engaged = true;
+  const k = mag > JOY_MAX ? JOY_MAX / mag : 1;
+  joyKnob.style.transform =
+    'translate(' + (joy.dx*k).toFixed(1) + 'px,' + (joy.dy*k).toFixed(1) + 'px)';
+  joyRing.style.opacity = mag > JOY_DEAD ? '0' : '1';
+}
+
+function joyEnd(){
+  joy.active = false; joy.id = null;
+  joy.dx = 0; joy.dy = 0; joy.axis = null;
+  joyEl.classList.remove('on');
+}
+
+/* direction tenue par le manche, ou null si le geste est trop court */
+function joyDir(){
+  const dx = joy.dx, dy = joy.dy;
+  const mag = Math.hypot(dx, dy);
+  if(mag < JOY_DEAD) return null;
+
+  const ax = Math.abs(dx), ay = Math.abs(dy);
+  // un peu d'hystérésis : on ne change d'axe que si l'autre l'emporte
+  // nettement, sinon un appui proche de la diagonale ferait vaciller
+  let axis;
+  if(joy.axis === 'x' && ax*1.18 >= ay) axis = 'x';
+  else if(joy.axis === 'y' && ay*1.18 >= ax) axis = 'y';
+  else axis = ax >= ay ? 'x' : 'y';
+  joy.axis = axis;
+
+  let d = axis === 'x' ? (dx > 0 ? 'right' : 'left')
+                       : (dy > 0 ? 'down'  : 'up');
+
+  // demi-tour interdit : on bascule sur l'autre axe si le geste y penche
+  const cur = G.queue.length ? G.queue[G.queue.length-1] : G.dir;
+  const c = DIRS[cur];
+  if(DIRS[d].x === -c.x && DIRS[d].y === -c.y){
+    const minor = axis === 'x' ? ay : ax;
+    if(minor > mag*0.22){
+      d = axis === 'x' ? (dy > 0 ? 'down' : 'up')
+                       : (dx > 0 ? 'right' : 'left');
+      joy.axis = axis === 'x' ? 'y' : 'x';
+    } else d = null;
+  }
+  return d;
+}
+
 stage.addEventListener('pointerdown', e=>{
   A.resume();
   if(e.target.closest('button')) return;
-  sw = { x:e.clientX, y:e.clientY, moved:false, id:e.pointerId };
-  try{ stage.setPointerCapture(e.pointerId); }catch(err){}
-}, {passive:true});
+  if(joy.active) return;
+  joyStart(e);
+  if(G.phase === 'play'){
+    const d = joyDir();
+    if(d) pushDir(d);
+  }
+});
 
 stage.addEventListener('pointermove', e=>{
-  if(!sw || e.pointerId !== sw.id || G.phase !== 'play') return;
-  const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
-  const TH = 20;
-  if(Math.abs(dx) < TH && Math.abs(dy) < TH) return;
-  const dir = Math.abs(dx) > Math.abs(dy)
-    ? (dx > 0 ? 'right' : 'left')
-    : (dy > 0 ? 'down' : 'up');
-  pushDir(dir);
-  flashKey(dir);
-  sw.x = e.clientX; sw.y = e.clientY; sw.moved = true;
-}, {passive:true});
+  if(!joy.active || e.pointerId !== joy.id) return;
+  joyMove(e);
+  if(G.phase === 'play'){
+    const d = joyDir();
+    if(d){ pushDir(d); flashKey(d); }
+  }
+});
 
 stage.addEventListener('pointerup', e=>{
-  if(!sw) return;
-  const tap = !sw.moved;
-  sw = null;
-  if(!tap) return;
-  if(e.target.closest('button')) return;
+  if(!joy.active || e.pointerId !== joy.id) return;
+  const tap = !joy.engaged;
+  joyEnd();
+  if(!tap || e.target.closest('button')) return;
   if(G.phase === 'play') pauseGame();
   else if(G.phase === 'pause') resumeGame();
-}, {passive:true});
+});
 
-stage.addEventListener('pointercancel', ()=>{ sw = null; }, {passive:true});
+stage.addEventListener('pointercancel', e=>{
+  if(joy.active && e.pointerId === joy.id) joyEnd();
+});
 stage.addEventListener('contextmenu', e=>e.preventDefault());
 
 // boutons
