@@ -654,12 +654,27 @@ function getBest(){ return store.best[bestKey()] || 0; }
 function setBest(v){ store.best[bestKey()] = v; save(); }
 
 /* ============================================================
-   3. Moteur audio — synthèse WebAudio, zéro fichier externe
+   3. Moteur audio
+   Musique : « Neon Velocity », lue via WebAudio.
+   Effets  : synthétisés à la volée, aucun fichier.
+   Si la piste ne charge pas, un séquenceur de secours prend le relais.
    ============================================================ */
+
+/* Deux montages possibles, réglés ici :
+   - MUSIC_LOOP = 0  → la piste entière est lue en flux (élément <audio>)
+   - MUSIC_LOOP > 0  → la piste est décodée en mémoire et bouclée au
+                       centième de seconde près (utilisé quand la musique
+                       est embarquée dans la page sous forme de data URI) */
+const MUSIC_SRC  = 'neonvelocity.mp3';
+const MUSIC_LOOP = 0;
+
 const A = {
   ctx:null, master:null, musicBus:null, sfxBus:null, comp:null,
   ready:false, playing:false,
   step:0, nextTime:0, timer:null, bpm:112,
+  track:null, trackNode:null, trackGain:null,
+  trackState:'idle',      // idle | loading | ready | failed
+  wantMusic:false, rate:1,
 
   init(){
     if(this.ctx) return;
@@ -682,6 +697,11 @@ const A = {
     this.sfxBus = this.ctx.createGain();
     this.sfxBus.gain.value = store.sfx ? 0.85 : 0;
 
+    // sous-bus dédié à la piste, pour la faire plonger à la mort
+    this.trackGain = this.ctx.createGain();
+    this.trackGain.gain.value = 1;
+    this.trackGain.connect(this.musicBus);
+
     this.musicBus.connect(this.comp);
     this.sfxBus.connect(this.comp);
     this.comp.connect(this.master);
@@ -694,11 +714,61 @@ const A = {
     for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
 
     this.ready = true;
+    this.loadTrack();
   },
 
   resume(){
     this.init();
     if(this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+  },
+
+  /* ---- chargement de la piste ---- */
+  loadTrack(){
+    if(this.trackState !== 'idle') return;
+    this.trackState = 'loading';
+
+    const fail = () => {
+      this.trackState = 'failed';
+      if(this.wantMusic) this.startSynth();   // repli sur le séquenceur
+    };
+
+    if(MUSIC_LOOP > 0){
+      // décodage complet : bouclage sans couture
+      fetch(MUSIC_SRC)
+        .then(r => r.arrayBuffer())
+        .then(ab => this.ctx.decodeAudioData(ab))
+        .then(buf => {
+          // le décodeur MP3 ajoute un silence en tête : on le mesure pour
+          // caler loopStart/loopEnd exactement sur la mesure
+          const d = buf.getChannelData(0);
+          let lead = 0;
+          while(lead < d.length && Math.abs(d[lead]) < 0.002) lead++;
+          this.track = { mode:'buffer', buf, lead: lead / buf.sampleRate };
+          this.trackState = 'ready';
+          if(this.wantMusic) this.startMusic();
+        })
+        .catch(fail);
+    } else {
+      // lecture en flux : mémoire constante, quelle que soit la durée
+      const el = new Audio();
+      el.src = MUSIC_SRC;
+      el.loop = true;
+      el.preload = 'auto';
+      const ok = () => {
+        if(this.trackState === 'ready') return;
+        try{
+          const node = this.ctx.createMediaElementSource(el);
+          node.connect(this.trackGain);
+          this.track = { mode:'media', el, node };
+          this.trackState = 'ready';
+          if(this.wantMusic) this.startMusic();
+        }catch(e){ fail(); }
+      };
+      el.addEventListener('canplaythrough', ok, { once:true });
+      el.addEventListener('loadeddata', ok, { once:true });
+      el.addEventListener('error', fail, { once:true });
+      el.load();
+    }
   },
 
   setMusic(on){ store.music = on; save(); if(this.musicBus) ramp(this.musicBus.gain, on?0.5:0, .25); },
@@ -762,16 +832,89 @@ const A = {
     osc.start(t); osc.stop(t+.2);
   },
 
-  /* ---- séquenceur ---- */
+  /* ---- pilotage de la musique ---- */
   startMusic(){
     this.init();
+    if(!this.ready) return;
+    this.wantMusic = true;
+
+    if(this.trackState === 'failed'){ this.startSynth(); return; }
+    if(this.trackState !== 'ready') return;   // démarrera au chargement
+
+    if(this.trackGain){
+      this.trackGain.gain.cancelScheduledValues(this.ctx.currentTime);
+      this.trackGain.gain.setValueAtTime(1, this.ctx.currentTime);
+    }
+
+    if(this.track.mode === 'buffer'){
+      if(this.trackNode) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = this.track.buf;
+      src.loop = true;
+      src.loopStart = this.track.lead;
+      src.loopEnd = Math.min(this.track.lead + MUSIC_LOOP, this.track.buf.duration);
+      src.playbackRate.value = this.rate;
+      src.connect(this.trackGain);
+      src.start(0, this.track.lead);
+      this.trackNode = src;
+    } else {
+      const el = this.track.el;
+      el.playbackRate = this.rate;
+      if('preservesPitch' in el) el.preservesPitch = false;
+      const p = el.play();
+      if(p && p.catch) p.catch(()=>{});
+    }
+  },
+
+  stopMusic(){
+    this.wantMusic = false;
+    this.stopSynth();
+    if(this.trackState !== 'ready') return;
+    if(this.track.mode === 'buffer'){
+      if(this.trackNode){
+        try{ this.trackNode.stop(); }catch(e){}
+        try{ this.trackNode.disconnect(); }catch(e){}
+        this.trackNode = null;
+      }
+    } else {
+      this.track.el.pause();
+    }
+  },
+
+  /* la musique s'emballe avec le niveau, et plonge à la mort */
+  setRate(r, glide){
+    this.rate = r;
+    if(this.trackState !== 'ready' || !this.ctx) return;
+    const t = this.ctx.currentTime, s = glide ?? .5;
+    if(this.track.mode === 'buffer'){
+      if(this.trackNode){
+        const p = this.trackNode.playbackRate;
+        p.cancelScheduledValues(t);
+        p.setValueAtTime(p.value, t);
+        p.linearRampToValueAtTime(r, t + s);
+      }
+    } else {
+      this.track.el.playbackRate = r;
+    }
+  },
+
+  duck(target, s){
+    if(!this.trackGain || !this.ctx) return;
+    const t = this.ctx.currentTime, g = this.trackGain.gain;
+    g.cancelScheduledValues(t);
+    g.setValueAtTime(g.value, t);
+    g.linearRampToValueAtTime(target, t + s);
+  },
+
+  /* ---- séquenceur de secours ---- */
+  startSynth(){
     if(!this.ready || this.playing) return;
     this.playing = true;
     this.step = 0;
     this.nextTime = this.ctx.currentTime + .06;
     this.timer = setInterval(()=>this.schedule(), 25);
   },
-  stopMusic(fade){
+  stopSynth(){
     if(!this.playing) return;
     this.playing = false;
     clearInterval(this.timer); this.timer = null;
@@ -831,7 +974,12 @@ const A = {
     if(i % 2 === 0)     this.noise({ t, dur:.035, f:8200, q:2, g:(i%4===0?.045:.026), bus });
   },
 
-  setTempo(level){ this.bpm = Math.min(150, 110 + (level-1)*3.2); },
+  setTempo(level, frenzy){
+    this.bpm = Math.min(150, 110 + (level-1)*3.2);              // séquenceur de secours
+    let r = Math.min(1.07, 1 + (level-1)*0.012);                 // piste
+    if(frenzy) r *= 1.06;
+    this.setRate(r, frenzy === undefined ? 1.2 : .35);
+  },
 
   /* ---- effets ---- */
   sEat(combo){
@@ -865,9 +1013,51 @@ const A = {
   },
   sDeath(){
     const t = this.ctx ? this.ctx.currentTime : 0;
-    this.tone({ t, f:340, f2:44, dur:.85, type:'sawtooth', g:.22, filter:1400 });
-    this.tone({ t: t+.04, f:170, f2:32, dur:.9, type:'square', g:.13, filter:900 });
-    this.noise({ t, dur:.6, f:1400, f2:90, g:.14, ftype:'lowpass' });
+    this.sExplosion(1.35);
+    this.tone({ t: t+.10, f:340, f2:44, dur:.9, type:'sawtooth', g:.16, filter:1400 });
+    this.tone({ t: t+.14, f:170, f2:32, dur:.95, type:'square', g:.10, filter:900 });
+  },
+
+  /* ---- déflagrations ---- */
+  sExplosion(power){
+    if(!this.ready) return;
+    const p = power ?? 1;
+    const t = this.ctx.currentTime;
+    // souffle grave
+    this.tone({ t, f:110*p, f2:26, dur:.55*p, type:'sine', g:.42*p, atk:.002 });
+    // corps : bruit filtré qui s'assombrit
+    this.noise({ t, dur:.85*p, f:2800, f2:70, g:.30*p, ftype:'lowpass', q:.7 });
+    // claquement initial
+    this.noise({ t, dur:.055, f:6500, q:.8, g:.24*p });
+    // crépitement de retombée
+    this.sCrackle(t + .12*p, Math.round(7*p), .5*p);
+  },
+
+  sCrackle(t0, n, spread){
+    for(let i=0;i<n;i++){
+      const t = t0 + Math.random()*(spread ?? .5);
+      this.noise({ t, dur:.03 + Math.random()*.04, f:1200 + Math.random()*4200,
+                   q:2.5, g:.05 + Math.random()*.05 });
+    }
+  },
+
+  sFirework(){
+    if(!this.ready) return;
+    const t = this.ctx.currentTime;
+    // sifflement de montée
+    this.tone({ t, f:420, f2:1700, dur:.30, type:'sine', g:.07 });
+    // détonation
+    this.tone({ t: t+.30, f:180, f2:40, dur:.28, type:'sine', g:.26, atk:.002 });
+    this.noise({ t: t+.30, dur:.34, f:3600, f2:400, g:.20, ftype:'lowpass' });
+    this.sCrackle(t + .38, 10, .55);
+  },
+
+  sSmash(){
+    if(!this.ready) return;
+    const t = this.ctx.currentTime;
+    this.noise({ t, dur:.20, f:1500, f2:300, g:.24, ftype:'bandpass', q:1.4 });
+    this.tone({ t, f:240, f2:70, dur:.22, type:'square', g:.16, filter:1600 });
+    this.sCrackle(t + .05, 5, .22);
   },
   sTick(n){
     const t = this.ctx ? this.ctx.currentTime : 0;
@@ -905,20 +1095,101 @@ function burst(cx, cy, color, n, power){
     });
   }
 }
-function ring(cx, cy, color){ rings.push({ x:cx, y:cy, r:.2, life:1, color }); }
+function ring(cx, cy, color, speed){
+  rings.push({ x:cx, y:cy, r:.2, life:1, color, speed: speed || 1 });
+}
+
+/* halos lumineux et débris projetés */
+const flares = [];
+const debris = [];
+
+function flare(cx, cy, color, r, decay){
+  if(reduceMotion) return;
+  flares.push({ x:cx, y:cy, r:r||2.2, life:1, decay:decay||.06, color });
+}
+
+/* déflagration complète : halo, onde de choc, étincelles, fumée */
+function explode(cx, cy, o){
+  const opt = o || {};
+  const power = opt.power ?? 1;
+  const col   = opt.color || '#FF8A3D';
+  const hot   = opt.hot || '#FFE9B0';
+
+  flare(cx, cy, col, 1.6*power, .07/power);
+  ring(cx, cy, hot, 1.5*power);
+  ring(cx, cy, col, 0.9*power);
+
+  const nSpark = reduceMotion ? 8 : Math.round(26*power);
+  for(let i=0;i<nSpark;i++){
+    const a = Math.random()*Math.PI*2;
+    const sp = (0.7 + Math.random()*1.5) * power;
+    parts.push({
+      x:cx, y:cy, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp,
+      life:1, decay:.018 + Math.random()*.03,
+      size:.05 + Math.random()*.07,
+      color: Math.random() < .45 ? hot : col,
+      spin:(Math.random()-.5)*.6, rot:Math.random()*6.28, glow:true
+    });
+  }
+  const nSmoke = (opt.smoke === false) ? 0 : (reduceMotion ? 3 : Math.round(9*power));
+  for(let i=0;i<nSmoke;i++){
+    const a = Math.random()*Math.PI*2;
+    const sp = (0.15 + Math.random()*.5) * power;
+    parts.push({
+      x:cx, y:cy, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - .2,
+      life:1, decay:.008 + Math.random()*.008,
+      size:.16 + Math.random()*.20,
+      color:'#3A4A58', spin:(Math.random()-.5)*.15, rot:Math.random()*6.28,
+      smoke:true
+    });
+  }
+}
+
+/* le serpent se disloque en morceaux à la mort */
+function shatter(points){
+  if(reduceMotion) return;
+  for(let i=0;i<points.length;i++){
+    const p = points[i];
+    const a = Math.random()*Math.PI*2;
+    const sp = 0.5 + Math.random()*1.4;
+    debris.push({
+      x:p.x, y:p.y,
+      vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 0.7,
+      rot:Math.random()*6.28, spin:(Math.random()-.5)*.5,
+      size:.34 - .12*(i/points.length),
+      life:1, decay:.009 + Math.random()*.006
+    });
+  }
+}
+
 function stepParts(dt){
   const f = dt/16.7;
   for(let i=parts.length-1;i>=0;i--){
     const p = parts[i];
     p.x += p.vx*f*.08; p.y += p.vy*f*.08;
-    p.vy += .05*f; p.vx *= 0.985; p.rot += p.spin*f;
+    p.vy += (p.smoke ? -.012 : .05)*f;
+    p.vx *= p.smoke ? .97 : .985;
+    if(p.smoke) p.vy *= .97;
+    p.rot += p.spin*f;
     p.life -= p.decay*f;
     if(p.life <= 0) parts.splice(i,1);
   }
   for(let i=rings.length-1;i>=0;i--){
     const r = rings[i];
-    r.r += .075*f; r.life -= .045*f;
+    r.r += .075*f*r.speed; r.life -= .045*f*r.speed;
     if(r.life <= 0) rings.splice(i,1);
+  }
+  for(let i=flares.length-1;i>=0;i--){
+    const fl = flares[i];
+    fl.life -= fl.decay*f;
+    if(fl.life <= 0) flares.splice(i,1);
+  }
+  for(let i=debris.length-1;i>=0;i--){
+    const d = debris[i];
+    d.x += d.vx*f*.08; d.y += d.vy*f*.08;
+    d.vy += .062*f; d.vx *= .99; d.rot += d.spin*f;
+    d.life -= d.decay*f;
+    if(d.life <= 0) debris.splice(i,1);
   }
 }
 
@@ -988,9 +1259,10 @@ function resetGame(attract){
   G.deathAt = 0; G.deathCause = '';
   G.startedAt = performance.now(); G.elapsed = 0;
   G.best = getBest();
-  parts.length = 0; rings.length = 0;
+  parts.length = 0; rings.length = 0; flares.length = 0; debris.length = 0;
   spawnFood();
   A.setTempo(1);
+  A.duck(1, .2);
   syncHUD();
 }
 
@@ -1042,11 +1314,20 @@ function step(now){
       if(G.snake[i].x===nx && G.snake[i].y===ny){ cause = 'morsure'; break; }
   }
 
-  if(cause){
-    // bouclier : on annule le mouvement et on bifurque
-    if(G.shield > 0 && !G.attract){
-      G.shield--; G.invuln = 900; G.shake = Math.max(G.shake, 9);
-      A.sShield(); vibrate([12,40,12]);
+  if(cause && G.shield > 0 && !G.attract){
+    if(cause === 'obstacle'){
+      // on pulvérise l'obstacle et on passe au travers
+      const i = G.obstacles.findIndex(o => o.x===nx && o.y===ny);
+      if(i >= 0) G.obstacles.splice(i, 1);
+      G.shield--; G.invuln = 700; G.shake = Math.max(G.shake, 13);
+      explode(nx+.5, ny+.5, { power:1.15, color:'#FF8A3D', hot:'#FFE9B0' });
+      A.sSmash(); A.sExplosion(.75);
+      vibrate([16,26,30]);
+      toast('Pulvérisé !', 'Bouclier consommé');
+      cause = '';
+      syncHUD();
+    } else {
+      // mur ou morsure : on annule le mouvement et on bifurque
       const alts = ['up','down','left','right'].filter(k=>{
         const b = DIRS[G.dir];
         return !(DIRS[k].x === -b.x && DIRS[k].y === -b.y);
@@ -1054,14 +1335,18 @@ function step(now){
       let picked = null;
       for(const k of alts){ const p = safeDir(head, k); if(p){ picked = {k, p}; break; } }
       if(picked){
+        G.shield--; G.invuln = 900; G.shake = Math.max(G.shake, 10);
+        A.sShield(); vibrate([12,40,12]);
         G.dir = picked.k; nx = picked.p.x; ny = picked.p.y; cause = '';
-        burst(head.x+.5, head.y+.5, '#B98CE6', 22, 1.4);
-        ring(head.x+.5, head.y+.5, '#B98CE6');
+        explode(head.x+.5, head.y+.5, { power:.8, color:'#B98CE6', hot:'#F0E0FF' });
         toast('Bouclier !', 'Il t’a sauvé la mise');
         syncHUD();
       }
     }
-    if(cause){ die(cause); return; }
+  }
+  if(cause){
+    die(cause, Math.max(0, Math.min(COLS-1, nx)), Math.max(0, Math.min(ROWS-1, ny)));
+    return;
   }
 
   G.snake.unshift({x:nx, y:ny});
@@ -1082,7 +1367,40 @@ function step(now){
   if(grew === 0) G.snake.pop();
   else for(let i=1;i<grew;i++) G.snake.push({...G.snake[G.snake.length-1]});
 
+  // traînée de braises pendant la frénésie, poussière d'or pendant la fièvre
+  if(!G.attract && !reduceMotion){
+    if(G.frenzy > 0) trail(nx, ny, '#FF8A3D', '#FFD08A', 2);
+    else if(G.fever > 0) trail(nx, ny, '#E3B25A', '#FFF3D0', 1);
+  }
+
   if(!G.food) spawnFood();
+}
+
+function trail(x, y, c1, c2, n){
+  for(let i=0;i<n;i++){
+    parts.push({
+      x: x + .5 + (Math.random()-.5)*.55,
+      y: y + .5 + (Math.random()-.5)*.55,
+      vx:(Math.random()-.5)*.35, vy:-.15 - Math.random()*.35,
+      life:1, decay:.032 + Math.random()*.02,
+      size:.05 + Math.random()*.05,
+      color: Math.random() < .5 ? c1 : c2,
+      spin:(Math.random()-.5)*.3, rot:Math.random()*6.28, glow:true
+    });
+  }
+}
+
+/* salve de feux d'artifice sur le plateau */
+function volley(n, color, hot){
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      if(G.phase !== 'play') return;
+      explode(1 + Math.random()*(COLS-2), 1 + Math.random()*(ROWS-2),
+              { power:.85, color, hot, smoke:false });
+      A.sFirework();
+      G.shake = Math.max(G.shake, 4);
+    }, i*240);
+  }
 }
 
 function onEat(kind, x, y, now){
@@ -1110,14 +1428,17 @@ function onEat(kind, x, y, now){
   } else if(kind === 'gold'){
     base = 60; col = '#E3B25A';
     G.fever = 7000;
-    A.sGold(); G.shake = Math.max(G.shake, 7);
+    A.sGold(); A.sFirework(); G.shake = Math.max(G.shake, 10);
+    explode(x+.5, y+.5, { power:1.3, color:'#E3B25A', hot:'#FFF3D0', smoke:false });
     toast('Fièvre d’or', 'Points doublés');
-    ring(x+.5, y+.5, '#E3B25A');
+    A.setTempo(G.level, false);
   } else if(kind === 'chili'){
     base = 25; col = '#FF8A3D';
     G.frenzy = 6000;
-    A.sPower(true); G.shake = Math.max(G.shake, 5);
+    A.sPower(true); A.sExplosion(.7); G.shake = Math.max(G.shake, 9);
+    explode(x+.5, y+.5, { power:1.1, color:'#FF6A2A', hot:'#FFE0A0' });
     toast('Frénésie', 'Plus vite, plus de points');
+    A.setTempo(G.level, true);
   } else if(kind === 'plum'){
     base = 20; col = '#B98CE6';
     G.shield = Math.min(2, G.shield + 1);
@@ -1137,12 +1458,13 @@ function onEat(kind, x, y, now){
     const newLevel = 1 + Math.floor(G.eaten / FOODS_PER_LEVEL);
     if(newLevel > G.level){
       G.level = newLevel;
-      A.setTempo(G.level);
+      A.setTempo(G.level, G.frenzy > 0);
       A.sLevel();
       const d = DIFFS[G.diff];
       if(G.level >= d.obsFrom && d.obsPer > 0 && G.obstacles.length < 16) addObstacles(d.obsPer);
       toast('Niveau ' + G.level, 'Ça accélère');
       G.flash = 1;
+      volley(3, '#E3B25A', '#FFF3D0');
     }
     maybeSpawnSpecial();
   }
@@ -1150,21 +1472,38 @@ function onEat(kind, x, y, now){
   syncHUD();
 }
 
-function die(cause){
+function die(cause, hx, hy){
   if(G.attract){ resetGame(true); return; }
   G.phase = 'dead';
   G.deathAt = performance.now();
   G.deathCause = cause;
   G.elapsed = G.deathAt - G.startedAt;
-  G.shake = 16; G.flash = 1;
+  G.shake = 24; G.flash = 1;
+
+  const cx = (hx ?? G.snake[0].x) + .5, cy = (hy ?? G.snake[0].y) + .5;
+
+  // le serpent se disloque, la déflagration part de l'impact
+  shatter(snakePoints(1));
+  explode(cx, cy, { power:1.9, color:'#FF6A4D', hot:'#FFD9A0' });
   A.sDeath();
-  A.stopMusic();
   vibrate([40,60,90]);
-  const h = G.snake[0];
-  burst(h.x+.5, h.y+.5, '#FF6A4D', 44, 2.2);
-  ring(h.x+.5, h.y+.5, '#FF6A4D');
+
+  // seconde détonation en écho
+  setTimeout(()=>{
+    if(G.phase !== 'dead') return;
+    explode(cx + (Math.random()-.5)*2, cy + (Math.random()-.5)*2,
+            { power:1.05, color:'#FF8A3D', hot:'#FFF0C0' });
+    A.sExplosion(.8);
+    G.shake = Math.max(G.shake, 12);
+  }, 190);
+
+  // la musique ralentit et s'éteint
+  A.setRate(0.55, .95);
+  A.duck(0, .95);
+  setTimeout(()=>A.stopMusic(), 1000);
+
   releaseWake();
-  setTimeout(showGameOver, 780);
+  setTimeout(showGameOver, 980);
 }
 
 /* ---- pilote automatique pour l'écran-titre ---- */
@@ -1312,6 +1651,9 @@ function drawSnake(t, now){
   const dying = G.phase === 'dead';
   const fadeT = dying ? Math.min(1, (now - G.deathAt)/700) : 0;
 
+  // à la mort le corps disparaît d'un coup : les débris prennent le relais
+  if(dying && !reduceMotion) return;
+
   const squash = G.squash;
   const baseW = CELL * (0.80 + squash*0.14);
 
@@ -1333,9 +1675,16 @@ function drawSnake(t, now){
     ctx.restore();
   }
 
-  const bodyCol  = dying ? mixHex('#3FCB92','#5A6570',fadeT)
-                 : (G.fever>0 ? '#5FD9A6' : (G.frenzy>0 ? '#63D9A0' : '#3FCB92'));
-  const edgeCol  = dying ? mixHex('#158F63','#39424C',fadeT) : '#128057';
+  let bodyCol = dying ? mixHex('#3FCB92','#5A6570',fadeT)
+              : (G.fever>0 ? '#5FD9A6' : (G.frenzy>0 ? '#63D9A0' : '#3FCB92'));
+  let edgeCol = dying ? mixHex('#158F63','#39424C',fadeT) : '#128057';
+
+  // invulnérabilité : on éclaircit la couleur plutôt que de jouer sur
+  // la transparence, qui ferait doubler les jointures de chaque segment
+  if(blink){
+    bodyCol = mixHex(bodyCol, '#F2E4FF', .72);
+    edgeCol = mixHex(edgeCol, '#B98CE6', .60);
+  }
 
   function seg(a, b, w, color){
     ctx.strokeStyle = color;
@@ -1352,7 +1701,6 @@ function drawSnake(t, now){
   for(let pass=0; pass<2; pass++){
     const col = pass===0 ? edgeCol : bodyCol;
     const add = pass===0 ? CELL*0.13 : 0;
-    if(blink && pass===1) ctx.globalAlpha = .45;
     for(let i=0;i<n-1;i++){
       const a = pts[i], b = pts[i+1];
       const k = i/(n-1);
@@ -1364,7 +1712,6 @@ function drawSnake(t, now){
       seg(a, {x:a.x+dx, y:a.y+dy}, w, col);
       if(wrapped) seg({x:b.x-dx, y:b.y-dy}, b, w, col);
     }
-    ctx.globalAlpha = 1;
   }
 
   // écailles laiton
@@ -1537,25 +1884,82 @@ function roundRect(c,x,y,w,h,r){
   c.closePath();
 }
 
-function drawParts(){
-  for(const p of parts){
+function drawFlares(){
+  if(!flares.length) return;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for(const f of flares){
+    const r = f.r * CELL * (1.4 - f.life*0.5);
+    const g = ctx.createRadialGradient(f.x*CELL, f.y*CELL, 0, f.x*CELL, f.y*CELL, r);
+    const a = Math.max(0, f.life);
+    g.addColorStop(0, hexA('#FFFFFF', a*0.75));
+    g.addColorStop(.25, hexA(f.color, a*0.55));
+    g.addColorStop(1, hexA(f.color, 0));
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(f.x*CELL, f.y*CELL, r, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawDebris(){
+  for(const d of debris){
     ctx.save();
+    ctx.globalAlpha = Math.max(0, Math.min(1, d.life*1.4));
+    ctx.translate(d.x*CELL, d.y*CELL);
+    ctx.rotate(d.rot);
+    const s = d.size*CELL;
+    ctx.fillStyle = mixHex('#3FCB92', '#4A545E', 1 - d.life);
+    roundRect(ctx, -s/2, -s/2, s, s, s*0.3); ctx.fill();
+    ctx.strokeStyle = mixHex('#158F63', '#2E3740', 1 - d.life);
+    ctx.lineWidth = Math.max(1, CELL*0.04);
+    roundRect(ctx, -s/2, -s/2, s, s, s*0.3); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawParts(){
+  // fumée d'abord, puis étincelles en mode additif
+  ctx.save();
+  for(const p of parts){
+    if(!p.smoke) continue;
+    ctx.globalAlpha = Math.max(0, p.life)*0.26;
+    ctx.fillStyle = p.color;
+    ctx.save();
+    ctx.translate(p.x*CELL, p.y*CELL); ctx.rotate(p.rot);
+    const s = p.size*CELL*(0.6 + (1-p.life)*1.5);
+    ctx.beginPath(); ctx.arc(0, 0, s/2, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+
+  ctx.save();
+  for(const p of parts){
+    if(p.smoke) continue;
+    ctx.globalCompositeOperation = p.glow ? 'lighter' : 'source-over';
     ctx.globalAlpha = Math.max(0, p.life);
     ctx.fillStyle = p.color;
-    ctx.translate(p.x*CELL, p.y*CELL);
-    ctx.rotate(p.rot);
+    ctx.save();
+    ctx.translate(p.x*CELL, p.y*CELL); ctx.rotate(p.rot);
     const s = p.size*CELL*(0.4+p.life*0.8);
     ctx.fillRect(-s/2,-s/2,s,s);
     ctx.restore();
   }
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
   for(const r of rings){
-    ctx.save();
     ctx.globalAlpha = Math.max(0, r.life)*0.6;
     ctx.strokeStyle = r.color;
     ctx.lineWidth = Math.max(1.5, CELL*0.1*r.life);
     ctx.beginPath(); ctx.arc(r.x*CELL, r.y*CELL, r.r*CELL, 0, Math.PI*2); ctx.stroke();
-    ctx.restore();
   }
+  ctx.restore();
+}
+
+function hexA(hex, a){
+  const p = [1,3,5].map(i=>parseInt(hex.substr(i,2),16));
+  return 'rgba(' + p.join(',') + ',' + Math.max(0, Math.min(1, a)).toFixed(3) + ')';
 }
 
 function drawWalls(){
@@ -1602,6 +2006,8 @@ function render(t, now){
   drawObstacles(now);
   drawFood(now);
   drawSnake(t, now);
+  drawDebris();
+  drawFlares();
   drawParts();
 
   ctx.restore();
@@ -1944,7 +2350,7 @@ function frame(now){
     G.fever  = Math.max(0, G.fever  - dt);
     G.frenzy = Math.max(0, G.frenzy - dt);
     if(prevFever > 0 && G.fever === 0) toast('Fin de fièvre', '');
-    if(prevFrenzy > 0 && G.frenzy === 0) toast('Fin de frénésie', '');
+    if(prevFrenzy > 0 && G.frenzy === 0){ toast('Fin de frénésie', ''); A.setTempo(G.level, false); }
 
     G.tick = currentTick();
     G.acc += dt;
