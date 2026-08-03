@@ -709,6 +709,19 @@ function setBest(v){ store.best[bestKey()] = v; save(); }
 const MUSIC_SRC  = 'neonvelocity.mp3';
 const MUSIC_LOOP = 0;
 
+/* Piste embarquée, en base64 brut. On la décode en mémoire plutôt que de
+   passer par une data URI : une page publiée sert souvent une CSP dont le
+   connect-src interdit fetch('data:…'), ce qui ferait échouer la musique
+   sans le moindre bruit. Ici aucune requête réseau n'est émise. */
+const MUSIC_B64  = '';
+
+function b64ToBuffer(b64){
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+
 const A = {
   ctx:null, master:null, musicBus:null, sfxBus:null, comp:null,
   ready:false, playing:false,
@@ -775,12 +788,27 @@ const A = {
 
     if(MUSIC_LOOP > 0){
       // décodage complet : bouclage sans couture
-      fetch(MUSIC_SRC)
-        .then(r => r.arrayBuffer())
-        .then(ab => this.ctx.decodeAudioData(ab))
+      // decodeAudioData rend une promesse sur les navigateurs récents et
+      // prend des callbacks sur les plus anciens : on accepte les deux
+      const decode = ab => new Promise((res, rej) => {
+        const p = this.ctx.decodeAudioData(ab, res, rej);
+        if(p && p.then) p.then(res, rej);
+      });
+
+      let bytes;
+      try{
+        bytes = MUSIC_B64 ? b64ToBuffer(MUSIC_B64) : null;
+      }catch(e){ fail(); return; }
+
+      const source = bytes
+        ? Promise.resolve(bytes)
+        : fetch(MUSIC_SRC).then(r => r.arrayBuffer());
+
+      source
+        .then(decode)
         .then(buf => {
-          // le décodeur MP3 ajoute un silence en tête : on le mesure pour
-          // caler loopStart/loopEnd exactement sur la mesure
+          // le décodeur MP3 peut ajouter un silence en tête : on le mesure
+          // pour caler loopStart/loopEnd exactement sur la mesure
           const d = buf.getChannelData(0);
           let lead = 0;
           while(lead < d.length && Math.abs(d[lead]) < 0.002) lead++;
