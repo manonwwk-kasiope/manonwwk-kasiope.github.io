@@ -27,32 +27,18 @@ function resizeCanvas() {
 /* ----------------------------------------------------------- entrées tactiles */
 var touchJoy = null;     // { id, ox, oy, x, y }
 var touchBtns = {};      // id -> nom de bouton
-var BTN_R = 46;          // rayon logique de la zone tactile, en pixels écran
 
-function btnRects() {
-  // renvoie les cercles tactiles des trois boutons, en pixels écran
-  var right = !S.opt.leftHanded;
-  var pad = 26 + (window.__safeR || 0);
-  var bx = right ? CW - pad - 62 : pad + 62;
-  var by = CH - 34 - 62;
-  var s = S.opt.joySize;
-  return {
-    boost:   { x: bx,               y: by,               r: 62 * s },
-    special: { x: bx - 96 * (right ? 1 : -1), y: by - 20,  r: 46 * s },
-    ult:     { x: bx - 40 * (right ? 1 : -1), y: by - 108, r: 46 * s }
-  };
-}
-
+/* L'interface possède la géométrie des contrôles : elle applique les réglages
+   du joueur (position, taille, main gauche). Le coeur ne la duplique pas, il
+   l'interroge — sinon la zone tactile et le dessin finissent par diverger et
+   le joueur tape à côté. */
 function hitBtn(x, y) {
-  var r = btnRects();
-  for (var k in r) {
-    var b = r[k];
-    if (dist2(x, y, b.x, b.y) < b.r * b.r) return k;
-  }
-  return null;
+  return (S2030.ui && S2030.ui.hitTest) ? S2030.ui.hitTest(x, y) : null;
 }
 
 function joySide(x) {
+  var home = (S2030.ui && S2030.ui.joyHome) ? S2030.ui.joyHome() : null;
+  if (home) return Math.abs(x - home.x) < CW * 0.5;
   return S.opt.leftHanded ? x > CW * 0.5 : x < CW * 0.5;
 }
 
@@ -65,6 +51,7 @@ function onTouchStart(e) {
     if (!touchJoy && joySide(t.clientX)) {
       touchJoy = { id: t.identifier, ox: t.clientX, oy: t.clientY, x: t.clientX, y: t.clientY };
       S.input.jactive = true;
+      S2030.ui && S2030.ui.placeJoy && S2030.ui.placeJoy(t.clientX, t.clientY);
     }
   }
   e.preventDefault();
@@ -83,6 +70,7 @@ function onTouchMove(e) {
         var k = (mag - max) / mag;
         touchJoy.ox += dx * k; touchJoy.oy += dy * k;
         dx = touchJoy.x - touchJoy.ox; dy = touchJoy.y - touchJoy.oy; mag = max;
+        S2030.ui && S2030.ui.placeJoy && S2030.ui.placeJoy(touchJoy.ox, touchJoy.oy);
       }
       S.input.jmag = clamp(mag / max, 0, 1);
       if (mag > 0.001) { S.input.jx = dx / mag; S.input.jy = dy / mag; }
@@ -96,6 +84,7 @@ function onTouchEnd(e) {
     var t = e.changedTouches[i];
     if (touchJoy && t.identifier === touchJoy.id) {
       touchJoy = null; S.input.jactive = false; S.input.jmag = 0;
+      S2030.ui && S2030.ui.releaseJoy && S2030.ui.releaseJoy();
     }
     var b = touchBtns[t.identifier];
     if (b) { S.input[b] = false; delete touchBtns[t.identifier]; }
@@ -133,10 +122,12 @@ function keyboardInput() {
 /* ------------------------------------------------------- capacités */
 function useSpecial() {
   if (S.phase !== 'play' || S.specialCd > 0) return;
-  S.specialCd = 7000;
+  S.specialCd = S.specialCdMax || 7000;
   var s = S.snake;
-  s.ghost = 2200;
-  s.invuln = Math.max(s.invuln, 2200);
+  // TRANSE : la traversée dure plus longtemps
+  var gt = 2200 + 700 * (S.up.f_ghostTime || 0);
+  s.ghost = gt;
+  s.invuln = Math.max(s.invuln, gt);
   S2030.fx && S2030.fx.ring(s.x, s.y, '#b388ff', 10, 900);
   S2030.fx && S2030.fx.flare(s.x, s.y, '#b388ff', 160);
   S2030.audio && S2030.audio.sfx('shock');
@@ -342,6 +333,8 @@ function frame(now) {
     S2030.levels && S2030.levels.update && S2030.levels.update(dt);
     updateEnemies(dt);
     S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
+    auraTick(dt);
+    poolsTick(dt);
     collide(dt);
     if (S.multT > 0) { S.multT -= raw * 1000; if (S.multT <= 0) { S.mult = 1; S.combo = 0; } }
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
@@ -388,6 +381,7 @@ function render() {
 
   S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(ctx);
   drawArenaEdge();
+  drawPools(ctx);
   drawPickups();
 
   for (var i = 0; i < S.enemies.length; i++) {
@@ -407,68 +401,10 @@ function render() {
   drawControls();
 }
 
-/* ------------------------------------------------- contrôles dessinés au canvas */
-function drawControls() {
-  if (S.phase !== 'play' || S.paused) return;
-  var a = S.opt.joyAlpha;
-  ctx.save();
-
-  // manche
-  if (touchJoy) {
-    ctx.globalAlpha = 0.5 * a;
-    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(touchJoy.ox, touchJoy.oy, 64 * S.opt.joySize, 0, TAU); ctx.stroke();
-    ctx.globalAlpha = 0.75 * a;
-    ctx.fillStyle = '#00e5ff';
-    var kx = touchJoy.ox + S.input.jx * S.input.jmag * 64 * S.opt.joySize;
-    var ky = touchJoy.oy + S.input.jy * S.input.jmag * 64 * S.opt.joySize;
-    ctx.beginPath(); ctx.arc(kx, ky, 26 * S.opt.joySize, 0, TAU); ctx.fill();
-  } else {
-    ctx.globalAlpha = 0.22 * a;
-    var hx = S.opt.leftHanded ? CW - 110 : 110, hy = CH - 96;
-    ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(hx, hy, 56 * S.opt.joySize, 0, TAU); ctx.stroke();
-    var pl = 0.5 + Math.sin(S.t / 400) * 0.5;
-    ctx.globalAlpha = 0.10 * a + 0.12 * pl;
-    ctx.beginPath(); ctx.arc(hx, hy, 24 * S.opt.joySize, 0, TAU); ctx.fill();
-  }
-
-  // boutons
-  var r = btnRects();
-  drawBtn(r.boost, '#ffd166', S.snake ? S.snake.boostE / S.snake.boostMax : 1, S.input.boost, '»');
-  drawBtn(r.special, '#b388ff', S.specialCd > 0 ? 1 - S.specialCd / 7000 : 1, S.input.special, '◈');
-  drawBtn(r.ult, '#ff2e63', S.ult / S.ultMax, S.input.ult, '★');
-  ctx.restore();
-}
-
-function drawBtn(b, color, fill, active, glyph) {
-  var a = S.opt.joyAlpha;
-  ctx.save();
-  ctx.globalAlpha = (active ? 0.55 : 0.26) * a;
-  ctx.fillStyle = color;
-  ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 0.72, 0, TAU); ctx.fill();
-  ctx.globalAlpha = 0.55 * a;
-  ctx.strokeStyle = color; ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 0.72, 0, TAU); ctx.stroke();
-  // jauge circulaire
-  ctx.globalAlpha = 0.95 * a;
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, b.r * 0.86, -Math.PI / 2, -Math.PI / 2 + TAU * clamp(fill, 0, 1));
-  ctx.stroke();
-  if (fill >= 1) {
-    ctx.globalAlpha = (0.35 + Math.sin(S.t / 160) * 0.25) * a;
-    ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 0.98, 0, TAU); ctx.stroke();
-  }
-  ctx.globalAlpha = 0.9 * a;
-  ctx.fillStyle = '#05060f';
-  ctx.font = 'bold ' + (b.r * 0.7) + 'px system-ui, sans-serif';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(glyph, b.x, b.y + 1);
-  ctx.restore();
-}
-
-function syncControls() { /* les contrôles sont dessinés au canvas, rien à synchroniser */ }
+/* Les contrôles sont rendus par l'interface, en DOM : un seul dessin, une
+   seule géométrie, donc zone tactile et visuel ne peuvent pas diverger. */
+function drawControls() {}
+function syncControls() {}
 
 /* ---------------------------------------------------------- qualité adaptative */
 var _qLow = 0;
@@ -500,20 +436,34 @@ function resetRun() {
   seedRnd((S.seed = (Math.floor(performance.now()) % 100000) + 7));
   S.snake = makeSnake();
   S.enemies.length = 0; S.bullets.length = 0; S.ebullets.length = 0;
-  S.pickups.length = 0; S.drones.length = 0;
+  S.pickups.length = 0; S.drones.length = 0; S.pools.length = 0;
   S.score = 0; S.mult = 1; S.multT = 0; S.combo = 0; S.kills = 0;
   S.xp = 0; S.xpNext = 12; S.lvlUps = 0;
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null;
+  S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
   S2030.weapons && S2030.weapons.reset && S2030.weapons.reset();
-  S.up.frontCannon = 1;   // on démarre armé : le tir automatique enseigne tout seul
+  S2030.enemies && S2030.enemies.reset && S2030.enemies.reset();
+  S2030.upgrades && S2030.upgrades.reset && S2030.upgrades.reset();
+
+  // déblocages permanents achetés entre deux parties
+  var u = S.stats.unlocks || {};
+  if (u.u_len) { S.snake.len += 3; S.snake.maxHp += 3; S.snake.hp = S.snake.len; }
+  if (u.u_boost) { S.snake.boostMax = 125; S.snake.boostE = 125; }
+  if (u.u_ult) S.ultMax = 80;
+  if (u.u_shield) S.snake.shield = (S.snake.shield || 0) + 1;
+  if (u.u_luck) S.up.f_luck = 1;
+
+  // on démarre armé : le tir automatique s'enseigne tout seul, sans tutoriel
+  S.up.frontCannon = u.u_start ? 2 : 1;
   S2030.levels && S2030.levels.start(1);
 }
 
 function startRun() {
+  armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
   resetRun();
   S.phase = 'play';
@@ -558,8 +508,20 @@ function loadMusic() {
   return fetch('neonvelocity.mp3').then(function (r) { return r.arrayBuffer(); });
 }
 
+var _armed = false;
+function armAudio() {
+  if (_armed || !S2030.audio) return;
+  _armed = true;
+  S2030.audio.init();
+  loadMusic()
+    .then(function (ab) { return S2030.audio.decode(ab); })
+    .then(function (buf) { if (!buf) console.warn('musique : repli sur la synthèse'); })
+    .catch(function () { /* la synthèse prend le relais */ });
+}
+
 /* --------------------------------------------------------------------- boot */
 function boot() {
+  window.__S = S; window.__K = K; window.__M = S2030;   // sondes de test
   loadStats();
   setupCanvas();
   addEventListener('resize', function () { setTimeout(resizeCanvas, 60); });
@@ -584,18 +546,12 @@ function boot() {
   S2030.levels && S2030.levels.start(1);
   S2030.ui.showScreen('menu');
 
-  // audio : initialisé au premier geste, comme l'exigent les navigateurs
-  var armed = false;
-  function arm() {
-    if (armed) return; armed = true;
-    S2030.audio.init();
-    loadMusic()
-      .then(function (ab) { return S2030.audio.decode ? S2030.audio.decode(ab) : null; })
-      .catch(function () { /* la synthèse prend le relais */ });
-  }
-  addEventListener('pointerdown', arm, { once: false });
-  addEventListener('touchstart', arm, { once: false });
-  addEventListener('keydown', arm, { once: false });
+  // L'audio ne peut démarrer que sur un geste utilisateur. On écoute large,
+  // en capture : un bouton d'interface qui arrête la propagation ne doit pas
+  // priver le jeu de sa musique.
+  addEventListener('pointerdown', armAudio, true);
+  addEventListener('touchstart', armAudio, true);
+  addEventListener('keydown', armAudio, true);
 
   requestAnimationFrame(function (t) { lastT = t; frame(t); });
 }

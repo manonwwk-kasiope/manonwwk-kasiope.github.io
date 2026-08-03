@@ -34,7 +34,7 @@ var S = {
   view: { w: 1280, h: 780 },
   shake: 0,
   snake: null,
-  enemies: [], bullets: [], ebullets: [], pickups: [], drones: [],
+  enemies: [], bullets: [], ebullets: [], pickups: [], drones: [], pools: [],
   level: 1, levelT: 0, levelProgress: 0, intensity: 0,
   score: 0, mult: 1, multT: 0, combo: 0, kills: 0,
   xp: 0, xpNext: 12, lvlUps: 0,
@@ -85,6 +85,7 @@ function makeSnake() {
     hp: K.START_LEN, maxHp: K.START_LEN,
     boostE: 100, boostMax: 100, boosting: false,
     invuln: 0, ghost: 0, slowmo: 0,
+    shield: 0, shieldT: 0, regenT: 0,
     turnBoost: 1
   };
   // on amorce le chemin pour que le corps existe dès la première image
@@ -142,13 +143,16 @@ function updateSnake(dt) {
 
   // --- boost ---
   var wantBoost = inp.boost && s.boostE > 1;
+  var drain = K.BOOST_DRAIN * (1 - 0.16 * (S.up.f_boostDrain || 0));  // RÉSERVE
   if (wantBoost) {
-    s.boostE = Math.max(0, s.boostE - K.BOOST_DRAIN * dt);
+    s.boostE = Math.max(0, s.boostE - drain * dt);
     if (!s.boosting) { s.boosting = true; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
   } else {
     if (s.boosting) { s.boosting = false; S2030.audio && S2030.audio.sfx('boostEnd'); }
     s.boostE = Math.min(s.boostMax, s.boostE + K.BOOST_FILL * dt);
   }
+  // PROPULSION : la vitesse de croisière monte avec les cartes
+  s.baseSpeed = K.BASE_SPEED * (1 + 0.07 * (S.up.f_speed || 0));
   var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1);
   s.speed = lerp(s.speed, target, 1 - Math.pow(0.002, dt));
 
@@ -168,7 +172,32 @@ function updateSnake(dt) {
 
   if (s.invuln > 0) s.invuln -= S.dt * 1000;
   if (s.ghost > 0) s.ghost -= S.dt * 1000;
-  if (s.boosting) S.ult = Math.min(S.ultMax, S.ult + 3 * dt);
+  if (S.up.f_permGhost) s.ghost = Math.max(s.ghost, 40);   // SPECTRE permanent
+  if (s.boosting) S.ult = Math.min(S.ultMax, S.ult + 3 * dt * (1 + 0.3 * (S.up.f_ultGain || 0)));
+
+  // RÉPARATION : un segment revient toutes les N secondes
+  if (S.up.f_regen) {
+    s.regenT += dt;
+    var every = 9 / S.up.f_regen;
+    if (s.regenT >= every) { s.regenT = 0; if (s.len < s.maxHp) healSnake(1); }
+  }
+  // BOUCLIER : une charge se recharge lentement, jusqu'au maximum acheté
+  if (S.up.f_shield) {
+    s.shieldT += dt;
+    var cd = (S.up.f_shieldCd ? 11 - S.up.f_shieldCd : 14);
+    if (s.shieldT >= cd) {
+      s.shieldT = 0;
+      if (s.shield < S.up.f_shield) {
+        s.shield++;
+        S2030.fx && S2030.fx.ring(s.x, s.y, '#7CFFB2', 6, 400);
+      }
+    }
+  }
+  // SURSIS : le temps ralentit quand il ne reste presque plus rien
+  if (S.up.f_slowmo) {
+    var low = s.len <= 3;
+    S.timeScale = low ? (1 - 0.18 * S.up.f_slowmo) : 1;
+  }
 }
 
 var _wallT = 0;
@@ -185,10 +214,29 @@ function hurtSnake(dmg, x, y) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
   dmg = Math.max(1, dmg | 0);
+
+  // BLINDAGE : plafonne chaque coup à un seul segment
+  if (S.up.f_capDamage) dmg = 1;
+
+  // BOUCLIER : une charge absorbe le coup entier
+  if (s.shield > 0) {
+    s.shield--;
+    s.invuln = K.INVULN + 400;
+    S2030.fx && S2030.fx.ring(s.x, s.y, '#7CFFB2', 12, 700);
+    S2030.fx && S2030.fx.flare(s.x, s.y, '#7CFFB2', 120);
+    S2030.audio && S2030.audio.sfx('shock');
+    haptic(16);
+    return;
+  }
+
   s.len = Math.max(1, s.len - dmg);
   s.hp = s.len;
-  s.invuln = K.INVULN;
-  S.mult = 1; S.combo = 0;
+  // TEMPS MORT : chaque niveau allonge l'invulnérabilité
+  s.invuln = K.INVULN + 220 * (S.up.f_iframes || 0);
+  // ÉCHAPPÉE : on traverse brièvement après avoir été touché
+  if (S.up.f_ghostOnHit) s.ghost = Math.max(s.ghost, 700 * S.up.f_ghostOnHit);
+  // SANG-FROID : le multiplicateur survit au coup
+  if (!S.up.f_multKeep) { S.mult = 1; S.combo = 0; }
   S2030.fx && S2030.fx.shake(14);
   S2030.fx && S2030.fx.flash('#ff2e63', 0.35);
   S2030.fx && S2030.fx.burst(x !== undefined ? x : s.x, y !== undefined ? y : s.y, '#ff2e63', 22, 1.5, { glow: true });
@@ -279,6 +327,8 @@ function addPickup(kind, x, y) {
 /* ------------------------------------------------------------ dégâts ennemis */
 function damageEnemy(e, dmg, opts) {
   if (!e || e.dead) return;
+  // ÉLAN : les dégâts montent avec la vitesse quand on est en boost
+  if (S.up.f_momentum && S.snake && S.snake.boosting) dmg *= 1 + 0.18 * S.up.f_momentum;
   e.hp -= dmg;
   e.hitT = 90;
   if (opts && opts.x !== undefined) {
@@ -302,10 +352,79 @@ function killEnemy(e, opts) {
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
   S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill');
   if (e.elite) { S2030.fx && S2030.fx.shake(9); haptic(20); }
+  deathEffects(e);
+}
+
+/* Constructions explosive et électrique : ce qui se déclenche à la mort d'un
+   ennemi. Regroupé ici pour que les cartes concernées aient un seul lecteur. */
+var _chainDepth = 0;
+function deathEffects(e) {
+  var bomb = (S.up.f_deathBomb || 0) + (S.up.f_shockExplode || 0);
+  var chain = S.up.f_chainExplode || 0;
+  var pool = S.up.f_burnPool || 0;
+
+  if (bomb || (chain && _chainDepth < 3)) {
+    var r = 70 + 22 * (bomb + chain) + 16 * (S.up.f_blastDmg || 0);
+    var dmg = (5 + 4 * bomb + 3 * chain) * (1 + 0.25 * (S.up.f_blastDmg || 0));
+    S2030.fx && S2030.fx.ring(e.x, e.y, '#ffb14a', 8, 620);
+    S2030.fx && S2030.fx.flare(e.x, e.y, '#ffb14a', r);
+    S2030.audio && S2030.audio.sfx('explode', { x: e.x });
+    var list = enemiesNear(e.x, e.y, r);
+    _chainDepth++;
+    for (var i = 0; i < list.length; i++) if (list[i] !== e) damageEnemy(list[i], dmg, { x: list[i].x, y: list[i].y });
+    _chainDepth--;
+  }
+
+  if (pool) {
+    // FLAQUE : une zone brûlante subsiste quelques instants
+    S.pools.push({ x: e.x, y: e.y, r: 60 + 14 * pool, dmg: 3 * pool, life: 2.2 + 0.5 * pool });
+    if (S.pools.length > 40) S.pools.shift();
+  }
+}
+
+/* Aura électrique passive (constructions conductrices). */
+function auraTick(dt) {
+  var n = (S.up.f_staticField || 0) + (S.up.f_conduct || 0) + (S.up.f_ionMark || 0);
+  if (!n || !S.snake) return;
+  var s = S.snake;
+  var r = 100 + 26 * n;
+  if ((S.t | 0) % 4 !== 0) return;      // on n'interroge la grille qu'une image sur quatre
+  var list = enemiesNear(s.x, s.y, r);
+  for (var i = 0; i < list.length; i++) {
+    damageEnemy(list[i], 1.6 * n * dt * 15, { x: list[i].x, y: list[i].y, type: 'shock' });
+  }
+  if (list.length && chance(0.25)) S2030.fx && S2030.fx.ring(s.x, s.y, '#7bdcff', r * 0.7, 420);
+}
+
+/* Flaques brûlantes laissées par les morts. */
+function poolsTick(dt) {
+  for (var i = S.pools.length - 1; i >= 0; i--) {
+    var p = S.pools[i];
+    p.life -= dt;
+    if (p.life <= 0) { S.pools.splice(i, 1); continue; }
+    var list = enemiesNear(p.x, p.y, p.r);
+    for (var j = 0; j < list.length; j++) damageEnemy(list[j], p.dmg * dt, { x: list[j].x, y: list[j].y });
+  }
+}
+
+function drawPools(ctx) {
+  for (var i = 0; i < S.pools.length; i++) {
+    var p = S.pools[i];
+    if (!inView(p.x, p.y, p.r)) continue;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = clamp(p.life / 2.2, 0, 1) * 0.4;
+    var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+    g.addColorStop(0, '#ff8a3d'); g.addColorStop(1, 'rgba(255,138,61,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
 }
 
 function addScore(n) { S.score += Math.round(n * S.mult); }
 function addXp(n) {
+  if (S.up.f_xp) n *= 1 + 0.25 * S.up.f_xp;   // SAVOIR : plus d'expérience
   S.xp += n;
   while (S.xp >= S.xpNext) {
     S.xp -= S.xpNext;
@@ -441,6 +560,15 @@ function collide(dt) {
           hurtSnake(e.dmg, e.x, e.y);
           if (e.suicide) killEnemy(e);
         }
+      } else if (S.up.f_thorns) {
+        // RONCES : le corps blesse ce qui le frôle
+        var tr = e.r + K.HEAD_R * 1.1;
+        for (var sg = 0; sg < segs.length; sg += 3) {
+          if (dist2(segs[sg].x, segs[sg].y, e.x, e.y) < tr * tr) {
+            damageEnemy(e, S.up.f_thorns * 0.9 * dt * 60, { x: e.x, y: e.y });
+            break;
+          }
+        }
       }
     }
   }
@@ -468,7 +596,8 @@ function collide(dt) {
 function grabPickup(p) {
   if (p.kind === 'energy') {
     addXp(1); addScore(5);
-    if (chance(0.35)) healSnake(1);
+    // GLOUTON : ramasser soigne plus souvent
+    if (chance(0.35 + 0.18 * (S.up.f_pickHeal || 0))) healSnake(1);
     S2030.audio && S2030.audio.sfx('pickup');
   } else if (p.kind === 'core') {
     addXp(6); addScore(60);
