@@ -221,7 +221,9 @@ function drawSnake() {
   // tête : halo permanent, elle doit rester repérable en toutes circonstances
   ctx.save();
   ctx.translate(s.x, s.y);
-  ctx.rotate(s.ang);
+  // la tête suit la visée, pas la trajectoire : sur le treillis elle pivote
+  // vers sa cible pendant que le corps reste sur son rail
+  ctx.rotate(aimAng());
   ctx.globalCompositeOperation = 'lighter';
   var g = ctx.createRadialGradient(0, 0, 2, 0, 0, K.HEAD_R * 3.2);
   g.addColorStop(0, ghost ? 'rgba(179,136,255,.85)' : 'rgba(0,229,255,.8)');
@@ -338,6 +340,8 @@ function frame(now) {
     auraTick(dt);
     poolsTick(dt);
     collide(dt);
+    // dernier mot au treillis : plus rien ne déplacera les ennemis après
+    S2030.phases && S2030.phases.railLate && S2030.phases.railLate(dt);
     if (S.multT > 0) { S.multT -= raw * 1000; if (S.multT <= 0) { S.mult = 1; S.combo = 0; } }
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
     updateCam(dt);

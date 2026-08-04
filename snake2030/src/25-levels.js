@@ -424,6 +424,11 @@ function _lvWaves(dt) {
   var sp = _lvDef.spawns;
   var rate = _lvCycle > 0 ? Math.max(0.55, 1 - _lvCycle * 0.055) : 1;
   var capB = _lvCycle > 0 ? Math.min(46, _lvCycle * 6) : 0;
+  // la difficulté resserre les salves et relève le plafond simultané : c'est
+  // là qu'elle se sent le plus, bien avant les points de vie des ennemis
+  var dm = diffMul();
+  rate /= Math.pow(dm, 0.85);
+  var capM = Math.pow(dm, 0.55);
 
   for (var i = 0; i < sp.length; i++) {
     var w = sp[i];
@@ -431,7 +436,7 @@ function _lvWaves(dt) {
     _lvWaveT[i] -= dt;
     if (_lvWaveT[i] > 0) continue;
     _lvWaveT[i] = w.every * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
-    var cap = Math.min(_LV_HARDCAP, w.cap + capB);
+    var cap = Math.min(_LV_HARDCAP, Math.round((w.cap + capB) * capM));
     if (S.enemies.length >= cap) continue;
     _lvFireWave(w);
   }
