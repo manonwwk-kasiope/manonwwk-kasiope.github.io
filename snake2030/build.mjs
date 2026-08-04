@@ -36,9 +36,14 @@ const embedArg = process.argv.indexOf('--embed');
 let musicDecl = '';
 let outName = 'index.html';
 if (embedArg > -1) {
+  // --embed <piste1> [piste2] : la seconde est celle qui prend la suite
   const mp3 = process.argv[embedArg + 1];
+  const mp3b = process.argv[embedArg + 2];
   const b64 = fs.readFileSync(mp3).toString('base64');
   musicDecl = `var MUSIC_B64 = ${JSON.stringify(b64)};\n`;
+  if (mp3b && !mp3b.startsWith('--') && fs.existsSync(mp3b)) {
+    musicDecl += `var MUSIC_B64_2 = ${JSON.stringify(fs.readFileSync(mp3b).toString('base64'))};\n`;
+  }
   outName = 'dist-embed.html';
 }
 

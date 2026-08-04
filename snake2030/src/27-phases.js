@@ -19,6 +19,14 @@ S2030.phases = (function () {
     cam.pulse = Math.max(cam.pulse, amount);
   }
 
+  /* Bascule réelle autour de l'axe horizontal, en radians. C'est elle qui
+     fait la 3D : le monde est rendu à plat dans un tampon, puis déformé en
+     bandes avec une division perspective. Une transformation affine — la
+     seule que sache poser un contexte 2D — ne peut pas l'exprimer, d'où le
+     détour par le tampon. */
+  var persp = 0, perspT = 0;
+  function perspAng() { return persp; }
+
   /* Le plateau est cadré serré par défaut, et le cadrage respire : de temps
      en temps la caméra plonge à 200 %, puis se recule jusqu'à 100 % — la
      vue d'ensemble qui suit le rapprochement se lit comme une respiration,
@@ -57,6 +65,9 @@ S2030.phases = (function () {
     cam.pulse *= Math.pow(0.0015, dt);
     cam.tilt = lerp(cam.tilt, cam.tiltT, 1 - Math.pow(0.06, dt));
     cam.rot = lerp(cam.rot, cam.rotT, 1 - Math.pow(0.08, dt));
+    // la bascule s'installe et se retire lentement : c'est le moment fort
+    persp = lerp(persp, S.opt.reduceShake ? 0 : perspT, 1 - Math.pow(0.14, dt));
+    if (persp < 0.002 && perspT === 0) persp = 0;
     joltDecay(dt);
   }
 
@@ -82,18 +93,30 @@ S2030.phases = (function () {
   function tilt() { return cam.tilt + jolt.tilt; }
   function rot() { return cam.rot + jolt.rot; }
 
-  /* ------------------------------------------------------- phases 3D / Tron */
-  var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 14 };
+  /* ================================================== mise en scène ordonnée
+     La partie s'ouvre sur une progression écrite, pas sur un tirage : grille
+     orthogonale vue du dessus, puis l'espace nu, puis la grille qui roule
+     autour de l'axe de vue, puis la bascule autour de l'axe horizontal — et
+     là seulement le jeu devient réellement tridimensionnel. Le tirage
+     aléatoire ne reprend qu'une fois la progression jouée. */
+  var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 4, step: 0 };
 
-  var KINDS = [
-    { kind: 'tilt',  dur: 13, tilt: 0.62, rot: 0.00, zoom: 1.06, nom: 'PLONGÉE' },
-    { kind: 'bank',  dur: 11, tilt: 0.42, rot: 0.16, zoom: 1.02, nom: 'INCLINAISON' },
-    { kind: 'dive',  dur: 10, tilt: 0.78, rot: -0.09, zoom: 1.12, nom: 'PERSPECTIVE' }
+  var SCRIPT = [
+    { kind: 'ortho', dur: 18, zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
+    { kind: 'space', dur: 13, zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
+    { kind: 'roll',  dur: 15, zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
+    { kind: 'dive',  dur: 24, zoom: 1.00, rot: -0.05, persp: 30,   nom: 'PERSPECTIVE' }
   ];
+  /* Une fois la progression jouée, on reprend dans le désordre — la bascule
+     3D revient plus souvent que le reste, c'est elle qu'on vient voir. */
+  var POOL = [3, 3, 2, 0, 3, 1];
 
   function startPhase(k) {
     phase.kind = k.kind; phase.dur = k.dur; phase.t = k.dur; phase.zoom = k.zoom;
-    cam.tiltT = k.tilt; cam.rotT = k.rot;
+    cam.rotT = k.rot || 0;
+    perspT = (k.persp || 0) * Math.PI / 180;
+    if (k.kind === 'ortho' || k.kind === 'roll' || k.kind === 'dive') startGrid(k.kind === 'ortho' ? 'ortho' : 'diag', k.dur);
+    else endGrid();
     S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
     S2030.audio && S2030.audio.sfx('warp');
     pulse(0.10);
@@ -101,73 +124,63 @@ S2030.phases = (function () {
 
   function endPhase() {
     phase.t = 0; phase.kind = '';
-    cam.tiltT = 0; cam.rotT = 0;
+    cam.rotT = 0; perspT = 0;
+    endGrid();
   }
 
-  /* ---------------------------------------------------- treillis diagonal */
-  /* Le treillis arrivait au plus tôt à 26 s ET à partir du niveau 2 : une
-     partie ordinaire se termine avant, et la séquence ne se voyait jamais.
-     Elle arrive maintenant dès la première minute du premier niveau. */
-  var diag = { t: 0, dur: 0, next: 17, lines: [], warn: 0, spacing: 330 };
+  /* ================================================================ treillis
+     Deux orientations : orthogonale (lignes horizontales et verticales) et
+     diagonale. Toute la géométrie passe par la normale d'une famille, ce qui
+     évite d'écrire deux fois les mêmes formules avec un facteur racine de
+     deux qui traîne. */
+  var grid = { t: 0, warn: 0, spacing: 330, axis: 'ortho', a0: 0, on: 0 };
 
-  function startDiag() {
-    diag.dur = 15; diag.t = 15; diag.warn = 1.6;
-    diag.lines.length = 0;
-    // deux familles de droites à 45 degrés : x+y = c et x-y = c
-    var span = K.ARENA_W + K.ARENA_H;
-    for (var c = -K.ARENA_H; c < span; c += diag.spacing) {
-      diag.lines.push({ dir: 1, c: c, on: 0 });
-      diag.lines.push({ dir: -1, c: c - K.ARENA_H, on: 0 });
-    }
-    S2030.ui && S2030.ui.banner && S2030.ui.banner('TREILLIS');
-    S2030.audio && S2030.audio.sfx('warp');
+  function startGrid(axis, dur) {
+    if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
+    grid.axis = axis;
+    grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
+    grid.t = dur; grid.warn = 1.4; grid.on = 0;
   }
-
-  /* distance signée d'un point à une droite diagonale */
-  function distTo(l, x, y) {
-    return (l.dir > 0 ? (x + y - l.c) : (x - y - l.c)) * 0.70710678;
-  }
+  function endGrid() { grid.t = 0; grid.warn = 0; grid.on = 0; }
 
   var HALF = 7;      // demi-épaisseur du faisceau, en unités monde
 
   /* ------------------------------------------ circulation sur le treillis */
-  /* Les diagonales ne blessent pas : elles canalisent. Tant que le treillis
-     est là, serpent et ennemis n'ont plus que quatre caps possibles et
-     glissent sur la droite la plus proche. Personne ne peut plus couper à
-     travers — c'est la contrainte qui fait le sel de la séquence. */
-  var QUAD = Math.PI / 2, DIAG0 = Math.PI / 4;
+  /* Les lignes ne blessent pas : elles canalisent. Tant que le treillis est
+     là, serpent et ennemis n'ont plus que quatre caps possibles et glissent
+     sur la droite la plus proche. Personne ne peut plus couper à travers —
+     c'est la contrainte qui fait le sel de la séquence. */
+  var QUAD = Math.PI / 2;
 
-  function railed() { return diag.t > 0 && diag.warn <= 0; }
+  function railed() { return grid.t > 0 && grid.warn <= 0; }
 
-  /* cap utile le plus proche, parmi les quatre diagonales */
-  function railAng(a) { return DIAG0 + Math.round((a - DIAG0) / QUAD) * QUAD; }
+  /* cap utile le plus proche, parmi les quatre de l'orientation courante */
+  function railAng(a) { return grid.a0 + Math.round((a - grid.a0) / QUAD) * QUAD; }
 
-  /* famille de droites que ce cap longe : +1 pour x+y = c, -1 pour x-y = c */
-  function railFam(a) {
-    var q = ((Math.round((a - DIAG0) / QUAD) % 4) + 4) % 4;
-    return (q === 0 || q === 2) ? -1 : 1;
+  /* Normale à la droite que longe ce cap. Les deux familles se distinguent
+     par la parité du quadrant ; la normale suffit à tout calculer. */
+  function railNorm(a, out) {
+    var ra = railAng(a);
+    out.x = -Math.sin(ra); out.y = Math.cos(ra);
+    return out;
   }
-  /* les droites ne sont pas centrées sur zéro : elles sont posées par
-     startDiag à partir de ces origines-là, il faut les retrouver ici */
-  function railBase(d) { return d > 0 ? -K.ARENA_H : -2 * K.ARENA_H; }
+  var _n = { x: 0, y: 1 }, _n2 = { x: 0, y: 1 };
 
-  /* Ramène un point sur le rail le plus proche de sa famille. Corriger x et y
-     de la même demi-quantité déplace exactement perpendiculairement à la
-     droite ; le plafond évite le saut sec au moment où le treillis prend. */
-  function railSnap(o, dt, fam, speed, rate) {
-    var d = fam === undefined ? railFam(o.ang || 0) : fam;
-    var u = d > 0 ? (o.x + o.y) : (o.x - o.y);
-    var b = railBase(d);
-    var c = b + Math.round((u - b) / diag.spacing) * diag.spacing;
-    var fix = (u - c) * 0.5 * Math.min(1, dt * (rate === undefined ? 12 : rate));
+  /* Ramène un point sur le rail le plus proche de sa famille. Le déplacement
+     se fait le long de la normale, donc perpendiculairement à la droite ; le
+     plafond évite le saut sec au moment où le treillis prend. */
+  function railSnap(o, dt, ang, speed, rate) {
+    var n = railNorm(ang === undefined ? (o.ang || 0) : ang, _n);
+    var u = o.x * n.x + o.y * n.y;
+    var c = Math.round(u / grid.spacing) * grid.spacing;
+    var fix = (u - c) * Math.min(1, dt * (rate === undefined ? 12 : rate));
     var cap = (speed || 460) * dt;
     if (fix > cap) fix = cap; else if (fix < -cap) fix = -cap;
-    o.x -= fix;
-    if (d > 0) o.y -= fix; else o.y += fix;
+    o.x -= n.x * fix; o.y -= n.y * fix;
   }
 
-  /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée
-     à la main, téléportation. Plutôt que de réécrire onze comportements, on
+  /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée à
+     la main, téléportation. Plutôt que de réécrire onze comportements, on
      reprojette leur déplacement de l'image : on garde la distance parcourue,
      on impose la direction. Ils gardent leur allure, ils perdent le droit de
      couper. */
@@ -179,9 +192,9 @@ S2030.phases = (function () {
       if (px === undefined) { px = e.x; py = e.y; }
       var dx = e.x - px, dy = e.y - py;
       var mag = Math.sqrt(dx * dx + dy * dy);
-      // un saut de plus d'un rail n'est pas un déplacement mais une
+      // un saut de plus d'un pas n'est pas un déplacement mais une
       // réapparition : on la laisse passer et on reprend le rail sur place
-      if (mag > diag.spacing) { e._rx = e.x; e._ry = e.y; continue; }
+      if (mag > grid.spacing) { e._rx = e.x; e._ry = e.y; continue; }
       var ra = railAng(mag > 0.01 ? Math.atan2(dy, dx) : (e.ang || 0));
       if (mag > 0.01) {
         e.x = px + Math.cos(ra) * mag;
@@ -192,25 +205,21 @@ S2030.phases = (function () {
         var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
         e.vx = Math.cos(ra) * vm; e.vy = Math.sin(ra) * vm;
       }
-      /* Correction totale, pas amortie. Un rattrapage partiel laisse un
-         écart d'équilibre : la séparation entre ennemis et l'aimantation des
-         mines les repoussent de quelques unités par image, et un gain de
-         0,2 stabilisait la file à cinquante unités du rail — visiblement à
-         côté. Le plafond suffit à rendre l'arrivée sur le rail progressive. */
-      railSnap(e, dt, railFam(ra), 900, 1e6);
+      /* Correction totale, pas amortie : un rattrapage partiel laisse un
+         écart d'équilibre, parce que la séparation entre corps et
+         l'aimantation des mines les repoussent de quelques unités par image.
+         Le plafond suffit à rendre l'arrivée sur le rail progressive. */
+      railSnap(e, dt, ra, 900, 1e6);
       e._rx = e.x; e._ry = e.y;
     }
   }
 
-  function diagUpdate(dt) {
-    if (diag.t <= 0) return;
-    diag.t -= dt;
-    if (diag.warn > 0) { diag.warn -= dt; return; }   // télégraphe avant matérialisation
-
-    for (var i = 0; i < diag.lines.length; i++) {
-      var l = diag.lines[i];
-      if (l.on < 1) l.on = Math.min(1, l.on + dt * 1.6);
-    }
+  function gridUpdate(dt) {
+    if (grid.t <= 0) return;
+    grid.t -= dt;
+    if (grid.warn > 0) { grid.warn -= dt; return; }
+    if (grid.on < 1) grid.on = Math.min(1, grid.on + dt * 1.8);
+    if (S.phase !== 'play') return;
   }
 
   /* Passe de fin d'image : les ennemis sont ramenés sur leurs rails une fois
@@ -221,44 +230,48 @@ S2030.phases = (function () {
     railEnemies(dt);
   }
 
-  function diagDraw(ctx) {
-    if (diag.t <= 0) return;
-    var fade = Math.min(1, diag.t / 1.2);
-    var warn = diag.warn > 0;
+  /* On ne trace que les droites qui traversent la vue : une ligne d'arène
+     mesure plusieurs milliers d'unités, et rasteriser un faisceau lumineux
+     hors écran coûtait à lui seul un tiers des images par seconde. */
+  function gridDraw(ctx) {
+    if (grid.t <= 0) return;
+    var fade = Math.min(1, grid.t / 1.2);
+    var warn = grid.warn > 0;
     var q = S.opt.particles;
+    var R = (Math.abs(S.view.w) + Math.abs(S.view.h)) * 0.75 + 200;
+    var cx = S.cam.x, cy = S.cam.y;
+
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    for (var i = 0; i < diag.lines.length; i++) {
-      var l = diag.lines[i];
-      var a = (warn ? 0.10 : 0.55 * l.on) * fade;
-      if (a <= 0.01) continue;
-      // on ne trace que ce qui traverse la vue
-      var cx = S.cam.x, cy = S.cam.y;
-      var d = distTo(l, cx, cy);
-      if (Math.abs(d) > S.view.w) continue;
-      ctx.globalAlpha = a;
-      ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff';
-      ctx.lineWidth = warn ? 2 : HALF * 2;
-      // On ne trace que la portion visible : une diagonale traverse toute
-      // l'arène, et rasteriser 3000 unités de faisceau lumineux hors écran
-      // coûtait à lui seul un tiers des images par seconde.
-      var vx0 = S.cam.x - S.view.w * 0.6, vx1 = S.cam.x + S.view.w * 0.6;
-      var vy0 = S.cam.y - S.view.h * 0.6, vy1 = S.cam.y + S.view.h * 0.6;
-      var ax, bx;
-      if (l.dir > 0) { ax = Math.max(vx0, l.c - vy1); bx = Math.min(vx1, l.c - vy0); }
-      else { ax = Math.max(vx0, vy0 + l.c); bx = Math.min(vx1, vy1 + l.c); }
-      if (bx <= ax) continue;
-      ctx.beginPath();
-      if (l.dir > 0) { ctx.moveTo(ax, l.c - ax); ctx.lineTo(bx, l.c - bx); }
-      else { ctx.moveTo(ax, ax - l.c); ctx.lineTo(bx, bx - l.c); }
-      ctx.stroke();
-      if (!warn && q > 0.6) {
-        // le liseré blanc ne survit qu'en qualité pleine : c'est un second
-        // rasterisage complet du faisceau, pour un gain visuel marginal
-        ctx.globalAlpha = a * 0.5;
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
+    ctx.lineCap = 'butt';
+    for (var fam = 0; fam < 2; fam++) {
+      var ra = grid.a0 + fam * QUAD;                 // cap longeant la famille
+      var dx = Math.cos(ra), dy = Math.sin(ra);
+      var nx = -dy, ny = dx;                         // normale
+      var uc = cx * nx + cy * ny;                    // caméra projetée
+      var k0 = Math.ceil((uc - R) / grid.spacing);
+      var k1 = Math.floor((uc + R) / grid.spacing);
+      for (var k = k0; k <= k1; k++) {
+        var c = k * grid.spacing;
+        // point de la droite le plus proche de la caméra, puis on étend
+        var px = cx + nx * (c - uc), py = cy + ny * (c - uc);
+        var a = (warn ? 0.10 : 0.5 * grid.on) * fade;
+        if (a <= 0.01) continue;
+        ctx.globalAlpha = a;
+        ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff';
+        ctx.lineWidth = warn ? 2 : HALF * 2;
+        ctx.beginPath();
+        ctx.moveTo(px - dx * R, py - dy * R);
+        ctx.lineTo(px + dx * R, py + dy * R);
         ctx.stroke();
+        if (!warn && q > 0.6) {
+          // le liseré blanc ne survit qu'en qualité pleine : c'est un second
+          // rasterisage complet du faisceau, pour un gain visuel marginal
+          ctx.globalAlpha = a * 0.5;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
       }
     }
     ctx.restore();
@@ -266,9 +279,11 @@ S2030.phases = (function () {
 
   /* --------------------------------- sol en perspective pendant les phases */
   function drawFloor(ctx) {
-    if (cam.tilt < 0.02) return;
+    // le sol de repère n'a de sens que sous la bascule réelle
+    var lean = Math.max(cam.tilt, persp * 1.6);
+    if (lean < 0.02) return;
     if (S.opt.particles < 0.6) return;   // en qualité réduite, on s'en passe
-    var a = cam.tilt * 0.5;
+    var a = Math.min(0.5, lean) * 0.5;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = a * 0.35;
@@ -416,8 +431,9 @@ S2030.phases = (function () {
   function reset() {
     cam.zoom = 1; cam.zoomT = 1; cam.pulse = 0;
     cam.tilt = 0; cam.tiltT = 0; cam.rot = 0; cam.rotT = 0;
-    phase.t = 0; phase.kind = ''; phase.next = 14;
-    diag.t = 0; diag.next = 17; diag.lines.length = 0;
+    phase.t = 0; phase.kind = ''; phase.next = 4; phase.step = 0;
+    persp = 0; perspT = 0;
+    grid.t = 0; grid.warn = 0; grid.on = 0;
     slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
     owned = ['ghost']; cds = { ghost: 0, slow: 0, fold: 0 }; pick = 0;
     zc.mode = 0; zc.t = 0; zc.next = 20;
@@ -433,42 +449,45 @@ S2030.phases = (function () {
     if (S.kills >= 25 && owned.indexOf('slow') < 0) grant('slow');
     if (S.kills >= 60 && owned.indexOf('fold') < 0) grant('fold');
 
-    // phases de mise en scène, à partir du moment où le joueur est installé
+    /* La progression s'enchaîne sans temps mort tant qu'elle n'est pas
+       jouée : c'est une ouverture, pas une loterie. Ensuite seulement on
+       laisse respirer entre deux mises en scène. */
     if (phase.t > 0) { phase.t -= dt; if (phase.t <= 0) endPhase(); }
     else {
       phase.next -= dt;
-      if (phase.next <= 0 && S.levelT > 12 && diag.t <= 0) {
-        phase.next = rndR(26, 40);
-        startPhase(pick2(KINDS));
+      if (phase.next <= 0) {
+        if (phase.step < SCRIPT.length) {
+          startPhase(SCRIPT[phase.step++]);
+          phase.next = 1.5;                 // enchaînement serré
+        } else {
+          startPhase(SCRIPT[POOL[(rnd() * POOL.length) | 0]]);
+          phase.next = rndR(10, 18);
+        }
       }
     }
 
-    if (diag.t > 0) diagUpdate(dt);
-    else {
-      diag.next -= dt;
-      if (diag.next <= 0 && S.levelT > 6 && phase.t <= 0) { diag.next = rndR(26, 40); startDiag(); }
-    }
+    gridUpdate(dt);
   }
-
-  function pick2(a) { return a[(rnd() * a.length) | 0]; }
 
   return {
     update: update, reset: reset,
     zoom: zoom, tilt: tilt, rot: rot, pulse: pulse, jolt: doJolt,
-    drawFloor: drawFloor, drawDiag: diagDraw,
+    drawFloor: drawFloor, drawDiag: gridDraw, persp: perspAng,
     use: use, grant: grant, buttonState: buttonState, powers: POWERS,
     enemyTimeScale: enemyTimeScale, foldFactor: foldFactor,
     railed: railed, railAng: railAng, railSnap: railSnap, railLate: railLate,
-    railSpacing: diag.spacing,
+    railSpacing: grid.spacing,
     // déclencheurs directs, utiles pour la mise au point et les tests
-    forcePhase: function (i) { startPhase(KINDS[(i || 0) % KINDS.length]); },
-    forceDiag: function () { startDiag(); diag.warn = 0; },
+    forcePhase: function (i) { startPhase(SCRIPT[(i || 0) % SCRIPT.length]); phase.step = SCRIPT.length; },
+    forceDiag: function () { startGrid('diag', 30); grid.warn = 0; grid.on = 1; },
+    forceGrid: function (axis) { startGrid(axis || 'ortho', 30); grid.warn = 0; grid.on = 1; },
     forceZoom: function (m) { zc.mode = m; zc.t = m ? 99 : 0; zc.next = 99; },
-    state: function () { return { phase: phase.kind, phaseT: phase.t, diagT: diag.t,
+    state: function () { return { phase: phase.kind, phaseT: phase.t, step: phase.step,
+      diagT: grid.t, axe: grid.axis, persp: persp, perspDeg: persp * 180 / Math.PI,
       owned: owned.slice(), cds: JSON.parse(JSON.stringify(cds)), slow: slowT, fold: foldT,
       zoom: cam.zoom, zoomT: cam.zoomT, zmode: zc.mode, tilt: cam.tilt, rot: cam.rot,
       railed: railed() }; },
     inPhase: function () { return phase.t > 0; },
-    inDiag: function () { return diag.t > 0; }
+    inDiag: function () { return grid.t > 0; }
   };
 })();

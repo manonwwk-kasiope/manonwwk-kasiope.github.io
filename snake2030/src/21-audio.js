@@ -494,7 +494,81 @@ function _audMeasureLead(buf){
   return _audLead;
 }
 
+/* ============================================================ liste de lecture
+   Deux pistes de plus de quatre minutes décodées en mémoire coûteraient près
+   de deux cents mégaoctets de PCM — impraticable sur téléphone. On les diffuse
+   donc en flux, l'une après l'autre, chacune jouée en entier : la mémoire ne
+   dépend plus de la durée, seulement du tampon de lecture. */
+var _audList = [], _audListI = 0, _audEl = null, _audListOn = false;
+var _audListErr = 0, _audListFail = null;
+
+function _audPlaylist(urls, onfail){
+  if(!_audOk || !urls || !urls.length || _audList.length) return false;
+  _audListFail = onfail || null;
+  for(var i = 0; i < urls.length; i++){
+    var a = new Audio();
+    a.src = urls[i];
+    a.preload = i ? 'none' : 'auto';
+    a.loop = false;
+    a.addEventListener('ended', _audEnded);
+    a.addEventListener('error', _audErr);
+    _audList.push(a);
+  }
+  _audListOn = true;
+  return true;
+}
+
+function _audEnded(){ _audListErr = 0; _audAdvance(); }
+
+/* Une source refusée — fichier manquant, ou politique de sécurité qui
+   interdit les URI de données sur un élément média — ne doit pas faire
+   tourner la liste à vide. Quand toutes ont échoué, on rend la main pour que
+   l'appelant retombe sur le décodage en mémoire. */
+function _audErr(){
+  if(!_audListOn) return;
+  if(++_audListErr >= _audList.length){
+    _audListOn = false; _audEl = null; _audList.length = 0;
+    var f = _audListFail; _audListFail = null;
+    if(f) try{ f(); }catch(e){}
+    return;
+  }
+  _audAdvance();
+}
+
+function _audAdvance(){
+  if(!_audListOn) return;
+  if(_audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
+  _audListI = (_audListI + 1) % _audList.length;
+  if(_audPlaying && _audMusicOn) _audStartStream(_audCtx ? _audCtx.currentTime : 0);
+}
+
+function _audStartStream(t0){
+  if(!_audOk || !_audListOn) return false;
+  if(_audEl) return true;                 // déjà en train de jouer
+  var a = _audList[_audListI];
+  if(!a) return false;
+  // le noeud de source ne peut être créé qu'une fois par élément
+  if(!a._node){
+    try{ a._node = _audCtx.createMediaElementSource(a); }catch(e){ return false; }
+    a._node.connect(_audTrackG);
+  }
+  try{ a.playbackRate = _audRate; }catch(e){}
+  var pr;
+  try{ pr = a.play(); }catch(e){ return false; }
+  if(pr && pr['catch']) pr['catch'](function(){});
+  _audEl = a;
+  // la suivante se met en tampon pendant que celle-ci joue : l'enchaînement
+  // ne doit pas s'entendre
+  var nx = _audList[(_audListI + 1) % _audList.length];
+  if(nx && nx !== a && nx.preload !== 'auto'){ try{ nx.preload = 'auto'; nx.load(); }catch(e){} }
+  _audRamp(_audTrackG.gain, 1, 0.9, t0);
+  _audRamp(_audBaseG.gain, 0, 0.9, t0);
+  _audBaseSynth = false;
+  return true;
+}
+
 function _audStartTrack(t0){
+  if(_audListOn) return _audStartStream(t0);
   if(!_audOk || _audTrackNode) return false;
   var buf = (typeof S !== 'undefined' && S) ? S.musicBuf : null;
   if(!buf || !buf.duration) return false;
@@ -527,6 +601,8 @@ function _audStartTrack(t0){
 }
 
 function _audStopTrack(){
+  // en flux, on met en pause : la reprise repart où on s'était arrêté
+  if(_audListOn && _audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
   if(_audTrackNode){
     try{ _audTrackNode.stop(); }catch(e){}
     try{ _audTrackNode.disconnect(); }catch(e){}
@@ -571,6 +647,7 @@ function _audApplyInt(v, fade){
   if(_audTrackNode){
     try{ _audRamp(_audTrackNode.playbackRate, _audRate, 1.5); }catch(e){}
   }
+  if(_audEl){ try{ _audEl.playbackRate = _audRate; }catch(e){} }
 }
 
 /* ============================================================
@@ -591,6 +668,16 @@ S2030.audio = {
 
   /* Décode un mp3 dans S.musicBuf. La double forme (callback + promesse) est
      nécessaire : Safari n'implémente que la forme à callbacks. */
+  /* Liste de lecture : chaque piste est jouée en entier, puis la suivante,
+     puis on recommence. Rien n'est décodé en mémoire. */
+  playlist: function (urls, onfail) { return this.init() ? _audPlaylist(urls, onfail) : false; },
+  playing: function () { return _audEl ? { i: _audListI, src: _audEl.currentSrc,
+    t: _audEl.currentTime, dur: _audEl.duration } : null; },
+  nextTrack: function () { _audAdvance(); },
+  /* Position dans la piste courante, en secondes. Les éléments média vivent
+     hors du document : sans cette prise, rien ne peut les atteindre. */
+  seek: function (t) { if (_audEl) { try { _audEl.currentTime = t; } catch (e) {} } },
+
   decode: function (ab) {
     var self = this;
     if (!ab) return Promise.resolve(null);
