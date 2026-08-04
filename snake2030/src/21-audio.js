@@ -76,20 +76,28 @@ var _audBASSP  = [0, 0, 12, 0, 0, 0, 7, 0];   /* offsets, un pas sur deux */
 var _audGuard = {};
 var _audBudgetT = -9, _audBudgetN = 0;
 var _audFxMax = {
-  shoot: 3, hit: 4, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
+  shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
   boost: 1, boostEnd: 1, click: 3
 };
+/* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
+   plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
+   passait vingt-cinq fois par seconde, ce qui donne une mitraillette de
+   jouet plutot qu'une arme. Un tir toutes les 90 ms suffit a porter la
+   cadence sans la marteler. */
+var _audFxWin = { shoot: 0.09, hit: 0.055, zap: 0.06 };
+var _audPlayed = {};
 function _audAllow(name, t){
   var g = _audGuard[name];
   if(!g){ g = { t0: t, n: 0 }; _audGuard[name] = g; }
-  if(t - g.t0 > 0.04){ g.t0 = t; g.n = 0; }
+  var win = _audFxWin[name] === undefined ? 0.04 : _audFxWin[name];
+  if(t - g.t0 > win){ g.t0 = t; g.n = 0; }
   var mx = _audFxMax[name];
   if(g.n >= (mx === undefined ? 2 : mx)) return false;
   if(t - _audBudgetT > 0.04){ _audBudgetT = t; _audBudgetN = 0; }
   if(_audBudgetN >= 18) return false;
-  g.n++; _audBudgetN++;
+  g.n++; _audBudgetN++; _audPlayed[name] = (_audPlayed[name] || 0) + 1;
   return true;
 }
 
@@ -193,8 +201,14 @@ var _audFx = {
   /* --- tirs joueur : clair, court, jamais fatigant ---------------------- */
   shoot: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
-    _audTone(t, 'square', 900 * p, 250 * p, 0.07, 0.075 * v, 0.002, 2800, 800, 1.1, d, _audRR(-25, 25));
-    _audNoise(t, 'highpass', 3000, 1500, 0.04, 0.035 * v, 0.7, d);
+    /* C'est l'attaque qui fait lire un tir, pas la hauteur. Un carre qui
+       glisse de 900 a 250 Hz, repete, s'entend comme un jouet ; on garde
+       donc un souffle court filtre, un corps triangulaire discret et un
+       coup de grave. Le desaccord aleatoire evite que la repetition ne
+       forme un peigne. */
+    _audNoise(t, 'bandpass', 2600 * p, 900 * p, 0.032, 0.055 * v, 1.7, d);
+    _audTone(t, 'triangle', 540 * p, 160 * p, 0.055, 0.05 * v, 0.001, 2200, 620, 1.3, d, _audRR(-70, 70));
+    _audSub(t, 150 * p, 62, 0.05, 0.055 * v, d);
   },
   laser: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
@@ -813,6 +827,10 @@ S2030.audio = {
     if(!_audOk) return;
     _audRamp(_audSfxIn.gain, _audSfxOn ? 0.9 : 0, 0.12);
   },
+
+  /* sondes de mise au point : nombre de sons reellement joues */
+  stats: function(){ return JSON.parse(JSON.stringify(_audPlayed)); },
+  resetStats: function(){ _audPlayed = {}; },
 
   sfx: function(name, opts){
     if(!_audOk || !_audSfxOn) return;
