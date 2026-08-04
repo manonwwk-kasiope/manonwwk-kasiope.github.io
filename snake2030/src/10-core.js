@@ -47,7 +47,7 @@ var S = {
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0,
+  boss: null, bossHpMax: 0, headR: 16,
   timeScale: 1
 };
 
@@ -166,6 +166,12 @@ function updateSnake(dt) {
   if (s.x > K.ARENA_W - m) { s.x = K.ARENA_W - m; s.ang = norm(Math.PI - s.ang); wallBump(); }
   if (s.y < m) { s.y = m; s.ang = -s.ang; wallBump(); }
   if (s.y > K.ARENA_H - m) { s.y = K.ARENA_H - m; s.ang = -s.ang; wallBump(); }
+
+  // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
+  // collision grossissent ensemble, sinon le joueur sentirait le mensonge
+  var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
+  S.headR = K.HEAD_R * (1 + 0.5 * fold);
+  if (fold) s.speed *= 1.12;
 
   pushPath();
   buildSegs();
@@ -329,6 +335,7 @@ function damageEnemy(e, dmg, opts) {
   if (!e || e.dead) return;
   // ÉLAN : les dégâts montent avec la vitesse quand on est en boost
   if (S.up.f_momentum && S.snake && S.snake.boosting) dmg *= 1 + 0.18 * S.up.f_momentum;
+  if (S2030.phases && S2030.phases.foldFactor()) dmg *= 1.8;   // REPLI : frappe lourde
   e.hp -= dmg;
   e.hitT = 90;
   if (opts && opts.x !== undefined) {
@@ -350,7 +357,8 @@ function killEnemy(e, opts) {
   S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 9 : 1.6));
   S.coins += e.elite ? 5 : 1;
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
-  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill');
+  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
+  S2030.phases && S2030.phases.pulse(e.elite ? 0.05 : 0.012);
   if (e.elite) { S2030.fx && S2030.fx.shake(9); haptic(20); }
   deathEffects(e);
 }
@@ -367,6 +375,7 @@ function deathEffects(e) {
     var r = 70 + 22 * (bomb + chain) + 16 * (S.up.f_blastDmg || 0);
     var dmg = (5 + 4 * bomb + 3 * chain) * (1 + 0.25 * (S.up.f_blastDmg || 0));
     S2030.fx && S2030.fx.ring(e.x, e.y, '#ffb14a', 8, 620);
+    duckMusic(0.35, 0.5);
     S2030.fx && S2030.fx.flare(e.x, e.y, '#ffb14a', r);
     S2030.audio && S2030.audio.sfx('explode', { x: e.x });
     var list = enemiesNear(e.x, e.y, r);
@@ -534,13 +543,15 @@ function collide(dt) {
       S.ebullets.splice(i, 1); continue;
     }
     if (s.invuln > 0) continue;
-    var hr = b.r + K.HEAD_R;
+    var hr = b.r + S.headR;
     if (dist2(b.x, b.y, s.x, s.y) < hr * hr) {
-      hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); continue;
+      hurtSnake(b.dmg, b.x, b.y);
+      if (S2030.phases && b.dmg >= 2) S2030.phases.jolt(1.2, angTo(s.x, s.y, b.x, b.y));
+      S.ebullets.splice(i, 1); continue;
     }
     var hitSeg = false;
     for (j = 0; j < segs.length; j += 2) {
-      var sr = b.r + K.HEAD_R * 0.72;
+      var sr = b.r + S.headR * 0.72;
       if (dist2(b.x, b.y, segs[j].x, segs[j].y) < sr * sr) { hitSeg = true; break; }
     }
     if (hitSeg) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
@@ -551,18 +562,22 @@ function collide(dt) {
     var close = enemiesNear(s.x, s.y, 260);
     for (i = 0; i < close.length; i++) {
       e = close[i];
-      var cr = e.r + K.HEAD_R;
+      var cr = e.r + S.headR;
       if (dist2(s.x, s.y, e.x, e.y) < cr * cr) {
         if (S.up.f_ramDamage && s.boosting) {
           damageEnemy(e, S.up.f_ramDamage, { x: e.x, y: e.y });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#fff3b0', 10, 1.4, { glow: true });
         } else if (s.invuln <= 0) {
           hurtSnake(e.dmg, e.x, e.y);
+          // un adversaire lourd fait piquer le plateau : le coup se voit
+          if (S2030.phases && (e.elite || e.boss || e.dmg >= 2)) {
+            S2030.phases.jolt(e.boss ? 2 : (e.elite ? 1.5 : 1), angTo(s.x, s.y, e.x, e.y));
+          }
           if (e.suicide) killEnemy(e);
         }
       } else if (S.up.f_thorns) {
         // RONCES : le corps blesse ce qui le frôle
-        var tr = e.r + K.HEAD_R * 1.1;
+        var tr = e.r + S.headR * 1.1;
         for (var sg = 0; sg < segs.length; sg += 3) {
           if (dist2(segs[sg].x, segs[sg].y, e.x, e.y) < tr * tr) {
             damageEnemy(e, S.up.f_thorns * 0.9 * dt * 60, { x: e.x, y: e.y });
@@ -586,7 +601,7 @@ function collide(dt) {
       p.vy = lerp(p.vy, Math.sin(pa) * pull, 0.25);
     } else { p.vx *= 0.94; p.vy *= 0.94; }
     p.x += p.vx * dt; p.y += p.vy * dt;
-    if (d < K.HEAD_R + p.r + 4) {
+    if (d < S.headR + p.r + 4) {
       grabPickup(p);
       S.pickups.splice(i, 1);
     }
@@ -627,6 +642,18 @@ function updateCam(dt) {
 }
 
 /* -------------------------------------------------------------- vibrations */
+/* Fait plonger la musique un instant pour laisser passer une déflagration.
+   Sans cela le morceau et l'explosion se disputent le même espace et
+   l'explosion perd — alors que c'est elle qui doit frapper. */
+var _duckT = 0;
+function duckMusic(depth, secs) {
+  if (!S2030.audio || !S2030.audio.duck) return;
+  if (S.t - _duckT < 90) return;
+  _duckT = S.t;
+  S2030.audio.duck(depth, 0.05);
+  setTimeout(function () { S2030.audio.duck(1, secs || 0.45); }, 140);
+}
+
 function haptic(p) {
   if (!S.opt.haptics || !navigator.vibrate) return;
   try { navigator.vibrate(p); } catch (e) {}

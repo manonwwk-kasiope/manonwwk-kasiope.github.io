@@ -563,6 +563,18 @@ function _audApplyInt(v, fade){
    Module
    ============================================================ */
 S2030.audio = {
+  /* Fait plonger la musique pour laisser passer une déflagration. Agit sur le
+     bus musique uniquement : les effets, eux, gardent toute leur place. */
+  duck: function (target, secs) {
+    if (!_audDuck || !_audCtx) return;
+    var t = _audCtx.currentTime, g = _audDuck.gain;
+    try {
+      g.cancelScheduledValues(t);
+      g.setValueAtTime(g.value, t);
+      g.linearRampToValueAtTime(Math.max(0, Math.min(1, target)), t + Math.max(0.01, secs || 0.2));
+    } catch (e) {}
+  },
+
   /* Décode un mp3 dans S.musicBuf. La double forme (callback + promesse) est
      nécessaire : Safari n'implémente que la forme à callbacks. */
   decode: function (ab) {
@@ -630,7 +642,7 @@ S2030.audio = {
     _audDuck.connect(_audComp);
 
     _audMusicBus = _audCtx.createGain();
-    _audMusicBus.gain.value = 0.55;
+    _audMusicBus.gain.value = 0.42;   // la musique laisse la place aux impacts
     _audMusicBus.connect(_audDuck);
 
     _audBaseFilt = _audCtx.createBiquadFilter();

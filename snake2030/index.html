@@ -89,7 +89,7 @@ var S = {
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0,
+  boss: null, bossHpMax: 0, headR: 16,
   timeScale: 1
 };
 
@@ -208,6 +208,12 @@ function updateSnake(dt) {
   if (s.x > K.ARENA_W - m) { s.x = K.ARENA_W - m; s.ang = norm(Math.PI - s.ang); wallBump(); }
   if (s.y < m) { s.y = m; s.ang = -s.ang; wallBump(); }
   if (s.y > K.ARENA_H - m) { s.y = K.ARENA_H - m; s.ang = -s.ang; wallBump(); }
+
+  // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
+  // collision grossissent ensemble, sinon le joueur sentirait le mensonge
+  var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
+  S.headR = K.HEAD_R * (1 + 0.5 * fold);
+  if (fold) s.speed *= 1.12;
 
   pushPath();
   buildSegs();
@@ -371,6 +377,7 @@ function damageEnemy(e, dmg, opts) {
   if (!e || e.dead) return;
   // ÉLAN : les dégâts montent avec la vitesse quand on est en boost
   if (S.up.f_momentum && S.snake && S.snake.boosting) dmg *= 1 + 0.18 * S.up.f_momentum;
+  if (S2030.phases && S2030.phases.foldFactor()) dmg *= 1.8;   // REPLI : frappe lourde
   e.hp -= dmg;
   e.hitT = 90;
   if (opts && opts.x !== undefined) {
@@ -392,7 +399,8 @@ function killEnemy(e, opts) {
   S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 9 : 1.6));
   S.coins += e.elite ? 5 : 1;
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
-  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill');
+  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
+  S2030.phases && S2030.phases.pulse(e.elite ? 0.05 : 0.012);
   if (e.elite) { S2030.fx && S2030.fx.shake(9); haptic(20); }
   deathEffects(e);
 }
@@ -409,6 +417,7 @@ function deathEffects(e) {
     var r = 70 + 22 * (bomb + chain) + 16 * (S.up.f_blastDmg || 0);
     var dmg = (5 + 4 * bomb + 3 * chain) * (1 + 0.25 * (S.up.f_blastDmg || 0));
     S2030.fx && S2030.fx.ring(e.x, e.y, '#ffb14a', 8, 620);
+    duckMusic(0.35, 0.5);
     S2030.fx && S2030.fx.flare(e.x, e.y, '#ffb14a', r);
     S2030.audio && S2030.audio.sfx('explode', { x: e.x });
     var list = enemiesNear(e.x, e.y, r);
@@ -576,13 +585,15 @@ function collide(dt) {
       S.ebullets.splice(i, 1); continue;
     }
     if (s.invuln > 0) continue;
-    var hr = b.r + K.HEAD_R;
+    var hr = b.r + S.headR;
     if (dist2(b.x, b.y, s.x, s.y) < hr * hr) {
-      hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); continue;
+      hurtSnake(b.dmg, b.x, b.y);
+      if (S2030.phases && b.dmg >= 2) S2030.phases.jolt(1.2, angTo(s.x, s.y, b.x, b.y));
+      S.ebullets.splice(i, 1); continue;
     }
     var hitSeg = false;
     for (j = 0; j < segs.length; j += 2) {
-      var sr = b.r + K.HEAD_R * 0.72;
+      var sr = b.r + S.headR * 0.72;
       if (dist2(b.x, b.y, segs[j].x, segs[j].y) < sr * sr) { hitSeg = true; break; }
     }
     if (hitSeg) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
@@ -593,18 +604,22 @@ function collide(dt) {
     var close = enemiesNear(s.x, s.y, 260);
     for (i = 0; i < close.length; i++) {
       e = close[i];
-      var cr = e.r + K.HEAD_R;
+      var cr = e.r + S.headR;
       if (dist2(s.x, s.y, e.x, e.y) < cr * cr) {
         if (S.up.f_ramDamage && s.boosting) {
           damageEnemy(e, S.up.f_ramDamage, { x: e.x, y: e.y });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#fff3b0', 10, 1.4, { glow: true });
         } else if (s.invuln <= 0) {
           hurtSnake(e.dmg, e.x, e.y);
+          // un adversaire lourd fait piquer le plateau : le coup se voit
+          if (S2030.phases && (e.elite || e.boss || e.dmg >= 2)) {
+            S2030.phases.jolt(e.boss ? 2 : (e.elite ? 1.5 : 1), angTo(s.x, s.y, e.x, e.y));
+          }
           if (e.suicide) killEnemy(e);
         }
       } else if (S.up.f_thorns) {
         // RONCES : le corps blesse ce qui le frôle
-        var tr = e.r + K.HEAD_R * 1.1;
+        var tr = e.r + S.headR * 1.1;
         for (var sg = 0; sg < segs.length; sg += 3) {
           if (dist2(segs[sg].x, segs[sg].y, e.x, e.y) < tr * tr) {
             damageEnemy(e, S.up.f_thorns * 0.9 * dt * 60, { x: e.x, y: e.y });
@@ -628,7 +643,7 @@ function collide(dt) {
       p.vy = lerp(p.vy, Math.sin(pa) * pull, 0.25);
     } else { p.vx *= 0.94; p.vy *= 0.94; }
     p.x += p.vx * dt; p.y += p.vy * dt;
-    if (d < K.HEAD_R + p.r + 4) {
+    if (d < S.headR + p.r + 4) {
       grabPickup(p);
       S.pickups.splice(i, 1);
     }
@@ -669,6 +684,18 @@ function updateCam(dt) {
 }
 
 /* -------------------------------------------------------------- vibrations */
+/* Fait plonger la musique un instant pour laisser passer une déflagration.
+   Sans cela le morceau et l'explosion se disputent le même espace et
+   l'explosion perd — alors que c'est elle qui doit frapper. */
+var _duckT = 0;
+function duckMusic(depth, secs) {
+  if (!S2030.audio || !S2030.audio.duck) return;
+  if (S.t - _duckT < 90) return;
+  _duckT = S.t;
+  S2030.audio.duck(depth, 0.05);
+  setTimeout(function () { S2030.audio.duck(1, secs || 0.45); }, 140);
+}
+
 function haptic(p) {
   if (!S.opt.haptics || !navigator.vibrate) return;
   try { navigator.vibrate(p); } catch (e) {}
@@ -2004,6 +2031,18 @@ function _audApplyInt(v, fade){
    Module
    ============================================================ */
 S2030.audio = {
+  /* Fait plonger la musique pour laisser passer une déflagration. Agit sur le
+     bus musique uniquement : les effets, eux, gardent toute leur place. */
+  duck: function (target, secs) {
+    if (!_audDuck || !_audCtx) return;
+    var t = _audCtx.currentTime, g = _audDuck.gain;
+    try {
+      g.cancelScheduledValues(t);
+      g.setValueAtTime(g.value, t);
+      g.linearRampToValueAtTime(Math.max(0, Math.min(1, target)), t + Math.max(0.01, secs || 0.2));
+    } catch (e) {}
+  },
+
   /* Décode un mp3 dans S.musicBuf. La double forme (callback + promesse) est
      nécessaire : Safari n'implémente que la forme à callbacks. */
   decode: function (ab) {
@@ -2071,7 +2110,7 @@ S2030.audio = {
     _audDuck.connect(_audComp);
 
     _audMusicBus = _audCtx.createGain();
-    _audMusicBus.gain.value = 0.55;
+    _audMusicBus.gain.value = 0.42;   // la musique laisse la place aux impacts
     _audMusicBus.connect(_audDuck);
 
     _audBaseFilt = _audCtx.createBiquadFilter();
@@ -9769,6 +9808,400 @@ S2030.ui = {
 };
 
 
+/* ==== 27-phases.js ================================================ */
+/* ============================================================================
+   SNAKE 2030 — mise en scène
+   Rig de caméra (zoom, bascule 3D, roulis), phases perspective façon Tron,
+   treillis diagonal, et pouvoirs supplémentaires.
+   ========================================================================== */
+
+S2030.phases = (function () {
+
+  /* ---------------------------------------------------------------- caméra */
+  var cam = {
+    zoom: 1, zoomT: 1, pulse: 0,
+    tilt: 0, tiltT: 0,        // 0 = vue du dessus, 1 = bascule maximale
+    rot: 0, rotT: 0
+  };
+
+  /* Coup de zoom bref : sert aux impacts, à l'ultime, aux montées de niveau. */
+  function pulse(amount) {
+    if (S.opt.reduceShake) return;
+    cam.pulse = Math.max(cam.pulse, amount);
+  }
+
+  function camUpdate(dt) {
+    // le zoom suit la vitesse : plus on fonce, plus on recule pour voir venir
+    var sp = S.snake ? S.snake.speed / K.BASE_SPEED : 1;
+    var want = 1 / (1 + (sp - 1) * 0.22);
+    if (phase.t > 0) want *= phase.zoom;
+    cam.zoomT = want;
+    cam.zoom = lerp(cam.zoom, cam.zoomT, 1 - Math.pow(0.02, dt));
+
+    cam.pulse *= Math.pow(0.0015, dt);
+    cam.tilt = lerp(cam.tilt, cam.tiltT, 1 - Math.pow(0.06, dt));
+    cam.rot = lerp(cam.rot, cam.rotT, 1 - Math.pow(0.08, dt));
+    joltDecay(dt);
+  }
+
+  /* Encaissement : un coup lourd fait piquer et rouler le plateau, puis il se
+     redresse. Le mouvement est court — sinon on perd la lecture du jeu. */
+  var jolt = { tilt: 0, rot: 0 };
+  function doJolt(power, ang) {
+    if (S.opt.reduceShake) return;
+    var p = Math.min(2, power || 1);
+    jolt.tilt = Math.min(0.46, jolt.tilt + 0.16 * p);
+    jolt.rot = clamp(jolt.rot + Math.cos(ang || 0) * 0.085 * p, -0.19, 0.19);
+    pulse(0.05 * p);
+  }
+  function joltDecay(dt) {
+    var k = Math.pow(0.012, dt);
+    jolt.tilt *= k; jolt.rot *= k;
+    if (jolt.tilt < 0.002) jolt.tilt = 0;
+    if (Math.abs(jolt.rot) < 0.002) jolt.rot = 0;
+  }
+
+  /* Facteur d'échelle effectif, lu par le rendu. */
+  function zoom() { return cam.zoom * (1 + cam.pulse); }
+  function tilt() { return cam.tilt + jolt.tilt; }
+  function rot() { return cam.rot + jolt.rot; }
+
+  /* ------------------------------------------------------- phases 3D / Tron */
+  var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 14 };
+
+  var KINDS = [
+    { kind: 'tilt',  dur: 13, tilt: 0.62, rot: 0.00, zoom: 1.06, nom: 'PLONGÉE' },
+    { kind: 'bank',  dur: 11, tilt: 0.42, rot: 0.16, zoom: 1.02, nom: 'INCLINAISON' },
+    { kind: 'dive',  dur: 10, tilt: 0.78, rot: -0.09, zoom: 1.12, nom: 'PERSPECTIVE' }
+  ];
+
+  function startPhase(k) {
+    phase.kind = k.kind; phase.dur = k.dur; phase.t = k.dur; phase.zoom = k.zoom;
+    cam.tiltT = k.tilt; cam.rotT = k.rot;
+    S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    S2030.audio && S2030.audio.sfx('warp');
+    pulse(0.10);
+  }
+
+  function endPhase() {
+    phase.t = 0; phase.kind = '';
+    cam.tiltT = 0; cam.rotT = 0;
+  }
+
+  /* ---------------------------------------------------- treillis diagonal */
+  var diag = { t: 0, dur: 0, next: 26, lines: [], warn: 0, spacing: 330 };
+
+  function startDiag() {
+    diag.dur = 15; diag.t = 15; diag.warn = 1.6;
+    diag.lines.length = 0;
+    // deux familles de droites à 45 degrés : x+y = c et x-y = c
+    var span = K.ARENA_W + K.ARENA_H;
+    for (var c = -K.ARENA_H; c < span; c += diag.spacing) {
+      diag.lines.push({ dir: 1, c: c, on: 0 });
+      diag.lines.push({ dir: -1, c: c - K.ARENA_H, on: 0 });
+    }
+    S2030.ui && S2030.ui.banner && S2030.ui.banner('TREILLIS');
+    S2030.audio && S2030.audio.sfx('warp');
+  }
+
+  /* distance signée d'un point à une droite diagonale */
+  function distTo(l, x, y) {
+    return (l.dir > 0 ? (x + y - l.c) : (x - y - l.c)) * 0.70710678;
+  }
+
+  var HALF = 7;      // demi-épaisseur du faisceau, en unités monde
+
+  function diagUpdate(dt) {
+    if (diag.t <= 0) return;
+    diag.t -= dt;
+    if (diag.warn > 0) { diag.warn -= dt; return; }   // télégraphe avant matérialisation
+
+    var s = S.snake, i, l, d;
+    for (i = 0; i < diag.lines.length; i++) {
+      l = diag.lines[i];
+      if (l.on < 1) l.on = Math.min(1, l.on + dt * 1.6);
+    }
+    if (!s || S.phase !== 'play') return;
+
+    // la tête : contact = dégât, avec la même invulnérabilité que le reste
+    if (s.invuln <= 0 && s.ghost <= 0) {
+      for (i = 0; i < diag.lines.length; i++) {
+        l = diag.lines[i];
+        if (l.on < 0.9) continue;
+        d = distTo(l, s.x, s.y);
+        if (d > -HALF && d < HALF) {
+          hurtSnake(1, s.x, s.y);
+          S2030.fx && S2030.fx.ring(s.x, s.y, '#22e0ff', 8, 520);
+          pulse(0.08);
+          break;
+        }
+      }
+    }
+
+    // les ennemis aussi : les couloirs deviennent la seule route sûre
+    for (var e = S.enemies.length - 1; e >= 0; e--) {
+      var en = S.enemies[e];
+      if (en.dead || en.boss) continue;
+      for (i = 0; i < diag.lines.length; i++) {
+        l = diag.lines[i];
+        if (l.on < 0.9) continue;
+        d = distTo(l, en.x, en.y);
+        if (d > -HALF && d < HALF) {
+          damageEnemy(en, 26 * dt * 15, { x: en.x, y: en.y, type: 'laser' });
+          break;
+        }
+      }
+    }
+  }
+
+  function diagDraw(ctx) {
+    if (diag.t <= 0) return;
+    var fade = Math.min(1, diag.t / 1.2);
+    var warn = diag.warn > 0;
+    var q = S.opt.particles;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < diag.lines.length; i++) {
+      var l = diag.lines[i];
+      var a = (warn ? 0.10 : 0.55 * l.on) * fade;
+      if (a <= 0.01) continue;
+      // on ne trace que ce qui traverse la vue
+      var cx = S.cam.x, cy = S.cam.y;
+      var d = distTo(l, cx, cy);
+      if (Math.abs(d) > S.view.w) continue;
+      ctx.globalAlpha = a;
+      ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff';
+      ctx.lineWidth = warn ? 2 : HALF * 2;
+      // On ne trace que la portion visible : une diagonale traverse toute
+      // l'arène, et rasteriser 3000 unités de faisceau lumineux hors écran
+      // coûtait à lui seul un tiers des images par seconde.
+      var vx0 = S.cam.x - S.view.w * 0.6, vx1 = S.cam.x + S.view.w * 0.6;
+      var vy0 = S.cam.y - S.view.h * 0.6, vy1 = S.cam.y + S.view.h * 0.6;
+      var ax, bx;
+      if (l.dir > 0) { ax = Math.max(vx0, l.c - vy1); bx = Math.min(vx1, l.c - vy0); }
+      else { ax = Math.max(vx0, vy0 + l.c); bx = Math.min(vx1, vy1 + l.c); }
+      if (bx <= ax) continue;
+      ctx.beginPath();
+      if (l.dir > 0) { ctx.moveTo(ax, l.c - ax); ctx.lineTo(bx, l.c - bx); }
+      else { ctx.moveTo(ax, ax - l.c); ctx.lineTo(bx, bx - l.c); }
+      ctx.stroke();
+      if (!warn && q > 0.6) {
+        // le liseré blanc ne survit qu'en qualité pleine : c'est un second
+        // rasterisage complet du faisceau, pour un gain visuel marginal
+        ctx.globalAlpha = a * 0.5;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  /* --------------------------------- sol en perspective pendant les phases */
+  function drawFloor(ctx) {
+    if (cam.tilt < 0.02) return;
+    if (S.opt.particles < 0.6) return;   // en qualité réduite, on s'en passe
+    var a = cam.tilt * 0.5;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = a * 0.35;
+    ctx.strokeStyle = '#00e5ff';
+    ctx.lineWidth = 1.5;
+    var step = 210;
+    var vy0 = Math.max(0, S.cam.y - S.view.h * 0.6), vy1 = Math.min(K.ARENA_H, S.cam.y + S.view.h * 0.6);
+    var x0 = Math.floor((S.cam.x - S.view.w * 0.6) / step) * step;
+    var x1 = S.cam.x + S.view.w * 0.6;
+    for (var x = x0; x < x1; x += step) {
+      ctx.beginPath(); ctx.moveTo(x, vy0); ctx.lineTo(x, vy1); ctx.stroke();
+    }
+    // les lignes horizontales se resserrent vers le fond : c'est ce
+    // resserrement qui donne la lecture de profondeur
+    var y = S.cam.y - S.view.h;
+    var gap = 40;
+    for (var k = 0; k < 12 && y < S.cam.y + S.view.h * 0.6; k++) {
+      ctx.globalAlpha = a * 0.30 * (1 - k / 12);
+      ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+      y += gap; gap *= 1.09;
+    }
+    ctx.restore();
+  }
+
+  /* ------------------------------------------------------------- pouvoirs */
+  /* Trois pouvoirs au maximum, utilisés à tour de rôle par le même bouton :
+     le cahier des charges plafonne à trois boutons, on ne les multiplie pas. */
+  var POWERS = {
+    ghost: {
+      nom: 'TRAVERSÉE', glyph: '◈', cd: 7000, col: '#b388ff',
+      run: function () {
+        var s = S.snake;
+        var gt = 2200 + 700 * (S.up.f_ghostTime || 0);
+        s.ghost = gt; s.invuln = Math.max(s.invuln, gt);
+        S2030.fx && S2030.fx.ring(s.x, s.y, '#b388ff', 10, 900);
+        S2030.fx && S2030.fx.flare(s.x, s.y, '#b388ff', 160);
+        S2030.audio && S2030.audio.sfx('shock', { x: s.x });
+        var near = enemiesNear(s.x, s.y, 240);
+        for (var i = 0; i < near.length; i++) {
+          var e = near[i], a = angTo(s.x, s.y, e.x, e.y);
+          e.vx += Math.cos(a) * 420; e.vy += Math.sin(a) * 420;
+          damageEnemy(e, 6, { x: e.x, y: e.y });
+        }
+        pulse(0.06);
+      }
+    },
+    slow: {
+      nom: 'RALENTI', glyph: '◐', cd: 11000, col: '#5ef1ff',
+      run: function () {
+        var s = S.snake;
+        // le monde ralentit, pas le joueur : c'est lui qui gagne du temps
+        slowT = 4200;
+        S2030.fx && S2030.fx.ring(s.x, s.y, '#5ef1ff', 12, 1400);
+        S2030.fx && S2030.fx.flash('#5ef1ff', 0.22);
+        S2030.audio && S2030.audio.sfx('warp');
+        S2030.ui && S2030.ui.banner && S2030.ui.banner('RALENTI');
+        pulse(0.16);
+        haptic([14, 40, 14]);
+      }
+    },
+    fold: {
+      nom: 'REPLI', glyph: '❖', cd: 13000, col: '#ffd166',
+      run: function () {
+        var s = S.snake;
+        // le corps se replie : moins de segments, mais un serpent plus épais,
+        // plus rapide et qui frappe beaucoup plus fort
+        var take = Math.max(2, Math.floor(s.len * 0.35));
+        s.len = Math.max(3, s.len - take);
+        foldT = 8000; foldN = take;
+        s.invuln = Math.max(s.invuln, 700);
+        for (var i = 0; i < s.segs.length; i += 2) {
+          S2030.fx && S2030.fx.burst(s.segs[i].x, s.segs[i].y, '#ffd166', 4, 1.1, { glow: true });
+        }
+        S2030.fx && S2030.fx.ring(s.x, s.y, '#ffd166', 10, 900);
+        S2030.audio && S2030.audio.sfx('levelup');
+        S2030.ui && S2030.ui.banner && S2030.ui.banner('REPLI');
+        pulse(0.2);
+        haptic([20, 30, 30]);
+      }
+    }
+  };
+
+  var slowT = 0, foldT = 0, foldN = 0;
+  var owned = ['ghost'];
+  var cds = { ghost: 0, slow: 0, fold: 0 };
+  var pick = 0;
+
+  function grant(id) {
+    if (POWERS[id] && owned.indexOf(id) < 0 && owned.length < 3) {
+      owned.push(id);
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('POUVOIR', POWERS[id].nom);
+    }
+  }
+
+  /* le bouton utilise le prochain pouvoir prêt, dans l'ordre */
+  function nextReady() {
+    for (var k = 0; k < owned.length; k++) {
+      var id = owned[(pick + k) % owned.length];
+      if (cds[id] <= 0) return id;
+    }
+    return null;
+  }
+
+  function use() {
+    if (S.phase !== 'play') return false;
+    var id = nextReady();
+    if (!id) return false;
+    POWERS[id].run();
+    cds[id] = POWERS[id].cd;
+    pick = (owned.indexOf(id) + 1) % owned.length;
+    return true;
+  }
+
+  /* état lu par l'interface pour dessiner le bouton */
+  function buttonState() {
+    var id = nextReady() || owned[pick % owned.length];
+    var p = POWERS[id];
+    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col,
+             ready: cds[id] <= 0, fill: cds[id] <= 0 ? 1 : 1 - cds[id] / p.cd };
+  }
+
+  function powersUpdate(dt) {
+    var ms = dt * 1000;
+    for (var k in cds) if (cds[k] > 0) cds[k] -= ms;
+    if (slowT > 0) slowT -= ms;
+    if (foldT > 0) {
+      foldT -= ms;
+      if (foldT <= 0) {
+        // le repli se dénoue : les segments reviennent
+        healSnake(foldN); foldN = 0;
+        S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ffd166', 8, 700);
+      }
+    }
+    // le compte à rebours du bouton reste lisible par l'interface d'origine
+    var st = buttonState();
+    S.specialCd = st.ready ? 0 : 1;
+    S.specialCdMax = 1;
+  }
+
+  /* Multiplicateur de temps appliqué aux ennemis et à leurs projectiles. */
+  function enemyTimeScale() { return slowT > 0 ? 0.35 : 1; }
+  /* Épaisseur et puissance du serpent pendant le repli. */
+  function foldFactor() { return foldT > 0 ? 1 : 0; }
+
+  function reset() {
+    cam.zoom = 1; cam.zoomT = 1; cam.pulse = 0;
+    cam.tilt = 0; cam.tiltT = 0; cam.rot = 0; cam.rotT = 0;
+    phase.t = 0; phase.kind = ''; phase.next = 14;
+    diag.t = 0; diag.next = 26; diag.lines.length = 0;
+    slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
+    owned = ['ghost']; cds = { ghost: 0, slow: 0, fold: 0 }; pick = 0;
+  }
+
+  function update(dt) {
+    camUpdate(dt);
+    powersUpdate(dt);
+
+    if (S.phase !== 'play') return;
+
+    // les pouvoirs se débloquent en jouant, sans passer par un menu
+    if (S.kills >= 25 && owned.indexOf('slow') < 0) grant('slow');
+    if (S.kills >= 60 && owned.indexOf('fold') < 0) grant('fold');
+
+    // phases de mise en scène, à partir du moment où le joueur est installé
+    if (phase.t > 0) { phase.t -= dt; if (phase.t <= 0) endPhase(); }
+    else {
+      phase.next -= dt;
+      if (phase.next <= 0 && S.levelT > 12 && diag.t <= 0) {
+        phase.next = rndR(26, 40);
+        startPhase(pick2(KINDS));
+      }
+    }
+
+    if (diag.t > 0) diagUpdate(dt);
+    else {
+      diag.next -= dt;
+      if (diag.next <= 0 && S.level >= 2 && phase.t <= 0) { diag.next = rndR(34, 52); startDiag(); }
+    }
+  }
+
+  function pick2(a) { return a[(rnd() * a.length) | 0]; }
+
+  return {
+    update: update, reset: reset,
+    zoom: zoom, tilt: tilt, rot: rot, pulse: pulse, jolt: doJolt,
+    drawFloor: drawFloor, drawDiag: diagDraw,
+    use: use, grant: grant, buttonState: buttonState, powers: POWERS,
+    enemyTimeScale: enemyTimeScale, foldFactor: foldFactor,
+    // déclencheurs directs, utiles pour la mise au point et les tests
+    forcePhase: function (i) { startPhase(KINDS[(i || 0) % KINDS.length]); },
+    forceDiag: function () { startDiag(); },
+    state: function () { return { phase: phase.kind, phaseT: phase.t, diagT: diag.t,
+      owned: owned.slice(), cds: JSON.parse(JSON.stringify(cds)), slow: slowT, fold: foldT,
+      zoom: cam.zoom, tilt: cam.tilt, rot: cam.rot }; },
+    inPhase: function () { return phase.t > 0; },
+    inDiag: function () { return diag.t > 0; }
+  };
+})();
+
+
 /* ==== 90-boot.js ================================================== */
 /* ============================================================================
    SNAKE 2030 — amorçage
@@ -9893,6 +10326,7 @@ function keyboardInput() {
 
 /* ------------------------------------------------------- capacités */
 function useSpecial() {
+  if (S2030.phases) { S2030.phases.use(); return; }
   if (S.phase !== 'play' || S.specialCd > 0) return;
   S.specialCd = S.specialCdMax || 7000;
   var s = S.snake;
@@ -9955,7 +10389,7 @@ function drawSnake() {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.strokeStyle = 'rgba(255,214,102,.45)';
-    ctx.lineWidth = K.HEAD_R * 2.4;
+    ctx.lineWidth = S.headR * 2.4;
     ctx.beginPath();
     ctx.moveTo(s.x, s.y);
     for (var t = 0; t < Math.min(n, 10); t++) ctx.lineTo(segs[t].x, segs[t].y);
@@ -9972,7 +10406,7 @@ function drawSnake() {
       if (!inView(segs[i].x, segs[i].y, 120) && i > 2) { ctx.moveTo(segs[i].x, segs[i].y); continue; }
       ctx.lineTo(segs[i].x, segs[i].y);
     }
-    ctx.lineWidth = K.HEAD_R * (pass === 0 ? 1.9 : 1.5);
+    ctx.lineWidth = S.headR * (pass === 0 ? 1.9 : 1.5);
     ctx.stroke();
   }
 
@@ -9982,7 +10416,7 @@ function drawSnake() {
   ctx.fillStyle = ghost ? 'rgba(179,136,255,.5)' : 'rgba(120,255,255,.45)';
   for (var k = 2; k < n; k += 3) {
     if (!inView(segs[k].x, segs[k].y, 40)) continue;
-    ctx.beginPath(); ctx.arc(segs[k].x, segs[k].y, K.HEAD_R * 0.32, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(segs[k].x, segs[k].y, S.headR * 0.32, 0, TAU); ctx.fill();
   }
   ctx.restore();
 
@@ -10105,6 +10539,7 @@ function frame(now) {
     S2030.levels && S2030.levels.update && S2030.levels.update(dt);
     updateEnemies(dt);
     S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
+    S2030.phases && S2030.phases.update(dt);
     auraTick(dt);
     poolsTick(dt);
     collide(dt);
@@ -10128,6 +10563,7 @@ function frame(now) {
 }
 
 function updateEnemies(dt) {
+  dt *= S2030.phases ? S2030.phases.enemyTimeScale() : 1;
   for (var i = S.enemies.length - 1; i >= 0; i--) {
     var e = S.enemies[i];
     if (e.dead) { S.enemies.splice(i, 1); continue; }
@@ -10146,12 +10582,19 @@ function render() {
   var ox = 0, oy = 0;
   if (sh > 0.2 && !S.opt.reduceShake) { ox = rndR(-sh, sh); oy = rndR(-sh, sh); }
 
+  var P = S2030.phases;
+  var zm = P ? P.zoom() : 1, tl = P ? P.tilt() : 0, rt = P ? P.rot() : 0;
+  var sx2 = SCALE * zm, sy2 = SCALE * zm * (1 - tl * 0.42);
+  // la vue change de taille avec le zoom : le tri du visible doit suivre
+  S.view.w = CW / sx2; S.view.h = CH / sy2;
   ctx.save();
   ctx.translate(CW / 2, CH / 2);
-  ctx.scale(SCALE, SCALE);
+  if (rt) ctx.rotate(rt);
+  ctx.scale(sx2, sy2);
   ctx.translate(-S.cam.x + ox, -S.cam.y + oy);
 
   S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(ctx);
+  P && P.drawFloor(ctx);
   drawArenaEdge();
   drawPools(ctx);
   drawPickups();
@@ -10164,6 +10607,7 @@ function render() {
 
   drawBullets();
   if (S.snake) drawSnake();
+  P && P.drawDiag(ctx);
   S2030.fx && S2030.fx.draw(ctx);
   S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(ctx);
 
@@ -10222,6 +10666,7 @@ function resetRun() {
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
+  S2030.phases && S2030.phases.reset();
   S2030.weapons && S2030.weapons.reset && S2030.weapons.reset();
   S2030.enemies && S2030.enemies.reset && S2030.enemies.reset();
   S2030.upgrades && S2030.upgrades.reset && S2030.upgrades.reset();
@@ -10240,6 +10685,7 @@ function resetRun() {
 }
 
 function startRun() {
+  goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
   resetRun();
@@ -10285,6 +10731,70 @@ function loadMusic() {
   return fetch('neonvelocity.mp3').then(function (r) { return r.arrayBuffer(); });
 }
 
+/* Plein écran là où l'API existe. Safari sur iPhone ne l'implémente pas :
+   là-bas le seul vrai plein écran passe par « Sur l'écran d'accueil ». */
+function goFullscreen() {
+  var el = document.documentElement;
+  if (document.fullscreenElement || document.webkitFullscreenElement) return;
+  var fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (!fn) return;
+  try {
+    var p = fn.call(el, { navigationUI: 'hide' });
+    if (p && p.catch) p.catch(function () {});
+  } catch (e) {}
+  try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+}
+function fullscreenAvailable() {
+  var el = document.documentElement;
+  return !!(el.requestFullscreen || el.webkitRequestFullscreen);
+}
+
+/* Bouton plein écran, posé par le coeur pour ne pas dépendre de l'interface.
+   Là où l'API n'existe pas — Safari sur iPhone — on affiche la seule méthode
+   qui marche vraiment : ajouter le jeu à l'écran d'accueil. */
+function buildFullscreenButton() {
+  var ui = document.getElementById('ui');
+  if (!ui) return;
+  var st = document.createElement('style');
+  st.textContent =
+    '#fsb{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);' +
+    'left:calc(env(safe-area-inset-left,0px) + 50%);transform:translateX(-50%);' +
+    'pointer-events:auto;z-index:40;border:1px solid rgba(0,229,255,.45);' +
+    'background:rgba(5,6,15,.72);color:#00e5ff;border-radius:8px;padding:5px 12px;' +
+    'font:600 10px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;' +
+    'cursor:pointer;opacity:.75}' +
+    '#fsb:active{background:rgba(0,229,255,.22)}' +
+    '#fsb.hide{display:none}' +
+    '#fst{position:absolute;inset:auto 0 18% 0;pointer-events:none;z-index:41;text-align:center;' +
+    'color:#9df5ff;font:600 12px/1.6 system-ui,sans-serif;opacity:0;transition:opacity .3s}' +
+    '#fst.on{opacity:1}';
+  document.head.appendChild(st);
+
+  var btn = document.createElement('button');
+  btn.id = 'fsb';
+  btn.textContent = 'Plein écran';
+  ui.appendChild(btn);
+
+  var tip = document.createElement('div');
+  tip.id = 'fst';
+  ui.appendChild(tip);
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (fullscreenAvailable()) { goFullscreen(); return; }
+    // iPhone : pas d'API plein écran. On donne la marche à suivre.
+    tip.innerHTML = 'Safari sur iPhone n\'a pas de plein écran.<br>' +
+      'Menu <b>Partager</b> → <b>Sur l\'écran d\'accueil</b> :<br>' +
+      'le jeu s\'ouvre alors sans barres.';
+    tip.classList.add('on');
+    setTimeout(function () { tip.classList.remove('on'); }, 5200);
+  });
+
+  document.addEventListener('fullscreenchange', function () {
+    btn.classList.toggle('hide', !!document.fullscreenElement);
+  });
+}
+
 var _armed = false;
 function armAudio() {
   if (_armed || !S2030.audio) return;
@@ -10305,6 +10815,7 @@ function boot() {
   addEventListener('orientationchange', function () { setTimeout(resizeCanvas, 200); });
 
   S2030.ui.build(document.getElementById('ui'));
+  buildFullscreenButton();
   S2030.fx.reset();
 
   var root = document.getElementById('app');

@@ -121,6 +121,7 @@ function keyboardInput() {
 
 /* ------------------------------------------------------- capacités */
 function useSpecial() {
+  if (S2030.phases) { S2030.phases.use(); return; }
   if (S.phase !== 'play' || S.specialCd > 0) return;
   S.specialCd = S.specialCdMax || 7000;
   var s = S.snake;
@@ -183,7 +184,7 @@ function drawSnake() {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.strokeStyle = 'rgba(255,214,102,.45)';
-    ctx.lineWidth = K.HEAD_R * 2.4;
+    ctx.lineWidth = S.headR * 2.4;
     ctx.beginPath();
     ctx.moveTo(s.x, s.y);
     for (var t = 0; t < Math.min(n, 10); t++) ctx.lineTo(segs[t].x, segs[t].y);
@@ -200,7 +201,7 @@ function drawSnake() {
       if (!inView(segs[i].x, segs[i].y, 120) && i > 2) { ctx.moveTo(segs[i].x, segs[i].y); continue; }
       ctx.lineTo(segs[i].x, segs[i].y);
     }
-    ctx.lineWidth = K.HEAD_R * (pass === 0 ? 1.9 : 1.5);
+    ctx.lineWidth = S.headR * (pass === 0 ? 1.9 : 1.5);
     ctx.stroke();
   }
 
@@ -210,7 +211,7 @@ function drawSnake() {
   ctx.fillStyle = ghost ? 'rgba(179,136,255,.5)' : 'rgba(120,255,255,.45)';
   for (var k = 2; k < n; k += 3) {
     if (!inView(segs[k].x, segs[k].y, 40)) continue;
-    ctx.beginPath(); ctx.arc(segs[k].x, segs[k].y, K.HEAD_R * 0.32, 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(segs[k].x, segs[k].y, S.headR * 0.32, 0, TAU); ctx.fill();
   }
   ctx.restore();
 
@@ -333,6 +334,7 @@ function frame(now) {
     S2030.levels && S2030.levels.update && S2030.levels.update(dt);
     updateEnemies(dt);
     S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
+    S2030.phases && S2030.phases.update(dt);
     auraTick(dt);
     poolsTick(dt);
     collide(dt);
@@ -356,6 +358,7 @@ function frame(now) {
 }
 
 function updateEnemies(dt) {
+  dt *= S2030.phases ? S2030.phases.enemyTimeScale() : 1;
   for (var i = S.enemies.length - 1; i >= 0; i--) {
     var e = S.enemies[i];
     if (e.dead) { S.enemies.splice(i, 1); continue; }
@@ -374,12 +377,19 @@ function render() {
   var ox = 0, oy = 0;
   if (sh > 0.2 && !S.opt.reduceShake) { ox = rndR(-sh, sh); oy = rndR(-sh, sh); }
 
+  var P = S2030.phases;
+  var zm = P ? P.zoom() : 1, tl = P ? P.tilt() : 0, rt = P ? P.rot() : 0;
+  var sx2 = SCALE * zm, sy2 = SCALE * zm * (1 - tl * 0.42);
+  // la vue change de taille avec le zoom : le tri du visible doit suivre
+  S.view.w = CW / sx2; S.view.h = CH / sy2;
   ctx.save();
   ctx.translate(CW / 2, CH / 2);
-  ctx.scale(SCALE, SCALE);
+  if (rt) ctx.rotate(rt);
+  ctx.scale(sx2, sy2);
   ctx.translate(-S.cam.x + ox, -S.cam.y + oy);
 
   S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(ctx);
+  P && P.drawFloor(ctx);
   drawArenaEdge();
   drawPools(ctx);
   drawPickups();
@@ -392,6 +402,7 @@ function render() {
 
   drawBullets();
   if (S.snake) drawSnake();
+  P && P.drawDiag(ctx);
   S2030.fx && S2030.fx.draw(ctx);
   S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(ctx);
 
@@ -450,6 +461,7 @@ function resetRun() {
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
+  S2030.phases && S2030.phases.reset();
   S2030.weapons && S2030.weapons.reset && S2030.weapons.reset();
   S2030.enemies && S2030.enemies.reset && S2030.enemies.reset();
   S2030.upgrades && S2030.upgrades.reset && S2030.upgrades.reset();
@@ -468,6 +480,7 @@ function resetRun() {
 }
 
 function startRun() {
+  goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
   resetRun();
@@ -513,6 +526,70 @@ function loadMusic() {
   return fetch('neonvelocity.mp3').then(function (r) { return r.arrayBuffer(); });
 }
 
+/* Plein écran là où l'API existe. Safari sur iPhone ne l'implémente pas :
+   là-bas le seul vrai plein écran passe par « Sur l'écran d'accueil ». */
+function goFullscreen() {
+  var el = document.documentElement;
+  if (document.fullscreenElement || document.webkitFullscreenElement) return;
+  var fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (!fn) return;
+  try {
+    var p = fn.call(el, { navigationUI: 'hide' });
+    if (p && p.catch) p.catch(function () {});
+  } catch (e) {}
+  try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+}
+function fullscreenAvailable() {
+  var el = document.documentElement;
+  return !!(el.requestFullscreen || el.webkitRequestFullscreen);
+}
+
+/* Bouton plein écran, posé par le coeur pour ne pas dépendre de l'interface.
+   Là où l'API n'existe pas — Safari sur iPhone — on affiche la seule méthode
+   qui marche vraiment : ajouter le jeu à l'écran d'accueil. */
+function buildFullscreenButton() {
+  var ui = document.getElementById('ui');
+  if (!ui) return;
+  var st = document.createElement('style');
+  st.textContent =
+    '#fsb{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);' +
+    'left:calc(env(safe-area-inset-left,0px) + 50%);transform:translateX(-50%);' +
+    'pointer-events:auto;z-index:40;border:1px solid rgba(0,229,255,.45);' +
+    'background:rgba(5,6,15,.72);color:#00e5ff;border-radius:8px;padding:5px 12px;' +
+    'font:600 10px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;' +
+    'cursor:pointer;opacity:.75}' +
+    '#fsb:active{background:rgba(0,229,255,.22)}' +
+    '#fsb.hide{display:none}' +
+    '#fst{position:absolute;inset:auto 0 18% 0;pointer-events:none;z-index:41;text-align:center;' +
+    'color:#9df5ff;font:600 12px/1.6 system-ui,sans-serif;opacity:0;transition:opacity .3s}' +
+    '#fst.on{opacity:1}';
+  document.head.appendChild(st);
+
+  var btn = document.createElement('button');
+  btn.id = 'fsb';
+  btn.textContent = 'Plein écran';
+  ui.appendChild(btn);
+
+  var tip = document.createElement('div');
+  tip.id = 'fst';
+  ui.appendChild(tip);
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (fullscreenAvailable()) { goFullscreen(); return; }
+    // iPhone : pas d'API plein écran. On donne la marche à suivre.
+    tip.innerHTML = 'Safari sur iPhone n\'a pas de plein écran.<br>' +
+      'Menu <b>Partager</b> → <b>Sur l\'écran d\'accueil</b> :<br>' +
+      'le jeu s\'ouvre alors sans barres.';
+    tip.classList.add('on');
+    setTimeout(function () { tip.classList.remove('on'); }, 5200);
+  });
+
+  document.addEventListener('fullscreenchange', function () {
+    btn.classList.toggle('hide', !!document.fullscreenElement);
+  });
+}
+
 var _armed = false;
 function armAudio() {
   if (_armed || !S2030.audio) return;
@@ -533,6 +610,7 @@ function boot() {
   addEventListener('orientationchange', function () { setTimeout(resizeCanvas, 200); });
 
   S2030.ui.build(document.getElementById('ui'));
+  buildFullscreenButton();
   S2030.fx.reset();
 
   var root = document.getElementById('app');

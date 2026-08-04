@@ -17,6 +17,7 @@ const ORDER = [
   '24-upgrades.js',
   '25-levels.js',
   '26-ui.js',
+  '27-phases.js',
   '90-boot.js',
 ];
 
