@@ -105,7 +105,10 @@ S2030.phases = (function () {
   }
 
   /* ---------------------------------------------------- treillis diagonal */
-  var diag = { t: 0, dur: 0, next: 26, lines: [], warn: 0, spacing: 330 };
+  /* Le treillis arrivait au plus tôt à 26 s ET à partir du niveau 2 : une
+     partie ordinaire se termine avant, et la séquence ne se voyait jamais.
+     Elle arrive maintenant dès la première minute du premier niveau. */
+  var diag = { t: 0, dur: 0, next: 17, lines: [], warn: 0, spacing: 330 };
 
   function startDiag() {
     diag.dur = 15; diag.t = 15; diag.warn = 1.6;
@@ -414,7 +417,7 @@ S2030.phases = (function () {
     cam.zoom = 1; cam.zoomT = 1; cam.pulse = 0;
     cam.tilt = 0; cam.tiltT = 0; cam.rot = 0; cam.rotT = 0;
     phase.t = 0; phase.kind = ''; phase.next = 14;
-    diag.t = 0; diag.next = 26; diag.lines.length = 0;
+    diag.t = 0; diag.next = 17; diag.lines.length = 0;
     slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
     owned = ['ghost']; cds = { ghost: 0, slow: 0, fold: 0 }; pick = 0;
     zc.mode = 0; zc.t = 0; zc.next = 20;
@@ -443,7 +446,7 @@ S2030.phases = (function () {
     if (diag.t > 0) diagUpdate(dt);
     else {
       diag.next -= dt;
-      if (diag.next <= 0 && S.level >= 2 && phase.t <= 0) { diag.next = rndR(34, 52); startDiag(); }
+      if (diag.next <= 0 && S.levelT > 6 && phase.t <= 0) { diag.next = rndR(26, 40); startDiag(); }
     }
   }
 

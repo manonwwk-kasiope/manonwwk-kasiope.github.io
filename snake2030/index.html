@@ -1614,20 +1614,28 @@ var _audBASSP  = [0, 0, 12, 0, 0, 0, 7, 0];   /* offsets, un pas sur deux */
 var _audGuard = {};
 var _audBudgetT = -9, _audBudgetN = 0;
 var _audFxMax = {
-  shoot: 3, hit: 4, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
+  shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
   boost: 1, boostEnd: 1, click: 3
 };
+/* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
+   plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
+   passait vingt-cinq fois par seconde, ce qui donne une mitraillette de
+   jouet plutot qu'une arme. Un tir toutes les 90 ms suffit a porter la
+   cadence sans la marteler. */
+var _audFxWin = { shoot: 0.09, hit: 0.055, zap: 0.06 };
+var _audPlayed = {};
 function _audAllow(name, t){
   var g = _audGuard[name];
   if(!g){ g = { t0: t, n: 0 }; _audGuard[name] = g; }
-  if(t - g.t0 > 0.04){ g.t0 = t; g.n = 0; }
+  var win = _audFxWin[name] === undefined ? 0.04 : _audFxWin[name];
+  if(t - g.t0 > win){ g.t0 = t; g.n = 0; }
   var mx = _audFxMax[name];
   if(g.n >= (mx === undefined ? 2 : mx)) return false;
   if(t - _audBudgetT > 0.04){ _audBudgetT = t; _audBudgetN = 0; }
   if(_audBudgetN >= 18) return false;
-  g.n++; _audBudgetN++;
+  g.n++; _audBudgetN++; _audPlayed[name] = (_audPlayed[name] || 0) + 1;
   return true;
 }
 
@@ -1731,8 +1739,14 @@ var _audFx = {
   /* --- tirs joueur : clair, court, jamais fatigant ---------------------- */
   shoot: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
-    _audTone(t, 'square', 900 * p, 250 * p, 0.07, 0.075 * v, 0.002, 2800, 800, 1.1, d, _audRR(-25, 25));
-    _audNoise(t, 'highpass', 3000, 1500, 0.04, 0.035 * v, 0.7, d);
+    /* C'est l'attaque qui fait lire un tir, pas la hauteur. Un carre qui
+       glisse de 900 a 250 Hz, repete, s'entend comme un jouet ; on garde
+       donc un souffle court filtre, un corps triangulaire discret et un
+       coup de grave. Le desaccord aleatoire evite que la repetition ne
+       forme un peigne. */
+    _audNoise(t, 'bandpass', 2600 * p, 900 * p, 0.032, 0.055 * v, 1.7, d);
+    _audTone(t, 'triangle', 540 * p, 160 * p, 0.055, 0.05 * v, 0.001, 2200, 620, 1.3, d, _audRR(-70, 70));
+    _audSub(t, 150 * p, 62, 0.05, 0.055 * v, d);
   },
   laser: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
@@ -2351,6 +2365,10 @@ S2030.audio = {
     if(!_audOk) return;
     _audRamp(_audSfxIn.gain, _audSfxOn ? 0.9 : 0, 0.12);
   },
+
+  /* sondes de mise au point : nombre de sons reellement joues */
+  stats: function(){ return JSON.parse(JSON.stringify(_audPlayed)); },
+  resetStats: function(){ _audPlayed = {}; },
 
   sfx: function(name, opts){
     if(!_audOk || !_audSfxOn) return;
@@ -10001,7 +10019,10 @@ S2030.phases = (function () {
   }
 
   /* ---------------------------------------------------- treillis diagonal */
-  var diag = { t: 0, dur: 0, next: 26, lines: [], warn: 0, spacing: 330 };
+  /* Le treillis arrivait au plus tôt à 26 s ET à partir du niveau 2 : une
+     partie ordinaire se termine avant, et la séquence ne se voyait jamais.
+     Elle arrive maintenant dès la première minute du premier niveau. */
+  var diag = { t: 0, dur: 0, next: 17, lines: [], warn: 0, spacing: 330 };
 
   function startDiag() {
     diag.dur = 15; diag.t = 15; diag.warn = 1.6;
@@ -10310,7 +10331,7 @@ S2030.phases = (function () {
     cam.zoom = 1; cam.zoomT = 1; cam.pulse = 0;
     cam.tilt = 0; cam.tiltT = 0; cam.rot = 0; cam.rotT = 0;
     phase.t = 0; phase.kind = ''; phase.next = 14;
-    diag.t = 0; diag.next = 26; diag.lines.length = 0;
+    diag.t = 0; diag.next = 17; diag.lines.length = 0;
     slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
     owned = ['ghost']; cds = { ghost: 0, slow: 0, fold: 0 }; pick = 0;
     zc.mode = 0; zc.t = 0; zc.next = 20;
@@ -10339,7 +10360,7 @@ S2030.phases = (function () {
     if (diag.t > 0) diagUpdate(dt);
     else {
       diag.next -= dt;
-      if (diag.next <= 0 && S.level >= 2 && phase.t <= 0) { diag.next = rndR(34, 52); startDiag(); }
+      if (diag.next <= 0 && S.levelT > 6 && phase.t <= 0) { diag.next = rndR(26, 40); startDiag(); }
     }
   }
 
@@ -10962,26 +10983,31 @@ function buildFullscreenButton() {
   // lancé depuis l'icône d'accueil : on est déjà en plein écran, rien à proposer
   if (isStandalone()) return;
 
+  /* Les sélecteurs sont préfixés par #ui : l'interface pose un
+     « #ui button{font:inherit;color:inherit;background:none;border:0} » dont
+     la spécificité (1,0,1) bat un simple #fsb (1,0,0). Sans ce préfixe le
+     bouton perd bordure, fond, couleur et taille — il ne restait qu'un
+     libellé gris posé sous les boutons de fin de partie. */
   var st = document.createElement('style');
   st.textContent =
-    '#fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
+    '#ui #fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
     'transform:translateX(-50%);pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
     'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
-    '#fsb.on{display:block}' +
-    '#fsb:active{background:rgba(0,229,255,.22)}' +
-    '#fshelp{position:absolute;inset:0;z-index:60;display:none;align-items:center;' +
+    '#ui #fsb.on{display:block}' +
+    '#ui #fsb:active{background:rgba(0,229,255,.22)}' +
+    '#ui #fshelp{position:absolute;inset:0;z-index:60;display:none;align-items:center;' +
     'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
-    '#fshelp.on{display:flex}' +
-    '#fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    '#ui #fshelp.on{display:flex}' +
+    '#ui #fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
     'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
     'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
-    '#fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
+    '#ui #fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
     'text-transform:uppercase;margin-bottom:10px}' +
-    '#fshelp ol{margin:10px 0 0 18px}#fshelp li{margin-bottom:6px}' +
-    '#fshelp b{color:#9df5ff}' +
-    '#fshelp .close{margin-top:16px;width:100%;border:1px solid rgba(0,229,255,.5);' +
+    '#ui #fshelp ol{margin:10px 0 0 18px}#ui #fshelp li{margin-bottom:6px}' +
+    '#ui #fshelp b{color:#9df5ff}' +
+    '#ui #fshelp .close{margin-top:16px;width:100%;border:1px solid rgba(0,229,255,.5);' +
     'background:rgba(0,229,255,.1);color:#00e5ff;border-radius:9px;padding:10px;' +
     'font:600 11px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}';
   document.head.appendChild(st);

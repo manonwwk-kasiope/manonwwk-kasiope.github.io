@@ -592,26 +592,31 @@ function buildFullscreenButton() {
   // lancé depuis l'icône d'accueil : on est déjà en plein écran, rien à proposer
   if (isStandalone()) return;
 
+  /* Les sélecteurs sont préfixés par #ui : l'interface pose un
+     « #ui button{font:inherit;color:inherit;background:none;border:0} » dont
+     la spécificité (1,0,1) bat un simple #fsb (1,0,0). Sans ce préfixe le
+     bouton perd bordure, fond, couleur et taille — il ne restait qu'un
+     libellé gris posé sous les boutons de fin de partie. */
   var st = document.createElement('style');
   st.textContent =
-    '#fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
+    '#ui #fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
     'transform:translateX(-50%);pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
     'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
-    '#fsb.on{display:block}' +
-    '#fsb:active{background:rgba(0,229,255,.22)}' +
-    '#fshelp{position:absolute;inset:0;z-index:60;display:none;align-items:center;' +
+    '#ui #fsb.on{display:block}' +
+    '#ui #fsb:active{background:rgba(0,229,255,.22)}' +
+    '#ui #fshelp{position:absolute;inset:0;z-index:60;display:none;align-items:center;' +
     'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
-    '#fshelp.on{display:flex}' +
-    '#fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    '#ui #fshelp.on{display:flex}' +
+    '#ui #fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
     'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
     'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
-    '#fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
+    '#ui #fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
     'text-transform:uppercase;margin-bottom:10px}' +
-    '#fshelp ol{margin:10px 0 0 18px}#fshelp li{margin-bottom:6px}' +
-    '#fshelp b{color:#9df5ff}' +
-    '#fshelp .close{margin-top:16px;width:100%;border:1px solid rgba(0,229,255,.5);' +
+    '#ui #fshelp ol{margin:10px 0 0 18px}#ui #fshelp li{margin-bottom:6px}' +
+    '#ui #fshelp b{color:#9df5ff}' +
+    '#ui #fshelp .close{margin-top:16px;width:100%;border:1px solid rgba(0,229,255,.5);' +
     'background:rgba(0,229,255,.1);color:#00e5ff;border-radius:9px;padding:10px;' +
     'font:600 11px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}';
   document.head.appendChild(st);
