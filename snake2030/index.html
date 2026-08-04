@@ -10731,68 +10731,142 @@ function loadMusic() {
   return fetch('neonvelocity.mp3').then(function (r) { return r.arrayBuffer(); });
 }
 
-/* Plein écran là où l'API existe. Safari sur iPhone ne l'implémente pas :
-   là-bas le seul vrai plein écran passe par « Sur l'écran d'accueil ». */
-function goFullscreen() {
-  var el = document.documentElement;
-  if (document.fullscreenElement || document.webkitFullscreenElement) return;
-  var fn = el.requestFullscreen || el.webkitRequestFullscreen;
-  if (!fn) return;
-  try {
-    var p = fn.call(el, { navigationUI: 'hide' });
-    if (p && p.catch) p.catch(function () {});
-  } catch (e) {}
-  try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+/* Plein écran. Trois mondes différents, et un seul bouton pour les couvrir :
+   - navigateur classique : l'API existe et répond, on bascule ;
+   - page embarquée (iframe sans allow="fullscreen") : l'API existe mais
+     refuse — c'est le cas qui donnait « je clique et rien ne se passe » ;
+   - Safari sur iPhone : l'API n'existe pas du tout, seul « Sur l'écran
+     d'accueil » donne un vrai plein écran.
+   Dans les deux derniers cas le bouton ouvre une notice au lieu de rester
+   muet : un bouton qui ne fait rien est un bug, pas une limite. */
+function inFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement);
 }
 function fullscreenAvailable() {
   var el = document.documentElement;
   return !!(el.requestFullscreen || el.webkitRequestFullscreen);
 }
+function isStandalone() {
+  try {
+    return !!(navigator.standalone ||
+      (window.matchMedia && matchMedia('(display-mode: standalone)').matches));
+  } catch (e) { return false; }
+}
+/* Pourquoi le plein écran est hors de portée ici, ou '' s'il est possible. */
+function fullscreenBlocker() {
+  if (!fullscreenAvailable()) return 'ios';
+  if (document.fullscreenEnabled === false) return 'frame';
+  return '';
+}
+function lockLandscape() {
+  try {
+    if (screen.orientation && screen.orientation.lock)
+      screen.orientation.lock('landscape')['catch'](function () {});
+  } catch (e) {}
+}
+/* onFail n'est appelé que si la demande est réellement refusée. */
+function goFullscreen(onFail) {
+  if (inFullscreen()) return;
+  var why = fullscreenBlocker();
+  if (why) { onFail && onFail(why); return; }
+  var el = document.documentElement;
+  var fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  try {
+    var p = fn.call(el, { navigationUI: 'hide' });
+    if (p && p.then) p.then(lockLandscape, function () { onFail && onFail('denied'); });
+    else lockLandscape();
+  } catch (e) { onFail && onFail('denied'); }
+}
+function leaveFullscreen() {
+  try {
+    var fn = document.exitFullscreen || document.webkitExitFullscreen;
+    if (fn) fn.call(document);
+  } catch (e) {}
+}
 
 /* Bouton plein écran, posé par le coeur pour ne pas dépendre de l'interface.
-   Là où l'API n'existe pas — Safari sur iPhone — on affiche la seule méthode
-   qui marche vraiment : ajouter le jeu à l'écran d'accueil. */
+   Il ne vit que sur le menu et l'écran de fin : en jeu il se superposait au
+   HUD, et le bas de l'écran appartient aux pouces. */
 function buildFullscreenButton() {
   var ui = document.getElementById('ui');
   if (!ui) return;
+  // lancé depuis l'icône d'accueil : on est déjà en plein écran, rien à proposer
+  if (isStandalone()) return;
+
   var st = document.createElement('style');
   st.textContent =
-    '#fsb{position:absolute;top:calc(env(safe-area-inset-top,0px) + 6px);' +
-    'left:calc(env(safe-area-inset-left,0px) + 50%);transform:translateX(-50%);' +
-    'pointer-events:auto;z-index:40;border:1px solid rgba(0,229,255,.45);' +
-    'background:rgba(5,6,15,.72);color:#00e5ff;border-radius:8px;padding:5px 12px;' +
-    'font:600 10px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;' +
-    'cursor:pointer;opacity:.75}' +
+    '#fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
+    'transform:translateX(-50%);pointer-events:auto;z-index:40;display:none;' +
+    'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
+    'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
+    'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
+    '#fsb.on{display:block}' +
     '#fsb:active{background:rgba(0,229,255,.22)}' +
-    '#fsb.hide{display:none}' +
-    '#fst{position:absolute;inset:auto 0 18% 0;pointer-events:none;z-index:41;text-align:center;' +
-    'color:#9df5ff;font:600 12px/1.6 system-ui,sans-serif;opacity:0;transition:opacity .3s}' +
-    '#fst.on{opacity:1}';
+    '#fshelp{position:absolute;inset:0;z-index:60;display:none;align-items:center;' +
+    'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
+    '#fshelp.on{display:flex}' +
+    '#fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
+    'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
+    '#fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
+    'text-transform:uppercase;margin-bottom:10px}' +
+    '#fshelp ol{margin:10px 0 0 18px}#fshelp li{margin-bottom:6px}' +
+    '#fshelp b{color:#9df5ff}' +
+    '#fshelp .close{margin-top:16px;width:100%;border:1px solid rgba(0,229,255,.5);' +
+    'background:rgba(0,229,255,.1);color:#00e5ff;border-radius:9px;padding:10px;' +
+    'font:600 11px/1 system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer}';
   document.head.appendChild(st);
+
+  var help = document.createElement('div');
+  help.id = 'fshelp';
+  help.innerHTML =
+    '<div class="card"><h3>Plein écran</h3><div class="body"></div>' +
+    '<button class="close" type="button">J\'ai compris</button></div>';
+  ui.appendChild(help);
+  var body = help.querySelector('.body');
+
+  function showHelp(why) {
+    body.innerHTML = why === 'ios'
+      ? 'Safari sur iPhone n\'autorise aucune page à passer en plein écran. ' +
+        'La seule méthode qui marche vraiment :' +
+        '<ol><li>touche le bouton <b>Partager</b> de Safari (le carré avec la flèche) ;</li>' +
+        '<li>choisis <b>Sur l\'écran d\'accueil</b> ;</li>' +
+        '<li>lance SNAKE 2030 depuis l\'icône : plus aucune barre, vrai plein écran.</li></ol>'
+      : 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
+        'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
+        'directement.';
+    help.classList.add('on');
+  }
+  /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
+     supprime le click de compatibilité : un simple addEventListener('click')
+     ne se déclenche jamais au doigt. On passe donc par le même branchement
+     tactile que le reste de l'interface. */
+  function tap(el, fn) {
+    if (typeof _uiTap === 'function') return _uiTap(el, fn);
+    el.addEventListener('pointerdown', function (e) { e.stopPropagation(); fn(el); });
+    el.addEventListener('click', function (e) { e.stopPropagation(); fn(el); });
+    return el;
+  }
+
+  tap(help.querySelector('.close'), function () { help.classList.remove('on'); });
 
   var btn = document.createElement('button');
   btn.id = 'fsb';
+  btn.type = 'button';
   btn.textContent = 'Plein écran';
   ui.appendChild(btn);
-
-  var tip = document.createElement('div');
-  tip.id = 'fst';
-  ui.appendChild(tip);
-
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    if (fullscreenAvailable()) { goFullscreen(); return; }
-    // iPhone : pas d'API plein écran. On donne la marche à suivre.
-    tip.innerHTML = 'Safari sur iPhone n\'a pas de plein écran.<br>' +
-      'Menu <b>Partager</b> → <b>Sur l\'écran d\'accueil</b> :<br>' +
-      'le jeu s\'ouvre alors sans barres.';
-    tip.classList.add('on');
-    setTimeout(function () { tip.classList.remove('on'); }, 5200);
+  tap(btn, function () {
+    if (inFullscreen()) leaveFullscreen();
+    else goFullscreen(showHelp);
   });
 
-  document.addEventListener('fullscreenchange', function () {
-    btn.classList.toggle('hide', !!document.fullscreenElement);
-  });
+  function sync() {
+    btn.classList.toggle('on', S.phase === 'menu' || S.phase === 'dead');
+    btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
+  }
+  setInterval(sync, 300);
+  document.addEventListener('fullscreenchange', sync);
+  document.addEventListener('webkitfullscreenchange', sync);
 }
 
 var _armed = false;
