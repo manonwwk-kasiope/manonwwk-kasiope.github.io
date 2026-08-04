@@ -45,7 +45,7 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 2 },
   stats: { best: 0, coins: 0, runs: 0 },
   boss: null, bossHpMax: 0, headR: 16,
   timeScale: 1
@@ -75,10 +75,41 @@ function angTo(x1, y1, x2, y2) { return Math.atan2(y2 - y1, x2 - x1); }
 function dist2(x1, y1, x2, y2) { var dx = x2 - x1, dy = y2 - y1; return dx * dx + dy * dy; }
 function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
 
+/* ------------------------------------------------------------- difficulté */
+/* Le cran 2 est la référence : il vaut le double de l'ancien réglage, qui
+   correspond désormais à « DÉTENDU ». Le multiplicateur ne s'applique pas
+   uniformément — doubler les dégâts encaissés rendrait le jeu injouable
+   alors que doubler la densité le rend simplement plus dense. */
+var DIFFS = [
+  { m: 1.0, nom: 'DÉTENDU' },
+  { m: 1.5, nom: 'SOUTENU' },
+  { m: 2.0, nom: 'STANDARD' },
+  { m: 2.7, nom: 'BRUTAL' },
+  { m: 3.5, nom: 'SUICIDE' }
+];
+function diffIdx() {
+  var v = S.opt.diff, b = 2, bd = 1e9;
+  for (var i = 0; i < DIFFS.length; i++) {
+    var d = Math.abs(DIFFS[i].m - v);
+    if (d < bd) { bd = d; b = i; }
+  }
+  return b;
+}
+function diffMul() { return DIFFS[diffIdx()].m; }
+function diffNom() { return DIFFS[diffIdx()].nom; }
+
 /* -------------------------------------------------------------- le serpent */
+/* Débattement de la tête par rapport au corps quand celui-ci est verrouillé
+   sur un rail : assez large pour couvrir l'écart maximal à la diagonale
+   (45°) et viser au-delà, assez étroit pour qu'on ne tire jamais en arrière. */
+var RAIL_LOOK = 1.15;
+
+/* Cap des canons : la tête, pas la trajectoire. */
+function aimAng() { var s = S.snake; return s.aim === undefined ? s.ang : s.aim; }
+
 function makeSnake() {
   var s = {
-    x: K.ARENA_W * 0.3, y: K.ARENA_H * 0.5, ang: 0,
+    x: K.ARENA_W * 0.3, y: K.ARENA_H * 0.5, ang: 0, aim: 0,
     speed: K.BASE_SPEED, baseSpeed: K.BASE_SPEED,
     path: [], p0: 0, pathLen: 0,
     len: K.START_LEN, segs: [],
@@ -132,14 +163,42 @@ function buildSegs() {
 function updateSnake(dt) {
   var s = S.snake, inp = S.input;
 
-  // --- cap : virage analogique vers la direction du manche ---
-  if (inp.jmag > 0.12) {
-    var want = Math.atan2(inp.jy, inp.jx);
+  var want = inp.jmag > 0.12 ? Math.atan2(inp.jy, inp.jx) : null;
+  var rail = !!(S2030.phases && S2030.phases.railed());
+
+  if (rail) {
+    /* --- treillis : le corps est verrouillé sur les rails ---
+       On arrondit la direction demandée, pas le cap courant. Arrondir le cap
+       courant bloquerait le serpent sur son rail : le virage progressif ne
+       franchit jamais la moitié du quadrant, la diagonale la plus proche
+       reste la même, et le manche a beau désigner l'autre rail, on y revient
+       à chaque image. Ici le changement de rail est franc, comme il doit
+       l'être sur un treillis. */
+    var tgt = S2030.phases.railAng(want === null ? s.ang : want);
+    // demi-tour refusé : on ne repique pas dans son propre corps
+    if (Math.abs(norm(tgt - s.ang)) > Math.PI * 0.75) tgt = S2030.phases.railAng(s.ang);
+    s.ang = tgt;
+  } else if (want !== null) {
+    // --- cap : virage analogique vers la direction du manche ---
     var diff = norm(want - s.ang);
     var rate = K.TURN_RATE * s.turnBoost * S.opt.sens * clamp(inp.jmag * 1.35, 0, 1);
     var step = clamp(diff, -rate * dt, rate * dt);
     s.ang = norm(s.ang + step);
   }
+
+  /* La tête, elle, reste libre : elle pivote dans un cône devant elle pour
+     garder ses cibles en joue, et c'est ce cap-là que suivent les canons.
+     Ce que le joueur perd en trajectoire, il le récupère en visée. */
+
+  var look = want;
+  if (rail && look === null) {
+    // manche au repos : on garde en joue l'ennemi le plus proche
+    var tgt = nearestEnemy(s.x, s.y, 560);
+    if (tgt) look = angTo(s.x, s.y, tgt.x, tgt.y);
+  }
+  s.aim = (rail && look !== null)
+    ? norm(s.ang + clamp(norm(look - s.ang), -RAIL_LOOK, RAIL_LOOK))
+    : s.ang;
 
   // --- boost ---
   var wantBoost = inp.boost && s.boostE > 1;
@@ -172,6 +231,10 @@ function updateSnake(dt) {
   var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
   S.headR = K.HEAD_R * (1 + 0.5 * fold);
   if (fold) s.speed *= 1.12;
+
+  // aimantation sur le rail : après l'avance, avant que le chemin ne
+  // l'enregistre, pour que le corps suive exactement la même ligne
+  if (rail) S2030.phases.railSnap(s, dt);
 
   pushPath();
   buildSegs();
@@ -282,10 +345,17 @@ function spawnEnemy(type, x, y, mods) {
   var defs = S2030.enemies && S2030.enemies.defs;
   var d = defs && defs[type];
   if (!d) return null;
+  // la difficulté joue surtout sur l'endurance et un peu sur l'allure ;
+  // la cadence d'apparition, elle, est réglée côté niveaux
+  var dm = diffMul();
   var e = {
     id: _eid++, type: type, x: x, y: y, vx: 0, vy: 0, ang: 0, t: 0,
-    r: d.r || 14, hp: d.hp || 10, maxHp: d.hp || 10, dmg: d.dmg || 1,
-    speed: d.speed || 60, score: d.score || 10, xp: d.xp || 1,
+    r: d.r || 14,
+    hp: Math.round((d.hp || 10) * Math.pow(dm, 0.5)),
+    maxHp: Math.round((d.hp || 10) * Math.pow(dm, 0.5)),
+    dmg: Math.max(1, Math.round((d.dmg || 1) * Math.pow(dm, 0.35))),
+    speed: (d.speed || 60) * (1 + (dm - 1) * 0.10),
+    score: d.score || 10, xp: d.xp || 1,
     color: d.color || '#ff2e63', elite: false, mod: null, dead: false, hitT: 0
   };
   // champs propres à la définition

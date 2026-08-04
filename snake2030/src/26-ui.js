@@ -772,6 +772,10 @@ function _uiBuildSettings(root) {
   var box = _uiMk('div', 's2scroll', sc);
   _uiScrollable(box);
 
+  _uiMk('div', 's2grp', box, 'PARTIE');
+  _uiStepper(box, 'Difficulté', 'diff', [1, 1.5, 2, 2.7, 3.5],
+    function (v, i) { return DIFFS[i].nom; });
+
   _uiMk('div', 's2grp', box, 'CONTRÔLES');
   _uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }]);
   _uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }]);
@@ -873,6 +877,9 @@ function _uiDefaults() {
   if (o.joySize === undefined) o.joySize = 1;
   if (o.sens === undefined) o.sens = 1;
   if (o.particles === undefined) o.particles = 1;
+  // les parties sauvegardées avant l'ajout du réglage repartent au cran de
+  // référence, pas au plus facile
+  if (o.diff === undefined) o.diff = 2;
 }
 
 function _uiApplyOpt() {

@@ -374,7 +374,8 @@ function _wpnUpFront(dt, L) {
     _wpnFront.beamT += 1 / L.hz;
     if (_wpnFront.beamT < 0) _wpnFront.beamT = 0;
 
-    var ca = Math.cos(s.ang), sa = Math.sin(s.ang);
+    var _a = aimAng();
+    var ca = Math.cos(_a), sa = Math.sin(_a);
     var len = _wpnRange(L.len), dmg = _wpnDmg(L.dmg);
     var mark = ++_wpnMark;
     var hitD = -1;
@@ -416,7 +417,8 @@ function _wpnUpFront(dt, L) {
   _wpnFront.t += _wpnCd(L.cd);
   if (_wpnFront.t < 0) _wpnFront.t = 0;
 
-  var c = Math.cos(s.ang), sn = Math.sin(s.ang);
+  var _a = aimAng();
+  var c = Math.cos(_a), sn = Math.sin(_a);
   var nx = -sn, ny = c;
   var lat = L.twin ? 7 : 0;
   var muzzle = K.HEAD_R * 1.4;
@@ -430,7 +432,7 @@ function _wpnUpFront(dt, L) {
   var n = L.n | 0;
   for (var k = 0; k < n; k++) {
     var off = n === 1 ? 0 : (k - (n - 1) / 2);
-    var ang = s.ang + off * L.spread;
+    var ang = _a + off * L.spread;
     var side = L.twin ? (n === 1 ? _wpnFront.side : (k * 2 - 1)) : 0;
     var ox = s.x + c * muzzle + nx * lat * side;
     var oy = s.y + sn * muzzle + ny * lat * side;
@@ -1595,7 +1597,8 @@ function _wpnDrawBeam(ctx, L) {
   var p = _wpnFront.beamP;
   if (p <= 0) return;
   var len = _wpnRange(L.len) * (0.5 + p * 0.5);
-  var ca = Math.cos(s.ang), sa = Math.sin(s.ang);
+  var _a = aimAng();
+  var ca = Math.cos(_a), sa = Math.sin(_a);
   var x0 = s.x + ca * K.HEAD_R, y0 = s.y + sa * K.HEAD_R;
   var x1 = s.x + ca * len, y1 = s.y + sa * len;
   var puls = 1 + Math.sin(S.t * 0.045) * 0.16;

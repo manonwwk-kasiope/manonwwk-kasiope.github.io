@@ -19,10 +19,37 @@ S2030.phases = (function () {
     cam.pulse = Math.max(cam.pulse, amount);
   }
 
+  /* Le plateau est cadré serré par défaut, et le cadrage respire : de temps
+     en temps la caméra plonge à 200 %, puis se recule jusqu'à 100 % — la
+     vue d'ensemble qui suit le rapprochement se lit comme une respiration,
+     pas comme un réglage qui dérive. */
+  var ZOOM_BASE = 1.30, ZOOM_NEAR = 2.00, ZOOM_WIDE = 1.00;
+  var zc = { mode: 0, t: 0, next: 20 };      // 0 repos, 1 rapproché, 2 reculé
+
+  function zoomCycle(dt) {
+    if (S.phase !== 'play' || S.opt.reduceShake) { zc.mode = 0; zc.next = 20; return; }
+    if (zc.mode) {
+      zc.t -= dt;
+      if (zc.t > 0) return;
+      if (zc.mode === 1) { zc.mode = 2; zc.t = 4.6; }
+      else { zc.mode = 0; zc.next = rndR(20, 32); }
+      return;
+    }
+    zc.next -= dt;
+    if (zc.next <= 0 && S.levelT > 8) {
+      zc.mode = 1; zc.t = 3.4;
+      S2030.audio && S2030.audio.sfx('warp');
+    }
+  }
+  function zoomBase() {
+    return zc.mode === 1 ? ZOOM_NEAR : zc.mode === 2 ? ZOOM_WIDE : ZOOM_BASE;
+  }
+
   function camUpdate(dt) {
-    // le zoom suit la vitesse : plus on fonce, plus on recule pour voir venir
+    zoomCycle(dt);
+    // le zoom suit aussi la vitesse : plus on fonce, plus on recule pour voir venir
     var sp = S.snake ? S.snake.speed / K.BASE_SPEED : 1;
-    var want = 1 / (1 + (sp - 1) * 0.22);
+    var want = zoomBase() / (1 + (sp - 1) * 0.22);
     if (phase.t > 0) want *= phase.zoom;
     cam.zoomT = want;
     cam.zoom = lerp(cam.zoom, cam.zoomT, 1 - Math.pow(0.02, dt));
@@ -100,47 +127,95 @@ S2030.phases = (function () {
 
   var HALF = 7;      // demi-épaisseur du faisceau, en unités monde
 
+  /* ------------------------------------------ circulation sur le treillis */
+  /* Les diagonales ne blessent pas : elles canalisent. Tant que le treillis
+     est là, serpent et ennemis n'ont plus que quatre caps possibles et
+     glissent sur la droite la plus proche. Personne ne peut plus couper à
+     travers — c'est la contrainte qui fait le sel de la séquence. */
+  var QUAD = Math.PI / 2, DIAG0 = Math.PI / 4;
+
+  function railed() { return diag.t > 0 && diag.warn <= 0; }
+
+  /* cap utile le plus proche, parmi les quatre diagonales */
+  function railAng(a) { return DIAG0 + Math.round((a - DIAG0) / QUAD) * QUAD; }
+
+  /* famille de droites que ce cap longe : +1 pour x+y = c, -1 pour x-y = c */
+  function railFam(a) {
+    var q = ((Math.round((a - DIAG0) / QUAD) % 4) + 4) % 4;
+    return (q === 0 || q === 2) ? -1 : 1;
+  }
+  /* les droites ne sont pas centrées sur zéro : elles sont posées par
+     startDiag à partir de ces origines-là, il faut les retrouver ici */
+  function railBase(d) { return d > 0 ? -K.ARENA_H : -2 * K.ARENA_H; }
+
+  /* Ramène un point sur le rail le plus proche de sa famille. Corriger x et y
+     de la même demi-quantité déplace exactement perpendiculairement à la
+     droite ; le plafond évite le saut sec au moment où le treillis prend. */
+  function railSnap(o, dt, fam, speed, rate) {
+    var d = fam === undefined ? railFam(o.ang || 0) : fam;
+    var u = d > 0 ? (o.x + o.y) : (o.x - o.y);
+    var b = railBase(d);
+    var c = b + Math.round((u - b) / diag.spacing) * diag.spacing;
+    var fix = (u - c) * 0.5 * Math.min(1, dt * (rate === undefined ? 12 : rate));
+    var cap = (speed || 460) * dt;
+    if (fix > cap) fix = cap; else if (fix < -cap) fix = -cap;
+    o.x -= fix;
+    if (d > 0) o.y -= fix; else o.y += fix;
+  }
+
+  /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée
+     à la main, téléportation. Plutôt que de réécrire onze comportements, on
+     reprojette leur déplacement de l'image : on garde la distance parcourue,
+     on impose la direction. Ils gardent leur allure, ils perdent le droit de
+     couper. */
+  function railEnemies(dt) {
+    for (var i = 0; i < S.enemies.length; i++) {
+      var e = S.enemies[i];
+      if (e.dead || e.boss || e.noRail) continue;
+      var px = e._rx, py = e._ry;
+      if (px === undefined) { px = e.x; py = e.y; }
+      var dx = e.x - px, dy = e.y - py;
+      var mag = Math.sqrt(dx * dx + dy * dy);
+      // un saut de plus d'un rail n'est pas un déplacement mais une
+      // réapparition : on la laisse passer et on reprend le rail sur place
+      if (mag > diag.spacing) { e._rx = e.x; e._ry = e.y; continue; }
+      var ra = railAng(mag > 0.01 ? Math.atan2(dy, dx) : (e.ang || 0));
+      if (mag > 0.01) {
+        e.x = px + Math.cos(ra) * mag;
+        e.y = py + Math.sin(ra) * mag;
+      }
+      e.ang = ra;
+      if (e.vx || e.vy) {
+        var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
+        e.vx = Math.cos(ra) * vm; e.vy = Math.sin(ra) * vm;
+      }
+      /* Correction totale, pas amortie. Un rattrapage partiel laisse un
+         écart d'équilibre : la séparation entre ennemis et l'aimantation des
+         mines les repoussent de quelques unités par image, et un gain de
+         0,2 stabilisait la file à cinquante unités du rail — visiblement à
+         côté. Le plafond suffit à rendre l'arrivée sur le rail progressive. */
+      railSnap(e, dt, railFam(ra), 900, 1e6);
+      e._rx = e.x; e._ry = e.y;
+    }
+  }
+
   function diagUpdate(dt) {
     if (diag.t <= 0) return;
     diag.t -= dt;
     if (diag.warn > 0) { diag.warn -= dt; return; }   // télégraphe avant matérialisation
 
-    var s = S.snake, i, l, d;
-    for (i = 0; i < diag.lines.length; i++) {
-      l = diag.lines[i];
+    for (var i = 0; i < diag.lines.length; i++) {
+      var l = diag.lines[i];
       if (l.on < 1) l.on = Math.min(1, l.on + dt * 1.6);
     }
-    if (!s || S.phase !== 'play') return;
+  }
 
-    // la tête : contact = dégât, avec la même invulnérabilité que le reste
-    if (s.invuln <= 0 && s.ghost <= 0) {
-      for (i = 0; i < diag.lines.length; i++) {
-        l = diag.lines[i];
-        if (l.on < 0.9) continue;
-        d = distTo(l, s.x, s.y);
-        if (d > -HALF && d < HALF) {
-          hurtSnake(1, s.x, s.y);
-          S2030.fx && S2030.fx.ring(s.x, s.y, '#22e0ff', 8, 520);
-          pulse(0.08);
-          break;
-        }
-      }
-    }
-
-    // les ennemis aussi : les couloirs deviennent la seule route sûre
-    for (var e = S.enemies.length - 1; e >= 0; e--) {
-      var en = S.enemies[e];
-      if (en.dead || en.boss) continue;
-      for (i = 0; i < diag.lines.length; i++) {
-        l = diag.lines[i];
-        if (l.on < 0.9) continue;
-        d = distTo(l, en.x, en.y);
-        if (d > -HALF && d < HALF) {
-          damageEnemy(en, 26 * dt * 15, { x: en.x, y: en.y, type: 'laser' });
-          break;
-        }
-      }
-    }
+  /* Passe de fin d'image : les ennemis sont ramenés sur leurs rails une fois
+     que plus rien ne les déplacera. La séparation entre corps, appliquée
+     après la mise à jour des phases, défaisait sinon une partie du travail. */
+  function railLate(dt) {
+    if (!railed() || S.phase !== 'play') return;
+    railEnemies(dt);
   }
 
   function diagDraw(ctx) {
@@ -342,6 +417,7 @@ S2030.phases = (function () {
     diag.t = 0; diag.next = 26; diag.lines.length = 0;
     slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
     owned = ['ghost']; cds = { ghost: 0, slow: 0, fold: 0 }; pick = 0;
+    zc.mode = 0; zc.t = 0; zc.next = 20;
   }
 
   function update(dt) {
@@ -379,12 +455,16 @@ S2030.phases = (function () {
     drawFloor: drawFloor, drawDiag: diagDraw,
     use: use, grant: grant, buttonState: buttonState, powers: POWERS,
     enemyTimeScale: enemyTimeScale, foldFactor: foldFactor,
+    railed: railed, railAng: railAng, railSnap: railSnap, railLate: railLate,
+    railSpacing: diag.spacing,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) { startPhase(KINDS[(i || 0) % KINDS.length]); },
-    forceDiag: function () { startDiag(); },
+    forceDiag: function () { startDiag(); diag.warn = 0; },
+    forceZoom: function (m) { zc.mode = m; zc.t = m ? 99 : 0; zc.next = 99; },
     state: function () { return { phase: phase.kind, phaseT: phase.t, diagT: diag.t,
       owned: owned.slice(), cds: JSON.parse(JSON.stringify(cds)), slow: slowT, fold: foldT,
-      zoom: cam.zoom, tilt: cam.tilt, rot: cam.rot }; },
+      zoom: cam.zoom, zoomT: cam.zoomT, zmode: zc.mode, tilt: cam.tilt, rot: cam.rot,
+      railed: railed() }; },
     inPhase: function () { return phase.t > 0; },
     inDiag: function () { return diag.t > 0; }
   };
