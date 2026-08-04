@@ -21,7 +21,7 @@ var K = {
   START_LEN: 9,
   MAX_LEN: 90,
   INVULN: 900,              // ms après un dégât
-  MUSIC_LOOP: 79.668050,
+  MUSIC_LOOP: 259.074979,
   MUSIC_BPM: 144.6,
   GRID: 110                 // taille de cellule de la grille de collision
 };
