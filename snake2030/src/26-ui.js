@@ -775,6 +775,10 @@ function _uiBuildSettings(root) {
   _uiMk('div', 's2grp', box, 'PARTIE');
   _uiStepper(box, 'Difficulté', 'diff', [1, 1.5, 2, 2.7, 3.5],
     function (v, i) { return DIFFS[i].nom; });
+  /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
+     un téléphone. Le repère par défaut tient les soixante images. */
+  _uiStepper(box, 'Netteté', 'px', [1, 1.25, 1.5, 2],
+    function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.5 ? 'FLUIDE' : v >= 1.25 ? 'LÉGÈRE' : 'BASSE'; });
 
   _uiMk('div', 's2grp', box, 'CONTRÔLES');
   _uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }]);
@@ -880,6 +884,7 @@ function _uiDefaults() {
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
   if (o.diff === undefined) o.diff = 2;
+  if (o.px === undefined) o.px = 1.5;
 }
 
 function _uiApplyOpt() {

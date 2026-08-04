@@ -50,7 +50,14 @@ S2030.phases = (function () {
     }
   }
   function zoomBase() {
-    return zc.mode === 1 ? ZOOM_NEAR : zc.mode === 2 ? ZOOM_WIDE : ZOOM_BASE;
+    var z = zc.mode === 1 ? ZOOM_NEAR : zc.mode === 2 ? ZOOM_WIDE : ZOOM_BASE;
+    /* La bascule agrandit l'image pour couvrir l'écran : sans compensation
+       elle se lirait comme un coup de zoom au lieu d'un basculement. */
+    if (persp > 0.001) {
+      var c = Math.cos(persp);
+      if (c > 0.2) z *= (4.6 * c) / (4.6 + Math.sin(persp));
+    }
+    return z;
   }
 
   function camUpdate(dt) {
@@ -99,13 +106,18 @@ S2030.phases = (function () {
      autour de l'axe de vue, puis la bascule autour de l'axe horizontal — et
      là seulement le jeu devient réellement tridimensionnel. Le tirage
      aléatoire ne reprend qu'une fois la progression jouée. */
-  var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 4, step: 0 };
+  var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 2, step: 0 };
 
+  /* Durées serrées : mesuré en conditions réelles, une partie dure trente à
+     quarante secondes au réglage de difficulté par défaut. Une ouverture qui
+     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais —
+     c'est exactement ce que le joueur a signalé. Elle arrive maintenant vers
+     vingt-trois secondes. */
   var SCRIPT = [
-    { kind: 'ortho', dur: 18, zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
-    { kind: 'space', dur: 13, zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
-    { kind: 'roll',  dur: 15, zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
-    { kind: 'dive',  dur: 24, zoom: 1.00, rot: -0.05, persp: 30,   nom: 'PERSPECTIVE' }
+    { kind: 'ortho', dur: 7,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
+    { kind: 'space', dur: 5,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
+    { kind: 'roll',  dur: 6,  zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
+    { kind: 'dive',  dur: 22, zoom: 1.00, rot: -0.05, persp: 30,   nom: 'PERSPECTIVE' }
   ];
   /* Une fois la progression jouée, on reprend dans le désordre — la bascule
      3D revient plus souvent que le reste, c'est elle qu'on vient voir. */
@@ -431,7 +443,7 @@ S2030.phases = (function () {
   function reset() {
     cam.zoom = 1; cam.zoomT = 1; cam.pulse = 0;
     cam.tilt = 0; cam.tiltT = 0; cam.rot = 0; cam.rotT = 0;
-    phase.t = 0; phase.kind = ''; phase.next = 4; phase.step = 0;
+    phase.t = 0; phase.kind = ''; phase.next = 2; phase.step = 0;
     persp = 0; perspT = 0;
     grid.t = 0; grid.warn = 0; grid.on = 0;
     slowT = 0; foldT = 0; foldN = 0; jolt.tilt = 0; jolt.rot = 0;
@@ -458,7 +470,7 @@ S2030.phases = (function () {
       if (phase.next <= 0) {
         if (phase.step < SCRIPT.length) {
           startPhase(SCRIPT[phase.step++]);
-          phase.next = 1.5;                 // enchaînement serré
+          phase.next = 1.0;                 // enchaînement serré
         } else {
           startPhase(SCRIPT[POOL[(rnd() * POOL.length) | 0]]);
           phase.next = rndR(10, 18);
@@ -478,9 +490,18 @@ S2030.phases = (function () {
     railed: railed, railAng: railAng, railSnap: railSnap, railLate: railLate,
     railSpacing: grid.spacing,
     // déclencheurs directs, utiles pour la mise au point et les tests
-    forcePhase: function (i) { startPhase(SCRIPT[(i || 0) % SCRIPT.length]); phase.step = SCRIPT.length; },
-    forceDiag: function () { startGrid('diag', 30); grid.warn = 0; grid.on = 1; },
-    forceGrid: function (axis) { startGrid(axis || 'ortho', 30); grid.warn = 0; grid.on = 1; },
+    forcePhase: function (i) {
+      startPhase(SCRIPT[(i || 0) % SCRIPT.length]);
+      phase.step = SCRIPT.length; phase.t = 1e9; phase.next = 1e9;
+    },
+    /* Les déclencheurs suspendent la progression : sans cela elle reprenait la
+       main deux secondes plus tard et remplaçait l'état forcé, ce qui rendait
+       le crochet inutilisable pour observer quoi que ce soit. */
+    forceDiag: function () { this.forceGrid('diag'); },
+    forceGrid: function (axis) {
+      phase.t = 0; phase.kind = ''; phase.next = 1e9; phase.step = SCRIPT.length;
+      startGrid(axis || 'ortho', 1e9); grid.warn = 0; grid.on = 1;
+    },
     forceZoom: function (m) { zc.mode = m; zc.t = m ? 99 : 0; zc.next = 99; },
     state: function () { return { phase: phase.kind, phaseT: phase.t, step: phase.step,
       diagT: grid.t, axe: grid.axis, persp: persp, perspDeg: persp * 180 / Math.PI,
