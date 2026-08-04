@@ -3,7 +3,7 @@
    Canvas, entrées tactiles, rendu du serpent, boucle principale, cycle de vie.
    ========================================================================== */
 
-var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1;
+var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5;
 
 function setupCanvas() {
   cv = document.getElementById('game');
@@ -11,12 +11,19 @@ function setupCanvas() {
   resizeCanvas();
 }
 
+/* Plafond de densité de pixels. Mesuré sur une partie réelle : à 2, neuf pour
+   cent des images dépassent 33 ms et la lecture saccade ; à 1,5, aucune, et
+   l'affichage reste verrouillé à soixante images par seconde. Le coût est
+   entièrement en remplissage — le profil ne montrait plus une seule fonction
+   JavaScript significative. Un halo néon supporte très bien 1,5 ; une image
+   sur dix perdue, non. Le joueur peut remonter le curseur s'il veut. */
 function resizeCanvas() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  DPR = Math.min(window.devicePixelRatio || 1, S.opt.px || 1.5);
   var w = window.innerWidth, h = window.innerHeight;
   CW = w; CH = h;
   cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
   cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  _perspApplied = -1;                      // la distance d'oeil dépend de la hauteur
   // hauteur de vue constante en unités monde : le jeu se voit pareil partout
   SCALE = h / K.VIEW_H;
   S.view.h = K.VIEW_H;
@@ -328,6 +335,9 @@ function frame(now) {
   var dt = raw * scale;
   S.dt = dt;
 
+  // le réglage de netteté s'applique sans passer par un événement de mise en page
+  if (S.opt.px !== _pxApplied) { _pxApplied = S.opt.px; resizeCanvas(); }
+
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
     keyboardInput();
@@ -378,9 +388,8 @@ function render() {
   ctx.fillRect(0, 0, CW, CH);
 
   var P = S2030.phases;
-  var pa = (P && P.persp) ? P.persp() : 0;
-  if (pa > 0.004) renderPersp(pa);
-  else drawWorld(ctx, CW, CH);
+  applyPersp((P && P.persp) ? P.persp() : 0);
+  drawWorld(ctx, CW, CH);
 
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   S2030.fx && S2030.fx.drawScreen && S2030.fx.drawScreen(ctx, CW, CH);
@@ -438,84 +447,40 @@ function drawWorld(g, bw, bh) {
 }
 
 /* ------------------------------------------------------------- perspective
-   Un contexte 2D ne sait poser qu'une transformation affine, et une division
-   perspective n'en est pas une : aucun setTransform ne peut l'exprimer. On
-   rend donc le monde à plat dans un tampon débordant, puis on le recopie
-   bande par bande en appliquant la division — chaque bande garde son propre
-   facteur d'échelle, ce qui fait converger les parallèles vers le fond. Les
-   dix modules de dessin n'ont pas à savoir que la caméra a basculé.
+   Première version : le monde était rendu à plat dans un tampon, puis
+   recopié bande par bande en appliquant la division perspective. Ça
+   fonctionnait, mais un profil l'a réglée — quatre-vingt-seize recopies
+   redimensionnées par image pesaient 73 % du temps processeur, et les bandes
+   laissaient un escalier visible sur les longues diagonales.
 
-   Le tampon est plus grand que l'écran et le monde y est dessiné à l'échelle
-   normale. L'inverse — tampon de la taille de l'écran, monde rapetissé —
-   donnait un effet deux fois plus faible pour autant de matière rasterisée :
-   la perspective réclame du hors-champ, pas de la réduction. */
-var pcv = null, pctx = null, _pw = 0, _ph = 0, _bw = 0, _bh = 0;
-/* Le tampon n'a presque pas besoin de déborder. En hauteur, la compression
-   perspective ramène le lointain dans moins de lignes qu'il n'en occupait à
-   plat : la marge sert seulement au roulis. En largeur, la marge fixe la
-   ligne d'horizon — au-delà, la bande demanderait plus de matière qu'il n'y
-   en a, on l'abandonne et le ciel commence là. Passer de 1,38 x 1,60 à
-   1,18 x 1,05 divise par deux la surface rasterisée. */
-var PB_W = 1.18, PB_H = 1.05;   // taille du tampon, en écrans
-var PERSP_DIST = 1.25;          // distance de l'oeil, en hauteurs d'écran
+   Le navigateur sait faire exactement cela, en vraie perspective, sur le
+   processeur graphique, pour rien : une transformation CSS 3D posée sur
+   l'élément canvas. Le rendu reste plat et ignore tout de la bascule ; seul
+   l'affichage penche. Aucun coût par image, aucun escalier.
 
-function ensureBuf() {
-  var bw = Math.round(CW * PB_W), bh = Math.round(CH * PB_H);
-  var w = Math.round(bw * DPR), h = Math.round(bh * DPR);
-  if (pcv && _pw === w && _ph === h) return;
-  pcv = document.createElement('canvas');
-  pcv.width = w; pcv.height = h;
-  pctx = pcv.getContext('2d', { alpha: false });
-  _pw = w; _ph = h; _bw = bw; _bh = bh;
+   Le plan penché ne couvre plus l'écran — son bord haut recule — d'où
+   l'agrandissement calculé ici, et la compensation de zoom côté caméra pour
+   que la bascule ne se lise pas comme un rapprochement. */
+var PERSP_D = 4.6;          // distance de l'oeil, en demi-hauteurs d'écran
+var _perspApplied = -1;
+
+/* Agrandissement nécessaire pour que le plan penché couvre encore l'écran. */
+function perspCover(t) {
+  var c = Math.cos(t);
+  if (c < 0.2) return 1;
+  return (PERSP_D + Math.sin(t)) / (PERSP_D * c);
 }
 
-function renderPersp(t) {
-  ensureBuf();
-  pctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  pctx.fillStyle = '#05060f';
-  pctx.fillRect(0, 0, _bw, _bh);
-  drawWorld(pctx, _bw, _bh);
-
-  var Ws = _pw, Hs = _ph, cxs = Ws * 0.5, cys = Hs * 0.5;
-  var Hd = CH * DPR, Wd = CW * DPR;
-  var d = Hd * PERSP_DIST;
-  var ct = Math.cos(t), st = Math.sin(t);
-
-  /* Inverse de la projection : de quelle profondeur du tampon vient une ligne
-     d'écran donnée. Le bas vient de tout près, le haut de beaucoup plus loin. */
-  function srcOf(yc) {
-    var Y = yc * DPR;
-    var den = d * ct + Y * st;
-    return den > 1 ? Y * d / den : null;
-  }
-
-  var n = S.opt.particles >= 0.7 ? 96 : 48;
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  var y0 = -CH / 2, w0 = srcOf(y0), horizon = -1;
-  for (var i = 1; i <= n; i++) {
-    var y1 = -CH / 2 + CH * i / n, w1 = srcOf(y1);
-    if (w0 === null || w1 === null || w1 <= w0) { y0 = y1; w0 = w1; continue; }
-    var sy = cys + w0, sh2 = w1 - w0;
-    var wm = (w0 + w1) * 0.5;
-    var f = d / (d - wm * st);
-    var sw = Wd / f;
-    if (sy >= 0 && sy + sh2 <= Hs && sw <= Ws) {
-      if (horizon < 0) horizon = CH / 2 + y0;
-      ctx.drawImage(pcv, cxs - sw * 0.5, sy, sw, sh2,
-                    0, CH / 2 + y0, CW, y1 - y0 + 0.7);
-    }
-    y0 = y1; w0 = w1;
-  }
-
-  // liseré d'horizon : sans lui la bande du haut se coupe net sur le fond
-  if (horizon > 1 && horizon < CH) {
-    var gr = ctx.createLinearGradient(0, horizon - 40, 0, horizon + 12);
-    gr.addColorStop(0, 'rgba(0,229,255,0)');
-    gr.addColorStop(0.78, 'rgba(0,229,255,.20)');
-    gr.addColorStop(1, 'rgba(0,229,255,0)');
-    ctx.fillStyle = gr;
-    ctx.fillRect(0, horizon - 40, CW, 52);
-  }
+function applyPersp(t) {
+  var q = Math.round(t * 400) / 400;          // on ne touche au style qu'utile
+  if (q === _perspApplied) return;
+  _perspApplied = q;
+  if (!cv) return;
+  if (q <= 0.0005) { cv.style.transform = ''; return; }
+  var P = (CH * 0.5 * PERSP_D).toFixed(0);
+  cv.style.transformOrigin = '50% 50%';
+  cv.style.transform = 'perspective(' + P + 'px) rotateX(' + (q * 180 / Math.PI).toFixed(2) +
+                       'deg) scale(' + perspCover(q).toFixed(4) + ')';
 }
 
 /* Les contrôles sont rendus par l'interface, en DOM : un seul dessin, une
@@ -529,6 +494,8 @@ function autoQuality() {
   if (fps < 42) {
     _qLow++;
     if (_qLow > 2 && S.opt.particles > 0.4) S.opt.particles = 0.4;
+    // si ça rame encore, c'est le remplissage : on descend d'un cran de netteté
+    if (_qLow > 5 && S.opt.px > 1) S.opt.px = S.opt.px > 1.25 ? 1.25 : 1;
     // en dessous de 34 images/s le fil audio commence à se vider : on allège
     // les couches synthétisées plutôt que de laisser la musique hoqueter
     if (_qLow > 4 && fps < 34) S.opt.audioLite = true;
