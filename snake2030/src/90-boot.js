@@ -377,6 +377,28 @@ function render() {
   ctx.fillStyle = '#05060f';
   ctx.fillRect(0, 0, CW, CH);
 
+  var P = S2030.phases;
+  var pa = (P && P.persp) ? P.persp() : 0;
+  if (pa > 0.004) renderPersp(pa);
+  else drawWorld(ctx, CW, CH);
+
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  S2030.fx && S2030.fx.drawScreen && S2030.fx.drawScreen(ctx, CW, CH);
+  drawControls();
+}
+
+/* Dessine le monde à plat dans le contexte donné, dont la surface fait
+   bw x bh pixels CSS. Hors perspective c'est l'écran ; en perspective c'est
+   un tampon plus grand, parce que la division perspective a besoin de
+   matière hors cadre. */
+function drawWorld(g, bw, bh) {
+  /* Les aides de dessin de ce module écrivent dans le « ctx » global. Plutôt
+     que de leur ajouter un paramètre — et d'en oublier une —, on échange le
+     global le temps de la passe. Les modules qui reçoivent déjà un contexte
+     en argument ne sont pas concernés. */
+  var _prev = ctx;
+  ctx = g;
+
   var sh = S2030.fx && S2030.fx.shakeAmount ? S2030.fx.shakeAmount() : 0;
   var ox = 0, oy = 0;
   if (sh > 0.2 && !S.opt.reduceShake) { ox = rndR(-sh, sh); oy = rndR(-sh, sh); }
@@ -384,36 +406,116 @@ function render() {
   var P = S2030.phases;
   var zm = P ? P.zoom() : 1, tl = P ? P.tilt() : 0, rt = P ? P.rot() : 0;
   var sx2 = SCALE * zm, sy2 = SCALE * zm * (1 - tl * 0.42);
-  // la vue change de taille avec le zoom : le tri du visible doit suivre
-  S.view.w = CW / sx2; S.view.h = CH / sy2;
-  ctx.save();
-  ctx.translate(CW / 2, CH / 2);
-  if (rt) ctx.rotate(rt);
-  ctx.scale(sx2, sy2);
-  ctx.translate(-S.cam.x + ox, -S.cam.y + oy);
+  // la vue change de taille avec le zoom et avec la cible : le tri du visible
+  // doit suivre, sinon la perspective révèle les trous là où l'on a coupé
+  S.view.w = bw / sx2; S.view.h = bh / sy2;
+  g.save();
+  g.translate(bw / 2, bh / 2);
+  if (rt) g.rotate(rt);
+  g.scale(sx2, sy2);
+  g.translate(-S.cam.x + ox, -S.cam.y + oy);
 
-  S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(ctx);
-  P && P.drawFloor(ctx);
+  S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(g);
+  P && P.drawFloor(g);
   drawArenaEdge();
-  drawPools(ctx);
+  drawPools(g);
   drawPickups();
 
   for (var i = 0; i < S.enemies.length; i++) {
     var e = S.enemies[i];
     if (!inView(e.x, e.y, e.r + 60)) continue;
-    S2030.enemies && S2030.enemies.draw && S2030.enemies.draw(ctx, e);
+    S2030.enemies && S2030.enemies.draw && S2030.enemies.draw(g, e);
   }
 
   drawBullets();
   if (S.snake) drawSnake();
-  P && P.drawDiag(ctx);
-  S2030.fx && S2030.fx.draw(ctx);
-  S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(ctx);
+  P && P.drawDiag(g);
+  S2030.fx && S2030.fx.draw(g);
+  S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(g);
 
-  ctx.restore();
+  g.restore();
+  ctx = _prev;
+}
+
+/* ------------------------------------------------------------- perspective
+   Un contexte 2D ne sait poser qu'une transformation affine, et une division
+   perspective n'en est pas une : aucun setTransform ne peut l'exprimer. On
+   rend donc le monde à plat dans un tampon débordant, puis on le recopie
+   bande par bande en appliquant la division — chaque bande garde son propre
+   facteur d'échelle, ce qui fait converger les parallèles vers le fond. Les
+   dix modules de dessin n'ont pas à savoir que la caméra a basculé.
+
+   Le tampon est plus grand que l'écran et le monde y est dessiné à l'échelle
+   normale. L'inverse — tampon de la taille de l'écran, monde rapetissé —
+   donnait un effet deux fois plus faible pour autant de matière rasterisée :
+   la perspective réclame du hors-champ, pas de la réduction. */
+var pcv = null, pctx = null, _pw = 0, _ph = 0, _bw = 0, _bh = 0;
+/* Le tampon n'a presque pas besoin de déborder. En hauteur, la compression
+   perspective ramène le lointain dans moins de lignes qu'il n'en occupait à
+   plat : la marge sert seulement au roulis. En largeur, la marge fixe la
+   ligne d'horizon — au-delà, la bande demanderait plus de matière qu'il n'y
+   en a, on l'abandonne et le ciel commence là. Passer de 1,38 x 1,60 à
+   1,18 x 1,05 divise par deux la surface rasterisée. */
+var PB_W = 1.18, PB_H = 1.05;   // taille du tampon, en écrans
+var PERSP_DIST = 1.25;          // distance de l'oeil, en hauteurs d'écran
+
+function ensureBuf() {
+  var bw = Math.round(CW * PB_W), bh = Math.round(CH * PB_H);
+  var w = Math.round(bw * DPR), h = Math.round(bh * DPR);
+  if (pcv && _pw === w && _ph === h) return;
+  pcv = document.createElement('canvas');
+  pcv.width = w; pcv.height = h;
+  pctx = pcv.getContext('2d', { alpha: false });
+  _pw = w; _ph = h; _bw = bw; _bh = bh;
+}
+
+function renderPersp(t) {
+  ensureBuf();
+  pctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  pctx.fillStyle = '#05060f';
+  pctx.fillRect(0, 0, _bw, _bh);
+  drawWorld(pctx, _bw, _bh);
+
+  var Ws = _pw, Hs = _ph, cxs = Ws * 0.5, cys = Hs * 0.5;
+  var Hd = CH * DPR, Wd = CW * DPR;
+  var d = Hd * PERSP_DIST;
+  var ct = Math.cos(t), st = Math.sin(t);
+
+  /* Inverse de la projection : de quelle profondeur du tampon vient une ligne
+     d'écran donnée. Le bas vient de tout près, le haut de beaucoup plus loin. */
+  function srcOf(yc) {
+    var Y = yc * DPR;
+    var den = d * ct + Y * st;
+    return den > 1 ? Y * d / den : null;
+  }
+
+  var n = S.opt.particles >= 0.7 ? 96 : 48;
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  S2030.fx && S2030.fx.drawScreen && S2030.fx.drawScreen(ctx, CW, CH);
-  drawControls();
+  var y0 = -CH / 2, w0 = srcOf(y0), horizon = -1;
+  for (var i = 1; i <= n; i++) {
+    var y1 = -CH / 2 + CH * i / n, w1 = srcOf(y1);
+    if (w0 === null || w1 === null || w1 <= w0) { y0 = y1; w0 = w1; continue; }
+    var sy = cys + w0, sh2 = w1 - w0;
+    var wm = (w0 + w1) * 0.5;
+    var f = d / (d - wm * st);
+    var sw = Wd / f;
+    if (sy >= 0 && sy + sh2 <= Hs && sw <= Ws) {
+      if (horizon < 0) horizon = CH / 2 + y0;
+      ctx.drawImage(pcv, cxs - sw * 0.5, sy, sw, sh2,
+                    0, CH / 2 + y0, CW, y1 - y0 + 0.7);
+    }
+    y0 = y1; w0 = w1;
+  }
+
+  // liseré d'horizon : sans lui la bande du haut se coupe net sur le fond
+  if (horizon > 1 && horizon < CH) {
+    var gr = ctx.createLinearGradient(0, horizon - 40, 0, horizon + 12);
+    gr.addColorStop(0, 'rgba(0,229,255,0)');
+    gr.addColorStop(0.78, 'rgba(0,229,255,.20)');
+    gr.addColorStop(1, 'rgba(0,229,255,0)');
+    ctx.fillStyle = gr;
+    ctx.fillRect(0, horizon - 40, CW, 52);
+  }
 }
 
 /* Les contrôles sont rendus par l'interface, en DOM : un seul dessin, une
@@ -517,7 +619,26 @@ function saveStats() {
   try { localStorage.setItem('snake2030.v1', JSON.stringify({ stats: S.stats, opt: S.opt })); } catch (e) {}
 }
 
-/* ------------------------------------------------------------------ musique */
+/* ------------------------------------------------------------------ musique
+   Deux pistes jouées chacune en entier, l'une après l'autre, puis on
+   recommence. Page servie depuis un site : diffusion en flux, mémoire
+   constante — deux pistes de plus de quatre minutes décodées coûteraient près
+   de deux cents mégaoctets de PCM. Page autonome : les pistes sont embarquées
+   en URI de données ; si la politique de sécurité les refuse sur un élément
+   média, on retombe sur le décodage en mémoire de la première. */
+var MUSIC_FILES = ['neonvelocity-2.mp3', 'neonvelocity.mp3'];
+
+function musicList() {
+  if (typeof MUSIC_B64 === 'string' && MUSIC_B64.length > 100) {
+    var out = [];
+    if (typeof MUSIC_B64_2 === 'string' && MUSIC_B64_2.length > 100)
+      out.push('data:audio/mpeg;base64,' + MUSIC_B64_2);
+    out.push('data:audio/mpeg;base64,' + MUSIC_B64);
+    return out;
+  }
+  return MUSIC_FILES;
+}
+
 function loadMusic() {
   if (typeof MUSIC_B64 === 'string' && MUSIC_B64.length > 100) {
     try {
@@ -576,6 +697,25 @@ function goFullscreen(onFail) {
     else lockLandscape();
   } catch (e) { onFail && onFail('denied'); }
 }
+/* Safari sur iPhone n'a pas d'API plein écran, mais il replie sa barre
+   d'outils quand la page défile. Le document est verrouillé à cent pour cent
+   de hauteur, donc il n'y a jamais rien à faire défiler et la barre reste.
+   On lui donne quatre-vingts pixels de marge le temps d'un défilement, puis
+   on remet tout en place. C'est au mieux quelques dizaines de pixels gagnés,
+   pas un vrai plein écran — la notice reste donc affichée. */
+function nudgeChrome() {
+  var h = document.documentElement, b = document.body;
+  var ph = h.style.cssText, pb = b.style.cssText;
+  h.style.height = 'auto'; h.style.overflowY = 'auto';
+  b.style.height = (window.innerHeight + 80) + 'px'; b.style.overflowY = 'auto';
+  try { window.scrollTo(0, 64); } catch (e) {}
+  setTimeout(function () {
+    h.style.cssText = ph; b.style.cssText = pb;
+    try { window.scrollTo(0, 0); } catch (e) {}
+    resizeCanvas();
+  }, 900);
+}
+
 function leaveFullscreen() {
   try {
     var fn = document.exitFullscreen || document.webkitExitFullscreen;
@@ -630,9 +770,12 @@ function buildFullscreenButton() {
   var body = help.querySelector('.body');
 
   function showHelp(why) {
+    // on tente quand même de récupérer la barre du navigateur
+    if (why === 'ios') nudgeChrome();
     body.innerHTML = why === 'ios'
       ? 'Safari sur iPhone n\'autorise aucune page à passer en plein écran. ' +
-        'La seule méthode qui marche vraiment :' +
+        'Je viens de replier ce qui pouvait l\'être, mais la seule méthode qui ' +
+        'donne un vrai plein écran :' +
         '<ol><li>touche le bouton <b>Partager</b> de Safari (le carré avec la flèche) ;</li>' +
         '<li>choisis <b>Sur l\'écran d\'accueil</b> ;</li>' +
         '<li>lance SNAKE 2030 depuis l\'icône : plus aucune barre, vrai plein écran.</li></ol>'
@@ -678,6 +821,11 @@ function armAudio() {
   if (_armed || !S2030.audio) return;
   _armed = true;
   S2030.audio.init();
+  if (S2030.audio.playlist && S2030.audio.playlist(musicList(), decodeMusic)) return;
+  decodeMusic();
+}
+
+function decodeMusic() {
   loadMusic()
     .then(function (ab) { return S2030.audio.decode(ab); })
     .then(function (buf) { if (!buf) console.warn('musique : repli sur la synthèse'); })
