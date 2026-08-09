@@ -212,7 +212,21 @@ S2030.phases = (function () {
     var n = railNormOf(a), d = railOff(o, a);
     o.x -= n.x * d; o.y -= n.y * d;
   }
-  function railHold(o) { if (o._ra !== undefined) railPlace(o, o._ra); }
+  function railHold(o) {
+    if (o._ra === undefined) return;
+    if (!o._rEase || o._rEase <= 0) railPlace(o, o._ra);
+    railClamp(o);
+  }
+
+  /* La passe de rail rejouait le déplacement à partir d'une position déjà
+     sortie de l'arène, ce qui repoussait l'objet plus loin dehors à chaque
+     image — croissance géométrique mesurée, jusqu'à 265 u en une image et
+     des ennemis vivants hors du cadre visible. On borne systématiquement. */
+  function railClamp(o) {
+    var r = o.r || K.HEAD_R;
+    if (o.x < r) o.x = r; else if (o.x > K.ARENA_W - r) o.x = K.ARENA_W - r;
+    if (o.y < r) o.y = r; else if (o.y > K.ARENA_H - r) o.y = K.ARENA_H - r;
+  }
 
   /* Rebond sur le bord de l'arène. Le cap est réfléchi par le coeur, mais le
      rail verrouillé continuait de pointer vers le mur : le serpent y restait
@@ -235,14 +249,29 @@ S2030.phases = (function () {
     }
     if (best === null) best = railAng(o.ang || 0);
     o._ra = best; o._rw = best;
+    /* Sans verrou, le manche tenu contre le mur ramenait le cap dans le mur
+       dès l'image suivante : cycle limite mesuré à 6 Hz, le serpent avançant
+       de 4 u en 6 s. On lui laisse le temps de décoller. */
+    o._rLock = 0.45;
     railPlace(o, best);
+    railClamp(o);
   }
 
   /* Rend le cap à suivre cette image. « step » est la distance qui sera
      parcourue : c'est elle qui dit si l'intersection est atteinte. */
-  function railSteer(o, want, step) {
-    if (o._ra === undefined) { o._ra = railAng(o.ang || 0); railPlace(o, o._ra); o._rw = o._ra; }
+  /* Arrivée sur le réseau : on ne pose PAS l'objet sur sa droite d'un coup —
+     mesuré, 84 % des ennemis et le serpent sautaient jusqu'à 166 u en une
+     image, la tête se détachant du corps. On rejoint en glissant, plafonné,
+     pendant une demi-seconde. */
+  var RAIL_EASE = 0.5;
 
+  function railSteer(o, want, step) {
+    if (o._ra === undefined) {
+      o._ra = railAng(o.ang || 0); o._rw = o._ra;
+      o._rEase = RAIL_EASE;
+    }
+
+    if (o._rLock > 0) { o._rLock -= S.dt; want = undefined; }
     if (want !== null && want !== undefined) {
       // hystérésis : sous 35° d'écart, on considère que le joueur vise le rail
       // qu'il suit déjà. Sans elle, un manche tenu sur la frontière faisait
@@ -261,7 +290,14 @@ S2030.phases = (function () {
         o._ra = o._rw;
       }
     }
-    railPlace(o, o._ra);
+    if (o._rEase > 0) {
+      // rattrapage progressif, jamais plus vite que l'objet ne se déplace
+      o._rEase -= S.dt;
+      var n = railNormOf(o._ra), d = railOff(o, o._ra);
+      var cap = Math.max(step, 2) * 1.6;
+      if (d > cap) d = cap; else if (d < -cap) d = -cap;
+      o.x -= n.x * d; o.y -= n.y * d;
+    } else railPlace(o, o._ra);
     return o._ra;
   }
 
@@ -289,6 +325,7 @@ S2030.phases = (function () {
         var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
         e.vx = Math.cos(a) * vm; e.vy = Math.sin(a) * vm;
       }
+      railClamp(e);
       e._rx = e.x; e._ry = e.y;
     }
   }
@@ -316,7 +353,7 @@ S2030.phases = (function () {
     if (grid.t <= 0) return;
     var fade = Math.min(1, grid.t / 1.2);
     var warn = grid.warn > 0;
-    var q = S.opt.particles;
+    var q = S.partEff === undefined ? S.opt.particles : S.partEff;
     var R = (Math.abs(S.view.w) + Math.abs(S.view.h)) * 0.75 + 200;
     var cx = S.cam.x, cy = S.cam.y;
 
@@ -361,7 +398,7 @@ S2030.phases = (function () {
     // le sol de repère n'a de sens que sous la bascule réelle
     var lean = Math.max(cam.tilt, persp * 1.6);
     if (lean < 0.02) return;
-    if (S.opt.particles < 0.6) return;   // en qualité réduite, on s'en passe
+    if ((S.partEff === undefined ? S.opt.particles : S.partEff) < 0.6) return;   // en qualité réduite
     var a = Math.min(0.5, lean) * 0.5;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';

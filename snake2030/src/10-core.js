@@ -47,7 +47,7 @@ var S = {
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5,
+  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1
 };
 
@@ -213,7 +213,12 @@ function updateSnake(dt) {
   }
   // PROPULSION : la vitesse de croisière monte avec les cartes
   s.baseSpeed = K.BASE_SPEED * (1 + 0.07 * (S.up.f_speed || 0));
-  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1);
+  /* Le facteur du REPLI entre dans la CIBLE, pas dans la vitesse déjà
+     lissée : appliqué après le lissage, il se composait à chaque image
+     (1,12 x 0,90 = 1,0096 > 1) et la vitesse divergeait — mesuré ×48 en
+     quatre secondes, ×108 en huit. */
+  var foldNow = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1) * (1 + 0.12 * foldNow);
   s.speed = lerp(s.speed, target, 1 - Math.pow(0.002, dt));
 
   // --- avance ---
@@ -249,9 +254,8 @@ function updateSnake(dt) {
 
   // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
   // collision grossissent ensemble, sinon le joueur sentirait le mensonge
-  var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var fold = foldNow;
   S.headR = K.HEAD_R * (1 + 0.5 * fold);
-  if (fold) s.speed *= 1.12;
 
   // on ne quitte jamais sa droite : après l'avance, avant que le chemin ne
   // l'enregistre, pour que le corps suive exactement la même ligne

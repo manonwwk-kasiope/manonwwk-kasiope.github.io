@@ -523,7 +523,8 @@ function _audPlaylist(urls, onfail){
     a.loop = false;
     a.src = urls[i];
     a.addEventListener('ended', _audEnded);
-    a.addEventListener('error', _audErr);
+    a._id = 'p' + i;
+    (function (el) { el.addEventListener('error', function () { _audLache(el); }); })(a);
     box.appendChild(a);
     _audList.push(a);
   }
@@ -531,15 +532,20 @@ function _audPlaylist(urls, onfail){
   return true;
 }
 
-function _audEnded(){ _audListErr = 0; _audAdvance(); }
+function _audEnded(){ _audEchecs = {}; _audListErr = 0; _audAdvance(); }
 
 /* Une source refusée — fichier manquant, ou politique de sécurité qui
    interdit les URI de données sur un élément média — ne doit pas faire
    tourner la liste à vide. Quand toutes ont échoué, on rend la main pour que
    l'appelant retombe sur le décodage en mémoire. */
-function _audErr(){
+var _audEchecs = {};
+function _audErr(a){
   if(!_audListOn) return;
-  if(++_audListErr >= _audList.length){
+  // un même élément qui échoue plusieurs fois ne compte qu'une panne
+  if(a){ if(_audEchecs[a._id]) return; _audEchecs[a._id] = 1; }
+  _audListErr = 0;
+  for(var q in _audEchecs) _audListErr++;
+  if(_audListErr >= _audList.length){
     _audListOn = false; _audEl = null;
     for(var i = 0; i < _audList.length; i++){
       try{ _audList[i].pause(); _audList[i].removeAttribute('src'); _audList[i].load(); }catch(e){}
@@ -576,7 +582,7 @@ function _audStartStream(t0){
     if(_audList[k] !== a){ try{ _audList[k].pause(); }catch(e){} }
   }
   try{ a.playbackRate = _audRate; }catch(e){}
-  a._ok = false;
+  a._ok = false; a._pauseVoulue = 0;
   a.addEventListener('playing', function(){ _audConfirme(a); });
   a.addEventListener('timeupdate', function(){ if(a.currentTime > 0.05) _audConfirme(a); });
   var pr;
@@ -584,7 +590,13 @@ function _audStartStream(t0){
   /* Un refus de lecture ne doit surtout pas être avalé : c'est le cas
      habituel sur iPhone, et le silence qui suit est indiscernable d'une
      musique qui marche si l'on se contente de regarder l'élément. */
-  if(pr && pr['catch']) pr['catch'](function(){ _audLache(a); });
+  /* Une AbortError vient de notre propre pause() — pause du jeu, coupure de
+     la musique, abandon volontaire — et n'est pas une panne de lecture. */
+  if(pr && pr['catch']) pr['catch'](function(err){
+    if(a._lache || a._pauseVoulue) return;
+    if(err && err.name === 'AbortError') return;
+    _audLache(a);
+  });
   _audEl = a;
   _audWatch(a);
   // la suivante se met en tampon pendant que celle-ci joue : l'enchaînement
@@ -594,60 +606,72 @@ function _audStartStream(t0){
   return true;
 }
 
-/* Chien de garde. Première version : un délai fixe de 1600 ms, sans regarder
-   si l'élément était simplement en train de se remplir. Mesuré à 4 Mb/s, la
-   piste de 6,45 Mo met 3073 ms à démarrer — elle était donc systématiquement
-   abandonnée hors réseau local, l'autre prenait sa place, puis la première
-   finissait de charger et se mettait à jouer par-dessus. Deux pistes
-   superposées, définitivement, sur toute connexion de téléphone.
+/* Chien de garde, troisième version.
 
-   On surveille donc la progression du tampon, pas l'horloge : tant que
-   l'élément charge, on attend. On n'abandonne que s'il est vraiment mort, ou
-   s'il n'a rien gagné pendant plusieurs contrôles d'affilée. */
+   Deuxième version : on surveillait « buffered » en croyant y lire la
+   progression du chargement. Mesuré, c'est faux : avant les métadonnées,
+   buffered reste VIDE alors que l'élément reçoit des mégaoctets — à 4 Mb/s,
+   1,40 Mo en 5,4 s, un « progress » toutes les 380 ms, networkState LOADING,
+   aucune erreur, et pourtant readyState 0 et buffered vide. La garde était
+   donc restée un délai fixe déguisé, et sous 4,5 Mb/s elle abandonnait
+   systématiquement une piste parfaitement saine.
+
+   On écoute donc les signaux que le navigateur émet vraiment : « progress »
+   pendant le téléchargement, « loadedmetadata », « canplay », « playing ».
+   Tant qu'il en arrive, on attend. On n'abandonne que sur une erreur franche
+   ou un silence total de trente secondes. */
 var _audWatchTO = null;
-
-function _audBuffered(a){
-  try{
-    var b = a.buffered, n = b.length ? b.end(b.length - 1) : 0;
-    return n;
-  }catch(e){ return 0; }
-}
 
 function _audWatch(a){
   if(_audWatchTO) clearTimeout(_audWatchTO);
-  var immobile = 0, vuBuf = -1, tours = 0;
+  a._vu = _audNow();
+  if(!a._sondes){
+    a._sondes = 1;
+    var vivant = function(){ a._vu = _audNow(); };
+    a.addEventListener('progress', vivant);
+    a.addEventListener('loadedmetadata', vivant);
+    a.addEventListener('loadeddata', vivant);
+    a.addEventListener('canplay', vivant);
+    a.addEventListener('suspend', vivant);
+  }
   function controle(){
     _audWatchTO = null;
     if(!_audListOn || _audEl !== a) return;
-    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }  // ça joue
-    if(a.error || a.networkState === 3 /* NETWORK_NO_SOURCE */){ _audLache(a); return; }
-    var buf = _audBuffered(a);
-    if(buf > vuBuf + 0.01){ immobile = 0; vuBuf = buf; }   // ça charge encore
-    else immobile++;
-    // rien de neuf pendant six contrôles (4,8 s), ou trente secondes en tout
-    if(immobile >= 6 || ++tours > 40){ _audLache(a); return; }
-    _audWatchTO = setTimeout(controle, 800);
+    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }   // ça joue
+    if(a.error){ _audLache(a); return; }
+    // trente secondes sans le moindre signe de vie : là seulement on renonce
+    if(_audNow() - a._vu > 30000){ _audLache(a); return; }
+    _audWatchTO = setTimeout(controle, 900);
   }
-  _audWatchTO = setTimeout(controle, 800);
+  _audWatchTO = setTimeout(controle, 900);
+}
+
+function _audNow(){
+  return (_audCtx ? _audCtx.currentTime * 1000 : 0);
 }
 
 /* Abandon franc : on coupe la source pour de bon, sinon l'élément se met à
-   jouer quand ses données finissent par arriver — c'est ce qui produisait la
-   superposition. */
+   jouer quand ses données finissent par arriver. Le drapeau est posé AVANT
+   la mise en pause : cette pause fait rejeter la promesse play() de
+   l'élément avec une AbortError, et sans le drapeau ce rejet était compté
+   comme une seconde panne — deux pannes suffisaient à démonter toute la
+   liste, y compris la piste qui venait de démarrer correctement. */
 function _audLache(a){
+  if(a._lache) return;
+  a._lache = 1;
   try{ a.pause(); }catch(e){}
   try{ a.removeAttribute('src'); a.load(); }catch(e){}
   if(_audEl === a) _audEl = null;
-  _audErr();
+  _audErr(a);
 }
 
 /* Preuve que du son sort : c'est seulement là qu'on éteint la base
-   synthétisée. L'éteindre au moment du play() laissait jusqu'à onze secondes
+   synthétisée. L'éteindre au moment du play() laissait de longues secondes
    de silence complet quand l'élément faisait semblant de jouer. */
 function _audConfirme(a){
   if(a._ok) return;
   a._ok = true;
-  _audListErr = 0;
+  _audEchecs = {};
   if(!_audCtx) return;
   var t = _audCtx.currentTime;
   _audRamp(_audTrackG.gain, 1, 0.6, t);
@@ -707,7 +731,12 @@ function _audStartTrack(t0){
 
 function _audStopTrack(){
   // en flux, on met en pause : la reprise repart où on s'était arrêté
-  if(_audListOn && _audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
+  if(_audListOn && _audEl){
+    // pause voulue : le rejet de play() qui suit ne doit pas tuer la piste
+    _audEl._pauseVoulue = 1;
+    try{ _audEl.pause(); }catch(e){}
+    _audEl = null;
+  }
   if(_audTrackNode){
     _audTrackNode._arret = 1;            // arrêt voulu, pas une fin de piste
     try{ _audTrackNode.stop(); }catch(e){}

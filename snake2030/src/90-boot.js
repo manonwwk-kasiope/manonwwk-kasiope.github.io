@@ -4,6 +4,7 @@
    ========================================================================== */
 
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
+var _fsbSync = null;
 
 function setupCanvas() {
   cv = document.getElementById('game');
@@ -345,6 +346,7 @@ function frame(now) {
   // le réglage de netteté s'applique sans passer par un événement de mise en page
   qualitySample(raw);
   qualityTilt();
+  if (_fsbSync) _fsbSync();
   if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
 
   if (S.phase === 'play' && !S.paused) {
@@ -493,7 +495,12 @@ function applyPersp(t) {
   if (q === _perspApplied) return;
   _perspApplied = q;
   if (!cv) return;
-  if (q <= 0.0005) { cv.style.transform = ''; return; }
+  if (q <= 0.0005) {
+    cv.style.transform = '';
+    cv.style.willChange = '';            // la couche promue ne doit pas survivre
+    cv.style.backfaceVisibility = '';
+    return;
+  }
   var P = (CH * 0.5 * PERSP_D).toFixed(0);
   cv.style.transformOrigin = '50% 50%';
   cv.style.willChange = 'transform';
@@ -545,16 +552,16 @@ function autoQuality() {
   }
 
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
-  if (part < 0.005 && _qStep > 0 && !penche) {
+  if (part < 0.02 && _qStep > 0 && !penche) {
     // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
     // regagner un cran : remonter vite, c'est retomber tout de suite
-    if (++_qBon >= 50) {
+    if (++_qBon >= 16) {
       _qStep--; _qBon = 0;
       applyQuality();
-      _qHold = 20;
+      _qHold = 12;
       _qWin.length = 0;
     }
-  } else if (part >= 0.005) _qBon = 0;
+  } else if (part >= 0.02) _qBon = 0;    // une image longue isolée ne remet pas à zéro
 }
 
 /* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
@@ -569,7 +576,11 @@ function applyQuality() {
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
   var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
   S.pxEff = PX_CRANS[i];
-  S.opt.particles = _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1);
+  /* On n'écrit PLUS dans S.opt : c'est l'objet enregistré dans le profil, et
+     « densité des particules » est un réglage du joueur à part entière. La
+     dégradation vit dans S.partEff, que le rendu lit. */
+  var vp = S.opt.particles === undefined ? 1 : S.opt.particles;
+  S.partEff = Math.min(vp, _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1));
   if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
 }
 
@@ -635,6 +646,10 @@ function resetRun() {
 }
 
 function startRun() {
+  // la transition (plein écran, armement audio, remise à zéro) saccade par
+  // nature : la mesure de qualité repart de zéro, sinon le premier cran
+  // tombait dès la première seconde sur une machine parfaitement saine
+  _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
   goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
@@ -826,6 +841,11 @@ function buildFullscreenButton() {
     '<button class="close" type="button">J\'ai compris</button></div>';
   ui.appendChild(help);
   var body = help.querySelector('.body');
+  /* Le coeur avale les gestes posés sur #app, qui contient l'interface : sans
+     ce branchement la carte ne défilait pas et, sous 305 px de haut, le
+     bouton « J'ai compris » devenait inatteignable — le jeu restait bloqué
+     derrière la notice. */
+  if (typeof _uiScrollable === 'function') _uiScrollable(help.querySelector('.card'));
 
   function showHelp(why) {
     // on tente quand même de récupérer la barre du navigateur
@@ -845,6 +865,7 @@ function buildFullscreenButton() {
           'onglet ordinaire, sans mode de navigation restreint, ou ajoute le jeu ' +
           'à ton écran d\'accueil.';
     help.classList.add('on');
+    btn.classList.remove('on');          // il tombait sous « J'ai compris »
   }
   /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
      supprime le click de compatibilité : un simple addEventListener('click')
@@ -878,11 +899,17 @@ function buildFullscreenButton() {
        masquait donc là où il devait justement être. La phase et le nom
        d'écran n'ont jamais eu le même vocabulaire. */
     var ecr = (S2030.ui && S2030.ui.screen) ? S2030.ui.screen() : null;
-    var libre = ecr === 'menu' || ecr === 'over' || ecr === null;
-    btn.classList.toggle('on', libre && (S.phase === 'menu' || S.phase === 'dead'));
+    // 'null' n'est plus accepté : c'est l'état pendant l'animation de mort et
+    // juste après REJOUER, où le bouton se retrouvait posé sur le jeu
+    var libre = ecr === 'menu' || ecr === 'over';
+    var notice = help.classList.contains('on');
+    btn.classList.toggle('on', !notice && libre && (S.phase === 'menu' || S.phase === 'dead'));
     btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
   }
-  setInterval(sync, 300);
+  // sondage toutes les 300 ms : le bouton restait allumé par-dessus le jeu
+  // pendant l'animation de mort et après REJOUER. On le synchronise dans la
+  // boucle, où le changement d'écran est immédiatement visible.
+  _fsbSync = sync;
   document.addEventListener('fullscreenchange', sync);
   document.addEventListener('webkitfullscreenchange', sync);
 }

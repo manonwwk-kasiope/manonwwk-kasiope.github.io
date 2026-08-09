@@ -90,7 +90,7 @@ var S = {
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5,
+  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1
 };
 
@@ -256,7 +256,12 @@ function updateSnake(dt) {
   }
   // PROPULSION : la vitesse de croisière monte avec les cartes
   s.baseSpeed = K.BASE_SPEED * (1 + 0.07 * (S.up.f_speed || 0));
-  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1);
+  /* Le facteur du REPLI entre dans la CIBLE, pas dans la vitesse déjà
+     lissée : appliqué après le lissage, il se composait à chaque image
+     (1,12 x 0,90 = 1,0096 > 1) et la vitesse divergeait — mesuré ×48 en
+     quatre secondes, ×108 en huit. */
+  var foldNow = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1) * (1 + 0.12 * foldNow);
   s.speed = lerp(s.speed, target, 1 - Math.pow(0.002, dt));
 
   // --- avance ---
@@ -292,9 +297,8 @@ function updateSnake(dt) {
 
   // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
   // collision grossissent ensemble, sinon le joueur sentirait le mensonge
-  var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var fold = foldNow;
   S.headR = K.HEAD_R * (1 + 0.5 * fold);
-  if (fold) s.speed *= 1.12;
 
   // on ne quitte jamais sa droite : après l'avance, avant que le chemin ne
   // l'enregistre, pour que le corps suive exactement la même ligne
@@ -1014,6 +1018,12 @@ function _fxOpt() {
   return (typeof S !== 'undefined' && S && S.opt) ? S.opt : null;
 }
 function _fxPartF() {           // densité de particules 0..2
+  /* S.partEff est la densité RENDUE : elle combine le réglage du joueur et la
+     dégradation automatique. Cette dernière n'écrit plus dans S.opt, qui est
+     enregistré dans le profil — elle y écrasait le choix du joueur. */
+  if (typeof S !== 'undefined' && S && typeof S.partEff === 'number') {
+    return S.partEff < 0 ? 0 : (S.partEff > 2 ? 2 : S.partEff);
+  }
   var o = _fxOpt();
   if (o && typeof o.particles === 'number') {
     return o.particles < 0 ? 0 : (o.particles > 2 ? 2 : o.particles);
@@ -2143,7 +2153,8 @@ function _audPlaylist(urls, onfail){
     a.loop = false;
     a.src = urls[i];
     a.addEventListener('ended', _audEnded);
-    a.addEventListener('error', _audErr);
+    a._id = 'p' + i;
+    (function (el) { el.addEventListener('error', function () { _audLache(el); }); })(a);
     box.appendChild(a);
     _audList.push(a);
   }
@@ -2151,15 +2162,20 @@ function _audPlaylist(urls, onfail){
   return true;
 }
 
-function _audEnded(){ _audListErr = 0; _audAdvance(); }
+function _audEnded(){ _audEchecs = {}; _audListErr = 0; _audAdvance(); }
 
 /* Une source refusée — fichier manquant, ou politique de sécurité qui
    interdit les URI de données sur un élément média — ne doit pas faire
    tourner la liste à vide. Quand toutes ont échoué, on rend la main pour que
    l'appelant retombe sur le décodage en mémoire. */
-function _audErr(){
+var _audEchecs = {};
+function _audErr(a){
   if(!_audListOn) return;
-  if(++_audListErr >= _audList.length){
+  // un même élément qui échoue plusieurs fois ne compte qu'une panne
+  if(a){ if(_audEchecs[a._id]) return; _audEchecs[a._id] = 1; }
+  _audListErr = 0;
+  for(var q in _audEchecs) _audListErr++;
+  if(_audListErr >= _audList.length){
     _audListOn = false; _audEl = null;
     for(var i = 0; i < _audList.length; i++){
       try{ _audList[i].pause(); _audList[i].removeAttribute('src'); _audList[i].load(); }catch(e){}
@@ -2196,7 +2212,7 @@ function _audStartStream(t0){
     if(_audList[k] !== a){ try{ _audList[k].pause(); }catch(e){} }
   }
   try{ a.playbackRate = _audRate; }catch(e){}
-  a._ok = false;
+  a._ok = false; a._pauseVoulue = 0;
   a.addEventListener('playing', function(){ _audConfirme(a); });
   a.addEventListener('timeupdate', function(){ if(a.currentTime > 0.05) _audConfirme(a); });
   var pr;
@@ -2204,7 +2220,13 @@ function _audStartStream(t0){
   /* Un refus de lecture ne doit surtout pas être avalé : c'est le cas
      habituel sur iPhone, et le silence qui suit est indiscernable d'une
      musique qui marche si l'on se contente de regarder l'élément. */
-  if(pr && pr['catch']) pr['catch'](function(){ _audLache(a); });
+  /* Une AbortError vient de notre propre pause() — pause du jeu, coupure de
+     la musique, abandon volontaire — et n'est pas une panne de lecture. */
+  if(pr && pr['catch']) pr['catch'](function(err){
+    if(a._lache || a._pauseVoulue) return;
+    if(err && err.name === 'AbortError') return;
+    _audLache(a);
+  });
   _audEl = a;
   _audWatch(a);
   // la suivante se met en tampon pendant que celle-ci joue : l'enchaînement
@@ -2214,60 +2236,72 @@ function _audStartStream(t0){
   return true;
 }
 
-/* Chien de garde. Première version : un délai fixe de 1600 ms, sans regarder
-   si l'élément était simplement en train de se remplir. Mesuré à 4 Mb/s, la
-   piste de 6,45 Mo met 3073 ms à démarrer — elle était donc systématiquement
-   abandonnée hors réseau local, l'autre prenait sa place, puis la première
-   finissait de charger et se mettait à jouer par-dessus. Deux pistes
-   superposées, définitivement, sur toute connexion de téléphone.
+/* Chien de garde, troisième version.
 
-   On surveille donc la progression du tampon, pas l'horloge : tant que
-   l'élément charge, on attend. On n'abandonne que s'il est vraiment mort, ou
-   s'il n'a rien gagné pendant plusieurs contrôles d'affilée. */
+   Deuxième version : on surveillait « buffered » en croyant y lire la
+   progression du chargement. Mesuré, c'est faux : avant les métadonnées,
+   buffered reste VIDE alors que l'élément reçoit des mégaoctets — à 4 Mb/s,
+   1,40 Mo en 5,4 s, un « progress » toutes les 380 ms, networkState LOADING,
+   aucune erreur, et pourtant readyState 0 et buffered vide. La garde était
+   donc restée un délai fixe déguisé, et sous 4,5 Mb/s elle abandonnait
+   systématiquement une piste parfaitement saine.
+
+   On écoute donc les signaux que le navigateur émet vraiment : « progress »
+   pendant le téléchargement, « loadedmetadata », « canplay », « playing ».
+   Tant qu'il en arrive, on attend. On n'abandonne que sur une erreur franche
+   ou un silence total de trente secondes. */
 var _audWatchTO = null;
-
-function _audBuffered(a){
-  try{
-    var b = a.buffered, n = b.length ? b.end(b.length - 1) : 0;
-    return n;
-  }catch(e){ return 0; }
-}
 
 function _audWatch(a){
   if(_audWatchTO) clearTimeout(_audWatchTO);
-  var immobile = 0, vuBuf = -1, tours = 0;
+  a._vu = _audNow();
+  if(!a._sondes){
+    a._sondes = 1;
+    var vivant = function(){ a._vu = _audNow(); };
+    a.addEventListener('progress', vivant);
+    a.addEventListener('loadedmetadata', vivant);
+    a.addEventListener('loadeddata', vivant);
+    a.addEventListener('canplay', vivant);
+    a.addEventListener('suspend', vivant);
+  }
   function controle(){
     _audWatchTO = null;
     if(!_audListOn || _audEl !== a) return;
-    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }  // ça joue
-    if(a.error || a.networkState === 3 /* NETWORK_NO_SOURCE */){ _audLache(a); return; }
-    var buf = _audBuffered(a);
-    if(buf > vuBuf + 0.01){ immobile = 0; vuBuf = buf; }   // ça charge encore
-    else immobile++;
-    // rien de neuf pendant six contrôles (4,8 s), ou trente secondes en tout
-    if(immobile >= 6 || ++tours > 40){ _audLache(a); return; }
-    _audWatchTO = setTimeout(controle, 800);
+    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }   // ça joue
+    if(a.error){ _audLache(a); return; }
+    // trente secondes sans le moindre signe de vie : là seulement on renonce
+    if(_audNow() - a._vu > 30000){ _audLache(a); return; }
+    _audWatchTO = setTimeout(controle, 900);
   }
-  _audWatchTO = setTimeout(controle, 800);
+  _audWatchTO = setTimeout(controle, 900);
+}
+
+function _audNow(){
+  return (_audCtx ? _audCtx.currentTime * 1000 : 0);
 }
 
 /* Abandon franc : on coupe la source pour de bon, sinon l'élément se met à
-   jouer quand ses données finissent par arriver — c'est ce qui produisait la
-   superposition. */
+   jouer quand ses données finissent par arriver. Le drapeau est posé AVANT
+   la mise en pause : cette pause fait rejeter la promesse play() de
+   l'élément avec une AbortError, et sans le drapeau ce rejet était compté
+   comme une seconde panne — deux pannes suffisaient à démonter toute la
+   liste, y compris la piste qui venait de démarrer correctement. */
 function _audLache(a){
+  if(a._lache) return;
+  a._lache = 1;
   try{ a.pause(); }catch(e){}
   try{ a.removeAttribute('src'); a.load(); }catch(e){}
   if(_audEl === a) _audEl = null;
-  _audErr();
+  _audErr(a);
 }
 
 /* Preuve que du son sort : c'est seulement là qu'on éteint la base
-   synthétisée. L'éteindre au moment du play() laissait jusqu'à onze secondes
+   synthétisée. L'éteindre au moment du play() laissait de longues secondes
    de silence complet quand l'élément faisait semblant de jouer. */
 function _audConfirme(a){
   if(a._ok) return;
   a._ok = true;
-  _audListErr = 0;
+  _audEchecs = {};
   if(!_audCtx) return;
   var t = _audCtx.currentTime;
   _audRamp(_audTrackG.gain, 1, 0.6, t);
@@ -2327,7 +2361,12 @@ function _audStartTrack(t0){
 
 function _audStopTrack(){
   // en flux, on met en pause : la reprise repart où on s'était arrêté
-  if(_audListOn && _audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
+  if(_audListOn && _audEl){
+    // pause voulue : le rejet de play() qui suit ne doit pas tuer la piste
+    _audEl._pauseVoulue = 1;
+    try{ _audEl.pause(); }catch(e){}
+    _audEl = null;
+  }
   if(_audTrackNode){
     _audTrackNode._arret = 1;            // arrêt voulu, pas une fin de piste
     try{ _audTrackNode.stop(); }catch(e){}
@@ -10459,7 +10498,21 @@ S2030.phases = (function () {
     var n = railNormOf(a), d = railOff(o, a);
     o.x -= n.x * d; o.y -= n.y * d;
   }
-  function railHold(o) { if (o._ra !== undefined) railPlace(o, o._ra); }
+  function railHold(o) {
+    if (o._ra === undefined) return;
+    if (!o._rEase || o._rEase <= 0) railPlace(o, o._ra);
+    railClamp(o);
+  }
+
+  /* La passe de rail rejouait le déplacement à partir d'une position déjà
+     sortie de l'arène, ce qui repoussait l'objet plus loin dehors à chaque
+     image — croissance géométrique mesurée, jusqu'à 265 u en une image et
+     des ennemis vivants hors du cadre visible. On borne systématiquement. */
+  function railClamp(o) {
+    var r = o.r || K.HEAD_R;
+    if (o.x < r) o.x = r; else if (o.x > K.ARENA_W - r) o.x = K.ARENA_W - r;
+    if (o.y < r) o.y = r; else if (o.y > K.ARENA_H - r) o.y = K.ARENA_H - r;
+  }
 
   /* Rebond sur le bord de l'arène. Le cap est réfléchi par le coeur, mais le
      rail verrouillé continuait de pointer vers le mur : le serpent y restait
@@ -10482,14 +10535,29 @@ S2030.phases = (function () {
     }
     if (best === null) best = railAng(o.ang || 0);
     o._ra = best; o._rw = best;
+    /* Sans verrou, le manche tenu contre le mur ramenait le cap dans le mur
+       dès l'image suivante : cycle limite mesuré à 6 Hz, le serpent avançant
+       de 4 u en 6 s. On lui laisse le temps de décoller. */
+    o._rLock = 0.45;
     railPlace(o, best);
+    railClamp(o);
   }
 
   /* Rend le cap à suivre cette image. « step » est la distance qui sera
      parcourue : c'est elle qui dit si l'intersection est atteinte. */
-  function railSteer(o, want, step) {
-    if (o._ra === undefined) { o._ra = railAng(o.ang || 0); railPlace(o, o._ra); o._rw = o._ra; }
+  /* Arrivée sur le réseau : on ne pose PAS l'objet sur sa droite d'un coup —
+     mesuré, 84 % des ennemis et le serpent sautaient jusqu'à 166 u en une
+     image, la tête se détachant du corps. On rejoint en glissant, plafonné,
+     pendant une demi-seconde. */
+  var RAIL_EASE = 0.5;
 
+  function railSteer(o, want, step) {
+    if (o._ra === undefined) {
+      o._ra = railAng(o.ang || 0); o._rw = o._ra;
+      o._rEase = RAIL_EASE;
+    }
+
+    if (o._rLock > 0) { o._rLock -= S.dt; want = undefined; }
     if (want !== null && want !== undefined) {
       // hystérésis : sous 35° d'écart, on considère que le joueur vise le rail
       // qu'il suit déjà. Sans elle, un manche tenu sur la frontière faisait
@@ -10508,7 +10576,14 @@ S2030.phases = (function () {
         o._ra = o._rw;
       }
     }
-    railPlace(o, o._ra);
+    if (o._rEase > 0) {
+      // rattrapage progressif, jamais plus vite que l'objet ne se déplace
+      o._rEase -= S.dt;
+      var n = railNormOf(o._ra), d = railOff(o, o._ra);
+      var cap = Math.max(step, 2) * 1.6;
+      if (d > cap) d = cap; else if (d < -cap) d = -cap;
+      o.x -= n.x * d; o.y -= n.y * d;
+    } else railPlace(o, o._ra);
     return o._ra;
   }
 
@@ -10536,6 +10611,7 @@ S2030.phases = (function () {
         var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
         e.vx = Math.cos(a) * vm; e.vy = Math.sin(a) * vm;
       }
+      railClamp(e);
       e._rx = e.x; e._ry = e.y;
     }
   }
@@ -10563,7 +10639,7 @@ S2030.phases = (function () {
     if (grid.t <= 0) return;
     var fade = Math.min(1, grid.t / 1.2);
     var warn = grid.warn > 0;
-    var q = S.opt.particles;
+    var q = S.partEff === undefined ? S.opt.particles : S.partEff;
     var R = (Math.abs(S.view.w) + Math.abs(S.view.h)) * 0.75 + 200;
     var cx = S.cam.x, cy = S.cam.y;
 
@@ -10608,7 +10684,7 @@ S2030.phases = (function () {
     // le sol de repère n'a de sens que sous la bascule réelle
     var lean = Math.max(cam.tilt, persp * 1.6);
     if (lean < 0.02) return;
-    if (S.opt.particles < 0.6) return;   // en qualité réduite, on s'en passe
+    if ((S.partEff === undefined ? S.opt.particles : S.partEff) < 0.6) return;   // en qualité réduite
     var a = Math.min(0.5, lean) * 0.5;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
@@ -10844,6 +10920,7 @@ S2030.phases = (function () {
    ========================================================================== */
 
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
+var _fsbSync = null;
 
 function setupCanvas() {
   cv = document.getElementById('game');
@@ -11185,6 +11262,7 @@ function frame(now) {
   // le réglage de netteté s'applique sans passer par un événement de mise en page
   qualitySample(raw);
   qualityTilt();
+  if (_fsbSync) _fsbSync();
   if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
 
   if (S.phase === 'play' && !S.paused) {
@@ -11333,7 +11411,12 @@ function applyPersp(t) {
   if (q === _perspApplied) return;
   _perspApplied = q;
   if (!cv) return;
-  if (q <= 0.0005) { cv.style.transform = ''; return; }
+  if (q <= 0.0005) {
+    cv.style.transform = '';
+    cv.style.willChange = '';            // la couche promue ne doit pas survivre
+    cv.style.backfaceVisibility = '';
+    return;
+  }
   var P = (CH * 0.5 * PERSP_D).toFixed(0);
   cv.style.transformOrigin = '50% 50%';
   cv.style.willChange = 'transform';
@@ -11385,16 +11468,16 @@ function autoQuality() {
   }
 
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
-  if (part < 0.005 && _qStep > 0 && !penche) {
+  if (part < 0.02 && _qStep > 0 && !penche) {
     // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
     // regagner un cran : remonter vite, c'est retomber tout de suite
-    if (++_qBon >= 50) {
+    if (++_qBon >= 16) {
       _qStep--; _qBon = 0;
       applyQuality();
-      _qHold = 20;
+      _qHold = 12;
       _qWin.length = 0;
     }
-  } else if (part >= 0.005) _qBon = 0;
+  } else if (part >= 0.02) _qBon = 0;    // une image longue isolée ne remet pas à zéro
 }
 
 /* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
@@ -11409,7 +11492,11 @@ function applyQuality() {
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
   var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
   S.pxEff = PX_CRANS[i];
-  S.opt.particles = _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1);
+  /* On n'écrit PLUS dans S.opt : c'est l'objet enregistré dans le profil, et
+     « densité des particules » est un réglage du joueur à part entière. La
+     dégradation vit dans S.partEff, que le rendu lit. */
+  var vp = S.opt.particles === undefined ? 1 : S.opt.particles;
+  S.partEff = Math.min(vp, _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1));
   if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
 }
 
@@ -11475,6 +11562,10 @@ function resetRun() {
 }
 
 function startRun() {
+  // la transition (plein écran, armement audio, remise à zéro) saccade par
+  // nature : la mesure de qualité repart de zéro, sinon le premier cran
+  // tombait dès la première seconde sur une machine parfaitement saine
+  _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
   goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
@@ -11666,6 +11757,11 @@ function buildFullscreenButton() {
     '<button class="close" type="button">J\'ai compris</button></div>';
   ui.appendChild(help);
   var body = help.querySelector('.body');
+  /* Le coeur avale les gestes posés sur #app, qui contient l'interface : sans
+     ce branchement la carte ne défilait pas et, sous 305 px de haut, le
+     bouton « J'ai compris » devenait inatteignable — le jeu restait bloqué
+     derrière la notice. */
+  if (typeof _uiScrollable === 'function') _uiScrollable(help.querySelector('.card'));
 
   function showHelp(why) {
     // on tente quand même de récupérer la barre du navigateur
@@ -11685,6 +11781,7 @@ function buildFullscreenButton() {
           'onglet ordinaire, sans mode de navigation restreint, ou ajoute le jeu ' +
           'à ton écran d\'accueil.';
     help.classList.add('on');
+    btn.classList.remove('on');          // il tombait sous « J'ai compris »
   }
   /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
      supprime le click de compatibilité : un simple addEventListener('click')
@@ -11718,11 +11815,17 @@ function buildFullscreenButton() {
        masquait donc là où il devait justement être. La phase et le nom
        d'écran n'ont jamais eu le même vocabulaire. */
     var ecr = (S2030.ui && S2030.ui.screen) ? S2030.ui.screen() : null;
-    var libre = ecr === 'menu' || ecr === 'over' || ecr === null;
-    btn.classList.toggle('on', libre && (S.phase === 'menu' || S.phase === 'dead'));
+    // 'null' n'est plus accepté : c'est l'état pendant l'animation de mort et
+    // juste après REJOUER, où le bouton se retrouvait posé sur le jeu
+    var libre = ecr === 'menu' || ecr === 'over';
+    var notice = help.classList.contains('on');
+    btn.classList.toggle('on', !notice && libre && (S.phase === 'menu' || S.phase === 'dead'));
     btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
   }
-  setInterval(sync, 300);
+  // sondage toutes les 300 ms : le bouton restait allumé par-dessus le jeu
+  // pendant l'animation de mort et après REJOUER. On le synchronise dans la
+  // boucle, où le changement d'écran est immédiatement visible.
+  _fsbSync = sync;
   document.addEventListener('fullscreenchange', sync);
   document.addEventListener('webkitfullscreenchange', sync);
 }
