@@ -321,6 +321,12 @@ var _UI_CSS = [
 '.s2tile>s{text-decoration:none;font:800 calc(var(--uis)*clamp(7px,1.6vh,10px))/1.35 var(--fs);',
 '  letter-spacing:.18em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 '.s2tile>b{font:800 calc(var(--uis)*clamp(12px,2.9vh,19px))/1.2 var(--fm);color:#fff;',
+/* La tuile ARME tronquait six noms sur huit sur petit écran : elle prend
+   toute la largeur qu'il lui faut, et son texte rétrécit plutôt que de se
+   couper. */
+'.s2tile.wide{flex:1 1 100%;max-width:100%}',
+'.s2tile.wide>b{font-size:calc(var(--uis)*clamp(9px,2.1vh,14px));white-space:nowrap;'
+  + 'overflow:hidden;text-overflow:clip}',
 '  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 '.s2tile.hi{border-color:var(--am)}.s2tile.hi>b{color:var(--am)}',
 '.s2rec{font:900 calc(var(--uis)*clamp(10px,2.4vh,15px))/1 var(--fs);letter-spacing:.22em;',
@@ -343,10 +349,10 @@ var _UI_CSS = [
 '.s2sw.on{background:rgba(0,229,255,.3);border-color:var(--cy)}',
 '.s2sw.on::after{transform:translateX(24px);background:var(--cy);box-shadow:0 0 12px var(--cy)}',
 '.s2stp{flex:0 0 auto;display:flex;align-items:center;gap:6px}',
-'#ui .s2stp>button{width:34px;height:30px;border-radius:6px;border:1px solid var(--line);',
+'#ui .s2stp>button{width:42px;height:38px;border-radius:6px;border:1px solid var(--line);',
 '  background:rgba(0,229,255,.09);font:900 16px/1 var(--fs);color:var(--cy)}',
 '#ui .s2stp>button:active{background:rgba(0,229,255,.3)}',
-'.s2stp>span{min-width:64px;text-align:center;font:800 calc(var(--uis)*12px)/1 var(--fm);color:#fff}',
+'.s2stp>span{min-width:76px;text-align:center;font:800 calc(var(--uis)*12px)/1 var(--fm);color:#fff}',
 '.s2seg2{flex:0 0 auto;display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}',
 '#ui .s2seg2>button{padding:0 12px;height:30px;font:800 calc(var(--uis)*10px)/1 var(--fs);',
 '  letter-spacing:.12em;color:var(--dim);background:rgba(255,255,255,.03)}',
@@ -694,6 +700,7 @@ function _uiBuildOver(root) {
   _uiE.oLvl = _uiTile(g, 'NIVEAU');
   _uiE.oKills = _uiTile(g, 'DÉTRUITS');
   _uiE.oWpn = _uiTile(g, 'ARME');
+  _uiE.oWpn.parentNode.classList.add('wide');
   _uiE.oBest = _uiTile(g, 'RECORD');
   _uiE.oCoins = _uiTile(g, 'CRÉDITS', true);
   var row = _uiMk('div', 's2row', sc);
@@ -773,7 +780,11 @@ function _uiBuildSettings(root) {
   _uiScrollable(box);
 
   _uiMk('div', 's2grp', box, 'PARTIE');
-  _uiStepper(box, 'Difficulté', 'diff', [1, 1.5, 2, 2.7, 3.5],
+  /* Les valeurs du sélecteur DOIVENT venir de la table du moteur. En les
+     écrivant à la main, deux crans du sélecteur (2,7 et 3,5) tombaient sur le
+     même palier moteur et les étiquettes annonçaient autre chose que ce qui
+     était appliqué. */
+  _uiStepper(box, 'Difficulté', 'diff', DIFFS.map(function (d) { return d.m; }),
     function (v, i) { return DIFFS[i].nom; });
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
@@ -883,7 +894,7 @@ function _uiDefaults() {
   if (o.particles === undefined) o.particles = 1;
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
-  if (o.diff === undefined) o.diff = 2;
+  if (o.diff === undefined) o.diff = DIFFS[1].m;
   if (o.px === undefined) o.px = 1.5;
 }
 
@@ -1286,15 +1297,24 @@ S2030.ui = {
 
   rects: function () { return _uiRects; },
 
+  /* On rend le bouton dont le CENTRE est le plus proche, pas le premier dont
+     le disque contient le point. Les zones tactiles se chevauchent (le boost
+     a 73 px de rayon, le pouvoir 54, leurs centres sont à 98 px) et le
+     premier de la liste gagnait : appuyer sur le bord dessiné du bouton de
+     pouvoir déclenchait le boost. */
   hitTest: function (x, y) {
-    var R = _uiRects, k, b, rr;
+    var R = _uiRects, k, b, rr, d2, best = null, bestD = 1e9;
     for (k in R) {
       if (k === 'joy') continue;
       b = R[k];
       rr = b.r * 1.18;
-      if (dist2(x, y, b.x, b.y) < rr * rr) return k;
+      d2 = dist2(x, y, b.x, b.y);
+      if (d2 >= rr * rr) continue;
+      // distance rapportée au rayon : un petit bouton ne se fait pas manger
+      var rel = d2 / (rr * rr);
+      if (rel < bestD) { bestD = rel; best = k; }
     }
-    return null;
+    return best;
   },
 
   joyHome: function () { return _uiRects.joy; },

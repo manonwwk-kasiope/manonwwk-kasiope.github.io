@@ -3,7 +3,8 @@
    Canvas, entrées tactiles, rendu du serpent, boucle principale, cycle de vie.
    ========================================================================== */
 
-var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5;
+var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
+var _fsbSync = null;
 
 function setupCanvas() {
   cv = document.getElementById('game');
@@ -18,7 +19,7 @@ function setupCanvas() {
    JavaScript significative. Un halo néon supporte très bien 1,5 ; une image
    sur dix perdue, non. Le joueur peut remonter le curseur s'il veut. */
 function resizeCanvas() {
-  DPR = Math.min(window.devicePixelRatio || 1, S.opt.px || 1.5);
+  DPR = Math.min(window.devicePixelRatio || 1, S.pxEff || S.opt.px || 1.5);
   var w = window.innerWidth, h = window.innerHeight;
   CW = w; CH = h;
   cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
@@ -28,7 +29,12 @@ function resizeCanvas() {
   SCALE = h / K.VIEW_H;
   S.view.h = K.VIEW_H;
   S.view.w = w / SCALE;
-  document.body.classList.toggle('portrait', h > w);
+  var portrait = h > w;
+  document.body.classList.toggle('portrait', portrait);
+  /* Le bandeau « tourne ton téléphone » est opaque et avale les touchers : la
+     partie continuait derrière, le joueur encaissant des coups qu'il ne
+     pouvait ni voir ni éviter. On met en pause comme pour l'arrière-plan. */
+  if (portrait && S.phase === 'play' && !S.paused) togglePause();
 }
 
 /* ----------------------------------------------------------- entrées tactiles */
@@ -55,6 +61,8 @@ function onTouchStart(e) {
     var t = e.changedTouches[i];
     var b = hitBtn(t.clientX, t.clientY);
     if (b) { touchBtns[t.identifier] = b; S.input[b] = true; pressBtn(b); continue; }
+    // bande du haut réservée au HUD : le manche flottant s'y dessinait par-dessus
+    if (t.clientY < CH * 0.22) continue;
     if (!touchJoy && joySide(t.clientX)) {
       touchJoy = { id: t.identifier, ox: t.clientX, oy: t.clientY, x: t.clientX, y: t.clientY };
       S.input.jactive = true;
@@ -336,7 +344,10 @@ function frame(now) {
   S.dt = dt;
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
-  if (S.opt.px !== _pxApplied) { _pxApplied = S.opt.px; resizeCanvas(); }
+  qualitySample(raw);
+  qualityTilt();
+  if (_fsbSync) _fsbSync();
+  if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
 
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
@@ -348,6 +359,7 @@ function frame(now) {
     S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
     S2030.phases && S2030.phases.update(dt);
     auraTick(dt);
+    sonicTick(dt);
     poolsTick(dt);
     collide(dt);
     // dernier mot au treillis : plus rien ne déplacera les ennemis après
@@ -357,6 +369,11 @@ function frame(now) {
     updateCam(dt);
     S2030.audio && S2030.audio.setIntensity(S.intensity);
     if (S.lvlUps > 0) openCards();
+  } else if (S.phase === 'dead' || S.phase === 'cards') {
+    S.t += raw * 1000;
+    // la caméra continue de se redresser : sinon le récapitulatif se lit sur
+    // une image penchée à 30° et gardée telle quelle
+    S2030.phases && S2030.phases.settle && S2030.phases.settle(raw);
   } else if (S.phase === 'menu') {
     S.t += raw * 1000;
     S.cam.x = lerp(S.cam.x, K.ARENA_W / 2, 0.02);
@@ -468,7 +485,9 @@ var _perspApplied = -1;
 function perspCover(t) {
   var c = Math.cos(t);
   if (c < 0.2) return 1;
-  return (PERSP_D + Math.sin(t)) / (PERSP_D * c);
+  // 1,5 % de marge : sans elle un liseré de 4 px reste découvert en haut,
+  // le calcul étant exact au pixel près et l'arrondi du navigateur non
+  return (PERSP_D + Math.sin(t)) / (PERSP_D * c) * 1.015;
 }
 
 function applyPersp(t) {
@@ -476,9 +495,16 @@ function applyPersp(t) {
   if (q === _perspApplied) return;
   _perspApplied = q;
   if (!cv) return;
-  if (q <= 0.0005) { cv.style.transform = ''; return; }
+  if (q <= 0.0005) {
+    cv.style.transform = '';
+    cv.style.willChange = '';            // la couche promue ne doit pas survivre
+    cv.style.backfaceVisibility = '';
+    return;
+  }
   var P = (CH * 0.5 * PERSP_D).toFixed(0);
   cv.style.transformOrigin = '50% 50%';
+  cv.style.willChange = 'transform';
+  cv.style.backfaceVisibility = 'hidden';
   cv.style.transform = 'perspective(' + P + 'px) rotateX(' + (q * 180 / Math.PI).toFixed(2) +
                        'deg) scale(' + perspCover(q).toFixed(4) + ')';
 }
@@ -488,18 +514,85 @@ function applyPersp(t) {
 function drawControls() {}
 function syncControls() {}
 
-/* ---------------------------------------------------------- qualité adaptative */
-var _qLow = 0;
+/* ---------------------------------------------------------- qualité adaptative
+   Trois défauts mesurés sur l'ancienne version : le seuil de 42 images/s ne se
+   déclenchait jamais pendant la bascule 3D (le jeu y lit 48 à 54 im/s de
+   moyenne tout en perdant une image sur six) ; la dégradation ne remontait
+   jamais ; et elle écrasait le réglage du joueur dans son profil enregistré.
+   On regarde donc la proportion d'images longues plutôt que la moyenne, on
+   remonte dès que ça respire, et l'ajustement automatique reste en mémoire
+   sans jamais toucher au choix du joueur. */
+var _qWin = [], _qStep = 0, _qHold = 0, _qBon = 0;
+var PX_CRANS = [1, 1.25, 1.5, 2];
+
+function qualitySample(raw) {
+  _qWin.push(raw);
+  if (_qWin.length > 120) _qWin.shift();
+}
+
+/* Première version : on remontait dès que la mesure redevenait bonne. Or elle
+   redevient bonne PARCE QU'ON A BAISSÉ — et la bascule 3D, qui est justement
+   le moment coûteux, ne dure que vingt secondes. Résultat mesuré : neuf
+   changements de netteté en quatre-vingt-dix secondes, un cycle limite. On ne
+   remonte donc jamais pendant la bascule, et seulement après une longue
+   période franchement saine. */
 function autoQuality() {
-  if (fps < 42) {
-    _qLow++;
-    if (_qLow > 2 && S.opt.particles > 0.4) S.opt.particles = 0.4;
-    // si ça rame encore, c'est le remplissage : on descend d'un cran de netteté
-    if (_qLow > 5 && S.opt.px > 1) S.opt.px = S.opt.px > 1.25 ? 1.25 : 1;
-    // en dessous de 34 images/s le fil audio commence à se vider : on allège
-    // les couches synthétisées plutôt que de laisser la musique hoqueter
-    if (_qLow > 4 && fps < 34) S.opt.audioLite = true;
-  } else if (fps > 55) { _qLow = 0; }
+  if (_qWin.length < 60) return;
+  var longues = 0;
+  for (var i = 0; i < _qWin.length; i++) if (_qWin[i] > 0.033) longues++;
+  var part = longues / _qWin.length;
+  if (_qHold > 0) { _qHold--; return; }
+
+  if (part > 0.06 && _qStep < 3) {
+    _qStep++; _qBon = 0;
+    applyQuality();
+    _qHold = 8;
+    _qWin.length = 0;
+    return;
+  }
+
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  if (part < 0.02 && _qStep > 0 && !penche) {
+    // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
+    // regagner un cran : remonter vite, c'est retomber tout de suite
+    if (++_qBon >= 16) {
+      _qStep--; _qBon = 0;
+      applyQuality();
+      _qHold = 12;
+      _qWin.length = 0;
+    }
+  } else if (part >= 0.02) _qBon = 0;    // une image longue isolée ne remet pas à zéro
+}
+
+/* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
+   l'écraser : S.opt.px reste ce qu'il a réglé, S.pxEff est ce qui est rendu.
+   La bascule coûte un cran de plus, de façon déterministe : c'est le moment
+   où le compositeur travaille le plus, et une règle fixe ne peut pas osciller
+   comme le ferait une boucle de rétroaction. */
+function applyQuality() {
+  var voulu = S.opt.px || 1.5;
+  var base = 0;
+  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu) base = k;
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
+  S.pxEff = PX_CRANS[i];
+  /* On n'écrit PLUS dans S.opt : c'est l'objet enregistré dans le profil, et
+     « densité des particules » est un réglage du joueur à part entière. La
+     dégradation vit dans S.partEff, que le rendu lit. */
+  var vp = S.opt.particles === undefined ? 1 : S.opt.particles;
+  S.partEff = Math.min(vp, _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1));
+  if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
+}
+
+/* La bascule s'installe et se retire progressivement : on ne rebascule la
+   netteté qu'aux deux franchissements, pas à chaque image. */
+var _penchePrec = false;
+function qualityTilt() {
+  var penche = !!(S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01);
+  if (penche === _penchePrec) return;
+  _penchePrec = penche;
+  applyQuality();
+  _qWin.length = 0; _qBon = 0; _qHold = 8;
 }
 
 /* ------------------------------------------------------------ cartes / niveaux */
@@ -553,6 +646,10 @@ function resetRun() {
 }
 
 function startRun() {
+  // la transition (plein écran, armement audio, remise à zéro) saccade par
+  // nature : la mesure de qualité repart de zéro, sinon le premier cran
+  // tombait dès la première seconde sur une machine parfaitement saine
+  _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
   goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
@@ -670,7 +767,13 @@ function goFullscreen(onFail) {
    On lui donne quatre-vingts pixels de marge le temps d'un défilement, puis
    on remet tout en place. C'est au mieux quelques dizaines de pixels gagnés,
    pas un vrai plein écran — la notice reste donc affichée. */
+var _nudgeOn = false;
 function nudgeChrome() {
+  /* Deux appuis rapprochés mémorisaient les styles DÉJÀ modifiés et les
+     réinstallaient pour de bon : la page restait défilable et 80 px trop
+     haute jusqu'au rechargement. Un seul repli à la fois. */
+  if (_nudgeOn) return;
+  _nudgeOn = true;
   var h = document.documentElement, b = document.body;
   var ph = h.style.cssText, pb = b.style.cssText;
   h.style.height = 'auto'; h.style.overflowY = 'auto';
@@ -680,6 +783,7 @@ function nudgeChrome() {
     h.style.cssText = ph; b.style.cssText = pb;
     try { window.scrollTo(0, 0); } catch (e) {}
     resizeCanvas();
+    _nudgeOn = false;
   }, 900);
 }
 
@@ -706,8 +810,9 @@ function buildFullscreenButton() {
      libellé gris posé sous les boutons de fin de partie. */
   var st = document.createElement('style');
   st.textContent =
-    '#ui #fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
-    'transform:translateX(-50%);pointer-events:auto;z-index:40;display:none;' +
+    '#ui #fsb{position:absolute;left:calc(env(safe-area-inset-left,0px) + 10px);' +
+    'bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
+    'pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
     'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
@@ -717,6 +822,7 @@ function buildFullscreenButton() {
     'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
     '#ui #fshelp.on{display:flex}' +
     '#ui #fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    '-webkit-overflow-scrolling:touch;touch-action:pan-y;' +
     'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
     'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
     '#ui #fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
@@ -735,6 +841,11 @@ function buildFullscreenButton() {
     '<button class="close" type="button">J\'ai compris</button></div>';
   ui.appendChild(help);
   var body = help.querySelector('.body');
+  /* Le coeur avale les gestes posés sur #app, qui contient l'interface : sans
+     ce branchement la carte ne défilait pas et, sous 305 px de haut, le
+     bouton « J'ai compris » devenait inatteignable — le jeu restait bloqué
+     derrière la notice. */
+  if (typeof _uiScrollable === 'function') _uiScrollable(help.querySelector('.card'));
 
   function showHelp(why) {
     // on tente quand même de récupérer la barre du navigateur
@@ -746,10 +857,15 @@ function buildFullscreenButton() {
         '<ol><li>touche le bouton <b>Partager</b> de Safari (le carré avec la flèche) ;</li>' +
         '<li>choisis <b>Sur l\'écran d\'accueil</b> ;</li>' +
         '<li>lance SNAKE 2030 depuis l\'icône : plus aucune barre, vrai plein écran.</li></ol>'
-      : 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
-        'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
-        'directement.';
+      : why === 'frame'
+        ? 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
+          'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
+          'directement.'
+        : 'Ton navigateur a refusé le passage en plein écran. Essaie depuis un ' +
+          'onglet ordinaire, sans mode de navigation restreint, ou ajoute le jeu ' +
+          'à ton écran d\'accueil.';
     help.classList.add('on');
+    btn.classList.remove('on');          // il tombait sous « J'ai compris »
   }
   /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
      supprime le click de compatibilité : un simple addEventListener('click')
@@ -775,10 +891,25 @@ function buildFullscreenButton() {
   });
 
   function sync() {
-    btn.classList.toggle('on', S.phase === 'menu' || S.phase === 'dead');
+    /* Le bouton se posait dès que la phase valait 'menu', donc aussi par-dessus
+       les écrans ouverts DEPUIS le menu : il recouvrait à 88 % la pilule RETOUR
+       des réglages et des déblocages, et le joueur ne pouvait plus revenir.
+       On regarde l'écran réellement affiché, pas la phase. */
+    /* L'écran de fin s'appelle 'over', pas 'dead' : mon premier garde-fou le
+       masquait donc là où il devait justement être. La phase et le nom
+       d'écran n'ont jamais eu le même vocabulaire. */
+    var ecr = (S2030.ui && S2030.ui.screen) ? S2030.ui.screen() : null;
+    // 'null' n'est plus accepté : c'est l'état pendant l'animation de mort et
+    // juste après REJOUER, où le bouton se retrouvait posé sur le jeu
+    var libre = ecr === 'menu' || ecr === 'over';
+    var notice = help.classList.contains('on');
+    btn.classList.toggle('on', !notice && libre && (S.phase === 'menu' || S.phase === 'dead'));
     btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
   }
-  setInterval(sync, 300);
+  // sondage toutes les 300 ms : le bouton restait allumé par-dessus le jeu
+  // pendant l'animation de mort et après REJOUER. On le synchronise dans la
+  // boucle, où le changement d'écran est immédiatement visible.
+  _fsbSync = sync;
   document.addEventListener('fullscreenchange', sync);
   document.addEventListener('webkitfullscreenchange', sync);
 }
@@ -792,11 +923,36 @@ function armAudio() {
   decodeMusic();
 }
 
-function decodeMusic() {
-  loadMusic()
+/* Repli mémoire : on suit l'ordre de la liste, une piste entière à la fois.
+   L'ancienne version décodait toujours 'neonvelocity.mp3' en dur, si bien que
+   la piste demandée en premier n'était jamais jouée dans aucun cas dégradé. */
+function decodeMusic(i) {
+  var liste = musicList();
+  var n = (i || 0) % liste.length;
+  S2030.audio.onTrackEnd(function () { decodeMusic(n + 1); });
+  loadSource(liste[n])
     .then(function (ab) { return S2030.audio.decode(ab); })
-    .then(function (buf) { if (!buf) console.warn('musique : repli sur la synthèse'); })
+    .then(function (buf) {
+      if (!buf) console.warn('musique : repli sur la synthèse');
+      else S2030.audio.start();
+    })
     .catch(function () { /* la synthèse prend le relais */ });
+}
+
+/* Charge une entrée de la liste, qu'elle soit un fichier ou une URI de
+   données. Le décodage en mémoire ne passe jamais par fetch('data:…') : une
+   page publiée sert souvent une politique dont le connect-src l'interdirait. */
+function loadSource(u) {
+  if (u.indexOf('data:') === 0) {
+    try {
+      var b64 = u.slice(u.indexOf(',') + 1);
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return Promise.resolve(bytes.buffer);
+    } catch (e) { return Promise.reject(e); }
+  }
+  return fetch(u).then(function (r) { return r.arrayBuffer(); });
 }
 
 /* --------------------------------------------------------------------- boot */

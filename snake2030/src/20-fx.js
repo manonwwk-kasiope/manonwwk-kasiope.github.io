@@ -150,6 +150,12 @@ function _fxOpt() {
   return (typeof S !== 'undefined' && S && S.opt) ? S.opt : null;
 }
 function _fxPartF() {           // densité de particules 0..2
+  /* S.partEff est la densité RENDUE : elle combine le réglage du joueur et la
+     dégradation automatique. Cette dernière n'écrit plus dans S.opt, qui est
+     enregistré dans le profil — elle y écrasait le choix du joueur. */
+  if (typeof S !== 'undefined' && S && typeof S.partEff === 'number') {
+    return S.partEff < 0 ? 0 : (S.partEff > 2 ? 2 : S.partEff);
+  }
   var o = _fxOpt();
   if (o && typeof o.particles === 'number') {
     return o.particles < 0 ? 0 : (o.particles > 2 ? 2 : o.particles);

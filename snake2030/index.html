@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SNAKE 2030">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305060f'/%3E%3Cpath d='M10 42c0-10 14-8 14-18S10 14 10 10' stroke='%2300e5ff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M40 24l14 8-14 8z' fill='%23ff2e63'/%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -87,9 +88,9 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 2, px: 1.5 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0, headR: 16,
+  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1
 };
 
@@ -122,12 +123,16 @@ function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
    correspond désormais à « DÉTENDU ». Le multiplicateur ne s'applique pas
    uniformément — doubler les dégâts encaissés rendrait le jeu injouable
    alors que doubler la densité le rend simplement plus dense. */
+/* Échelle retaillée sur des mesures de survie, non sur des multiplicateurs.
+   L'ancienne donnait, pour un joueur passif : plus de 150 s / 88 / 90 / 62 /
+   20 s — le premier cran ne finissait jamais, les deux du milieu étaient
+   indiscernables, et le dernier tuait avant le premier contenu du jeu. */
 var DIFFS = [
-  { m: 1.0, nom: 'DÉTENDU' },
-  { m: 1.5, nom: 'SOUTENU' },
-  { m: 2.0, nom: 'STANDARD' },
-  { m: 2.7, nom: 'BRUTAL' },
-  { m: 3.5, nom: 'SUICIDE' }
+  { m: 1.25, nom: 'DÉTENDU' },
+  { m: 1.55, nom: 'SOUTENU' },
+  { m: 1.90, nom: 'STANDARD' },
+  { m: 2.30, nom: 'BRUTAL' },
+  { m: 2.75, nom: 'SUICIDE' }
 ];
 function diffIdx() {
   var v = S.opt.diff, b = 2, bd = 1e9;
@@ -216,10 +221,7 @@ function updateSnake(dt) {
        reste la même, et le manche a beau désigner l'autre rail, on y revient
        à chaque image. Ici le changement de rail est franc, comme il doit
        l'être sur un treillis. */
-    var tgt = S2030.phases.railAng(want === null ? s.ang : want);
-    // demi-tour refusé : on ne repique pas dans son propre corps
-    if (Math.abs(norm(tgt - s.ang)) > Math.PI * 0.75) tgt = S2030.phases.railAng(s.ang);
-    s.ang = tgt;
+    s.ang = S2030.phases.railSteer(s, want, s.speed * dt);
   } else if (want !== null) {
     // --- cap : virage analogique vers la direction du manche ---
     var diff = norm(want - s.ang);
@@ -254,7 +256,12 @@ function updateSnake(dt) {
   }
   // PROPULSION : la vitesse de croisière monte avec les cartes
   s.baseSpeed = K.BASE_SPEED * (1 + 0.07 * (S.up.f_speed || 0));
-  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1);
+  /* Le facteur du REPLI entre dans la CIBLE, pas dans la vitesse déjà
+     lissée : appliqué après le lissage, il se composait à chaque image
+     (1,12 x 0,90 = 1,0096 > 1) et la vitesse divergeait — mesuré ×48 en
+     quatre secondes, ×108 en huit. */
+  var foldNow = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1) * (1 + 0.12 * foldNow);
   s.speed = lerp(s.speed, target, 1 - Math.pow(0.002, dt));
 
   // --- avance ---
@@ -267,16 +274,35 @@ function updateSnake(dt) {
   if (s.x > K.ARENA_W - m) { s.x = K.ARENA_W - m; s.ang = norm(Math.PI - s.ang); wallBump(); }
   if (s.y < m) { s.y = m; s.ang = -s.ang; wallBump(); }
   if (s.y > K.ARENA_H - m) { s.y = K.ARENA_H - m; s.ang = -s.ang; wallBump(); }
+  if (rail) {
+    // normale rentrante du ou des bords touchés : c'est elle qui dit vers où
+    // repartir, un cap simplement réfléchi repointant souvent dans le mur
+    var nx = 0, ny = 0;
+    if (s.x <= m) nx = 1; else if (s.x >= K.ARENA_W - m) nx = -1;
+    if (s.y <= m) ny = 1; else if (s.y >= K.ARENA_H - m) ny = -1;
+    if (nx || ny) {
+      var nl = Math.sqrt(nx * nx + ny * ny);
+      S2030.phases.railBounce(s, nx / nl, ny / nl);
+    }
+  }
+
+  /* La visée est bornée à ±RAIL_LOOK autour du cap ; le rebond change le cap
+     après coup, et la tête comme les canons partaient jusqu'à l'opposé du
+     corps. On la ramène dans son cône une fois le cap définitif. */
+  if (s.aim !== undefined) {
+    var ec = norm(s.aim - s.ang);
+    if (ec > RAIL_LOOK) s.aim = norm(s.ang + RAIL_LOOK);
+    else if (ec < -RAIL_LOOK) s.aim = norm(s.ang - RAIL_LOOK);
+  }
 
   // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
   // collision grossissent ensemble, sinon le joueur sentirait le mensonge
-  var fold = S2030.phases ? S2030.phases.foldFactor() : 0;
+  var fold = foldNow;
   S.headR = K.HEAD_R * (1 + 0.5 * fold);
-  if (fold) s.speed *= 1.12;
 
-  // aimantation sur le rail : après l'avance, avant que le chemin ne
+  // on ne quitte jamais sa droite : après l'avance, avant que le chemin ne
   // l'enregistre, pour que le corps suive exactement la même ligne
-  if (rail) S2030.phases.railSnap(s, dt);
+  if (rail) S2030.phases.railHold(s);
 
   pushPath();
   buildSegs();
@@ -466,7 +492,10 @@ function killEnemy(e, opts) {
   S.mult = Math.min(12, 1 + Math.floor(S.combo / 4) * 0.5);
   addScore(e.score);
   addXp(e.xp);
-  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 9 : 1.6));
+  /* Mesuré : 0,13 point par seconde, soit 750 s pour une jauge pleine alors
+     qu'une partie en dure 30 à 40. Le bouton pulsait « prêt » sans jamais
+     l'être. Une partie ordinaire doit offrir une à deux surcharges. */
+  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
   S.coins += e.elite ? 5 : 1;
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
   S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
@@ -501,6 +530,59 @@ function deathEffects(e) {
     S.pools.push({ x: e.x, y: e.y, r: 60 + 14 * pool, dmg: 3 * pool, life: 2.2 + 0.5 * pool });
     if (S.pools.length > 40) S.pools.shift();
   }
+
+  /* IMPLOSION : « les explosions aspirent pendant 0,18 s ». L'indicateur était
+     posé par la carte et lu nulle part — la carte ne faisait rien. */
+  if (S.up.f_implode && (bomb || chain)) {
+    var pull = enemiesNear(e.x, e.y, 190);
+    for (var q = 0; q < pull.length; q++) {
+      var t = pull[q];
+      if (t === e || t === S.boss) continue;
+      var pa = angTo(t.x, t.y, e.x, e.y);
+      t.vx = (t.vx || 0) + Math.cos(pa) * 420;
+      t.vy = (t.vy || 0) + Math.sin(pa) * 420;
+    }
+    S2030.fx && S2030.fx.ring(e.x, e.y, '#b388ff', 6, 380);
+  }
+
+  /* ARC DE MORT : « toute mort relance un arc de 3 rebonds depuis le corps ». */
+  if (S.up.f_deathArc && _chainDepth < 2) {
+    var from = e, hop = 0;
+    _chainDepth++;
+    while (hop < 3) {
+      var near = enemiesNear(from.x, from.y, 240);
+      var cible = null;
+      for (var z = 0; z < near.length; z++) {
+        if (near[z] !== from && near[z] !== e && !near[z].dead) { cible = near[z]; break; }
+      }
+      if (!cible) break;
+      S2030.fx && S2030.fx.bolt
+        ? S2030.fx.bolt(from.x, from.y, cible.x, cible.y, '#7bdcff')
+        : S2030.fx && S2030.fx.ring(cible.x, cible.y, '#7bdcff', 5, 260);
+      damageEnemy(cible, 7, { x: cible.x, y: cible.y, type: 'shock' });
+      from = cible; hop++;
+    }
+    _chainDepth--;
+    if (hop) S2030.audio && S2030.audio.sfx('zap', { x: e.x });
+  }
+}
+
+/* MUR DU SON : « pendant le boost, onde permanente de rayon 90 devant la
+   tête ». L'indicateur n'était lu nulle part : la carte, la plus chère du
+   paquet, ne produisait aucune sortie mesurable. */
+function sonicTick(dt) {
+  var s = S.snake;
+  if (!S.up.f_sonicBoom || !s || !s.boosting) return;
+  var fx = s.x + Math.cos(s.ang) * 74, fy = s.y + Math.sin(s.ang) * 74;
+  var list = enemiesNear(fx, fy, 90);
+  for (var i = 0; i < list.length; i++) {
+    var e = list[i];
+    damageEnemy(e, 26 * dt * 15, { x: e.x, y: e.y, type: 'blast' });
+    var a = angTo(fx, fy, e.x, e.y);
+    e.vx = (e.vx || 0) + Math.cos(a) * 260 * dt * 15;
+    e.vy = (e.vy || 0) + Math.sin(a) * 260 * dt * 15;
+  }
+  if ((S.t | 0) % 6 === 0) S2030.fx && S2030.fx.ring(fx, fy, '#fff3b0', 5, 240);
 }
 
 /* Aura électrique passive (constructions conductrices). */
@@ -705,6 +787,10 @@ function collide(dt) {
   for (i = S.pickups.length - 1; i >= 0; i--) {
     var p = S.pickups[i];
     p.t += dt;
+    /* Sans expiration ils s'accumulaient — 128 mesurés après trois minutes —
+       jusqu'au plafond de 400, où le jeu cessait silencieusement de produire
+       le moindre butin. Ils clignotent avant de partir. */
+    if (p.t > 26) { S.pickups.splice(i, 1); continue; }
     var d = dist(p.x, p.y, s.x, s.y);
     if (d < magnetR) {
       var pull = (1 - d / magnetR) * 900;
@@ -932,6 +1018,12 @@ function _fxOpt() {
   return (typeof S !== 'undefined' && S && S.opt) ? S.opt : null;
 }
 function _fxPartF() {           // densité de particules 0..2
+  /* S.partEff est la densité RENDUE : elle combine le réglage du joueur et la
+     dégradation automatique. Cette dernière n'écrit plus dans S.opt, qui est
+     enregistré dans le profil — elle y écrasait le choix du joueur. */
+  if (typeof S !== 'undefined' && S && typeof S.partEff === 'number') {
+    return S.partEff < 0 ? 0 : (S.partEff > 2 ? 2 : S.partEff);
+  }
   var o = _fxOpt();
   if (o && typeof o.particles === 'number') {
     return o.particles < 0 ? 0 : (o.particles > 2 ? 2 : o.particles);
@@ -2037,35 +2129,59 @@ function _audMeasureLead(buf){
    de deux cents mégaoctets de PCM — impraticable sur téléphone. On les diffuse
    donc en flux, l'une après l'autre, chacune jouée en entier : la mémoire ne
    dépend plus de la durée, seulement du tampon de lecture. */
-var _audList = [], _audListI = 0, _audEl = null, _audListOn = false;
+var _audList = [], _audListI = 0, _audEl = null, _audListOn = false, _audBufNext = null;
 var _audListErr = 0, _audListFail = null;
 
 function _audPlaylist(urls, onfail){
   if(!_audOk || !urls || !urls.length || _audList.length) return false;
   _audListFail = onfail || null;
+  /* Safari sur iPhone ne joue pas de manière fiable un élément média resté
+     hors du document, et refuse la lecture sans « playsinline ». On les
+     attache donc pour de bon, en les gardant invisibles. */
+  var box = document.getElementById('s2music');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 's2music';
+    box.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none';
+    document.body.appendChild(box);
+  }
   for(var i = 0; i < urls.length; i++){
-    var a = new Audio();
-    a.src = urls[i];
-    a.preload = i ? 'none' : 'auto';
+    var a = document.createElement('audio');
+    a.setAttribute('playsinline', '');
+    a.setAttribute('webkit-playsinline', '');
+    a.preload = i ? 'metadata' : 'auto';
     a.loop = false;
+    a.src = urls[i];
     a.addEventListener('ended', _audEnded);
-    a.addEventListener('error', _audErr);
+    a._id = 'p' + i;
+    (function (el) { el.addEventListener('error', function () { _audLache(el); }); })(a);
+    box.appendChild(a);
     _audList.push(a);
   }
   _audListOn = true;
   return true;
 }
 
-function _audEnded(){ _audListErr = 0; _audAdvance(); }
+function _audEnded(){ _audEchecs = {}; _audListErr = 0; _audAdvance(); }
 
 /* Une source refusée — fichier manquant, ou politique de sécurité qui
    interdit les URI de données sur un élément média — ne doit pas faire
    tourner la liste à vide. Quand toutes ont échoué, on rend la main pour que
    l'appelant retombe sur le décodage en mémoire. */
-function _audErr(){
+var _audEchecs = {};
+function _audErr(a){
   if(!_audListOn) return;
-  if(++_audListErr >= _audList.length){
-    _audListOn = false; _audEl = null; _audList.length = 0;
+  // un même élément qui échoue plusieurs fois ne compte qu'une panne
+  if(a){ if(_audEchecs[a._id]) return; _audEchecs[a._id] = 1; }
+  _audListErr = 0;
+  for(var q in _audEchecs) _audListErr++;
+  if(_audListErr >= _audList.length){
+    _audListOn = false; _audEl = null;
+    for(var i = 0; i < _audList.length; i++){
+      try{ _audList[i].pause(); _audList[i].removeAttribute('src'); _audList[i].load(); }catch(e){}
+      if(_audList[i].parentNode) _audList[i].parentNode.removeChild(_audList[i]);
+    }
+    _audList.length = 0;
     var f = _audListFail; _audListFail = null;
     if(f) try{ f(); }catch(e){}
     return;
@@ -2090,19 +2206,107 @@ function _audStartStream(t0){
     try{ a._node = _audCtx.createMediaElementSource(a); }catch(e){ return false; }
     a._node.connect(_audTrackG);
   }
+  // aucune autre piste ne doit rester en lecture : c'est la seule garantie
+  // contre deux morceaux superposés
+  for(var k = 0; k < _audList.length; k++){
+    if(_audList[k] !== a){ try{ _audList[k].pause(); }catch(e){} }
+  }
   try{ a.playbackRate = _audRate; }catch(e){}
+  a._ok = false; a._pauseVoulue = 0;
+  a.addEventListener('playing', function(){ _audConfirme(a); });
+  a.addEventListener('timeupdate', function(){ if(a.currentTime > 0.05) _audConfirme(a); });
   var pr;
-  try{ pr = a.play(); }catch(e){ return false; }
-  if(pr && pr['catch']) pr['catch'](function(){});
+  try{ pr = a.play(); }catch(e){ _audLache(a); return false; }
+  /* Un refus de lecture ne doit surtout pas être avalé : c'est le cas
+     habituel sur iPhone, et le silence qui suit est indiscernable d'une
+     musique qui marche si l'on se contente de regarder l'élément. */
+  /* Une AbortError vient de notre propre pause() — pause du jeu, coupure de
+     la musique, abandon volontaire — et n'est pas une panne de lecture. */
+  if(pr && pr['catch']) pr['catch'](function(err){
+    if(a._lache || a._pauseVoulue) return;
+    if(err && err.name === 'AbortError') return;
+    _audLache(a);
+  });
   _audEl = a;
+  _audWatch(a);
   // la suivante se met en tampon pendant que celle-ci joue : l'enchaînement
   // ne doit pas s'entendre
   var nx = _audList[(_audListI + 1) % _audList.length];
   if(nx && nx !== a && nx.preload !== 'auto'){ try{ nx.preload = 'auto'; nx.load(); }catch(e){} }
-  _audRamp(_audTrackG.gain, 1, 0.9, t0);
-  _audRamp(_audBaseG.gain, 0, 0.9, t0);
-  _audBaseSynth = false;
   return true;
+}
+
+/* Chien de garde, troisième version.
+
+   Deuxième version : on surveillait « buffered » en croyant y lire la
+   progression du chargement. Mesuré, c'est faux : avant les métadonnées,
+   buffered reste VIDE alors que l'élément reçoit des mégaoctets — à 4 Mb/s,
+   1,40 Mo en 5,4 s, un « progress » toutes les 380 ms, networkState LOADING,
+   aucune erreur, et pourtant readyState 0 et buffered vide. La garde était
+   donc restée un délai fixe déguisé, et sous 4,5 Mb/s elle abandonnait
+   systématiquement une piste parfaitement saine.
+
+   On écoute donc les signaux que le navigateur émet vraiment : « progress »
+   pendant le téléchargement, « loadedmetadata », « canplay », « playing ».
+   Tant qu'il en arrive, on attend. On n'abandonne que sur une erreur franche
+   ou un silence total de trente secondes. */
+var _audWatchTO = null;
+
+function _audWatch(a){
+  if(_audWatchTO) clearTimeout(_audWatchTO);
+  a._vu = _audNow();
+  if(!a._sondes){
+    a._sondes = 1;
+    var vivant = function(){ a._vu = _audNow(); };
+    a.addEventListener('progress', vivant);
+    a.addEventListener('loadedmetadata', vivant);
+    a.addEventListener('loadeddata', vivant);
+    a.addEventListener('canplay', vivant);
+    a.addEventListener('suspend', vivant);
+  }
+  function controle(){
+    _audWatchTO = null;
+    if(!_audListOn || _audEl !== a) return;
+    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }   // ça joue
+    if(a.error){ _audLache(a); return; }
+    // trente secondes sans le moindre signe de vie : là seulement on renonce
+    if(_audNow() - a._vu > 30000){ _audLache(a); return; }
+    _audWatchTO = setTimeout(controle, 900);
+  }
+  _audWatchTO = setTimeout(controle, 900);
+}
+
+function _audNow(){
+  return (_audCtx ? _audCtx.currentTime * 1000 : 0);
+}
+
+/* Abandon franc : on coupe la source pour de bon, sinon l'élément se met à
+   jouer quand ses données finissent par arriver. Le drapeau est posé AVANT
+   la mise en pause : cette pause fait rejeter la promesse play() de
+   l'élément avec une AbortError, et sans le drapeau ce rejet était compté
+   comme une seconde panne — deux pannes suffisaient à démonter toute la
+   liste, y compris la piste qui venait de démarrer correctement. */
+function _audLache(a){
+  if(a._lache) return;
+  a._lache = 1;
+  try{ a.pause(); }catch(e){}
+  try{ a.removeAttribute('src'); a.load(); }catch(e){}
+  if(_audEl === a) _audEl = null;
+  _audErr(a);
+}
+
+/* Preuve que du son sort : c'est seulement là qu'on éteint la base
+   synthétisée. L'éteindre au moment du play() laissait de longues secondes
+   de silence complet quand l'élément faisait semblant de jouer. */
+function _audConfirme(a){
+  if(a._ok) return;
+  a._ok = true;
+  _audEchecs = {};
+  if(!_audCtx) return;
+  var t = _audCtx.currentTime;
+  _audRamp(_audTrackG.gain, 1, 0.6, t);
+  _audRamp(_audBaseG.gain, 0, 0.9, t);
+  _audBaseSynth = false;
 }
 
 function _audStartTrack(t0){
@@ -2118,10 +2322,27 @@ function _audStartTrack(t0){
     src = _audCtx.createBufferSource();
     src.buffer = buf;
   }catch(e){ return false; }
-  src.loop = true;
-  src.loopStart = lead;
-  var loopLen = _audLoopSec > 0 ? _audLoopSec : (buf.duration - lead);
-  src.loopEnd = Math.min(lead + loopLen, buf.duration);
+  /* En repli mémoire, on alterne comme le flux : une piste entière, puis
+     l'autre. Un seul tampon décodé à la fois — deux feraient deux cents
+     mégaoctets de PCM. Sans relais déclaré, on boucle comme avant. */
+  if(_audBufNext){
+    src.loop = false;
+    /* Un stop() programmé — pause, coupure, changement d'écran — déclenche
+       lui aussi « ended ». Sans distinguer les deux, chaque pause était prise
+       pour une fin de morceau : la liste avançait, la musique repartait
+       toute seule par-dessus le silence attendu, et la piste demandée en
+       premier n'était jamais entendue. */
+    src.onended = function(){
+      _audTrackNode = null;
+      if(src._arret) return;
+      var f = _audBufNext; if(f) f();
+    };
+  } else {
+    src.loop = true;
+    src.loopStart = lead;
+    var loopLen = _audLoopSec > 0 ? _audLoopSec : (buf.duration - lead);
+    src.loopEnd = Math.min(lead + loopLen, buf.duration);
+  }
   try{ src.playbackRate.value = _audRate; }catch(e){}
   src.connect(_audTrackG);
   try{ src.start(t0, lead); }catch(e){ try{ src.start(0, lead); }catch(e2){ return false; } }
@@ -2140,8 +2361,14 @@ function _audStartTrack(t0){
 
 function _audStopTrack(){
   // en flux, on met en pause : la reprise repart où on s'était arrêté
-  if(_audListOn && _audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
+  if(_audListOn && _audEl){
+    // pause voulue : le rejet de play() qui suit ne doit pas tuer la piste
+    _audEl._pauseVoulue = 1;
+    try{ _audEl.pause(); }catch(e){}
+    _audEl = null;
+  }
   if(_audTrackNode){
+    _audTrackNode._arret = 1;            // arrêt voulu, pas une fin de piste
     try{ _audTrackNode.stop(); }catch(e){}
     try{ _audTrackNode.disconnect(); }catch(e){}
     _audTrackNode = null;
@@ -2206,6 +2433,17 @@ S2030.audio = {
 
   /* Décode un mp3 dans S.musicBuf. La double forme (callback + promesse) est
      nécessaire : Safari n'implémente que la forme à callbacks. */
+  /* Prise de mesure. Sans elle, aucune vérification ne peut distinguer
+     « la piste avance » de « du son sort » — c'est exactement cette
+     confusion qui a laissé passer une musique muette. */
+  tap: function (node, quoi) {
+    if (!_audOk) return false;
+    var src = quoi === 'musique' ? _audMusicBus : _audMaster;
+    if (!src) return false;
+    try { src.connect(node); } catch (e) { return false; }
+    return true;
+  },
+
   /* Liste de lecture : chaque piste est jouée en entier, puis la suivante,
      puis on recommence. Rien n'est décodé en mémoire. */
   playlist: function (urls, onfail) { return this.init() ? _audPlaylist(urls, onfail) : false; },
@@ -2215,6 +2453,8 @@ S2030.audio = {
   /* Position dans la piste courante, en secondes. Les éléments média vivent
      hors du document : sans cette prise, rien ne peut les atteindre. */
   seek: function (t) { if (_audEl) { try { _audEl.currentTime = t; } catch (e) {} } },
+  /* Relais de fin de piste en repli mémoire : l'appelant décode la suivante. */
+  onTrackEnd: function (fn) { _audBufNext = fn || null; },
 
   decode: function (ab) {
     var self = this;
@@ -3354,6 +3594,8 @@ var _enMods = {
 };
 
 function _enModTick(e, dt, s) {
+  // le blindage cède immédiatement devant les tirs spectraux
+  if (e.mArm && !e.armBroken && S.up.f_phaseShot) e.armBroken = 1;
   if (e.mArm && !e.armBroken && e.hp < e.maxHp * 0.5) {
     e.armBroken = 1;
     e.speed *= 1.55;
@@ -3415,6 +3657,10 @@ function _enModTick(e, dt, s) {
         if (dd2 > rr2 || dd2 < ri2) continue;
         var ba = angTo(e.x, e.y, b.x, b.y);
         if (Math.abs(norm(ba - e.shA)) > e.shArc) continue;
+        /* TIRS SPECTRAUX : « tes tirs ignorent blindages et boucliers ». La
+           carte posait un indicateur que rien ne lisait — mesuré, le bouclier
+           avalait exactement autant de tirs avec elle que sans. */
+        if (S.up.f_phaseShot) continue;
         bs.splice(i, 1);
         e.shHp--;
         e.shFlash = 1;
@@ -4769,12 +5015,17 @@ function _wpnMountPlaces(L) {
     var sg = segs[idx], m = _wpnMounts[i];
     m.x = sg.x; m.y = sg.y; m.ang = sg.ang;
     m.side = (i & 1) ? 1 : -1;
+    m.i = i;
   }
 }
 
 function _wpnTurretFire(m, L) {
   var dmg = _wpnDmg(L.dmg);
+  /* BORDÉE ARRIÈRE : « tes tourelles couvrent aussi tes arrières ». La carte
+     posait un indicateur que rien ne lisait : une tourelle sur deux tire
+     désormais vers l'arrière, les autres gardent leur flanc. */
   var base = m.ang + m.side * Math.PI * 0.5;
+  if (S.up.f_rearTurrets && (m.i & 1)) base = m.ang + Math.PI;
   var ang = base;
   if (L.aim) {
     var e = nearestEnemy(m.x, m.y, _wpnRange(360));
@@ -6824,9 +7075,18 @@ function _upEligible(c) {
   return true;
 }
 
+/* ORACLE, l'article le plus cher de la boutique, promettait « meilleures
+   chances de cartes rares » et ne touchait rien : f_luck était posé mais
+   jamais lu ici. Mesuré avant correction : 61,9 / 36,5 / 1,7 / 0,0 % contre
+   61,6 / 36,4 / 2,0 / 0,0 % — l'écart tenait au bruit. */
+var _UP_RARE = { common: 1, rare: 1.6, epic: 2.4, ultra: 3.2 };
 function _upWeight(c) {
   var w = c.wt ? c.wt(c) : c.weight;
   if (!(w > 0)) w = 0.001;
+  if (S.up.f_luck) {
+    var r = _UP_RARE[c.rarity || 'common'];
+    w *= r === undefined ? 1 : r;
+  }
   return w;
 }
 
@@ -8995,6 +9255,12 @@ var _UI_CSS = [
 '.s2tile>s{text-decoration:none;font:800 calc(var(--uis)*clamp(7px,1.6vh,10px))/1.35 var(--fs);',
 '  letter-spacing:.18em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 '.s2tile>b{font:800 calc(var(--uis)*clamp(12px,2.9vh,19px))/1.2 var(--fm);color:#fff;',
+/* La tuile ARME tronquait six noms sur huit sur petit écran : elle prend
+   toute la largeur qu'il lui faut, et son texte rétrécit plutôt que de se
+   couper. */
+'.s2tile.wide{flex:1 1 100%;max-width:100%}',
+'.s2tile.wide>b{font-size:calc(var(--uis)*clamp(9px,2.1vh,14px));white-space:nowrap;'
+  + 'overflow:hidden;text-overflow:clip}',
 '  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
 '.s2tile.hi{border-color:var(--am)}.s2tile.hi>b{color:var(--am)}',
 '.s2rec{font:900 calc(var(--uis)*clamp(10px,2.4vh,15px))/1 var(--fs);letter-spacing:.22em;',
@@ -9017,10 +9283,10 @@ var _UI_CSS = [
 '.s2sw.on{background:rgba(0,229,255,.3);border-color:var(--cy)}',
 '.s2sw.on::after{transform:translateX(24px);background:var(--cy);box-shadow:0 0 12px var(--cy)}',
 '.s2stp{flex:0 0 auto;display:flex;align-items:center;gap:6px}',
-'#ui .s2stp>button{width:34px;height:30px;border-radius:6px;border:1px solid var(--line);',
+'#ui .s2stp>button{width:42px;height:38px;border-radius:6px;border:1px solid var(--line);',
 '  background:rgba(0,229,255,.09);font:900 16px/1 var(--fs);color:var(--cy)}',
 '#ui .s2stp>button:active{background:rgba(0,229,255,.3)}',
-'.s2stp>span{min-width:64px;text-align:center;font:800 calc(var(--uis)*12px)/1 var(--fm);color:#fff}',
+'.s2stp>span{min-width:76px;text-align:center;font:800 calc(var(--uis)*12px)/1 var(--fm);color:#fff}',
 '.s2seg2{flex:0 0 auto;display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}',
 '#ui .s2seg2>button{padding:0 12px;height:30px;font:800 calc(var(--uis)*10px)/1 var(--fs);',
 '  letter-spacing:.12em;color:var(--dim);background:rgba(255,255,255,.03)}',
@@ -9368,6 +9634,7 @@ function _uiBuildOver(root) {
   _uiE.oLvl = _uiTile(g, 'NIVEAU');
   _uiE.oKills = _uiTile(g, 'DÉTRUITS');
   _uiE.oWpn = _uiTile(g, 'ARME');
+  _uiE.oWpn.parentNode.classList.add('wide');
   _uiE.oBest = _uiTile(g, 'RECORD');
   _uiE.oCoins = _uiTile(g, 'CRÉDITS', true);
   var row = _uiMk('div', 's2row', sc);
@@ -9447,7 +9714,11 @@ function _uiBuildSettings(root) {
   _uiScrollable(box);
 
   _uiMk('div', 's2grp', box, 'PARTIE');
-  _uiStepper(box, 'Difficulté', 'diff', [1, 1.5, 2, 2.7, 3.5],
+  /* Les valeurs du sélecteur DOIVENT venir de la table du moteur. En les
+     écrivant à la main, deux crans du sélecteur (2,7 et 3,5) tombaient sur le
+     même palier moteur et les étiquettes annonçaient autre chose que ce qui
+     était appliqué. */
+  _uiStepper(box, 'Difficulté', 'diff', DIFFS.map(function (d) { return d.m; }),
     function (v, i) { return DIFFS[i].nom; });
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
@@ -9557,7 +9828,7 @@ function _uiDefaults() {
   if (o.particles === undefined) o.particles = 1;
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
-  if (o.diff === undefined) o.diff = 2;
+  if (o.diff === undefined) o.diff = DIFFS[1].m;
   if (o.px === undefined) o.px = 1.5;
 }
 
@@ -9960,15 +10231,24 @@ S2030.ui = {
 
   rects: function () { return _uiRects; },
 
+  /* On rend le bouton dont le CENTRE est le plus proche, pas le premier dont
+     le disque contient le point. Les zones tactiles se chevauchent (le boost
+     a 73 px de rayon, le pouvoir 54, leurs centres sont à 98 px) et le
+     premier de la liste gagnait : appuyer sur le bord dessiné du bouton de
+     pouvoir déclenchait le boost. */
   hitTest: function (x, y) {
-    var R = _uiRects, k, b, rr;
+    var R = _uiRects, k, b, rr, d2, best = null, bestD = 1e9;
     for (k in R) {
       if (k === 'joy') continue;
       b = R[k];
       rr = b.r * 1.18;
-      if (dist2(x, y, b.x, b.y) < rr * rr) return k;
+      d2 = dist2(x, y, b.x, b.y);
+      if (d2 >= rr * rr) continue;
+      // distance rapportée au rayon : un petit bouton ne se fait pas manger
+      var rel = d2 / (rr * rr);
+      if (rel < bestD) { bestD = rel; best = k; }
     }
-    return null;
+    return best;
   },
 
   joyHome: function () { return _uiRects.joy; },
@@ -10116,13 +10396,15 @@ S2030.phases = (function () {
 
   /* Durées serrées : mesuré en conditions réelles, une partie dure trente à
      quarante secondes au réglage de difficulté par défaut. Une ouverture qui
-     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais —
+     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais.
+     Resserrée à 23 s, elle restait hors d'atteinte pour quatre parties sur
+     trente (survie médiane 34,2 s) — elle démarre maintenant vers 19 s. Reste
      c'est exactement ce que le joueur a signalé. Elle arrive maintenant vers
      vingt-trois secondes. */
   var SCRIPT = [
-    { kind: 'ortho', dur: 7,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
-    { kind: 'space', dur: 5,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
-    { kind: 'roll',  dur: 6,  zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
+    { kind: 'ortho', dur: 6,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
+    { kind: 'space', dur: 4,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
+    { kind: 'roll',  dur: 5,  zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
     { kind: 'dive',  dur: 22, zoom: 1.00, rot: -0.05, persp: 30,   nom: 'PERSPECTIVE' }
   ];
   /* Une fois la progression jouée, on reprend dans le désordre — la bascule
@@ -10155,6 +10437,12 @@ S2030.phases = (function () {
 
   function startGrid(axis, dur) {
     if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
+    /* La position de référence de chaque ennemi n'est écrite que par la passe
+       de rail : après une coupure, elle date d'avant. Le déplacement de toute
+       la coupure était alors pris pour celui d'une image et reprojeté, ce qui
+       téléportait tout le monde de près d'un pas de treillis. */
+    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; }
+    if (S.snake) S.snake._ra = undefined;
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
@@ -10184,50 +10472,146 @@ S2030.phases = (function () {
   }
   var _n = { x: 0, y: 1 }, _n2 = { x: 0, y: 1 };
 
-  /* Ramène un point sur le rail le plus proche de sa famille. Le déplacement
-     se fait le long de la normale, donc perpendiculairement à la droite ; le
-     plafond évite le saut sec au moment où le treillis prend. */
-  function railSnap(o, dt, ang, speed, rate) {
-    var n = railNorm(ang === undefined ? (o.ang || 0) : ang, _n);
+  /* ------------------------------------------- circulation, seconde version
+     Première version : on arrondissait le cap, puis on ramenait le corps vers
+     la droite la plus proche avec un plafond de vitesse. Mesuré en partie
+     réelle, ça ne tenait pas : à chaque virage le serpent traversait la maille
+     en biais pendant près d'une seconde, et il n'était réellement sur ses
+     droites que 13 % du temps en orthogonal, 37 % en diagonal. Baisser le
+     plafond n'y changeait rien — ça allongeait la traversée.
+
+     Le bon modèle est celui d'une moto-lumière : on ne tourne qu'en ATTEIGNANT
+     une droite de la famille visée. Entre deux virages on ne quitte jamais sa
+     droite, et le virage est net. */
+  var RAIL_HYST = 0.62;      // ~35° : un pouce qui tremble ne change pas de rail
+
+  function railNormOf(a) { return { x: -Math.sin(a), y: Math.cos(a) }; }
+
+  /* écart signé à la droite la plus proche de la famille que longe ce cap */
+  function railOff(o, a) {
+    var n = railNormOf(a);
     var u = o.x * n.x + o.y * n.y;
-    var c = Math.round(u / grid.spacing) * grid.spacing;
-    var fix = (u - c) * Math.min(1, dt * (rate === undefined ? 12 : rate));
-    var cap = (speed || 460) * dt;
-    if (fix > cap) fix = cap; else if (fix < -cap) fix = -cap;
-    o.x -= n.x * fix; o.y -= n.y * fix;
+    return u - Math.round(u / grid.spacing) * grid.spacing;
+  }
+  /* pose exactement sur cette droite */
+  function railPlace(o, a) {
+    var n = railNormOf(a), d = railOff(o, a);
+    o.x -= n.x * d; o.y -= n.y * d;
+  }
+  function railHold(o) {
+    if (o._ra === undefined) return;
+    if (!o._rEase || o._rEase <= 0) railPlace(o, o._ra);
+    railClamp(o);
+  }
+
+  /* La passe de rail rejouait le déplacement à partir d'une position déjà
+     sortie de l'arène, ce qui repoussait l'objet plus loin dehors à chaque
+     image — croissance géométrique mesurée, jusqu'à 265 u en une image et
+     des ennemis vivants hors du cadre visible. On borne systématiquement. */
+  function railClamp(o) {
+    var r = o.r || K.HEAD_R;
+    if (o.x < r) o.x = r; else if (o.x > K.ARENA_W - r) o.x = K.ARENA_W - r;
+    if (o.y < r) o.y = r; else if (o.y > K.ARENA_H - r) o.y = K.ARENA_H - r;
+  }
+
+  /* Rebond sur le bord de l'arène. Le cap est réfléchi par le coeur, mais le
+     rail verrouillé continuait de pointer vers le mur : le serpent y restait
+     collé. Et se contenter du cap réfléchi ne suffit pas — sur le treillis
+     diagonal, une diagonale réfléchie repointe très souvent vers le bord,
+     surtout dans un coin. Mesuré avant correction : le serpent passait 66 %
+     de la séquence collé au bord. On choisit donc, parmi les quatre rails,
+     celui qui rentre le plus franchement dans l'arène. */
+  function railBounce(o, nx, ny) {
+    if (o._ra === undefined) return;
+    var best = null, bestS = -1e9;
+    for (var k = 0; k < 4; k++) {
+      var r = grid.a0 + k * QUAD;
+      var cx = Math.cos(r), cy = Math.sin(r);
+      var dedans = cx * nx + cy * ny;                  // composante vers l'intérieur
+      if (dedans <= 0.01) continue;                    // longe ou sort : écarté
+      // à composante égale, on garde le cap le plus proche de celui qu'on avait
+      var s2 = dedans * 10 + Math.cos(norm(r - o._ra));
+      if (s2 > bestS) { bestS = s2; best = r; }
+    }
+    if (best === null) best = railAng(o.ang || 0);
+    o._ra = best; o._rw = best;
+    /* Sans verrou, le manche tenu contre le mur ramenait le cap dans le mur
+       dès l'image suivante : cycle limite mesuré à 6 Hz, le serpent avançant
+       de 4 u en 6 s. On lui laisse le temps de décoller. */
+    o._rLock = 0.45;
+    railPlace(o, best);
+    railClamp(o);
+  }
+
+  /* Rend le cap à suivre cette image. « step » est la distance qui sera
+     parcourue : c'est elle qui dit si l'intersection est atteinte. */
+  /* Arrivée sur le réseau : on ne pose PAS l'objet sur sa droite d'un coup —
+     mesuré, 84 % des ennemis et le serpent sautaient jusqu'à 166 u en une
+     image, la tête se détachant du corps. On rejoint en glissant, plafonné,
+     pendant une demi-seconde. */
+  var RAIL_EASE = 0.5;
+
+  function railSteer(o, want, step) {
+    if (o._ra === undefined) {
+      o._ra = railAng(o.ang || 0); o._rw = o._ra;
+      o._rEase = RAIL_EASE;
+    }
+
+    if (o._rLock > 0) { o._rLock -= S.dt; want = undefined; }
+    if (want !== null && want !== undefined) {
+      // hystérésis : sous 35° d'écart, on considère que le joueur vise le rail
+      // qu'il suit déjà. Sans elle, un manche tenu sur la frontière faisait
+      // battre le cap jusqu'à quinze fois par seconde.
+      if (Math.abs(norm(want - o._ra)) > RAIL_HYST) {
+        var t = railAng(want);
+        if (Math.abs(norm(t - o._ra)) < Math.PI * 0.75) o._rw = t;   // demi-tour refusé
+      } else o._rw = o._ra;
+    }
+
+    if (o._rw !== undefined && o._rw !== o._ra) {
+      // la droite visée se rapproche à mesure qu'on avance : on tourne pile
+      // dessus, jamais entre deux
+      if (Math.abs(railOff(o, o._rw)) <= step * 0.75 + 2) {
+        railPlace(o, o._rw);
+        o._ra = o._rw;
+      }
+    }
+    if (o._rEase > 0) {
+      // rattrapage progressif, jamais plus vite que l'objet ne se déplace
+      o._rEase -= S.dt;
+      var n = railNormOf(o._ra), d = railOff(o, o._ra);
+      var cap = Math.max(step, 2) * 1.6;
+      if (d > cap) d = cap; else if (d < -cap) d = -cap;
+      o.x -= n.x * d; o.y -= n.y * d;
+    } else railPlace(o, o._ra);
+    return o._ra;
   }
 
   /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée à
-     la main, téléportation. Plutôt que de réécrire onze comportements, on
-     reprojette leur déplacement de l'image : on garde la distance parcourue,
-     on impose la direction. Ils gardent leur allure, ils perdent le droit de
-     couper. */
+     la main, téléportation. On leur applique la même règle : on récupère la
+     distance qu'ils viennent de parcourir, et on la refait dans la direction
+     autorisée. Ils gardent leur allure, ils perdent le droit de couper. */
   function railEnemies(dt) {
     for (var i = 0; i < S.enemies.length; i++) {
       var e = S.enemies[i];
-      if (e.dead || e.boss || e.noRail) continue;
+      if (e.dead || e.noRail) continue;
       var px = e._rx, py = e._ry;
-      if (px === undefined) { px = e.x; py = e.y; }
+      if (px === undefined) { px = e.x; py = e.y; e._ra = undefined; }
       var dx = e.x - px, dy = e.y - py;
       var mag = Math.sqrt(dx * dx + dy * dy);
       // un saut de plus d'un pas n'est pas un déplacement mais une
       // réapparition : on la laisse passer et on reprend le rail sur place
-      if (mag > grid.spacing) { e._rx = e.x; e._ry = e.y; continue; }
-      var ra = railAng(mag > 0.01 ? Math.atan2(dy, dx) : (e.ang || 0));
-      if (mag > 0.01) {
-        e.x = px + Math.cos(ra) * mag;
-        e.y = py + Math.sin(ra) * mag;
-      }
-      e.ang = ra;
+      if (mag > grid.spacing) { e._rx = e.x; e._ry = e.y; e._ra = undefined; continue; }
+      e.x = px; e.y = py;
+      var a = railSteer(e, mag > 0.01 ? Math.atan2(dy, dx) : undefined, mag);
+      e.x += Math.cos(a) * mag; e.y += Math.sin(a) * mag;
+      railHold(e);
+      e.ang = a;
       if (e.vx || e.vy) {
         var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
-        e.vx = Math.cos(ra) * vm; e.vy = Math.sin(ra) * vm;
+        e.vx = Math.cos(a) * vm; e.vy = Math.sin(a) * vm;
       }
-      /* Correction totale, pas amortie : un rattrapage partiel laisse un
-         écart d'équilibre, parce que la séparation entre corps et
-         l'aimantation des mines les repoussent de quelques unités par image.
-         Le plafond suffit à rendre l'arrivée sur le rail progressive. */
-      railSnap(e, dt, ra, 900, 1e6);
+      railClamp(e);
       e._rx = e.x; e._ry = e.y;
     }
   }
@@ -10255,7 +10639,7 @@ S2030.phases = (function () {
     if (grid.t <= 0) return;
     var fade = Math.min(1, grid.t / 1.2);
     var warn = grid.warn > 0;
-    var q = S.opt.particles;
+    var q = S.partEff === undefined ? S.opt.particles : S.partEff;
     var R = (Math.abs(S.view.w) + Math.abs(S.view.h)) * 0.75 + 200;
     var cx = S.cam.x, cy = S.cam.y;
 
@@ -10300,7 +10684,7 @@ S2030.phases = (function () {
     // le sol de repère n'a de sens que sous la bascule réelle
     var lean = Math.max(cam.tilt, persp * 1.6);
     if (lean < 0.02) return;
-    if (S.opt.particles < 0.6) return;   // en qualité réduite, on s'en passe
+    if ((S.partEff === undefined ? S.opt.particles : S.partEff) < 0.6) return;   // en qualité réduite
     var a = Math.min(0.5, lean) * 0.5;
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
@@ -10457,6 +10841,14 @@ S2030.phases = (function () {
     zc.mode = 0; zc.t = 0; zc.next = 20;
   }
 
+  /* Redressement hors partie : la mise à jour ne tournant qu'en phase 'play',
+     l'écran de fin gardait la bascule à 30° et le cadrage élargi. */
+  function settle(dt) {
+    perspT = 0; cam.tiltT = 0; cam.rotT = 0;
+    zc.mode = 0;
+    camUpdate(dt);
+  }
+
   function update(dt) {
     camUpdate(dt);
     powersUpdate(dt);
@@ -10488,12 +10880,13 @@ S2030.phases = (function () {
   }
 
   return {
-    update: update, reset: reset,
+    update: update, reset: reset, settle: settle,
     zoom: zoom, tilt: tilt, rot: rot, pulse: pulse, jolt: doJolt,
     drawFloor: drawFloor, drawDiag: gridDraw, persp: perspAng,
     use: use, grant: grant, buttonState: buttonState, powers: POWERS,
     enemyTimeScale: enemyTimeScale, foldFactor: foldFactor,
-    railed: railed, railAng: railAng, railSnap: railSnap, railLate: railLate,
+    railed: railed, railAng: railAng, railSteer: railSteer, railHold: railHold,
+    railBounce: railBounce, railLate: railLate,
     railSpacing: grid.spacing,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) {
@@ -10526,7 +10919,8 @@ S2030.phases = (function () {
    Canvas, entrées tactiles, rendu du serpent, boucle principale, cycle de vie.
    ========================================================================== */
 
-var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5;
+var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
+var _fsbSync = null;
 
 function setupCanvas() {
   cv = document.getElementById('game');
@@ -10541,7 +10935,7 @@ function setupCanvas() {
    JavaScript significative. Un halo néon supporte très bien 1,5 ; une image
    sur dix perdue, non. Le joueur peut remonter le curseur s'il veut. */
 function resizeCanvas() {
-  DPR = Math.min(window.devicePixelRatio || 1, S.opt.px || 1.5);
+  DPR = Math.min(window.devicePixelRatio || 1, S.pxEff || S.opt.px || 1.5);
   var w = window.innerWidth, h = window.innerHeight;
   CW = w; CH = h;
   cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
@@ -10551,7 +10945,12 @@ function resizeCanvas() {
   SCALE = h / K.VIEW_H;
   S.view.h = K.VIEW_H;
   S.view.w = w / SCALE;
-  document.body.classList.toggle('portrait', h > w);
+  var portrait = h > w;
+  document.body.classList.toggle('portrait', portrait);
+  /* Le bandeau « tourne ton téléphone » est opaque et avale les touchers : la
+     partie continuait derrière, le joueur encaissant des coups qu'il ne
+     pouvait ni voir ni éviter. On met en pause comme pour l'arrière-plan. */
+  if (portrait && S.phase === 'play' && !S.paused) togglePause();
 }
 
 /* ----------------------------------------------------------- entrées tactiles */
@@ -10578,6 +10977,8 @@ function onTouchStart(e) {
     var t = e.changedTouches[i];
     var b = hitBtn(t.clientX, t.clientY);
     if (b) { touchBtns[t.identifier] = b; S.input[b] = true; pressBtn(b); continue; }
+    // bande du haut réservée au HUD : le manche flottant s'y dessinait par-dessus
+    if (t.clientY < CH * 0.22) continue;
     if (!touchJoy && joySide(t.clientX)) {
       touchJoy = { id: t.identifier, ox: t.clientX, oy: t.clientY, x: t.clientX, y: t.clientY };
       S.input.jactive = true;
@@ -10859,7 +11260,10 @@ function frame(now) {
   S.dt = dt;
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
-  if (S.opt.px !== _pxApplied) { _pxApplied = S.opt.px; resizeCanvas(); }
+  qualitySample(raw);
+  qualityTilt();
+  if (_fsbSync) _fsbSync();
+  if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
 
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
@@ -10871,6 +11275,7 @@ function frame(now) {
     S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
     S2030.phases && S2030.phases.update(dt);
     auraTick(dt);
+    sonicTick(dt);
     poolsTick(dt);
     collide(dt);
     // dernier mot au treillis : plus rien ne déplacera les ennemis après
@@ -10880,6 +11285,11 @@ function frame(now) {
     updateCam(dt);
     S2030.audio && S2030.audio.setIntensity(S.intensity);
     if (S.lvlUps > 0) openCards();
+  } else if (S.phase === 'dead' || S.phase === 'cards') {
+    S.t += raw * 1000;
+    // la caméra continue de se redresser : sinon le récapitulatif se lit sur
+    // une image penchée à 30° et gardée telle quelle
+    S2030.phases && S2030.phases.settle && S2030.phases.settle(raw);
   } else if (S.phase === 'menu') {
     S.t += raw * 1000;
     S.cam.x = lerp(S.cam.x, K.ARENA_W / 2, 0.02);
@@ -10991,7 +11401,9 @@ var _perspApplied = -1;
 function perspCover(t) {
   var c = Math.cos(t);
   if (c < 0.2) return 1;
-  return (PERSP_D + Math.sin(t)) / (PERSP_D * c);
+  // 1,5 % de marge : sans elle un liseré de 4 px reste découvert en haut,
+  // le calcul étant exact au pixel près et l'arrondi du navigateur non
+  return (PERSP_D + Math.sin(t)) / (PERSP_D * c) * 1.015;
 }
 
 function applyPersp(t) {
@@ -10999,9 +11411,16 @@ function applyPersp(t) {
   if (q === _perspApplied) return;
   _perspApplied = q;
   if (!cv) return;
-  if (q <= 0.0005) { cv.style.transform = ''; return; }
+  if (q <= 0.0005) {
+    cv.style.transform = '';
+    cv.style.willChange = '';            // la couche promue ne doit pas survivre
+    cv.style.backfaceVisibility = '';
+    return;
+  }
   var P = (CH * 0.5 * PERSP_D).toFixed(0);
   cv.style.transformOrigin = '50% 50%';
+  cv.style.willChange = 'transform';
+  cv.style.backfaceVisibility = 'hidden';
   cv.style.transform = 'perspective(' + P + 'px) rotateX(' + (q * 180 / Math.PI).toFixed(2) +
                        'deg) scale(' + perspCover(q).toFixed(4) + ')';
 }
@@ -11011,18 +11430,85 @@ function applyPersp(t) {
 function drawControls() {}
 function syncControls() {}
 
-/* ---------------------------------------------------------- qualité adaptative */
-var _qLow = 0;
+/* ---------------------------------------------------------- qualité adaptative
+   Trois défauts mesurés sur l'ancienne version : le seuil de 42 images/s ne se
+   déclenchait jamais pendant la bascule 3D (le jeu y lit 48 à 54 im/s de
+   moyenne tout en perdant une image sur six) ; la dégradation ne remontait
+   jamais ; et elle écrasait le réglage du joueur dans son profil enregistré.
+   On regarde donc la proportion d'images longues plutôt que la moyenne, on
+   remonte dès que ça respire, et l'ajustement automatique reste en mémoire
+   sans jamais toucher au choix du joueur. */
+var _qWin = [], _qStep = 0, _qHold = 0, _qBon = 0;
+var PX_CRANS = [1, 1.25, 1.5, 2];
+
+function qualitySample(raw) {
+  _qWin.push(raw);
+  if (_qWin.length > 120) _qWin.shift();
+}
+
+/* Première version : on remontait dès que la mesure redevenait bonne. Or elle
+   redevient bonne PARCE QU'ON A BAISSÉ — et la bascule 3D, qui est justement
+   le moment coûteux, ne dure que vingt secondes. Résultat mesuré : neuf
+   changements de netteté en quatre-vingt-dix secondes, un cycle limite. On ne
+   remonte donc jamais pendant la bascule, et seulement après une longue
+   période franchement saine. */
 function autoQuality() {
-  if (fps < 42) {
-    _qLow++;
-    if (_qLow > 2 && S.opt.particles > 0.4) S.opt.particles = 0.4;
-    // si ça rame encore, c'est le remplissage : on descend d'un cran de netteté
-    if (_qLow > 5 && S.opt.px > 1) S.opt.px = S.opt.px > 1.25 ? 1.25 : 1;
-    // en dessous de 34 images/s le fil audio commence à se vider : on allège
-    // les couches synthétisées plutôt que de laisser la musique hoqueter
-    if (_qLow > 4 && fps < 34) S.opt.audioLite = true;
-  } else if (fps > 55) { _qLow = 0; }
+  if (_qWin.length < 60) return;
+  var longues = 0;
+  for (var i = 0; i < _qWin.length; i++) if (_qWin[i] > 0.033) longues++;
+  var part = longues / _qWin.length;
+  if (_qHold > 0) { _qHold--; return; }
+
+  if (part > 0.06 && _qStep < 3) {
+    _qStep++; _qBon = 0;
+    applyQuality();
+    _qHold = 8;
+    _qWin.length = 0;
+    return;
+  }
+
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  if (part < 0.02 && _qStep > 0 && !penche) {
+    // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
+    // regagner un cran : remonter vite, c'est retomber tout de suite
+    if (++_qBon >= 16) {
+      _qStep--; _qBon = 0;
+      applyQuality();
+      _qHold = 12;
+      _qWin.length = 0;
+    }
+  } else if (part >= 0.02) _qBon = 0;    // une image longue isolée ne remet pas à zéro
+}
+
+/* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
+   l'écraser : S.opt.px reste ce qu'il a réglé, S.pxEff est ce qui est rendu.
+   La bascule coûte un cran de plus, de façon déterministe : c'est le moment
+   où le compositeur travaille le plus, et une règle fixe ne peut pas osciller
+   comme le ferait une boucle de rétroaction. */
+function applyQuality() {
+  var voulu = S.opt.px || 1.5;
+  var base = 0;
+  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu) base = k;
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
+  S.pxEff = PX_CRANS[i];
+  /* On n'écrit PLUS dans S.opt : c'est l'objet enregistré dans le profil, et
+     « densité des particules » est un réglage du joueur à part entière. La
+     dégradation vit dans S.partEff, que le rendu lit. */
+  var vp = S.opt.particles === undefined ? 1 : S.opt.particles;
+  S.partEff = Math.min(vp, _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1));
+  if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
+}
+
+/* La bascule s'installe et se retire progressivement : on ne rebascule la
+   netteté qu'aux deux franchissements, pas à chaque image. */
+var _penchePrec = false;
+function qualityTilt() {
+  var penche = !!(S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01);
+  if (penche === _penchePrec) return;
+  _penchePrec = penche;
+  applyQuality();
+  _qWin.length = 0; _qBon = 0; _qHold = 8;
 }
 
 /* ------------------------------------------------------------ cartes / niveaux */
@@ -11076,6 +11562,10 @@ function resetRun() {
 }
 
 function startRun() {
+  // la transition (plein écran, armement audio, remise à zéro) saccade par
+  // nature : la mesure de qualité repart de zéro, sinon le premier cran
+  // tombait dès la première seconde sur une machine parfaitement saine
+  _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
   goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
@@ -11193,7 +11683,13 @@ function goFullscreen(onFail) {
    On lui donne quatre-vingts pixels de marge le temps d'un défilement, puis
    on remet tout en place. C'est au mieux quelques dizaines de pixels gagnés,
    pas un vrai plein écran — la notice reste donc affichée. */
+var _nudgeOn = false;
 function nudgeChrome() {
+  /* Deux appuis rapprochés mémorisaient les styles DÉJÀ modifiés et les
+     réinstallaient pour de bon : la page restait défilable et 80 px trop
+     haute jusqu'au rechargement. Un seul repli à la fois. */
+  if (_nudgeOn) return;
+  _nudgeOn = true;
   var h = document.documentElement, b = document.body;
   var ph = h.style.cssText, pb = b.style.cssText;
   h.style.height = 'auto'; h.style.overflowY = 'auto';
@@ -11203,6 +11699,7 @@ function nudgeChrome() {
     h.style.cssText = ph; b.style.cssText = pb;
     try { window.scrollTo(0, 0); } catch (e) {}
     resizeCanvas();
+    _nudgeOn = false;
   }, 900);
 }
 
@@ -11229,8 +11726,9 @@ function buildFullscreenButton() {
      libellé gris posé sous les boutons de fin de partie. */
   var st = document.createElement('style');
   st.textContent =
-    '#ui #fsb{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
-    'transform:translateX(-50%);pointer-events:auto;z-index:40;display:none;' +
+    '#ui #fsb{position:absolute;left:calc(env(safe-area-inset-left,0px) + 10px);' +
+    'bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
+    'pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
     'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
@@ -11240,6 +11738,7 @@ function buildFullscreenButton() {
     'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
     '#ui #fshelp.on{display:flex}' +
     '#ui #fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    '-webkit-overflow-scrolling:touch;touch-action:pan-y;' +
     'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
     'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
     '#ui #fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
@@ -11258,6 +11757,11 @@ function buildFullscreenButton() {
     '<button class="close" type="button">J\'ai compris</button></div>';
   ui.appendChild(help);
   var body = help.querySelector('.body');
+  /* Le coeur avale les gestes posés sur #app, qui contient l'interface : sans
+     ce branchement la carte ne défilait pas et, sous 305 px de haut, le
+     bouton « J'ai compris » devenait inatteignable — le jeu restait bloqué
+     derrière la notice. */
+  if (typeof _uiScrollable === 'function') _uiScrollable(help.querySelector('.card'));
 
   function showHelp(why) {
     // on tente quand même de récupérer la barre du navigateur
@@ -11269,10 +11773,15 @@ function buildFullscreenButton() {
         '<ol><li>touche le bouton <b>Partager</b> de Safari (le carré avec la flèche) ;</li>' +
         '<li>choisis <b>Sur l\'écran d\'accueil</b> ;</li>' +
         '<li>lance SNAKE 2030 depuis l\'icône : plus aucune barre, vrai plein écran.</li></ol>'
-      : 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
-        'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
-        'directement.';
+      : why === 'frame'
+        ? 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
+          'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
+          'directement.'
+        : 'Ton navigateur a refusé le passage en plein écran. Essaie depuis un ' +
+          'onglet ordinaire, sans mode de navigation restreint, ou ajoute le jeu ' +
+          'à ton écran d\'accueil.';
     help.classList.add('on');
+    btn.classList.remove('on');          // il tombait sous « J'ai compris »
   }
   /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
      supprime le click de compatibilité : un simple addEventListener('click')
@@ -11298,10 +11807,25 @@ function buildFullscreenButton() {
   });
 
   function sync() {
-    btn.classList.toggle('on', S.phase === 'menu' || S.phase === 'dead');
+    /* Le bouton se posait dès que la phase valait 'menu', donc aussi par-dessus
+       les écrans ouverts DEPUIS le menu : il recouvrait à 88 % la pilule RETOUR
+       des réglages et des déblocages, et le joueur ne pouvait plus revenir.
+       On regarde l'écran réellement affiché, pas la phase. */
+    /* L'écran de fin s'appelle 'over', pas 'dead' : mon premier garde-fou le
+       masquait donc là où il devait justement être. La phase et le nom
+       d'écran n'ont jamais eu le même vocabulaire. */
+    var ecr = (S2030.ui && S2030.ui.screen) ? S2030.ui.screen() : null;
+    // 'null' n'est plus accepté : c'est l'état pendant l'animation de mort et
+    // juste après REJOUER, où le bouton se retrouvait posé sur le jeu
+    var libre = ecr === 'menu' || ecr === 'over';
+    var notice = help.classList.contains('on');
+    btn.classList.toggle('on', !notice && libre && (S.phase === 'menu' || S.phase === 'dead'));
     btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
   }
-  setInterval(sync, 300);
+  // sondage toutes les 300 ms : le bouton restait allumé par-dessus le jeu
+  // pendant l'animation de mort et après REJOUER. On le synchronise dans la
+  // boucle, où le changement d'écran est immédiatement visible.
+  _fsbSync = sync;
   document.addEventListener('fullscreenchange', sync);
   document.addEventListener('webkitfullscreenchange', sync);
 }
@@ -11315,11 +11839,36 @@ function armAudio() {
   decodeMusic();
 }
 
-function decodeMusic() {
-  loadMusic()
+/* Repli mémoire : on suit l'ordre de la liste, une piste entière à la fois.
+   L'ancienne version décodait toujours 'neonvelocity.mp3' en dur, si bien que
+   la piste demandée en premier n'était jamais jouée dans aucun cas dégradé. */
+function decodeMusic(i) {
+  var liste = musicList();
+  var n = (i || 0) % liste.length;
+  S2030.audio.onTrackEnd(function () { decodeMusic(n + 1); });
+  loadSource(liste[n])
     .then(function (ab) { return S2030.audio.decode(ab); })
-    .then(function (buf) { if (!buf) console.warn('musique : repli sur la synthèse'); })
+    .then(function (buf) {
+      if (!buf) console.warn('musique : repli sur la synthèse');
+      else S2030.audio.start();
+    })
     .catch(function () { /* la synthèse prend le relais */ });
+}
+
+/* Charge une entrée de la liste, qu'elle soit un fichier ou une URI de
+   données. Le décodage en mémoire ne passe jamais par fetch('data:…') : une
+   page publiée sert souvent une politique dont le connect-src l'interdirait. */
+function loadSource(u) {
+  if (u.indexOf('data:') === 0) {
+    try {
+      var b64 = u.slice(u.indexOf(',') + 1);
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return Promise.resolve(bytes.buffer);
+    } catch (e) { return Promise.reject(e); }
+  }
+  return fetch(u).then(function (r) { return r.arrayBuffer(); });
 }
 
 /* --------------------------------------------------------------------- boot */

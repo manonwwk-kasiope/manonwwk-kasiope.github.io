@@ -65,6 +65,7 @@ const HTML = `<!DOCTYPE html>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SNAKE 2030">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2305060f'/%3E%3Cpath d='M10 42c0-10 14-8 14-18S10 14 10 10' stroke='%2300e5ff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3Cpath d='M40 24l14 8-14 8z' fill='%23ff2e63'/%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}

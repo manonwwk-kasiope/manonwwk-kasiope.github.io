@@ -849,6 +849,8 @@ var _enMods = {
 };
 
 function _enModTick(e, dt, s) {
+  // le blindage cède immédiatement devant les tirs spectraux
+  if (e.mArm && !e.armBroken && S.up.f_phaseShot) e.armBroken = 1;
   if (e.mArm && !e.armBroken && e.hp < e.maxHp * 0.5) {
     e.armBroken = 1;
     e.speed *= 1.55;
@@ -910,6 +912,10 @@ function _enModTick(e, dt, s) {
         if (dd2 > rr2 || dd2 < ri2) continue;
         var ba = angTo(e.x, e.y, b.x, b.y);
         if (Math.abs(norm(ba - e.shA)) > e.shArc) continue;
+        /* TIRS SPECTRAUX : « tes tirs ignorent blindages et boucliers ». La
+           carte posait un indicateur que rien ne lisait — mesuré, le bouclier
+           avalait exactement autant de tirs avec elle que sans. */
+        if (S.up.f_phaseShot) continue;
         bs.splice(i, 1);
         e.shHp--;
         e.shFlash = 1;
