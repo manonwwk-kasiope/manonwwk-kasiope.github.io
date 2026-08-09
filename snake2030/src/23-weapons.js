@@ -463,12 +463,17 @@ function _wpnMountPlaces(L) {
     var sg = segs[idx], m = _wpnMounts[i];
     m.x = sg.x; m.y = sg.y; m.ang = sg.ang;
     m.side = (i & 1) ? 1 : -1;
+    m.i = i;
   }
 }
 
 function _wpnTurretFire(m, L) {
   var dmg = _wpnDmg(L.dmg);
+  /* BORDÉE ARRIÈRE : « tes tourelles couvrent aussi tes arrières ». La carte
+     posait un indicateur que rien ne lisait : une tourelle sur deux tire
+     désormais vers l'arrière, les autres gardent leur flanc. */
   var base = m.ang + m.side * Math.PI * 0.5;
+  if (S.up.f_rearTurrets && (m.i & 1)) base = m.ang + Math.PI;
   var ang = base;
   if (L.aim) {
     var e = nearestEnemy(m.x, m.y, _wpnRange(360));

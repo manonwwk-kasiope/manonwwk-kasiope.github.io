@@ -45,9 +45,9 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 2, px: 1.5 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.5, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0, headR: 16,
+  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5,
   timeScale: 1
 };
 
@@ -80,12 +80,16 @@ function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
    correspond désormais à « DÉTENDU ». Le multiplicateur ne s'applique pas
    uniformément — doubler les dégâts encaissés rendrait le jeu injouable
    alors que doubler la densité le rend simplement plus dense. */
+/* Échelle retaillée sur des mesures de survie, non sur des multiplicateurs.
+   L'ancienne donnait, pour un joueur passif : plus de 150 s / 88 / 90 / 62 /
+   20 s — le premier cran ne finissait jamais, les deux du milieu étaient
+   indiscernables, et le dernier tuait avant le premier contenu du jeu. */
 var DIFFS = [
-  { m: 1.0, nom: 'DÉTENDU' },
-  { m: 1.5, nom: 'SOUTENU' },
-  { m: 2.0, nom: 'STANDARD' },
-  { m: 2.7, nom: 'BRUTAL' },
-  { m: 3.5, nom: 'SUICIDE' }
+  { m: 1.25, nom: 'DÉTENDU' },
+  { m: 1.55, nom: 'SOUTENU' },
+  { m: 1.90, nom: 'STANDARD' },
+  { m: 2.30, nom: 'BRUTAL' },
+  { m: 2.75, nom: 'SUICIDE' }
 ];
 function diffIdx() {
   var v = S.opt.diff, b = 2, bd = 1e9;
@@ -225,6 +229,15 @@ function updateSnake(dt) {
   if (s.x > K.ARENA_W - m) { s.x = K.ARENA_W - m; s.ang = norm(Math.PI - s.ang); wallBump(); }
   if (s.y < m) { s.y = m; s.ang = -s.ang; wallBump(); }
   if (s.y > K.ARENA_H - m) { s.y = K.ARENA_H - m; s.ang = -s.ang; wallBump(); }
+
+  /* La visée est bornée à ±RAIL_LOOK autour du cap ; le rebond change le cap
+     après coup, et la tête comme les canons partaient jusqu'à l'opposé du
+     corps. On la ramène dans son cône une fois le cap définitif. */
+  if (s.aim !== undefined) {
+    var ec = norm(s.aim - s.ang);
+    if (ec > RAIL_LOOK) s.aim = norm(s.ang + RAIL_LOOK);
+    else if (ec < -RAIL_LOOK) s.aim = norm(s.ang - RAIL_LOOK);
+  }
 
   // REPLI : moins long, mais nettement plus épais — le corps et la boîte de
   // collision grossissent ensemble, sinon le joueur sentirait le mensonge
@@ -424,7 +437,10 @@ function killEnemy(e, opts) {
   S.mult = Math.min(12, 1 + Math.floor(S.combo / 4) * 0.5);
   addScore(e.score);
   addXp(e.xp);
-  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 9 : 1.6));
+  /* Mesuré : 0,13 point par seconde, soit 750 s pour une jauge pleine alors
+     qu'une partie en dure 30 à 40. Le bouton pulsait « prêt » sans jamais
+     l'être. Une partie ordinaire doit offrir une à deux surcharges. */
+  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
   S.coins += e.elite ? 5 : 1;
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
   S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
@@ -459,6 +475,59 @@ function deathEffects(e) {
     S.pools.push({ x: e.x, y: e.y, r: 60 + 14 * pool, dmg: 3 * pool, life: 2.2 + 0.5 * pool });
     if (S.pools.length > 40) S.pools.shift();
   }
+
+  /* IMPLOSION : « les explosions aspirent pendant 0,18 s ». L'indicateur était
+     posé par la carte et lu nulle part — la carte ne faisait rien. */
+  if (S.up.f_implode && (bomb || chain)) {
+    var pull = enemiesNear(e.x, e.y, 190);
+    for (var q = 0; q < pull.length; q++) {
+      var t = pull[q];
+      if (t === e || t === S.boss) continue;
+      var pa = angTo(t.x, t.y, e.x, e.y);
+      t.vx = (t.vx || 0) + Math.cos(pa) * 420;
+      t.vy = (t.vy || 0) + Math.sin(pa) * 420;
+    }
+    S2030.fx && S2030.fx.ring(e.x, e.y, '#b388ff', 6, 380);
+  }
+
+  /* ARC DE MORT : « toute mort relance un arc de 3 rebonds depuis le corps ». */
+  if (S.up.f_deathArc && _chainDepth < 2) {
+    var from = e, hop = 0;
+    _chainDepth++;
+    while (hop < 3) {
+      var near = enemiesNear(from.x, from.y, 240);
+      var cible = null;
+      for (var z = 0; z < near.length; z++) {
+        if (near[z] !== from && near[z] !== e && !near[z].dead) { cible = near[z]; break; }
+      }
+      if (!cible) break;
+      S2030.fx && S2030.fx.bolt
+        ? S2030.fx.bolt(from.x, from.y, cible.x, cible.y, '#7bdcff')
+        : S2030.fx && S2030.fx.ring(cible.x, cible.y, '#7bdcff', 5, 260);
+      damageEnemy(cible, 7, { x: cible.x, y: cible.y, type: 'shock' });
+      from = cible; hop++;
+    }
+    _chainDepth--;
+    if (hop) S2030.audio && S2030.audio.sfx('zap', { x: e.x });
+  }
+}
+
+/* MUR DU SON : « pendant le boost, onde permanente de rayon 90 devant la
+   tête ». L'indicateur n'était lu nulle part : la carte, la plus chère du
+   paquet, ne produisait aucune sortie mesurable. */
+function sonicTick(dt) {
+  var s = S.snake;
+  if (!S.up.f_sonicBoom || !s || !s.boosting) return;
+  var fx = s.x + Math.cos(s.ang) * 74, fy = s.y + Math.sin(s.ang) * 74;
+  var list = enemiesNear(fx, fy, 90);
+  for (var i = 0; i < list.length; i++) {
+    var e = list[i];
+    damageEnemy(e, 26 * dt * 15, { x: e.x, y: e.y, type: 'blast' });
+    var a = angTo(fx, fy, e.x, e.y);
+    e.vx = (e.vx || 0) + Math.cos(a) * 260 * dt * 15;
+    e.vy = (e.vy || 0) + Math.sin(a) * 260 * dt * 15;
+  }
+  if ((S.t | 0) % 6 === 0) S2030.fx && S2030.fx.ring(fx, fy, '#fff3b0', 5, 240);
 }
 
 /* Aura électrique passive (constructions conductrices). */
@@ -663,6 +732,10 @@ function collide(dt) {
   for (i = S.pickups.length - 1; i >= 0; i--) {
     var p = S.pickups[i];
     p.t += dt;
+    /* Sans expiration ils s'accumulaient — 128 mesurés après trois minutes —
+       jusqu'au plafond de 400, où le jeu cessait silencieusement de produire
+       le moindre butin. Ils clignotent avant de partir. */
+    if (p.t > 26) { S.pickups.splice(i, 1); continue; }
     var d = dist(p.x, p.y, s.x, s.y);
     if (d < magnetR) {
       var pull = (1 - d / magnetR) * 900;

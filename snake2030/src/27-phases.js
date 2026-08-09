@@ -149,6 +149,11 @@ S2030.phases = (function () {
 
   function startGrid(axis, dur) {
     if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
+    /* La position de référence de chaque ennemi n'est écrite que par la passe
+       de rail : après une coupure, elle date d'avant. Le déplacement de toute
+       la coupure était alors pris pour celui d'une image et reprojeté, ce qui
+       téléportait tout le monde de près d'un pas de treillis. */
+    for (var i = 0; i < S.enemies.length; i++) S.enemies[i]._rx = undefined;
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
@@ -186,7 +191,7 @@ S2030.phases = (function () {
     var u = o.x * n.x + o.y * n.y;
     var c = Math.round(u / grid.spacing) * grid.spacing;
     var fix = (u - c) * Math.min(1, dt * (rate === undefined ? 12 : rate));
-    var cap = (speed || 460) * dt;
+    var cap = (speed || 190) * dt;
     if (fix > cap) fix = cap; else if (fix < -cap) fix = -cap;
     o.x -= n.x * fix; o.y -= n.y * fix;
   }
@@ -199,7 +204,10 @@ S2030.phases = (function () {
   function railEnemies(dt) {
     for (var i = 0; i < S.enemies.length; i++) {
       var e = S.enemies[i];
-      if (e.dead || e.boss || e.noRail) continue;
+      /* Seul le boss nommé du niveau échappe au réseau : les élites du climax
+         portent elles aussi e.boss, et les exclure toutes les laissait couper
+         à travers pendant que tout le reste était canalisé. */
+      if (e.dead || e === S.boss || e.noRail) continue;
       var px = e._rx, py = e._ry;
       if (px === undefined) { px = e.x; py = e.y; }
       var dx = e.x - px, dy = e.y - py;
@@ -221,7 +229,9 @@ S2030.phases = (function () {
          écart d'équilibre, parce que la séparation entre corps et
          l'aimantation des mines les repoussent de quelques unités par image.
          Le plafond suffit à rendre l'arrivée sur le rail progressive. */
-      railSnap(e, dt, ra, 900, 1e6);
+      // plafond ramené à l'ordre de grandeur de la vitesse propre des ennemis
+      // (60 à 160 u/s) : à 900 ils traversaient en biais, visiblement
+      railSnap(e, dt, ra, 240, 1e6);
       e._rx = e.x; e._ry = e.y;
     }
   }
@@ -451,6 +461,14 @@ S2030.phases = (function () {
     zc.mode = 0; zc.t = 0; zc.next = 20;
   }
 
+  /* Redressement hors partie : la mise à jour ne tournant qu'en phase 'play',
+     l'écran de fin gardait la bascule à 30° et le cadrage élargi. */
+  function settle(dt) {
+    perspT = 0; cam.tiltT = 0; cam.rotT = 0;
+    zc.mode = 0;
+    camUpdate(dt);
+  }
+
   function update(dt) {
     camUpdate(dt);
     powersUpdate(dt);
@@ -482,7 +500,7 @@ S2030.phases = (function () {
   }
 
   return {
-    update: update, reset: reset,
+    update: update, reset: reset, settle: settle,
     zoom: zoom, tilt: tilt, rot: rot, pulse: pulse, jolt: doJolt,
     drawFloor: drawFloor, drawDiag: gridDraw, persp: perspAng,
     use: use, grant: grant, buttonState: buttonState, powers: POWERS,

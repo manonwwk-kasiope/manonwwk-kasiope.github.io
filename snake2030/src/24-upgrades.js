@@ -634,9 +634,18 @@ function _upEligible(c) {
   return true;
 }
 
+/* ORACLE, l'article le plus cher de la boutique, promettait « meilleures
+   chances de cartes rares » et ne touchait rien : f_luck était posé mais
+   jamais lu ici. Mesuré avant correction : 61,9 / 36,5 / 1,7 / 0,0 % contre
+   61,6 / 36,4 / 2,0 / 0,0 % — l'écart tenait au bruit. */
+var _UP_RARE = { common: 1, rare: 1.6, epic: 2.4, ultra: 3.2 };
 function _upWeight(c) {
   var w = c.wt ? c.wt(c) : c.weight;
   if (!(w > 0)) w = 0.001;
+  if (S.up.f_luck) {
+    var r = _UP_RARE[c.rarity || 'common'];
+    w *= r === undefined ? 1 : r;
+  }
   return w;
 }
 

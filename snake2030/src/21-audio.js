@@ -499,19 +499,32 @@ function _audMeasureLead(buf){
    de deux cents mégaoctets de PCM — impraticable sur téléphone. On les diffuse
    donc en flux, l'une après l'autre, chacune jouée en entier : la mémoire ne
    dépend plus de la durée, seulement du tampon de lecture. */
-var _audList = [], _audListI = 0, _audEl = null, _audListOn = false;
+var _audList = [], _audListI = 0, _audEl = null, _audListOn = false, _audBufNext = null;
 var _audListErr = 0, _audListFail = null;
 
 function _audPlaylist(urls, onfail){
   if(!_audOk || !urls || !urls.length || _audList.length) return false;
   _audListFail = onfail || null;
+  /* Safari sur iPhone ne joue pas de manière fiable un élément média resté
+     hors du document, et refuse la lecture sans « playsinline ». On les
+     attache donc pour de bon, en les gardant invisibles. */
+  var box = document.getElementById('s2music');
+  if(!box){
+    box = document.createElement('div');
+    box.id = 's2music';
+    box.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none';
+    document.body.appendChild(box);
+  }
   for(var i = 0; i < urls.length; i++){
-    var a = new Audio();
-    a.src = urls[i];
-    a.preload = i ? 'none' : 'auto';
+    var a = document.createElement('audio');
+    a.setAttribute('playsinline', '');
+    a.setAttribute('webkit-playsinline', '');
+    a.preload = i ? 'metadata' : 'auto';
     a.loop = false;
+    a.src = urls[i];
     a.addEventListener('ended', _audEnded);
     a.addEventListener('error', _audErr);
+    box.appendChild(a);
     _audList.push(a);
   }
   _audListOn = true;
@@ -527,7 +540,12 @@ function _audEnded(){ _audListErr = 0; _audAdvance(); }
 function _audErr(){
   if(!_audListOn) return;
   if(++_audListErr >= _audList.length){
-    _audListOn = false; _audEl = null; _audList.length = 0;
+    _audListOn = false; _audEl = null;
+    for(var i = 0; i < _audList.length; i++){
+      try{ _audList[i].pause(); _audList[i].removeAttribute('src'); _audList[i].load(); }catch(e){}
+      if(_audList[i].parentNode) _audList[i].parentNode.removeChild(_audList[i]);
+    }
+    _audList.length = 0;
     var f = _audListFail; _audListFail = null;
     if(f) try{ f(); }catch(e){}
     return;
@@ -552,19 +570,89 @@ function _audStartStream(t0){
     try{ a._node = _audCtx.createMediaElementSource(a); }catch(e){ return false; }
     a._node.connect(_audTrackG);
   }
+  // aucune autre piste ne doit rester en lecture : c'est la seule garantie
+  // contre deux morceaux superposés
+  for(var k = 0; k < _audList.length; k++){
+    if(_audList[k] !== a){ try{ _audList[k].pause(); }catch(e){} }
+  }
   try{ a.playbackRate = _audRate; }catch(e){}
+  a._ok = false;
+  a.addEventListener('playing', function(){ _audConfirme(a); });
+  a.addEventListener('timeupdate', function(){ if(a.currentTime > 0.05) _audConfirme(a); });
   var pr;
-  try{ pr = a.play(); }catch(e){ return false; }
-  if(pr && pr['catch']) pr['catch'](function(){});
+  try{ pr = a.play(); }catch(e){ _audLache(a); return false; }
+  /* Un refus de lecture ne doit surtout pas être avalé : c'est le cas
+     habituel sur iPhone, et le silence qui suit est indiscernable d'une
+     musique qui marche si l'on se contente de regarder l'élément. */
+  if(pr && pr['catch']) pr['catch'](function(){ _audLache(a); });
   _audEl = a;
+  _audWatch(a);
   // la suivante se met en tampon pendant que celle-ci joue : l'enchaînement
   // ne doit pas s'entendre
   var nx = _audList[(_audListI + 1) % _audList.length];
   if(nx && nx !== a && nx.preload !== 'auto'){ try{ nx.preload = 'auto'; nx.load(); }catch(e){} }
-  _audRamp(_audTrackG.gain, 1, 0.9, t0);
-  _audRamp(_audBaseG.gain, 0, 0.9, t0);
-  _audBaseSynth = false;
   return true;
+}
+
+/* Chien de garde. Première version : un délai fixe de 1600 ms, sans regarder
+   si l'élément était simplement en train de se remplir. Mesuré à 4 Mb/s, la
+   piste de 6,45 Mo met 3073 ms à démarrer — elle était donc systématiquement
+   abandonnée hors réseau local, l'autre prenait sa place, puis la première
+   finissait de charger et se mettait à jouer par-dessus. Deux pistes
+   superposées, définitivement, sur toute connexion de téléphone.
+
+   On surveille donc la progression du tampon, pas l'horloge : tant que
+   l'élément charge, on attend. On n'abandonne que s'il est vraiment mort, ou
+   s'il n'a rien gagné pendant plusieurs contrôles d'affilée. */
+var _audWatchTO = null;
+
+function _audBuffered(a){
+  try{
+    var b = a.buffered, n = b.length ? b.end(b.length - 1) : 0;
+    return n;
+  }catch(e){ return 0; }
+}
+
+function _audWatch(a){
+  if(_audWatchTO) clearTimeout(_audWatchTO);
+  var immobile = 0, vuBuf = -1, tours = 0;
+  function controle(){
+    _audWatchTO = null;
+    if(!_audListOn || _audEl !== a) return;
+    if(a.currentTime > 0.05 && !a.paused){ _audConfirme(a); return; }  // ça joue
+    if(a.error || a.networkState === 3 /* NETWORK_NO_SOURCE */){ _audLache(a); return; }
+    var buf = _audBuffered(a);
+    if(buf > vuBuf + 0.01){ immobile = 0; vuBuf = buf; }   // ça charge encore
+    else immobile++;
+    // rien de neuf pendant six contrôles (4,8 s), ou trente secondes en tout
+    if(immobile >= 6 || ++tours > 40){ _audLache(a); return; }
+    _audWatchTO = setTimeout(controle, 800);
+  }
+  _audWatchTO = setTimeout(controle, 800);
+}
+
+/* Abandon franc : on coupe la source pour de bon, sinon l'élément se met à
+   jouer quand ses données finissent par arriver — c'est ce qui produisait la
+   superposition. */
+function _audLache(a){
+  try{ a.pause(); }catch(e){}
+  try{ a.removeAttribute('src'); a.load(); }catch(e){}
+  if(_audEl === a) _audEl = null;
+  _audErr();
+}
+
+/* Preuve que du son sort : c'est seulement là qu'on éteint la base
+   synthétisée. L'éteindre au moment du play() laissait jusqu'à onze secondes
+   de silence complet quand l'élément faisait semblant de jouer. */
+function _audConfirme(a){
+  if(a._ok) return;
+  a._ok = true;
+  _audListErr = 0;
+  if(!_audCtx) return;
+  var t = _audCtx.currentTime;
+  _audRamp(_audTrackG.gain, 1, 0.6, t);
+  _audRamp(_audBaseG.gain, 0, 0.9, t);
+  _audBaseSynth = false;
 }
 
 function _audStartTrack(t0){
@@ -580,10 +668,18 @@ function _audStartTrack(t0){
     src = _audCtx.createBufferSource();
     src.buffer = buf;
   }catch(e){ return false; }
-  src.loop = true;
-  src.loopStart = lead;
-  var loopLen = _audLoopSec > 0 ? _audLoopSec : (buf.duration - lead);
-  src.loopEnd = Math.min(lead + loopLen, buf.duration);
+  /* En repli mémoire, on alterne comme le flux : une piste entière, puis
+     l'autre. Un seul tampon décodé à la fois — deux feraient deux cents
+     mégaoctets de PCM. Sans relais déclaré, on boucle comme avant. */
+  if(_audBufNext){
+    src.loop = false;
+    src.onended = function(){ _audTrackNode = null; var f = _audBufNext; if(f) f(); };
+  } else {
+    src.loop = true;
+    src.loopStart = lead;
+    var loopLen = _audLoopSec > 0 ? _audLoopSec : (buf.duration - lead);
+    src.loopEnd = Math.min(lead + loopLen, buf.duration);
+  }
   try{ src.playbackRate.value = _audRate; }catch(e){}
   src.connect(_audTrackG);
   try{ src.start(t0, lead); }catch(e){ try{ src.start(0, lead); }catch(e2){ return false; } }
@@ -668,6 +764,17 @@ S2030.audio = {
 
   /* Décode un mp3 dans S.musicBuf. La double forme (callback + promesse) est
      nécessaire : Safari n'implémente que la forme à callbacks. */
+  /* Prise de mesure. Sans elle, aucune vérification ne peut distinguer
+     « la piste avance » de « du son sort » — c'est exactement cette
+     confusion qui a laissé passer une musique muette. */
+  tap: function (node, quoi) {
+    if (!_audOk) return false;
+    var src = quoi === 'musique' ? _audMusicBus : _audMaster;
+    if (!src) return false;
+    try { src.connect(node); } catch (e) { return false; }
+    return true;
+  },
+
   /* Liste de lecture : chaque piste est jouée en entier, puis la suivante,
      puis on recommence. Rien n'est décodé en mémoire. */
   playlist: function (urls, onfail) { return this.init() ? _audPlaylist(urls, onfail) : false; },
@@ -677,6 +784,8 @@ S2030.audio = {
   /* Position dans la piste courante, en secondes. Les éléments média vivent
      hors du document : sans cette prise, rien ne peut les atteindre. */
   seek: function (t) { if (_audEl) { try { _audEl.currentTime = t; } catch (e) {} } },
+  /* Relais de fin de piste en repli mémoire : l'appelant décode la suivante. */
+  onTrackEnd: function (fn) { _audBufNext = fn || null; },
 
   decode: function (ab) {
     var self = this;
