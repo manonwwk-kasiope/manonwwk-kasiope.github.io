@@ -45,7 +45,7 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.5, px: 1.5 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
   boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5,
   timeScale: 1
@@ -178,10 +178,7 @@ function updateSnake(dt) {
        reste la même, et le manche a beau désigner l'autre rail, on y revient
        à chaque image. Ici le changement de rail est franc, comme il doit
        l'être sur un treillis. */
-    var tgt = S2030.phases.railAng(want === null ? s.ang : want);
-    // demi-tour refusé : on ne repique pas dans son propre corps
-    if (Math.abs(norm(tgt - s.ang)) > Math.PI * 0.75) tgt = S2030.phases.railAng(s.ang);
-    s.ang = tgt;
+    s.ang = S2030.phases.railSteer(s, want, s.speed * dt);
   } else if (want !== null) {
     // --- cap : virage analogique vers la direction du manche ---
     var diff = norm(want - s.ang);
@@ -229,6 +226,17 @@ function updateSnake(dt) {
   if (s.x > K.ARENA_W - m) { s.x = K.ARENA_W - m; s.ang = norm(Math.PI - s.ang); wallBump(); }
   if (s.y < m) { s.y = m; s.ang = -s.ang; wallBump(); }
   if (s.y > K.ARENA_H - m) { s.y = K.ARENA_H - m; s.ang = -s.ang; wallBump(); }
+  if (rail) {
+    // normale rentrante du ou des bords touchés : c'est elle qui dit vers où
+    // repartir, un cap simplement réfléchi repointant souvent dans le mur
+    var nx = 0, ny = 0;
+    if (s.x <= m) nx = 1; else if (s.x >= K.ARENA_W - m) nx = -1;
+    if (s.y <= m) ny = 1; else if (s.y >= K.ARENA_H - m) ny = -1;
+    if (nx || ny) {
+      var nl = Math.sqrt(nx * nx + ny * ny);
+      S2030.phases.railBounce(s, nx / nl, ny / nl);
+    }
+  }
 
   /* La visée est bornée à ±RAIL_LOOK autour du cap ; le rebond change le cap
      après coup, et la tête comme les canons partaient jusqu'à l'opposé du
@@ -245,9 +253,9 @@ function updateSnake(dt) {
   S.headR = K.HEAD_R * (1 + 0.5 * fold);
   if (fold) s.speed *= 1.12;
 
-  // aimantation sur le rail : après l'avance, avant que le chemin ne
+  // on ne quitte jamais sa droite : après l'avance, avant que le chemin ne
   // l'enregistre, pour que le corps suive exactement la même ligne
-  if (rail) S2030.phases.railSnap(s, dt);
+  if (rail) S2030.phases.railHold(s);
 
   pushPath();
   buildSegs();

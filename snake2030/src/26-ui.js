@@ -780,7 +780,11 @@ function _uiBuildSettings(root) {
   _uiScrollable(box);
 
   _uiMk('div', 's2grp', box, 'PARTIE');
-  _uiStepper(box, 'Difficulté', 'diff', [1, 1.5, 2, 2.7, 3.5],
+  /* Les valeurs du sélecteur DOIVENT venir de la table du moteur. En les
+     écrivant à la main, deux crans du sélecteur (2,7 et 3,5) tombaient sur le
+     même palier moteur et les étiquettes annonçaient autre chose que ce qui
+     était appliqué. */
+  _uiStepper(box, 'Difficulté', 'diff', DIFFS.map(function (d) { return d.m; }),
     function (v, i) { return DIFFS[i].nom; });
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
@@ -890,7 +894,7 @@ function _uiDefaults() {
   if (o.particles === undefined) o.particles = 1;
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
-  if (o.diff === undefined) o.diff = 1.5;
+  if (o.diff === undefined) o.diff = DIFFS[1].m;
   if (o.px === undefined) o.px = 1.5;
 }
 

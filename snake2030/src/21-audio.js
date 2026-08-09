@@ -673,7 +673,16 @@ function _audStartTrack(t0){
      mégaoctets de PCM. Sans relais déclaré, on boucle comme avant. */
   if(_audBufNext){
     src.loop = false;
-    src.onended = function(){ _audTrackNode = null; var f = _audBufNext; if(f) f(); };
+    /* Un stop() programmé — pause, coupure, changement d'écran — déclenche
+       lui aussi « ended ». Sans distinguer les deux, chaque pause était prise
+       pour une fin de morceau : la liste avançait, la musique repartait
+       toute seule par-dessus le silence attendu, et la piste demandée en
+       premier n'était jamais entendue. */
+    src.onended = function(){
+      _audTrackNode = null;
+      if(src._arret) return;
+      var f = _audBufNext; if(f) f();
+    };
   } else {
     src.loop = true;
     src.loopStart = lead;
@@ -700,6 +709,7 @@ function _audStopTrack(){
   // en flux, on met en pause : la reprise repart où on s'était arrêté
   if(_audListOn && _audEl){ try{ _audEl.pause(); }catch(e){} _audEl = null; }
   if(_audTrackNode){
+    _audTrackNode._arret = 1;            // arrêt voulu, pas une fin de piste
     try{ _audTrackNode.stop(); }catch(e){}
     try{ _audTrackNode.disconnect(); }catch(e){}
     _audTrackNode = null;

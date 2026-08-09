@@ -110,13 +110,15 @@ S2030.phases = (function () {
 
   /* Durées serrées : mesuré en conditions réelles, une partie dure trente à
      quarante secondes au réglage de difficulté par défaut. Une ouverture qui
-     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais —
+     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais.
+     Resserrée à 23 s, elle restait hors d'atteinte pour quatre parties sur
+     trente (survie médiane 34,2 s) — elle démarre maintenant vers 19 s. Reste
      c'est exactement ce que le joueur a signalé. Elle arrive maintenant vers
      vingt-trois secondes. */
   var SCRIPT = [
-    { kind: 'ortho', dur: 7,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
-    { kind: 'space', dur: 5,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
-    { kind: 'roll',  dur: 6,  zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
+    { kind: 'ortho', dur: 6,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
+    { kind: 'space', dur: 4,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
+    { kind: 'roll',  dur: 5,  zoom: 1.02, rot: 0.20,  persp: 0,    nom: 'ROULIS' },
     { kind: 'dive',  dur: 22, zoom: 1.00, rot: -0.05, persp: 30,   nom: 'PERSPECTIVE' }
   ];
   /* Une fois la progression jouée, on reprend dans le désordre — la bascule
@@ -153,7 +155,8 @@ S2030.phases = (function () {
        de rail : après une coupure, elle date d'avant. Le déplacement de toute
        la coupure était alors pris pour celui d'une image et reprojeté, ce qui
        téléportait tout le monde de près d'un pas de treillis. */
-    for (var i = 0; i < S.enemies.length; i++) S.enemies[i]._rx = undefined;
+    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; }
+    if (S.snake) S.snake._ra = undefined;
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
@@ -183,55 +186,109 @@ S2030.phases = (function () {
   }
   var _n = { x: 0, y: 1 }, _n2 = { x: 0, y: 1 };
 
-  /* Ramène un point sur le rail le plus proche de sa famille. Le déplacement
-     se fait le long de la normale, donc perpendiculairement à la droite ; le
-     plafond évite le saut sec au moment où le treillis prend. */
-  function railSnap(o, dt, ang, speed, rate) {
-    var n = railNorm(ang === undefined ? (o.ang || 0) : ang, _n);
+  /* ------------------------------------------- circulation, seconde version
+     Première version : on arrondissait le cap, puis on ramenait le corps vers
+     la droite la plus proche avec un plafond de vitesse. Mesuré en partie
+     réelle, ça ne tenait pas : à chaque virage le serpent traversait la maille
+     en biais pendant près d'une seconde, et il n'était réellement sur ses
+     droites que 13 % du temps en orthogonal, 37 % en diagonal. Baisser le
+     plafond n'y changeait rien — ça allongeait la traversée.
+
+     Le bon modèle est celui d'une moto-lumière : on ne tourne qu'en ATTEIGNANT
+     une droite de la famille visée. Entre deux virages on ne quitte jamais sa
+     droite, et le virage est net. */
+  var RAIL_HYST = 0.62;      // ~35° : un pouce qui tremble ne change pas de rail
+
+  function railNormOf(a) { return { x: -Math.sin(a), y: Math.cos(a) }; }
+
+  /* écart signé à la droite la plus proche de la famille que longe ce cap */
+  function railOff(o, a) {
+    var n = railNormOf(a);
     var u = o.x * n.x + o.y * n.y;
-    var c = Math.round(u / grid.spacing) * grid.spacing;
-    var fix = (u - c) * Math.min(1, dt * (rate === undefined ? 12 : rate));
-    var cap = (speed || 190) * dt;
-    if (fix > cap) fix = cap; else if (fix < -cap) fix = -cap;
-    o.x -= n.x * fix; o.y -= n.y * fix;
+    return u - Math.round(u / grid.spacing) * grid.spacing;
+  }
+  /* pose exactement sur cette droite */
+  function railPlace(o, a) {
+    var n = railNormOf(a), d = railOff(o, a);
+    o.x -= n.x * d; o.y -= n.y * d;
+  }
+  function railHold(o) { if (o._ra !== undefined) railPlace(o, o._ra); }
+
+  /* Rebond sur le bord de l'arène. Le cap est réfléchi par le coeur, mais le
+     rail verrouillé continuait de pointer vers le mur : le serpent y restait
+     collé. Et se contenter du cap réfléchi ne suffit pas — sur le treillis
+     diagonal, une diagonale réfléchie repointe très souvent vers le bord,
+     surtout dans un coin. Mesuré avant correction : le serpent passait 66 %
+     de la séquence collé au bord. On choisit donc, parmi les quatre rails,
+     celui qui rentre le plus franchement dans l'arène. */
+  function railBounce(o, nx, ny) {
+    if (o._ra === undefined) return;
+    var best = null, bestS = -1e9;
+    for (var k = 0; k < 4; k++) {
+      var r = grid.a0 + k * QUAD;
+      var cx = Math.cos(r), cy = Math.sin(r);
+      var dedans = cx * nx + cy * ny;                  // composante vers l'intérieur
+      if (dedans <= 0.01) continue;                    // longe ou sort : écarté
+      // à composante égale, on garde le cap le plus proche de celui qu'on avait
+      var s2 = dedans * 10 + Math.cos(norm(r - o._ra));
+      if (s2 > bestS) { bestS = s2; best = r; }
+    }
+    if (best === null) best = railAng(o.ang || 0);
+    o._ra = best; o._rw = best;
+    railPlace(o, best);
+  }
+
+  /* Rend le cap à suivre cette image. « step » est la distance qui sera
+     parcourue : c'est elle qui dit si l'intersection est atteinte. */
+  function railSteer(o, want, step) {
+    if (o._ra === undefined) { o._ra = railAng(o.ang || 0); railPlace(o, o._ra); o._rw = o._ra; }
+
+    if (want !== null && want !== undefined) {
+      // hystérésis : sous 35° d'écart, on considère que le joueur vise le rail
+      // qu'il suit déjà. Sans elle, un manche tenu sur la frontière faisait
+      // battre le cap jusqu'à quinze fois par seconde.
+      if (Math.abs(norm(want - o._ra)) > RAIL_HYST) {
+        var t = railAng(want);
+        if (Math.abs(norm(t - o._ra)) < Math.PI * 0.75) o._rw = t;   // demi-tour refusé
+      } else o._rw = o._ra;
+    }
+
+    if (o._rw !== undefined && o._rw !== o._ra) {
+      // la droite visée se rapproche à mesure qu'on avance : on tourne pile
+      // dessus, jamais entre deux
+      if (Math.abs(railOff(o, o._rw)) <= step * 0.75 + 2) {
+        railPlace(o, o._rw);
+        o._ra = o._rw;
+      }
+    }
+    railPlace(o, o._ra);
+    return o._ra;
   }
 
   /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée à
-     la main, téléportation. Plutôt que de réécrire onze comportements, on
-     reprojette leur déplacement de l'image : on garde la distance parcourue,
-     on impose la direction. Ils gardent leur allure, ils perdent le droit de
-     couper. */
+     la main, téléportation. On leur applique la même règle : on récupère la
+     distance qu'ils viennent de parcourir, et on la refait dans la direction
+     autorisée. Ils gardent leur allure, ils perdent le droit de couper. */
   function railEnemies(dt) {
     for (var i = 0; i < S.enemies.length; i++) {
       var e = S.enemies[i];
-      /* Seul le boss nommé du niveau échappe au réseau : les élites du climax
-         portent elles aussi e.boss, et les exclure toutes les laissait couper
-         à travers pendant que tout le reste était canalisé. */
-      if (e.dead || e === S.boss || e.noRail) continue;
+      if (e.dead || e.noRail) continue;
       var px = e._rx, py = e._ry;
-      if (px === undefined) { px = e.x; py = e.y; }
+      if (px === undefined) { px = e.x; py = e.y; e._ra = undefined; }
       var dx = e.x - px, dy = e.y - py;
       var mag = Math.sqrt(dx * dx + dy * dy);
       // un saut de plus d'un pas n'est pas un déplacement mais une
       // réapparition : on la laisse passer et on reprend le rail sur place
-      if (mag > grid.spacing) { e._rx = e.x; e._ry = e.y; continue; }
-      var ra = railAng(mag > 0.01 ? Math.atan2(dy, dx) : (e.ang || 0));
-      if (mag > 0.01) {
-        e.x = px + Math.cos(ra) * mag;
-        e.y = py + Math.sin(ra) * mag;
-      }
-      e.ang = ra;
+      if (mag > grid.spacing) { e._rx = e.x; e._ry = e.y; e._ra = undefined; continue; }
+      e.x = px; e.y = py;
+      var a = railSteer(e, mag > 0.01 ? Math.atan2(dy, dx) : undefined, mag);
+      e.x += Math.cos(a) * mag; e.y += Math.sin(a) * mag;
+      railHold(e);
+      e.ang = a;
       if (e.vx || e.vy) {
         var vm = Math.sqrt(e.vx * e.vx + e.vy * e.vy);
-        e.vx = Math.cos(ra) * vm; e.vy = Math.sin(ra) * vm;
+        e.vx = Math.cos(a) * vm; e.vy = Math.sin(a) * vm;
       }
-      /* Correction totale, pas amortie : un rattrapage partiel laisse un
-         écart d'équilibre, parce que la séparation entre corps et
-         l'aimantation des mines les repoussent de quelques unités par image.
-         Le plafond suffit à rendre l'arrivée sur le rail progressive. */
-      // plafond ramené à l'ordre de grandeur de la vitesse propre des ennemis
-      // (60 à 160 u/s) : à 900 ils traversaient en biais, visiblement
-      railSnap(e, dt, ra, 240, 1e6);
       e._rx = e.x; e._ry = e.y;
     }
   }
@@ -505,7 +562,8 @@ S2030.phases = (function () {
     drawFloor: drawFloor, drawDiag: gridDraw, persp: perspAng,
     use: use, grant: grant, buttonState: buttonState, powers: POWERS,
     enemyTimeScale: enemyTimeScale, foldFactor: foldFactor,
-    railed: railed, railAng: railAng, railSnap: railSnap, railLate: railLate,
+    railed: railed, railAng: railAng, railSteer: railSteer, railHold: railHold,
+    railBounce: railBounce, railLate: railLate,
     railSpacing: grid.spacing,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) {

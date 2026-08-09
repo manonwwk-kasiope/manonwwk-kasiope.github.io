@@ -344,7 +344,8 @@ function frame(now) {
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
   qualitySample(raw);
-  if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; applyQuality(); }
+  qualityTilt();
+  if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
 
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
@@ -514,44 +515,73 @@ function syncControls() {}
    On regarde donc la proportion d'images longues plutôt que la moyenne, on
    remonte dès que ça respire, et l'ajustement automatique reste en mémoire
    sans jamais toucher au choix du joueur. */
-var _qWin = [], _qWinT = 0, _qStep = 0, _qHold = 0;
+var _qWin = [], _qStep = 0, _qHold = 0, _qBon = 0;
 var PX_CRANS = [1, 1.25, 1.5, 2];
 
 function qualitySample(raw) {
   _qWin.push(raw);
-  if (_qWin.length > 90) _qWin.shift();
+  if (_qWin.length > 120) _qWin.shift();
 }
 
+/* Première version : on remontait dès que la mesure redevenait bonne. Or elle
+   redevient bonne PARCE QU'ON A BAISSÉ — et la bascule 3D, qui est justement
+   le moment coûteux, ne dure que vingt secondes. Résultat mesuré : neuf
+   changements de netteté en quatre-vingt-dix secondes, un cycle limite. On ne
+   remonte donc jamais pendant la bascule, et seulement après une longue
+   période franchement saine. */
 function autoQuality() {
-  if (_qWin.length < 45) return;
+  if (_qWin.length < 60) return;
   var longues = 0;
   for (var i = 0; i < _qWin.length; i++) if (_qWin[i] > 0.033) longues++;
   var part = longues / _qWin.length;
   if (_qHold > 0) { _qHold--; return; }
 
-  if (part > 0.08 && _qStep < 3) {
-    _qStep++;
+  if (part > 0.06 && _qStep < 3) {
+    _qStep++; _qBon = 0;
     applyQuality();
-    _qHold = 6;                       // on laisse la mesure se renouveler
+    _qHold = 8;
     _qWin.length = 0;
-  } else if (part < 0.01 && _qStep > 0) {
-    _qStep--;
-    applyQuality();
-    _qHold = 12;                      // on remonte plus prudemment qu'on ne descend
-    _qWin.length = 0;
+    return;
   }
+
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  if (part < 0.005 && _qStep > 0 && !penche) {
+    // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
+    // regagner un cran : remonter vite, c'est retomber tout de suite
+    if (++_qBon >= 50) {
+      _qStep--; _qBon = 0;
+      applyQuality();
+      _qHold = 20;
+      _qWin.length = 0;
+    }
+  } else if (part >= 0.005) _qBon = 0;
 }
 
-/* Le cran automatique s'applique par-dessus le choix du joueur, sans jamais
-   l'écraser : S.opt.px reste ce qu'il a réglé, S.pxEff est ce qui est rendu. */
+/* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
+   l'écraser : S.opt.px reste ce qu'il a réglé, S.pxEff est ce qui est rendu.
+   La bascule coûte un cran de plus, de façon déterministe : c'est le moment
+   où le compositeur travaille le plus, et une règle fixe ne peut pas osciller
+   comme le ferait une boucle de rétroaction. */
 function applyQuality() {
   var voulu = S.opt.px || 1.5;
-  var i = 0;
-  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu) i = k;
-  i = Math.max(0, i - _qStep);
+  var base = 0;
+  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu) base = k;
+  var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
+  var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
   S.pxEff = PX_CRANS[i];
   S.opt.particles = _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1);
   if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
+}
+
+/* La bascule s'installe et se retire progressivement : on ne rebascule la
+   netteté qu'aux deux franchissements, pas à chaque image. */
+var _penchePrec = false;
+function qualityTilt() {
+  var penche = !!(S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01);
+  if (penche === _penchePrec) return;
+  _penchePrec = penche;
+  applyQuality();
+  _qWin.length = 0; _qBon = 0; _qHold = 8;
 }
 
 /* ------------------------------------------------------------ cartes / niveaux */
@@ -777,6 +807,7 @@ function buildFullscreenButton() {
     'justify-content:center;background:rgba(3,4,10,.88);pointer-events:auto;padding:16px}' +
     '#ui #fshelp.on{display:flex}' +
     '#ui #fshelp .card{max-width:460px;width:100%;max-height:100%;overflow-y:auto;' +
+    '-webkit-overflow-scrolling:touch;touch-action:pan-y;' +
     'border:1px solid rgba(0,229,255,.34);border-radius:14px;background:#080b18;' +
     'padding:18px 20px;color:#cfe9f2;font:400 13px/1.6 system-ui,-apple-system,sans-serif}' +
     '#ui #fshelp h3{color:#00e5ff;font:700 12px/1.3 system-ui,sans-serif;letter-spacing:.2em;' +
@@ -806,9 +837,13 @@ function buildFullscreenButton() {
         '<ol><li>touche le bouton <b>Partager</b> de Safari (le carré avec la flèche) ;</li>' +
         '<li>choisis <b>Sur l\'écran d\'accueil</b> ;</li>' +
         '<li>lance SNAKE 2030 depuis l\'icône : plus aucune barre, vrai plein écran.</li></ol>'
-      : 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
-        'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
-        'directement.';
+      : why === 'frame'
+        ? 'Le jeu est affiché dans un cadre qui n\'autorise pas le plein écran. ' +
+          'Ouvre cette page dans son propre onglet — le bouton fonctionnera alors ' +
+          'directement.'
+        : 'Ton navigateur a refusé le passage en plein écran. Essaie depuis un ' +
+          'onglet ordinaire, sans mode de navigation restreint, ou ajoute le jeu ' +
+          'à ton écran d\'accueil.';
     help.classList.add('on');
   }
   /* Le coeur appelle preventDefault() sur les touchstart de #app, ce qui
@@ -839,8 +874,11 @@ function buildFullscreenButton() {
        les écrans ouverts DEPUIS le menu : il recouvrait à 88 % la pilule RETOUR
        des réglages et des déblocages, et le joueur ne pouvait plus revenir.
        On regarde l'écran réellement affiché, pas la phase. */
+    /* L'écran de fin s'appelle 'over', pas 'dead' : mon premier garde-fou le
+       masquait donc là où il devait justement être. La phase et le nom
+       d'écran n'ont jamais eu le même vocabulaire. */
     var ecr = (S2030.ui && S2030.ui.screen) ? S2030.ui.screen() : null;
-    var libre = ecr === 'menu' || ecr === 'dead' || ecr === null;
+    var libre = ecr === 'menu' || ecr === 'over' || ecr === null;
     btn.classList.toggle('on', libre && (S.phase === 'menu' || S.phase === 'dead'));
     btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
   }
