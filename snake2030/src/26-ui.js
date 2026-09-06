@@ -167,6 +167,8 @@ var _UI_CSS = [
 '.s2ctl{position:absolute;inset:0;pointer-events:none;opacity:0;',
 '  transition:opacity .2s ease;will-change:opacity}',
 '.s2ctl.on{opacity:1}',
+'.s2opt[hidden]{display:none}',
+'.s2pause-blur{color:#ffd166;text-shadow:0 0 calc(18px*var(--bl)*var(--glow)) #ffd166}',
 '.s2joy{position:absolute;transform:translate(-50%,50%);border-radius:50%;',
 '  border:2px solid var(--cy);opacity:calc(.24*var(--ca));transition:opacity .14s ease;',
 '  box-shadow:0 0 calc(18px*var(--bl)) rgba(0,229,255,.35),inset 0 0 calc(22px*var(--bl)) rgba(0,229,255,.14)}',
@@ -669,7 +671,12 @@ function _uiBuildPause(root) {
   sc.style.justifyContent = 'center';
   sc.style.gap = 'clamp(10px,3vh,26px)';
   _uiE.scrPause = sc;
-  _uiMk('div', 's2ttl', sc, 'PAUSE');
+  _uiE.pauseTtl = _uiMk('div', 's2ttl', sc, 'PAUSE');
+  /* Pause subie (fenêtre inactive, onglet caché) : un bandeau distinct prend
+     la place du titre ; il n'est dans le document que pendant cette pause. */
+  _uiE.pauseBlur = document.createElement('div');
+  _uiE.pauseBlur.className = 's2ttl s2pause-blur';
+  _uiE.pauseBlur.textContent = 'PAUSE — FENÊTRE INACTIVE';
   var row = _uiMk('div', 's2row', sc);
   _uiTap(_uiMk('button', 's2big', row, 'REPRENDRE'), function () {
     if (typeof togglePause === 'function') togglePause(); else _uiShow(null);
@@ -677,6 +684,18 @@ function _uiBuildPause(root) {
   var row2 = _uiMk('div', 's2row', sc);
   _uiTap(_uiMk('button', 's2pill', row2, 'RÉGLAGES'), function () { _uiShow('settings'); });
   _uiTap(_uiMk('button', 's2pill dim', row2, 'ABANDONNER'), function () { _uiQuit(); });
+}
+
+function _uiSetPauseBlur(on) {
+  var sc = _uiE.scrPause, b = _uiE.pauseBlur, t = _uiE.pauseTtl;
+  if (!sc || !b || !t) return;
+  if (on) {
+    if (t.parentNode === sc) sc.replaceChild(b, t);
+    else if (b.parentNode !== sc) sc.insertBefore(b, sc.firstChild);
+  } else {
+    if (b.parentNode === sc) sc.replaceChild(t, b);
+    else if (t.parentNode !== sc) sc.insertBefore(t, sc.firstChild);
+  }
 }
 
 /* ---------------------------------------------------------- fin de partie -- */
@@ -728,6 +747,7 @@ function _uiTog(parent, label, key, after) {
   });
   _uiWidgets.push(refresh);
   refresh();
+  return r;
 }
 function _uiStepper(parent, label, key, vals, fmt) {
   var r = _uiOptRow(parent, label);
@@ -753,6 +773,7 @@ function _uiStepper(parent, label, key, vals, fmt) {
   _uiTap(plus, function () { move(1); });
   _uiWidgets.push(refresh);
   refresh();
+  return r;
 }
 function _uiSeg2(parent, label, key, opts) {
   var r = _uiOptRow(parent, label);
@@ -768,6 +789,7 @@ function _uiSeg2(parent, label, key, opts) {
   }
   _uiWidgets.push(refresh);
   refresh();
+  return r;
 }
 function _uiPct(v) { return Math.round(v * 100) + ' %'; }
 
@@ -792,18 +814,21 @@ function _uiBuildSettings(root) {
     function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.5 ? 'FLUIDE' : v >= 1.25 ? 'LÉGÈRE' : 'BASSE'; });
 
   _uiMk('div', 's2grp', box, 'CONTRÔLES');
-  _uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }]);
-  _uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }]);
-  _uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct);
-  _uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct);
+  /* Les six lignes du manche et des boutons tactiles n'ont pas d'objet sur
+     bureau : elles reçoivent hidden (voir _uiSyncDesktop). */
+  var tr = _uiE.touchRows = [];
+  tr.push(_uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }]));
+  tr.push(_uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }]));
+  tr.push(_uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct));
+  tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct));
   _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct);
-  _uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
-    function (v) { return (v > 0 ? '+' : '') + v + ' px'; });
-  _uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
-    function (v) { return (v > 0 ? '+' : '') + v + ' px'; });
+  tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
+    function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
+  tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
+    function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
 
   _uiMk('div', 's2grp', box, 'CONFORT');
-  _uiTog(box, 'Vibrations', 'haptics');
+  _uiE.vibRow = _uiTog(box, 'Vibrations', 'haptics');
   _uiTog(box, 'Réduire les flashs', 'reduceFlash');
   _uiTog(box, 'Réduire les secousses', 'reduceShake');
   _uiTog(box, 'Réduire le bloom', 'reduceBloom');
@@ -821,6 +846,17 @@ function _uiBuildSettings(root) {
 
   var row = _uiMk('div', 's2row', sc);
   _uiTap(_uiMk('button', 's2pill', row, 'RETOUR'), function () { _uiShow(_uiPrevScr); });
+  _uiSyncDesktop();
+}
+
+/* Bureau : les réglages du manche et des boutons tactiles n'ont pas d'objet ;
+   Vibrations non plus sans navigator.vibrate (Safari iOS) ni sur bureau, où
+   l'API existe mais ne vibre rien. Resynchronisé à chaque ouverture des
+   réglages : S.desktop peut tomber au premier toucher. */
+function _uiSyncDesktop() {
+  var d = !!S.desktop, rows = _uiE.touchRows || [];
+  for (var i = 0; i < rows.length; i++) rows[i].hidden = d;
+  if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
 }
 
 /* ------------------------------------------------------------- déblocages -- */
@@ -938,6 +974,7 @@ function _uiShow(name) {
 
   if (_uiScreen === 'menu') { _uiRefreshMenu(); _uiRunMs = 0; }
   if (_uiScreen === 'unlocks') _uiRefreshUnlocks();
+  if (_uiScreen === 'settings') _uiSyncDesktop();
   if (_uiScreen === 'over') _uiFillOver();
   if (_uiScreen === null && (prev === _uiE.scrMenu || prev === _uiE.scrOver)) _uiNewRun();
 }
@@ -1084,6 +1121,12 @@ function _uiTickRun() {
 
 function _uiSyncCtl() {
   var show = !_uiCanvasCtl && S.phase === 'play' && !S.paused && !_uiScreen;
+  show = show && !S.desktop;            // bureau : ni manche ni boutons
+  /* Sur bureau la couche est retirée du rendu (display:none par l'attribut
+     hidden), pas seulement transparente : rien à composer, rien à toucher.
+     Sur mobile on garde le fondu d'opacité. */
+  var dk = !!S.desktop;
+  if (_uiE.ctl.hidden !== dk) _uiE.ctl.hidden = dk;
   var si = show ? 1 : 0;
   if (si !== _uiCtlShown) {
     _uiCtlShown = si;
@@ -1345,5 +1388,9 @@ S2030.ui = {
 
   relayout: function () { _uiLayout(); },
   runTime: function () { return _uiRunMs; },
-  screen: function () { return _uiScreen; }
+  screen: function () { return _uiScreen; },
+  /* pause subie (fenêtre inactive) : bandeau .s2pause-blur à la place du titre */
+  setPauseBlur: function (on) { _uiSetPauseBlur(!!on); },
+  /* S.desktop a changé : lignes de réglages tactiles masquées ou non */
+  syncDesktop: function () { _uiSyncDesktop(); }
 };

@@ -26,6 +26,19 @@ var K = {
   GRID: 110                 // taille de cellule de la grille de collision
 };
 
+/* ---------------------------------------------------------------- bureau */
+/* Bureau : aucun point de contact et pointeur fin. Ni manche ni boutons
+   tactiles, ni plein écran forcé, toute fenêtre jouable. L'amorçage remet
+   S.desktop à false au premier touchstart réel. */
+function detectDesktop() {
+  try {
+    if (typeof navigator === 'undefined') return false;
+    if (navigator.maxTouchPoints > 0) return false;
+    if (typeof matchMedia === 'function' && matchMedia('(pointer:coarse)').matches) return false;
+    return true;
+  } catch (e) { return false; }
+}
+
 /* --------------------------------------------------------------------- état */
 var S = {
   t: 0, dt: 0,
@@ -48,7 +61,8 @@ var S = {
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
   stats: { best: 0, coins: 0, runs: 0 },
   boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
-  timeScale: 1
+  timeScale: 1,
+  desktop: detectDesktop()
 };
 
 /* ------------------------------------------------- aléatoire avec graine */
@@ -815,8 +829,23 @@ function haptic(p) {
 }
 
 /* --------------------------------------------------------- verrou d'écran */
-var _wake = null;
+/* Une seule demande par période d'éveil : le verrou est redemandé au retour
+   au premier plan et à la reprise, mais jamais deux fois de suite — la
+   reprise qui suit un retour au premier plan ne redemande rien. releaseWake()
+   rouvre la porte (mort, abandon, passage en arrière-plan, verrou lâché par
+   le système). */
+var _wake = null, _wakeAsked = false;
 function requestWake() {
-  try { if ('wakeLock' in navigator) navigator.wakeLock.request('screen').then(function (w) { _wake = w; }).catch(function () {}); } catch (e) {}
+  if (_wakeAsked) return;
+  try {
+    if (!('wakeLock' in navigator)) return;
+    _wakeAsked = true;
+    navigator.wakeLock.request('screen').then(function (w) {
+      _wake = w;
+      try {
+        w.addEventListener('release', function () { if (_wake === w) { _wake = null; _wakeAsked = false; } });
+      } catch (e) {}
+    }).catch(function () { _wake = null; });
+  } catch (e) { _wake = null; }
 }
-function releaseWake() { try { _wake && _wake.release(); } catch (e) {} _wake = null; }
+function releaseWake() { try { _wake && _wake.release(); } catch (e) {} _wake = null; _wakeAsked = false; }

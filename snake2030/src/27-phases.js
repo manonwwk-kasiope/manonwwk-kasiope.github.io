@@ -31,7 +31,13 @@ S2030.phases = (function () {
      en temps la caméra plonge à 200 %, puis se recule jusqu'à 100 % — la
      vue d'ensemble qui suit le rapprochement se lit comme une respiration,
      pas comme un réglage qui dérive. */
-  var ZOOM_BASE = 1.30, ZOOM_NEAR = 2.00, ZOOM_WIDE = 1.00;
+  /* Bureau : la fenêtre est déjà large, on cadre plus lâche (1,05) ; mobile :
+     1,30 de base, 200 % rapproché, 100 % reculé — les deux autres crans
+     suivent la base (× 1,54 et × 0,77). Lus à chaque image : S.desktop peut
+     tomber au premier toucher. */
+  function ZOOM_BASE() { return S.desktop ? 1.05 : 1.30; }
+  function ZOOM_NEAR() { return 1.54 * ZOOM_BASE(); }
+  function ZOOM_WIDE() { return 0.77 * ZOOM_BASE(); }
   var zc = { mode: 0, t: 0, next: 20 };      // 0 repos, 1 rapproché, 2 reculé
 
   function zoomCycle(dt) {
@@ -50,7 +56,7 @@ S2030.phases = (function () {
     }
   }
   function zoomBase() {
-    var z = zc.mode === 1 ? ZOOM_NEAR : zc.mode === 2 ? ZOOM_WIDE : ZOOM_BASE;
+    var z = zc.mode === 1 ? ZOOM_NEAR() : zc.mode === 2 ? ZOOM_WIDE() : ZOOM_BASE();
     /* La bascule agrandit l'image pour couvrir l'écran : sans compensation
        elle se lirait comme un coup de zoom au lieu d'un basculement. */
     if (persp > 0.001) {

@@ -23,6 +23,8 @@ async function launchWith(ctxOpts, kind, opts = {}) {
   if (opts.args) args.push(...opts.args);
   const browser = await chromium.launch({ headless: true, args });
   const context = await browser.newContext({ ...ctxOpts, ...(opts.ctx || {}) });
+  // opts.init : scripts d'initialisation (chaîne ou fonction) posés AVANT le chargement de la page (espions d'API, G2)
+  for (const s of (opts.init || [])) await context.addInitScript(s);
   const page = await context.newPage();
   page.setDefaultTimeout(opts.timeout || 15000);
   const pageErrors = [], consoleErrors = [];

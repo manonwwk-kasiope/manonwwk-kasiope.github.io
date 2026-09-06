@@ -4,7 +4,7 @@
    ========================================================================== */
 
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
-var _fsbSync = null;
+var _fsbSync = null, _fsHelp = null;
 
 /* ------------------------------------------------ quarantaine des erreurs
    Une exception dans une étape de frame() n'emporte plus l'image : chaque
@@ -80,11 +80,17 @@ function resizeCanvas() {
   cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
   cv.style.width = w + 'px'; cv.style.height = h + 'px';
   _perspApplied = -1;                      // la distance d'oeil dépend de la hauteur
-  // hauteur de vue constante en unités monde : le jeu se voit pareil partout
+  /* Hauteur de vue de référence en unités monde, puis la largeur est bornée :
+     jamais moins de 1000 unités (fenêtre haute et étroite : on dézoome au
+     lieu de couper) ni plus de 1600 (écran ultra-large : on ne voit pas toute
+     l'arène). La hauteur suit — ce n'est plus une constante. */
   SCALE = h / K.VIEW_H;
-  S.view.h = K.VIEW_H;
+  if (w / SCALE < 1000) SCALE = w / 1000;
+  if (w / SCALE > 1600) SCALE = w / 1600;
+  S.view.h = h / SCALE;
   S.view.w = w / SCALE;
-  var portrait = h > w;
+  // bureau : une fenêtre haute est une fenêtre, pas un téléphone à tourner
+  var portrait = !S.desktop && h > w;
   document.body.classList.toggle('portrait', portrait);
   /* Le bandeau « tourne ton téléphone » est opaque et avale les touchers : la
      partie continuait derrière, le joueur encaissant des coups qu'il ne
@@ -124,7 +130,7 @@ function onTouchStart(e) {
       S2030.ui && S2030.ui.placeJoy && S2030.ui.placeJoy(t.clientX, t.clientY);
     }
   }
-  e.preventDefault();
+  if (e.cancelable) e.preventDefault();
 }
 
 function onTouchMove(e) {
@@ -146,7 +152,7 @@ function onTouchMove(e) {
       if (mag > 0.001) { S.input.jx = dx / mag; S.input.jy = dy / mag; }
     }
   }
-  e.preventDefault();
+  if (e.cancelable) e.preventDefault();
 }
 
 function onTouchEnd(e) {
@@ -159,7 +165,7 @@ function onTouchEnd(e) {
     var b = touchBtns[t.identifier];
     if (b) { S.input[b] = false; delete touchBtns[t.identifier]; }
   }
-  e.preventDefault();
+  if (e.cancelable) e.preventDefault();
 }
 
 function pressBtn(b) {
@@ -167,22 +173,56 @@ function pressBtn(b) {
   if (b === 'ult') useUlt();
 }
 
-/* --- clavier, pour mettre au point sur ordinateur --- */
+/* --- clavier : pilotage complet sur ordinateur ---
+   Directions lues sur e.code, la position physique de la touche : ZQSD et
+   WASD marchent tels quels sur AZERTY comme sur QWERTY, plus les flèches.
+   Actions lues sur e.key. Les raccourcis du navigateur (Cmd+R, Ctrl+…,
+   Alt+…) ne touchent jamais au jeu ; la répétition automatique d'une touche
+   maintenue ne relance pas une action. Écouteurs en capture sur window : un
+   événement synthétique posé sur document sans bubbles y passe aussi. */
 var keys = {};
+var KEY_ONCE = { e: 1, r: 1, f: 1, p: 1, escape: 1, enter: 1 };
+function clearKeys() { for (var k in keys) keys[k] = false; }
+function keyName(e) {
+  var k = e.key || '';
+  if (!k && e.code) {
+    var c = e.code;
+    if (c.length === 4 && c.indexOf('Key') === 0) k = c.charAt(3);
+    else if (c === 'Space') k = ' ';
+    else k = c;
+  }
+  return k.toLowerCase();
+}
+function toggleFullscreenKey() {
+  if (inFullscreen()) leaveFullscreen();
+  else goFullscreen(_fsHelp);
+}
 addEventListener('keydown', function (e) {
-  keys[e.key.toLowerCase()] = true;
-  if (e.key === ' ') { S.input.boost = true; e.preventDefault(); }
-  if (e.key.toLowerCase() === 'e') useSpecial();
-  if (e.key.toLowerCase() === 'r') useUlt();
-  if (e.key === 'Escape') togglePause();
-});
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  var k = keyName(e), code = e.code || '';
+  if (e.repeat && KEY_ONCE[k]) return;
+  if (code) keys[code] = true;
+  var space = code === 'Space' || e.key === ' ';
+  if ((space || code.indexOf('Arrow') === 0) && e.cancelable) e.preventDefault();
+  if (space) {
+    if (S.paused) { if (!e.repeat) togglePause(); return; }
+    S.input.boost = true;
+    return;
+  }
+  if (k === 'e') useSpecial();
+  else if (k === 'r') useUlt();
+  else if (k === 'p' || k === 'escape') togglePause();
+  else if (k === 'enter') { if (S.paused) togglePause(); }
+  else if (k === 'f') toggleFullscreenKey();
+}, true);
 addEventListener('keyup', function (e) {
-  keys[e.key.toLowerCase()] = false;
-  if (e.key === ' ') S.input.boost = false;
-});
+  var code = e.code || '';
+  if (code) keys[code] = false;
+  if (code === 'Space' || e.key === ' ') S.input.boost = false;
+}, true);
 function keyboardInput() {
-  var kx = (keys['d'] || keys['arrowright'] ? 1 : 0) - (keys['q'] || keys['a'] || keys['arrowleft'] ? 1 : 0);
-  var ky = (keys['s'] || keys['arrowdown'] ? 1 : 0) - (keys['z'] || keys['w'] || keys['arrowup'] ? 1 : 0);
+  var kx = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.KeyQ || keys.ArrowLeft ? 1 : 0);
+  var ky = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.KeyZ || keys.ArrowUp ? 1 : 0);
   if (kx || ky) {
     var m = Math.hypot(kx, ky);
     S.input.jx = kx / m; S.input.jy = ky / m; S.input.jmag = 1; S.input.jactive = true;
@@ -751,7 +791,9 @@ function startRun() {
   // nature : la mesure de qualité repart de zéro, sinon le premier cran
   // tombait dès la première seconde sur une machine parfaitement saine
   _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
-  goFullscreen();
+  // bureau : la fenêtre est jouable telle quelle, F bascule le plein écran ;
+  // goFullscreen() verrouille aussi le paysage, on saute les deux
+  if (!S.desktop) goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
   resetRun();
@@ -762,12 +804,33 @@ function startRun() {
   requestWake();
 }
 
-function togglePause() {
+/* reason 'blur' : pause subie (fenêtre inactive, onglet caché), bandeau
+   distinct de la pause volontaire. Toute pause vide le clavier : une touche
+   enfoncée à cet instant ne doit pas rester collée à la reprise. */
+function togglePause(reason) {
   if (S.phase !== 'play' && !S.paused) return;
   S.paused = !S.paused;
+  clearKeys();
+  if (S2030.ui.setPauseBlur) S2030.ui.setPauseBlur(S.paused && reason === 'blur');
   S2030.ui.showScreen(S.paused ? 'pause' : null);
   if (S.paused) S2030.audio && S2030.audio.stop();
-  else S2030.audio && S2030.audio.start();
+  else {
+    S2030.audio && S2030.audio.start();
+    if (S.phase === 'play') requestWake();
+  }
+}
+
+/* Perte de focus (fenêtre, onglet, page) : plus aucune entrée ne reste
+   enfoncée — ni touche, ni manche, ni bouton — et la partie se met en pause. */
+function loseFocus() {
+  clearKeys();
+  var inp = S.input;
+  inp.jx = 0; inp.jy = 0; inp.jmag = 0;
+  inp.jactive = false; inp.boost = false; inp.special = false; inp.ult = false;
+  touchJoy = null; touchBtns = {};
+  if (S.snake) S.snake.boosting = false;
+  S2030.ui && S2030.ui.releaseJoy && S2030.ui.releaseJoy();
+  if (S.phase === 'play' && !S.paused) togglePause('blur');
 }
 
 function loadStats() {
@@ -1005,8 +1068,9 @@ function buildFullscreenButton() {
     var libre = ecr === 'menu' || ecr === 'over';
     var notice = help.classList.contains('on');
     btn.classList.toggle('on', !notice && libre && (S.phase === 'menu' || S.phase === 'dead'));
-    btn.textContent = inFullscreen() ? 'Quitter le plein écran' : 'Plein écran';
+    btn.textContent = (inFullscreen() ? 'Quitter le plein écran' : 'Plein écran') + (S.desktop ? ' (F)' : '');
   }
+  _fsHelp = showHelp;
   // sondage toutes les 300 ms : le bouton restait allumé par-dessus le jeu
   // pendant l'animation de mort et après REJOUER. On le synchronise dans la
   // boucle, où le changement d'écran est immédiatement visible.
@@ -1075,9 +1139,34 @@ function boot() {
   root.addEventListener('touchcancel', onTouchEnd, { passive: false });
   root.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
+  /* Arrière-plan : pause subie, verrou d'écran rendu (le système le lâche de
+     toute façon). Retour : contexte audio relancé — Safari le laisse en
+     'interrupted' après un appel — et verrou redemandé si une partie est en
+     cours, même en pause : l'écran doit rester allumé sur le bandeau. */
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden && S.phase === 'play' && !S.paused) togglePause();
+    var hid = document.hidden === true || document.visibilityState === 'hidden';
+    if (hid) { loseFocus(); releaseWake(); return; }
+    if (S2030.audio && S2030.audio.ready) S2030.audio.resume();
+    if (S.phase === 'play') { releaseWake(); requestWake(); }
   });
+  addEventListener('blur', loseFocus);
+  addEventListener('pagehide', loseFocus);
+  /* Sortie du plein écran pendant la partie (Échap avalé par le navigateur,
+     changement de fenêtre) : c'est une interruption, on met en pause. */
+  function onFsChange() {
+    if (!inFullscreen() && S.phase === 'play' && !S.paused) togglePause();
+  }
+  document.addEventListener('fullscreenchange', onFsChange);
+  document.addEventListener('webkitfullscreenchange', onFsChange);
+  /* Un vrai toucher sur ce qui se croyait un bureau : contrôles tactiles,
+     bandeau de rotation et cadrage mobile reviennent. */
+  addEventListener('touchstart', function () {
+    if (!S.desktop) return;
+    S.desktop = false;
+    resizeCanvas();
+    S2030.ui && S2030.ui.syncDesktop && S2030.ui.syncDesktop();
+    S2030.ui && S2030.ui.relayout && S2030.ui.relayout();
+  }, true);
 
   S.snake = makeSnake();
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
@@ -1090,6 +1179,10 @@ function boot() {
   addEventListener('pointerdown', armAudio, true);
   addEventListener('touchstart', armAudio, true);
   addEventListener('keydown', armAudio, true);
+  // et à chaque geste ensuite : un contexte 'interrupted' (Safari) repart
+  function kickAudio() { if (_armed && S2030.audio && S2030.audio.ready) S2030.audio.resume(); }
+  addEventListener('pointerdown', kickAudio, true);
+  addEventListener('touchstart', kickAudio, true);
 
   requestAnimationFrame(function (t) { lastT = t; frame(t); });
 }

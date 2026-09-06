@@ -972,7 +972,9 @@ S2030.audio = {
 
   start: function(){
     if(!this.init()) return;
-    if(_audCtx.state === 'suspended'){ try{ _audCtx.resume(); }catch(e){} }
+    /* tout état autre que 'running' : 'suspended', mais aussi 'interrupted'
+       (Safari après un appel ou un changement de sortie) */
+    if(_audCtx.state !== 'running'){ try{ var _rp = _audCtx.resume(); if(_rp && _rp['catch']) _rp['catch'](function(){}); }catch(e){} }
     var now = _audCtx.currentTime;
     _audPlaying = true;
     _audMuteAt = 1e9;
@@ -1009,7 +1011,9 @@ S2030.audio = {
 
   resume: function(){
     if(!this.init()) return;
-    if(_audCtx.state === 'suspended'){ try{ _audCtx.resume(); }catch(e){} }
+    /* tout état autre que 'running' : 'suspended', mais aussi 'interrupted'
+       (Safari après un appel ou un changement de sortie) */
+    if(_audCtx.state !== 'running'){ try{ var _rp = _audCtx.resume(); if(_rp && _rp['catch']) _rp['catch'](function(){}); }catch(e){} }
     if(_audPlaying){
       if(_audStopTO){ clearTimeout(_audStopTO); _audStopTO = null; }
       if(!_audTimer) _audTimer = setInterval(_audTick, 45);
