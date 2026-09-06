@@ -5098,6 +5098,7 @@ function _wpnUpSide(dt, L) {
    ========================================================================== */
 
 function _wpnTailPush(L) {
+  if (!L) return;
   var tx = _wpnTailX(), ty = _wpnTailY();
   var dx = tx - _wpnTail.lx, dy = ty - _wpnTail.ly;
   if (dx * dx + dy * dy < 64) return;
@@ -5147,6 +5148,7 @@ function _wpnTailPush(L) {
 }
 
 function _wpnUpTail(dt, L) {
+  if (!L) return;
   var i, nd;
   if (_wpnTail.loopCd > 0) _wpnTail.loopCd -= dt;
   if (_wpnTail.boom > 0) _wpnTail.boom -= dt;
@@ -5719,8 +5721,7 @@ function _wpnUpMines(dt, L) {
 function _wpnUpdate(dt) {
   // brouilleur : tant que la tête baigne dans le champ, les armes se taisent
   if (S2030.enemies && S2030.enemies.isJammed && S2030.enemies.isJammed()) {
-    _wpnUpTail && _wpnUpTail(dt);   // le sillage de queue n'est pas une arme
-    return;
+    var L = _wpnL('tailLaser'); if (L) _wpnUpTail(dt, L); return;   // le sillage de queue n'est pas une arme
   }
   if (!S.snake) return;
   _wpnFrame++;
@@ -10922,6 +10923,61 @@ S2030.phases = (function () {
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
 var _fsbSync = null;
 
+/* ------------------------------------------------ quarantaine des erreurs
+   Une exception dans une étape de frame() n'emporte plus l'image : chaque
+   étape est isolée, l'entité fautive est marquée dead et retirée (aussitôt
+   si c'est son update qui lève, à l'image suivante si c'est son dessin), et
+   l'erreur est journalisée une fois par signature — message plus première
+   ligne de pile — dans window.__ERR = { count, sigs }. */
+var ERR = { count: 0, sigs: {} };
+
+function errSig(e) {
+  var msg = (e && e.message != null) ? String(e.message) : String(e);
+  var line = '';
+  var st = (e && e.stack) ? String(e.stack).split('\n') : [];
+  for (var i = 0; i < st.length; i++) {
+    var l = st[i].trim();
+    if (!l) continue;
+    // V8 répète le message en tête de pile ; on veut la première vraie ligne
+    if (i === 0 && l.indexOf('@') < 0 && l.indexOf('at ') !== 0 && l.indexOf(msg) >= 0) continue;
+    line = l; break;
+  }
+  return msg + (line ? ' @ ' + line : '');
+}
+
+function errLog(where, e) {
+  ERR.count++;
+  var sig = where + ' | ' + errSig(e);
+  if (ERR.sigs[sig]) { ERR.sigs[sig]++; return; }
+  ERR.sigs[sig] = 1;
+  try { console.warn('SNAKE 2030 — erreur mise en quarantaine : ' + sig); } catch (x) { /* rien */ }
+}
+
+/* Repère monde de l'image en cours, gardé pour le rétablir après une
+   exception survenue au milieu d'un save() : on déroule toute la pile, on
+   remet les attributs à leur défaut et on repose la caméra. */
+var _WX = { bw: 0, bh: 0, rt: 0, sx: 1, sy: 1, ox: 0, oy: 0 };
+
+function worldXf(g, W) {
+  g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  g.translate(W.bw / 2, W.bh / 2);
+  if (W.rt) g.rotate(W.rt);
+  g.scale(W.sx, W.sy);
+  g.translate(-S.cam.x + W.ox, -S.cam.y + W.oy);
+}
+
+function gfxRecover(g, W) {
+  try {
+    for (var k = 0; k < 32; k++) g.restore();   // au-delà de la pile : sans effet
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+    g.shadowBlur = 0; g.shadowColor = 'rgba(0,0,0,0)';
+    g.setLineDash([]); g.lineWidth = 1;
+    if ('filter' in g) g.filter = 'none';
+    if (W) { g.save(); worldXf(g, W); }
+    else g.setTransform(DPR, 0, 0, DPR, 0, 0);
+  } catch (x) { /* contexte perdu : l'image suivante repart de zéro */ }
+}
+
 function setupCanvas() {
   cv = document.getElementById('game');
   ctx = cv.getContext('2d', { alpha: false });
@@ -11082,19 +11138,29 @@ function useUlt() {
   S2030.fx && S2030.fx.shake(26);
   S2030.ui && S2030.ui.banner('SURCHARGE');
   haptic([40, 20, 90]);
-  var s = S.snake;
-  setTimeout(function () { S.timeScale = 1; }, 420);
-  // déferlement : vague de destruction concentrique
-  var step = 0;
-  var iv = setInterval(function () {
-    if (S.phase !== 'play') { clearInterval(iv); return; }
-    var r = 160 + step * 150;
+  // minuteries en temps de jeu (S.t, contrat : jamais l'horloge murale) : le
+  // ralenti et le déferlement durent le même nombre d'images d'une machine à
+  // l'autre, et s'arrêtent avec la pause
+  _ultEnd = S.t + 420;
+  _ultStep = 0; _ultNext = S.t + 90;   // premier palier à 90 ms, comme l'ancien setInterval
+}
+
+/* Déferlement de l'ultime : vague de destruction concentrique, six paliers à
+   90 ms de jeu ; le ralenti se relâche à 420 ms de jeu. Appelé chaque image de
+   jeu par frame(). */
+var _ultEnd = -1, _ultStep = 9, _ultNext = 0;
+function ultTick() {
+  if (_ultEnd >= 0 && S.t >= _ultEnd) { _ultEnd = -1; S.timeScale = 1; }
+  if (_ultStep > 5) return;
+  if (S.phase !== 'play') { _ultStep = 9; return; }
+  while (_ultStep <= 5 && S.t >= _ultNext) {
+    var s = S.snake, r = 160 + _ultStep * 150;
     S2030.fx && S2030.fx.ring(s.x, s.y, '#fff3b0', r * 0.5, 1400);
     var list = enemiesNear(s.x, s.y, r);
     for (var i = 0; i < list.length; i++) damageEnemy(list[i], 40, { x: list[i].x, y: list[i].y });
     S2030.audio && S2030.audio.sfx('explode');
-    if (++step > 5) clearInterval(iv);
-  }, 90);
+    _ultStep++; _ultNext += 90;
+  }
 }
 
 /* --------------------------------------------------------- rendu du serpent */
@@ -11215,8 +11281,10 @@ function drawBullets() {
   for (i = 0; i < S.bullets.length; i++) {
     b = S.bullets[i];
     if (!inView(b.x, b.y, 30)) continue;
-    if (S2030.weapons && S2030.weapons.drawBullet) S2030.weapons.drawBullet(ctx, b);
-    else { ctx.fillStyle = b.color || '#fff3b0'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill(); }
+    try {
+      if (S2030.weapons && S2030.weapons.drawBullet) S2030.weapons.drawBullet(ctx, b);
+      else { ctx.fillStyle = b.color || '#fff3b0'; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill(); }
+    } catch (x) { b.life = 0; errLog('bullet.draw:' + (b.kind || '?'), x); gfxRecover(ctx, _WX); }
   }
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
@@ -11244,15 +11312,21 @@ function drawArenaEdge() {
 }
 
 /* ----------------------------------------------------------- boucle de jeu */
-var lastT = 0, accFps = 0, frames = 0, fps = 60;
+var lastT = 0, accFps = 0, accReal = 0, frames = 0, fps = 60;
 
 function frame(now) {
   requestAnimationFrame(frame);
-  var raw = Math.min(0.05, (now - lastT) / 1000 || 0.016);
+  var real = Math.min(0.05, (now - lastT) / 1000 || 0.016);   // temps d'image réel, s
   lastT = now;
+  // pas de temps imposé par une sonde de test (window.__DT, en secondes) : la
+  // latence « en images » mesurée sur le treillis ne dépend plus du taux
+  // d'images réel de la machine de test, et la suite d'états du jeu devient
+  // la même d'une exécution à l'autre ; jamais posé en jeu normal. La mesure
+  // de qualité, elle, regarde toujours le temps d'image réel.
+  var raw = window.__DT > 0 ? Math.min(0.05, +window.__DT) : real;
 
-  frames++; accFps += raw;
-  if (accFps > 0.5) { fps = frames / accFps; frames = 0; accFps = 0; autoQuality(); }
+  frames++; accFps += raw; accReal += real;
+  if (accFps > 0.5) { fps = frames / accReal; frames = 0; accFps = 0; accReal = 0; autoQuality(); }
 
   var hs = S2030.fx && S2030.fx.hitstopLeft ? S2030.fx.hitstopLeft() : 0;
   var scale = hs > 0 ? 0.08 : S.timeScale;
@@ -11260,36 +11334,41 @@ function frame(now) {
   S.dt = dt;
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
-  qualitySample(raw);
-  qualityTilt();
-  if (_fsbSync) _fsbSync();
-  if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
+  try {
+    qualitySample(real);
+    qualityTilt();
+    if (_fsbSync) _fsbSync();
+    if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
+  } catch (e) { errLog('quality', e); }
 
+  /* Chaque étape est isolée : une exception dans l'une ne prive pas les
+     suivantes, et render() puis hud() tournent quoi qu'il arrive. */
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
-    keyboardInput();
-    updateSnake(dt);
+    try { keyboardInput(); } catch (e) { errLog('keyboardInput', e); }
+    try { ultTick(); } catch (e) { errLog('ultTick', e); }
+    try { updateSnake(dt); } catch (e) { errLog('updateSnake', e); }
     S.levelT += dt;
-    S2030.levels && S2030.levels.update && S2030.levels.update(dt);
-    updateEnemies(dt);
-    S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt);
-    S2030.phases && S2030.phases.update(dt);
-    auraTick(dt);
-    sonicTick(dt);
-    poolsTick(dt);
-    collide(dt);
+    try { S2030.levels && S2030.levels.update && S2030.levels.update(dt); } catch (e) { errLog('levels.update', e); }
+    updateEnemies(dt);                       // try/catch par ennemi
+    try { S2030.weapons && S2030.weapons.update && S2030.weapons.update(dt); } catch (e) { errLog('weapons.update', e); }
+    try { S2030.phases && S2030.phases.update(dt); } catch (e) { errLog('phases.update', e); }
+    try { auraTick(dt); } catch (e) { errLog('auraTick', e); }
+    try { sonicTick(dt); } catch (e) { errLog('sonicTick', e); }
+    try { poolsTick(dt); } catch (e) { errLog('poolsTick', e); }
+    try { collide(dt); } catch (e) { errLog('collide', e); }
     // dernier mot au treillis : plus rien ne déplacera les ennemis après
-    S2030.phases && S2030.phases.railLate && S2030.phases.railLate(dt);
+    try { S2030.phases && S2030.phases.railLate && S2030.phases.railLate(dt); } catch (e) { errLog('railLate', e); }
     if (S.multT > 0) { S.multT -= raw * 1000; if (S.multT <= 0) { S.mult = 1; S.combo = 0; } }
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
-    updateCam(dt);
-    S2030.audio && S2030.audio.setIntensity(S.intensity);
-    if (S.lvlUps > 0) openCards();
+    try { updateCam(dt); } catch (e) { errLog('updateCam', e); }
+    try { S2030.audio && S2030.audio.setIntensity(S.intensity); } catch (e) { errLog('audio.setIntensity', e); }
+    if (S.lvlUps > 0) { try { openCards(); } catch (e) { errLog('openCards', e); } }
   } else if (S.phase === 'dead' || S.phase === 'cards') {
     S.t += raw * 1000;
     // la caméra continue de se redresser : sinon le récapitulatif se lit sur
     // une image penchée à 30° et gardée telle quelle
-    S2030.phases && S2030.phases.settle && S2030.phases.settle(raw);
+    try { S2030.phases && S2030.phases.settle && S2030.phases.settle(raw); } catch (e) { errLog('phases.settle', e); }
   } else if (S.phase === 'menu') {
     S.t += raw * 1000;
     S.cam.x = lerp(S.cam.x, K.ARENA_W / 2, 0.02);
@@ -11298,20 +11377,25 @@ function frame(now) {
     S.t += raw * 1000;
   }
 
-  S2030.fx && S2030.fx.update(raw);
-  render();
-  S2030.ui && S2030.ui.hud && S2030.ui.hud();
+  try { S2030.fx && S2030.fx.update(raw); } catch (e) { errLog('fx.update', e); }
+  try { render(); } catch (e) { errLog('render', e); gfxRecover(ctx, null); }
+  try { S2030.ui && S2030.ui.hud && S2030.ui.hud(); } catch (e) { errLog('hud', e); }
   syncControls();
 }
 
 function updateEnemies(dt) {
-  dt *= S2030.phases ? S2030.phases.enemyTimeScale() : 1;
+  var ts = 1;
+  try { ts = S2030.phases ? S2030.phases.enemyTimeScale() : 1; } catch (x) { errLog('enemyTimeScale', x); }
+  dt *= ts;
+  var E = S2030.enemies;
   for (var i = S.enemies.length - 1; i >= 0; i--) {
     var e = S.enemies[i];
     if (e.dead) { S.enemies.splice(i, 1); continue; }
     e.t += dt * 1000;
     if (e.hitT > 0) e.hitT -= dt * 1000;
-    S2030.enemies && S2030.enemies.update && S2030.enemies.update(e, dt);
+    if (!E || !E.update) continue;
+    try { E.update(e, dt); }
+    catch (x) { e.dead = true; e.qrt = 1; S.enemies.splice(i, 1); errLog('enemy.update:' + e.type, x); }
   }
 }
 
@@ -11321,11 +11405,12 @@ function render() {
   ctx.fillRect(0, 0, CW, CH);
 
   var P = S2030.phases;
-  applyPersp((P && P.persp) ? P.persp() : 0);
+  try { applyPersp((P && P.persp) ? P.persp() : 0); } catch (x) { errLog('applyPersp', x); }
   drawWorld(ctx, CW, CH);
 
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  S2030.fx && S2030.fx.drawScreen && S2030.fx.drawScreen(ctx, CW, CH);
+  try { S2030.fx && S2030.fx.drawScreen && S2030.fx.drawScreen(ctx, CW, CH); }
+  catch (x) { errLog('fx.drawScreen', x); gfxRecover(ctx, null); }
   drawControls();
 }
 
@@ -11346,37 +11431,43 @@ function drawWorld(g, bw, bh) {
   if (sh > 0.2 && !S.opt.reduceShake) { ox = rndR(-sh, sh); oy = rndR(-sh, sh); }
 
   var P = S2030.phases;
-  var zm = P ? P.zoom() : 1, tl = P ? P.tilt() : 0, rt = P ? P.rot() : 0;
+  var zm = 1, tl = 0, rt = 0;
+  try { if (P) { zm = P.zoom(); tl = P.tilt(); rt = P.rot(); } } catch (x) { errLog('phases.camera', x); }
   var sx2 = SCALE * zm, sy2 = SCALE * zm * (1 - tl * 0.42);
   // la vue change de taille avec le zoom et avec la cible : le tri du visible
   // doit suivre, sinon la perspective révèle les trous là où l'on a coupé
   S.view.w = bw / sx2; S.view.h = bh / sy2;
+  _WX.bw = bw; _WX.bh = bh; _WX.rt = rt; _WX.sx = sx2; _WX.sy = sy2; _WX.ox = ox; _WX.oy = oy;
   g.save();
-  g.translate(bw / 2, bh / 2);
-  if (rt) g.rotate(rt);
-  g.scale(sx2, sy2);
-  g.translate(-S.cam.x + ox, -S.cam.y + oy);
+  worldXf(g, _WX);
 
-  S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(g);
-  P && P.drawFloor(g);
-  drawArenaEdge();
-  drawPools(g);
-  drawPickups();
+  /* Chaque couche est isolée : si l'une lève au milieu d'un save(), on
+     déroule la pile et on repose la caméra avant de passer à la suivante. */
+  try {
+    try { S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(g); } catch (x) { errLog('levels.drawBack', x); gfxRecover(g, _WX); }
+    try { P && P.drawFloor(g); } catch (x) { errLog('phases.drawFloor', x); gfxRecover(g, _WX); }
+    try { drawArenaEdge(); } catch (x) { errLog('drawArenaEdge', x); gfxRecover(g, _WX); }
+    try { drawPools(g); } catch (x) { errLog('drawPools', x); gfxRecover(g, _WX); }
+    try { drawPickups(); } catch (x) { errLog('drawPickups', x); gfxRecover(g, _WX); }
 
-  for (var i = 0; i < S.enemies.length; i++) {
-    var e = S.enemies[i];
-    if (!inView(e.x, e.y, e.r + 60)) continue;
-    S2030.enemies && S2030.enemies.draw && S2030.enemies.draw(g, e);
+    var E = S2030.enemies;
+    for (var i = 0; i < S.enemies.length; i++) {
+      var e = S.enemies[i];
+      if (e.qrt || !inView(e.x, e.y, e.r + 60)) continue;
+      if (!E || !E.draw) continue;
+      try { E.draw(g, e); }
+      catch (x) { e.dead = true; e.qrt = 1; errLog('enemy.draw:' + e.type, x); gfxRecover(g, _WX); }
+    }
+
+    try { drawBullets(); } catch (x) { errLog('drawBullets', x); gfxRecover(g, _WX); }
+    try { if (S.snake) drawSnake(); } catch (x) { errLog('drawSnake', x); gfxRecover(g, _WX); }
+    try { P && P.drawDiag(g); } catch (x) { errLog('phases.drawDiag', x); gfxRecover(g, _WX); }
+    try { S2030.fx && S2030.fx.draw(g); } catch (x) { errLog('fx.draw', x); gfxRecover(g, _WX); }
+    try { S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(g); } catch (x) { errLog('levels.drawFore', x); gfxRecover(g, _WX); }
+  } finally {
+    g.restore();
+    ctx = _prev;
   }
-
-  drawBullets();
-  if (S.snake) drawSnake();
-  P && P.drawDiag(g);
-  S2030.fx && S2030.fx.draw(g);
-  S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(g);
-
-  g.restore();
-  ctx = _prev;
 }
 
 /* ------------------------------------------------------------- perspective
@@ -11451,7 +11542,13 @@ function qualitySample(raw) {
    le moment coûteux, ne dure que vingt secondes. Résultat mesuré : neuf
    changements de netteté en quatre-vingt-dix secondes, un cycle limite. On ne
    remonte donc jamais pendant la bascule, et seulement après une longue
-   période franchement saine. */
+   période franchement saine.
+   Seuil de descente (G1) : l'ancien « six pour cent d'images longues » laissait
+   un profil tourner entre un et deux pour cent d'images doublées — à soixante
+   hertz, c'est une saccade par seconde, et un p99 à 33 ms. On descend d'un
+   cran dès que la fenêtre de deux secondes contient au moins deux images
+   longues (≈ un pour cent) ; une image isolée ne compte pas. Hystérésis :
+   on ne remonte qu'après seize contrôles d'affilée sans AUCUNE image longue. */
 function autoQuality() {
   if (_qWin.length < 60) return;
   var longues = 0;
@@ -11459,25 +11556,25 @@ function autoQuality() {
   var part = longues / _qWin.length;
   if (_qHold > 0) { _qHold--; return; }
 
-  if (part > 0.06 && _qStep < 3) {
+  if (longues >= 2 && part > 0.01 && _qStep < 3) {
     _qStep++; _qBon = 0;
     applyQuality();
-    _qHold = 8;
+    _qHold = 4;                 // deux secondes de répit, puis on remesure
     _qWin.length = 0;
     return;
   }
 
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
-  if (part < 0.02 && _qStep > 0 && !penche) {
-    // il faut cinquante contrôles sains d'affilée — vingt-cinq secondes — pour
-    // regagner un cran : remonter vite, c'est retomber tout de suite
+  if (longues === 0 && _qStep > 0 && !penche) {
+    // seize contrôles sains d'affilée — huit secondes sans une image longue —
+    // pour regagner un cran : remonter vite, c'est retomber tout de suite
     if (++_qBon >= 16) {
       _qStep--; _qBon = 0;
       applyQuality();
       _qHold = 12;
       _qWin.length = 0;
     }
-  } else if (part >= 0.02) _qBon = 0;    // une image longue isolée ne remet pas à zéro
+  } else if (longues >= 2) _qBon = 0;    // une image longue isolée ne remet pas à zéro
 }
 
 /* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
@@ -11516,7 +11613,7 @@ function openCards() {
   if (S.phase !== 'play') return;
   S.lvlUps--;
   S.phase = 'cards';
-  S.timeScale = 1;
+  S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
   var cards = S2030.upgrades ? S2030.upgrades.roll(3) : [];
   S2030.audio && S2030.audio.sfx('levelup');
   haptic(14);
@@ -11531,7 +11628,12 @@ function openCards() {
 
 /* --------------------------------------------------------------- cycle de vie */
 function resetRun() {
-  seedRnd((S.seed = (Math.floor(performance.now()) % 100000) + 7));
+  // graine tirée de l'horloge, sauf si une sonde de test l'impose (window.__SEED :
+  // même exception que window.__S/__K/__M dans boot) — mêmes vagues d'une
+  // exécution à l'autre pour la batterie de non-régression
+  var sd = (typeof window !== 'undefined' && window.__SEED != null) ? (Math.floor(+window.__SEED) || 1)
+         : (Math.floor(performance.now()) % 100000) + 7;
+  seedRnd((S.seed = sd));
   S.snake = makeSnake();
   S.enemies.length = 0; S.bullets.length = 0; S.ebullets.length = 0;
   S.pickups.length = 0; S.drones.length = 0; S.pools.length = 0;
@@ -11539,7 +11641,7 @@ function resetRun() {
   S.xp = 0; S.xpNext = 12; S.lvlUps = 0;
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
-  S.timeScale = 1; S.boss = null;
+  S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
@@ -11873,7 +11975,7 @@ function loadSource(u) {
 
 /* --------------------------------------------------------------------- boot */
 function boot() {
-  window.__S = S; window.__K = K; window.__M = S2030;   // sondes de test
+  window.__S = S; window.__K = K; window.__M = S2030; window.__ERR = ERR;   // sondes de test
   loadStats();
   setupCanvas();
   addEventListener('resize', function () { setTimeout(resizeCanvas, 60); });

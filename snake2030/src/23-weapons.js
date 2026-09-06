@@ -546,6 +546,7 @@ function _wpnUpSide(dt, L) {
    ========================================================================== */
 
 function _wpnTailPush(L) {
+  if (!L) return;
   var tx = _wpnTailX(), ty = _wpnTailY();
   var dx = tx - _wpnTail.lx, dy = ty - _wpnTail.ly;
   if (dx * dx + dy * dy < 64) return;
@@ -595,6 +596,7 @@ function _wpnTailPush(L) {
 }
 
 function _wpnUpTail(dt, L) {
+  if (!L) return;
   var i, nd;
   if (_wpnTail.loopCd > 0) _wpnTail.loopCd -= dt;
   if (_wpnTail.boom > 0) _wpnTail.boom -= dt;
@@ -1167,8 +1169,7 @@ function _wpnUpMines(dt, L) {
 function _wpnUpdate(dt) {
   // brouilleur : tant que la tête baigne dans le champ, les armes se taisent
   if (S2030.enemies && S2030.enemies.isJammed && S2030.enemies.isJammed()) {
-    _wpnUpTail && _wpnUpTail(dt);   // le sillage de queue n'est pas une arme
-    return;
+    var L = _wpnL('tailLaser'); if (L) _wpnUpTail(dt, L); return;   // le sillage de queue n'est pas une arme
   }
   if (!S.snake) return;
   _wpnFrame++;
