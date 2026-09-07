@@ -199,6 +199,8 @@ function toggleFullscreenKey() {
 }
 addEventListener('keydown', function (e) {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
+  // un écran affiché (menu, cartes, pause, fin, réglages) a la priorité sur les touches de jeu
+  if (S2030.ui && S2030.ui.key && S2030.ui.key(e)) return;
   var k = keyName(e), code = e.code || '';
   if (e.repeat && KEY_ONCE[k]) return;
   if (code) keys[code] = true;

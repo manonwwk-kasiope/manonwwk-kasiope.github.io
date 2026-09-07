@@ -28,6 +28,9 @@ var _uiRunMs = 0, _uiRunLast = 0, _uiRunOn = false;
 var _uiBanTo = 0, _uiToastTo = 0;
 var _uiSafe = { t: 0, r: 0, b: 0, l: 0 };
 var _uiLvName = '', _uiLvCache = -1;
+var _uiKF = null, _uiOverLock = false;       // curseur clavier, verrou de l'écran de fin
+var _UI_INERT = 'inert' in document.createElement('div');
+var _UI_KEYS_D = '↑←↓→ / ZQSD / WASD diriger · SOURIS viser · ESPACE ou clic boost · E ou clic droit pouvoir · R ou molette ultime · P / ÉCHAP pause · F plein écran';
 var _uiRects = {
   boost: { x: 0, y: 0, r: 46 },
   special: { x: 0, y: 0, r: 40 },
@@ -84,7 +87,19 @@ var _UI_CSS = [
 '#game.s2nocur{cursor:none}',
 '.s2card,.s2opt{cursor:pointer}',
 '@media(hover:hover){button:hover{filter:brightness(1.15)}#ui button{transition:filter .08s}',
-'  .s2card:hover{transform:translateY(-6px);border-color:var(--r)}}',
+'  #ui .s2card:hover{transform:translateY(-6px);border-color:var(--r)}',
+'  #ui.kb .s2card.kf:hover{transform:translateY(-6px) scale(1.04)}}',
+/* clavier : curseur de focus (.kb : bureau, ou dès la première touche), focus visible, légende, capuchons */
+'#ui.kb .kf{border:2px solid var(--cy)!important;transform:scale(1.04);transition:transform .08s,border-color .08s}',
+'#ui :focus-visible{outline:2px solid var(--cy);outline-offset:2px}',
+'.s2keys{font:600 12px/1.5 var(--fs);letter-spacing:.05em;color:var(--dim);text-align:center}',
+'.s2menu .s2keys{text-align:left}',
+'.s2g{position:relative}.s2gs[hidden]{display:none}',
+'.s2gs>i>u{background:linear-gradient(90deg,var(--vi),#d9c4ff);box-shadow:0 0 calc(10px*var(--bl)) var(--vi)}',
+'.s2kcap{position:absolute;right:100%;top:50%;transform:translateY(-50%);margin-right:7px;',
+'  font:800 9px/1 var(--fm);letter-spacing:.08em;color:var(--ink);border:1px solid var(--line);',
+'  border-radius:3px;padding:2px 4px;background:var(--pan);white-space:nowrap;opacity:0;transition:opacity .4s}',
+'.s2hud.kc .s2kcap{opacity:1}',
 '.s2p{position:fixed;inset:0;visibility:hidden;pointer-events:none;',
 '  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)',
 '  env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}',
@@ -298,14 +313,14 @@ var _UI_CSS = [
 '.s2cards{align-items:center;justify-content:center;gap:clamp(6px,1.6vh,14px)}',
 '.s2cardrow{display:flex;gap:clamp(8px,2.2vw,20px);align-items:stretch;justify-content:center;',
 '  width:100%;flex:1 1 auto;min-height:0;max-height:clamp(120px,52vh,250px)}',
-'.s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(150px,31%,300px);',
+'#ui .s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(150px,31%,300px);',
 '  display:flex;flex-direction:column;align-items:center;justify-content:center;',
 '  gap:clamp(3px,1.1vh,10px);padding:clamp(8px,2.4vh,20px) clamp(6px,1.4vw,16px);',
 '  border-radius:12px;border:2px solid var(--rb,var(--r));transition:transform .08s,border-color .08s;',
 '  background:linear-gradient(168deg,rgba(12,18,36,.95),rgba(4,6,15,.97));',
 '  box-shadow:0 0 calc(24px*var(--bl)) var(--rg),inset 0 0 calc(40px*var(--bl)) var(--rg);',
 '  animation:s2cardIn .34s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}',
-'.s2card:active{transform:scale(.97);filter:brightness(1.35)}',
+'#ui .s2card:active{transform:scale(.97);filter:brightness(1.35)}',
 '@keyframes s2cardIn{0%{opacity:0;transform:translateY(26px) scale(.9)}100%{opacity:1}}',
 '.s2card>u{position:absolute;top:0;left:0;right:0;height:3px;background:var(--r);',
 '  box-shadow:0 0 calc(14px*var(--bl)) var(--r)}',
@@ -431,6 +446,16 @@ function _uiTap(el, fn) {
   }
   el.addEventListener('touchmove', function (e) { e.stopPropagation(); }, { passive: true });
   el.addEventListener('touchend', function (e) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); }, { passive: false });
+  // clavier : Entrée ou Espace sur l'élément focalisé, même verrou busy. Le verrou de l'écran de fin
+  // vaut aussi ici : l'événement atteint le bouton focalisé AVANT le gestionnaire d'écran, donc sans
+  // ce garde une touche encore enfoncée à la mort relancerait la partie avant les 600 ms.
+  el.addEventListener('keydown', function (e) {
+    if (e.repeat) return;
+    if (!(e.key === 'Enter' || e.key === ' ' || e.code === 'Space')) return;
+    if (_uiScreen === 'over' && _uiOverLock) return;
+    fire(e);
+  });
+  el._kf = fire;
   return el;
 }
 function _uiClick() {
@@ -565,18 +590,28 @@ function _uiBuildHud(root) {
   _uiE.gBoostBox = gb;
   _uiMk('s', '', gb, 'BST');
   _uiE.gBoost = _uiMk('u', '', _uiMk('i', '', gb));
+  // bureau : recharge du pouvoir (sur tactile, l'arc du bouton ◈ la montre)
+  var gs = _uiMk('div', 's2g s2gs', R);
+  _uiE.gSpBox = gs; gs.hidden = true;
+  _uiMk('s', '', gs, 'PWR');
+  _uiE.gSp = _uiMk('u', '', _uiMk('i', '', gs));
   var gu = _uiMk('div', 's2g s2gu', R);
   _uiE.gUltBox = gu;
   _uiMk('s', '', gu, 'ULT');
   _uiE.gUlt = _uiMk('u', '', _uiMk('i', '', gu));
+  // capuchons de touches (bureau, 3 premières parties, 6 s)
+  _uiMk('kbd', 's2kcap', gb, 'ESPACE'); _uiMk('kbd', 's2kcap', gs, 'E'); _uiMk('kbd', 's2kcap', gu, 'R');
 
   _uiE.pauseBtn = _uiTap(_uiMk('button', 's2pause', hud, '❚❚'), function () {
     if (typeof togglePause === 'function') togglePause();
   });
+  _uiE.pauseBtn.setAttribute('aria-label', 'Pause');
+  _uiE.pauseBtn.tabIndex = -1;
 }
 
-function _uiMkBtn(parent, key, glyph) {
+function _uiMkBtn(parent, key, glyph, label) {
   var b = _uiMk('div', 's2btn s2b-' + key, parent);
+  b.setAttribute('aria-label', label);
   var svg = _uiSvgMk('svg', b, { viewBox: '0 0 100 100' });
   _uiSvgMk('circle', svg, { cx: 50, cy: 50, r: 36, 'class': 'trk' });
   var arc = _uiSvgMk('circle', svg, { cx: 50, cy: 50, r: 44, 'class': 'arc' });
@@ -595,9 +630,9 @@ function _uiBuildCtl(root) {
   var joy = _uiMk('div', 's2joy', ctl);
   _uiE.joy = joy;
   _uiE.knob = _uiMk('div', 's2knob', joy);
-  _uiE.btnBoost = _uiMkBtn(ctl, 'boost', '»');
-  _uiE.btnSpecial = _uiMkBtn(ctl, 'special', '◈');
-  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★');
+  _uiE.btnBoost = _uiMkBtn(ctl, 'boost', '»', 'Boost');
+  _uiE.btnSpecial = _uiMkBtn(ctl, 'special', '◈', 'Pouvoir');
+  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★', 'Ultime');
 }
 
 function _uiBuildBanner(root) {
@@ -626,6 +661,7 @@ function _uiBuildMenu(root) {
   var k3 = _uiMk('div', 's2kv cy', st);
   _uiMk('s', '', k3, 'PARTIES');
   _uiE.mRuns = _uiMk('b', '', k3, '0');
+  _uiE.keysMenu = _uiMk('div', 's2keys', L, '');
 
   var R = _uiMk('div', 's2mR', sc);
   _uiTap(_uiMk('button', 's2big', R, 'JOUER'), function () {
@@ -646,7 +682,7 @@ function _uiBuildCards(root) {
   var row = _uiMk('div', 's2cardrow', sc);
   _uiE.cardRow = row;
   for (var i = 0; i < 4; i++) {
-    var c = _uiMk('div', 's2card', row);
+    var c = _uiMk('button', 's2card', row);
     c.style.display = 'none';
     _uiMk('u', '', c);
     var o = {};
@@ -694,6 +730,7 @@ function _uiBuildPause(root) {
   var row2 = _uiMk('div', 's2row', sc);
   _uiTap(_uiMk('button', 's2pill', row2, 'RÉGLAGES'), function () { _uiShow('settings'); });
   _uiTap(_uiMk('button', 's2pill dim', row2, 'ABANDONNER'), function () { _uiQuit(); });
+  _uiE.keysPause = _uiMk('div', 's2keys', sc, '');
 }
 
 function _uiSetPauseBlur(on) {
@@ -733,7 +770,7 @@ function _uiBuildOver(root) {
   _uiE.oBest = _uiTile(g, 'RECORD');
   _uiE.oCoins = _uiTile(g, 'CRÉDITS', true);
   var row = _uiMk('div', 's2row', sc);
-  _uiTap(_uiMk('button', 's2big mag', row, 'REJOUER'), function () {
+  _uiE.btnReplay = _uiTap(_uiMk('button', 's2big mag', row, 'REJOUER'), function () {
     _uiNewRun();
     if (typeof startRun === 'function') startRun();
   });
@@ -743,6 +780,7 @@ function _uiBuildOver(root) {
 /* ------ réglages -- */
 function _uiOptRow(parent, label) {
   var r = _uiMk('div', 's2opt', parent);
+  r.tabIndex = 0;
   _uiMk('s', '', r, label);
   return r;
 }
@@ -755,6 +793,7 @@ function _uiTog(parent, label, key, after) {
     refresh(); _uiApplyOpt();
     if (after) after(S.opt[key]);
   });
+  r._kadj = function () { sw._kf(); };
   _uiWidgets.push(refresh);
   refresh();
   return r;
@@ -781,6 +820,7 @@ function _uiStepper(parent, label, key, vals, fmt) {
   }
   _uiTap(minus, function () { move(-1); });
   _uiTap(plus, function () { move(1); });
+  r._kadj = function (d) { (d < 0 ? minus : plus)._kf(); };
   _uiWidgets.push(refresh);
   refresh();
   return r;
@@ -797,6 +837,10 @@ function _uiSeg2(parent, label, key, opts) {
     btns.push(b);
     (function (v) { _uiTap(b, function () { S.opt[key] = v; refresh(); _uiApplyOpt(); }); })(opts[i].v);
   }
+  r._kadj = function (d) {
+    var i = 0; for (var j = 0; j < opts.length; j++) if (S.opt[key] === opts[j].v) i = j;
+    btns[clamp(i + d, 0, btns.length - 1)]._kf();
+  };
   _uiWidgets.push(refresh);
   refresh();
   return r;
@@ -869,6 +913,7 @@ function _uiSyncDesktop() {
   for (var i = 0; i < rows.length; i++) rows[i].hidden = d;
   if (_uiE.mouseRow) _uiE.mouseRow.hidden = !d;
   if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
+  _uiKeysTxt();
 }
 
 /* ------ déblocages -- */
@@ -980,15 +1025,24 @@ function _uiShow(name) {
   if (name === _uiScreen) return;
   if (_uiScreen && _uiScreen !== 'settings' && _uiScreen !== 'unlocks') _uiPrevScr = _uiScreen;
   var prev = _uiScrEl(_uiScreen);
-  if (prev) prev.classList.remove('on');
+  if (prev) { prev.classList.remove('on'); _uiInert(prev, true); }
+  _uiKFocus(null);
+  var a = document.activeElement;
+  if (a && prev && prev.contains(a)) a.blur();
   _uiScreen = name || null;
   var el = _uiScrEl(_uiScreen);
-  if (el) el.classList.add('on');
+  if (el) { el.classList.add('on'); _uiInert(el, false); }
 
   if (_uiScreen === 'menu') { _uiRefreshMenu(); _uiRunMs = 0; }
   if (_uiScreen === 'unlocks') _uiRefreshUnlocks();
   if (_uiScreen === 'settings') _uiSyncDesktop();
-  if (_uiScreen === 'over') _uiFillOver();
+  if (_uiScreen === 'over') {
+    _uiFillOver();
+    _uiOverLock = true;                     // 600 ms sans REJOUER au clavier
+    setTimeout(function () { _uiOverLock = false; }, 600);
+  }
+  if (_uiScreen === 'menu' || _uiScreen === 'pause') _uiKeysTxt();
+  if (el) _uiKMove(1);                      // curseur sur le premier élément
   if (_uiScreen === null && (prev === _uiE.scrMenu || prev === _uiE.scrOver)) _uiNewRun();
 }
 
@@ -1041,6 +1095,99 @@ function _uiNewRun() {
   _uiRunMs = 0;
   _uiRunLast = S.t;
   _uiRunOn = false;
+}
+
+/* ======
+   CLAVIER — curseur .kf et raccourcis d'écran (S2030.ui.key, appelé par le coeur)
+   ====== */
+function _uiInert(sc, on) {
+  if (_UI_INERT) { sc.inert = on; return; }
+  var q = sc.querySelectorAll('button,.s2opt');   // repli : tabindex -1
+  for (var i = 0; i < q.length; i++) q[i].tabIndex = on ? -1 : 0;
+}
+function _uiKeysTxt() {
+  var s = S.desktop ? _UI_KEYS_D : (S.opt.leftHanded ? 'Pouce droit' : 'Pouce gauche') + ' : diriger · » boost · ◈ pouvoir · ★ ultime';
+  if (_uiE.keysMenu) { _uiTxt(_uiE.keysMenu, s); _uiTxt(_uiE.keysPause, s); }
+}
+/* éléments navigables de l'écran affiché : boutons hors ligne de réglage, lignes .s2opt visibles */
+function _uiKItems() {
+  var sc = _uiScrEl(_uiScreen), out = [];
+  if (!sc) return out;
+  var q = sc.querySelectorAll('button,.s2opt');
+  for (var i = 0; i < q.length; i++) {
+    var el = q[i];
+    if (el.offsetParent === null) continue;
+    if (el.tagName === 'BUTTON' && el.closest('.s2opt')) continue;
+    out.push(el);
+  }
+  return out;
+}
+function _uiKMark(el) {
+  if (_uiKF === el) return;
+  if (_uiKF) _uiKF.classList.remove('kf');
+  _uiKF = el;
+  if (el) el.classList.add('kf');
+}
+function _uiKFocus(el) {
+  _uiKMark(el);
+  if (!el) return;
+  try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); }
+  if (el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+}
+function _uiKMove(d) {
+  var it = _uiKItems(), n = it.length;
+  if (!n) { _uiKMark(null); return; }
+  var i = it.indexOf(_uiKF);
+  i = i < 0 ? (d > 0 ? 0 : n - 1) : (i + d + n) % n;
+  _uiKFocus(it[i]);
+}
+function _uiKey(e) {
+  var sc = _uiScreen;
+  if (!_uiBuilt) return false;
+  var k = (e.key || '').toLowerCase(), c = e.code || '', kf = _uiKF, t = e.target;
+  if (!k && c) k = c.length === 4 && c.indexOf('Key') === 0 ? c.charAt(3).toLowerCase() : c.toLowerCase();
+  if (k === 'space') k = ' ';
+  if (!sc) {
+    // en jeu, Tab ne quitte pas le document (sinon blur → pause subie) : il va au bouton pause
+    if (k === 'tab' && S.phase === 'play' && !S.paused) { e.preventDefault(); _uiE.pauseBtn.focus(); return true; }
+    // un bouton du HUD focalisé (le bouton pause) prend Entrée/Espace : le jeu ne les reçoit pas en double
+    if ((k === 'enter' || k === ' ') && t && t._kf) return true;
+    return false;
+  }
+  _uiRoot.classList.add('kb');
+  var lr = k === 'arrowleft' ? -1 : k === 'arrowright' ? 1 : 0;
+  var nav = k === 'tab' ? (e.shiftKey ? -1 : 1) : k === 'arrowup' ? -1 : k === 'arrowdown' ? 1 : lr;
+  if (sc === 'cards' && e.repeat) return true;    // touche gardée enfoncée au passage en cartes
+  if (lr && kf && kf._kadj) { kf._kadj(lr); e.preventDefault(); return true; }
+  if (nav) { _uiKMove(nav); e.preventDefault(); return true; }
+  if (e.repeat) return true;
+  if (k === 'enter' || k === ' ') {
+    if (sc === 'over' && _uiOverLock) return true;
+    if (t && (t._kf || t._kadj)) { if (t._kadj) { t._kadj(1); e.preventDefault(); } return true; }  // l'élément focalisé s'en charge
+    if (kf) { if (kf._kadj) kf._kadj(1); else if (kf._kf) kf._kf(); }
+    e.preventDefault();
+    return true;
+  }
+  if (k === 'escape') {
+    if (sc === 'pause') { if (typeof togglePause === 'function') togglePause(); }
+    else if (sc === 'over') _uiQuit();
+    else if (sc === 'settings' || sc === 'unlocks') _uiShow(_uiPrevScr);
+    return true;                                   // menu, cartes : sans effet
+  }
+  if (sc === 'menu') {
+    if (k === 's') { _uiShow('settings'); return true; }
+    if (k === 'd') { _uiShow('unlocks'); return true; }
+  }
+  if (sc === 'cards') {
+    var m = /^(Digit|Numpad)([1-4])$/.exec(c), n = m ? +m[2] : (k >= '1' && k <= '4' && k.length === 1 ? +k : 0);
+    if (n && _uiCardEls[n - 1].id) { _uiPickCard(_uiCardEls[n - 1]); return true; }
+    return k === 'p';
+  }
+  if (sc === 'over') {
+    if (k === 'r') { if (!_uiOverLock && _uiE.btnReplay) _uiE.btnReplay._kf(); return true; }
+    if (k === 'm') { _uiQuit(); return true; }
+  }
+  return k === 'p' && sc !== 'pause';              // P inerte hors de l'écran de pause
 }
 
 /* ======
@@ -1097,6 +1244,7 @@ function _uiShowCards(cards, cb) {
     o.el.style.setProperty('--d', (i * 55) + 'ms');
     o.el.classList.toggle('ultra', c.rarity === 'ultra');
     o.id = c.id;
+    o.el.setAttribute('data-id', c.id);
     _uiTxt(o.ic, c.icon || '◆');
     _uiTxt(o.nm, c.name || '?');
     _uiTxt(o.ds, c.desc || '');
@@ -1208,7 +1356,15 @@ function _uiHud() {
     _uiHudShown = hi;
     _uiE.hud.classList.toggle('on', showHud);
   }
+  // bouton pause : tabulable en jeu seulement
+  var pt = (ph === 'play' && !S.paused && !_uiScreen) ? 0 : -1;
+  if (pt !== _uiP.ptab) { _uiP.ptab = pt; _uiE.pauseBtn.tabIndex = pt; }
+  var dk = S.desktop ? 1 : 0;
+  var kc = (dk && ph === 'play' && (S.stats.runs | 0) < 3 && _uiRunMs < 6000) ? 1 : 0;
+  if (kc !== _uiP.kc) { _uiP.kc = kc; _uiE.hud.classList.toggle('kc', !!kc); }
   if (!showHud) return;
+  if (dk !== _uiP.dk) { _uiP.dk = dk; _uiE.gSpBox.hidden = !dk; }
+  if (dk) _uiBar(_uiE.gSp, S.specialCd > 0 ? 1 - S.specialCd / (S.specialCdMax || 7000) : 1);
 
   var s = S.snake;
 
@@ -1298,6 +1454,14 @@ S2030.ui = {
     _uiBuildBanner(_uiRoot);   /* en dernier : la bannière passe au-dessus de tout */
 
     _uiBuilt = true;
+    _uiRoot.classList.toggle('kb', !!S.desktop);
+    var scrs = _uiRoot.querySelectorAll('.s2scr');
+    for (var i = 0; i < scrs.length; i++) _uiInert(scrs[i], true);
+    // un clic qui déplace le focus déplace aussi le curseur clavier
+    _uiRoot.addEventListener('focusin', function (e) {
+      var t = e.target;
+      if (_uiScreen && t && (t._kf || t._kadj) && _uiScrEl(_uiScreen).contains(t)) _uiKMark(t);
+    });
 
     /* références attendues par le coeur */
     this.joyEl = _uiE.joy;
@@ -1418,6 +1582,8 @@ S2030.ui = {
   setPauseBlur: function (on) { _uiSetPauseBlur(!!on); },
   /* S.desktop a changé : lignes de réglages tactiles masquées ou non */
   syncDesktop: function () { _uiSyncDesktop(); },
+  /* keydown reçu par le coeur : true si l'écran affiché l'a consommé */
+  key: function (e) { return _uiKey(e); },
   /* curseur du canvas : '' normal, 'ret' réticule, 'none' masqué */
   cursor: function (m) {
     var g = document.getElementById('game');
