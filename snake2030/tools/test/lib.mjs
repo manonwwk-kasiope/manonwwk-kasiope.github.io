@@ -23,6 +23,10 @@ async function launchWith(ctxOpts, kind, opts = {}) {
   if (opts.args) args.push(...opts.args);
   const browser = await chromium.launch({ headless: true, args });
   const context = await browser.newContext({ ...ctxOpts, ...(opts.ctx || {}) });
+  // opts.clock : horloge factice Playwright (Date, performance.now, timers, requestAnimationFrame) posée AVANT le
+  // chargement — elle avance avec le temps réel tant qu'on ne l'arrête pas ; clockPause/clockStep font ensuite
+  // avancer le jeu image par image pour des captures d'écran exactes (G5)
+  if (opts.clock) await context.clock.install();
   // opts.init : scripts d'initialisation (chaîne ou fonction) posés AVANT le chargement de la page (espions d'API, G2)
   for (const s of (opts.init || [])) await context.addInitScript(s);
   const page = await context.newPage();
@@ -35,7 +39,7 @@ async function launchWith(ctxOpts, kind, opts = {}) {
   await page.goto(opts.url || URL, { waitUntil: 'load', timeout: 30000 });
   await page.waitForFunction(() => window.__S && window.__M && window.__M.ui, null, { timeout: 30000 });
   const loadMs = Date.now() - t0;
-  const ctx = { browser, context, page, cdp, kind, pageErrors, consoleErrors, loadMs, profile: opts.profile || kind };
+  const ctx = { browser, context, page, cdp, kind, pageErrors, consoleErrors, loadMs, profile: opts.profile || kind, clock: opts.clock ? context.clock : null };
   ctx.close = async () => { try { await browser.close(); } catch (e) {} };
   return ctx;
 }
@@ -194,6 +198,43 @@ export async function pullProbe(page, clear = true) {
   }, [clear, PROBE_PHASES]);
 }
 export async function clearProbe(page) { await page.evaluate(() => { const P = window.__P; P.fn = 0; P.fh = 0; P.rn = 0; P.rh = 0; P.marks.length = 0; }); }
+/* ------------------------------------------------ horloge factice (G5) ---
+   Avec launch…({ clock: true }) : clockPause gèle le jeu (plus aucune image), clockStep(n) fait tourner exactement n
+   images (une image = un requestAnimationFrame de 16 ms d'horloge factice), clockResume rend le temps réel. Les
+   entrées (clavier Playwright, doigt CDP) sont traitées même à l'arrêt ; waitFrames, lui, attendrait pour rien. */
+export async function clockPause(ctx) {
+  if (!ctx.clock) throw new Error('lancer avec { clock: true }');
+  /* Course de l'horloge factice : une fois sur deux environ, pauseAt laisse la boucle du jeu (frame() de 90-boot.js)
+     hors du lot de requestAnimationFrame rejoué — le compteur rAF du test avance mais S.t reste figé (mesuré 3/7 par
+     l'exécuteur de G5). En jeu, on vérifie que le jeu avance sur deux images ; sinon on rend le temps réel 150 ms et
+     on recommence (six essais). Hors jeu (menu, pause) rien ne bouge par construction : on ne vérifie pas. */
+  for (let a = 0; a < 6; a++) {
+    await ctx.clock.pauseAt(Date.now());
+    const playing = await ctx.page.evaluate(() => !!(window.__S && window.__S.phase === 'play' && !window.__S.paused));
+    if (!playing) return;
+    const t0 = await ctx.page.evaluate(() => window.__S.t);
+    await clockStep(ctx, 2);
+    const t1 = await ctx.page.evaluate(() => window.__S.t);
+    if (t1 > t0) return;
+    await ctx.clock.resume(); await sleep(150);
+  }
+  throw new Error('clockPause : la boucle du jeu ne tourne plus sous l\'horloge factice (6 essais)');
+}
+export async function clockStep(ctx, n = 1) {
+  // compteur d'images côté page (une image = un lot de requestAnimationFrame de l'horloge factice) : on avance par
+  // tranches de 6 ms jusqu'à voir le compteur bouger — runFor(16) seul pouvait tomber juste avant la frontière
+  // de 16 ms et ne faire tourner aucune image
+  const page = ctx.page;
+  await page.evaluate(() => { if (!window.__clk) { window.__clk = { n: 0 }; (function t() { requestAnimationFrame(t); window.__clk.n++; })(); } });
+  for (let k = 0; k < n; k++) {
+    const before = await page.evaluate(() => window.__clk.n);
+    let moved = false;
+    for (let j = 0; j < 6 && !moved; j++) { await ctx.clock.runFor(6); moved = (await page.evaluate(() => window.__clk.n)) > before; }
+    if (!moved) throw new Error('clockStep : aucune image en 36 ms d\'horloge factice');
+  }
+}
+export async function clockResume(ctx) { await ctx.clock.resume(); }
+
 /** Attend que `n` images (window.__fi) se soient écoulées, comptées côté page par requestAnimationFrame. */
 export async function waitFrames(page, n) {
   await page.evaluate(n => new Promise(r => { let k = 0; (function f() { if (++k >= n) r(); else requestAnimationFrame(f); })(); }), n);

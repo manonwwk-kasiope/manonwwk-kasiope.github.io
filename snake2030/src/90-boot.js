@@ -1,12 +1,12 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — amorçage
    Canvas, entrées tactiles, rendu du serpent, boucle principale, cycle de vie.
-   ========================================================================== */
+   ====== */
 
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
 var _fsbSync = null, _fsHelp = null;
 
-/* ------------------------------------------------ quarantaine des erreurs
+/* ------ quarantaine des erreurs
    Une exception dans une étape de frame() n'emporte plus l'image : chaque
    étape est isolée, l'entité fautive est marquée dead et retirée (aussitôt
    si c'est son update qui lève, à l'image suivante si c'est son dessin), et
@@ -98,7 +98,7 @@ function resizeCanvas() {
   if (portrait && S.phase === 'play' && !S.paused) togglePause();
 }
 
-/* ----------------------------------------------------------- entrées tactiles */
+/* ------ entrées tactiles */
 var touchJoy = null;     // { id, ox, oy, x, y }
 var touchBtns = {};      // id -> nom de bouton
 
@@ -229,7 +229,7 @@ function keyboardInput() {
   } else if (!touchJoy) { S.input.jmag = 0; S.input.jactive = false; }
 }
 
-/* ------------------------------------------------------- capacités */
+/* ------ capacités */
 function useSpecial() {
   if (S2030.phases) { S2030.phases.use(); return; }
   if (S.phase !== 'play' || S.specialCd > 0) return;
@@ -286,7 +286,7 @@ function ultTick() {
   }
 }
 
-/* --------------------------------------------------------- rendu du serpent */
+/* ------ rendu du serpent */
 function drawSnake() {
   var s = S.snake, segs = s.segs, n = segs.length;
   var blink = s.invuln > 0 && ((S.t / 60) | 0) % 2 === 0;
@@ -366,6 +366,23 @@ function drawSnake() {
   ctx.beginPath(); ctx.arc(K.HEAD_R * 0.35, -K.HEAD_R * 0.3, 2.6, 0, TAU); ctx.fill();
   ctx.beginPath(); ctx.arc(K.HEAD_R * 0.35, K.HEAD_R * 0.3, 2.6, 0, TAU); ctx.fill();
   ctx.restore();
+
+  drawBoostArc(s);
+}
+
+// jauge de boost autour de la tête : arc de 270°, rayon 2,2 × HEAD_R, 3 px d'écran, ambre (rouge sous 20 %)
+function drawBoostArc(s) {
+  var f = clamp(s.boostE / (s.boostMax || 100), 0, 1);
+  if (f >= 1 && !s.boosting) return;
+  var zm = 1;
+  try { if (S2030.phases && S2030.phases.zoom) zm = S2030.phases.zoom(); } catch (x) { zm = 1; }
+  var r = K.HEAD_R * 2.2, a0 = aimAng() - Math.PI * 0.75, span = Math.PI * 1.5;   // se remplit de l'arrière-gauche vers l'avant
+  ctx.save();
+  ctx.lineCap = 'butt'; ctx.lineWidth = 3 / (SCALE * zm); ctx.strokeStyle = f < 0.2 ? '#ff2a2a' : '#ffd166';
+  ctx.globalAlpha = 0.28;                          // piste discrète sur les 270°, puis la part remplie
+  ctx.beginPath(); ctx.arc(s.x, s.y, r, a0, a0 + span); ctx.stroke();
+  if (f > 0.002) { ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(s.x, s.y, r, a0, a0 + span * f); ctx.stroke(); }
+  ctx.restore();
 }
 
 function drawPickups() {
@@ -434,7 +451,7 @@ function drawArenaEdge() {
   ctx.restore();
 }
 
-/* ----------------------------------------------------------- boucle de jeu */
+/* ------ boucle de jeu */
 var lastT = 0, accFps = 0, accReal = 0, frames = 0, fps = 60;
 
 function frame(now) {
@@ -593,21 +610,11 @@ function drawWorld(g, bw, bh) {
   }
 }
 
-/* ------------------------------------------------------------- perspective
-   Première version : le monde était rendu à plat dans un tampon, puis
-   recopié bande par bande en appliquant la division perspective. Ça
-   fonctionnait, mais un profil l'a réglée — quatre-vingt-seize recopies
-   redimensionnées par image pesaient 73 % du temps processeur, et les bandes
-   laissaient un escalier visible sur les longues diagonales.
-
-   Le navigateur sait faire exactement cela, en vraie perspective, sur le
-   processeur graphique, pour rien : une transformation CSS 3D posée sur
-   l'élément canvas. Le rendu reste plat et ignore tout de la bascule ; seul
-   l'affichage penche. Aucun coût par image, aucun escalier.
-
-   Le plan penché ne couvre plus l'écran — son bord haut recule — d'où
-   l'agrandissement calculé ici, et la compensation de zoom côté caméra pour
-   que la bascule ne se lise pas comme un rapprochement. */
+/* ------ perspective
+   Transformation CSS 3D posée sur le canvas : le rendu reste plat, seul l'affichage penche,
+   sur le processeur graphique (la première version recopiait 96 bandes par image : 73 % du
+   temps processeur et un escalier sur les diagonales). Le plan penché ne couvre plus l'écran,
+   d'où l'agrandissement calculé ici et la compensation de zoom côté caméra. */
 var PERSP_D = 4.6;          // distance de l'oeil, en demi-hauteurs d'écran
 var _perspApplied = -1;
 
@@ -644,7 +651,7 @@ function applyPersp(t) {
 function drawControls() {}
 function syncControls() {}
 
-/* ---------------------------------------------------------- qualité adaptative
+/* ------ qualité adaptative
    Trois défauts mesurés sur l'ancienne version : le seuil de 42 images/s ne se
    déclenchait jamais pendant la bascule 3D (le jeu y lit 48 à 54 im/s de
    moyenne tout en perdant une image sur six) ; la dégradation ne remontait
@@ -660,18 +667,10 @@ function qualitySample(raw) {
   if (_qWin.length > 120) _qWin.shift();
 }
 
-/* Première version : on remontait dès que la mesure redevenait bonne. Or elle
-   redevient bonne PARCE QU'ON A BAISSÉ — et la bascule 3D, qui est justement
-   le moment coûteux, ne dure que vingt secondes. Résultat mesuré : neuf
-   changements de netteté en quatre-vingt-dix secondes, un cycle limite. On ne
-   remonte donc jamais pendant la bascule, et seulement après une longue
-   période franchement saine.
-   Seuil de descente (G1) : l'ancien « six pour cent d'images longues » laissait
-   un profil tourner entre un et deux pour cent d'images doublées — à soixante
-   hertz, c'est une saccade par seconde, et un p99 à 33 ms. On descend d'un
-   cran dès que la fenêtre de deux secondes contient au moins deux images
-   longues (≈ un pour cent) ; une image isolée ne compte pas. Hystérésis :
-   on ne remonte qu'après seize contrôles d'affilée sans AUCUNE image longue. */
+/* On ne remonte jamais pendant la bascule (la mesure redevient bonne PARCE QU'ON A BAISSÉ :
+   neuf changements en 90 s mesurés) et seulement après seize contrôles d'affilée sans aucune
+   image longue. Descente (G1) dès que la fenêtre de deux secondes contient au moins deux
+   images longues (≈ 1 %) ; une image isolée ne compte pas. */
 function autoQuality() {
   if (_qWin.length < 60) return;
   var longues = 0;
@@ -731,7 +730,7 @@ function qualityTilt() {
   _qWin.length = 0; _qBon = 0; _qHold = 8;
 }
 
-/* ------------------------------------------------------------ cartes / niveaux */
+/* ------ cartes / niveaux */
 function openCards() {
   if (S.phase !== 'play') return;
   S.lvlUps--;
@@ -749,7 +748,7 @@ function openCards() {
   });
 }
 
-/* --------------------------------------------------------------- cycle de vie */
+/* ------ cycle de vie */
 function resetRun() {
   // graine tirée de l'horloge, sauf si une sonde de test l'impose (window.__SEED :
   // même exception que window.__S/__K/__M dans boot) — mêmes vagues d'une
@@ -847,7 +846,7 @@ function saveStats() {
   try { localStorage.setItem('snake2030.v1', JSON.stringify({ stats: S.stats, opt: S.opt })); } catch (e) {}
 }
 
-/* ------------------------------------------------------------------ musique
+/* ------ musique
    Deux pistes jouées chacune en entier, l'une après l'autre, puis on
    recommence. Page servie depuis un site : diffusion en flux, mémoire
    constante — deux pistes de plus de quatre minutes décodées coûteraient près
@@ -1120,7 +1119,7 @@ function loadSource(u) {
   return fetch(u).then(function (r) { return r.arrayBuffer(); });
 }
 
-/* --------------------------------------------------------------------- boot */
+/* ------ boot */
 function boot() {
   window.__S = S; window.__K = K; window.__M = S2030; window.__ERR = ERR;   // sondes de test
   loadStats();

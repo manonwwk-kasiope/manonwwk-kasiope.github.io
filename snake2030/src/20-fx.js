@@ -1,13 +1,13 @@
-/* =========================================================================
+/* ======
    SNAKE 2030 — 20-fx.js
    Module S2030.fx : particules, ondes, halos, secousse, hitstop, textes,
    flashs plein écran. Tout est préalloué : zéro allocation par image.
 
    Dépendances (fournies par 10-core.js dans la closure partagée) :
      S, K, rnd, rndR, rndI, pick, chance, clamp, lerp, inView
-   ========================================================================= */
+   ====== */
 
-/* ---------------------------------------------------------------- réglages */
+/* ------ réglages */
 
 var _FX_NPART  = 800;   // particules
 var _FX_NRING  = 60;    // ondes de choc
@@ -21,7 +21,7 @@ var _FX_STREAK_MAX = 96;   // longueur max d'une traînée, unités monde
 
 var _fxFontFam = "'Rajdhani','Orbitron',ui-sans-serif,system-ui,sans-serif";
 
-/* ------------------------------------------------------------------- pools */
+/* ------ pools */
 
 var _fxParts  = new Array(_FX_NPART);
 var _fxRings  = new Array(_FX_NRING);
@@ -53,7 +53,7 @@ var _fxPi = 0, _fxRi = 0, _fxFi = 0, _fxTi = 0;
   }
 })();
 
-/* ------------------------------------------------------- état global du fx */
+/* ------ état global du fx */
 
 var _fxShake   = 0;   // amplitude courante, unités monde
 var _fxHit     = 0;   // hitstop restant, ms
@@ -63,7 +63,7 @@ var _fxVigA    = 0;   // flash en vignette (bords)
 var _fxVigC    = '#ff2b52';
 var _fxGlitch  = 0;   // 0..1
 
-/* ------------------------------------------------------- caches sans alloc */
+/* ------ caches sans alloc */
 
 var _fxRgbCache  = {};   // '#ff0' -> '255,255,0'
 var _fxGradCache = {};   // couleur -> { g: CanvasGradient, c: ctx }
@@ -144,7 +144,7 @@ function _fxHash(i) {
   return v - Math.floor(v);
 }
 
-/* ------------------------------------------------------------- préférences */
+/* ------ préférences */
 
 function _fxOpt() {
   return (typeof S !== 'undefined' && S && S.opt) ? S.opt : null;
@@ -171,7 +171,7 @@ function _fxShakeF() {          // atténuation des secousses
   return (o && o.reduceShake) ? 0.3 : 1;
 }
 
-/* ------------------------------------------------------------- allocateurs */
+/* ------ allocateurs */
 
 function _fxNextPart() {
   var p = _fxParts[_fxPi];
@@ -194,7 +194,7 @@ function _fxNextText() {
   return t;
 }
 
-/* ---------------------------------------------------------------- émission */
+/* ------ émission */
 
 /**
  * Gerbe de particules.
@@ -351,7 +351,7 @@ function _fxGlitchAdd(a) {
   if (a > _fxGlitch) _fxGlitch = a > 1 ? 1 : a;
 }
 
-/* ------------------------------------------------------------------ update */
+/* ------ update */
 
 function _fxUpdate(dt) {
   if (!dt || dt < 0) dt = 0;
@@ -449,7 +449,7 @@ function _fxUpdate(dt) {
   }
 }
 
-/* ------------------------------------------------------------ dessin monde */
+/* ------ dessin monde */
 
 /* Un seul passage par couche, avec regroupement des états pour limiter
    les changements de contexte. glow = 1 -> composition 'lighter'. */
@@ -632,7 +632,7 @@ function _fxDraw(ctx) {
   _fxDrawTexts(ctx);
 }
 
-/* ------------------------------------------------------------ dessin écran */
+/* ------ dessin écran */
 
 function _fxVigGrad(ctx, col, w, h) {
   if (_fxVig.g && _fxVig.c === ctx && _fxVig.col === col && _fxVig.w === w && _fxVig.h === h) {
@@ -690,7 +690,7 @@ function _fxDrawScreen(ctx, w, h) {
   }
 }
 
-/* ------------------------------------------------------------------- reset */
+/* ------ reset */
 
 function _fxReset() {
   var i;
@@ -706,7 +706,7 @@ function _fxReset() {
   }
 }
 
-/* -------------------------------------------------------------- API module */
+/* ------ API module */
 
 S2030.fx = {
   burst: _fxBurst,

@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 26-ui.js
    S2030.ui : interface, contrôles tactiles, écrans. SEUL module qui touche
    au DOM.
@@ -13,9 +13,9 @@
 
    Conventions : tout identifiant de niveau fichier est préfixé `_ui` / `_UI`.
    Aucun Math.random(), aucun Date.now() : le temps est S.t.
-   ========================================================================== */
+   ====== */
 
-/* ---------------------------------------------------------------- état local */
+/* ------ état local */
 var _uiRoot = null, _uiBuilt = false;
 var _uiE = {};                       // références d'éléments, remplies au build
 var _uiScreen = null, _uiPrevScr = 'menu';
@@ -59,9 +59,9 @@ var _UI_UNLOCKS = [
   { id: 'u_luck',   icon: '◇', name: 'ORACLE',        cost: 520, desc: 'Meilleures chances de cartes rares.' }
 ];
 
-/* ============================================================================
+/* ======
    FEUILLE DE STYLE
-   ========================================================================== */
+   ====== */
 var _UI_CSS = [
 '#ui{',
 '  --uis:1; --bl:1; --glow:1; --ca:1;',
@@ -83,7 +83,7 @@ var _UI_CSS = [
 '  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)',
 '  env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}',
 
-/* ------------------------------------------------------------------- HUD --- */
+/* ------ HUD --- */
 '.s2hud{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .22s ease}',
 '.s2hud.on{opacity:1}',
 '.s2xp{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(0,229,255,.12)}',
@@ -155,6 +155,8 @@ var _UI_CSS = [
 '.s2gu>i>u{background:linear-gradient(90deg,var(--mg),#ff9ec4);',
 '  box-shadow:0 0 calc(10px*var(--bl)) var(--mg)}',
 '.s2gu.rdy>s{color:var(--mg);animation:s2blink .7s infinite}',
+'.s2gb.dry>s{color:#ff2a2a} .s2gb.dry>i{background:rgba(255,42,42,.55);box-shadow:0 0 calc(10px*var(--bl)) #ff2a2a}',
+'.s2gb.dry>i>u{background:#ff2a2a;box-shadow:none}',   /* panne de boost : barre BST rouge le temps de deux éclats */
 '@keyframes s2blink{0%,100%{opacity:1}50%{opacity:.3}}',
 
 '#ui .s2pause{position:absolute;top:calc(var(--sat) + 4px);right:calc(var(--sar) + 6px);',
@@ -163,7 +165,7 @@ var _UI_CSS = [
 '#ui .s2pause:active{opacity:.9}',
 '#ui .s2pause::after{content:"";position:absolute;inset:-12px}',
 
-/* -------------------------------------------------------------- contrôles -- */
+/* ------ contrôles -- */
 '.s2ctl{position:absolute;inset:0;pointer-events:none;opacity:0;',
 '  transition:opacity .2s ease;will-change:opacity}',
 '.s2ctl.on{opacity:1}',
@@ -193,8 +195,9 @@ var _UI_CSS = [
 '@keyframes s2rdy{0%,100%{filter:none}50%{filter:brightness(1.7)}}',
 '#ui.nf .s2btn.rdy{animation:none}',
 '.s2b-boost{color:var(--am)} .s2b-special{color:var(--vi)} .s2b-ult{color:var(--mg)}',
+'.s2b-boost.dry{color:#ff2a2a} .s2b-boost.dry .trk{fill-opacity:.85;stroke-opacity:1}',   /* panne : bouton rouge */
 
-/* ---------------------------------------------------------------- bannière - */
+/* ------ bannière - */
 '.s2ban{position:absolute;inset:0;display:none;align-items:center;justify-content:center;',
 '  pointer-events:none;overflow:hidden;z-index:2}',
 '.s2ban.on{display:flex}',
@@ -221,7 +224,7 @@ var _UI_CSS = [
 '#ui.nf .s2ban>b::before,#ui.nf .s2ban>b::after,#ui.nf .s2ban i{display:none}',
 '@keyframes s2banSoft{0%{opacity:0}15%{opacity:1}80%{opacity:1}100%{opacity:0}}',
 
-/* ------------------------------------------------------------------ écrans - */
+/* ------ écrans - */
 '.s2scr{position:absolute;inset:0;display:none;flex-direction:column;z-index:0;',
 '  padding:calc(var(--sat) + 10px) calc(var(--sar) + 16px) calc(var(--sab) + 10px) calc(var(--sal) + 16px);',
 '  pointer-events:auto;overscroll-behavior:contain}',
@@ -374,9 +377,9 @@ var _UI_CSS = [
 '#ui .s2u.no>button{opacity:.35}',
 ''].join('\n');
 
-/* ============================================================================
+/* ======
    PETITES AIDES DOM
-   ========================================================================== */
+   ====== */
 function _uiMk(tag, cls, parent, txt) {
   var e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -435,7 +438,7 @@ function _uiScrollable(el) {
   el.addEventListener('touchend', function (e) { e.stopPropagation(); }, { passive: true });
 }
 
-/* -------------------------------------------------------------- formatage -- */
+/* ------ formatage -- */
 function _uiNum(n) {
   n = Math.round(n) || 0;
   if (n < 1000) return '' + n;
@@ -452,11 +455,11 @@ function _uiTime(ms) {
   return m + ':' + (s < 10 ? '0' : '') + s;
 }
 
-/* ============================================================================
+/* ======
    GÉOMÉTRIE DES CONTRÔLES
    Les mêmes formules que le coeur (90-boot.js, btnRects) afin que le dessin
    colle aux zones tactiles même si le coeur garde son propre calcul.
-   ========================================================================== */
+   ====== */
 function _uiMeasureSafe() {
   var p = _uiE.probe;
   if (!p) return;
@@ -511,9 +514,9 @@ function _uiLayout() {
   }
 }
 
-/* ============================================================================
+/* ======
    CONSTRUCTION
-   ========================================================================== */
+   ====== */
 function _uiBuildHud(root) {
   var hud = _uiMk('div', 's2hud', root);
   _uiE.hud = hud;
@@ -553,6 +556,7 @@ function _uiBuildHud(root) {
   _uiMk('s', '', sg, 'SEG');
   _uiE.segN = _uiMk('b', '', sg, '9');
   var gb = _uiMk('div', 's2g s2gb', R);
+  _uiE.gBoostBox = gb;
   _uiMk('s', '', gb, 'BST');
   _uiE.gBoost = _uiMk('u', '', _uiMk('i', '', gb));
   var gu = _uiMk('div', 's2g s2gu', R);
@@ -597,7 +601,7 @@ function _uiBuildBanner(root) {
   _uiE.banT = _uiMk('b', '', b, '');
 }
 
-/* ------------------------------------------------------------------ menu --- */
+/* ------ menu --- */
 function _uiBuildMenu(root) {
   var sc = _uiMk('div', 's2scr s2menu', root);
   _uiE.scrMenu = sc;
@@ -627,7 +631,7 @@ function _uiBuildMenu(root) {
   _uiTap(_uiMk('button', 's2pill', row, 'DÉBLOCAGES'), function () { _uiShow('unlocks'); });
 }
 
-/* ----------------------------------------------------------------- cartes -- */
+/* ------ cartes -- */
 function _uiBuildCards(root) {
   var sc = _uiMk('div', 's2scr s2cards', root);
   _uiE.scrCards = sc;
@@ -664,7 +668,7 @@ function _uiPickCard(slot) {
   if (cb) cb(slot.id);
 }
 
-/* ------------------------------------------------------------------ pause -- */
+/* ------ pause -- */
 function _uiBuildPause(root) {
   var sc = _uiMk('div', 's2scr', root);
   sc.style.alignItems = 'center';
@@ -698,7 +702,7 @@ function _uiSetPauseBlur(on) {
   }
 }
 
-/* ---------------------------------------------------------- fin de partie -- */
+/* ------ fin de partie -- */
 function _uiTile(parent, label, hi) {
   var t = _uiMk('div', 's2tile' + (hi ? ' hi' : ''), parent);
   _uiMk('s', '', t, label);
@@ -730,7 +734,7 @@ function _uiBuildOver(root) {
   _uiTap(_uiMk('button', 's2pill dim', row, 'MENU'), function () { _uiQuit(); });
 }
 
-/* --------------------------------------------------------------- réglages -- */
+/* ------ réglages -- */
 function _uiOptRow(parent, label) {
   var r = _uiMk('div', 's2opt', parent);
   _uiMk('s', '', r, label);
@@ -859,7 +863,7 @@ function _uiSyncDesktop() {
   if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
 }
 
-/* ------------------------------------------------------------- déblocages -- */
+/* ------ déblocages -- */
 function _uiBuildUnlocks(root) {
   var sc = _uiMk('div', 's2scr', root);
   sc.style.gap = '8px';
@@ -915,9 +919,9 @@ function _uiRefreshUnlocks() {
   }
 }
 
-/* ============================================================================
+/* ======
    OPTIONS
-   ========================================================================== */
+   ====== */
 function _uiDefaults() {
   var o = S.opt;
   if (o.ctlX === undefined) o.ctlX = 0;
@@ -949,9 +953,9 @@ function _uiApplyOpt() {
   if (typeof saveStats === 'function') saveStats();
 }
 
-/* ============================================================================
+/* ======
    ÉCRANS
-   ========================================================================== */
+   ====== */
 function _uiScrEl(name) {
   if (name === 'menu') return _uiE.scrMenu;
   if (name === 'over') return _uiE.scrOver;
@@ -1030,9 +1034,9 @@ function _uiNewRun() {
   _uiRunOn = false;
 }
 
-/* ============================================================================
+/* ======
    ANNONCES
-   ========================================================================== */
+   ====== */
 function _uiToast(title, sub) {
   if (!_uiBuilt) return;
   _uiTxt(_uiE.annT, title == null ? '' : ('' + title));
@@ -1062,9 +1066,9 @@ function _uiBanner(text) {
   }, 1200);
 }
 
-/* ============================================================================
+/* ======
    CARTES
-   ========================================================================== */
+   ====== */
 function _uiShowCards(cards, cb) {
   if (!_uiBuilt) { if (cb && cards && cards.length) cb(cards[0].id); return; }
   _uiCardCb = cb || null;
@@ -1104,9 +1108,9 @@ function _uiAlpha(col, a) {
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
 
-/* ============================================================================
+/* ======
    RAFRAÎCHISSEMENT PAR IMAGE
-   ========================================================================== */
+   ====== */
 function _uiTickRun() {
   var t = S.t;
   if (S.phase === 'play' && !S.paused) {
@@ -1163,6 +1167,15 @@ function _uiSyncCtl() {
   _uiBtnState(_uiE.btnBoost, inp.boost, fb > 0.98);
   _uiBtnState(_uiE.btnSpecial, inp.special, fs >= 1);
   _uiBtnState(_uiE.btnUlt, inp.ult, fu >= 1);
+  var dry = _uiDryOn(s) ? 1 : 0;
+  if (dry !== _uiP.dryBtn) { _uiP.dryBtn = dry; _uiE.btnBoost.classList.toggle('dry', !!dry); }
+}
+
+// panne de boost : éclat rouge à 0–120 et 240–360 ms après s.boostDryT
+function _uiDryOn(s) {
+  if (!s || s.boostDryT === undefined) return false;
+  var d = S.t - s.boostDryT;
+  return d >= 0 && d < 480 && ((d / 120) | 0) % 2 === 0;
 }
 
 function _uiBtnState(el, on, rdy) {
@@ -1236,6 +1249,8 @@ function _uiHud() {
       if (low !== _uiP.low) { _uiP.low = low; _uiE.segBox.classList.toggle('low', !!low); }
     }
     _uiBar(_uiE.gBoost, s.boostE / (s.boostMax || 100));
+    var dryB = _uiDryOn(s) ? 1 : 0;
+    if (dryB !== _uiP.dryBar) { _uiP.dryBar = dryB; _uiE.gBoostBox.classList.toggle('dry', !!dryB); }
   }
   var fu = S.ult / (S.ultMax || 100);
   _uiBar(_uiE.gUlt, fu);
@@ -1243,12 +1258,12 @@ function _uiHud() {
   if (rdy !== _uiP.ready) { _uiP.ready = rdy; _uiE.gUltBox.classList.toggle('rdy', !!rdy); }
 }
 
-/* ============================================================================
+/* ======
    API PUBLIQUE
-   ========================================================================== */
+   ====== */
 S2030.ui = {
 
-  /* ---------------------------------------------------------------- build */
+  /* ------ build */
   build: function (root) {
     if (_uiBuilt) return;
     _uiRoot = root || document.getElementById('ui');
@@ -1291,22 +1306,22 @@ S2030.ui = {
     return self;
   },
 
-  /* ------------------------------------------------------------------ hud */
+  /* ------ hud */
   hud: _uiHud,
 
-  /* --------------------------------------------------------------- écrans */
+  /* ------ écrans */
   showScreen: function (name) { _uiShow(name); },
   showCards: function (cards, cb) { _uiShowCards(cards, cb); },
   toast: function (title, sub) { _uiToast(title, sub); },
   banner: function (text) { _uiBanner(text); },
 
-  /* -------------------------------------------------------------- options */
+  /* ------ options */
   setControls: function (cfg) {
     if (cfg) for (var k in cfg) if (cfg[k] !== undefined) S.opt[k] = cfg[k];
     _uiApplyOpt();
   },
 
-  /* ============================ PONT AVEC LE COEUR ==========================
+  /* ====== PONT AVEC LE COEUR ======
      Le coeur capte les touchers et remplit S.input ; l'interface ne fait que
      refléter cet état. Ce qui suit est le contrat exact.
 
@@ -1331,7 +1346,7 @@ S2030.ui = {
                       contrôles sur le canvas ; masque alors la couche DOM.
      runTime()   -> durée de la partie en cours, en ms.
      screen()    -> nom de l'écran affiché ou null.
-     ======================================================================== */
+     ====== */
   joyEl: null,
   knobEl: null,
   btnEls: null,

@@ -166,7 +166,7 @@ restauration du repère caméra, en coordonnées écran.
 ```
 
 Noms d'effets attendus : `shoot`, `laser`, `hit`, `kill`, `bigkill`, `pickup`,
-`core`, `hurt`, `boost`, `boostEnd`, `levelup`, `card`, `ultReady`, `ultFire`,
+`core`, `hurt`, `boost`, `boostEnd`, `boostDry`, `levelup`, `card`, `ultReady`, `ultFire`,
 `bossIn`, `warp`, `click`, `dead`, `shock`, `zap`, `missile`, `explode`.
 
 La musique est bâtie sur `neonvelocity.mp3` (fourni au cœur, décodé en

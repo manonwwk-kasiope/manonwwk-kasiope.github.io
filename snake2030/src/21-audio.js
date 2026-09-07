@@ -1,4 +1,4 @@
-/* ============================================================
+/* ======
    SNAKE 2030 — 21-audio.js
    S2030.audio : musique dynamique en couches + banque d'effets.
 
@@ -18,9 +18,9 @@
      consommer la graine du jeu depuis un ordonnanceur asynchrone, ce qui
      désynchroniserait les parties à graine fixe. Il est initialisé depuis
      S.seed quand il existe, donc reproductible lui aussi.
-   ============================================================ */
+   ====== */
 
-/* ---------- générateur pseudo-aléatoire local (jamais Math.random) ------- */
+/* ------ générateur pseudo-aléatoire local (jamais Math.random) ------- */
 var _audSeed = 0x9e3779b9;
 function _audRnd(){
   _audSeed = (Math.imul(_audSeed, 1664525) + 1013904223) >>> 0;
@@ -28,7 +28,7 @@ function _audRnd(){
 }
 function _audRR(a, b){ return a + (b - a) * _audRnd(); }
 
-/* ---------- table MIDI -> Hz (remplie à l'init, zéro Math.pow en boucle) - */
+/* ------ table MIDI -> Hz (remplie à l'init, zéro Math.pow en boucle) - */
 var _audHzTab = null;
 function _audHz(m){
   m |= 0;
@@ -36,7 +36,7 @@ function _audHz(m){
   return _audHzTab[m];
 }
 
-/* ---------- nœuds et état ---------------------------------------------- */
+/* ------ nœuds et état ------ */
 var _audCtx = null, _audOk = false;
 var _audMaster = null, _audComp = null;          // bus commun
 var _audMusicBus = null, _audDuck = null;        // musique
@@ -58,7 +58,7 @@ var _audRate = 1, _audInt = 0, _audIntApplied = -1, _audIntT = -9;
 var _audLay = null;        // couches synthétiques
 var _audBaseSynth = true;  // true tant que la piste n'est pas lancée
 
-/* ---------- motifs musicaux (alloués une fois) -------------------------- */
+/* ------ motifs musicaux (alloués une fois) ------ */
 /* progression 4 mesures : Am – F – C – G, seizièmes, 16 pas par mesure     */
 var _audROOTS  = [33, 29, 36, 31];
 var _audCH0    = [57, 60, 64];
@@ -72,14 +72,14 @@ var _audLEAD   = [69, -1, 72, -1, 74, -1, 72, -1, 69, -1, 76, -1, 74, 72, 69, -1
 var _audTRANS  = [0, -4, -5, -2];
 var _audBASSP  = [0, 0, 12, 0, 0, 0, 7, 0];   /* offsets, un pas sur deux */
 
-/* ---------- garde anti-saturation --------------------------------------- */
+/* ------ garde anti-saturation ------ */
 var _audGuard = {};
 var _audBudgetT = -9, _audBudgetN = 0;
 var _audFxMax = {
   shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
-  boost: 1, boostEnd: 1, click: 3
+  boost: 1, boostEnd: 1, boostDry: 1, click: 3
 };
 /* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
    plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
@@ -101,7 +101,7 @@ function _audAllow(name, t){
   return true;
 }
 
-/* ---------- utilitaires de paramètres ----------------------------------- */
+/* ------ utilitaires de paramètres ------ */
 function _audRamp(p, v, s, t0){
   var t = t0 === undefined ? _audCtx.currentTime : t0;
   try{ p.cancelScheduledValues(t); }catch(e){}
@@ -109,7 +109,7 @@ function _audRamp(p, v, s, t0){
   p.linearRampToValueAtTime(v, t + s);
 }
 
-/* ---------- voix élémentaires ------------------------------------------- */
+/* ------ voix élémentaires ------ */
 /* Signatures positionnelles : aucune allocation d'objet d'options par appel. */
 
 /* oscillateur + filtre passe-bas optionnel (lp -> lp2 balayé sur la durée) */
@@ -177,7 +177,7 @@ function _audSub(t, f0, f1, dur, peak, dest){
   o.stop(t + dur + 0.03);
 }
 
-/* ---------- panoramique : 7 nœuds préalloués, zéro allocation ----------- */
+/* ------ panoramique : 7 nœuds préalloués, zéro allocation ------ */
 function _audDestFor(x){
   if(!_audPans || x === undefined || x === null) return _audSfxIn;
   if(typeof S === 'undefined' || !S || !S.cam || !S.view) return _audSfxIn;
@@ -190,15 +190,15 @@ function _audDestFor(x){
   return _audPans[i] || _audSfxIn;
 }
 
-/* ============================================================
+/* ======
    Banque d'effets — chaque son : (t, v, d, o)
    v = volume relatif, d = destination (panoramique), o = options
    Code sonore : joueur = timbres clairs/chauds, ennemi = médium rêche,
    ressources = cloches cristallines, danger = graves saturés.
-   ============================================================ */
+   ====== */
 var _audFx = {
 
-  /* --- tirs joueur : clair, court, jamais fatigant ---------------------- */
+  /* --- tirs joueur : clair, court, jamais fatigant ------ */
   shoot: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
     /* C'est l'attaque qui fait lire un tir, pas la hauteur. Un carre qui
@@ -232,7 +232,7 @@ var _audFx = {
     _audNoise(t, 'bandpass', 6200, 800, 0.11, 0.06 * v, 2.4, d);
   },
 
-  /* --- impacts et morts ------------------------------------------------ */
+  /* --- impacts et morts ------ */
   hit: function(t, v, d){
     _audNoise(t, 'bandpass', 1900, 900, 0.045, 0.055 * v, 1.4, d);
     _audTone(t, 'triangle', 420, 190, 0.05, 0.035 * v, 0.001, 3000, 1200, 1, d, 0);
@@ -254,7 +254,7 @@ var _audFx = {
     _audNoise(t + 0.02, 'highpass', 6000, 2200, 0.09, 0.10 * v, 0.7, d);
   },
 
-  /* --- ressources : cristallin, cyan/vert -------------------------------- */
+  /* --- ressources : cristallin, cyan/vert ------ */
   pickup: function(t, v, d){
     _audTone(t, 'triangle', 720, 1080, 0.09, 0.075 * v, 0.002, 0, 0, 0, d, 0);
     _audTone(t + 0.05, 'sine', 1440, 1620, 0.10, 0.05 * v, 0.002, 0, 0, 0, d, 0);
@@ -266,7 +266,7 @@ var _audFx = {
     _audTone(t + 0.12, 'triangle', _audHz(100), 0, 0.20, 0.025 * v, 0.004, 0, 0, 0, d, 5);
   },
 
-  /* --- joueur en danger : grave, rêche ---------------------------------- */
+  /* --- joueur en danger : grave, rêche ------ */
   hurt: function(t, v, d){
     _audTone(t, 'square', 300, 62, 0.28, 0.14 * v, 0.001, 1400, 220, 3, d, 0);
     _audNoise(t, 'lowpass', 2400, 220, 0.24, 0.14 * v, 0.9, d);
@@ -279,7 +279,7 @@ var _audFx = {
     _audSub(t + 0.05, 110, 22, 1.00, 0.40 * v, d);
   },
 
-  /* --- déplacement ------------------------------------------------------ */
+  /* --- déplacement ------ */
   boost: function(t, v, d){
     _audNoise(t, 'highpass', 260, 5200, 0.34, 0.11 * v, 0.9, d);
     _audTone(t, 'sawtooth', 180, 760, 0.30, 0.06 * v, 0.02, 900, 4200, 2, d, 0);
@@ -288,6 +288,11 @@ var _audFx = {
     _audNoise(t, 'lowpass', 4200, 380, 0.26, 0.08 * v, 0.8, d);
     _audTone(t, 'triangle', 620, 200, 0.20, 0.04 * v, 0.006, 2400, 500, 1, d, 0);
   },
+  // panne de boost : clic grave 90 ms, passe-bas 900 Hz, crete -16 dBFS (un seul, a la panne)
+  boostDry: function(t, v, d){
+    _audTone(t, 'square', 150, 60, 0.09, 0.16 * v, 0.002, 900, 900, 1.1, d, 0);
+    _audNoise(t, 'lowpass', 900, 420, 0.06, 0.05 * v, 0.8, d);
+  },
   warp: function(t, v, d){
     _audNoise(t, 'bandpass', 260, 6400, 0.85, 0.13 * v, 1.3, d);
     _audTone(t, 'sawtooth', 110, 1760, 0.80, 0.07 * v, 0.05, 700, 6000, 3, d, 0);
@@ -295,7 +300,7 @@ var _audFx = {
     _audSub(t + 0.62, 180, 30, 0.45, 0.35 * v, d);
   },
 
-  /* --- interface et jalons ---------------------------------------------- */
+  /* --- interface et jalons ------ */
   click: function(t, v, d){
     _audTone(t, 'square', 1250, 950, 0.022, 0.05 * v, 0.001, 4200, 3000, 1, d, 0);
   },
@@ -333,9 +338,9 @@ var _audFx = {
   }
 };
 
-/* ============================================================
+/* ======
    Couches synthétiques calées sur le tempo du morceau
-   ============================================================ */
+   ====== */
 function _audMkLayer(thr, vol){
   var g = _audCtx.createGain();
   g.gain.value = 0;
@@ -368,7 +373,7 @@ function _audStep(i, t, sd){
   var chord = _audCHORDS[bar], root = _audROOTS[bar];
   var L = _audLay, n, f;
 
-  /* ---- base de secours (pas de piste) : kick, basse, accords ---------- */
+  /* ---- base de secours (pas de piste) : kick, basse, accords ------ */
   if(_audBaseSynth){
     if(s === 0 || s === 4 || s === 8 || s === 12){
       _audSub(t, 150, 44, 0.16, 0.55, _audBaseG);
@@ -403,7 +408,7 @@ function _audStep(i, t, sd){
     }
   }
 
-  /* ---- v > 0.35 : arpège ---------------------------------------------- */
+  /* ---- v > 0.35 : arpège ------ */
   if(L.arp.amt > 0.01){
     n = chord[_audARP[s]] + _audARPO[s];
     _audTone(t, 'square', _audHz(n + 12), 0, sd * 1.25, 0.10, 0.002, 3400, 1100, 3, L.arp.g, _audRR(-6, 6));
@@ -412,7 +417,7 @@ function _audStep(i, t, sd){
     }
   }
 
-  /* ---- v > 0.55 : nappe (un accord par mesure, attaque lente) ---------- */
+  /* ---- v > 0.55 : nappe (un accord par mesure, attaque lente) ------ */
   if(L.pad.amt > 0.01 && s === 0){
     var dur = sd * 16.6;
     _audTone(t, 'sawtooth', _audHz(chord[0]), 0, dur, 0.075, dur * 0.28, 900, 2600, 1.4, L.pad.g, -9);
@@ -421,7 +426,7 @@ function _audStep(i, t, sd){
     _audTone(t, 'sine', _audHz(chord[0] - 12), 0, dur, 0.05, dur * 0.25, 0, 0, 0, L.pad.g, 0);
   }
 
-  /* ---- v > 0.75 : lead agressif (passe par la saturation) ------------- */
+  /* ---- v > 0.75 : lead agressif (passe par la saturation) ------ */
   if(L.lead.amt > 0.01){
     n = _audLEAD[s];
     if(n > 0){
@@ -431,7 +436,7 @@ function _audStep(i, t, sd){
     }
   }
 
-  /* ---- v > 0.90 : climax ---------------------------------------------- */
+  /* ---- v > 0.90 : climax ------ */
   if(L.clim.amt > 0.01){
     if((s & 3) === 0){
       _audSub(t, 170, 40, 0.18, 0.5, L.clim.g);
@@ -479,7 +484,7 @@ function _audTick(){
   }
 }
 
-/* ---------- piste de base ----------------------------------------------- */
+/* ------ piste de base ------ */
 function _audMeasureLead(buf){
   if(_audTrackBuf === buf) return _audLead;
   _audTrackBuf = buf;
@@ -494,7 +499,7 @@ function _audMeasureLead(buf){
   return _audLead;
 }
 
-/* ============================================================ liste de lecture
+/* ====== liste de lecture
    Deux pistes de plus de quatre minutes décodées en mémoire coûteraient près
    de deux cents mégaoctets de PCM — impraticable sur téléphone. On les diffuse
    donc en flux, l'une après l'autre, chacune jouée en entier : la mémoire ne
@@ -763,7 +768,7 @@ function _audHardStop(){
   }
 }
 
-/* ---------- application de l'intensité ---------------------------------- */
+/* ------ application de l'intensité ------ */
 function _audApplyInt(v, fade){
   var L = _audLay, k, l, a;
   for(k in L){
@@ -785,9 +790,9 @@ function _audApplyInt(v, fade){
   if(_audEl){ try{ _audEl.playbackRate = _audRate; }catch(e){} }
 }
 
-/* ============================================================
+/* ======
    Module
-   ============================================================ */
+   ====== */
 S2030.audio = {
   /* Fait plonger la musique pour laisser passer une déflagration. Agit sur le
      bus musique uniquement : les effets, eux, gardent toute leur place. */
@@ -872,7 +877,7 @@ S2030.audio = {
     var sd1 = 60 / _audBpm / 4;
     _audStepsLoop = _audLoopSec > 0 ? Math.max(16, Math.round(_audLoopSec / sd1 / 16) * 16) : 64;
 
-    /* --- sortie commune : compresseur puis gain maître ----------------- */
+    /* --- sortie commune : compresseur puis gain maître ------ */
     _audComp = _audCtx.createDynamicsCompressor();
     _audComp.threshold.value = -13;
     _audComp.knee.value = 24;
@@ -885,7 +890,7 @@ S2030.audio = {
     _audComp.connect(_audMaster);
     _audMaster.connect(_audCtx.destination);
 
-    /* --- bus musique ---------------------------------------------------- */
+    /* --- bus musique ------ */
     _audDuck = _audCtx.createGain();
     _audDuck.gain.value = 1;
     _audDuck.connect(_audComp);
@@ -942,7 +947,7 @@ S2030.audio = {
     var nd = _audNoiseBuf.getChannelData(0);
     for(var i = 0; i < len; i++) nd[i] = _audRnd() * 2 - 1;
 
-    /* --- couches ------------------------------------------------------- */
+    /* --- couches ------ */
     _audLay = {
       perc: _audMkLayer(0.15, 0.55),
       arp:  _audMkLayer(0.35, 0.45),

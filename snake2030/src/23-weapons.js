@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 23-weapons.js
    S2030.weapons : arsenal entièrement automatique.
 
@@ -15,9 +15,9 @@
 
    Conventions internes : tout identifiant de niveau fichier est préfixé
    `_wpn` / `_WPN` pour ne heurter aucun autre module.
-   ========================================================================== */
+   ====== */
 
-/* ------------------------------------------------------------- palette */
+/* ------ palette */
 var _WPN_WHITE = '#ffffff';
 var _WPN_CREAM = '#fff3b0';
 var _WPN_GOLD = '#ffd166';
@@ -25,11 +25,11 @@ var _WPN_AMBER = '#ffb347';
 var _WPN_PLASMA = '#fff7d6';
 var _WPN_CHROME = '#dfe9f5';
 
-/* ============================================================================
+/* ======
    DÉFINITIONS
    Chaque niveau porte ses propres paramètres : le code de tir lit l'objet
    de niveau, jamais un numéro. Ajouter un palier = ajouter une ligne.
-   ========================================================================== */
+   ====== */
 
 var _wpnDefs = {
 
@@ -141,9 +141,9 @@ var _wpnDefs = {
 var _WPN_IDS = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
                 'missiles', 'drones', 'shockwave', 'tailMines'];
 
-/* ============================================================================
+/* ======
    ÉTAT LOCAL — tout est préalloué, aucune allocation par image.
-   ========================================================================== */
+   ====== */
 
 var _wpnFrame = 0;      // compteur d'images, sert aux étalements de charge
 var _wpnMark = 1;       // marqueur de passe (évite les doubles dégâts)
@@ -244,9 +244,9 @@ var _wpnBurns = [];
   }
 })();
 
-/* ============================================================================
+/* ======
    AIDES
-   ========================================================================== */
+   ====== */
 
 function _wpnLvl(id) {
   var v = S.up[id] | 0;
@@ -356,9 +356,9 @@ function _wpnThreat(e, x, y) {
   return v - Math.sqrt(dist2(x, y, e.x, e.y)) * 0.35;
 }
 
-/* ============================================================================
+/* ======
    1. CANON FRONTAL
-   ========================================================================== */
+   ====== */
 
 function _wpnUpFront(dt, L) {
   var s = S.snake;
@@ -445,9 +445,9 @@ function _wpnUpFront(dt, L) {
   S2030.audio.sfx('shoot', { vol: L.orb ? 0.5 : 0.34, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    2. TOURELLES LATÉRALES
-   ========================================================================== */
+   ====== */
 
 function _wpnMountPlaces(L) {
   var segs = S.snake.segs, n = segs.length;
@@ -541,9 +541,9 @@ function _wpnUpSide(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    3. TRAÎNÉE DE QUEUE
-   ========================================================================== */
+   ====== */
 
 function _wpnTailPush(L) {
   if (!L) return;
@@ -662,9 +662,9 @@ function _wpnUpTail(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    4. ARC ÉLECTRIQUE
-   ========================================================================== */
+   ====== */
 
 function _wpnArcNext() {
   var a = _wpnArcs[_wpnArc.i];
@@ -747,9 +747,9 @@ function _wpnUpArc(dt, L) {
   if (fired) S2030.audio.sfx('zap', { vol: 0.5, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    5. MISSILES
-   ========================================================================== */
+   ====== */
 
 function _wpnMissileHit(e) {
   if (!this.split) return;
@@ -817,9 +817,9 @@ function _wpnUpMissile(dt, L) {
   S2030.audio.sfx('missile', { vol: 0.55, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    6. DRONES
-   ========================================================================== */
+   ====== */
 
 function _wpnDroneSync(L) {
   var want = L.n | 0, d;
@@ -921,9 +921,9 @@ function _wpnUpDrones(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    7. ONDE DE CHOC
-   ========================================================================== */
+   ====== */
 
 function _wpnWaveSpawn(x, y, r, sp, dmg) {
   var w = null;
@@ -1016,9 +1016,9 @@ function _wpnUpShock(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    8. MINES DE SILLAGE
-   ========================================================================== */
+   ====== */
 
 function _wpnMineFree() {
   for (var i = 0; i < _WPN_MINEN; i++) if (!_wpnMines[i].on) return _wpnMines[i];
@@ -1162,9 +1162,9 @@ function _wpnUpMines(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    MISE À JOUR GÉNÉRALE
-   ========================================================================== */
+   ====== */
 
 function _wpnUpdate(dt) {
   // brouilleur : tant que la tête baigne dans le champ, les armes se taisent
@@ -1185,12 +1185,12 @@ function _wpnUpdate(dt) {
   L = _wpnL('tailMines');    if (L) _wpnUpMines(dt, L);
 }
 
-/* ============================================================================
+/* ======
    DESSIN DES PROJECTILES
    Un seul passage groupé par image : le cœur appelle drawBullet pour chaque
    projectile visible, on ne travaille que sur le premier appel de l'image et
    on trace un chemin par famille. Coût : quelques stroke() au lieu de mille.
-   ========================================================================== */
+   ====== */
 
 var _WPN_KINDS = ['frag', 'shard', 'flak', 'dbolt', 'bolt', 'sub', 'orb'];
 var _WPN_STYLE = {
@@ -1327,9 +1327,9 @@ function _wpnDrawBullet(ctx, b) {
   _wpnDrawAll(ctx);
 }
 
-/* ============================================================================
+/* ======
    DESSIN DES MODULES VISIBLES SUR LE CORPS
-   ========================================================================== */
+   ====== */
 
 /* bruit déterministe, sans consommer le générateur du jeu */
 function _wpnNoise(a) {
@@ -1812,9 +1812,9 @@ function _wpnDrawMounts(ctx) {
   L = _wpnL('frontCannon');  if (L && L.beam && _wpnFront.beamOn) _wpnDrawBeam(ctx, L);
 }
 
-/* ============================================================================
+/* ======
    RÉINITIALISATION
-   ========================================================================== */
+   ====== */
 
 function _wpnReset() {
   var i;
@@ -1852,9 +1852,9 @@ function _wpnReset() {
   _wpnMine.t = 0.8;
 }
 
-/* ============================================================================
+/* ======
    API DU MODULE
-   ========================================================================== */
+   ====== */
 
 S2030.weapons = {
   defs: _wpnDefs,

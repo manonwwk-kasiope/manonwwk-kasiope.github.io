@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 24-upgrades.js
    S2030.upgrades : les cartes d'amélioration.
 
@@ -19,21 +19,21 @@
    Conventions internes : tout identifiant de niveau fichier est préfixé
    `_up` / `_UP` pour ne heurter aucun autre module.
 
-   ==========================================================================
+   ======
    DRAPEAUX — RÉFÉRENCE COMPLÈTE
-   ==========================================================================
+   ======
    Tous les drapeaux vivent dans `S.up` et sont préfixés `f_`. Ils valent 0
    quand la carte n'a pas été prise : lire systématiquement `(S.up.f_x || 0)`.
    Les cinq premiers existaient déjà, les autres sont posés par ce module.
 
-   --- déjà consommés par le moteur -----------------------------------------
+   --- déjà consommés par le moteur ------
    f_damage      (0..5) weapons : dégâts × (1 + 0.15 × n)
    f_rate        (0..5) weapons : cadence ÷ (1 + 0.10 × n)
    f_range       (0..4) weapons : portée × (1 + 0.12 × n)
    f_ramDamage   (dégâts) coeur : dégâts d'éperonnage pendant le boost
    f_magnet      (0..3)  coeur  : rayon d'aimantation +90 par point
 
-   --- électrique ------------------------------------------------------------
+   --- électrique ------
    f_conduct     (0..3) le corps est conducteur : un arc peut naître de
                         n'importe quel segment, et n bornes de départ de plus.
    f_chainPlus   (0..3) +1 rebond de chaîne et +8 % de portée d'arc par point.
@@ -46,7 +46,7 @@
                         rayon 70 + 45 n, 6 + 5 n dégâts/s, type 'shock'.
    f_deathArc    (0|1)  toute mort relance un arc de 3 rebonds depuis le corps.
 
-   --- laser -----------------------------------------------------------------
+   --- laser ------
    f_pierce      (0..3) +1 perforation sur tout projectile joueur créé.
    f_ricochet    (0..2) un projectile à bout de perforation ricoche vers
                         l'ennemi le plus proche dans 260 u, n fois.
@@ -56,7 +56,7 @@
    f_phaseShot   (0|1)  les tirs joueur ignorent le mod 'armored' et tout
                         bouclier ennemi.
 
-   --- explosif --------------------------------------------------------------
+   --- explosif ------
    f_blast       (0..4) +22 % de rayon sur TOUTE explosion (aoe, mines,
                         missiles, onde de choc, blast() de enemies).
    f_blastDmg    (0..4) +20 % de dégâts sur toute explosion.
@@ -70,7 +70,7 @@
    f_implode     (0|1)  les explosions aspirent (force 420) pendant 0.18 s
                         avant de détoner.
 
-   --- vitesse ---------------------------------------------------------------
+   --- vitesse ------
    f_speed       (0..5) compteur informatif — l'effet est DÉJÀ appliqué sur
                         S.snake.baseSpeed par la carte.
    f_boostDrain  (0..3) consommation de boost × (1 − 0.18 n) : le coeur doit
@@ -81,7 +81,7 @@
                         la tête, 14 dégâts/s, efface les tirs ennemis touchés.
    f_trailWide   (0..2) +30 % de largeur et de durée du sillage de queue.
 
-   --- forteresse ------------------------------------------------------------
+   --- forteresse ------
    f_shield      (0..3) nombre maximum de charges de bouclier.
    f_shieldCd    (ms)   délai de recharge d'une charge de bouclier.
    S.snake.shield(int)  charges disponibles — posé plein par la carte,
@@ -96,7 +96,7 @@
    f_iframes     (0..3) +220 ms d'invulnérabilité après un coup.
    f_capDamage   (0|1)  aucun coup ne peut retirer plus d'un segment.
 
-   --- spectral --------------------------------------------------------------
+   --- spectral ------
    f_ghostTime   (0..3) +900 ms de traversée sur le spécial (useSpecial).
    f_ghostOnHit  (0..2) après un dégât subi : S.snake.ghost = 900 × n ms.
    f_slowmo      (0..2) si un ennemi est à moins de 90 u de la tête,
@@ -106,14 +106,14 @@
    f_permGhost   (0|1)  traversée permanente (la carte pose déjà un
                         S.snake.ghost très long) au prix d'1 segment / 15 s.
 
-   --- transversal -----------------------------------------------------------
+   --- transversal ------
    f_xp          (0..3) +20 % d'XP par point dans addXp.
    f_ultGain     (0..3) +25 % de charge d'ultime par point (la carte abaisse
                         déjà S.ultMax, ce drapeau est le bonus supplémentaire).
    f_multKeep    (0|1)  hurtSnake ne remet plus S.mult et S.combo à zéro.
-   ========================================================================== */
+   ====== */
 
-/* ------------------------------------------------------------- palette */
+/* ------ palette */
 var _UP_ELEC  = '#7cf3ff';
 var _UP_LASER = '#fff3b0';
 var _UP_EXPLO = '#ffb347';
@@ -122,9 +122,9 @@ var _UP_FORT  = '#7dffb0';
 var _UP_GHOST = '#b388ff';
 var _UP_CORE  = '#dfe9f5';
 
-/* ============================================================================
+/* ======
    AIDES
-   ========================================================================== */
+   ====== */
 
 var _UP_WPN = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
                'missiles', 'drones', 'shockwave', 'tailMines'];
@@ -217,17 +217,17 @@ var _UP_RAM = [0, 12, 26, 46, 72];
 var _UP_THORNS = [0, 10, 24, 42];
 var _UP_SHIELDCD = [0, 9000, 7000, 5200];
 
-/* ============================================================================
+/* ======
    LE POOL
    Six axes, des synergies explicites : une carte « epic » d'un axe suppose
    toujours qu'on a investi dans cet axe, et change la façon de jouer.
-   ========================================================================== */
+   ====== */
 
 var _upPool = [
 
-  /* ==========================================================================
+  /* ======
      AXE ÉLECTRIQUE — l'arc saute, le corps conduit, les cadavres claquent.
-     ======================================================================== */
+     ====== */
 
   { id: 'arcLightning', name: 'ARC', icon: '⚡', axis: 'elec', tint: _UP_ELEC,
     desc: 'La foudre saute d\'ennemi en ennemi.',
@@ -271,9 +271,9 @@ var _upPool = [
     req: function () { return _upN('arcLightning') >= 4 && _upF('f_conduct') >= 1; },
     apply: function () { S.up.f_deathArc = 1; } },
 
-  /* ==========================================================================
+  /* ======
      AXE LASER — canons, tourelles, perforation, réflexion.
-     ======================================================================== */
+     ====== */
 
   { id: 'frontCannon', name: 'CANON', icon: '▲', axis: 'laser', tint: _UP_LASER,
     desc: 'Tire droit devant, sans relâche.',
@@ -317,9 +317,9 @@ var _upPool = [
     req: function () { return _upHasGun(); },
     apply: function () { _upBump('f_crit'); } },
 
-  /* ==========================================================================
+  /* ======
      AXE EXPLOSIF — missiles, mines, réactions en chaîne, zone.
-     ======================================================================== */
+     ====== */
 
   { id: 'missiles', name: 'MISSILES', icon: '➤', axis: 'explo', tint: _UP_EXPLO,
     desc: 'Rares, autoguidés sur le plus dangereux.',
@@ -369,9 +369,9 @@ var _upPool = [
     req: function () { return _upExplo() >= 3 && _upF('f_blast') >= 1; },
     apply: function () { S.up.f_implode = 1; } },
 
-  /* ==========================================================================
+  /* ======
      AXE VITESSE — aller vite EST une arme.
-     ======================================================================== */
+     ====== */
 
   { id: 'tailLaser', name: 'SILLAGE', icon: '∿', axis: 'speed', tint: _UP_SPEED,
     desc: 'Ta queue laisse une traînée brûlante.',
@@ -443,9 +443,9 @@ var _upPool = [
     req: function () { return _upF('f_speed') >= 3 && _upF('f_ramDamage') > 0; },
     apply: function () { S.up.f_sonicBoom = 1; } },
 
-  /* ==========================================================================
+  /* ======
      AXE FORTERESSE — long, blindé, réparé, intouchable.
-     ======================================================================== */
+     ====== */
 
   { id: 'drones', name: 'DRONES', icon: '◎', axis: 'fort', tint: _UP_FORT,
     desc: 'Ils orbitent, tirent et encaissent pour toi.',
@@ -511,9 +511,9 @@ var _upPool = [
     req: function () { return _upN('growth') >= 3 || _upF('f_shield') >= 2; },
     apply: function () { S.up.f_capDamage = 1; _upGrow(3); } },
 
-  /* ==========================================================================
+  /* ======
      AXE SPECTRAL — traverser, ralentir le temps, ignorer la matière.
-     ======================================================================== */
+     ====== */
 
   { id: 'ghostTime', name: 'PHASE', icon: '◐', axis: 'ghost', tint: _UP_GHOST,
     desc: 'Ta traversée spectrale dure bien plus longtemps.',
@@ -555,9 +555,9 @@ var _upPool = [
       if (S.snake) S.snake.ghost = 900000000;
     } },
 
-  /* ==========================================================================
+  /* ======
      TRANSVERSAL — le socle qui fait tenir toutes les constructions.
-     ======================================================================== */
+     ====== */
 
   { id: 'power', name: 'PUISSANCE', icon: '⬆', axis: 'core', tint: _UP_CORE,
     desc: 'Toutes tes armes frappent plus fort.',
@@ -613,11 +613,11 @@ var _upById = {};
   for (var i = 0; i < _upPool.length; i++) _upById[_upPool[i].id] = _upPool[i];
 })();
 
-/* ============================================================================
+/* ======
    TIRAGE
    Échantillonnage pondéré sans remise. Tampons réutilisés : le seul tableau
    alloué est celui que l'on rend à l'interface (trois éléments, très rare).
-   ========================================================================== */
+   ====== */
 
 var _upCand = [];      // cartes éligibles
 var _upWts = [];       // poids de base correspondants
@@ -706,11 +706,11 @@ function _upRoll(n) {
   return out;
 }
 
-/* ============================================================================
+/* ======
    APPLICATION
    Le compteur est incrémenté ICI, avant l'effet : chaque `apply()` de carte
    peut donc lire `S.up[son id]` pour connaître son propre palier.
-   ========================================================================== */
+   ====== */
 
 function _upApply(id) {
   var c = _upById[id];
@@ -723,16 +723,16 @@ function _upApply(id) {
   return true;
 }
 
-/* ============================================================================
+/* ======
    API DU MODULE
-   ========================================================================== */
+   ====== */
 
 S2030.upgrades = {
   pool: _upPool,
   roll: _upRoll,
   apply: _upApply,
 
-  /* --- extras lisibles par l'interface et par le coeur ------------------- */
+  /* --- extras lisibles par l'interface et par le coeur ------ */
 
   /** Carte par identifiant, ou null. */
   byId: function (id) { return _upById[id] || null; },

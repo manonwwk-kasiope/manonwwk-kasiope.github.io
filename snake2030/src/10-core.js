@@ -1,12 +1,12 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — coeur
    État, mathématiques, physique du serpent, caméra, collisions, entrées,
    boucle principale. Tout ce que les modules de contenu consomment.
-   ========================================================================== */
+   ====== */
 
 var S2030 = {};
 
-/* ---------------------------------------------------------------- constantes */
+/* ------ constantes */
 var K = {
   ARENA_W: 2600, ARENA_H: 1600,
   VIEW_H: 780,              // hauteur de vue en unités monde, identique partout
@@ -17,7 +17,7 @@ var K = {
   TURN_RATE: 4.6,           // rad/s à fond de manche
   BOOST_MUL: 1.9,
   BOOST_DRAIN: 34,          // par seconde
-  BOOST_FILL: 15,
+  BOOST_FILL: 22,           // par seconde : 0 → 100 en 4,5 s
   START_LEN: 9,
   MAX_LEN: 90,
   INVULN: 900,              // ms après un dégât
@@ -26,7 +26,7 @@ var K = {
   GRID: 110                 // taille de cellule de la grille de collision
 };
 
-/* ---------------------------------------------------------------- bureau */
+/* ------ bureau */
 /* Bureau : aucun point de contact et pointeur fin. Ni manche ni boutons
    tactiles, ni plein écran forcé, toute fenêtre jouable. L'amorçage remet
    S.desktop à false au premier touchstart réel. */
@@ -39,7 +39,7 @@ function detectDesktop() {
   } catch (e) { return false; }
 }
 
-/* --------------------------------------------------------------------- état */
+/* ------ état */
 var S = {
   t: 0, dt: 0,
   phase: 'menu', paused: false,
@@ -65,7 +65,7 @@ var S = {
   desktop: detectDesktop()
 };
 
-/* ------------------------------------------------- aléatoire avec graine */
+/* ------ aléatoire avec graine */
 var _seedState = 123456789;
 function seedRnd(n) { _seedState = (n >>> 0) || 1; }
 function rnd() {
@@ -80,7 +80,7 @@ function rndI(a, b) { return a + ((rnd() * (b - a + 1)) | 0); }
 function pick(a) { return a[(rnd() * a.length) | 0]; }
 function chance(p) { return rnd() < p; }
 
-/* ----------------------------------------------------------- mathématiques */
+/* ------ mathématiques */
 var TAU = Math.PI * 2;
 function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
 function lerp(a, b, t) { return a + (b - a) * t; }
@@ -89,7 +89,7 @@ function angTo(x1, y1, x2, y2) { return Math.atan2(y2 - y1, x2 - x1); }
 function dist2(x1, y1, x2, y2) { var dx = x2 - x1, dy = y2 - y1; return dx * dx + dy * dy; }
 function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
 
-/* ------------------------------------------------------------- difficulté */
+/* ------ difficulté */
 /* Le cran 2 est la référence : il vaut le double de l'ancien réglage, qui
    correspond désormais à « DÉTENDU ». Le multiplicateur ne s'applique pas
    uniformément — doubler les dégâts encaissés rendrait le jeu injouable
@@ -116,7 +116,7 @@ function diffIdx() {
 function diffMul() { return DIFFS[diffIdx()].m; }
 function diffNom() { return DIFFS[diffIdx()].nom; }
 
-/* -------------------------------------------------------------- le serpent */
+/* ------ le serpent */
 /* Débattement de la tête par rapport au corps quand celui-ci est verrouillé
    sur un rail : assez large pour couvrir l'écart maximal à la diagonale
    (45°) et viser au-delà, assez étroit pour qu'on ne tire jamais en arrière. */
@@ -185,13 +185,8 @@ function updateSnake(dt) {
   var rail = !!(S2030.phases && S2030.phases.railed());
 
   if (rail) {
-    /* --- treillis : le corps est verrouillé sur les rails ---
-       On arrondit la direction demandée, pas le cap courant. Arrondir le cap
-       courant bloquerait le serpent sur son rail : le virage progressif ne
-       franchit jamais la moitié du quadrant, la diagonale la plus proche
-       reste la même, et le manche a beau désigner l'autre rail, on y revient
-       à chaque image. Ici le changement de rail est franc, comme il doit
-       l'être sur un treillis. */
+    // treillis : le corps est verrouillé sur les rails ; on arrondit la direction DEMANDÉE
+    // (arrondir le cap courant bloquerait le serpent sur son rail), le changement de rail est franc
     s.ang = S2030.phases.railSteer(s, want, s.speed * dt);
   } else if (want !== null) {
     // --- cap : virage analogique vers la direction du manche ---
@@ -201,9 +196,7 @@ function updateSnake(dt) {
     s.ang = norm(s.ang + step);
   }
 
-  /* La tête, elle, reste libre : elle pivote dans un cône devant elle pour
-     garder ses cibles en joue, et c'est ce cap-là que suivent les canons.
-     Ce que le joueur perd en trajectoire, il le récupère en visée. */
+  // la tête reste libre : elle pivote dans un cône devant elle et c'est ce cap que suivent les canons
 
   var look = want;
   if (rail && look === null) {
@@ -216,24 +209,37 @@ function updateSnake(dt) {
     : s.ang;
 
   // --- boost ---
-  var wantBoost = inp.boost && s.boostE > 1;
+  // panne franche : réserve à zéro → s.boostDry et un seul 'boostDry', puis rien tant que le bouton
+  // reste tenu ; reprise sur nouvel appui à ≥ 10 ou d'elle-même à ≥ 25
+  var press = !!inp.boost, newPress = press && !s.boostPrev;
+  if (!press) s.boostHeld = false;
+  s.boostPrev = press;
+  if (s.boostDry && s.boostE >= 25) s.boostDry = false;
+  var wantBoost = s.boosting ? press : (!press || s.boostHeld) ? false : s.boostDry ? (newPress && s.boostE >= 10) : s.boostE > 1;
   var drain = K.BOOST_DRAIN * (1 - 0.16 * (S.up.f_boostDrain || 0));  // RÉSERVE
   if (wantBoost) {
-    s.boostE = Math.max(0, s.boostE - drain * dt);
-    if (!s.boosting) { s.boosting = true; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
+    s.boostE -= drain * dt;
+    if (!s.boosting) { s.boosting = true; s.boostKick = 3; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
+    if (s.boostE < 1.5) {                              // panne, dans la même image (pas de boostEnd)
+      s.boostE = 0; s.boosting = false; s.boostDry = true; s.boostDryT = S.t; s.boostHeld = press;
+      S2030.audio && S2030.audio.sfx('boostDry'); haptic([10, 30, 10]);
+    }
   } else {
     if (s.boosting) { s.boosting = false; S2030.audio && S2030.audio.sfx('boostEnd'); }
     s.boostE = Math.min(s.boostMax, s.boostE + K.BOOST_FILL * dt);
   }
   // PROPULSION : la vitesse de croisière monte avec les cartes
   s.baseSpeed = K.BASE_SPEED * (1 + 0.07 * (S.up.f_speed || 0));
-  /* Le facteur du REPLI entre dans la CIBLE, pas dans la vitesse déjà
-     lissée : appliqué après le lissage, il se composait à chaque image
-     (1,12 x 0,90 = 1,0096 > 1) et la vitesse divergeait — mesuré ×48 en
-     quatre secondes, ×108 en huit. */
+  // le facteur du REPLI entre dans la CIBLE, pas dans la vitesse lissée (sinon il se composait à chaque image)
   var foldNow = S2030.phases ? S2030.phases.foldFactor() : 0;
   var target = s.baseSpeed * (s.boosting ? K.BOOST_MUL : 1) * (1 + 0.12 * foldNow);
-  s.speed = lerp(s.speed, target, 1 - Math.pow(0.002, dt));
+  if (s.boostDry && press && s.boostHeld) s.speed = target;    // tenu à vide : vitesse de base, strictement
+  // montée : 95 % de la vitesse de boost en 7 images (0,0002^dt en demandait 16, contrat ≤ 11) ; descente inchangée
+  else s.speed = lerp(s.speed, target, 1 - Math.pow(target > s.speed ? 1e-9 : 0.002, dt));
+  if (s.boosting && s.boostKick > 0 && S2030.fx && S2030.fx.trail) {   // départ : six traînées par image sur trois images
+    s.boostKick--;
+    for (var tk = 0; tk < 6; tk++) S2030.fx.trail(s.x - Math.cos(s.ang) * (6 + tk * 4), s.y - Math.sin(s.ang) * (6 + tk * 4), s.ang + Math.PI + (tk - 2.5) * 0.28, '#ffd166');
+  }
 
   // --- avance ---
   s.x += Math.cos(s.ang) * s.speed * dt;
@@ -257,9 +263,7 @@ function updateSnake(dt) {
     }
   }
 
-  /* La visée est bornée à ±RAIL_LOOK autour du cap ; le rebond change le cap
-     après coup, et la tête comme les canons partaient jusqu'à l'opposé du
-     corps. On la ramène dans son cône une fois le cap définitif. */
+  // la visée est ramenée dans son cône ±RAIL_LOOK une fois le cap définitif (le rebond le change après coup)
   if (s.aim !== undefined) {
     var ec = norm(s.aim - s.ang);
     if (ec > RAIL_LOOK) s.aim = norm(s.ang + RAIL_LOOK);
@@ -317,7 +321,7 @@ function wallBump() {
   S2030.audio && S2030.audio.sfx('hit');
 }
 
-/* ------------------------------------------------------------- dégâts joueur */
+/* ------ dégâts joueur */
 function hurtSnake(dmg, x, y) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
@@ -378,7 +382,7 @@ function die() {
   setTimeout(function () { S2030.ui && S2030.ui.showScreen('over'); }, 900);
 }
 
-/* ------------------------------------------------------- entités : création */
+/* ------ entités : création */
 var _eid = 1;
 function spawnEnemy(type, x, y, mods) {
   var defs = S2030.enemies && S2030.enemies.defs;
@@ -439,7 +443,7 @@ function addPickup(kind, x, y) {
   S.pickups.push({ kind: kind, x: x, y: y, vx: rndR(-40, 40), vy: rndR(-40, 40), t: 0, r: kind === 'core' ? 11 : 7 });
 }
 
-/* ------------------------------------------------------------ dégâts ennemis */
+/* ------ dégâts ennemis */
 function damageEnemy(e, dmg, opts) {
   if (!e || e.dead) return;
   // ÉLAN : les dégâts montent avec la vitesse quand on est en boost
@@ -607,7 +611,7 @@ function addXp(n) {
   }
 }
 
-/* ------------------------------------------------------- requêtes spatiales */
+/* ------ requêtes spatiales */
 var _grid = { cells: null, cols: 0, rows: 0 };
 function rebuildGrid() {
   var cols = Math.ceil(K.ARENA_W / K.GRID), rows = Math.ceil(K.ARENA_H / K.GRID);
@@ -651,13 +655,16 @@ function nearestEnemy(x, y, maxR) {
   }
   return best;
 }
+// visible = dans l'étendue réellement montrée (phases.visibleExtent : sous la bascule le tampon déborde l'écran)
 function inView(x, y, m) {
   m = m || 60;
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
+  if (V) return x > V.x0 - m && x < V.x1 + m && y > V.y0 - m && y < V.y1 + m;
   return x > S.cam.x - S.view.w / 2 - m && x < S.cam.x + S.view.w / 2 + m &&
          y > S.cam.y - S.view.h / 2 - m && y < S.cam.y + S.view.h / 2 + m;
 }
 
-/* ------------------------------------------------------------- collisions */
+/* ------ collisions */
 function collide(dt) {
   var s = S.snake, i, j, e, b;
 
@@ -797,20 +804,38 @@ function grabPickup(p) {
   haptic(6);
 }
 
-/* ------------------------------------------------------------------ caméra */
+/* ------ caméra */
+// suivi avec avance ; sous la bascule 3D (écran plus petit que le tampon) : cible bornée sur l'étendue
+// visible, avance en y réduite à 0,3 × vitesse au-delà de 10°, tête maintenue entre 12 % et 88 % de l'écran
+var CAM_BAND = 0.12, _camP = { x: 0, y: 0 }, _camQ = { x: 0, y: 0 };
 function updateCam(dt) {
-  var s = S.snake;
-  var lead = s.speed * 0.55;
-  var tx = clamp(s.x + Math.cos(s.ang) * lead, S.view.w / 2, K.ARENA_W - S.view.w / 2);
-  var ty = clamp(s.y + Math.sin(s.ang) * lead, S.view.h / 2, K.ARENA_H - S.view.h / 2);
-  if (K.ARENA_W < S.view.w) tx = K.ARENA_W / 2;
-  if (K.ARENA_H < S.view.h) ty = K.ARENA_H / 2;
+  var s = S.snake, P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
+  var lead = s.speed * 0.55, leadY = (P && P.persp && P.persp() > 0.1745) ? s.speed * 0.3 : lead;
+  var L = V ? V.left : S.view.w / 2, R = V ? V.right : L, T = V ? V.top : S.view.h / 2, B = V ? V.bottom : T;
+  var tx = K.ARENA_W < L + R ? K.ARENA_W / 2 : clamp(s.x + Math.cos(s.ang) * lead, L, K.ARENA_W - R);
+  var ty = K.ARENA_H < T + B ? K.ARENA_H / 2 : clamp(s.y + Math.sin(s.ang) * leadY, T, K.ARENA_H - B);
   var k = 1 - Math.pow(0.0015, dt);
-  S.cam.x = lerp(S.cam.x, tx, k);
-  S.cam.y = lerp(S.cam.y, ty, k);
+  S.cam.x = lerp(S.cam.x, tx, k); S.cam.y = lerp(S.cam.y, ty, k);
+  if (P && P.toScreen) camKeepHead(P, s);
+}
+// borne linéaire à plat, itération sur une dérivée locale sous la bascule
+function camKeepHead(P, s) {
+  var lo = CAM_BAND, hi = 1 - lo, b = 1 - 2 * lo, hw = S.view.w / 2, hh = S.view.h / 2, bx = (s.x - S.cam.x) / hw, by = (s.y - S.cam.y) / hh;
+  if (!(P.persp && P.persp() > 0.001) && !(P.rot && P.rot())) {
+    if (bx > b) S.cam.x = s.x - b * hw; else if (bx < -b) S.cam.x = s.x + b * hw;
+    if (by > b) S.cam.y = s.y - b * hh; else if (by < -b) S.cam.y = s.y + b * hh;
+    return;
+  }
+  if (bx > 0.95 || bx < -0.95 || by > 0.95 || by < -0.95) { S.cam.x = s.x; S.cam.y = s.y; }   // hors tampon : recentrage d'abord
+  for (var it = 0; it < 4; it++) {
+    var p = P.toScreen(s.x, s.y, _camP), ex = p.x < lo ? p.x - lo : p.x > hi ? p.x - hi : 0, ey = p.y < lo ? p.y - lo : p.y > hi ? p.y - hi : 0;
+    if (!ex && !ey) return;
+    if (ex) { var gx = P.toScreen(s.x + 1, s.y, _camQ).x - p.x; if (Math.abs(gx) > 1e-6) S.cam.x += ex / gx; }
+    if (ey) { var gy = P.toScreen(s.x, s.y + 1, _camQ).y - p.y; if (Math.abs(gy) > 1e-6) S.cam.y += ey / gy; }
+  }
 }
 
-/* -------------------------------------------------------------- vibrations */
+/* ------ vibrations */
 /* Fait plonger la musique un instant pour laisser passer une déflagration.
    Sans cela le morceau et l'explosion se disputent le même espace et
    l'explosion perd — alors que c'est elle qui doit frapper. */
@@ -828,12 +853,9 @@ function haptic(p) {
   try { navigator.vibrate(p); } catch (e) {}
 }
 
-/* --------------------------------------------------------- verrou d'écran */
-/* Une seule demande par période d'éveil : le verrou est redemandé au retour
-   au premier plan et à la reprise, mais jamais deux fois de suite — la
-   reprise qui suit un retour au premier plan ne redemande rien. releaseWake()
-   rouvre la porte (mort, abandon, passage en arrière-plan, verrou lâché par
-   le système). */
+/* ------ verrou d'écran */
+/* Une seule demande par période d'éveil (retour au premier plan, reprise) ; releaseWake() rouvre
+   la porte (mort, abandon, arrière-plan, verrou lâché par le système). */
 var _wake = null, _wakeAsked = false;
 function requestWake() {
   if (_wakeAsked) return;

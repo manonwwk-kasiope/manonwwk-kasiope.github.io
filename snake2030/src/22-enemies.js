@@ -1,11 +1,11 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 22-enemies.js — le bestiaire
    Onze silhouettes, onze menaces lisibles, six modificateurs d'élite.
    Règle d'or : le joueur doit toujours comprendre pourquoi il meurt.
    Tout ce qui va tuer se télégraphie une demi-seconde avant.
-   ========================================================================== */
+   ====== */
 
-/* ------------------------------------------------------------- palette ---- */
+/* ------ palette ---- */
 var _EN_WHITE = '#ffffff';
 var _EN_DARK  = '#080a16';
 var _EN_HOT   = '#fff3b0';
@@ -18,7 +18,7 @@ var _EN_D_AIM  = [13, 9];
 var _EN_D_SCAN = [5, 7];
 var _EN_D_BIG  = [22, 14];
 
-/* ------------------------------------------------- couleurs mises en cache */
+/* ------ couleurs mises en cache */
 var _enRgbCache = {}, _enLiteCache = {}, _enFadeCache = {};
 
 function _enRgb(hex) {
@@ -67,7 +67,7 @@ function _enGrad(ctx, color) {
   return g;
 }
 
-/* ------------------------------------------------------ primitives de dessin */
+/* ------ primitives de dessin */
 
 /** Halo additif centré, sans allocation (dégradé mis en cache). */
 function _enGlow(ctx, x, y, r, color, a) {
@@ -183,7 +183,7 @@ function _enElite(ctx, e, color) {
   ctx.globalCompositeOperation = 'source-over';
 }
 
-/* ------------------------------------------------ tampon de trajectoire ---- */
+/* ------ tampon de trajectoire ---- */
 /* Un seul enregistrement partagé de la tête : les miroirs y puisent avec un
    décalage. Index direct, aucune recherche, aucune allocation en jeu.        */
 var _EN_MIR_N = 256, _EN_MIR_STEP = 25;   // 6.4 s d'historique
@@ -191,7 +191,7 @@ var _enMirBuf = new Array(_EN_MIR_N);
 for (var _enI = 0; _enI < _EN_MIR_N; _enI++) _enMirBuf[_enI] = { t: -1e9, x: 0, y: 0, a: 0, sp: 0 };
 var _enMirI = 0, _enMirLast = -1e9;
 
-/* -------------------------------------------------------- état de module --- */
+/* ------ état de module --- */
 var _enFrameT = -1;      // horodatage de la dernière passe globale
 var _enParaN = 0;        // parasites accrochés
 var _enParaScanT = -1e9; // dernière resynchronisation du compte
@@ -245,7 +245,7 @@ function _enFrameTick() {
   }
 }
 
-/* ------------------------------------------------------------ déplacement -- */
+/* ------ déplacement -- */
 
 function _enSteer(e, tx, ty, dt, turn, speed) {
   var want = angTo(e.x, e.y, tx, ty);
@@ -296,7 +296,7 @@ function _enTouchesBody(x, y, r) {
   return false;
 }
 
-/* ------------------------------------------------------------- explosions -- */
+/* ------ explosions -- */
 
 function _enBlast(x, y, radius, dmg, color, srcId) {
   if (_enBlastDepth > 3) return;
@@ -325,7 +325,7 @@ function _enBlast(x, y, radius, dmg, color, srcId) {
   _enBlastDepth--;
 }
 
-/* ------------------------------------------------------------------ butin -- */
+/* ------ butin -- */
 
 function _enLoot(e) {
   var n = e.loot === undefined ? 1 : e.loot;
@@ -338,11 +338,11 @@ function _enLoot(e) {
   if (chance((e.healP || 0.015) + (e.elite ? 0.12 : 0))) addPickup('heal', e.x + rndR(-8, 8), e.y + rndR(-8, 8));
 }
 
-/* ==========================================================================
+/* ======
    COMPORTEMENTS
-   ========================================================================== */
+   ====== */
 
-/* -------------------------------------------------------------- chasseur --- */
+/* ------ chasseur --- */
 /* Fonce sur la tête, ondule pour ne pas être un rail, arme un bond quand il
    arrive à portée : il se fige, gonfle, puis se jette en ligne droite.       */
 function _enUpChaser(e, dt, s) {
@@ -378,7 +378,7 @@ function _enUpChaser(e, dt, s) {
   if (e.cdT <= 0 && d < e.lungeR && d > 44) { e.st = 1; e.stT = e.lungeWind * cs; }
 }
 
-/* ----------------------------------------------------------- intercepteur -- */
+/* ------ intercepteur -- */
 /* Vise le point où la tête SERA. Il gèle sa cible pendant l'armement : la
    ligne affichée est exactement la trajectoire qu'il prendra.                */
 function _enUpInter(e, dt, s) {
@@ -419,7 +419,7 @@ function _enUpInter(e, dt, s) {
   }
 }
 
-/* ------------------------------------------------------------------ mine --- */
+/* ------ mine --- */
 /* Immobile, dort. S'amorce quand le serpent entre dans son rayon : la mèche
    brûle, le disque de souffle grandit à l'écran, puis tout saute.            */
 function _enUpMine(e, dt, s) {
@@ -448,7 +448,7 @@ function _enUpMine(e, dt, s) {
   }
 }
 
-/* --------------------------------------------------------------- tireur ---- */
+/* ------ tireur ---- */
 /* Garde sa bande de distance, tourne autour, et arme un tir lent en montrant
    la ligne exacte du projectile pendant 0,7 s.                               */
 function _enUpShooter(e, dt, s) {
@@ -495,7 +495,7 @@ function _enUpShooter(e, dt, s) {
   }
 }
 
-/* -------------------------------------------------------------- trancheur -- */
+/* ------ trancheur -- */
 /* Se met en garde, montre une ligne laser d'un bout à l'autre de l'arène,
    puis traverse tout en ligne droite. Coupe le corps, pas seulement la tête. */
 function _enUpCutter(e, dt, s) {
@@ -547,7 +547,7 @@ function _enUpCutter(e, dt, s) {
   if (d < 620) { e.st = 1; e.stT = e.chargeMs * cs; }
 }
 
-/* -------------------------------------------------------------- pondeuse --- */
+/* ------ pondeuse --- */
 /* Lente, encaisse, garde ses distances et ouvre ses pétales pour cracher une
    nichée. L'ouverture est visible bien avant l'éjection.                     */
 function _enUpSpawner(e, dt, s) {
@@ -585,7 +585,7 @@ function _enUpSpawner(e, dt, s) {
   if (e.cdT <= 0 && d < 900) { e.st = 1; e.stT = e.openMs * cs; }
 }
 
-/* ---------------------------------------------------------------- larve ---- */
+/* ------ larve ---- */
 function _enUpMite(e, dt, s) {
   if (e.birth > 0) {
     e.birth -= dt * 2.6;
@@ -599,7 +599,7 @@ function _enUpMite(e, dt, s) {
   _enGo(e, e.ang, dt, e.speed);
 }
 
-/* -------------------------------------------------------------- parasite --- */
+/* ------ parasite --- */
 /* Se colle à un anneau du corps, l'étouffe (le serpent tourne moins bien) et
    mord périodiquement. Il faut le décrocher au tir.                          */
 function _enUpParasite(e, dt, s) {
@@ -649,7 +649,7 @@ function _enUpParasite(e, dt, s) {
   _enSteer(e, tx, ty, dt, e.turn, e.speed);
 }
 
-/* -------------------------------------------------------------- brouilleur - */
+/* ------ brouilleur - */
 /* Champ nul : tout projectile du joueur qui franchit la coque est absorbé.
    Pour le tuer il faut entrer dans le champ — où les armes se coupent.       */
 function _enUpJammer(e, dt, s) {
@@ -689,7 +689,7 @@ function _enUpJammer(e, dt, s) {
   }
 }
 
-/* ---------------------------------------------------------------- voleur --- */
+/* ------ voleur --- */
 /* Vise le butin au sol, l'empoche, puis file vers le bord de l'arène. Tué,
    il rend tout — et un peu plus.                                             */
 function _enUpThief(e, dt, s) {
@@ -748,7 +748,7 @@ function _enUpThief(e, dt, s) {
   }
 }
 
-/* ---------------------------------------------------------------- miroir --- */
+/* ------ miroir --- */
 /* Rejoue ta propre trajectoire avec 1,5 s de retard. On ne le sème pas : on
    le tue, ou on lui fait traverser ses propres alliés.                       */
 function _enUpMirror(e, dt, s) {
@@ -771,9 +771,9 @@ function _enUpMirror(e, dt, s) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MODIFICATEURS D'ÉLITE — statistiques ET comportement ET visuel
-   ========================================================================== */
+   ====== */
 
 var _enMods = {
 
@@ -933,11 +933,11 @@ function _enModTick(e, dt, s) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DESSIN
-   ========================================================================== */
+   ====== */
 
-/* -------- télégraphes, repère monde, dessinés SOUS les corps -------------- */
+/* -------- télégraphes, repère monde, dessinés SOUS les corps ------ */
 
 function _enTeChaser(ctx, e, col) {
   if (e.st !== 1) return;
@@ -1090,7 +1090,7 @@ var _enTele = {
   parasite: _enTeParasite, thief: _enTeThief
 };
 
-/* -------- corps, repère local (déjà translaté sur l'ennemi) --------------- */
+/* -------- corps, repère local (déjà translaté sur l'ennemi) ------ */
 
 function _enDrChaser(ctx, e, col) {
   var r = e.r;
@@ -1466,7 +1466,7 @@ var _enDr = {
   thief: _enDrThief, mirror: _enDrMirror
 };
 
-/* -------- surcouche des modificateurs, repère local ---------------------- */
+/* -------- surcouche des modificateurs, repère local ------ */
 
 function _enModDraw(ctx, e, col) {
   if (e.mArm && !e.armBroken) {
@@ -1559,9 +1559,9 @@ function _enModDraw(ctx, e, col) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DÉFINITIONS
-   ========================================================================== */
+   ====== */
 
 var _enDefs = {
 
@@ -1663,9 +1663,9 @@ var _enUp = {
   thief: _enUpThief, mirror: _enUpMirror
 };
 
-/* ==========================================================================
+/* ======
    API
-   ========================================================================== */
+   ====== */
 
 function _enUpdate(e, dt) {
   _enFrameTick();
@@ -1782,7 +1782,7 @@ S2030.enemies = {
   draw: _enDraw,
   onDeath: _enOnDeath,
 
-  /* --- extras lisibles par les autres modules --------------------------- */
+  /* --- extras lisibles par les autres modules ------ */
 
   /** true si les armes du joueur sont brouillées (champ d'un brouilleur). */
   isJammed: function () { return S.t < _enJamT; },

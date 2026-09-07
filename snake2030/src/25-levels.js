@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 25-levels.js
    S2030.levels : les arènes, leur décor animé, leurs dangers, et la montée
    en intensité (vagues, phases, élites, transitions).
@@ -18,9 +18,9 @@
    Contraintes tenues : aucune allocation dans les boucles chaudes (tampons
    et pools préalloués, dégradés mis en cache), aucun Math.random, aucun
    Date.now, aucun accès au DOM.
-   ========================================================================== */
+   ====== */
 
-/* --------------------------------------------------------------- constantes */
+/* ------ constantes */
 
 var _LV_PHASES = ['calm', 'rise', 'surge', 'climax', 'clear'];
 var _LV_HARDCAP = 130;          // plafond absolu d'ennemis vivants, garde-fou perf
@@ -40,16 +40,16 @@ var _LV_OVERPAL = [
     pull: '#b388ff', push: '#ff5c3a', lane: '#ffb43c', chrome: '#e6d2ff' }
 ];
 
-/* ==========================================================================
+/* ======
    DÉFINITIONS DES NIVEAUX
    Une vague : { p:phase, every:s, jit:0..1, cap:plafond, g:[[type,n,motif]],
                  eliteP:probabilité, mods:[modificateurs] }
    Les motifs d'apparition : edge, ring, ahead, flank, pack, lane, corner.
-   ========================================================================== */
+   ====== */
 
 var _lvDefs = [
 
-  /* ---------------------------------------------------------------- 1 : GRILLE */
+  /* ------ 1 : GRILLE */
   {
     n: 1,
     name: 'LA GRILLE',
@@ -85,7 +85,7 @@ var _lvDefs = [
     ]
   },
 
-  /* ------------------------------------------------------------ 2 : AUTOROUTE */
+  /* ------ 2 : AUTOROUTE */
   {
     n: 2,
     name: 'AUTOROUTE NÉON',
@@ -124,7 +124,7 @@ var _lvDefs = [
     ]
   },
 
-  /* ------------------------------------------------------------ 3 : MAGNÉTIQUE */
+  /* ------ 3 : MAGNÉTIQUE */
   {
     n: 3,
     name: 'ZONE MAGNÉTIQUE',
@@ -161,7 +161,7 @@ var _lvDefs = [
     ]
   },
 
-  /* -------------------------------------------------------------- 4+ SURCHARGE */
+  /* ------ 4+ SURCHARGE */
   {
     n: 4,
     name: 'SURCHARGE',
@@ -197,9 +197,9 @@ var _lvDefs = [
   }
 ];
 
-/* ==========================================================================
+/* ======
    ÉTAT D'EXÉCUTION
-   ========================================================================== */
+   ====== */
 
 var _lvHaz = [];            // dangers vivants, exposés par l'API
 var _lvHazPool = [];        // recyclage, aucune allocation en régime établi
@@ -249,9 +249,9 @@ var _lvVigG = null, _lvVigKey = '';
 var _lvDngG = null, _lvDngKey = '';
 var _lvGradW = 0, _lvGradH = 0;
 
-/* ==========================================================================
+/* ======
    PETITES AIDES
-   ========================================================================== */
+   ====== */
 
 var _lvRgbC = {};
 function _lvRgb(hex) {
@@ -305,25 +305,37 @@ function _lvCollect(x, y, r) {
   return _lvNear;
 }
 
-/* ==========================================================================
+/* ======
    POINTS D'APPARITION
    Remplit _lvPX / _lvPY. Toujours dans l'arène, de préférence hors champ.
-   ========================================================================== */
+   ====== */
+
+var _lvVisW = 640, _lvVisH = 390;
+function _lvVisHalf() {      // demi-étendue réellement visible (phases.visibleExtent) : les apparitions se placent hors d'elle
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
+  _lvVisW = V ? Math.max(V.left, V.right) : S.view.w * 0.5; _lvVisH = V ? Math.max(V.top, V.bottom) : S.view.h * 0.5;
+}
+function _lvOut(a) {         // pousse le point hors de l'étendue visible (la caméra est en avance sur la tête)
+  for (var k = 0; k < 6 && inView(_lvPX, _lvPY, 40); k++) { _lvPX += Math.cos(a) * 90; _lvPY += Math.sin(a) * 90; }
+}
 
 function _lvPoint(pat, i, n) {
   var s = S.snake;
   if (!s) { _lvPX = K.ARENA_W * 0.5; _lvPY = K.ARENA_H * 0.5; return; }
-  var off = S.view.w * 0.5 + 150;
+  _lvVisHalf();
+  var off = _lvVisW + 150;
   var a, R, tries, ok;
 
   if (pat === 'lane' && _lvLanes.length) {
     var ln = _lvLanes[rndI(0, _lvLanes.length - 1)];
     if (ln.ax === 0) {
-      _lvPX = s.x - ln.dir * (S.view.w * 0.5 + rndR(180, 420));
+      _lvPX = s.x - ln.dir * (_lvVisW + rndR(180, 420));
       _lvPY = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      _lvOut(-ln.dir > 0 ? 0 : Math.PI);
     } else {
-      _lvPY = s.y - ln.dir * (S.view.h * 0.5 + rndR(180, 380));
+      _lvPY = s.y - ln.dir * (_lvVisH + rndR(180, 380));
       _lvPX = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      _lvOut(-ln.dir > 0 ? Math.PI / 2 : -Math.PI / 2);
     }
     _lvClampPoint();
     return;
@@ -349,7 +361,7 @@ function _lvPoint(pat, i, n) {
     R = off + rndR(0, 190);
   } else if (pat === 'flank') {
     a = s.ang + ((i & 1) ? 1 : -1) * (Math.PI * 0.5) + rndR(-0.28, 0.28);
-    R = S.view.h * 0.5 + rndR(120, 300);
+    R = _lvVisH + rndR(120, 300);
   } else if (pat === 'ring') {
     a = _lvRingA + (i / Math.max(1, n)) * TAU;
     R = off + rndR(-40, 120);
@@ -371,6 +383,7 @@ function _lvPoint(pat, i, n) {
 
   _lvPX = s.x + Math.cos(a) * R;
   _lvPY = s.y + Math.sin(a) * R;
+  _lvOut(a);
   _lvClampPoint();
 }
 var _lvPackX = 0, _lvPackY = 0;
@@ -380,9 +393,9 @@ function _lvClampPoint() {
   _lvPY = clamp(_lvPY, _LV_MARGIN, K.ARENA_H - _LV_MARGIN);
 }
 
-/* ==========================================================================
+/* ======
    VAGUES
-   ========================================================================== */
+   ====== */
 
 function _lvSpawnGroup(type, n, pat, eliteP, mods) {
   for (var i = 0; i < n; i++) {
@@ -442,9 +455,9 @@ function _lvWaves(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    PHASES
-   ========================================================================== */
+   ====== */
 
 function _lvEnterPhase(idx) {
   _lvPhaseI = idx;
@@ -567,9 +580,9 @@ function _lvPhaseTick(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    INTENSITÉ ET PROGRESSION
-   ========================================================================== */
+   ====== */
 
 var _LV_BASE_INT = { calm: 0.20, rise: 0.46, surge: 0.76, climax: 0.94, clear: 0.22 };
 
@@ -598,9 +611,9 @@ function _lvIntensity(dt) {
   S.levelPhase = ph;
 }
 
-/* ==========================================================================
+/* ======
    MÉCANIQUE 2 — VOIES DE CIRCULATION
-   ========================================================================== */
+   ====== */
 
 function _lvBuildLanes() {
   _lvLanes.length = 0;
@@ -746,9 +759,9 @@ function _lvRigs(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MÉCANIQUE 3 — CHAMPS MAGNÉTIQUES
-   ========================================================================== */
+   ====== */
 
 function _lvBuildNodes() {
   var d = _lvDef;
@@ -893,9 +906,9 @@ function _lvFieldApply(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    PARTICULES DE DÉCOR (poussière, limaille, traits de vitesse)
-   ========================================================================== */
+   ====== */
 
 function _lvBuildDust() {
   if (!_lvDust) {
@@ -975,9 +988,9 @@ function _lvStreaks(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DÉMARRAGE D'UN NIVEAU
-   ========================================================================== */
+   ====== */
 
 function _lvStart(n) {
   n = n || 1;
@@ -1045,9 +1058,9 @@ function _lvStart(n) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MISE À JOUR
-   ========================================================================== */
+   ====== */
 
 function _lvUpdate(dt) {
   if (!_lvDef) _lvStart(S.level || 1);
@@ -1066,9 +1079,9 @@ function _lvUpdate(dt) {
   _lvIntensity(dt);
 }
 
-/* ==========================================================================
+/* ======
    DESSIN — FOND
-   ========================================================================== */
+   ====== */
 
 function _lvViewRect() {
   _lvVX = S.cam.x - S.view.w * 0.5 - 60;
@@ -1437,9 +1450,9 @@ function _lvDrawRigShadows(ctx) {
   ctx.restore();
 }
 
-/* ==========================================================================
+/* ======
    DESSIN — PREMIER PLAN
-   ========================================================================== */
+   ====== */
 
 /* Sept passes au total, quel que soit le nombre de convois à l'écran. */
 function _lvDrawRigs(ctx) {
@@ -1709,9 +1722,9 @@ function _lvDrawFore(ctx) {
   ctx.globalCompositeOperation = 'source-over';
 }
 
-/* ==========================================================================
+/* ======
    API
-   ========================================================================== */
+   ====== */
 
 S2030.levels = {
   defs: _lvDefs,
