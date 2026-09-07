@@ -426,6 +426,23 @@ S2030.phases = (function () {
     return out;
   }
 
+  /* Point monde → px CSS : caméra, SCALE, zoom, roulis, bascule (cv, CW, CH, SCALE : globales du coeur),
+     puis la matrice CSS du canvas, relue par getComputedStyle quand le style change. */
+  var _w2m = null, _w2k = '';
+  function worldToScreen(wx, wy, out) {
+    var sx = SCALE * zoom(), sy = sx * (1 - tilt() * 0.42), rt = rot(), c = Math.cos(rt), sn = Math.sin(rt);
+    var px = (wx - S.cam.x) * sx, py = (wy - S.cam.y) * sy, x = px * c - py * sn, y = px * sn + py * c;
+    var key = cv ? cv.style.transform + '|' + CW + 'x' + CH : '';
+    if (key !== _w2k) { _w2k = key; _w2m = cv ? new DOMMatrix(getComputedStyle(cv).transform) : null; }
+    if (_w2m && !_w2m.isIdentity) {         // origine 50 % 50 %, division par w
+      var p = _w2m.transformPoint({ x: x, y: y, z: 0, w: 1 });
+      x = p.x / p.w; y = p.y / p.w;
+    }
+    out = out || {};
+    out.sx = x + CW / 2; out.sy = y + CH / 2;
+    return out;
+  }
+
   /* ------ sol en perspective pendant les phases */
   function drawFloor(ctx) {
     // le sol de repère n'a de sens que sous la bascule réelle
@@ -633,7 +650,7 @@ S2030.phases = (function () {
     railed: railed, railAng: railAng, railSteer: railSteer, railHold: railHold,
     railBounce: railBounce, railLate: railLate,
     railSpacing: grid.spacing,
-    pending: pending, visibleExtent: visibleExtent, toScreen: toScreen,
+    pending: pending, visibleExtent: visibleExtent, toScreen: toScreen, worldToScreen: worldToScreen,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) {
       startPhase(SCRIPT[(i || 0) % SCRIPT.length]);

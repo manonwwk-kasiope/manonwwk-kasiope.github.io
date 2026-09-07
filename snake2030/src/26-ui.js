@@ -79,6 +79,12 @@ var _UI_CSS = [
 '#ui *{box-sizing:border-box}',
 '#ui button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;',
 '  -webkit-tap-highlight-color:transparent;touch-action:manipulation}',
+/* bureau : réticule en jeu, masqué à l'inactivité, pointeur sur le cliquable */
+"#game.s2ret{cursor:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='7'/%3E%3Cpath d='M12 1v5M12 18v5M1 12h5M18 12h5'/%3E%3C/svg%3E\") 12 12,auto}",
+'#game.s2nocur{cursor:none}',
+'.s2card,.s2opt{cursor:pointer}',
+'@media(hover:hover){button:hover{filter:brightness(1.15)}#ui button{transition:filter .08s}',
+'  .s2card:hover{transform:translateY(-6px);border-color:var(--r)}}',
 '.s2p{position:fixed;inset:0;visibility:hidden;pointer-events:none;',
 '  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)',
 '  env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}',
@@ -295,12 +301,12 @@ var _UI_CSS = [
 '.s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(150px,31%,300px);',
 '  display:flex;flex-direction:column;align-items:center;justify-content:center;',
 '  gap:clamp(3px,1.1vh,10px);padding:clamp(8px,2.4vh,20px) clamp(6px,1.4vw,16px);',
-'  border-radius:12px;border:2px solid var(--r);',
+'  border-radius:12px;border:2px solid var(--rb,var(--r));transition:transform .08s,border-color .08s;',
 '  background:linear-gradient(168deg,rgba(12,18,36,.95),rgba(4,6,15,.97));',
 '  box-shadow:0 0 calc(24px*var(--bl)) var(--rg),inset 0 0 calc(40px*var(--bl)) var(--rg);',
 '  animation:s2cardIn .34s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}',
 '.s2card:active{transform:scale(.97);filter:brightness(1.35)}',
-'@keyframes s2cardIn{0%{opacity:0;transform:translateY(26px) scale(.9)}100%{opacity:1;transform:none}}',
+'@keyframes s2cardIn{0%{opacity:0;transform:translateY(26px) scale(.9)}100%{opacity:1}}',
 '.s2card>u{position:absolute;top:0;left:0;right:0;height:3px;background:var(--r);',
 '  box-shadow:0 0 calc(14px*var(--bl)) var(--r)}',
 '.s2card .ic{font:400 calc(var(--uis)*clamp(22px,8vh,54px))/1.1 var(--fs);color:var(--t,var(--r));',
@@ -826,6 +832,7 @@ function _uiBuildSettings(root) {
   tr.push(_uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct));
   tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct));
   _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct);
+  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse', [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }]);
   tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
     function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
   tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
@@ -860,6 +867,7 @@ function _uiBuildSettings(root) {
 function _uiSyncDesktop() {
   var d = !!S.desktop, rows = _uiE.touchRows || [];
   for (var i = 0; i < rows.length; i++) rows[i].hidden = d;
+  if (_uiE.mouseRow) _uiE.mouseRow.hidden = !d;
   if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
 }
 
@@ -931,6 +939,7 @@ function _uiDefaults() {
   if (o.joyAlpha === undefined) o.joyAlpha = 1;
   if (o.joySize === undefined) o.joySize = 1;
   if (o.sens === undefined) o.sens = 1;
+  if (o.mouse === undefined) o.mouse = 'auto';
   if (o.particles === undefined) o.particles = 1;
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
@@ -1084,6 +1093,7 @@ function _uiShowCards(cards, cb) {
     o.el.style.setProperty('--r', col);
     o.el.style.setProperty('--t', c.tint || col);   /* icône : l'axe */
     o.el.style.setProperty('--rg', _uiAlpha(col, 0.22));
+    o.el.style.setProperty('--rb', _uiAlpha(col, 0.7));
     o.el.style.setProperty('--d', (i * 55) + 'ms');
     o.el.classList.toggle('ultra', c.rarity === 'ultra');
     o.id = c.id;
@@ -1407,5 +1417,10 @@ S2030.ui = {
   /* pause subie (fenêtre inactive) : bandeau .s2pause-blur à la place du titre */
   setPauseBlur: function (on) { _uiSetPauseBlur(!!on); },
   /* S.desktop a changé : lignes de réglages tactiles masquées ou non */
-  syncDesktop: function () { _uiSyncDesktop(); }
+  syncDesktop: function () { _uiSyncDesktop(); },
+  /* curseur du canvas : '' normal, 'ret' réticule, 'none' masqué */
+  cursor: function (m) {
+    var g = document.getElementById('game');
+    if (g) { g.classList.toggle('s2ret', m === 'ret'); g.classList.toggle('s2nocur', m === 'none'); }
+  }
 };

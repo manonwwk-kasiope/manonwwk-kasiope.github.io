@@ -101,7 +101,7 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
   stats: { best: 0, coins: 0, runs: 0 },
   boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,
@@ -9087,6 +9087,12 @@ var _UI_CSS = [
 '#ui *{box-sizing:border-box}',
 '#ui button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;',
 '  -webkit-tap-highlight-color:transparent;touch-action:manipulation}',
+/* bureau : réticule en jeu, masqué à l'inactivité, pointeur sur le cliquable */
+"#game.s2ret{cursor:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300e5ff' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='7'/%3E%3Cpath d='M12 1v5M12 18v5M1 12h5M18 12h5'/%3E%3C/svg%3E\") 12 12,auto}",
+'#game.s2nocur{cursor:none}',
+'.s2card,.s2opt{cursor:pointer}',
+'@media(hover:hover){button:hover{filter:brightness(1.15)}#ui button{transition:filter .08s}',
+'  .s2card:hover{transform:translateY(-6px);border-color:var(--r)}}',
 '.s2p{position:fixed;inset:0;visibility:hidden;pointer-events:none;',
 '  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px)',
 '  env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}',
@@ -9303,12 +9309,12 @@ var _UI_CSS = [
 '.s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(150px,31%,300px);',
 '  display:flex;flex-direction:column;align-items:center;justify-content:center;',
 '  gap:clamp(3px,1.1vh,10px);padding:clamp(8px,2.4vh,20px) clamp(6px,1.4vw,16px);',
-'  border-radius:12px;border:2px solid var(--r);',
+'  border-radius:12px;border:2px solid var(--rb,var(--r));transition:transform .08s,border-color .08s;',
 '  background:linear-gradient(168deg,rgba(12,18,36,.95),rgba(4,6,15,.97));',
 '  box-shadow:0 0 calc(24px*var(--bl)) var(--rg),inset 0 0 calc(40px*var(--bl)) var(--rg);',
 '  animation:s2cardIn .34s cubic-bezier(.16,1,.3,1) both;animation-delay:var(--d,0ms)}',
 '.s2card:active{transform:scale(.97);filter:brightness(1.35)}',
-'@keyframes s2cardIn{0%{opacity:0;transform:translateY(26px) scale(.9)}100%{opacity:1;transform:none}}',
+'@keyframes s2cardIn{0%{opacity:0;transform:translateY(26px) scale(.9)}100%{opacity:1}}',
 '.s2card>u{position:absolute;top:0;left:0;right:0;height:3px;background:var(--r);',
 '  box-shadow:0 0 calc(14px*var(--bl)) var(--r)}',
 '.s2card .ic{font:400 calc(var(--uis)*clamp(22px,8vh,54px))/1.1 var(--fs);color:var(--t,var(--r));',
@@ -9834,6 +9840,7 @@ function _uiBuildSettings(root) {
   tr.push(_uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct));
   tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct));
   _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct);
+  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse', [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }]);
   tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
     function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
   tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
@@ -9868,6 +9875,7 @@ function _uiBuildSettings(root) {
 function _uiSyncDesktop() {
   var d = !!S.desktop, rows = _uiE.touchRows || [];
   for (var i = 0; i < rows.length; i++) rows[i].hidden = d;
+  if (_uiE.mouseRow) _uiE.mouseRow.hidden = !d;
   if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
 }
 
@@ -9939,6 +9947,7 @@ function _uiDefaults() {
   if (o.joyAlpha === undefined) o.joyAlpha = 1;
   if (o.joySize === undefined) o.joySize = 1;
   if (o.sens === undefined) o.sens = 1;
+  if (o.mouse === undefined) o.mouse = 'auto';
   if (o.particles === undefined) o.particles = 1;
   // les parties sauvegardées avant l'ajout du réglage repartent au cran de
   // référence, pas au plus facile
@@ -10092,6 +10101,7 @@ function _uiShowCards(cards, cb) {
     o.el.style.setProperty('--r', col);
     o.el.style.setProperty('--t', c.tint || col);   /* icône : l'axe */
     o.el.style.setProperty('--rg', _uiAlpha(col, 0.22));
+    o.el.style.setProperty('--rb', _uiAlpha(col, 0.7));
     o.el.style.setProperty('--d', (i * 55) + 'ms');
     o.el.classList.toggle('ultra', c.rarity === 'ultra');
     o.id = c.id;
@@ -10415,7 +10425,12 @@ S2030.ui = {
   /* pause subie (fenêtre inactive) : bandeau .s2pause-blur à la place du titre */
   setPauseBlur: function (on) { _uiSetPauseBlur(!!on); },
   /* S.desktop a changé : lignes de réglages tactiles masquées ou non */
-  syncDesktop: function () { _uiSyncDesktop(); }
+  syncDesktop: function () { _uiSyncDesktop(); },
+  /* curseur du canvas : '' normal, 'ret' réticule, 'none' masqué */
+  cursor: function (m) {
+    var g = document.getElementById('game');
+    if (g) { g.classList.toggle('s2ret', m === 'ret'); g.classList.toggle('s2nocur', m === 'none'); }
+  }
 };
 
 
@@ -10848,6 +10863,23 @@ S2030.phases = (function () {
     return out;
   }
 
+  /* Point monde → px CSS : caméra, SCALE, zoom, roulis, bascule (cv, CW, CH, SCALE : globales du coeur),
+     puis la matrice CSS du canvas, relue par getComputedStyle quand le style change. */
+  var _w2m = null, _w2k = '';
+  function worldToScreen(wx, wy, out) {
+    var sx = SCALE * zoom(), sy = sx * (1 - tilt() * 0.42), rt = rot(), c = Math.cos(rt), sn = Math.sin(rt);
+    var px = (wx - S.cam.x) * sx, py = (wy - S.cam.y) * sy, x = px * c - py * sn, y = px * sn + py * c;
+    var key = cv ? cv.style.transform + '|' + CW + 'x' + CH : '';
+    if (key !== _w2k) { _w2k = key; _w2m = cv ? new DOMMatrix(getComputedStyle(cv).transform) : null; }
+    if (_w2m && !_w2m.isIdentity) {         // origine 50 % 50 %, division par w
+      var p = _w2m.transformPoint({ x: x, y: y, z: 0, w: 1 });
+      x = p.x / p.w; y = p.y / p.w;
+    }
+    out = out || {};
+    out.sx = x + CW / 2; out.sy = y + CH / 2;
+    return out;
+  }
+
   /* ------ sol en perspective pendant les phases */
   function drawFloor(ctx) {
     // le sol de repère n'a de sens que sous la bascule réelle
@@ -11055,7 +11087,7 @@ S2030.phases = (function () {
     railed: railed, railAng: railAng, railSteer: railSteer, railHold: railHold,
     railBounce: railBounce, railLate: railLate,
     railSpacing: grid.spacing,
-    pending: pending, visibleExtent: visibleExtent, toScreen: toScreen,
+    pending: pending, visibleExtent: visibleExtent, toScreen: toScreen, worldToScreen: worldToScreen,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) {
       startPhase(SCRIPT[(i || 0) % SCRIPT.length]);
@@ -11284,6 +11316,7 @@ addEventListener('keydown', function (e) {
   var k = keyName(e), code = e.code || '';
   if (e.repeat && KEY_ONCE[k]) return;
   if (code) keys[code] = true;
+  if (!e.repeat && DIR_KEYS[code]) { mouse.on = false; mouse.acc = 0; }   // 'auto' : la souris rend la main
   var space = code === 'Space' || e.key === ' ';
   if ((space || code.indexOf('Arrow') === 0) && e.cancelable) e.preventDefault();
   if (space) {
@@ -11305,10 +11338,72 @@ addEventListener('keyup', function (e) {
 function keyboardInput() {
   var kx = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.KeyQ || keys.ArrowLeft ? 1 : 0);
   var ky = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.KeyZ || keys.ArrowUp ? 1 : 0);
+  _kdir = !!(kx || ky);
   if (kx || ky) {
     var m = Math.hypot(kx, ky);
     S.input.jx = kx / m; S.input.jy = ky / m; S.input.jmag = 1; S.input.jactive = true;
   } else if (!touchJoy) { S.input.jmag = 0; S.input.jactive = false; }
+}
+
+/* --- souris (bureau). S.opt.mouse 'auto' : active après 8 px cumulés, rendue à la première touche de
+   direction. Gauche = boost, droit = spécial, molette ou central = ultime. */
+var mouse = { x: 0, y: 0, has: false, on: false, acc: 0, lb: false, moveAt: -1e9, cur: '', aim: null };
+var _kdir = false, _mh = { sx: 0, sy: 0 };
+var DIR_KEYS = { ArrowUp: 1, ArrowDown: 1, ArrowLeft: 1, ArrowRight: 1, KeyW: 1, KeyA: 1, KeyS: 1, KeyD: 1, KeyZ: 1, KeyQ: 1 };
+function mouseActive() {
+  var m = S.opt.mouse || 'auto';
+  return !!S.desktop && mouse.has && m !== 'never' && (m === 'always' || mouse.on);
+}
+function inPlay() { return S.phase === 'play' && !S.paused; }
+function onMouseMove(e) {
+  if (!S.desktop) return;
+  if (mouse.has && !mouse.on) { mouse.acc += Math.hypot(e.clientX - mouse.x, e.clientY - mouse.y); if (mouse.acc >= 8) mouse.on = true; }
+  mouse.x = e.clientX; mouse.y = e.clientY; mouse.has = true; mouse.moveAt = performance.now();
+  if (mouse.cur === 'none') mouseCursor(mouse.moveAt);     // réticule sans attendre l'image suivante
+}
+function onMouseDown(e) {
+  if (!S.desktop || (e.target && e.target.tagName === 'BUTTON')) return;   // le bouton pause n'est pas un boost
+  if (e.button === 0) { mouse.lb = true; if (inPlay()) S.input.boost = true; }
+  else if (e.button === 1) { e.preventDefault(); if (inPlay()) useUlt(); }
+}
+function onMouseUp(e) {
+  if (!S.desktop || e.button !== 0) return;
+  mouse.lb = false; S.input.boost = false;
+}
+function onWheel(e) {
+  if (!S.desktop || !inPlay()) return;          // en pause la molette défile les réglages
+  e.preventDefault();
+  if (e.deltaY) useUlt();
+}
+function onContextMenu(e) {
+  e.preventDefault();
+  if (S.desktop && inPlay()) useSpecial();
+}
+/* souris → S.input (avant updateSnake) : au-delà de 24 px, cap = atan2 − roulis, jmag = |d|/120 dans [0,25 ; 1] ;
+   touche de direction tenue : les touches dirigent, la souris vise (mouse.aim) */
+function mouseInput() {
+  mouse.aim = null;
+  if (!S.snake || !mouseActive()) return;
+  var P = S2030.phases, s = S.snake, h = P.worldToScreen(s.x, s.y, _mh);
+  var dx = mouse.x - h.sx, dy = mouse.y - h.sy, L = Math.hypot(dx, dy), inp = S.input;
+  if (L > 24) {
+    var cap = Math.atan2(dy, dx) - P.rot();
+    if (_kdir) mouse.aim = cap;
+    else { inp.jx = Math.cos(cap); inp.jy = Math.sin(cap); inp.jmag = clamp(L / 120, 0.25, 1); inp.jactive = true; }
+  } else if (!_kdir) { inp.jmag = 0; inp.jactive = false; }
+}
+/* visée souris, après updateSnake et avant les armes */
+function mouseAim() {
+  if (mouse.aim === null) return;
+  var s = S.snake;
+  s.aim = norm(s.ang + clamp(norm(mouse.aim - s.ang), -RAIL_LOOK, RAIL_LOOK));
+}
+/* curseur : réticule en jeu, masqué après 1,5 s sans mouvement */
+function mouseCursor(now) {
+  var want = (S.desktop && inPlay()) ? (now - mouse.moveAt > 1500 ? 'none' : 'ret') : '';
+  if (want === mouse.cur) return;
+  mouse.cur = want;
+  S2030.ui && S2030.ui.cursor && S2030.ui.cursor(want);
 }
 
 /* ------ capacités */
@@ -11561,6 +11656,7 @@ function frame(now) {
     qualityTilt();
     if (_fsbSync) _fsbSync();
     if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
+    mouseCursor(now);
   } catch (e) { errLog('quality', e); }
 
   /* Chaque étape est isolée : une exception dans l'une ne prive pas les
@@ -11568,8 +11664,10 @@ function frame(now) {
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
     try { keyboardInput(); } catch (e) { errLog('keyboardInput', e); }
+    try { mouseInput(); } catch (e) { errLog('mouseInput', e); }
     try { ultTick(); } catch (e) { errLog('ultTick', e); }
     try { updateSnake(dt); } catch (e) { errLog('updateSnake', e); }
+    try { mouseAim(); } catch (e) { errLog('mouseAim', e); }
     S.levelT += dt;
     try { S2030.levels && S2030.levels.update && S2030.levels.update(dt); } catch (e) { errLog('levels.update', e); }
     updateEnemies(dt);                       // try/catch par ennemi
@@ -11846,6 +11944,7 @@ function resetRun() {
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
+  mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
@@ -11908,7 +12007,7 @@ function loseFocus() {
   var inp = S.input;
   inp.jx = 0; inp.jy = 0; inp.jmag = 0;
   inp.jactive = false; inp.boost = false; inp.special = false; inp.ult = false;
-  touchJoy = null; touchBtns = {};
+  touchJoy = null; touchBtns = {}; mouse.lb = false;
   if (S.snake) S.snake.boosting = false;
   S2030.ui && S2030.ui.releaseJoy && S2030.ui.releaseJoy();
   if (S.phase === 'play' && !S.paused) togglePause('blur');
@@ -12218,7 +12317,11 @@ function boot() {
   root.addEventListener('touchmove', onTouchMove, { passive: false });
   root.addEventListener('touchend', onTouchEnd, { passive: false });
   root.addEventListener('touchcancel', onTouchEnd, { passive: false });
-  root.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  root.addEventListener('contextmenu', onContextMenu);
+  root.addEventListener('mousemove', onMouseMove);
+  root.addEventListener('mousedown', onMouseDown);
+  root.addEventListener('mouseup', onMouseUp);
+  root.addEventListener('wheel', onWheel, { passive: false });
 
   /* Arrière-plan : pause subie, verrou d'écran rendu (le système le lâche de
      toute façon). Retour : contexte audio relancé — Safari le laisse en

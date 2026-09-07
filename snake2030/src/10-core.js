@@ -58,7 +58,7 @@ var S = {
   input: { jx: 0, jy: 0, jmag: 0, jactive: false, boost: false, special: false, ult: false },
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
-         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5 },
+         joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
   stats: { best: 0, coins: 0, runs: 0 },
   boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,

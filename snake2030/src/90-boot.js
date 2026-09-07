@@ -202,6 +202,7 @@ addEventListener('keydown', function (e) {
   var k = keyName(e), code = e.code || '';
   if (e.repeat && KEY_ONCE[k]) return;
   if (code) keys[code] = true;
+  if (!e.repeat && DIR_KEYS[code]) { mouse.on = false; mouse.acc = 0; }   // 'auto' : la souris rend la main
   var space = code === 'Space' || e.key === ' ';
   if ((space || code.indexOf('Arrow') === 0) && e.cancelable) e.preventDefault();
   if (space) {
@@ -223,10 +224,72 @@ addEventListener('keyup', function (e) {
 function keyboardInput() {
   var kx = (keys.KeyD || keys.ArrowRight ? 1 : 0) - (keys.KeyA || keys.KeyQ || keys.ArrowLeft ? 1 : 0);
   var ky = (keys.KeyS || keys.ArrowDown ? 1 : 0) - (keys.KeyW || keys.KeyZ || keys.ArrowUp ? 1 : 0);
+  _kdir = !!(kx || ky);
   if (kx || ky) {
     var m = Math.hypot(kx, ky);
     S.input.jx = kx / m; S.input.jy = ky / m; S.input.jmag = 1; S.input.jactive = true;
   } else if (!touchJoy) { S.input.jmag = 0; S.input.jactive = false; }
+}
+
+/* --- souris (bureau). S.opt.mouse 'auto' : active après 8 px cumulés, rendue à la première touche de
+   direction. Gauche = boost, droit = spécial, molette ou central = ultime. */
+var mouse = { x: 0, y: 0, has: false, on: false, acc: 0, lb: false, moveAt: -1e9, cur: '', aim: null };
+var _kdir = false, _mh = { sx: 0, sy: 0 };
+var DIR_KEYS = { ArrowUp: 1, ArrowDown: 1, ArrowLeft: 1, ArrowRight: 1, KeyW: 1, KeyA: 1, KeyS: 1, KeyD: 1, KeyZ: 1, KeyQ: 1 };
+function mouseActive() {
+  var m = S.opt.mouse || 'auto';
+  return !!S.desktop && mouse.has && m !== 'never' && (m === 'always' || mouse.on);
+}
+function inPlay() { return S.phase === 'play' && !S.paused; }
+function onMouseMove(e) {
+  if (!S.desktop) return;
+  if (mouse.has && !mouse.on) { mouse.acc += Math.hypot(e.clientX - mouse.x, e.clientY - mouse.y); if (mouse.acc >= 8) mouse.on = true; }
+  mouse.x = e.clientX; mouse.y = e.clientY; mouse.has = true; mouse.moveAt = performance.now();
+  if (mouse.cur === 'none') mouseCursor(mouse.moveAt);     // réticule sans attendre l'image suivante
+}
+function onMouseDown(e) {
+  if (!S.desktop || (e.target && e.target.tagName === 'BUTTON')) return;   // le bouton pause n'est pas un boost
+  if (e.button === 0) { mouse.lb = true; if (inPlay()) S.input.boost = true; }
+  else if (e.button === 1) { e.preventDefault(); if (inPlay()) useUlt(); }
+}
+function onMouseUp(e) {
+  if (!S.desktop || e.button !== 0) return;
+  mouse.lb = false; S.input.boost = false;
+}
+function onWheel(e) {
+  if (!S.desktop || !inPlay()) return;          // en pause la molette défile les réglages
+  e.preventDefault();
+  if (e.deltaY) useUlt();
+}
+function onContextMenu(e) {
+  e.preventDefault();
+  if (S.desktop && inPlay()) useSpecial();
+}
+/* souris → S.input (avant updateSnake) : au-delà de 24 px, cap = atan2 − roulis, jmag = |d|/120 dans [0,25 ; 1] ;
+   touche de direction tenue : les touches dirigent, la souris vise (mouse.aim) */
+function mouseInput() {
+  mouse.aim = null;
+  if (!S.snake || !mouseActive()) return;
+  var P = S2030.phases, s = S.snake, h = P.worldToScreen(s.x, s.y, _mh);
+  var dx = mouse.x - h.sx, dy = mouse.y - h.sy, L = Math.hypot(dx, dy), inp = S.input;
+  if (L > 24) {
+    var cap = Math.atan2(dy, dx) - P.rot();
+    if (_kdir) mouse.aim = cap;
+    else { inp.jx = Math.cos(cap); inp.jy = Math.sin(cap); inp.jmag = clamp(L / 120, 0.25, 1); inp.jactive = true; }
+  } else if (!_kdir) { inp.jmag = 0; inp.jactive = false; }
+}
+/* visée souris, après updateSnake et avant les armes */
+function mouseAim() {
+  if (mouse.aim === null) return;
+  var s = S.snake;
+  s.aim = norm(s.ang + clamp(norm(mouse.aim - s.ang), -RAIL_LOOK, RAIL_LOOK));
+}
+/* curseur : réticule en jeu, masqué après 1,5 s sans mouvement */
+function mouseCursor(now) {
+  var want = (S.desktop && inPlay()) ? (now - mouse.moveAt > 1500 ? 'none' : 'ret') : '';
+  if (want === mouse.cur) return;
+  mouse.cur = want;
+  S2030.ui && S2030.ui.cursor && S2030.ui.cursor(want);
 }
 
 /* ------ capacités */
@@ -479,6 +542,7 @@ function frame(now) {
     qualityTilt();
     if (_fsbSync) _fsbSync();
     if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
+    mouseCursor(now);
   } catch (e) { errLog('quality', e); }
 
   /* Chaque étape est isolée : une exception dans l'une ne prive pas les
@@ -486,8 +550,10 @@ function frame(now) {
   if (S.phase === 'play' && !S.paused) {
     S.t += raw * 1000;
     try { keyboardInput(); } catch (e) { errLog('keyboardInput', e); }
+    try { mouseInput(); } catch (e) { errLog('mouseInput', e); }
     try { ultTick(); } catch (e) { errLog('ultTick', e); }
     try { updateSnake(dt); } catch (e) { errLog('updateSnake', e); }
+    try { mouseAim(); } catch (e) { errLog('mouseAim', e); }
     S.levelT += dt;
     try { S2030.levels && S2030.levels.update && S2030.levels.update(dt); } catch (e) { errLog('levels.update', e); }
     updateEnemies(dt);                       // try/catch par ennemi
@@ -764,6 +830,7 @@ function resetRun() {
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
+  mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
@@ -826,7 +893,7 @@ function loseFocus() {
   var inp = S.input;
   inp.jx = 0; inp.jy = 0; inp.jmag = 0;
   inp.jactive = false; inp.boost = false; inp.special = false; inp.ult = false;
-  touchJoy = null; touchBtns = {};
+  touchJoy = null; touchBtns = {}; mouse.lb = false;
   if (S.snake) S.snake.boosting = false;
   S2030.ui && S2030.ui.releaseJoy && S2030.ui.releaseJoy();
   if (S.phase === 'play' && !S.paused) togglePause('blur');
@@ -1136,7 +1203,11 @@ function boot() {
   root.addEventListener('touchmove', onTouchMove, { passive: false });
   root.addEventListener('touchend', onTouchEnd, { passive: false });
   root.addEventListener('touchcancel', onTouchEnd, { passive: false });
-  root.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  root.addEventListener('contextmenu', onContextMenu);
+  root.addEventListener('mousemove', onMouseMove);
+  root.addEventListener('mousedown', onMouseDown);
+  root.addEventListener('mouseup', onMouseUp);
+  root.addEventListener('wheel', onWheel, { passive: false });
 
   /* Arrière-plan : pause subie, verrou d'écran rendu (le système le lâche de
      toute façon). Retour : contexte audio relancé — Safari le laisse en
