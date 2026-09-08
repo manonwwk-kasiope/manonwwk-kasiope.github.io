@@ -1,0 +1,26 @@
+{
+ "id": "G10",
+ "titre": "Interface à l'échelle de l'écran, plancher typographique, bannières disciplinées, réglages nommés et adaptés",
+ "pourquoi": "L'interface est figée en pixels de téléphone (score 30 px, cartes 300×250, JOUER 320×78) de 1280×720 à 3440×1440 avec 3 000 px de vide ; sur iPhone les textes descendent à 7 px (HUD, fin de partie, rareté) et 15 restent sous 11 px au réglage maximal ; les bannières « NIVEAU 2 — AUTOROUTE NÉON » débordent de 278 px ; quatre bannières plein écran en 22 s ne sont que des noms de phases caméra ; le cran par défaut s'appelle SOUTENU sous STANDARD.",
+ "quoi": "src/26-ui.js : --uis = clamp(innerHeight / 720, 1, 2,2) × S.opt.uiScale (recalculé sur resize ; uiScale ∈ [0,85 ; 1,5]) ; menu en colonne centrée max-width 1100 px (écart logo → JOUER ≤ 400 px) ; réglages en panneau centré max-width 820 px ; cartes largeur clamp(300px, 22vw, 480px) et hauteur proportionnelle, polices × --uis ; fin de partie en grille max-width 900 px ; bouton pause ≥ 48 px dès 1080p. Plancher : bornes basses des clamp() relevées — étiquettes HUD BST/ULT/SEG 7-8 → 11 px et en toutes lettres (BOOST / SURTENSION / VIE), tuiles de fin 7 → 11, rareté 7 → 11, descriptions de cartes 9 → 12, accroche 9 → 12, réglages 10 → 13, titres de groupe 8 → 11 ; sur bureau minimum 12 px ; tuile ARME en largeur automatique sans troncature. Bannières : font-size = min(clamp(26px, 10vh, 76px), 0,9 × innerWidth / (0,68 × nombre de caractères)) ; une bannière à la fois (file de G9), le toast attend la fin de la bannière (1,15 s) ; src/27-phases.js startPhase n'appelle plus ui.banner : le nom de phase caméra devient un tag de 11 px pendant 1 s à droite du nom de niveau (bannière seulement à la toute première rencontre par profil) ; l'ultime est renommé « SURTENSION » partout (jauge, toast, cartes, aide) pour ne plus partager son nom avec la phase SURCHARGE et le niveau 4 ; bannière « NIVEAU 1 — nom » émise à S.t < 1 000 ms. Réglages : onglets JEU / CONTRÔLES / CONFORT avec une ligne de description de 11 px sous chaque réglage ; Difficulté renommée FACILE / NORMAL / DIFFICILE / BRUTAL / SUICIDE (multiplicateurs inchangés, défaut NORMAL = 1,55) ; « Netteté » → « Qualité d'image » ÉCONOMIE / ÉQUILIBRÉE / MAXIMALE ; « Réduire les mouvements » maître (secousses + flashs + bloom + bannières), pré-coché si prefers-reduced-motion ; lignes tactiles masquées sur bureau (G2) et groupe CLAVIER & SOURIS (Mode souris de G3, sensibilité).",
+ "tests": [
+  "Bureau 2560×1440 : getComputedStyle('.s2score').fontSize ≥ 56 px ; .s2card visible width ≥ 480 px ; bouton JOUER height ≥ 120 px ; JOUER.left − logo.right ≤ 400 px ; .s2pause width ≥ 48 px ; largeur de .s2opt ≤ 820 px. Bureau 1280×720 : .s2score 30 px et JOUER 320×78 (inchangés). iPhone 13 paysage : .s2score 17 px (inchangé).",
+  "iPhone 13 paysage, pour chaque écran (menu, HUD en jeu, cards, pause, over, settings, unlocks) : minimum des font-size calculées des nœuds texte visibles ≥ 11 px à 100 % et ≥ 16 px à 150 % ; bureau 1440×900 : ≥ 12 px ; pour chaque .s2tile>b, .s2card .nm, .s2card .ds : scrollWidth ≤ clientWidth et scrollHeight ≤ clientHeight sur les deux formats.",
+  "av-banner.mjs sur 1440×900, 1280×720, 1920×1080 et iPhone 13 paysage : overflow ≤ 0 px pour toutes les chaînes de bannière du jeu ; jamais .s2ban.on et .s2ann.on simultanément (sondage DOM à 20 Hz sur 3 min) ; sur 30 s de jeu (profil non vierge) ui.banner appelé ≤ 1 fois, aucun texte ∈ {GRILLE, ESPACE, ROULIS, PERSPECTIVE}, premier appel à S.t < 1 000 ms avec /NIVEAU 1/ ; grep 'SURCHARGE' dans l'interface de l'ultime = 0 occurrence, 'SURTENSION' ≥ 3.",
+  "Profil vierge : valeur affichée de Difficulté 'NORMAL' et S.opt.diff === 1,55 ; aucun label ne contient 'SOUTENU' ; contexte reducedMotion 'reduce' : S.opt.reduceMotion === true et fx.shakeAmount() === 0 100 ms après fx.shake(30) ; chaque .s2opt a un élément description non vide ≥ 11 px ; sur iPhone chaque onglet a scrollHeight ≤ 1,6 × clientHeight.",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G2",
+  "G4"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "DESK-7",
+  "ACC-4",
+  "AV-11",
+  "ACC-5",
+  "ACC-10"
+ ]
+}

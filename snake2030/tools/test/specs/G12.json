@@ -1,0 +1,29 @@
+{
+ "id": "G12",
+ "titre": "Audio : remixage des 22 bruitages, tir ennemi distinct, musique qui suit l'action, aucune voix perdue, sons dédiés, démarrage sans intro",
+ "pourquoi": "Le tir joueur sort à −29 dBFS sous une musique à −20 ; 11 sons sur 22 ont plus de 70 % d'énergie sous 400 Hz (muets sur haut-parleur de téléphone) ; l'artilleur joue le même 'shoot' que le joueur, trois fois plus fort ; l'« intensité » ne change le RMS que de +1,8 dB (corrélation 0,09 en partie) ; 20-25 % des kills sont avalés par la garde ; chaque chargement rejoue 15 s d'intro à −32 dB.",
+ "quoi": "src/21-audio.js, cibles de crête dBFS (mesure av-sfx.mjs) : shoot −12 (volume joueur 0,34 → 0,7 ; timbre : attaque 2 ms, corps 900 → 300 Hz en 45 ms, souffle 3 kHz), hit −14 (60 ms, composante 1-2 kHz), pickup −14, core −12, kill −8, bigkill −4, explode −4, hurt −4, bossIn −3 avec ≥ 30 % d'énergie entre 600 et 2 000 Hz, dead −3, click −16, card −14, levelup −10, boost −12, boostEnd −16, boostDry −16, warp −10 ; tout son garde ≥ 25 % d'énergie au-dessus de 400 Hz ; tir ennemi = nouveau 'eshoot' (dent de scie 380 Hz, 120 ms, passe-bande 1,2 kHz), toujours panoramisé, utilisé par src/22-enemies.js:480 ; bus musique 0,55 → 0,40. Musique : gain de piste −7 dB à v = 0 → 0 dB à v ≥ 0,8 (rampe 1 s) en plus du passe-bas ; couches perc 0,55 → 1,3, arp 0,45 → 0,9, lead 0,34 → 0,7, clim 0,42 → 0,9 avec compression douce du bus couches ; stinger d'une mesure (4 temps à K.MUSIC_BPM) à chaque changement de S.levelPhase ; drop (silence 250 ms puis plein gain) à l'entrée du boss ; tempo +6 % conservé ; première lecture à t = 18 s de la piste ou piste 2 tirée au sort ; après une mort, reprise au début de mesure (multiple de 60/144,6 × 4 s). Garde : un kill arrivant dans la fenêtre de 40 ms d'un autre ne rejoue pas le corps grave mais ajoute une note de 30 ms dont la hauteur monte d'un demi-ton par kill de combo (≤ +12) et le volume de +1 dB ; fenêtre shoot 90 → 60 ms ; budget 18 → 28 voix par 40 ms. Nouveaux sons branchés : multUp (accord montant, paliers de S.mult, remplace le provisoire de G7), bossHit, lowHp (battement 1 Hz, −14 dBFS tant que len ≤ 3), wallBump (remplace 'hit' au mur, src/10-core.js:303), teleport, steal, absorb et spawnTick (G6) ; warp réservé au cycle de zoom et aux transitions de niveau ; shock au bouclier et au brouilleur ; zap aux arcs ; chaque nom de bruitage ≤ 3 sites d'appel ; pickup : pitch 2^(n/12) sur ramassages consécutifs (fenêtre 1,2 s, plafond +12). Exposer audio.lastSfx() → {name, f0, t}.",
+ "tests": [
+  "av-sfx.mjs : crête de chacun des 30 sons dans ± 2 dB de sa cible ; part d'énergie < 400 Hz ≤ 75 % pour tous (aujourd'hui 11 sons > 70 %... bossIn 100 %) ; corrélation croisée normalisée (100 ms) entre shoot joueur et eshoot < 0,5 ; centroïdes des sons d'une même classe espacés d'au moins 20 %.",
+  "av-music.mjs BALANCE : shootOverMusicDb ≥ +9 dB au volume réel du joueur, killOverMusicDb ≥ +10 dB, hit ≥ +3 dB au-dessus du RMS master de la musique seule.",
+  "av-music2.mjs (niveau figé, seek 60 s) : RMS bus musique à v = 1 − RMS à v = 0 ≥ +6 dB (1,8) ; couches seules à v = 1 ≥ −24 dBFS (−31) ; av-desk.mjs 3 min : corr(S.intensity, RMS bus musique à 10 Hz) ≥ 0,5 (0,09) ; à chaque changement de S.levelPhase, pic RMS master ≥ +4 dB au-dessus de la seconde précédente en ≤ 300 ms.",
+  "Garde : 8 kill demandés en 80 ms → audio.stats().kill === 8 et 8 attaques distinctes sur l'enveloppe RMS 5 ms (pics séparés ≥ 8 ms) ou centroïde strictement croissant ; partie increvable 3 min : kills demandés − joués = 0 (aujourd'hui 20-25 % perdus) ; multUp === paliers de S.mult franchis ; lowHp > 0 si len ≤ 3 a été atteint ; 6 pickups posés à 40 u d'écart : audio.lastSfx().f0 strictement croissant, ratio 6e/1er ≥ 1,3.",
+  "Après clic JOUER : RMS bus musique ≥ −24 dBFS en ≤ 2 s (aujourd'hui −32 dB pendant 15 s) ; sur 6 rechargements audio.playing().i n'est pas toujours 0 et audio.playing().t ≥ 18 s au démarrage quand i = 0 ; position de reprise après une mort = multiple de 1,66 s ± 30 ms.",
+  "grep sur src : chaque nom de bruitage ≤ 3 sites d'appel (warp aujourd'hui 8).",
+  "NR : run.mjs nr passe, son-ios.mjs inclus (RMS ≥ −40 dBFS après reprise)."
+ ],
+ "depend_de": [
+  "G8"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "AV-5",
+  "AV-6",
+  "AV-7",
+  "AV-16",
+  "AV-17",
+  "FEEL-9",
+  "FEEL-11"
+ ]
+}

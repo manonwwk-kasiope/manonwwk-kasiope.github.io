@@ -1,0 +1,29 @@
+{
+ "id": "G11",
+ "titre": "Lisibilité visuelle : le cyan au seul joueur, silhouettes pleines à liseré, tête reconnaissable, télégraphes rouges et épais, butin en vert",
+ "pourquoi": "Le cyan #00e5ff du serpent est aussi celui des rails (contraste 1,14:1), du décor, du butin (jusqu'à 137 disques cyan à l'écran) et d'un mod d'élite ; 7 ennemis sur 11 partagent une bande de teinte de 34° ; le contraste rendu des ennemis et de la tête est sous 3:1 la moitié du temps ; sur iPhone les tirs font 2,6 px, les traqueurs 6-7 px et les télégraphes sont à alpha 0,10.",
+ "quoi": "tools/test/palette.mjs (script node sur les constantes des sources, étendu de av-palette.mjs) impose : joueur = #00e5ff exclusif (drawSnake et UI seulement) ; rails #3a7bff (avertissement #6aa0ff) ; drawFloor (src/27-phases.js:405) et accents des niveaux 1 et 3 → gridHot du niveau ; ennemis en trois familles : contact rose #ff2e63 (TRAQUEUR, LARVE, TRANCHEUR), tir/explosif orange #ff6a00 (ARTILLEUR, MINE), contrôle violet #8a4dff (PONDEUSE, BROUILLEUR, PARASITE, VOLEUR), MIROIR chrome rouge #ffb0b0 ; ressources vert #64ff9a (énergie), vert clair + croix (soin), or #ffd166 (core) ; tirs joueur blanc/crème, tirs ennemis orange à cœur jaune #ffe45e, contour blanc 1 px et noyau sombre ; toute paire inter-catégorie ΔE76 ≥ 25 et Δteinte ≥ 40°. src/22-enemies.js : _enShell → remplissage à 55 % de la couleur de l'ennemi sur un liseré extérieur sombre de 2 u (#05060f à 0,9) tracé avant le trait néon ; halo _enGlow limité à 1,6 r ; sur écran de hauteur < 480 px CSS : rayons dessinés × 1,35 (pas les rayons de collision) ; lineWidth = max(w, 2 / (SCALE × zoom)). src/90-boot.js drawSnake : tête = triangle blanc #ffffff avec liseré sombre 2 u et œil ; halo de tête 3,2 r → 1,6 r blanc ; cône de visée de 30° à α 0,25 sur 120 u devant la tête ; en invulnérabilité seul le liseré clignote ; liseré du corps porté à 2,3 × HEAD_R en #063a52. Télégraphes (src/22-enemies.js) : cercle d'armement de mine α 0,10 → 0,35, anneau de cible d'intercepteur 0,16 → 0,4, ligne de visée d'artilleur 0,18→0,60 → 0,35→0,85 avec pointillés ≥ 8 px CSS ; couleur unique d'alerte #ff2b2b ; largeur max(w, 2 / (SCALE × zoom)). Butin énergie en vert #64ff9a (la fusion et l'expiration sont en G13).",
+ "tests": [
+  "palette.mjs sur le build : 0 paire inter-catégorie avec ΔE76 < 25 ou Δteinte < 40° ; #00e5ff n'apparaît que dans src/90-boot.js drawSnake et src/26-ui.js ; contraste WCAG rails vs #00e5ff ≥ 3,0:1 (1,14).",
+  "Capture en jeu 1440×900 après 60 s (av-hue.mjs avec masque) : pixels de la famille cyan (teinte 165-200°, S > 0,18) hors d'un masque de 40 px autour des segments du serpent < 2 % de l'écran.",
+  "av-lib.mjs sampleEntity, partie increvable 3 min 1440×900 et 60 s iPhone 13 paysage : ratio WCAG cœur/anneau médian ≥ 4,5 pour chaque type d'ennemi, ≤ 15 % de relevés < 3 (aujourd'hui 44-61 %) ; tête cr p50 ≥ 4,5 et < 10 % de relevés < 3 ; sur 300 images, un blob blanc (R,G,B > 235) unique ≥ 20 px² dans un rayon de 1,2 HEAD_R autour de la tête sur ≥ 95 % des images et aucun ailleurs sur le corps ; rayon rendu médian du TRAQUEUR ≥ 9 px CSS sur iPhone (6,4-7,3) ; aucun ctx.lineWidth effectif < 2 px CSS (prototype intercepté).",
+  "iPhone : sonde getImageData le long de la ligne de visée d'un artilleur (aimT > 0) : contraste ligne/fond ≥ 2:1 sur ≥ 90 % de 16 points ; cercle d'armement de mine ≥ 1,6:1 sur ≥ 80 % de 24 points ; pixel de contour d'un ebullet : luminance ≥ luminance du centre + 60.",
+  "acc-cvd.mjs sur la palette active : paires confondues (ΔE < 20) protan ≤ 6 et deutan ≤ 6 (17 / 15) ; serpent vs chaque ennemi ΔE ≥ 30 dans les trois simulations.",
+  "NR : run.mjs nr passe ; luminance médiane du fond ≤ 30/255 (inchangée)."
+ ],
+ "depend_de": [
+  "G8",
+  "G6"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "AV-1",
+  "AV-2",
+  "AV-3",
+  "AV-15",
+  "FEEL-13",
+  "AV-4",
+  "ACC-11"
+ ]
+}

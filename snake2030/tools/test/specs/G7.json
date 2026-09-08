@@ -1,0 +1,27 @@
+{
+ "id": "G7",
+ "titre": "Première minute et courbe : carte à 12 s, main de survie garantie, rise lissé, cartes à cadence constante, ultime rare et lourd, multiplicateur lisible",
+ "pourquoi": "7 parties réelles sur 7 finissent au niveau 1 entre 29 et 97 s ; le pilote humain imparfait meurt à 41,9 s médians (SOUTENU) et 30-70 % des parties se terminent sans avoir vu une carte (première carte à 25,6 s) ; ensuite les cartes passent de 4,1/min à 0,9/min, l'ultime de 1 par 40 s à 1 par 0,7 s, et le multiplicateur reste à ×1 67-87 % du temps. Le jeu n'a pas de courbe, il a un mur puis un plateau.",
+ "quoi": "src/10-core.js : xpNext initial 12 → 6 ; croissance xpNext = round(xpNext × 1,12 + 6) (au lieu de × 1,28 + 4) ; XP ennemi × (1 + 0,15 × (S.level − 1)) ; cœur +6 → +8 XP ; si S.lvlUps ≥ 2 à l'ouverture, un seul écran de 4 cartes (lvlUps −= 2). src/25-levels.js niveau 1 : calm 16 → 10 s avec 2 traqueurs toutes les 3,2 s (au lieu de 4,4) ; rise : cadence des traqueurs 5,0 s pendant les 10 premières secondes de la phase puis 3,6 ; cap simultané 30 → 22 tant que S.snake.len < 8 ; artilleurs seulement après la première carte prise (S.cardsTaken ≥ 1, nouveau compteur) ; mines du calm posées à ≥ 300 u de la tête. src/24-upgrades.js : le premier écran contient obligatoirement ≥ 1 carte de l'axe 'fort' (CROISSANCE, BOUCLIER, RÉPARATION, AMORTISSEURS) et ≤ 1 arme neuve. Ultime : charge par kill = 6 × sqrt(12 / max(12, S.xpNext)) (6 au début, ≈ 0,7 à xpNext 1 000), élite +22 inchangé, cœur +12 → +20, boost +3/s inchangé ; dégâts de la vague 40 → 40 + 10 × S.level ; rayon final 910 → 1 100. Multiplicateur : multT 3 200 → 5 000 ms (7 000 si mult ≥ 3) ; un coup reçu divise combo par 2 (floor) au lieu de le remettre à 0, SANG-FROID le conserve entier ; mult = min(12, 1 + floor(combo/3) × 0,5), plafond 16 en SURCHARGE du secteur ; paliers ×2 / ×4 / ×8 / ×12 : au.sfx('multUp') (son provisoire : accord montant 120 ms, affiné en G12) ; HUD (src/26-ui.js) affiche « ×4 · 2 kills → ×4,5 ».",
+ "tests": [
+  "tools/test/sim.mjs (copie de sim-lib.mjs), pilote 'sloppy', cran SOUTENU, n = 20 : médiane de S.t à la première ouverture de ui.showCards ≤ 15 000 ms (aujourd'hui 25 000) ; 100 % des premiers écrans contiennent ≥ 1 carte d'axe 'fort' et ≤ 1 arme neuve ; parties mortes sans aucune carte ≤ 5 % (30 %) ; survie médiane ∈ [90 ; 240] s (41,9) ; coups reçus par minute sur la tranche 15-45 s ≤ 12 (20-23) ; ≥ 60 % des parties atteignent la 3e carte.",
+  "Pilote 'passive' n = 10 : première carte ≤ 18 s ; survie médiane ≥ 40 s (26,8).",
+  "Pilote dodge-greedy 10 min n = 10 : cartes/min par tranche de 60 s ∈ [1,5 ; 3,5] pour les 10 tranches (4,1 → 0,9) ; ultimes/min par tranche ∈ [0,7 ; 2,0] (3,8 → 45) ; premier ultime médian ≤ 45 s ; écrans de cartes enchaînés en < 2 s ≤ 1 % (8 %).",
+  "Pilote 'sloppy', parties > 60 s : part du temps avec S.mult > 1 ≥ 40 % (0-11,7 %) ; multiplicateur max médian ≥ 4 ; après un coup reçu à combo 20 → S.combo === 10 ; le HUD contient un texte /kills → ×/ en phase 'play' ; au.sfx('multUp') appelé exactement au nombre de paliers franchis.",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G5",
+  "G6"
+ ],
+ "effort": 3,
+ "impact": 5,
+ "propositions_source": [
+  "PROG-1",
+  "PROG-2",
+  "PROG-4",
+  "PROG-5",
+  "PROG-10",
+  "FEEL-11"
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "id": "G5",
+ "titre": "Pilotage : rails réactifs avec indicateur et demi-tour, boost à vide sans bégaiement, caméra bornée en bascule 3D, boost plus disponible",
+ "pourquoi": "Rejoué en direct : sur rails ortho, 20 virages demandés → latence médiane 61 images, p90 106, max 125 (2,1 s), 13/20 au-delà de 500 ms, demi-tour refusé, et 68 à 87 % du temps de jeu se passe sur les rails ; boost tenu à vide : 165 bascules marche/arrêt et 165 sons en 4,4 s (med-feel.mjs) ; en bascule 3D la tête est hors écran sur 21 % des images sur iPhone (dive-head.mjs). Ce sont les trois défauts qui donnent l'impression que le jeu ignore le joueur.",
+ "quoi": "src/27-phases.js : grid.spacing 330 → 165 ; railSteer : si la ligne visée a été franchie depuis < 28 u, replacer le serpent sur ce nœud et tourner immédiatement ; demi-tour (|Δ| ≥ 135°) accepté comme deux quarts enchaînés aux deux prochains nœuds (champ o._rw2) ; exposer phases.pending() → {nx, ny, ang, dist} ou null ; gridDraw dessine sur le nœud d'attente un disque pulsé de 10 u (couleur de la tête, alpha 0,8) et une flèche fantôme de 24 u dans la direction demandée, dès l'image qui suit l'entrée. src/10-core.js updateSnake : s.boostDry = true quand boostE ≤ 0 ; ré-engagement seulement si boostE ≥ 25, ou après relâchement puis nouvel appui avec boostE ≥ 10 ; à la panne : un seul sfx 'boostDry' (src/21-audio.js : clic grave 90 ms, passe-bas 900 Hz, crête −16 dBFS), barre BST et anneau du bouton boost clignotent rouge 2 × 120 ms ; tenu à vide : vitesse = baseSpeed strictement, aucun son. K.BOOST_FILL 15 → 22 ; lissage de montée de vitesse 0,002^dt → 0,0002^dt (descente inchangée) ; 12 fx.trail sur les 3 premières images du boost. src/90-boot.js drawSnake : arc de boost autour de la tête, 270°, rayon 2,2 × HEAD_R, épaisseur 3 px écran (÷ SCALE × zoom), ambre, visible si boostE < 100 ou boosting, rouge sous 20 %. Caméra : exposer phases.visibleExtent() = étendue monde réellement visible sous la transformation CSS (cover × 1,298 à 30°, bande haute rognée exclue) ; updateCam (src/10-core.js) borne tx/ty sur cette étendue et réduit l'avance en y à 0,3 × speed quand persp > 10°, garantissant la tête dans [0,12 ; 0,88] des deux axes de l'écran ; inView et src/25-levels.js _lvPoint utilisent visibleExtent (aucune apparition dans la bande rognée).",
+ "tests": [
+  "rail2.mjs ortho (20 virages de 90° à positions aléatoires, 150 u/s) : p90 ≤ 40 images, max ≤ 45, 0 demande > 700 ms (aujourd'hui médiane 61, max 125, 13/20 > 500 ms) ; diag : 20/20 virages détectés (aujourd'hui 10/20) ; phases.pending() non nul à l'image suivant le keydown ; luminance d'une fenêtre de 20 u autour de (nx, ny) ≥ +8 points par rapport à 12 images plus tôt.",
+  "Demi-tour : gauche tenue 3 s en roulant à droite sur rail ortho → cap = 180° ± 1° avant 2,4 s (aujourd'hui cap inchangé).",
+  "med-feel.mjs : Espace tenue 7 s depuis boostE = 100 : après la première image où boostE < 1,5, 0 bascule de s.boosting jusqu'au relâchement, vitesse ≤ 152 après 30 images, sfx boost + boostEnd + boostDry demandés ≤ 2 dont exactement 1 boostDry (aujourd'hui 165 bascules, 82 + 83 sons) ; canal R moyen du disque du bouton boost ≥ 2 × canal G pendant ≥ 6 images ; boostE 0 → 100 en ≤ 4,7 s sans appui ; vitesse ≥ 95 % de 285 en ≤ 11 images après l'appui ; ≥ 10 appels fx.trail dans les 3 images suivant boosting = true.",
+  "Arc de boost : boostE forcé à 50 → luminance moyenne de l'anneau écran [1,9 R ; 2,5 R] côté rempli ≥ +10 points vs boostE = 100 ; boostE = 10 → canal R ≥ 2 × canal G ; épaisseur mesurée 3 ± 1 px à 1440×900 et sur iPhone 13 paysage.",
+  "dive-head.mjs (iPhone 13 paysage et 1440×900), phase dive forcée, 4 directions × 2,2 s depuis (2300,1450) puis (300,150) : 100 % des images avec la tête ∈ [0,10 ; 0,90] des deux axes de l'écran (aujourd'hui 21,4 % hors écran) ; partie bot iPhone de 60 s : 0 image tête hors écran (aujourd'hui 11,5 %).",
+  "Pilotage libre inchangé : desktop-feel.mjs et iphone-feel.mjs : 1 image de latence entrée→virage, 90° en ≤ 22 images, retour de vitesse ≤ 157 en 20-26 images après relâchement.",
+  "NR : run.mjs nr passe (rail2 avec les seuils ci-dessus désormais)."
+ ],
+ "depend_de": [
+  "G1"
+ ],
+ "effort": 3,
+ "impact": 5,
+ "propositions_source": [
+  "FEEL-1",
+  "FEEL-3",
+  "FEEL-4",
+  "FEEL-10",
+  "FEEL-14",
+  "ENN-10"
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "id": "G9",
+ "titre": "Directeur de difficulté après 60 s, boss non forfaitable, mis en scène et récompensé",
+ "pourquoi": "Passé 60 s plus personne ne meurt : 100 % des pilotes d'esquive atteignent le plafond de 10 min sur quatre crans sur cinq, 90 segments à 172 s, PV ennemis constants ; les boss sont des élites renommées tuées en 4 à 10 s ou forfaitées au chrono (20-25 %) avec la même bannière et la même récompense qu'une victoire ; 5 % des coups en climax viennent du boss ; le boss apparaît hors champ.",
+ "quoi": "src/10-core.js : PV ennemi × (1 + 0,08 × (S.level − 1)) × (1 + 0,04 × cycle de surcharge). src/25-levels.js SURCHARGE du secteur : plancher de cadence 0,55 → 0,30 ; capB max 46 → 80 ; hardcap 130 → 160 seulement si la moyenne d'images/s mesurée par autoQuality ≥ 50, sinon 130 ; élites +3 %/cycle ; modificateur sur chaque élite dès le cycle 2 ; 2e boss au cycle 2 et 3e au cycle 4, +40 % PV chacun. Boss : PV × 2,5 (PROTOTYPE ZÉRO ≈ 36 → 90, DOUBLE LAME 2 × 85, NOYAU × 2,5) ; invulnérable 1 s pendant sa bannière ; _lvPhaseTick : supprimer le forfait `_lvPhaseT > _lvPhaseDur` en climax ; à +45 s de climax le boss passe e.enraged (vitesse × 1,3, annonces −25 %, liseré blanc) ; escorte limitée à 2 salves déclenchées à 66 % et 33 % de PV ; à la mort : bannière SECTEUR NETTOYÉ, purge des ennemis restants (score × 1 chacun, gerbe), S.lvlUps += 1 avec tirage étiqueté TROPHÉE (rareté ≥ rare, 1 épique garantie), +60 crédits avec bannière « +60 ◆ », S.ult +50, 3 cœurs + soin conservés ; entrée d'un niveau : les survivants fuient à 400 u/s vers le bord et disparaissent (0 ennemi reporté). Entrée de boss : apparition à 0,8 × demi-diagonale de phases.visibleExtent() (donc en vue) ; S.timeScale 0,3 pendant 2,2 s, serpent à vitesse normale comme le pouvoir RALENTI ; escorte à +1,5 s ; bannière du boss 2,2 s ; src/26-ui.js : file d'attente des bannières (une à la fois, les suivantes après) ; jauge .s2boss se remplit 0 → 100 % en 900 ms ; S.run.bossKills incrémenté.",
+ "tests": [
+  "sim.mjs dodge-greedy STANDARD n = 10, plafond 900 s : ≤ 30 % des parties atteignent le plafond (100 %) ; survie médiane ∈ [360 ; 720] s ; survivants 'sloppy' (parties > 90 s) : survie médiane ≤ 420 s ; kills/min du niveau 6 ≤ 1,5 × kills/min du niveau 3 (2,2×) ; part du temps à 90 segments après 120 s ≤ 25 % (65 %).",
+  "en-bossfx.mjs : climax forcé avec boss invulnérable 90 s → S.level reste 1, aucune bannière SECTEUR NETTOYÉ, e.enraged === true à 45 ± 1 s ; puis boss tué → bannière en ≤ 200 ms, S.enemies vivants = 0 en ≤ 500 ms, S.lvlUps incrémenté, 3 cartes proposées toutes de rareté ≥ rare dont ≥ 1 'epic', S.coins +60 en ≤ 1 s, S.ult +50.",
+  "en-sim.mjs 20 parties : enemiesCarried à l'entrée d'un niveau = 0 (médiane 6, max 59 aujourd'hui) ; durée médiane des climax L1 et L2 ∈ [20 ; 45] s (8,6 / 3,6) ; DOUBLE LAME jamais tué en < 12 s ; part des coups infligés par le boss lui-même pendant un climax ≥ 15 % (5 %).",
+  "Entrée de boss, 20 essais bureau + iPhone : boss inView à t + 300 ms 20/20 ; S.timeScale ≤ 0,35 pendant ≥ 1,8 s ; texte de bannière = nom du boss pendant 2,2 s sans autre texte (lecture DOM à 10 Hz) ; largeur de .s2boss u passant de 0 à ≥ 95 % entre t + 0 et t + 1 s ; première apparition non-boss à t ≥ 1,4 s.",
+  "NR : run.mjs nr passe ; god10.mjs : 0 pageerror avec les nouveaux plafonds."
+ ],
+ "depend_de": [
+  "G7",
+  "G6"
+ ],
+ "effort": 3,
+ "impact": 5,
+ "propositions_source": [
+  "PROG-3",
+  "ENN-3",
+  "PROG-9",
+  "ENN-4",
+  "AV-12"
+ ]
+}

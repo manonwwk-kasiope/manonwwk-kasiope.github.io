@@ -1,0 +1,24 @@
+{
+ "id": "G3",
+ "titre": "Souris : pilotage analogique par le curseur, visée twin-stick, clics, réticule masqué à l'inactivité, survols",
+ "pourquoi": "Mesuré : mousemove 200,200 → 1200,700, mousedown, clic droit → S.input et S.snake.ang inchangés, curseur 'auto' en permanence, aucun survol stylé. Sur PC/Mac la souris est l'entrée naturelle et le premier contrôle analogique du bureau.",
+ "quoi": "src/27-phases.js : exposer worldToScreen(x, y) → {sx, sy} en px CSS (cam, SCALE, zoom, rot, puis la transformation CSS du canvas appliquée via new DOMMatrix(getComputedStyle(cv).transform)). src/90-boot.js : écouteurs mousemove, mousedown, mouseup, contextmenu, wheel sur #app, actifs seulement si S.desktop. Réglage S.opt.mouse ∈ {'auto','always','never'} (défaut 'auto', ligne « Mode souris » dans CONTRÔLES sur bureau) : en 'auto', la souris devient active après un déplacement cumulé ≥ 8 px et redevient inactive à la première touche de direction. Chaque image, souris active : d = souris − worldToScreen(tête) ; si |d| > 24 px : cap cible = atan2(d) − phases.rot() ; S.input.jx = cos, jy = sin, jmag = clamp(|d|/120, 0,25, 1), jactive = true ; sinon jmag = 0, jactive = false. Bouton gauche maintenu = S.input.boost ; bouton droit (contextmenu, preventDefault) = useSpecial() ; molette (deltaY ≠ 0, preventDefault) ou bouton central = useUlt(). Mode clavier+souris (touche de direction enfoncée ET souris active) : les touches dirigent, la souris fixe S.snake.aim = norm(ang + clamp(norm(capSouris − ang), −RAIL_LOOK, RAIL_LOOK)) pour aimAng() des canons. Curseur : en jeu (S.desktop) #game reçoit cursor: url(réticule SVG 24 px en data-URI) 12 12, auto ; 'none' après 1500 ms sans mousemove ; 'pointer' sur button, .s2card, .s2opt. src/26-ui.js CSS : .s2card:hover translateY(−6px) et bordure alpha 1 ; button:hover filter brightness(1.15) ; transition 80 ms.",
+ "tests": [
+  "Bureau 1440×900 en jeu, cap initial 0, tête au repos : page.mouse.move(tête.sx, tête.sy + 300) → après 700 ms |norm(S.snake.ang − π/2)| < 0,1 ; move à 40 px de la tête (angle 30°) → 0 < S.input.jmag ≤ 0,35 ; move à 20 px → S.input.jmag === 0 et jactive === false.",
+  "mouse.down (gauche) → S.input.boost === true ; mouse.up → false ; clic droit → compteur posé sur __M.phases.use incrémenté de 1 et aucun menu contextuel (événement contextmenu defaultPrevented) ; S.ult = S.ultMax puis mouse.wheel(0, 120) → S.ult === 0 et window.scrollY === 0.",
+  "Clavier+souris : keyboard.down('ArrowRight') maintenu et souris placée à 60° sous l'axe de la tête → après 200 ms |norm(S.snake.aim − S.snake.ang − 1,047)| < 0,1 et S.input.jx > 0,9.",
+  "Mode 'auto' : souris active puis press 'ArrowUp' → S.input.jy === −1 et un mousemove ultérieur de 5 px ne modifie plus S.input ; un mousemove de 20 px la réactive.",
+  "Curseur : 2 s sans mousemove en jeu → getComputedStyle('#game').cursor === 'none' ; mousemove → cursor commence par 'url(' en ≤ 100 ms ; hover d'une .s2card → transform !== 'none' et cursor 'pointer' ; hover de REPRENDRE → filter !== 'none'.",
+  "iPhone hasTouch:true : page.mouse.move puis down → S.input inchangé ; iphone-feel.mjs : latence doigt→virage = 1 image (inchangé).",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G2"
+ ],
+ "effort": 3,
+ "impact": 5,
+ "propositions_source": [
+  "DESK-5",
+  "ACC-2"
+ ]
+}
