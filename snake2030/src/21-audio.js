@@ -80,7 +80,7 @@ var _audFxMax = {
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
   boost: 1, boostEnd: 1, boostDry: 1, click: 3,
-  spawnTick: 3, absorb: 3
+  spawnTick: 3, absorb: 3, multUp: 1
 };
 /* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
    plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
@@ -337,6 +337,16 @@ var _audFx = {
     _audTone(t + 0.18, 'triangle', _audHz(76), 0, 0.13, 0.08 * v, 0.003, 0, 0, 0, d, 0);
     _audTone(t + 0.27, 'triangle', _audHz(81), 0, 0.42, 0.09 * v, 0.003, 0, 0, 0, d, 0);
     _audTone(t + 0.27, 'sawtooth', _audHz(81), 0, 0.40, 0.03 * v, 0.02, 2200, 5200, 2, d, 8);
+  },
+  /* Palier de multiplicateur : accord montant de 120 ms, clair et court —
+     il doit passer SOUS le son de kill qui le déclenche, jamais devant.
+     Provisoire, affiné en G12. */
+  multUp: function(t, v, d){
+    _audF0 = _audHz(76);
+    _audTone(t,         'triangle', _audHz(76), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.040, 'triangle', _audHz(80), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'triangle', _audHz(83), 0, 0.12, 0.060 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'sine',     _audHz(95), 0, 0.12, 0.030 * v, 0.004, 0, 0, 0, d, 6);
   },
   card: function(t, v, d){
     _audTone(t, 'sine', _audHz(84), 0, 0.55, 0.06 * v, 0.01, 0, 0, 0, d, 0);

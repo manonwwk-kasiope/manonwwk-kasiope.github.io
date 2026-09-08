@@ -657,10 +657,27 @@ function _upRefresh(c) {
   }
 }
 
+/* ======
+   PREMIÈRE MAIN
+   La toute première main d'une partie (S.cardsTaken === 0) obéit à deux règles
+   qui ne valent que pour elle : au moins une carte de la LISTE DE SURVIE, et au
+   plus UNE arme neuve. « Arme » = un des huit identifiants d'arme (DRONES et
+   ONDE en font partie, même si leur axe est 'fort' : ce ne sont jamais des
+   cartes de survie) ; « neuve » = jamais prise, ce qui exclut d'office CANON,
+   posé à 1 ou 2 par resetRun. CITADELLE n'est pas dans la liste : son req()
+   (CROISSANCE ≥ 3 ou BOUCLIER ≥ 2) l'interdit au premier écran.
+   ====== */
+var _UP_SURV = ['growth', 'shield', 'regen', 'iframes', 'pickHeal'];
+var _UP_WPN = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
+               'missiles', 'drones', 'shockwave', 'tailMines'];
+function _upIsSurv(c) { return _UP_SURV.indexOf(c.id) >= 0; }
+function _upIsNewWpn(c) { return _UP_WPN.indexOf(c.id) >= 0 && (S.up[c.id] | 0) === 0; }
+
 function _upRoll(n) {
   var out = [];
   n = n | 0;
   if (n <= 0) return out;
+  var first = (S.cardsTaken | 0) === 0;   // première main de la partie
 
   _upCand.length = 0;
   _upWts.length = 0;
@@ -702,6 +719,38 @@ function _upRoll(n) {
     _upAxisN[card.axis] = (_upAxisN[card.axis] | 0) + 1;
     _upRefresh(card);
     out.push(card);
+
+    // première main : une arme neuve sortie, les autres quittent le tirage
+    if (first && _upIsNewWpn(card)) {
+      for (j = _upCand.length - 1; j >= 0; j--) {
+        if (_upIsNewWpn(_upCand[j])) { _upCand.splice(j, 1); _upWts.splice(j, 1); }
+      }
+    }
+  }
+
+  // première main : garantie de survie, par substitution d'une carte tirée
+  if (first && out.length) {
+    var has = false, i2;
+    for (i2 = 0; i2 < out.length; i2++) if (_upIsSurv(out[i2])) { has = true; break; }
+    if (!has) {
+      var sc = [], sw = [], tot2 = 0;
+      for (i2 = 0; i2 < _upPool.length; i2++) {
+        var c2 = _upPool[i2];
+        if (!_upIsSurv(c2) || !_upEligible(c2)) continue;
+        sc.push(c2); var w2 = _upWeight(c2); sw.push(w2); tot2 += w2;
+      }
+      if (sc.length) {
+        var k2 = sc.length - 1;
+        if (tot2 > 0) {
+          var r2 = rnd() * tot2, acc2 = 0;
+          for (i2 = 0; i2 < sc.length; i2++) { acc2 += sw[i2]; if (r2 < acc2) { k2 = i2; break; } }
+        }
+        var slot = (rnd() * out.length) | 0;
+        if (slot >= out.length) slot = out.length - 1;
+        _upRefresh(sc[k2]);
+        out[slot] = sc[k2];
+      }
+    }
   }
   return out;
 }

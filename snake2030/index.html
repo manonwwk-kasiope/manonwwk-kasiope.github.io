@@ -92,8 +92,8 @@ var S = {
   snake: null,
   enemies: [], bullets: [], ebullets: [], pickups: [], drones: [], pools: [],
   level: 1, levelT: 0, levelProgress: 0, intensity: 0,
-  score: 0, mult: 1, multT: 0, combo: 0, kills: 0,
-  xp: 0, xpNext: 12, lvlUps: 0,
+  score: 0, mult: 1, multT: 0, multTMax: 5000, combo: 0, kills: 0,
+  xp: 0, xpNext: 6, lvlUps: 0, cardsTaken: 0,
   up: {},
   ult: 0, ultMax: 100, special: 0, specialCd: 0,
   coins: 0, seed: 1,
@@ -407,7 +407,10 @@ function hurtSnake(dmg, x, y, src) {
   // ÉCHAPPÉE : on traverse brièvement après avoir été touché
   if (S.up.f_ghostOnHit) s.ghost = Math.max(s.ghost, 700 * S.up.f_ghostOnHit);
   // SANG-FROID : le multiplicateur survit au coup
-  if (!S.up.f_multKeep) { S.mult = 1; S.combo = 0; }
+  /* SANG-FROID garde tout ; sinon le combo est DIVISÉ PAR DEUX (et non remis
+     à zéro) et le multiplicateur est recalculé dans la même image — sans ce
+     recalcul le HUD afficherait ×4 avec un combo de 10 jusqu'au kill suivant */
+  if (!S.up.f_multKeep) { S.combo = Math.floor(S.combo / 2); setMult(multOf(S.combo)); }
   var hx = x !== undefined ? x : s.x, hy = y !== undefined ? y : s.y;
   /* D'où vient le coup : angle MONDE pour le plateau, angle ÉCRAN pour la
      vignette (sous le roulis et la bascule les deux ne coïncident pas). */
@@ -541,19 +544,49 @@ function damageEnemy(e, dmg, opts) {
   else if (S2030.audio) S2030.audio.sfx('hit');
 }
 
+/* ------ multiplicateur
+   Un SEUL chemin d'écriture : setMult(). Le multiplicateur se dérive du combo
+   (un palier tous les 3 kills), il est plafonné à 12 — 16 en SURCHARGE de
+   secteur — et chaque franchissement ASCENDANT d'un palier rond fait sonner
+   'multUp'. Écrire S.mult ailleurs ferait taire le son ou mentir le HUD :
+   c'était le cas de hurtSnake, qui remettait mult à 1 sans passer par ici. */
+var _MULT_TIERS = [2, 4, 8, 12, 16];
+function multCap() {
+  var L = S2030.levels;
+  return (L && L.cycle && L.cycle() > 0) ? 16 : 12;
+}
+function multOf(combo) { return Math.min(multCap(), 1 + Math.floor(combo / 3) * 0.5); }
+function _multTierOf(m) {
+  var n = 0;
+  for (var i = 0; i < _MULT_TIERS.length; i++) if (m >= _MULT_TIERS[i] - 1e-9) n++;
+  return n;
+}
+function setMult(m) {
+  var a = _multTierOf(S.mult);
+  S.mult = m;
+  var b = _multTierOf(m);
+  while (b > a) { a++; S2030.audio && S2030.audio.sfx('multUp'); }
+}
+
 function killEnemy(e, opts) {
   if (e.dead) return;
   e.dead = true;
   S.kills++;
   S.combo++;
-  S.multT = 3200;
-  S.mult = Math.min(12, 1 + Math.floor(S.combo / 4) * 0.5);
+  setMult(multOf(S.combo));
+  /* la fenêtre s'allonge avec le multiplicateur : trois secondes deux dixièmes
+     ne laissaient jamais le temps d'enchaîner hors d'une nuée */
+  S.multT = S.multTMax = S.mult >= 3 ? 7000 : 5000;
   addScore(e.score);
-  addXp(e.xp);
+  /* le revenu suit le SECTEUR (S.level = numéro de secteur, jamais un niveau
+     de joueur) : +15 % par secteur, donc exactement 1,00 pendant le secteur 1 */
+  addXp(e.xp * (1 + 0.15 * ((S.level || 1) - 1)));
   /* Mesuré : 0,13 point par seconde, soit 750 s pour une jauge pleine alors
      qu'une partie en dure 30 à 40. Le bouton pulsait « prêt » sans jamais
      l'être. Une partie ordinaire doit offrir une à deux surcharges. */
-  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
+  /* charge par kill indexée sur le coût du niveau suivant : 6 au départ,
+     ~0,7 à xpNext 1 000 — l'ultime reste rare quand la partie s'allonge */
+  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 6 * Math.sqrt(12 / Math.max(12, S.xpNext))));
   S.coins += e.elite ? 5 : 1;
   /* Direction du tir qui l'a tué : le point d'impact est du côté du tireur,
      donc impact -> centre donne le sens de déplacement du projectile. Sans
@@ -709,7 +742,7 @@ function addXp(n) {
   while (S.xp >= S.xpNext) {
     S.xp -= S.xpNext;
     S.lvlUps++;
-    S.xpNext = Math.round(S.xpNext * 1.28 + 4);
+    S.xpNext = Math.round(S.xpNext * 1.12 + 6);
   }
 }
 
@@ -916,8 +949,8 @@ function grabPickup(p) {
     if (chance(0.35 + 0.18 * (S.up.f_pickHeal || 0))) healSnake(1);
     S2030.audio && S2030.audio.sfx('pickup');
   } else if (p.kind === 'core') {
-    addXp(6); addScore(60);
-    S.ult = Math.min(S.ultMax, S.ult + 12);
+    addXp(8); addScore(60);
+    S.ult = Math.min(S.ultMax, S.ult + 20);
     healSnake(1);
     S2030.audio && S2030.audio.sfx('core');
     S2030.fx && S2030.fx.flare(p.x, p.y, '#ffd166', 90);
@@ -2135,7 +2168,7 @@ var _audFxMax = {
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
   boost: 1, boostEnd: 1, boostDry: 1, click: 3,
-  spawnTick: 3, absorb: 3
+  spawnTick: 3, absorb: 3, multUp: 1
 };
 /* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
    plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
@@ -2392,6 +2425,16 @@ var _audFx = {
     _audTone(t + 0.18, 'triangle', _audHz(76), 0, 0.13, 0.08 * v, 0.003, 0, 0, 0, d, 0);
     _audTone(t + 0.27, 'triangle', _audHz(81), 0, 0.42, 0.09 * v, 0.003, 0, 0, 0, d, 0);
     _audTone(t + 0.27, 'sawtooth', _audHz(81), 0, 0.40, 0.03 * v, 0.02, 2200, 5200, 2, d, 8);
+  },
+  /* Palier de multiplicateur : accord montant de 120 ms, clair et court —
+     il doit passer SOUS le son de kill qui le déclenche, jamais devant.
+     Provisoire, affiné en G12. */
+  multUp: function(t, v, d){
+    _audF0 = _audHz(76);
+    _audTone(t,         'triangle', _audHz(76), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.040, 'triangle', _audHz(80), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'triangle', _audHz(83), 0, 0.12, 0.060 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'sine',     _audHz(95), 0, 0.12, 0.030 * v, 0.004, 0, 0, 0, d, 6);
   },
   card: function(t, v, d){
     _audTone(t, 'sine', _audHz(84), 0, 0.55, 0.06 * v, 0.01, 0, 0, 0, d, 0);
@@ -7697,10 +7740,27 @@ function _upRefresh(c) {
   }
 }
 
+/* ======
+   PREMIÈRE MAIN
+   La toute première main d'une partie (S.cardsTaken === 0) obéit à deux règles
+   qui ne valent que pour elle : au moins une carte de la LISTE DE SURVIE, et au
+   plus UNE arme neuve. « Arme » = un des huit identifiants d'arme (DRONES et
+   ONDE en font partie, même si leur axe est 'fort' : ce ne sont jamais des
+   cartes de survie) ; « neuve » = jamais prise, ce qui exclut d'office CANON,
+   posé à 1 ou 2 par resetRun. CITADELLE n'est pas dans la liste : son req()
+   (CROISSANCE ≥ 3 ou BOUCLIER ≥ 2) l'interdit au premier écran.
+   ====== */
+var _UP_SURV = ['growth', 'shield', 'regen', 'iframes', 'pickHeal'];
+var _UP_WPN = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
+               'missiles', 'drones', 'shockwave', 'tailMines'];
+function _upIsSurv(c) { return _UP_SURV.indexOf(c.id) >= 0; }
+function _upIsNewWpn(c) { return _UP_WPN.indexOf(c.id) >= 0 && (S.up[c.id] | 0) === 0; }
+
 function _upRoll(n) {
   var out = [];
   n = n | 0;
   if (n <= 0) return out;
+  var first = (S.cardsTaken | 0) === 0;   // première main de la partie
 
   _upCand.length = 0;
   _upWts.length = 0;
@@ -7742,6 +7802,38 @@ function _upRoll(n) {
     _upAxisN[card.axis] = (_upAxisN[card.axis] | 0) + 1;
     _upRefresh(card);
     out.push(card);
+
+    // première main : une arme neuve sortie, les autres quittent le tirage
+    if (first && _upIsNewWpn(card)) {
+      for (j = _upCand.length - 1; j >= 0; j--) {
+        if (_upIsNewWpn(_upCand[j])) { _upCand.splice(j, 1); _upWts.splice(j, 1); }
+      }
+    }
+  }
+
+  // première main : garantie de survie, par substitution d'une carte tirée
+  if (first && out.length) {
+    var has = false, i2;
+    for (i2 = 0; i2 < out.length; i2++) if (_upIsSurv(out[i2])) { has = true; break; }
+    if (!has) {
+      var sc = [], sw = [], tot2 = 0;
+      for (i2 = 0; i2 < _upPool.length; i2++) {
+        var c2 = _upPool[i2];
+        if (!_upIsSurv(c2) || !_upEligible(c2)) continue;
+        sc.push(c2); var w2 = _upWeight(c2); sw.push(w2); tot2 += w2;
+      }
+      if (sc.length) {
+        var k2 = sc.length - 1;
+        if (tot2 > 0) {
+          var r2 = rnd() * tot2, acc2 = 0;
+          for (i2 = 0; i2 < sc.length; i2++) { acc2 += sw[i2]; if (r2 < acc2) { k2 = i2; break; } }
+        }
+        var slot = (rnd() * out.length) | 0;
+        if (slot >= out.length) slot = out.length - 1;
+        _upRefresh(sc[k2]);
+        out[slot] = sc[k2];
+      }
+    }
   }
   return out;
 }
@@ -7860,16 +7952,16 @@ var _lvDefs = [
     },
     back: { grid: 1, cell: 132, scan: 1, lanes: 0, field: 0, overload: 0 },
     fore: { fog: 0.10, streaks: 0 },
-    dur: { calm: 16, rise: 24, surge: 24, climax: 34, clear: 6 },
+    dur: { calm: 10, rise: 24, surge: 24, climax: 34, clear: 6 },
     rigs: 0, nodes: 0, fieldTurn: 0,
     mods: ['armored'],
     boss: { name: 'PROTOTYPE ZÉRO', type: 'chaser', mod: 'armored', n: 1,
             escort: [['chaser', 5, 'ring'], ['shooter', 1, 'flank']] },
     spawns: [
-      { p: 'calm',  every: 4.4, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
+      { p: 'calm',  every: 3.2, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
       { p: 'calm',  every: 9.0, jit: 0.6, cap: 14, g: [['mine', 1, 'ahead']] },
 
-      { p: 'rise',  every: 3.6, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
+      { p: 'rise',  every: 3.6, every0: 5.0, ramp: 10, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
       { p: 'rise',  every: 8.0, jit: 0.8, cap: 28, g: [['chaser', 1, 'flank']] },
       { p: 'rise',  every: 8.5, jit: 0.7, cap: 26, g: [['mine', 2, 'ahead']] },
 
@@ -8333,6 +8425,11 @@ function _lvFireWave(w) {
   var eliteP = (w.eliteP || 0) + _lvCycle * 0.02;
   for (var i = 0; i < w.g.length; i++) {
     var g = w.g[i];
+    /* Les artilleurs n'entrent qu'une fois la première carte prise : tirer sur
+       un serpent qui n'a encore aucune réponse n'apprend rien. Vrai pour tous
+       les secteurs ; au secteur 1 le premier 'shooter' est en surge, la porte
+       n'y mord donc qu'à partir de t = 34 s. */
+    if (g[0] === 'shooter' && (S.cardsTaken | 0) < 1) continue;
     var n = g[1];
     if (_lvCycle > 0) n = Math.min(n + ((_lvCycle / 3) | 0), n + 3);
     _lvSpawnGroup(g[0], n, g[2], eliteP, mods);
@@ -8356,8 +8453,17 @@ function _lvWaves(dt) {
     if (w.p !== ph) continue;
     _lvWaveT[i] -= dt;
     if (_lvWaveT[i] > 0) continue;
-    _lvWaveT[i] = w.every * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
-    var cap = Math.min(_LV_HARDCAP, Math.round((w.cap + capB) * capM));
+    /* Montée en deux temps : une vague peut annoncer une cadence de début de
+       phase (every0) tenue pendant « ramp » secondes. Le rise du secteur 1
+       ouvre ainsi à 5,0 s avant de reprendre ses 3,6 s. */
+    var ev = (w.every0 && _lvPhaseT < (w.ramp || 0)) ? w.every0 : w.every;
+    _lvWaveT[i] = ev * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
+    /* Tant que le serpent est intact (9 segments au départ, 13 après la
+       première CROISSANCE), le plafond simultané de la table est ramené à 22 :
+       moins de corps à l'écran quand on n'a encore rien pour s'en défaire. */
+    var wcap = w.cap;
+    if (S.snake && S.snake.len < 12 && wcap > 22) wcap = 22;
+    var cap = Math.min(_LV_HARDCAP, Math.round((wcap + capB) * capM));
     if (S.enemies.length + _lvPend.length >= cap) continue;
     _lvFireWave(w);
   }
@@ -9705,7 +9811,7 @@ var _uiRects = {
 
 /* mémoire d'affichage : on n'écrit dans le DOM que ce qui a bougé */
 var _uiP = {
-  score: -1, mult: -1, len: -1, maxlen: -1, lvl: -1, prog: -1,
+  score: -1, mult: -1, multNx: -1, len: -1, maxlen: -1, lvl: -1, prog: -1,
   boost: -1, ult: -1, sp: -1, xp: -1, boss: -2, bossName: '',
   ja: -1, jx: -9, jy: -9, ready: -1, low: -1
 };
@@ -9789,6 +9895,8 @@ var _UI_CSS = [
 '.s2mult>b{font:900 calc(var(--uis)*clamp(11px,2.6vh,16px))/1 var(--fm);color:var(--am);',
 '  text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) var(--am);opacity:.5;transition:opacity .15s}',
 '.s2mult.up>b{opacity:1}',
+'.s2mult>s{font:700 calc(var(--uis)*clamp(8px,1.9vh,11px))/1 var(--fm);color:var(--am);',
+'  opacity:.72;text-decoration:none;white-space:nowrap}',
 '.s2mult>i{display:block;width:calc(var(--uis)*54px);height:3px;background:rgba(255,209,102,.18);',
 '  border-radius:2px;overflow:hidden}',
 '.s2mult>i>u{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);',
@@ -10140,6 +10248,9 @@ function _uiScrollable(el) {
 }
 
 /* ------ formatage -- */
+/* « ×4 », « ×4.5 » : un dixième seulement quand il y en a un */
+function _uiMultTxt(v) { var m = Math.round(v * 10); return m % 10 === 0 ? String(m / 10) : (m / 10).toFixed(1); }
+
 function _uiNum(n) {
   n = Math.round(n) || 0;
   if (n < 1000) return '' + n;
@@ -10234,6 +10345,7 @@ function _uiBuildHud(root) {
   _uiE.mult = _uiMk('b', '', mu, '×1');
   _uiE.multBox = mu;
   _uiE.multBar = _uiMk('u', '', _uiMk('i', '', mu));
+  _uiE.multNx = _uiMk('s', '', mu, '');
 
   /* --- centre : niveau, progression, boss, annonces --- */
   var C = _uiMk('div', 's2col s2hc', bar);
@@ -11043,10 +11155,27 @@ function _uiHud() {
   var m = Math.round(S.mult * 10);
   if (m !== _uiP.mult) {
     _uiP.mult = m;
-    _uiTxt(_uiE.mult, '×' + (m % 10 === 0 ? (m / 10) : (m / 10).toFixed(1)));
+    _uiTxt(_uiE.mult, '×' + _uiMultTxt(m / 10));
     _uiE.multBox.classList.toggle('up', S.mult > 1.01);
   }
-  _uiBar(_uiE.multBar, S.multT > 0 ? S.multT / 3200 : 0);
+  /* Combien de kills avant le palier suivant. Le compte descend à CHAQUE kill
+     sans que mult bouge : il lui faut son propre cache, sinon le texte reste
+     figé jusqu'au palier. Absent au plafond et à combo nul. */
+  var nk = (S.combo | 0) * 1000 + m;              // clé : ni chaîne ni allocation par image
+  if (nk !== _uiP.multNx) {
+    _uiP.multNx = nk;
+    var nx = '', cap = multCap();
+    if (S.combo > 0 && S.mult < cap - 1e-9) {
+      var rem = 3 - (S.combo % 3);
+      nx = '· ' + rem + (rem > 1 ? ' kills → ×' : ' kill → ×')
+         + _uiMultTxt(Math.min(cap, 1 + (Math.floor(S.combo / 3) + 1) * 0.5));
+    }
+    _uiTxt(_uiE.multNx, nx);
+  }
+  /* La jauge se divise par la durée COURANTE de la fenêtre (5 000 ms, 7 000 au
+     delà de ×3) : divisée par 3 200 en dur, elle restait collée au maximum
+     pendant les premières secondes. */
+  _uiBar(_uiE.multBar, S.multT > 0 ? S.multT / (S.multTMax || 5000) : 0);
 
   /* progression */
   if (S.level !== _uiLvCache) {
@@ -11454,8 +11583,8 @@ S2030.phases = (function () {
   function startGrid(axis, dur) {
     if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
     // la position de référence date d'avant la coupure : la reprojeter téléportait tout le monde d'un pas
-    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; }
-    if (S.snake) S.snake._ra = undefined;
+    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; S.enemies[i]._rlx = undefined; }
+    if (S.snake) { S.snake._ra = undefined; S.snake._rlx = undefined; }
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
@@ -11521,7 +11650,7 @@ S2030.phases = (function () {
       if (s2 > bestS) { bestS = s2; best = r; }
     }
     if (best === null) best = railAng(o.ang || 0);
-    o._ra = best; o._rw = best; o._rw2 = undefined;
+    o._ra = best; o._rw = best; o._rw2 = undefined; o._rlx = undefined;
     // verrou : sans lui le manche tenu contre le mur y ramenait le cap dès l'image suivante (cycle à 6 Hz)
     o._rLock = 0.45;
     railPlace(o, best);
@@ -11567,7 +11696,7 @@ S2030.phases = (function () {
 
   function railSteer(o, want, step) {
     if (o._ra === undefined) {
-      o._ra = railAng(o.ang || 0); o._rw = o._ra; o._rw2 = undefined;
+      o._ra = railAng(o.ang || 0); o._rw = o._ra; o._rw2 = undefined; o._rlx = undefined;
       o._rEase = RAIL_EASE;
     }
 
@@ -11591,9 +11720,21 @@ S2030.phases = (function () {
       var d = railOff(o, o._rw), nn = railNormOf(o._rw);              // écart signé à la droite visée la plus proche
       var behind = d * (Math.cos(o._ra) * nn.x + Math.sin(o._ra) * nn.y);   // > 0 : droite derrière nous, à |d|
       var turned = Math.abs(d) <= step * 0.75 + 2;                     // on tourne pile sur la droite, jamais entre deux
-      if (!turned && o === S.snake && behind > 0 && behind < RAIL_BACK) { railRewind(o, behind); turned = true; }   // retour au nœud
+      /* VERROU DE NŒUD. On ne tourne pas deux fois au même nœud. Sans lui le
+         second quart d'un demi-tour s'exécutait à l'image SUIVANTE, au même
+         nœud (mesuré : 3,5 u et 1 image entre les deux quarts), parce qu'après
+         le premier quart la droite visée est exactement celle qu'on vient de
+         quitter — et parce qu'une demande maintenue redemande le quart restant
+         à chaque image. Un demi-pas de latence ne coûte aucun virage légitime :
+         le nœud suivant est à un pas entier (165 u). */
+      var lockR = grid.spacing * 0.5;
+      var locked = o._rlx !== undefined
+                && (o.x - o._rlx) * (o.x - o._rlx) + (o.y - o._rly) * (o.y - o._rly) < lockR * lockR;
+      if (locked) turned = false;
+      else if (!turned && o === S.snake && behind > 0 && behind < RAIL_BACK) { railRewind(o, behind); turned = true; }   // retour au nœud
       if (turned) {
         railPlace(o, o._rw); o._ra = o._rw;
+        o._rlx = o.x; o._rly = o.y;                    // nœud consommé
         if (o === S.snake) { _last.t = S.t; _last.nx = o.x; _last.ny = o.y; _last.ang = o._ra; }
         if (o._rw2 !== undefined) { o._rw = o._rw2; o._rw2 = undefined; }
       }
@@ -12337,10 +12478,12 @@ function ultTick() {
   if (_ultStep > 5) return;
   if (S.phase !== 'play') { _ultStep = 9; return; }
   while (_ultStep <= 5 && S.t >= _ultNext) {
-    var s = S.snake, r = 160 + _ultStep * 150;
+    var s = S.snake, r = 160 + _ultStep * 188;          // six paliers : 160 -> 1 100 u
     S2030.fx && S2030.fx.ring(s.x, s.y, '#fff3b0', r * 0.5, 1400);
     var list = enemiesNear(s.x, s.y, r);
-    for (var i = 0; i < list.length; i++) damageEnemy(list[i], 40, { x: list[i].x, y: list[i].y });
+    // les dégâts suivent le SECTEUR (S.level = numéro de secteur) : 50 au secteur 1
+    var udm = 40 + 10 * (S.level || 1);
+    for (var i = 0; i < list.length; i++) damageEnemy(list[i], udm, { x: list[i].x, y: list[i].y });
     S2030.audio && S2030.audio.sfx('explode');
     _ultStep++; _ultNext += 90;
   }
@@ -12803,9 +12946,16 @@ function qualityTilt() {
 /* Montée de niveau : 350 ms de ralenti tenu AVANT l'écran de cartes. Le
    passage était instantané — on voyait l'écran, jamais la montée. Appelé
    chaque image de jeu par frame() tant que S.lvlUps > 0. */
-var _lvlSeq = 0;
+var _lvlSeq = 0, _cardsNext = 0;
 function openCards() {
   if (S.phase !== 'play') return;
+  /* Deux écrans de cartes ne se touchent pas. Absorber la file (S.lvlUps = 0)
+     ne suffit pas : une montée GAGNÉE juste après la fermeture — les six vagues
+     d'un ultime tombent volontiers dans les images qui suivent — rouvrait un
+     écran 610 ms plus tard. Mesuré sur 20 parties 'sloppy' : 14 enchaînements
+     de moins de 2 s sur 534, soit 2,6 %. La montée n'est pas perdue, elle
+     attend, et sera absorbée par l'écran suivant. */
+  if (S.t < _cardsNext) return;
   var s = S.snake;
   if (_lvlSeq === 0) {
     _lvlSeq = S.t + 350;
@@ -12824,17 +12974,23 @@ function openCards() {
     return;
   }
   _lvlSeq = 0;
-  S.lvlUps--;
+  /* Plusieurs montées en attente ne donnent plus une file d'écrans enchaînés à
+     610 ms d'intervalle : UN SEUL écran, quatre cartes au lieu de trois, et la
+     file entière est absorbée par le choix (S.lvlUps = 0). */
+  var pend = S.lvlUps;
+  S.lvlUps--;                                     // sécurité : si la main sort vide, on ne reboucle pas
   S.phase = 'cards';
   S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
-  var cards = S2030.upgrades ? S2030.upgrades.roll(3) : [];
+  var cards = S2030.upgrades ? S2030.upgrades.roll(pend >= 2 ? 4 : 3) : [];
   if (!cards.length) { S.phase = 'play'; return; }
   S2030.audio && S2030.audio.sfx('card');
   S2030.ui.showCards(cards, function (id) {
     S2030.upgrades.apply(id);
+    S.cardsTaken = (S.cardsTaken | 0) + 1;
     S2030.audio && S2030.audio.sfx('card');
+    S.lvlUps = 0;                                 // toute la file est absorbée
+    _cardsNext = S.t + 2500;                      // pas deux écrans coup sur coup
     S.phase = 'play';
-    if (S.lvlUps > 0) setTimeout(openCards, 260);
   });
 }
 
@@ -12870,12 +13026,12 @@ function resetRun() {
   S.snake = makeSnake();
   S.enemies.length = 0; S.bullets.length = 0; S.ebullets.length = 0;
   S.pickups.length = 0; S.drones.length = 0; S.pools.length = 0;
-  S.score = 0; S.mult = 1; S.multT = 0; S.combo = 0; S.kills = 0;
-  S.xp = 0; S.xpNext = 12; S.lvlUps = 0;
+  S.score = 0; S.mult = 1; S.multT = 0; S.multTMax = 5000; S.combo = 0; S.kills = 0;
+  S.xp = 0; S.xpNext = 6; S.lvlUps = 0; S.cardsTaken = 0;
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
-  _lvlSeq = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
+  _lvlSeq = 0; _cardsNext = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;

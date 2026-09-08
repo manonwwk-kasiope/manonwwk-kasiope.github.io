@@ -40,7 +40,7 @@ var _uiRects = {
 
 /* mémoire d'affichage : on n'écrit dans le DOM que ce qui a bougé */
 var _uiP = {
-  score: -1, mult: -1, len: -1, maxlen: -1, lvl: -1, prog: -1,
+  score: -1, mult: -1, multNx: -1, len: -1, maxlen: -1, lvl: -1, prog: -1,
   boost: -1, ult: -1, sp: -1, xp: -1, boss: -2, bossName: '',
   ja: -1, jx: -9, jy: -9, ready: -1, low: -1
 };
@@ -124,6 +124,8 @@ var _UI_CSS = [
 '.s2mult>b{font:900 calc(var(--uis)*clamp(11px,2.6vh,16px))/1 var(--fm);color:var(--am);',
 '  text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) var(--am);opacity:.5;transition:opacity .15s}',
 '.s2mult.up>b{opacity:1}',
+'.s2mult>s{font:700 calc(var(--uis)*clamp(8px,1.9vh,11px))/1 var(--fm);color:var(--am);',
+'  opacity:.72;text-decoration:none;white-space:nowrap}',
 '.s2mult>i{display:block;width:calc(var(--uis)*54px);height:3px;background:rgba(255,209,102,.18);',
 '  border-radius:2px;overflow:hidden}',
 '.s2mult>i>u{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);',
@@ -475,6 +477,9 @@ function _uiScrollable(el) {
 }
 
 /* ------ formatage -- */
+/* « ×4 », « ×4.5 » : un dixième seulement quand il y en a un */
+function _uiMultTxt(v) { var m = Math.round(v * 10); return m % 10 === 0 ? String(m / 10) : (m / 10).toFixed(1); }
+
 function _uiNum(n) {
   n = Math.round(n) || 0;
   if (n < 1000) return '' + n;
@@ -569,6 +574,7 @@ function _uiBuildHud(root) {
   _uiE.mult = _uiMk('b', '', mu, '×1');
   _uiE.multBox = mu;
   _uiE.multBar = _uiMk('u', '', _uiMk('i', '', mu));
+  _uiE.multNx = _uiMk('s', '', mu, '');
 
   /* --- centre : niveau, progression, boss, annonces --- */
   var C = _uiMk('div', 's2col s2hc', bar);
@@ -1378,10 +1384,27 @@ function _uiHud() {
   var m = Math.round(S.mult * 10);
   if (m !== _uiP.mult) {
     _uiP.mult = m;
-    _uiTxt(_uiE.mult, '×' + (m % 10 === 0 ? (m / 10) : (m / 10).toFixed(1)));
+    _uiTxt(_uiE.mult, '×' + _uiMultTxt(m / 10));
     _uiE.multBox.classList.toggle('up', S.mult > 1.01);
   }
-  _uiBar(_uiE.multBar, S.multT > 0 ? S.multT / 3200 : 0);
+  /* Combien de kills avant le palier suivant. Le compte descend à CHAQUE kill
+     sans que mult bouge : il lui faut son propre cache, sinon le texte reste
+     figé jusqu'au palier. Absent au plafond et à combo nul. */
+  var nk = (S.combo | 0) * 1000 + m;              // clé : ni chaîne ni allocation par image
+  if (nk !== _uiP.multNx) {
+    _uiP.multNx = nk;
+    var nx = '', cap = multCap();
+    if (S.combo > 0 && S.mult < cap - 1e-9) {
+      var rem = 3 - (S.combo % 3);
+      nx = '· ' + rem + (rem > 1 ? ' kills → ×' : ' kill → ×')
+         + _uiMultTxt(Math.min(cap, 1 + (Math.floor(S.combo / 3) + 1) * 0.5));
+    }
+    _uiTxt(_uiE.multNx, nx);
+  }
+  /* La jauge se divise par la durée COURANTE de la fenêtre (5 000 ms, 7 000 au
+     delà de ×3) : divisée par 3 200 en dur, elle restait collée au maximum
+     pendant les premières secondes. */
+  _uiBar(_uiE.multBar, S.multT > 0 ? S.multT / (S.multTMax || 5000) : 0);
 
   /* progression */
   if (S.level !== _uiLvCache) {

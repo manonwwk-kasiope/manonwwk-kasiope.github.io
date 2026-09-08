@@ -63,16 +63,16 @@ var _lvDefs = [
     },
     back: { grid: 1, cell: 132, scan: 1, lanes: 0, field: 0, overload: 0 },
     fore: { fog: 0.10, streaks: 0 },
-    dur: { calm: 16, rise: 24, surge: 24, climax: 34, clear: 6 },
+    dur: { calm: 10, rise: 24, surge: 24, climax: 34, clear: 6 },
     rigs: 0, nodes: 0, fieldTurn: 0,
     mods: ['armored'],
     boss: { name: 'PROTOTYPE ZÉRO', type: 'chaser', mod: 'armored', n: 1,
             escort: [['chaser', 5, 'ring'], ['shooter', 1, 'flank']] },
     spawns: [
-      { p: 'calm',  every: 4.4, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
+      { p: 'calm',  every: 3.2, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
       { p: 'calm',  every: 9.0, jit: 0.6, cap: 14, g: [['mine', 1, 'ahead']] },
 
-      { p: 'rise',  every: 3.6, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
+      { p: 'rise',  every: 3.6, every0: 5.0, ramp: 10, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
       { p: 'rise',  every: 8.0, jit: 0.8, cap: 28, g: [['chaser', 1, 'flank']] },
       { p: 'rise',  every: 8.5, jit: 0.7, cap: 26, g: [['mine', 2, 'ahead']] },
 
@@ -536,6 +536,11 @@ function _lvFireWave(w) {
   var eliteP = (w.eliteP || 0) + _lvCycle * 0.02;
   for (var i = 0; i < w.g.length; i++) {
     var g = w.g[i];
+    /* Les artilleurs n'entrent qu'une fois la première carte prise : tirer sur
+       un serpent qui n'a encore aucune réponse n'apprend rien. Vrai pour tous
+       les secteurs ; au secteur 1 le premier 'shooter' est en surge, la porte
+       n'y mord donc qu'à partir de t = 34 s. */
+    if (g[0] === 'shooter' && (S.cardsTaken | 0) < 1) continue;
     var n = g[1];
     if (_lvCycle > 0) n = Math.min(n + ((_lvCycle / 3) | 0), n + 3);
     _lvSpawnGroup(g[0], n, g[2], eliteP, mods);
@@ -559,8 +564,17 @@ function _lvWaves(dt) {
     if (w.p !== ph) continue;
     _lvWaveT[i] -= dt;
     if (_lvWaveT[i] > 0) continue;
-    _lvWaveT[i] = w.every * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
-    var cap = Math.min(_LV_HARDCAP, Math.round((w.cap + capB) * capM));
+    /* Montée en deux temps : une vague peut annoncer une cadence de début de
+       phase (every0) tenue pendant « ramp » secondes. Le rise du secteur 1
+       ouvre ainsi à 5,0 s avant de reprendre ses 3,6 s. */
+    var ev = (w.every0 && _lvPhaseT < (w.ramp || 0)) ? w.every0 : w.every;
+    _lvWaveT[i] = ev * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
+    /* Tant que le serpent est intact (9 segments au départ, 13 après la
+       première CROISSANCE), le plafond simultané de la table est ramené à 22 :
+       moins de corps à l'écran quand on n'a encore rien pour s'en défaire. */
+    var wcap = w.cap;
+    if (S.snake && S.snake.len < 12 && wcap > 22) wcap = 22;
+    var cap = Math.min(_LV_HARDCAP, Math.round((wcap + capB) * capM));
     if (S.enemies.length + _lvPend.length >= cap) continue;
     _lvFireWave(w);
   }

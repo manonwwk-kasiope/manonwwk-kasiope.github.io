@@ -137,8 +137,8 @@ S2030.phases = (function () {
   function startGrid(axis, dur) {
     if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
     // la position de référence date d'avant la coupure : la reprojeter téléportait tout le monde d'un pas
-    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; }
-    if (S.snake) S.snake._ra = undefined;
+    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; S.enemies[i]._rlx = undefined; }
+    if (S.snake) { S.snake._ra = undefined; S.snake._rlx = undefined; }
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
@@ -204,7 +204,7 @@ S2030.phases = (function () {
       if (s2 > bestS) { bestS = s2; best = r; }
     }
     if (best === null) best = railAng(o.ang || 0);
-    o._ra = best; o._rw = best; o._rw2 = undefined;
+    o._ra = best; o._rw = best; o._rw2 = undefined; o._rlx = undefined;
     // verrou : sans lui le manche tenu contre le mur y ramenait le cap dès l'image suivante (cycle à 6 Hz)
     o._rLock = 0.45;
     railPlace(o, best);
@@ -250,7 +250,7 @@ S2030.phases = (function () {
 
   function railSteer(o, want, step) {
     if (o._ra === undefined) {
-      o._ra = railAng(o.ang || 0); o._rw = o._ra; o._rw2 = undefined;
+      o._ra = railAng(o.ang || 0); o._rw = o._ra; o._rw2 = undefined; o._rlx = undefined;
       o._rEase = RAIL_EASE;
     }
 
@@ -274,9 +274,21 @@ S2030.phases = (function () {
       var d = railOff(o, o._rw), nn = railNormOf(o._rw);              // écart signé à la droite visée la plus proche
       var behind = d * (Math.cos(o._ra) * nn.x + Math.sin(o._ra) * nn.y);   // > 0 : droite derrière nous, à |d|
       var turned = Math.abs(d) <= step * 0.75 + 2;                     // on tourne pile sur la droite, jamais entre deux
-      if (!turned && o === S.snake && behind > 0 && behind < RAIL_BACK) { railRewind(o, behind); turned = true; }   // retour au nœud
+      /* VERROU DE NŒUD. On ne tourne pas deux fois au même nœud. Sans lui le
+         second quart d'un demi-tour s'exécutait à l'image SUIVANTE, au même
+         nœud (mesuré : 3,5 u et 1 image entre les deux quarts), parce qu'après
+         le premier quart la droite visée est exactement celle qu'on vient de
+         quitter — et parce qu'une demande maintenue redemande le quart restant
+         à chaque image. Un demi-pas de latence ne coûte aucun virage légitime :
+         le nœud suivant est à un pas entier (165 u). */
+      var lockR = grid.spacing * 0.5;
+      var locked = o._rlx !== undefined
+                && (o.x - o._rlx) * (o.x - o._rlx) + (o.y - o._rly) * (o.y - o._rly) < lockR * lockR;
+      if (locked) turned = false;
+      else if (!turned && o === S.snake && behind > 0 && behind < RAIL_BACK) { railRewind(o, behind); turned = true; }   // retour au nœud
       if (turned) {
         railPlace(o, o._rw); o._ra = o._rw;
+        o._rlx = o.x; o._rly = o.y;                    // nœud consommé
         if (o === S.snake) { _last.t = S.t; _last.nx = o.x; _last.ny = o.y; _last.ang = o._ra; }
         if (o._rw2 !== undefined) { o._rw = o._rw2; o._rw2 = undefined; }
       }

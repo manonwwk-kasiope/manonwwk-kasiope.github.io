@@ -343,10 +343,12 @@ function ultTick() {
   if (_ultStep > 5) return;
   if (S.phase !== 'play') { _ultStep = 9; return; }
   while (_ultStep <= 5 && S.t >= _ultNext) {
-    var s = S.snake, r = 160 + _ultStep * 150;
+    var s = S.snake, r = 160 + _ultStep * 188;          // six paliers : 160 -> 1 100 u
     S2030.fx && S2030.fx.ring(s.x, s.y, '#fff3b0', r * 0.5, 1400);
     var list = enemiesNear(s.x, s.y, r);
-    for (var i = 0; i < list.length; i++) damageEnemy(list[i], 40, { x: list[i].x, y: list[i].y });
+    // les dégâts suivent le SECTEUR (S.level = numéro de secteur) : 50 au secteur 1
+    var udm = 40 + 10 * (S.level || 1);
+    for (var i = 0; i < list.length; i++) damageEnemy(list[i], udm, { x: list[i].x, y: list[i].y });
     S2030.audio && S2030.audio.sfx('explode');
     _ultStep++; _ultNext += 90;
   }
@@ -809,9 +811,16 @@ function qualityTilt() {
 /* Montée de niveau : 350 ms de ralenti tenu AVANT l'écran de cartes. Le
    passage était instantané — on voyait l'écran, jamais la montée. Appelé
    chaque image de jeu par frame() tant que S.lvlUps > 0. */
-var _lvlSeq = 0;
+var _lvlSeq = 0, _cardsNext = 0;
 function openCards() {
   if (S.phase !== 'play') return;
+  /* Deux écrans de cartes ne se touchent pas. Absorber la file (S.lvlUps = 0)
+     ne suffit pas : une montée GAGNÉE juste après la fermeture — les six vagues
+     d'un ultime tombent volontiers dans les images qui suivent — rouvrait un
+     écran 610 ms plus tard. Mesuré sur 20 parties 'sloppy' : 14 enchaînements
+     de moins de 2 s sur 534, soit 2,6 %. La montée n'est pas perdue, elle
+     attend, et sera absorbée par l'écran suivant. */
+  if (S.t < _cardsNext) return;
   var s = S.snake;
   if (_lvlSeq === 0) {
     _lvlSeq = S.t + 350;
@@ -830,17 +839,23 @@ function openCards() {
     return;
   }
   _lvlSeq = 0;
-  S.lvlUps--;
+  /* Plusieurs montées en attente ne donnent plus une file d'écrans enchaînés à
+     610 ms d'intervalle : UN SEUL écran, quatre cartes au lieu de trois, et la
+     file entière est absorbée par le choix (S.lvlUps = 0). */
+  var pend = S.lvlUps;
+  S.lvlUps--;                                     // sécurité : si la main sort vide, on ne reboucle pas
   S.phase = 'cards';
   S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
-  var cards = S2030.upgrades ? S2030.upgrades.roll(3) : [];
+  var cards = S2030.upgrades ? S2030.upgrades.roll(pend >= 2 ? 4 : 3) : [];
   if (!cards.length) { S.phase = 'play'; return; }
   S2030.audio && S2030.audio.sfx('card');
   S2030.ui.showCards(cards, function (id) {
     S2030.upgrades.apply(id);
+    S.cardsTaken = (S.cardsTaken | 0) + 1;
     S2030.audio && S2030.audio.sfx('card');
+    S.lvlUps = 0;                                 // toute la file est absorbée
+    _cardsNext = S.t + 2500;                      // pas deux écrans coup sur coup
     S.phase = 'play';
-    if (S.lvlUps > 0) setTimeout(openCards, 260);
   });
 }
 
@@ -876,12 +891,12 @@ function resetRun() {
   S.snake = makeSnake();
   S.enemies.length = 0; S.bullets.length = 0; S.ebullets.length = 0;
   S.pickups.length = 0; S.drones.length = 0; S.pools.length = 0;
-  S.score = 0; S.mult = 1; S.multT = 0; S.combo = 0; S.kills = 0;
-  S.xp = 0; S.xpNext = 12; S.lvlUps = 0;
+  S.score = 0; S.mult = 1; S.multT = 0; S.multTMax = 5000; S.combo = 0; S.kills = 0;
+  S.xp = 0; S.xpNext = 6; S.lvlUps = 0; S.cardsTaken = 0;
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
-  _lvlSeq = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
+  _lvlSeq = 0; _cardsNext = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;

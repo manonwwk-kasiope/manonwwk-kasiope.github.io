@@ -49,8 +49,8 @@ var S = {
   snake: null,
   enemies: [], bullets: [], ebullets: [], pickups: [], drones: [], pools: [],
   level: 1, levelT: 0, levelProgress: 0, intensity: 0,
-  score: 0, mult: 1, multT: 0, combo: 0, kills: 0,
-  xp: 0, xpNext: 12, lvlUps: 0,
+  score: 0, mult: 1, multT: 0, multTMax: 5000, combo: 0, kills: 0,
+  xp: 0, xpNext: 6, lvlUps: 0, cardsTaken: 0,
   up: {},
   ult: 0, ultMax: 100, special: 0, specialCd: 0,
   coins: 0, seed: 1,
@@ -364,7 +364,10 @@ function hurtSnake(dmg, x, y, src) {
   // ÉCHAPPÉE : on traverse brièvement après avoir été touché
   if (S.up.f_ghostOnHit) s.ghost = Math.max(s.ghost, 700 * S.up.f_ghostOnHit);
   // SANG-FROID : le multiplicateur survit au coup
-  if (!S.up.f_multKeep) { S.mult = 1; S.combo = 0; }
+  /* SANG-FROID garde tout ; sinon le combo est DIVISÉ PAR DEUX (et non remis
+     à zéro) et le multiplicateur est recalculé dans la même image — sans ce
+     recalcul le HUD afficherait ×4 avec un combo de 10 jusqu'au kill suivant */
+  if (!S.up.f_multKeep) { S.combo = Math.floor(S.combo / 2); setMult(multOf(S.combo)); }
   var hx = x !== undefined ? x : s.x, hy = y !== undefined ? y : s.y;
   /* D'où vient le coup : angle MONDE pour le plateau, angle ÉCRAN pour la
      vignette (sous le roulis et la bascule les deux ne coïncident pas). */
@@ -498,19 +501,49 @@ function damageEnemy(e, dmg, opts) {
   else if (S2030.audio) S2030.audio.sfx('hit');
 }
 
+/* ------ multiplicateur
+   Un SEUL chemin d'écriture : setMult(). Le multiplicateur se dérive du combo
+   (un palier tous les 3 kills), il est plafonné à 12 — 16 en SURCHARGE de
+   secteur — et chaque franchissement ASCENDANT d'un palier rond fait sonner
+   'multUp'. Écrire S.mult ailleurs ferait taire le son ou mentir le HUD :
+   c'était le cas de hurtSnake, qui remettait mult à 1 sans passer par ici. */
+var _MULT_TIERS = [2, 4, 8, 12, 16];
+function multCap() {
+  var L = S2030.levels;
+  return (L && L.cycle && L.cycle() > 0) ? 16 : 12;
+}
+function multOf(combo) { return Math.min(multCap(), 1 + Math.floor(combo / 3) * 0.5); }
+function _multTierOf(m) {
+  var n = 0;
+  for (var i = 0; i < _MULT_TIERS.length; i++) if (m >= _MULT_TIERS[i] - 1e-9) n++;
+  return n;
+}
+function setMult(m) {
+  var a = _multTierOf(S.mult);
+  S.mult = m;
+  var b = _multTierOf(m);
+  while (b > a) { a++; S2030.audio && S2030.audio.sfx('multUp'); }
+}
+
 function killEnemy(e, opts) {
   if (e.dead) return;
   e.dead = true;
   S.kills++;
   S.combo++;
-  S.multT = 3200;
-  S.mult = Math.min(12, 1 + Math.floor(S.combo / 4) * 0.5);
+  setMult(multOf(S.combo));
+  /* la fenêtre s'allonge avec le multiplicateur : trois secondes deux dixièmes
+     ne laissaient jamais le temps d'enchaîner hors d'une nuée */
+  S.multT = S.multTMax = S.mult >= 3 ? 7000 : 5000;
   addScore(e.score);
-  addXp(e.xp);
+  /* le revenu suit le SECTEUR (S.level = numéro de secteur, jamais un niveau
+     de joueur) : +15 % par secteur, donc exactement 1,00 pendant le secteur 1 */
+  addXp(e.xp * (1 + 0.15 * ((S.level || 1) - 1)));
   /* Mesuré : 0,13 point par seconde, soit 750 s pour une jauge pleine alors
      qu'une partie en dure 30 à 40. Le bouton pulsait « prêt » sans jamais
      l'être. Une partie ordinaire doit offrir une à deux surcharges. */
-  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
+  /* charge par kill indexée sur le coût du niveau suivant : 6 au départ,
+     ~0,7 à xpNext 1 000 — l'ultime reste rare quand la partie s'allonge */
+  S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 6 * Math.sqrt(12 / Math.max(12, S.xpNext))));
   S.coins += e.elite ? 5 : 1;
   /* Direction du tir qui l'a tué : le point d'impact est du côté du tireur,
      donc impact -> centre donne le sens de déplacement du projectile. Sans
@@ -666,7 +699,7 @@ function addXp(n) {
   while (S.xp >= S.xpNext) {
     S.xp -= S.xpNext;
     S.lvlUps++;
-    S.xpNext = Math.round(S.xpNext * 1.28 + 4);
+    S.xpNext = Math.round(S.xpNext * 1.12 + 6);
   }
 }
 
@@ -873,8 +906,8 @@ function grabPickup(p) {
     if (chance(0.35 + 0.18 * (S.up.f_pickHeal || 0))) healSnake(1);
     S2030.audio && S2030.audio.sfx('pickup');
   } else if (p.kind === 'core') {
-    addXp(6); addScore(60);
-    S.ult = Math.min(S.ultMax, S.ult + 12);
+    addXp(8); addScore(60);
+    S.ult = Math.min(S.ultMax, S.ult + 20);
     healSnake(1);
     S2030.audio && S2030.audio.sfx('core');
     S2030.fx && S2030.fx.flare(p.x, p.y, '#ffd166', 90);
