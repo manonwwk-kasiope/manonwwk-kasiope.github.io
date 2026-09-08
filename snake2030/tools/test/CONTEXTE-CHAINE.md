@@ -49,8 +49,14 @@ HONNÊTETÉ DE LA MESURE — LA RÈGLE QUI PRIME SUR TOUTES LES AUTRES
   quelque chose, écris que tu ne l as pas mesuré plutôt que de le déduire.
 - Si un seuil de la spec est démontrablement inatteignable, écris la démonstration : c est une erreur de
   la spec, pas un manquement du build. C est déjà arrivé une fois.
-- Deux mesures simultanées se polluent. Avant toute mesure : « ps -eo args --no-headers | grep -cE
-  "[r]un.mjs|[b]anc.mjs" » doit rendre 0, et la charge (« cat /proc/loadavg ») être sous 0,5.
+- Deux mesures simultanées se polluent. Avant toute mesure, attends que « cat /proc/loadavg » soit sous
+  0,5 et que ce compte soit à zéro :
+      ps -eo args --no-headers | grep -cE "^/opt/node22/bin/node .*(run|banc)\\.mjs" || true
+  L ancrage sur « ^/opt/node22/bin/node » n est pas cosmétique. Un motif non ancré compte AUSSI le shell
+  qui exécute la vérification, dont la ligne de commande contient le texte cherché : un exécuteur s est
+  bloqué neuf minutes sur son propre garde-fou, qui ne pouvait jamais retomber à zéro. Si ton compteur
+  reste haut alors que la charge est nulle, c est ce piège — regarde avec « ps -eo pid,args » ce que tu
+  comptes vraiment avant de conclure que la machine est occupée.
 
 RÈGLES DE GIT
 Jamais « git reset --hard », « git stash », « git checkout <branche> », « git add -A ». Ne touche pas à
