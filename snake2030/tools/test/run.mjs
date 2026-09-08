@@ -62,7 +62,13 @@ function runScript(name) {
 }
 
 function nr() {
-  const R = { banc: runScript('banc.mjs'), diag: runScript('diag.mjs'), sonIos: runScript('son-ios.mjs'), rail2: runScript('rail2.mjs') };
+  /* invariants.mjs garde les promesses faites à la joueuse — bouton et notice de plein écran (impossible
+     sur iOS autrement), manche tactile, zoom de base, musique en flux, réglages persistés, difficulté,
+     message de rotation en portrait, et sur bureau ni manche ni plein écran imposé. Elles étaient jusqu'ici
+     relues à la main par le médiateur de chaque objectif ; une vérification qui dépend de quelqu'un qui
+     pense à la faire est un rappel, pas une vérification. Son échec est rapporté à part, préfixé
+     « invariants : », pour qu'on distingue une promesse rompue d'une régression de performance. */
+  const R = { banc: runScript('banc.mjs'), diag: runScript('diag.mjs'), sonIos: runScript('son-ios.mjs'), rail2: runScript('rail2.mjs'), invariants: runScript('invariants.mjs') };
   const d = R.diag.json && R.diag.json.measured, s = R.sonIos.json, r2 = R.rail2.json && R.rail2.json.measured;
   const bc = R.banc.json && R.banc.json.measured;
   const fails = [], notes = [];
@@ -90,6 +96,9 @@ function nr() {
   }
   if (bc && Array.isArray(bc.fails)) for (const f of bc.fails) fails.push('banc ' + f);
   if (s && !s.pass) fails.push('son-ios : ' + JSON.stringify(s.measured && s.measured.checks));
+  const inv = R.invariants.json;
+  if (!inv) fails.push('invariants sans résultat');
+  else if (!inv.pass) for (const f of ((inv.measured && inv.measured.fails) || ['échec sans détail'])) fails.push('invariants : ' + f);
   if (r2 && !(r2.ortho && r2.ortho.n >= 10)) fails.push('rail2 ortho non mesurable');
   // seuils G5 (rails réactifs) : latence de virage sur treillis ortho p90 ≤ 40 images, max ≤ 45, aucune demande au-delà
   // de 700 ms de jeu (42 images à 1/60 s) ; 20/20 virages détectés en ortho et en diagonale
