@@ -77,3 +77,31 @@ Le même doute vaut pour les deux autres affirmations de l'audit, qui elles se v
 recherche et que j'ai contrôlées : `au.sfx('ultReady')` existe dans `21-audio.js` et n'a effectivement
 aucun appelant ; `fx.hit()` existe dans `20-fx.js` et n'a effectivement aucun appelant. Ces deux-là sont
 justes.
+
+---
+
+# RECTIFICATION — ma mesure était biaisée, la prémisse de l'audit était juste
+
+L'implémenteur de G8 a rejoué le protocole de la spécification sur le build d'avant G8, servi depuis git
+sur un port séparé, et il obtient pour un kill ordinaire **zéro image**, à soixante comme à trente images
+par seconde. Le « aujourd'hui 0 » de la spécification est donc exact, et l'affirmation qui ouvre cette
+note — « la prémisse de l'audit est fausse » — était fausse elle-même.
+
+**D'où venait mon « une image ».** J'appelais `fx.hitstop(12)` depuis l'extérieur de la boucle, par une
+évaluation dans la page, donc entre deux images. L'image suivante lisait le compteur encore plein et
+gelait, puis le vidait. Une image gelée, mais posée d'une façon dont aucun code de jeu ne dispose. Le
+protocole de la spécification pose le gel **dans** l'image, depuis un crochet sur la mise à jour des
+armes, et compte à partir de l'image suivante — ce que la spécification écrit noir sur blanc, « jamais
+dans l'image de pose ». Avec ce protocole, la mise à jour des effets vide le compteur avant l'image
+suivante et rien ne gèle. Ma mesure comptait l'image que le protocole exclut.
+
+**Ce qui reste vrai de ma note.** Le mécanisme de décrément en temps réel, et non en temps de jeu, était
+bien la cause de fond, et c'est ce que G8 corrige en comptant le gel en images. L'implémenteur le montre
+plus finement que moi : sur une élite, l'ancien code gelait trois images à soixante par seconde mais une
+seule à trente. Le nombre d'images gelées dépendait de la cadence de la machine, ce qui est le défaut
+véritable. Après G8, deux, cinq et quatre images, identiques aux deux cadences.
+
+**La leçon, pour la chaîne comme pour moi.** J'avais écrit dans cette note qu'il fallait mesurer la bonne
+grandeur. C'était juste, et insuffisant : il faut aussi mesurer par le bon chemin. Un déclencheur qui
+n'existe pas dans le jeu produit un nombre qui n'existe pas dans le jeu. La note d'origine est conservée
+au-dessus, sans retouche, parce qu'une rectification qui efface ce qu'elle rectifie n'apprend rien.
