@@ -81,5 +81,12 @@ snake2030/docs/ ni aux fichiers mp3. Le commit est réservé au médiateur de l 
 - G4 (f1a0b5d) Clavier : curseur de focus .kf sur tous les écrans, Entrée et Espace sur l élément focalisé, raccourcis par écran, verrou de 600 ms à l écran de fin, écrans cachés inertes, cartes en vrais boutons, légende .s2keys, capuchons d aide .s2kcap.
 - G5 (e389ad3, réserves) Pilotage : treillis au pas 165, virage au nœud franchi (RAIL_BACK 72 u), phases.pending(), demi-tour, panne de boost franche (boostDry), BOOST_FILL 22, arc de boost, phases.visibleExtent(), caméra bornée en bascule.
 - G6 (fafb2a0, réserves) Menaces lisibles : _lvPoint tire à hypot(demi-w, demi-h) + 150 et revérifie hors champ ; portail de 600 ms avant chaque apparition (fx.drawScreen, chevron 24 px, son spawnTick, entrée portal dans S.log) ; les quatre types annonceurs n arment que dans le champ, prolongation de 300 ms et chevron clignotant à la sortie de cadre ; trancheur perpendiculaire sur treillis ; artilleur bSpeed 230 et vie de balle 2,2 s ; absorption des balles au-delà du 8e anneau dans collide ; ui.offscreen() pour boss, élites et mines armées.
+- G8 (4858d07) Impact : gel d image compté en IMAGES et non plus en millisecondes, décrémenté dans frame()
+  APRÈS la lecture de hitstopLeft() pour que l image de pose ne le consomme pas — 2 sur un kill, 5 sur une
+  élite, 4 sur une blessure, 8 à la mort, identiques à 60 comme à 30 images par seconde. Score flottant
+  indexé sur le combo, hauteur du son de kill en 2^(min(combo,12)/12), recul de caméra opposé au tir,
+  blessure en vignette directionnelle sur le bord touché au lieu d un flash plein écran, plafond d un
+  flash plein écran toutes les 4 s, silhouette d ennemi remplie à l impact, fx.hit enfin appelé, montée de
+  niveau mise en scène sur 350 ms de temps réel, sons et toasts « ULTIME PRÊT » et « POUVOIR PRÊT ».
 - Instrument (1f30a81 et 44b55cd) : le banc d essai agrège médiane, p95 et p99 chacun par son propre minimum sur toutes les séries et toutes les passes, et son modèle d ennemi est construit depuis enemies.defs.chaser. Lire son en-tête avant d interpréter un rapport : la dispersion nulle du p95 sur iphone/bascule-charge y est documentée à environ treize pour cent contre quinze de tolérance.
 - Avis du pilote versionnés, à lire quand ils concernent ton objectif : snake2030/tools/test/AVIS-PILOTE-*.md et snake2030/tools/test/G6/*.md..
