@@ -212,7 +212,12 @@ var _UI_CSS = [
 '  filter:drop-shadow(0 0 calc(6px*var(--bl)) currentColor)}',
 '.s2btn>span{position:relative;font:900 1em/1 var(--fs);color:#04101a;',
 '  text-shadow:0 0 6px rgba(255,255,255,.5)}',
-'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite}',
+'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite;opacity:calc(.42*var(--ca))}',
+/* prêt ET pressé : .rdy suit .on à specificite egale, un bouton pret s'assombrissait
+   sous le doigt (0,42 au lieu de 0,55). L'appui reste l'etat le plus lumineux. */
+'.s2btn.rdy.on{opacity:calc(.62*var(--ca))}',
+/* prêt : halo de l'arc × 1,3 — la jauge pleine se voyait à peine */
+'.s2btn.rdy .arc{stroke-width:8;filter:drop-shadow(0 0 calc(7.8px*var(--bl)) currentColor)}',
 '@keyframes s2rdy{0%,100%{filter:none}50%{filter:brightness(1.7)}}',
 '#ui.nf .s2btn.rdy{animation:none}',
 '.s2b-boost{color:var(--am)} .s2b-special{color:var(--vi)} .s2b-ult{color:var(--mg)}',

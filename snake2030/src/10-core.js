@@ -310,19 +310,35 @@ function updateSnake(dt) {
     var low = s.len <= 3;
     S.timeScale = low ? (1 - 0.18 * S.up.f_slowmo) : 1;
   }
+  hurtSlowTick();
 }
 
 var _wallT = 0;
 function wallBump() {
   if (S.t - _wallT < 260) return;
   _wallT = S.t;
-  S2030.fx && S2030.fx.shake(5);
+  S2030.fx && S2030.fx.shake(3);
   S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ff5c8a', 8, 260);
   S2030.audio && S2030.audio.sfx('hit');
 }
 
-/* ------ dégâts joueur */
-function hurtSnake(dmg, x, y) {
+/* ------ dégâts joueur
+   ARRÊT SUR IMAGE : 0,4 pendant 180 ms puis retour linéaire sur 120 ms.
+   Compté en temps de jeu (S.t), donc insensible au ralenti qu'il pose. */
+var _hurtSlowT = 0, _hurtPrevTs = -1;
+var _hurtP0 = { x: 0, y: 0 }, _hurtP1 = { x: 0, y: 0 };
+function hurtSlowTick() {
+  if (_hurtSlowT <= 0) return;
+  var el = S.t - _hurtSlowT, ts;
+  if (el < 180) ts = 0.4;
+  else if (el < 300) ts = 0.4 + 0.6 * (el - 180) / 120;
+  else ts = 1;
+  if (S.timeScale === _hurtPrevTs || S.timeScale > ts) S.timeScale = ts;
+  _hurtPrevTs = ts;
+  if (el >= 300) { _hurtSlowT = 0; _hurtPrevTs = -1; }
+}
+
+function hurtSnake(dmg, x, y, src) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
   dmg = Math.max(1, dmg | 0);
@@ -349,9 +365,29 @@ function hurtSnake(dmg, x, y) {
   if (S.up.f_ghostOnHit) s.ghost = Math.max(s.ghost, 700 * S.up.f_ghostOnHit);
   // SANG-FROID : le multiplicateur survit au coup
   if (!S.up.f_multKeep) { S.mult = 1; S.combo = 0; }
-  S2030.fx && S2030.fx.shake(14);
-  S2030.fx && S2030.fx.flash('#ff2e63', 0.35);
-  S2030.fx && S2030.fx.burst(x !== undefined ? x : s.x, y !== undefined ? y : s.y, '#ff2e63', 22, 1.5, { glow: true });
+  var hx = x !== undefined ? x : s.x, hy = y !== undefined ? y : s.y;
+  /* D'où vient le coup : angle MONDE pour le plateau, angle ÉCRAN pour la
+     vignette (sous le roulis et la bascule les deux ne coïncident pas). */
+  var wa = angTo(s.x, s.y, hx, hy);
+  var sa = wa, P = S2030.phases;
+  if (P && P.worldToScreen && (hx !== s.x || hy !== s.y)) {
+    /* worldToScreen rend {sx, sy} (px du tampon), pas {x, y} : lire x/y
+       renvoyait undefined et l'angle retombait silencieusement sur le monde. */
+    var p0 = P.worldToScreen(s.x, s.y, _hurtP0), q0x = p0.sx, q0y = p0.sy;
+    var p1 = P.worldToScreen(hx, hy, _hurtP1);
+    if (p1.sx !== q0x || p1.sy !== q0y) sa = Math.atan2(p1.sy - q0y, p1.sx - q0x);
+  }
+  S2030.fx && S2030.fx.shake(8);
+  /* Vignette du côté touché : le flash plein écran d'une image ne disait ni
+     d'où venait le coup ni combien il coûtait. */
+  S2030.fx && S2030.fx.flash('#ff2b52', 0.7, 'edge', sa);
+  S2030.fx && S2030.fx.hitstop(4);
+  _hurtSlowT = S.t; _hurtPrevTs = -1;
+  P && P.jolt && P.jolt(src && src.boss ? 2 : (src && src.elite ? 1.5 : 0.6), wa);
+  /* Gerbe : 12 éclats PROJETÉS depuis le point d'impact au lieu de 22 posés
+     dessus. Un amas immobile de 22 points sur la tête éclairait le centre de
+     l'écran, ce que la vignette est justement là pour éviter. */
+  S2030.fx && S2030.fx.burst(hx, hy, '#ff2e63', 12, 210, { glow: true, ang: wa, spread: 1.1, life: 0.28, size: 1.8 });
   S2030.audio && S2030.audio.sfx('hurt');
   haptic([18, 30, 26]);
   if (s.len <= 1) die();
@@ -369,6 +405,7 @@ function die() {
   S.phase = 'dead';
   var s = S.snake;
   S2030.fx && S2030.fx.shake(30);
+  S2030.fx && S2030.fx.hitstop(8);
   S2030.fx && S2030.fx.flash('#ffffff', 0.7);
   S2030.fx && S2030.fx.burst(s.x, s.y, '#00e5ff', 70, 3, { glow: true });
   S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 700);
@@ -452,7 +489,10 @@ function damageEnemy(e, dmg, opts) {
   e.hp -= dmg;
   e.hitT = 90;
   if (opts && opts.x !== undefined) {
-    S2030.fx && S2030.fx.burst(opts.x, opts.y, e.color, 3, 0.7, { glow: true });
+    /* Un projectile joueur passe par fx.hit (gerbe + halo), les autres sources
+       gardent la gerbe courte : sans cela l'impact non létal ne se voyait pas. */
+    if (opts.type === 'bullet' && S2030.fx && S2030.fx.hit) S2030.fx.hit(opts.x, opts.y, e.color);
+    else S2030.fx && S2030.fx.burst(opts.x, opts.y, e.color, 3, 0.7, { glow: true });
   }
   if (e.hp <= 0) killEnemy(e, opts);
   else if (S2030.audio) S2030.audio.sfx('hit');
@@ -472,10 +512,29 @@ function killEnemy(e, opts) {
      l'être. Une partie ordinaire doit offrir une à deux surcharges. */
   S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
   S.coins += e.elite ? 5 : 1;
+  /* Direction du tir qui l'a tué : le point d'impact est du côté du tireur,
+     donc impact -> centre donne le sens de déplacement du projectile. Sans
+     point d'impact utilisable, on retombe sur tête -> ennemi. */
+  var ka;
+  if (opts && opts.vx !== undefined && (opts.vx || opts.vy)) ka = Math.atan2(opts.vy, opts.vx);
+  else if (opts && opts.x !== undefined && dist2(opts.x, opts.y, e.x, e.y) > 1)
+    ka = angTo(opts.x, opts.y, e.x, e.y);
+  else ka = angTo(S.snake.x, S.snake.y, e.x, e.y);
+  e.killAng = ka;
+  /* Score flottant : taille indexée sur le combo, ambre dès que le
+     multiplicateur mord. Un kill = un texte, élite comprise. */
+  if (S2030.fx && S2030.fx.text) {
+    var cb = S.combo < 6 ? S.combo : 6;
+    S2030.fx.text(e.x, e.y - e.r - 10, '+' + Math.round(e.score * S.mult),
+                  S.mult > 1 ? '#ffb14a' : '#ffffff', { size: 13 + 2 * cb, vy: -60 });
+  }
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
-  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
-  S2030.phases && S2030.phases.pulse(e.elite ? 0.05 : 0.012);
-  if (e.elite) { S2030.fx && S2030.fx.shake(9); haptic(20); }
+  /* Hauteur du son de kill : un demi-ton par palier de combo, douze au plus —
+     une série se lit à l'oreille comme une montée, pas comme une répétition. */
+  var kp = Math.pow(2, (S.combo < 12 ? S.combo : 12) / 12);
+  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x, pitch: kp });
+  S2030.phases && S2030.phases.pulse(e.elite ? 0.09 : 0.035);
+  if (e.elite) haptic(20);
   deathEffects(e);
 }
 
@@ -704,7 +763,7 @@ function collide(dt) {
       e = hits[j];
       var rr = b.r + e.r;
       if (dist2(b.x, b.y, e.x, e.y) > rr * rr) continue;
-      damageEnemy(e, b.dmg, { x: b.x, y: b.y, type: 'bullet' });
+      damageEnemy(e, b.dmg, { x: b.x, y: b.y, type: 'bullet', vx: b.vx, vy: b.vy });
       if (b.onHit) b.onHit(e);
       if (b.aoe) {
         var around = enemiesNear(b.x, b.y, b.aoe);
@@ -729,7 +788,6 @@ function collide(dt) {
     var hr = b.r + S.headR;
     if (s.invuln <= 0 && dist2(b.x, b.y, s.x, s.y) < hr * hr) {
       hurtSnake(b.dmg, b.x, b.y);
-      if (S2030.phases && b.dmg >= 2) S2030.phases.jolt(1.2, angTo(s.x, s.y, b.x, b.y));
       S.ebullets.splice(i, 1); continue;
     }
     /* Anneaux : les 8 premiers d'abord (ils blessent et l'emportent sur le reste
@@ -768,11 +826,7 @@ function collide(dt) {
           damageEnemy(e, S.up.f_ramDamage, { x: e.x, y: e.y });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#fff3b0', 10, 1.4, { glow: true });
         } else if (s.invuln <= 0) {
-          hurtSnake(e.dmg, e.x, e.y);
-          // un adversaire lourd fait piquer le plateau : le coup se voit
-          if (S2030.phases && (e.elite || e.boss || e.dmg >= 2)) {
-            S2030.phases.jolt(e.boss ? 2 : (e.elite ? 1.5 : 1), angTo(s.x, s.y, e.x, e.y));
-          }
+          hurtSnake(e.dmg, e.x, e.y, e);   // hurtSnake fait piquer le plateau pour TOUTE blessure
           if (e.suicide) killEnemy(e);
         }
       } else if (S.up.f_thorns) {

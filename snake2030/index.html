@@ -353,19 +353,35 @@ function updateSnake(dt) {
     var low = s.len <= 3;
     S.timeScale = low ? (1 - 0.18 * S.up.f_slowmo) : 1;
   }
+  hurtSlowTick();
 }
 
 var _wallT = 0;
 function wallBump() {
   if (S.t - _wallT < 260) return;
   _wallT = S.t;
-  S2030.fx && S2030.fx.shake(5);
+  S2030.fx && S2030.fx.shake(3);
   S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ff5c8a', 8, 260);
   S2030.audio && S2030.audio.sfx('hit');
 }
 
-/* ------ dégâts joueur */
-function hurtSnake(dmg, x, y) {
+/* ------ dégâts joueur
+   ARRÊT SUR IMAGE : 0,4 pendant 180 ms puis retour linéaire sur 120 ms.
+   Compté en temps de jeu (S.t), donc insensible au ralenti qu'il pose. */
+var _hurtSlowT = 0, _hurtPrevTs = -1;
+var _hurtP0 = { x: 0, y: 0 }, _hurtP1 = { x: 0, y: 0 };
+function hurtSlowTick() {
+  if (_hurtSlowT <= 0) return;
+  var el = S.t - _hurtSlowT, ts;
+  if (el < 180) ts = 0.4;
+  else if (el < 300) ts = 0.4 + 0.6 * (el - 180) / 120;
+  else ts = 1;
+  if (S.timeScale === _hurtPrevTs || S.timeScale > ts) S.timeScale = ts;
+  _hurtPrevTs = ts;
+  if (el >= 300) { _hurtSlowT = 0; _hurtPrevTs = -1; }
+}
+
+function hurtSnake(dmg, x, y, src) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
   dmg = Math.max(1, dmg | 0);
@@ -392,9 +408,29 @@ function hurtSnake(dmg, x, y) {
   if (S.up.f_ghostOnHit) s.ghost = Math.max(s.ghost, 700 * S.up.f_ghostOnHit);
   // SANG-FROID : le multiplicateur survit au coup
   if (!S.up.f_multKeep) { S.mult = 1; S.combo = 0; }
-  S2030.fx && S2030.fx.shake(14);
-  S2030.fx && S2030.fx.flash('#ff2e63', 0.35);
-  S2030.fx && S2030.fx.burst(x !== undefined ? x : s.x, y !== undefined ? y : s.y, '#ff2e63', 22, 1.5, { glow: true });
+  var hx = x !== undefined ? x : s.x, hy = y !== undefined ? y : s.y;
+  /* D'où vient le coup : angle MONDE pour le plateau, angle ÉCRAN pour la
+     vignette (sous le roulis et la bascule les deux ne coïncident pas). */
+  var wa = angTo(s.x, s.y, hx, hy);
+  var sa = wa, P = S2030.phases;
+  if (P && P.worldToScreen && (hx !== s.x || hy !== s.y)) {
+    /* worldToScreen rend {sx, sy} (px du tampon), pas {x, y} : lire x/y
+       renvoyait undefined et l'angle retombait silencieusement sur le monde. */
+    var p0 = P.worldToScreen(s.x, s.y, _hurtP0), q0x = p0.sx, q0y = p0.sy;
+    var p1 = P.worldToScreen(hx, hy, _hurtP1);
+    if (p1.sx !== q0x || p1.sy !== q0y) sa = Math.atan2(p1.sy - q0y, p1.sx - q0x);
+  }
+  S2030.fx && S2030.fx.shake(8);
+  /* Vignette du côté touché : le flash plein écran d'une image ne disait ni
+     d'où venait le coup ni combien il coûtait. */
+  S2030.fx && S2030.fx.flash('#ff2b52', 0.7, 'edge', sa);
+  S2030.fx && S2030.fx.hitstop(4);
+  _hurtSlowT = S.t; _hurtPrevTs = -1;
+  P && P.jolt && P.jolt(src && src.boss ? 2 : (src && src.elite ? 1.5 : 0.6), wa);
+  /* Gerbe : 12 éclats PROJETÉS depuis le point d'impact au lieu de 22 posés
+     dessus. Un amas immobile de 22 points sur la tête éclairait le centre de
+     l'écran, ce que la vignette est justement là pour éviter. */
+  S2030.fx && S2030.fx.burst(hx, hy, '#ff2e63', 12, 210, { glow: true, ang: wa, spread: 1.1, life: 0.28, size: 1.8 });
   S2030.audio && S2030.audio.sfx('hurt');
   haptic([18, 30, 26]);
   if (s.len <= 1) die();
@@ -412,6 +448,7 @@ function die() {
   S.phase = 'dead';
   var s = S.snake;
   S2030.fx && S2030.fx.shake(30);
+  S2030.fx && S2030.fx.hitstop(8);
   S2030.fx && S2030.fx.flash('#ffffff', 0.7);
   S2030.fx && S2030.fx.burst(s.x, s.y, '#00e5ff', 70, 3, { glow: true });
   S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 700);
@@ -495,7 +532,10 @@ function damageEnemy(e, dmg, opts) {
   e.hp -= dmg;
   e.hitT = 90;
   if (opts && opts.x !== undefined) {
-    S2030.fx && S2030.fx.burst(opts.x, opts.y, e.color, 3, 0.7, { glow: true });
+    /* Un projectile joueur passe par fx.hit (gerbe + halo), les autres sources
+       gardent la gerbe courte : sans cela l'impact non létal ne se voyait pas. */
+    if (opts.type === 'bullet' && S2030.fx && S2030.fx.hit) S2030.fx.hit(opts.x, opts.y, e.color);
+    else S2030.fx && S2030.fx.burst(opts.x, opts.y, e.color, 3, 0.7, { glow: true });
   }
   if (e.hp <= 0) killEnemy(e, opts);
   else if (S2030.audio) S2030.audio.sfx('hit');
@@ -515,10 +555,29 @@ function killEnemy(e, opts) {
      l'être. Une partie ordinaire doit offrir une à deux surcharges. */
   S.ult = Math.min(S.ultMax, S.ult + (e.elite ? 22 : 4.5));
   S.coins += e.elite ? 5 : 1;
+  /* Direction du tir qui l'a tué : le point d'impact est du côté du tireur,
+     donc impact -> centre donne le sens de déplacement du projectile. Sans
+     point d'impact utilisable, on retombe sur tête -> ennemi. */
+  var ka;
+  if (opts && opts.vx !== undefined && (opts.vx || opts.vy)) ka = Math.atan2(opts.vy, opts.vx);
+  else if (opts && opts.x !== undefined && dist2(opts.x, opts.y, e.x, e.y) > 1)
+    ka = angTo(opts.x, opts.y, e.x, e.y);
+  else ka = angTo(S.snake.x, S.snake.y, e.x, e.y);
+  e.killAng = ka;
+  /* Score flottant : taille indexée sur le combo, ambre dès que le
+     multiplicateur mord. Un kill = un texte, élite comprise. */
+  if (S2030.fx && S2030.fx.text) {
+    var cb = S.combo < 6 ? S.combo : 6;
+    S2030.fx.text(e.x, e.y - e.r - 10, '+' + Math.round(e.score * S.mult),
+                  S.mult > 1 ? '#ffb14a' : '#ffffff', { size: 13 + 2 * cb, vy: -60 });
+  }
   S2030.enemies && S2030.enemies.onDeath && S2030.enemies.onDeath(e);
-  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x });
-  S2030.phases && S2030.phases.pulse(e.elite ? 0.05 : 0.012);
-  if (e.elite) { S2030.fx && S2030.fx.shake(9); haptic(20); }
+  /* Hauteur du son de kill : un demi-ton par palier de combo, douze au plus —
+     une série se lit à l'oreille comme une montée, pas comme une répétition. */
+  var kp = Math.pow(2, (S.combo < 12 ? S.combo : 12) / 12);
+  S2030.audio && S2030.audio.sfx(e.elite ? 'bigkill' : 'kill', { x: e.x, pitch: kp });
+  S2030.phases && S2030.phases.pulse(e.elite ? 0.09 : 0.035);
+  if (e.elite) haptic(20);
   deathEffects(e);
 }
 
@@ -747,7 +806,7 @@ function collide(dt) {
       e = hits[j];
       var rr = b.r + e.r;
       if (dist2(b.x, b.y, e.x, e.y) > rr * rr) continue;
-      damageEnemy(e, b.dmg, { x: b.x, y: b.y, type: 'bullet' });
+      damageEnemy(e, b.dmg, { x: b.x, y: b.y, type: 'bullet', vx: b.vx, vy: b.vy });
       if (b.onHit) b.onHit(e);
       if (b.aoe) {
         var around = enemiesNear(b.x, b.y, b.aoe);
@@ -772,7 +831,6 @@ function collide(dt) {
     var hr = b.r + S.headR;
     if (s.invuln <= 0 && dist2(b.x, b.y, s.x, s.y) < hr * hr) {
       hurtSnake(b.dmg, b.x, b.y);
-      if (S2030.phases && b.dmg >= 2) S2030.phases.jolt(1.2, angTo(s.x, s.y, b.x, b.y));
       S.ebullets.splice(i, 1); continue;
     }
     /* Anneaux : les 8 premiers d'abord (ils blessent et l'emportent sur le reste
@@ -811,11 +869,7 @@ function collide(dt) {
           damageEnemy(e, S.up.f_ramDamage, { x: e.x, y: e.y });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#fff3b0', 10, 1.4, { glow: true });
         } else if (s.invuln <= 0) {
-          hurtSnake(e.dmg, e.x, e.y);
-          // un adversaire lourd fait piquer le plateau : le coup se voit
-          if (S2030.phases && (e.elite || e.boss || e.dmg >= 2)) {
-            S2030.phases.jolt(e.boss ? 2 : (e.elite ? 1.5 : 1), angTo(s.x, s.y, e.x, e.y));
-          }
+          hurtSnake(e.dmg, e.x, e.y, e);   // hurtSnake fait piquer le plateau pour TOUTE blessure
           if (e.suicide) killEnemy(e);
         }
       } else if (S.up.f_thorns) {
@@ -962,8 +1016,10 @@ var _FX_NFLARE = 40;    // halos additifs
 var _FX_NTEXT  = 30;    // textes flottants
 
 var _FX_AQ        = 20;    // quantification de l'alpha (batching)
-var _FX_SHAKE_MAX = 30;    // unités monde
-var _FX_HIT_MAX   = 140;   // ms
+var _FX_SHAKE_MAX = 18;    // unités monde (G8 : plafond global de secousse)
+var _FX_HIT_MAX   = 6;     // hitstop : borne documentaire des demandes ordinaires (kill 2, elite 5, blessure 4) ; la mort en vaut 8
+var _FX_FLASH_GAP = 4000;  // un seul flash plein écran toutes les 4 s (ms de jeu)
+var _FX_FLASH_MIN = 0.28;  // en dessous, c'est de l'ambiance : vignette, pas nappe
 var _FX_STREAK_MAX = 96;   // longueur max d'une traînée, unités monde
 
 var _fxFontFam = "'Rajdhani','Orbitron',ui-sans-serif,system-ui,sans-serif";
@@ -1003,11 +1059,18 @@ var _fxPi = 0, _fxRi = 0, _fxFi = 0, _fxTi = 0;
 /* ------ état global du fx */
 
 var _fxShake   = 0;   // amplitude courante, unités monde
-var _fxHit     = 0;   // hitstop restant, ms
+var _fxShakeNew = 0;  // part posée DANS l'image en cours : jamais amortie avant d'être vue
+var _fxHit     = 0;   // hitstop restant, en IMAGES (décrémenté par frame(), pas ici)
 var _fxFlashA  = 0;   // flash plein écran
 var _fxFlashC  = '#ffffff';
+var _fxFlashK  = 0;   // décroissance linéaire /s quand une durée est imposée
+var _fxFlashT  = -1e9; // date du dernier flash plein écran réellement joué (S.t)
+var _fxFlashN  = 0;   // compteur de flashs plein écran joués (sonde)
+var _fxVigN    = 0;   // compteur de vignettes (sonde)
 var _fxVigA    = 0;   // flash en vignette (bords)
 var _fxVigC    = '#ff2b52';
+var _fxVigDx   = 0, _fxVigDy = 0, _fxVigDir = 0;   // direction d'impact (repère écran)
+var _fxCamRx   = 0, _fxCamRy = 0;   // recul de caméra restant, unités monde
 var _fxGlitch  = 0;   // 0..1
 
 /* ------ caches sans alloc */
@@ -1272,25 +1335,71 @@ function _fxText(x, y, str, color, opts) {
 
 function _fxShakeAdd(amount) {
   if (!amount) return;
-  _fxShake += amount * _fxShakeF();
-  if (_fxShake > _FX_SHAKE_MAX) _fxShake = _FX_SHAKE_MAX;
+  var v = amount * _fxShakeF();
+  _fxShake += v; _fxShakeNew += v;
+  if (_fxShake > _FX_SHAKE_MAX) { _fxShake = _FX_SHAKE_MAX; if (_fxShakeNew > _FX_SHAKE_MAX) _fxShakeNew = _FX_SHAKE_MAX; }
 }
 
-function _fxHitstop(ms) {
-  if (!ms) return;
-  if (ms > _FX_HIT_MAX) ms = _FX_HIT_MAX;
-  if (ms > _fxHit) _fxHit = ms;
+/** Hitstop compté en IMAGES. n images gelées à timeScale 0,08 ; le décrément
+   appartient à frame() (90-boot.js), APRÈS la lecture de hitstopLeft() : la
+   pose ne peut donc pas être consommée par l'image qui la pose. Plafond de 6
+   images cumulées, sauf pour une demande plus grande (la mort en vaut 8). */
+function _fxHitstop(n) {
+  if (!n) return;
+  n = n | 0;
+  if (n <= 0) return;
+  /* « max, jamais somme » : le plafond borne la DEMANDE ENTRANTE, jamais un
+     gel DÉJÀ POSÉ. Une demande au-delà du plafond ordinaire porte son propre
+     plafond (mort 8), donc min(n, cap(n)) vaut toujours n et _FX_HIT_MAX ne
+     sert qu'à documenter la borne des demandes ordinaires (kill 2, élite 5,
+     blessure 4). Le rabattre sur _fxHit ramenait le 8 de la mort à 6 dès
+     qu'un fx.kill(2) arrivait dans la MÊME image — ce que collide() fait à
+     chaque mort par ennemi suicide (mine) : hurtSnake() puis killEnemy(). */
+  if (n > _fxHit) _fxHit = n;
 }
 
-/** Flash plein écran. mode 'edge' => vignette (idéal pour les dégâts). */
-function _fxFlash(color, a, mode) {
+/** Une image de hitstop consommée. Appelé par frame() seulement. */
+function _fxHitStep() {
+  if (_fxHit > 0) _fxHit--;
+}
+
+/** Flash. mode 'edge' => vignette de bord, orientée par `ang` (repère écran).
+   Budget global : un seul flash PLEIN ÉCRAN toutes les 4 s de jeu ; les
+   suivants sont rendus en vignette, qui laisse le centre lisible.
+   `ms` impose une durée (décroissance linéaire) ; sinon décroissance libre. */
+function _fxFlash(color, a, mode, ang, ms) {
   if (a === undefined) a = 0.5;
   a *= _fxFlashF();
+  if (a <= 0) return;
+  var t = (typeof S !== 'undefined' && S) ? (S.t || 0) : 0;
+  /* Budget : une nappe plein écran toutes les 4 s, et seulement pour un
+     événement franc. En dessous de 0,28 le flash n'annonce rien qu'une
+     bannière ne dise déjà — il ne fait que blanchir l'écran. */
+  if (mode !== 'edge' && (t - _fxFlashT < _FX_FLASH_GAP || a < _FX_FLASH_MIN)) mode = 'edge';
   if (mode === 'edge') {
-    if (a > _fxVigA) { _fxVigA = a > 1 ? 1 : a; _fxVigC = color || '#ff2b52'; }
+    if (a > _fxVigA) {
+      _fxVigA = a > 1 ? 1 : a;
+      _fxVigC = color || '#ff2b52';
+      _fxVigN++;
+      if (ang === undefined || ang === null) { _fxVigDir = 0; }
+      else { _fxVigDir = 1; _fxVigDx = Math.cos(ang); _fxVigDy = Math.sin(ang); }
+    }
   } else {
-    if (a > _fxFlashA) { _fxFlashA = a > 1 ? 1 : a; _fxFlashC = color || '#ffffff'; }
+    if (a > _fxFlashA) {
+      _fxFlashA = a > 1 ? 1 : a;
+      _fxFlashC = color || '#ffffff';
+      _fxFlashK = (ms > 0) ? (_fxFlashA / (ms / 1000)) : 0;
+      _fxFlashT = t; _fxFlashN++;
+    }
   }
+}
+
+/** Recul de caméra : impulsion de `amount` unités monde dans la direction
+   `ang`, étalée sur deux à trois images (jamais un saut sec). */
+function _fxRecoil(ang, amount) {
+  if (!amount) return;
+  _fxCamRx += Math.cos(ang) * amount;
+  _fxCamRy += Math.sin(ang) * amount;
 }
 
 function _fxGlitchAdd(a) {
@@ -1349,26 +1458,47 @@ function _fxUpdate(dt) {
     t.vy *= 1 / (1 + 2.6 * dt);
   }
 
-  // secousse : amortissement exponentiel (demi-vie ~90 ms)
+  /* Secousse : plus haute mais BEAUCOUP plus courte. Deux corrections liées.
+     (1) La part posée PENDANT cette image n'est pas amortie : sinon
+     l'amplitude demandée n'est jamais celle qui s'affiche (4,5 u posés ne
+     rendaient que 3,9 u). (2) L'amortissement passe de 0,00045 à 1e-13 par
+     seconde : une secousse de kill retombe sous 0,5 u en 4 images au lieu de
+     17. Mesuré sur 5 min increvables : part d'images secouées 23,4 % → voir
+     le rapport ; l'ancienne queue rendait l'écran tremblant en permanence
+     sans jamais rien signifier. */
   if (_fxShake > 0) {
-    _fxShake *= Math.pow(0.00045, dt);
-    _fxShake -= 1.2 * dt;
+    var old = _fxShake - _fxShakeNew;
+    if (old > 0) {
+      old *= Math.pow(1e-13, dt);
+      old -= 1.2 * dt;
+      if (old < 0) old = 0;
+    } else old = 0;
+    _fxShake = old + _fxShakeNew;
     if (_fxShake < 0.02) _fxShake = 0;
   }
+  _fxShakeNew = 0;
 
-  // hitstop : décrément garanti même si le cœur ralentit dt
-  if (_fxHit > 0) {
-    var d = dt * 1000;
-    if (d < 4) d = 4;
-    _fxHit -= d;
-    if (_fxHit < 0) _fxHit = 0;
+  // hitstop : compté en images, décrémenté par frame() — rien à faire ici
+
+  // recul de caméra : ~93 % du reste par image à 60 Hz, vu en deux à trois images
+  if (_fxCamRx !== 0 || _fxCamRy !== 0) {
+    var kr = dt / 0.018;
+    if (kr > 1) kr = 1; else if (kr < 0) kr = 0;
+    var rx = _fxCamRx * kr, ry = _fxCamRy * kr;
+    _fxCamRx -= rx; _fxCamRy -= ry;
+    if (Math.abs(_fxCamRx) < 0.01 && Math.abs(_fxCamRy) < 0.01) { _fxCamRx = 0; _fxCamRy = 0; }
+    if (typeof S !== 'undefined' && S && S.cam) { S.cam.x += rx; S.cam.y += ry; }
   }
 
   // flashs
   if (_fxFlashA > 0) {
-    _fxFlashA *= 1 / (1 + 9 * dt);
-    _fxFlashA -= 0.7 * dt;
-    if (_fxFlashA < 0.004) _fxFlashA = 0;
+    if (_fxFlashK > 0) {
+      _fxFlashA -= _fxFlashK * dt;
+    } else {
+      _fxFlashA *= 1 / (1 + 9 * dt);
+      _fxFlashA -= 0.7 * dt;
+    }
+    if (_fxFlashA < 0.004) { _fxFlashA = 0; _fxFlashK = 0; }
   }
   if (_fxVigA > 0) {
     _fxVigA *= 1 / (1 + 4.5 * dt);
@@ -1596,6 +1726,25 @@ function _fxVigGrad(ctx, col, w, h) {
   return g;
 }
 
+/* Vignette DIRECTIONNELLE : le centre du dégradé est posé sur le bord touché,
+   rayon = un quart de la diagonale. Le bord côté impact prend toute la
+   couleur, le centre de l'écran et le bord opposé n'en reçoivent rien — c'est
+   ce qui distingue « je me fais toucher par la droite » d'un flash blanc. */
+function _fxVigDirGrad(ctx, col, w, h, dx, dy) {
+  var base = _fxRgb(col);
+  var px = w * 0.5 + dx * w * 0.5, py = h * 0.5 + dy * h * 0.5;
+  var r = 0.5 * Math.sqrt(w * w * 0.25 + h * h * 0.25);
+  var g = ctx.createRadialGradient(px, py, 0, px, py, r);
+  /* Plateau à pleine couleur sur la moitié du rayon, puis extinction : le
+     gain de luminance doit tenir même quand le bord touché est déjà la partie
+     claire de la scène (mesuré : +14 points seulement sur un tiers d'écran à
+     31/255 avec un dégradé linéaire, contre +23 avec le plateau). */
+  g.addColorStop(0, 'rgba(' + base + ',1)');
+  g.addColorStop(0.55, 'rgba(' + base + ',1)');
+  g.addColorStop(1, 'rgba(' + base + ',0)');
+  return g;
+}
+
 /* ------ marqueurs de bord (repère ÉCRAN)
    Poussés pendant la mise à jour par levels (portails d'apparition) et par
    enemies (armement dont la source est sortie du cadre) ; dessinés puis vidés
@@ -1761,11 +1910,16 @@ function _fxDrawEdges(ctx, w, h) {
 }
 
 function _fxDrawScreen(ctx, w, h) {
-  // vignette de danger / dégâts
+  // vignette de danger / dégâts (directionnelle quand l'angle est connu)
   if (_fxVigA > 0.004) {
-    ctx.globalAlpha = _fxVigA;
+    ctx.globalAlpha = _fxVigDir ? _fxVigA * 0.10 : _fxVigA;
     ctx.fillStyle = _fxVigGrad(ctx, _fxVigC, w, h);
     ctx.fillRect(0, 0, w, h);
+    if (_fxVigDir) {
+      ctx.globalAlpha = _fxVigA;
+      ctx.fillStyle = _fxVigDirGrad(ctx, _fxVigC, w, h, _fxVigDx, _fxVigDy);
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.globalAlpha = 1;
   }
 
@@ -1816,8 +1970,10 @@ function _fxReset() {
   for (i = 0; i < _FX_NTEXT; i++) { _fxTexts[i].on = false; _fxTexts[i].s = ''; }
   _fxPi = _fxRi = _fxFi = _fxTi = 0;
   _fxEdgeN = 0;
-  _fxShake = 0; _fxHit = 0;
-  _fxFlashA = 0; _fxVigA = 0; _fxGlitch = 0;
+  _fxShake = 0; _fxShakeNew = 0; _fxHit = 0;
+  _fxFlashA = 0; _fxFlashK = 0; _fxVigA = 0; _fxVigDir = 0; _fxGlitch = 0;
+  _fxFlashT = -1e9; _fxFlashN = 0; _fxVigN = 0;
+  _fxCamRx = 0; _fxCamRy = 0;
   if (typeof S !== 'undefined' && S) {
     S.shake = 0; S.hitstop = 0; S.shakeX = 0; S.shakeY = 0;
   }
@@ -1832,8 +1988,10 @@ S2030.fx = {
   trail: _fxTrail,
   shake: _fxShakeAdd,
   hitstop: _fxHitstop,
+  hitstopStep: _fxHitStep,
   text: _fxText,
   flash: _fxFlash,
+  recoil: _fxRecoil,
 
   update: _fxUpdate,
   draw: _fxDraw,
@@ -1845,6 +2003,8 @@ S2030.fx = {
   // extras lus par le cœur
   shakeAmount: function () { return _fxShake; },
   hitstopLeft: function () { return _fxHit; },
+  // sondes : flashs PLEIN ÉCRAN réellement joués, et vignettes
+  flashStats: function () { return { full: _fxFlashN, vignette: _fxVigN }; },
   shakeX: function () { return (typeof S !== 'undefined' && S) ? (S.shakeX || 0) : 0; },
   shakeY: function () { return (typeof S !== 'undefined' && S) ? (S.shakeY || 0) : 0; },
 
@@ -1861,14 +2021,28 @@ S2030.fx = {
     _fxBurst(x, y, color || '#fff2c0', 5, power || 190, { life: 0.2, size: 1.6, spread: 1.0, ang: rndR(-3.14159, 3.14159) });
     _fxFlare(x, y, color || '#fff2c0', 22, { life: 0.14, a: 0.7 });
   },
-  kill: function (x, y, color, big) {
+  /* Mort d'un ennemi. `ang` = direction du tir qui l'a tué : la caméra recule
+     de 3 u dans le sens opposé. `r` = rayon de la silhouette (flash blanc).
+     Anneau et halo sont divisés par le zoom courant pour que l'impact garde la
+     même taille À L'ÉCRAN de 0,78× à 1,35×. */
+  kill: function (x, y, color, big, ang, r) {
     var n = big ? 34 : 16;
-    _fxBurst(x, y, color || '#ff5ad6', n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
+    var z = 1;
+    if (S2030.phases && S2030.phases.zoom) { z = S2030.phases.zoom() || 1; if (z < 0.2) z = 0.2; }
+    var iz = 1 / z;
+    var col = color || '#ff5ad6';
+    var rad = (r > 0 ? r : (big ? 22 : 13));
+    _fxBurst(x, y, col, n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
     _fxBurst(x, y, '#ffffff', big ? 12 : 6, big ? 300 : 190, { size: 1.6, life: 0.2 });
-    _fxRing(x, y, color || '#ff5ad6', big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
-    _fxFlare(x, y, color || '#ff5ad6', big ? 110 : 54, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
-    _fxShakeAdd(big ? 9 : 2.4);
-    _fxHitstop(big ? 55 : 12);
+    // éclats francs : 6 shards à 300 u/s pendant 0,35 s
+    _fxBurst(x, y, '#ffffff', 6, 300, { shape: 'shard', life: 0.35, size: 2.1, drag: 0.6, spin: 9, fade: 1 });
+    _fxRing(x, y, col, (big ? 14 : 8) * iz, (big ? 520 : 330) * iz, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
+    _fxFlare(x, y, col, (big ? 110 : 54) * iz, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
+    // flash blanc de la silhouette : 60 ms, taille de l'ennemi, pleine opacité
+    _fxFlare(x, y, '#ffffff', rad * 1.35, { life: 0.06, a: 1 });
+    _fxShakeAdd(big ? 14 : 4.5);
+    _fxHitstop(big ? 5 : 2);
+    if (ang !== undefined && ang !== null) _fxRecoil(ang + Math.PI, 3);
   },
   pickup: function (x, y, color) {
     _fxBurst(x, y, color || '#7df9ff', 8, 150, { size: 1.6, life: 0.28, shape: 'dot', drag: 3.2 });
@@ -1970,6 +2144,10 @@ var _audFxMax = {
    cadence sans la marteler. */
 var _audFxWin = { shoot: 0.09, hit: 0.055, zap: 0.06 };
 var _audPlayed = {};
+/* Dernier effet REELLEMENT joue : nom, fondamentale annoncee par le son
+   (0 quand il n'en declare pas) et date du contexte audio. Sonde de test. */
+var _audF0 = 0;
+var _audLast = { name: '', f0: 0, t: 0 };
 function _audAllow(name, t){
   var g = _audGuard[name];
   if(!g){ g = { t0: t, n: 0 }; _audGuard[name] = g; }
@@ -2083,6 +2261,7 @@ var _audFx = {
   /* --- tirs joueur : clair, court, jamais fatigant ------ */
   shoot: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
+    _audF0 = 540 * p;
     /* C'est l'attaque qui fait lire un tir, pas la hauteur. Un carre qui
        glisse de 900 a 250 Hz, repete, s'entend comme un jouet ; on garde
        donc un souffle court filtre, un corps triangulaire discret et un
@@ -2094,6 +2273,7 @@ var _audFx = {
   },
   laser: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
+    _audF0 = 1500 * p;
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.075 * v, 0.003, 5200, 700, 6, d, 6);
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.05 * v, 0.003, 4200, 600, 6, d, -9);
     _audNoise(t, 'bandpass', 5200, 900, 0.16, 0.05 * v, 3.2, d);
@@ -2119,16 +2299,23 @@ var _audFx = {
     _audNoise(t, 'bandpass', 1900, 900, 0.045, 0.055 * v, 1.4, d);
     _audTone(t, 'triangle', 420, 190, 0.05, 0.035 * v, 0.001, 3000, 1200, 1, d, 0);
   },
-  kill: function(t, v, d){
-    _audNoise(t, 'lowpass', 2600, 260, 0.20, 0.14 * v, 0.8, d);
-    _audTone(t, 'square', 320, 80, 0.17, 0.07 * v, 0.002, 1800, 400, 2, d, 0);
-    _audSub(t, 140, 42, 0.20, 0.20 * v, d);
+  /* La hauteur monte avec le combo (opts.pitch) : une serie de kills se lit
+     comme une montee. Le grave ne suit qu'a la racine, sinon la basse part
+     dans l'aigu et la frappe perd son poids. */
+  kill: function(t, v, d, o){
+    var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
+    _audF0 = 320 * p;
+    _audNoise(t, 'lowpass', 2600 * p, 260 * p, 0.20, 0.14 * v, 0.8, d);
+    _audTone(t, 'square', 320 * p, 80 * p, 0.17, 0.07 * v, 0.002, 1800, 400, 2, d, 0);
+    _audSub(t, 140 * ps, 42 * ps, 0.20, 0.20 * v, d);
   },
-  bigkill: function(t, v, d){
-    _audNoise(t, 'lowpass', 5200, 180, 0.50, 0.24 * v, 0.7, d);
-    _audSub(t, 190, 30, 0.55, 0.55 * v, d);
-    _audTone(t, 'sawtooth', 520, 70, 0.40, 0.09 * v, 0.004, 2600, 300, 2, d, -12);
-    _audNoise(t + 0.10, 'bandpass', 900, 200, 0.42, 0.09 * v, 1.1, d);
+  bigkill: function(t, v, d, o){
+    var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
+    _audF0 = 520 * p;
+    _audNoise(t, 'lowpass', 5200 * p, 180 * p, 0.50, 0.24 * v, 0.7, d);
+    _audSub(t, 190 * ps, 30 * ps, 0.55, 0.55 * v, d);
+    _audTone(t, 'sawtooth', 520 * p, 70 * p, 0.40, 0.09 * v, 0.004, 2600, 300, 2, d, -12);
+    _audNoise(t + 0.10, 'bandpass', 900 * p, 200 * p, 0.42, 0.09 * v, 1.1, d);
   },
   explode: function(t, v, d){
     _audNoise(t, 'lowpass', 3800, 120, 0.45, 0.26 * v, 0.6, d);
@@ -2984,8 +3171,12 @@ S2030.audio = {
     }
     if(v <= 0) return;
     if(v > 2) v = 2;
+    _audF0 = 0;
     fn(t, v, d, opts);
+    _audLast.name = name; _audLast.f0 = _audF0; _audLast.t = t;
   },
+
+  lastSfx: function(){ return { name: _audLast.name, f0: _audLast.f0, t: _audLast.t }; },
 
   /* plongeon bref, battement grave, retour explosif */
   ultimate: function(){
@@ -3645,7 +3836,7 @@ function _enUpCutter(e, dt, s) {
       for (var i = 0; i < segs.length; i += 2) {
         if (dist2(e.x, e.y, segs[i].x, segs[i].y) < rr) {
           e.cutHit = 1;
-          hurtSnake(e.dmg, e.x, e.y);
+          hurtSnake(e.dmg, e.x, e.y, e);
           S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 12, 300, { size: 2, life: 0.3 });
           break;
         }
@@ -3762,7 +3953,7 @@ function _enUpParasite(e, dt, s) {
     }
     if (e.biteT <= 0) {
       e.biteT = e.biteMs; e.warned = 0;
-      hurtSnake(1, e.x, e.y);
+      hurtSnake(1, e.x, e.y, e);
       S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 14, 280, { size: 2, life: 0.32 });
       S2030.audio && S2030.audio.sfx('hurt');
     }
@@ -4833,8 +5024,16 @@ function _enDraw(ctx, e) {
   if (f) f(ctx, e, col);
   _enModDraw(ctx, e, col);
   if (e.elite) _enElite(ctx, e, col);
-  if (e.hitT > 0) {
-    // éclat blanc franc : l'impact doit se sentir même dans le fouillis
+  if (e.hitT > 30) {
+    /* Silhouette REMPLIE de blanc opaque tant qu'il reste plus de 60 ms, puis
+       fondue sur les 30 ms suivantes : un éclat additif à 55 % se perdait dans
+       le fouillis, on ne voyait pas ce qu'on touchait. */
+    var ha = e.hitT > 60 ? 1 : (e.hitT - 30) / 30;
+    ctx.globalAlpha = ha;
+    ctx.fillStyle = _EN_WHITE;
+    ctx.beginPath(); ctx.arc(0, 0, e.r, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (e.hitT > 0) {
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = clamp(e.hitT / 90, 0, 1) * 0.55;
     ctx.fillStyle = _EN_WHITE;
@@ -4850,12 +5049,11 @@ function _enOnDeath(e) {
   var big = e.elite || e.maxHp >= 40;
 
   if (fx) {
-    if (fx.kill) fx.kill(e.x, e.y, e.color, big);
+    if (fx.kill) fx.kill(e.x, e.y, e.color, big, e.killAng, e.r);
     else {
       fx.burst(e.x, e.y, e.color, big ? 34 : 16, big ? 420 : 260, { size: big ? 3 : 2, life: 0.4 });
       fx.ring(e.x, e.y, e.color, big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: 0.4 });
     }
-    if (e.elite) fx.text(e.x, e.y - e.r - 12, '+' + Math.round(e.score * S.mult), _EN_HOT);
   }
 
   _enLoot(e);
@@ -9679,7 +9877,12 @@ var _UI_CSS = [
 '  filter:drop-shadow(0 0 calc(6px*var(--bl)) currentColor)}',
 '.s2btn>span{position:relative;font:900 1em/1 var(--fs);color:#04101a;',
 '  text-shadow:0 0 6px rgba(255,255,255,.5)}',
-'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite}',
+'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite;opacity:calc(.42*var(--ca))}',
+/* prêt ET pressé : .rdy suit .on à specificite egale, un bouton pret s'assombrissait
+   sous le doigt (0,42 au lieu de 0,55). L'appui reste l'etat le plus lumineux. */
+'.s2btn.rdy.on{opacity:calc(.62*var(--ca))}',
+/* prêt : halo de l'arc × 1,3 — la jauge pleine se voyait à peine */
+'.s2btn.rdy .arc{stroke-width:8;filter:drop-shadow(0 0 calc(7.8px*var(--bl)) currentColor)}',
 '@keyframes s2rdy{0%,100%{filter:none}50%{filter:brightness(1.7)}}',
 '#ui.nf .s2btn.rdy{animation:none}',
 '.s2b-boost{color:var(--am)} .s2b-special{color:var(--vi)} .s2b-ult{color:var(--mg)}',
@@ -12113,9 +12316,10 @@ function useUlt() {
   S.ult = 0;
   S.timeScale = 0.25;
   S2030.audio && S2030.audio.ultimate();
-  S2030.fx && S2030.fx.flash('#ffffff', 0.85);
-  S2030.fx && S2030.fx.shake(26);
-  S2030.ui && S2030.ui.banner('SURCHARGE');
+  /* Un flash à 0,85 mangeait l'écran une demi-seconde et la bannière cachait
+     le déferlement : 0,4 pendant 120 ms, et on regarde le jeu. */
+  S2030.fx && S2030.fx.flash('#ffffff', 0.4, null, null, 120);
+  S2030.fx && S2030.fx.shake(18);
   haptic([40, 20, 90]);
   // minuteries en temps de jeu (S.t, contrat : jamais l'horloge murale) : le
   // ralenti et le déferlement durent le même nombre d'images d'une machine à
@@ -12324,10 +12528,15 @@ function frame(now) {
   frames++; accFps += raw; accReal += real;
   if (accFps > 0.5) { fps = frames / accReal; frames = 0; accFps = 0; accReal = 0; autoQuality(); }
 
+  /* HITSTOP compté en IMAGES. On lit d'abord, on gèle, PUIS on consomme :
+     une pose faite plus loin dans cette image (un kill, un coup reçu) ne peut
+     donc pas être avalée par l'image qui la pose. C'est ce décalage qui
+     manquait — fx.hitstop(12) ne gelait rien du tout. */
   var hs = S2030.fx && S2030.fx.hitstopLeft ? S2030.fx.hitstopLeft() : 0;
   var scale = hs > 0 ? 0.08 : S.timeScale;
   var dt = raw * scale;
   S.dt = dt;
+  if (hs > 0 && S2030.fx.hitstopStep) S2030.fx.hitstopStep();
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
   try {
@@ -12362,6 +12571,7 @@ function frame(now) {
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
     try { updateCam(dt); } catch (e) { errLog('updateCam', e); }
     try { S2030.audio && S2030.audio.setIntensity(S.intensity); } catch (e) { errLog('audio.setIntensity', e); }
+    try { readyTick(); } catch (e) { errLog('readyTick', e); }
     if (S.lvlUps > 0) { try { openCards(); } catch (e) { errLog('openCards', e); } }
   } else if (S.phase === 'dead' || S.phase === 'cards') {
     S.t += raw * 1000;
@@ -12590,21 +12800,63 @@ function qualityTilt() {
 }
 
 /* ------ cartes / niveaux */
+/* Montée de niveau : 350 ms de ralenti tenu AVANT l'écran de cartes. Le
+   passage était instantané — on voyait l'écran, jamais la montée. Appelé
+   chaque image de jeu par frame() tant que S.lvlUps > 0. */
+var _lvlSeq = 0;
 function openCards() {
   if (S.phase !== 'play') return;
+  var s = S.snake;
+  if (_lvlSeq === 0) {
+    _lvlSeq = S.t + 350;
+    S.timeScale = 0.15;
+    s.invuln = Math.max(s.invuln, 900);
+    S2030.fx && S2030.fx.flash('#ffffff', 0.3);
+    S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 2000, { w: 6, life: 0.5 });
+    S2030.phases && S2030.phases.pulse(0.08);
+    S2030.audio && S2030.audio.sfx('levelup');
+    haptic(14);
+    return;
+  }
+  if (S.t < _lvlSeq) {
+    S.timeScale = 0.15;
+    s.invuln = Math.max(s.invuln, 300);
+    return;
+  }
+  _lvlSeq = 0;
   S.lvlUps--;
   S.phase = 'cards';
   S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
   var cards = S2030.upgrades ? S2030.upgrades.roll(3) : [];
-  S2030.audio && S2030.audio.sfx('levelup');
-  haptic(14);
   if (!cards.length) { S.phase = 'play'; return; }
+  S2030.audio && S2030.audio.sfx('card');
   S2030.ui.showCards(cards, function (id) {
     S2030.upgrades.apply(id);
     S2030.audio && S2030.audio.sfx('card');
     S.phase = 'play';
     if (S.lvlUps > 0) setTimeout(openCards, 260);
   });
+}
+
+/* Sons « prêt » : l'ultime et le pouvoir se remplissaient en silence.
+   ultReady existait dans la banque et n'était appelé nulle part. */
+var _rdyUlt = 0, _rdyPow = 0, _rdyPowArm = 0;
+function readyTick() {
+  var full = S.ult >= (S.ultMax || 100);
+  if (full) {
+    if (!_rdyUlt) {
+      _rdyUlt = 1;
+      S2030.audio && S2030.audio.sfx('ultReady');
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('ULTIME PRÊT', '★ / R');
+    }
+  } else _rdyUlt = 0;
+  if (!_rdyPow) {
+    if (S.specialCd > 0) _rdyPowArm = 1;
+    else if (_rdyPowArm || S.t > 2500) {
+      _rdyPow = 1;
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('POUVOIR PRÊT', '◈ / E');
+    }
+  }
 }
 
 /* ------ cycle de vie */
@@ -12623,6 +12875,7 @@ function resetRun() {
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
+  _lvlSeq = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;

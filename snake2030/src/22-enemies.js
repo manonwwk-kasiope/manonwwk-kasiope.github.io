@@ -626,7 +626,7 @@ function _enUpCutter(e, dt, s) {
       for (var i = 0; i < segs.length; i += 2) {
         if (dist2(e.x, e.y, segs[i].x, segs[i].y) < rr) {
           e.cutHit = 1;
-          hurtSnake(e.dmg, e.x, e.y);
+          hurtSnake(e.dmg, e.x, e.y, e);
           S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 12, 300, { size: 2, life: 0.3 });
           break;
         }
@@ -743,7 +743,7 @@ function _enUpParasite(e, dt, s) {
     }
     if (e.biteT <= 0) {
       e.biteT = e.biteMs; e.warned = 0;
-      hurtSnake(1, e.x, e.y);
+      hurtSnake(1, e.x, e.y, e);
       S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 14, 280, { size: 2, life: 0.32 });
       S2030.audio && S2030.audio.sfx('hurt');
     }
@@ -1814,8 +1814,16 @@ function _enDraw(ctx, e) {
   if (f) f(ctx, e, col);
   _enModDraw(ctx, e, col);
   if (e.elite) _enElite(ctx, e, col);
-  if (e.hitT > 0) {
-    // éclat blanc franc : l'impact doit se sentir même dans le fouillis
+  if (e.hitT > 30) {
+    /* Silhouette REMPLIE de blanc opaque tant qu'il reste plus de 60 ms, puis
+       fondue sur les 30 ms suivantes : un éclat additif à 55 % se perdait dans
+       le fouillis, on ne voyait pas ce qu'on touchait. */
+    var ha = e.hitT > 60 ? 1 : (e.hitT - 30) / 30;
+    ctx.globalAlpha = ha;
+    ctx.fillStyle = _EN_WHITE;
+    ctx.beginPath(); ctx.arc(0, 0, e.r, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (e.hitT > 0) {
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = clamp(e.hitT / 90, 0, 1) * 0.55;
     ctx.fillStyle = _EN_WHITE;
@@ -1831,12 +1839,11 @@ function _enOnDeath(e) {
   var big = e.elite || e.maxHp >= 40;
 
   if (fx) {
-    if (fx.kill) fx.kill(e.x, e.y, e.color, big);
+    if (fx.kill) fx.kill(e.x, e.y, e.color, big, e.killAng, e.r);
     else {
       fx.burst(e.x, e.y, e.color, big ? 34 : 16, big ? 420 : 260, { size: big ? 3 : 2, life: 0.4 });
       fx.ring(e.x, e.y, e.color, big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: 0.4 });
     }
-    if (e.elite) fx.text(e.x, e.y - e.r - 12, '+' + Math.round(e.score * S.mult), _EN_HOT);
   }
 
   _enLoot(e);

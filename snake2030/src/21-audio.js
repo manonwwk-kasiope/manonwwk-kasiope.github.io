@@ -89,6 +89,10 @@ var _audFxMax = {
    cadence sans la marteler. */
 var _audFxWin = { shoot: 0.09, hit: 0.055, zap: 0.06 };
 var _audPlayed = {};
+/* Dernier effet REELLEMENT joue : nom, fondamentale annoncee par le son
+   (0 quand il n'en declare pas) et date du contexte audio. Sonde de test. */
+var _audF0 = 0;
+var _audLast = { name: '', f0: 0, t: 0 };
 function _audAllow(name, t){
   var g = _audGuard[name];
   if(!g){ g = { t0: t, n: 0 }; _audGuard[name] = g; }
@@ -202,6 +206,7 @@ var _audFx = {
   /* --- tirs joueur : clair, court, jamais fatigant ------ */
   shoot: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
+    _audF0 = 540 * p;
     /* C'est l'attaque qui fait lire un tir, pas la hauteur. Un carre qui
        glisse de 900 a 250 Hz, repete, s'entend comme un jouet ; on garde
        donc un souffle court filtre, un corps triangulaire discret et un
@@ -213,6 +218,7 @@ var _audFx = {
   },
   laser: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
+    _audF0 = 1500 * p;
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.075 * v, 0.003, 5200, 700, 6, d, 6);
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.05 * v, 0.003, 4200, 600, 6, d, -9);
     _audNoise(t, 'bandpass', 5200, 900, 0.16, 0.05 * v, 3.2, d);
@@ -238,16 +244,23 @@ var _audFx = {
     _audNoise(t, 'bandpass', 1900, 900, 0.045, 0.055 * v, 1.4, d);
     _audTone(t, 'triangle', 420, 190, 0.05, 0.035 * v, 0.001, 3000, 1200, 1, d, 0);
   },
-  kill: function(t, v, d){
-    _audNoise(t, 'lowpass', 2600, 260, 0.20, 0.14 * v, 0.8, d);
-    _audTone(t, 'square', 320, 80, 0.17, 0.07 * v, 0.002, 1800, 400, 2, d, 0);
-    _audSub(t, 140, 42, 0.20, 0.20 * v, d);
+  /* La hauteur monte avec le combo (opts.pitch) : une serie de kills se lit
+     comme une montee. Le grave ne suit qu'a la racine, sinon la basse part
+     dans l'aigu et la frappe perd son poids. */
+  kill: function(t, v, d, o){
+    var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
+    _audF0 = 320 * p;
+    _audNoise(t, 'lowpass', 2600 * p, 260 * p, 0.20, 0.14 * v, 0.8, d);
+    _audTone(t, 'square', 320 * p, 80 * p, 0.17, 0.07 * v, 0.002, 1800, 400, 2, d, 0);
+    _audSub(t, 140 * ps, 42 * ps, 0.20, 0.20 * v, d);
   },
-  bigkill: function(t, v, d){
-    _audNoise(t, 'lowpass', 5200, 180, 0.50, 0.24 * v, 0.7, d);
-    _audSub(t, 190, 30, 0.55, 0.55 * v, d);
-    _audTone(t, 'sawtooth', 520, 70, 0.40, 0.09 * v, 0.004, 2600, 300, 2, d, -12);
-    _audNoise(t + 0.10, 'bandpass', 900, 200, 0.42, 0.09 * v, 1.1, d);
+  bigkill: function(t, v, d, o){
+    var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
+    _audF0 = 520 * p;
+    _audNoise(t, 'lowpass', 5200 * p, 180 * p, 0.50, 0.24 * v, 0.7, d);
+    _audSub(t, 190 * ps, 30 * ps, 0.55, 0.55 * v, d);
+    _audTone(t, 'sawtooth', 520 * p, 70 * p, 0.40, 0.09 * v, 0.004, 2600, 300, 2, d, -12);
+    _audNoise(t + 0.10, 'bandpass', 900 * p, 200 * p, 0.42, 0.09 * v, 1.1, d);
   },
   explode: function(t, v, d){
     _audNoise(t, 'lowpass', 3800, 120, 0.45, 0.26 * v, 0.6, d);
@@ -1103,8 +1116,12 @@ S2030.audio = {
     }
     if(v <= 0) return;
     if(v > 2) v = 2;
+    _audF0 = 0;
     fn(t, v, d, opts);
+    _audLast.name = name; _audLast.f0 = _audF0; _audLast.t = t;
   },
+
+  lastSfx: function(){ return { name: _audLast.name, f0: _audLast.f0, t: _audLast.t }; },
 
   /* plongeon bref, battement grave, retour explosif */
   ultimate: function(){

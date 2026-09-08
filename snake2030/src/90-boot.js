@@ -322,9 +322,10 @@ function useUlt() {
   S.ult = 0;
   S.timeScale = 0.25;
   S2030.audio && S2030.audio.ultimate();
-  S2030.fx && S2030.fx.flash('#ffffff', 0.85);
-  S2030.fx && S2030.fx.shake(26);
-  S2030.ui && S2030.ui.banner('SURCHARGE');
+  /* Un flash à 0,85 mangeait l'écran une demi-seconde et la bannière cachait
+     le déferlement : 0,4 pendant 120 ms, et on regarde le jeu. */
+  S2030.fx && S2030.fx.flash('#ffffff', 0.4, null, null, 120);
+  S2030.fx && S2030.fx.shake(18);
   haptic([40, 20, 90]);
   // minuteries en temps de jeu (S.t, contrat : jamais l'horloge murale) : le
   // ralenti et le déferlement durent le même nombre d'images d'une machine à
@@ -533,10 +534,15 @@ function frame(now) {
   frames++; accFps += raw; accReal += real;
   if (accFps > 0.5) { fps = frames / accReal; frames = 0; accFps = 0; accReal = 0; autoQuality(); }
 
+  /* HITSTOP compté en IMAGES. On lit d'abord, on gèle, PUIS on consomme :
+     une pose faite plus loin dans cette image (un kill, un coup reçu) ne peut
+     donc pas être avalée par l'image qui la pose. C'est ce décalage qui
+     manquait — fx.hitstop(12) ne gelait rien du tout. */
   var hs = S2030.fx && S2030.fx.hitstopLeft ? S2030.fx.hitstopLeft() : 0;
   var scale = hs > 0 ? 0.08 : S.timeScale;
   var dt = raw * scale;
   S.dt = dt;
+  if (hs > 0 && S2030.fx.hitstopStep) S2030.fx.hitstopStep();
 
   // le réglage de netteté s'applique sans passer par un événement de mise en page
   try {
@@ -571,6 +577,7 @@ function frame(now) {
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
     try { updateCam(dt); } catch (e) { errLog('updateCam', e); }
     try { S2030.audio && S2030.audio.setIntensity(S.intensity); } catch (e) { errLog('audio.setIntensity', e); }
+    try { readyTick(); } catch (e) { errLog('readyTick', e); }
     if (S.lvlUps > 0) { try { openCards(); } catch (e) { errLog('openCards', e); } }
   } else if (S.phase === 'dead' || S.phase === 'cards') {
     S.t += raw * 1000;
@@ -799,21 +806,63 @@ function qualityTilt() {
 }
 
 /* ------ cartes / niveaux */
+/* Montée de niveau : 350 ms de ralenti tenu AVANT l'écran de cartes. Le
+   passage était instantané — on voyait l'écran, jamais la montée. Appelé
+   chaque image de jeu par frame() tant que S.lvlUps > 0. */
+var _lvlSeq = 0;
 function openCards() {
   if (S.phase !== 'play') return;
+  var s = S.snake;
+  if (_lvlSeq === 0) {
+    _lvlSeq = S.t + 350;
+    S.timeScale = 0.15;
+    s.invuln = Math.max(s.invuln, 900);
+    S2030.fx && S2030.fx.flash('#ffffff', 0.3);
+    S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 2000, { w: 6, life: 0.5 });
+    S2030.phases && S2030.phases.pulse(0.08);
+    S2030.audio && S2030.audio.sfx('levelup');
+    haptic(14);
+    return;
+  }
+  if (S.t < _lvlSeq) {
+    S.timeScale = 0.15;
+    s.invuln = Math.max(s.invuln, 300);
+    return;
+  }
+  _lvlSeq = 0;
   S.lvlUps--;
   S.phase = 'cards';
   S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
   var cards = S2030.upgrades ? S2030.upgrades.roll(3) : [];
-  S2030.audio && S2030.audio.sfx('levelup');
-  haptic(14);
   if (!cards.length) { S.phase = 'play'; return; }
+  S2030.audio && S2030.audio.sfx('card');
   S2030.ui.showCards(cards, function (id) {
     S2030.upgrades.apply(id);
     S2030.audio && S2030.audio.sfx('card');
     S.phase = 'play';
     if (S.lvlUps > 0) setTimeout(openCards, 260);
   });
+}
+
+/* Sons « prêt » : l'ultime et le pouvoir se remplissaient en silence.
+   ultReady existait dans la banque et n'était appelé nulle part. */
+var _rdyUlt = 0, _rdyPow = 0, _rdyPowArm = 0;
+function readyTick() {
+  var full = S.ult >= (S.ultMax || 100);
+  if (full) {
+    if (!_rdyUlt) {
+      _rdyUlt = 1;
+      S2030.audio && S2030.audio.sfx('ultReady');
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('ULTIME PRÊT', '★ / R');
+    }
+  } else _rdyUlt = 0;
+  if (!_rdyPow) {
+    if (S.specialCd > 0) _rdyPowArm = 1;
+    else if (_rdyPowArm || S.t > 2500) {
+      _rdyPow = 1;
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('POUVOIR PRÊT', '◈ / E');
+    }
+  }
 }
 
 /* ------ cycle de vie */
@@ -832,6 +881,7 @@ function resetRun() {
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
   S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
+  _lvlSeq = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;

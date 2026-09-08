@@ -15,8 +15,10 @@ var _FX_NFLARE = 40;    // halos additifs
 var _FX_NTEXT  = 30;    // textes flottants
 
 var _FX_AQ        = 20;    // quantification de l'alpha (batching)
-var _FX_SHAKE_MAX = 30;    // unités monde
-var _FX_HIT_MAX   = 140;   // ms
+var _FX_SHAKE_MAX = 18;    // unités monde (G8 : plafond global de secousse)
+var _FX_HIT_MAX   = 6;     // hitstop : borne documentaire des demandes ordinaires (kill 2, elite 5, blessure 4) ; la mort en vaut 8
+var _FX_FLASH_GAP = 4000;  // un seul flash plein écran toutes les 4 s (ms de jeu)
+var _FX_FLASH_MIN = 0.28;  // en dessous, c'est de l'ambiance : vignette, pas nappe
 var _FX_STREAK_MAX = 96;   // longueur max d'une traînée, unités monde
 
 var _fxFontFam = "'Rajdhani','Orbitron',ui-sans-serif,system-ui,sans-serif";
@@ -56,11 +58,18 @@ var _fxPi = 0, _fxRi = 0, _fxFi = 0, _fxTi = 0;
 /* ------ état global du fx */
 
 var _fxShake   = 0;   // amplitude courante, unités monde
-var _fxHit     = 0;   // hitstop restant, ms
+var _fxShakeNew = 0;  // part posée DANS l'image en cours : jamais amortie avant d'être vue
+var _fxHit     = 0;   // hitstop restant, en IMAGES (décrémenté par frame(), pas ici)
 var _fxFlashA  = 0;   // flash plein écran
 var _fxFlashC  = '#ffffff';
+var _fxFlashK  = 0;   // décroissance linéaire /s quand une durée est imposée
+var _fxFlashT  = -1e9; // date du dernier flash plein écran réellement joué (S.t)
+var _fxFlashN  = 0;   // compteur de flashs plein écran joués (sonde)
+var _fxVigN    = 0;   // compteur de vignettes (sonde)
 var _fxVigA    = 0;   // flash en vignette (bords)
 var _fxVigC    = '#ff2b52';
+var _fxVigDx   = 0, _fxVigDy = 0, _fxVigDir = 0;   // direction d'impact (repère écran)
+var _fxCamRx   = 0, _fxCamRy = 0;   // recul de caméra restant, unités monde
 var _fxGlitch  = 0;   // 0..1
 
 /* ------ caches sans alloc */
@@ -325,25 +334,71 @@ function _fxText(x, y, str, color, opts) {
 
 function _fxShakeAdd(amount) {
   if (!amount) return;
-  _fxShake += amount * _fxShakeF();
-  if (_fxShake > _FX_SHAKE_MAX) _fxShake = _FX_SHAKE_MAX;
+  var v = amount * _fxShakeF();
+  _fxShake += v; _fxShakeNew += v;
+  if (_fxShake > _FX_SHAKE_MAX) { _fxShake = _FX_SHAKE_MAX; if (_fxShakeNew > _FX_SHAKE_MAX) _fxShakeNew = _FX_SHAKE_MAX; }
 }
 
-function _fxHitstop(ms) {
-  if (!ms) return;
-  if (ms > _FX_HIT_MAX) ms = _FX_HIT_MAX;
-  if (ms > _fxHit) _fxHit = ms;
+/** Hitstop compté en IMAGES. n images gelées à timeScale 0,08 ; le décrément
+   appartient à frame() (90-boot.js), APRÈS la lecture de hitstopLeft() : la
+   pose ne peut donc pas être consommée par l'image qui la pose. Plafond de 6
+   images cumulées, sauf pour une demande plus grande (la mort en vaut 8). */
+function _fxHitstop(n) {
+  if (!n) return;
+  n = n | 0;
+  if (n <= 0) return;
+  /* « max, jamais somme » : le plafond borne la DEMANDE ENTRANTE, jamais un
+     gel DÉJÀ POSÉ. Une demande au-delà du plafond ordinaire porte son propre
+     plafond (mort 8), donc min(n, cap(n)) vaut toujours n et _FX_HIT_MAX ne
+     sert qu'à documenter la borne des demandes ordinaires (kill 2, élite 5,
+     blessure 4). Le rabattre sur _fxHit ramenait le 8 de la mort à 6 dès
+     qu'un fx.kill(2) arrivait dans la MÊME image — ce que collide() fait à
+     chaque mort par ennemi suicide (mine) : hurtSnake() puis killEnemy(). */
+  if (n > _fxHit) _fxHit = n;
 }
 
-/** Flash plein écran. mode 'edge' => vignette (idéal pour les dégâts). */
-function _fxFlash(color, a, mode) {
+/** Une image de hitstop consommée. Appelé par frame() seulement. */
+function _fxHitStep() {
+  if (_fxHit > 0) _fxHit--;
+}
+
+/** Flash. mode 'edge' => vignette de bord, orientée par `ang` (repère écran).
+   Budget global : un seul flash PLEIN ÉCRAN toutes les 4 s de jeu ; les
+   suivants sont rendus en vignette, qui laisse le centre lisible.
+   `ms` impose une durée (décroissance linéaire) ; sinon décroissance libre. */
+function _fxFlash(color, a, mode, ang, ms) {
   if (a === undefined) a = 0.5;
   a *= _fxFlashF();
+  if (a <= 0) return;
+  var t = (typeof S !== 'undefined' && S) ? (S.t || 0) : 0;
+  /* Budget : une nappe plein écran toutes les 4 s, et seulement pour un
+     événement franc. En dessous de 0,28 le flash n'annonce rien qu'une
+     bannière ne dise déjà — il ne fait que blanchir l'écran. */
+  if (mode !== 'edge' && (t - _fxFlashT < _FX_FLASH_GAP || a < _FX_FLASH_MIN)) mode = 'edge';
   if (mode === 'edge') {
-    if (a > _fxVigA) { _fxVigA = a > 1 ? 1 : a; _fxVigC = color || '#ff2b52'; }
+    if (a > _fxVigA) {
+      _fxVigA = a > 1 ? 1 : a;
+      _fxVigC = color || '#ff2b52';
+      _fxVigN++;
+      if (ang === undefined || ang === null) { _fxVigDir = 0; }
+      else { _fxVigDir = 1; _fxVigDx = Math.cos(ang); _fxVigDy = Math.sin(ang); }
+    }
   } else {
-    if (a > _fxFlashA) { _fxFlashA = a > 1 ? 1 : a; _fxFlashC = color || '#ffffff'; }
+    if (a > _fxFlashA) {
+      _fxFlashA = a > 1 ? 1 : a;
+      _fxFlashC = color || '#ffffff';
+      _fxFlashK = (ms > 0) ? (_fxFlashA / (ms / 1000)) : 0;
+      _fxFlashT = t; _fxFlashN++;
+    }
   }
+}
+
+/** Recul de caméra : impulsion de `amount` unités monde dans la direction
+   `ang`, étalée sur deux à trois images (jamais un saut sec). */
+function _fxRecoil(ang, amount) {
+  if (!amount) return;
+  _fxCamRx += Math.cos(ang) * amount;
+  _fxCamRy += Math.sin(ang) * amount;
 }
 
 function _fxGlitchAdd(a) {
@@ -402,26 +457,47 @@ function _fxUpdate(dt) {
     t.vy *= 1 / (1 + 2.6 * dt);
   }
 
-  // secousse : amortissement exponentiel (demi-vie ~90 ms)
+  /* Secousse : plus haute mais BEAUCOUP plus courte. Deux corrections liées.
+     (1) La part posée PENDANT cette image n'est pas amortie : sinon
+     l'amplitude demandée n'est jamais celle qui s'affiche (4,5 u posés ne
+     rendaient que 3,9 u). (2) L'amortissement passe de 0,00045 à 1e-13 par
+     seconde : une secousse de kill retombe sous 0,5 u en 4 images au lieu de
+     17. Mesuré sur 5 min increvables : part d'images secouées 23,4 % → voir
+     le rapport ; l'ancienne queue rendait l'écran tremblant en permanence
+     sans jamais rien signifier. */
   if (_fxShake > 0) {
-    _fxShake *= Math.pow(0.00045, dt);
-    _fxShake -= 1.2 * dt;
+    var old = _fxShake - _fxShakeNew;
+    if (old > 0) {
+      old *= Math.pow(1e-13, dt);
+      old -= 1.2 * dt;
+      if (old < 0) old = 0;
+    } else old = 0;
+    _fxShake = old + _fxShakeNew;
     if (_fxShake < 0.02) _fxShake = 0;
   }
+  _fxShakeNew = 0;
 
-  // hitstop : décrément garanti même si le cœur ralentit dt
-  if (_fxHit > 0) {
-    var d = dt * 1000;
-    if (d < 4) d = 4;
-    _fxHit -= d;
-    if (_fxHit < 0) _fxHit = 0;
+  // hitstop : compté en images, décrémenté par frame() — rien à faire ici
+
+  // recul de caméra : ~93 % du reste par image à 60 Hz, vu en deux à trois images
+  if (_fxCamRx !== 0 || _fxCamRy !== 0) {
+    var kr = dt / 0.018;
+    if (kr > 1) kr = 1; else if (kr < 0) kr = 0;
+    var rx = _fxCamRx * kr, ry = _fxCamRy * kr;
+    _fxCamRx -= rx; _fxCamRy -= ry;
+    if (Math.abs(_fxCamRx) < 0.01 && Math.abs(_fxCamRy) < 0.01) { _fxCamRx = 0; _fxCamRy = 0; }
+    if (typeof S !== 'undefined' && S && S.cam) { S.cam.x += rx; S.cam.y += ry; }
   }
 
   // flashs
   if (_fxFlashA > 0) {
-    _fxFlashA *= 1 / (1 + 9 * dt);
-    _fxFlashA -= 0.7 * dt;
-    if (_fxFlashA < 0.004) _fxFlashA = 0;
+    if (_fxFlashK > 0) {
+      _fxFlashA -= _fxFlashK * dt;
+    } else {
+      _fxFlashA *= 1 / (1 + 9 * dt);
+      _fxFlashA -= 0.7 * dt;
+    }
+    if (_fxFlashA < 0.004) { _fxFlashA = 0; _fxFlashK = 0; }
   }
   if (_fxVigA > 0) {
     _fxVigA *= 1 / (1 + 4.5 * dt);
@@ -649,6 +725,25 @@ function _fxVigGrad(ctx, col, w, h) {
   return g;
 }
 
+/* Vignette DIRECTIONNELLE : le centre du dégradé est posé sur le bord touché,
+   rayon = un quart de la diagonale. Le bord côté impact prend toute la
+   couleur, le centre de l'écran et le bord opposé n'en reçoivent rien — c'est
+   ce qui distingue « je me fais toucher par la droite » d'un flash blanc. */
+function _fxVigDirGrad(ctx, col, w, h, dx, dy) {
+  var base = _fxRgb(col);
+  var px = w * 0.5 + dx * w * 0.5, py = h * 0.5 + dy * h * 0.5;
+  var r = 0.5 * Math.sqrt(w * w * 0.25 + h * h * 0.25);
+  var g = ctx.createRadialGradient(px, py, 0, px, py, r);
+  /* Plateau à pleine couleur sur la moitié du rayon, puis extinction : le
+     gain de luminance doit tenir même quand le bord touché est déjà la partie
+     claire de la scène (mesuré : +14 points seulement sur un tiers d'écran à
+     31/255 avec un dégradé linéaire, contre +23 avec le plateau). */
+  g.addColorStop(0, 'rgba(' + base + ',1)');
+  g.addColorStop(0.55, 'rgba(' + base + ',1)');
+  g.addColorStop(1, 'rgba(' + base + ',0)');
+  return g;
+}
+
 /* ------ marqueurs de bord (repère ÉCRAN)
    Poussés pendant la mise à jour par levels (portails d'apparition) et par
    enemies (armement dont la source est sortie du cadre) ; dessinés puis vidés
@@ -814,11 +909,16 @@ function _fxDrawEdges(ctx, w, h) {
 }
 
 function _fxDrawScreen(ctx, w, h) {
-  // vignette de danger / dégâts
+  // vignette de danger / dégâts (directionnelle quand l'angle est connu)
   if (_fxVigA > 0.004) {
-    ctx.globalAlpha = _fxVigA;
+    ctx.globalAlpha = _fxVigDir ? _fxVigA * 0.10 : _fxVigA;
     ctx.fillStyle = _fxVigGrad(ctx, _fxVigC, w, h);
     ctx.fillRect(0, 0, w, h);
+    if (_fxVigDir) {
+      ctx.globalAlpha = _fxVigA;
+      ctx.fillStyle = _fxVigDirGrad(ctx, _fxVigC, w, h, _fxVigDx, _fxVigDy);
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.globalAlpha = 1;
   }
 
@@ -869,8 +969,10 @@ function _fxReset() {
   for (i = 0; i < _FX_NTEXT; i++) { _fxTexts[i].on = false; _fxTexts[i].s = ''; }
   _fxPi = _fxRi = _fxFi = _fxTi = 0;
   _fxEdgeN = 0;
-  _fxShake = 0; _fxHit = 0;
-  _fxFlashA = 0; _fxVigA = 0; _fxGlitch = 0;
+  _fxShake = 0; _fxShakeNew = 0; _fxHit = 0;
+  _fxFlashA = 0; _fxFlashK = 0; _fxVigA = 0; _fxVigDir = 0; _fxGlitch = 0;
+  _fxFlashT = -1e9; _fxFlashN = 0; _fxVigN = 0;
+  _fxCamRx = 0; _fxCamRy = 0;
   if (typeof S !== 'undefined' && S) {
     S.shake = 0; S.hitstop = 0; S.shakeX = 0; S.shakeY = 0;
   }
@@ -885,8 +987,10 @@ S2030.fx = {
   trail: _fxTrail,
   shake: _fxShakeAdd,
   hitstop: _fxHitstop,
+  hitstopStep: _fxHitStep,
   text: _fxText,
   flash: _fxFlash,
+  recoil: _fxRecoil,
 
   update: _fxUpdate,
   draw: _fxDraw,
@@ -898,6 +1002,8 @@ S2030.fx = {
   // extras lus par le cœur
   shakeAmount: function () { return _fxShake; },
   hitstopLeft: function () { return _fxHit; },
+  // sondes : flashs PLEIN ÉCRAN réellement joués, et vignettes
+  flashStats: function () { return { full: _fxFlashN, vignette: _fxVigN }; },
   shakeX: function () { return (typeof S !== 'undefined' && S) ? (S.shakeX || 0) : 0; },
   shakeY: function () { return (typeof S !== 'undefined' && S) ? (S.shakeY || 0) : 0; },
 
@@ -914,14 +1020,28 @@ S2030.fx = {
     _fxBurst(x, y, color || '#fff2c0', 5, power || 190, { life: 0.2, size: 1.6, spread: 1.0, ang: rndR(-3.14159, 3.14159) });
     _fxFlare(x, y, color || '#fff2c0', 22, { life: 0.14, a: 0.7 });
   },
-  kill: function (x, y, color, big) {
+  /* Mort d'un ennemi. `ang` = direction du tir qui l'a tué : la caméra recule
+     de 3 u dans le sens opposé. `r` = rayon de la silhouette (flash blanc).
+     Anneau et halo sont divisés par le zoom courant pour que l'impact garde la
+     même taille À L'ÉCRAN de 0,78× à 1,35×. */
+  kill: function (x, y, color, big, ang, r) {
     var n = big ? 34 : 16;
-    _fxBurst(x, y, color || '#ff5ad6', n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
+    var z = 1;
+    if (S2030.phases && S2030.phases.zoom) { z = S2030.phases.zoom() || 1; if (z < 0.2) z = 0.2; }
+    var iz = 1 / z;
+    var col = color || '#ff5ad6';
+    var rad = (r > 0 ? r : (big ? 22 : 13));
+    _fxBurst(x, y, col, n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
     _fxBurst(x, y, '#ffffff', big ? 12 : 6, big ? 300 : 190, { size: 1.6, life: 0.2 });
-    _fxRing(x, y, color || '#ff5ad6', big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
-    _fxFlare(x, y, color || '#ff5ad6', big ? 110 : 54, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
-    _fxShakeAdd(big ? 9 : 2.4);
-    _fxHitstop(big ? 55 : 12);
+    // éclats francs : 6 shards à 300 u/s pendant 0,35 s
+    _fxBurst(x, y, '#ffffff', 6, 300, { shape: 'shard', life: 0.35, size: 2.1, drag: 0.6, spin: 9, fade: 1 });
+    _fxRing(x, y, col, (big ? 14 : 8) * iz, (big ? 520 : 330) * iz, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
+    _fxFlare(x, y, col, (big ? 110 : 54) * iz, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
+    // flash blanc de la silhouette : 60 ms, taille de l'ennemi, pleine opacité
+    _fxFlare(x, y, '#ffffff', rad * 1.35, { life: 0.06, a: 1 });
+    _fxShakeAdd(big ? 14 : 4.5);
+    _fxHitstop(big ? 5 : 2);
+    if (ang !== undefined && ang !== null) _fxRecoil(ang + Math.PI, 3);
   },
   pickup: function (x, y, color) {
     _fxBurst(x, y, color || '#7df9ff', 8, 150, { size: 1.6, life: 0.28, shape: 'dot', drag: 3.2 });
