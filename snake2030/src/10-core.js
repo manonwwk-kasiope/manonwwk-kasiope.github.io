@@ -665,6 +665,18 @@ function inView(x, y, m) {
 }
 
 /* ------ collisions */
+
+/* Au-delà de cet indice d'anneau, une balle ennemie est absorbée par le corps :
+   pas de dégât, pas d'invulnérabilité, pas de combo cassé. Les 8 premiers
+   anneaux (0..7) et la tête blessent comme avant. */
+var BODY_ABSORB = 8;
+function absorbEBullet(b) {
+  var s = S.snake;
+  S2030.fx && S2030.fx.burst(b.x, b.y, '#00e5ff', 6, 170, { size: 1.5, life: 0.22, drag: 2.2 });
+  s.boostE = Math.min(s.boostMax, s.boostE + 1);
+  S2030.audio && S2030.audio.sfx('absorb', { vol: 0.8 });
+}
+
 function collide(dt) {
   var s = S.snake, i, j, e, b;
 
@@ -714,19 +726,35 @@ function collide(dt) {
     if (b.life <= 0 || b.x < -80 || b.y < -80 || b.x > K.ARENA_W + 80 || b.y > K.ARENA_H + 80) {
       S.ebullets.splice(i, 1); continue;
     }
-    if (s.invuln > 0) continue;
     var hr = b.r + S.headR;
-    if (dist2(b.x, b.y, s.x, s.y) < hr * hr) {
+    if (s.invuln <= 0 && dist2(b.x, b.y, s.x, s.y) < hr * hr) {
       hurtSnake(b.dmg, b.x, b.y);
       if (S2030.phases && b.dmg >= 2) S2030.phases.jolt(1.2, angTo(s.x, s.y, b.x, b.y));
       S.ebullets.splice(i, 1); continue;
     }
-    var hitSeg = false;
-    for (j = 0; j < segs.length; j += 2) {
-      var sr = b.r + S.headR * 0.72;
-      if (dist2(b.x, b.y, segs[j].x, segs[j].y) < sr * sr) { hitSeg = true; break; }
+    /* Anneaux : les 8 premiers d'abord (ils blessent et l'emportent sur le reste
+       quand un serpent replié se croise), puis le corps profond, qui ENCAISSE —
+       le coup ne blesse pas, il nourrit le boost. Le balayage profond garde le
+       pas de 2 d'origine : même coût qu'avant l'absorption. */
+    var sr = b.r + S.headR * 0.72, srr = sr * sr, ns = segs.length, bi = -1, bd = srr, dd;
+    var lim = ns < BODY_ABSORB ? ns : BODY_ABSORB;
+    for (j = 0; j < lim; j++) {                       // 8 premiers anneaux : un par un
+      dd = dist2(b.x, b.y, segs[j].x, segs[j].y);
+      if (dd < bd) { bd = dd; bi = j; }
     }
-    if (hitSeg) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
+    if (bi >= 0) {                                    // un anneau proche blesserait : on vérifie TOUT le corps
+      for (j = BODY_ABSORB; j < ns; j++) {
+        dd = dist2(b.x, b.y, segs[j].x, segs[j].y);
+        if (dd < bd) { bd = dd; bi = j; }
+      }
+    } else {                                          // cas courant (la balle ne touche rien près de la tête) : pas de 2
+      for (j = BODY_ABSORB; j < ns; j += 2) {
+        dd = dist2(b.x, b.y, segs[j].x, segs[j].y);
+        if (dd < bd) { bd = dd; bi = j; }
+      }
+    }
+    if (bi >= BODY_ABSORB) { absorbEBullet(b); S.ebullets.splice(i, 1); continue; }
+    if (bi >= 0 && s.invuln <= 0) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
   }
 
   // ennemis contre la tête et le corps

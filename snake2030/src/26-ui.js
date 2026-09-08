@@ -1427,7 +1427,59 @@ function _uiHud() {
 /* ======
    API PUBLIQUE
    ====== */
+/* ======
+   MARQUEURS HORS CHAMP
+   Boss, élites et mines amorcées gardent un repère sur le cadre : 20 px du
+   bord, dans leur direction, taille inversement proportionnelle à la distance.
+   La liste est calculée ici (calque écran) et tracée par fx.drawScreen, qui
+   est le seul endroit du jeu en coordonnées écran.
+   ====== */
+
+var _uiOffL = [], _uiOffPool = [], _uiOffP = { x: 0, y: 0 };
+
+function _uiOffKind(e) {
+  if (e.boss) return 'boss';
+  if (e.type === 'mine' && e.st === 1) return 'mine';
+  if (e.elite) return 'elite';
+  return null;
+}
+
+function _uiOffscreen() {
+  _uiOffL.length = 0;
+  if (!S.snake || S.phase !== 'play' || !CW || !CH) return _uiOffL;
+  var list = S.enemies, P = S2030.phases;
+  var cx = CW * 0.5, cy = CH * 0.5, hw = cx - 20, hh = cy - 20;
+  if (hw < 10 || hh < 10) return _uiOffL;
+  for (var i = 0; i < list.length && _uiOffL.length < 12; i++) {
+    var e = list[i];
+    if (e.dead) continue;
+    var kind = _uiOffKind(e);
+    if (!kind || inView(e.x, e.y, 8)) continue;
+    var sx, sy;
+    var p = (P && P.toScreen) ? P.toScreen(e.x, e.y, _uiOffP) : null;
+    if (p && isFinite(p.x) && isFinite(p.y)) { sx = p.x * CW; sy = p.y * CH; }
+    else {                                   // bascule : projection non finie pour un point très éloigné
+      sx = CW * (0.5 + (e.x - S.cam.x) / Math.max(1, S.view.w));
+      sy = CH * (0.5 + (e.y - S.cam.y) / Math.max(1, S.view.h));
+    }
+    var dx = sx - cx, dy = sy - cy, adx = Math.abs(dx), ady = Math.abs(dy);
+    if (adx < 1e-4 && ady < 1e-4) continue;
+    var t = Math.min(adx > 1e-6 ? hw / adx : 1e9, ady > 1e-6 ? hh / ady : 1e9);
+    var o = _uiOffPool[_uiOffL.length];
+    if (!o) { o = { x: 0, y: 0, kind: '', d: 0, sz: 16, color: '#fff' }; _uiOffPool.push(o); }
+    var d = dist(e.x, e.y, S.snake.x, S.snake.y);
+    o.x = cx + dx * t; o.y = cy + dy * t; o.kind = kind; o.d = Math.round(d);
+    o.sz = clamp(11000 / (d < 420 ? 420 : d), 8, 26);
+    o.color = kind === 'boss' ? '#ff2b2b' : (kind === 'mine' ? '#ff8a3d' : '#ffe45e');
+    _uiOffL.push(o);
+  }
+  return _uiOffL;
+}
+
 S2030.ui = {
+
+  /* menaces hors champ, en px écran : [{x, y, kind}] */
+  offscreen: _uiOffscreen,
 
   /* ------ build */
   build: function (root) {

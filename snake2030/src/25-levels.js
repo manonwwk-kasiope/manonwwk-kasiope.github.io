@@ -67,21 +67,22 @@ var _lvDefs = [
     rigs: 0, nodes: 0, fieldTurn: 0,
     mods: ['armored'],
     boss: { name: 'PROTOTYPE ZÉRO', type: 'chaser', mod: 'armored', n: 1,
-            escort: [['chaser', 5, 'ring'], ['shooter', 2, 'flank']] },
+            escort: [['chaser', 5, 'ring'], ['shooter', 1, 'flank']] },
     spawns: [
       { p: 'calm',  every: 4.4, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
       { p: 'calm',  every: 9.0, jit: 0.6, cap: 14, g: [['mine', 1, 'ahead']] },
 
       { p: 'rise',  every: 3.6, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
-      { p: 'rise',  every: 6.4, jit: 0.8, cap: 28, g: [['shooter', 1, 'flank']] },
+      { p: 'rise',  every: 8.0, jit: 0.8, cap: 28, g: [['chaser', 1, 'flank']] },
       { p: 'rise',  every: 8.5, jit: 0.7, cap: 26, g: [['mine', 2, 'ahead']] },
 
       { p: 'surge', every: 3.0, jit: 0.7, cap: 44, g: [['chaser', 4, 'ring']], eliteP: 0.08 },
       { p: 'surge', every: 5.0, jit: 0.7, cap: 42, g: [['interceptor', 2, 'flank']], eliteP: 0.06 },
-      { p: 'surge', every: 6.0, jit: 0.6, cap: 40, g: [['shooter', 2, 'edge']] },
+      { p: 'surge', every: 7.0, jit: 0.6, cap: 40, g: [['shooter', 1, 'edge'], ['chaser', 1, 'edge']] },
       { p: 'surge', every: 9.0, jit: 0.5, cap: 38, g: [['mine', 3, 'pack']] },
 
-      { p: 'climax', every: 4.2, jit: 0.6, cap: 46, g: [['chaser', 3, 'edge'], ['shooter', 1, 'flank']] }
+      { p: 'climax', every: 4.2, jit: 0.6, cap: 46, g: [['chaser', 3, 'edge']] },
+      { p: 'climax', every: 7.5, jit: 0.6, cap: 46, g: [['shooter', 1, 'flank']] }
     ]
   },
 
@@ -106,7 +107,7 @@ var _lvDefs = [
     rigSpd: [215, 330],
     mods: ['fast', 'explosive'],
     boss: { name: 'DOUBLE LAME', type: 'cutter', mod: 'fast', n: 2,
-            escort: [['interceptor', 4, 'lane'], ['shooter', 2, 'ring']] },
+            escort: [['interceptor', 5, 'lane'], ['shooter', 1, 'ring']] },
     spawns: [
       { p: 'calm',  every: 4.2, jit: 0.8, cap: 20, g: [['chaser', 2, 'lane']] },
       { p: 'calm',  every: 7.5, jit: 0.7, cap: 18, g: [['interceptor', 1, 'ahead']] },
@@ -117,7 +118,7 @@ var _lvDefs = [
 
       { p: 'surge', every: 2.9, jit: 0.6, cap: 50, g: [['interceptor', 3, 'lane'], ['chaser', 2, 'edge']], eliteP: 0.09, mods: ['fast', 'explosive'] },
       { p: 'surge', every: 4.6, jit: 0.6, cap: 48, g: [['cutter', 2, 'flank']], eliteP: 0.08, mods: ['fast'] },
-      { p: 'surge', every: 6.2, jit: 0.6, cap: 46, g: [['shooter', 2, 'ring']] },
+      { p: 'surge', every: 7.0, jit: 0.6, cap: 46, g: [['shooter', 1, 'ring'], ['interceptor', 1, 'lane']] },
       { p: 'surge', every: 8.0, jit: 0.5, cap: 44, g: [['thief', 1, 'edge']] },
 
       { p: 'climax', every: 3.8, jit: 0.5, cap: 52, g: [['interceptor', 3, 'lane'], ['mine', 2, 'ahead']] }
@@ -149,13 +150,14 @@ var _lvDefs = [
       { p: 'calm',  every: 8.0, jit: 0.6, cap: 20, g: [['parasite', 1, 'edge']] },
 
       { p: 'rise',  every: 3.4, jit: 0.8, cap: 36, g: [['chaser', 3, 'ring'], ['parasite', 1, 'flank']] },
-      { p: 'rise',  every: 5.6, jit: 0.7, cap: 34, g: [['shooter', 2, 'edge']], eliteP: 0.05, mods: ['shielded'] },
+      { p: 'rise',  every: 5.6, jit: 0.7, cap: 34, g: [['parasite', 1, 'flank'], ['chaser', 2, 'ring']], eliteP: 0.05, mods: ['shielded'] },
       { p: 'rise',  every: 9.0, jit: 0.6, cap: 32, g: [['mirror', 1, 'ahead']] },
 
       { p: 'surge', every: 2.8, jit: 0.6, cap: 54, g: [['mite', 5, 'pack'], ['chaser', 2, 'edge']] },
       { p: 'surge', every: 4.4, jit: 0.6, cap: 52, g: [['parasite', 2, 'flank'], ['mine', 2, 'ahead']] },
       { p: 'surge', every: 6.0, jit: 0.6, cap: 50, g: [['jammer', 1, 'edge']], eliteP: 0.10, mods: ['shielded', 'regen'] },
-      { p: 'surge', every: 7.4, jit: 0.5, cap: 48, g: [['mirror', 1, 'ring'], ['shooter', 2, 'ring']], eliteP: 0.08, mods: ['teleporter'] },
+      { p: 'surge', every: 7.4, jit: 0.5, cap: 48, g: [['mirror', 1, 'ring'], ['mite', 3, 'pack']], eliteP: 0.08, mods: ['teleporter'] },
+      { p: 'surge', every: 7.5, jit: 0.5, cap: 48, g: [['shooter', 1, 'ring']], eliteP: 0.06, mods: ['teleporter'] },
 
       { p: 'climax', every: 3.6, jit: 0.5, cap: 56, g: [['mite', 6, 'pack'], ['parasite', 2, 'flank']] }
     ]
@@ -185,11 +187,12 @@ var _lvDefs = [
       { p: 'calm',  every: 6.5, jit: 0.6, cap: 24, g: [['mine', 2, 'ahead']] },
 
       { p: 'rise',  every: 3.0, jit: 0.7, cap: 44, g: [['interceptor', 3, 'lane'], ['cutter', 1, 'flank']], eliteP: 0.08 },
-      { p: 'rise',  every: 5.0, jit: 0.6, cap: 42, g: [['shooter', 2, 'ring'], ['parasite', 1, 'edge']] },
+      { p: 'rise',  every: 5.0, jit: 0.6, cap: 42, g: [['parasite', 2, 'edge'], ['chaser', 2, 'ring']] },
 
       { p: 'surge', every: 2.5, jit: 0.6, cap: 64, g: [['chaser', 4, 'ring'], ['mite', 4, 'pack']], eliteP: 0.12 },
       { p: 'surge', every: 3.8, jit: 0.6, cap: 62, g: [['cutter', 2, 'flank'], ['interceptor', 2, 'lane']], eliteP: 0.12 },
-      { p: 'surge', every: 5.2, jit: 0.5, cap: 60, g: [['jammer', 1, 'edge'], ['mirror', 1, 'ahead'], ['shooter', 2, 'ring']], eliteP: 0.14 },
+      { p: 'surge', every: 5.2, jit: 0.5, cap: 60, g: [['jammer', 1, 'edge'], ['mirror', 1, 'ahead'], ['chaser', 2, 'ring']], eliteP: 0.14 },
+      { p: 'surge', every: 7.0, jit: 0.5, cap: 60, g: [['shooter', 1, 'ring']], eliteP: 0.14 },
       { p: 'surge', every: 7.0, jit: 0.5, cap: 58, g: [['spawner', 1, 'edge'], ['thief', 1, 'edge']] },
 
       { p: 'climax', every: 3.2, jit: 0.5, cap: 70, g: [['chaser', 4, 'ring'], ['interceptor', 2, 'lane'], ['mite', 4, 'pack']], eliteP: 0.10 }
@@ -311,80 +314,110 @@ function _lvCollect(x, y, r) {
    ====== */
 
 var _lvVisW = 640, _lvVisH = 390;
-function _lvVisHalf() {      // demi-étendue réellement visible (phases.visibleExtent) : les apparitions se placent hors d'elle
-  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
-  _lvVisW = V ? Math.max(V.left, V.right) : S.view.w * 0.5; _lvVisH = V ? Math.max(V.top, V.bottom) : S.view.h * 0.5;
-}
-function _lvOut(a) {         // pousse le point hors de l'étendue visible (la caméra est en avance sur la tête)
-  for (var k = 0; k < 6 && inView(_lvPX, _lvPY, 40); k++) { _lvPX += Math.cos(a) * 90; _lvPY += Math.sin(a) * 90; }
+/* demi-étendue à couvrir : le plus grand du tampon caméra et de l'étendue
+   réellement montrée (phases.visibleExtent) — R part de là, +150 u */
+var _lvAntX = 0, _lvAntY = 0;
+function _lvVisHalf() {
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null, s = S.snake;
+  _lvVisW = S.view.w * 0.5; _lvVisH = S.view.h * 0.5;
+  // caméra anticipée : pendant les 600 ms du portail elle avance d'environ
+  // 0,6 s de course plus son avance (0,55 s) — un point tout juste caché
+  // maintenant serait dans le champ à l'éclosion
+  _lvAntX = s ? s.x + Math.cos(s.ang) * s.speed * 1.15 : S.cam.x;
+  _lvAntY = s ? s.y + Math.sin(s.ang) * s.speed * 1.15 : S.cam.y;
+  if (V) {
+    if (V.left > _lvVisW) _lvVisW = V.left;
+    if (V.right > _lvVisW) _lvVisW = V.right;
+    if (V.top > _lvVisH) _lvVisH = V.top;
+    if (V.bottom > _lvVisH) _lvVisH = V.bottom;
+  }
 }
 
+/* Un point d'apparition n'est bon que s'il est DANS l'arène et HORS de tout
+   ce que le joueur peut voir : ni l'étendue montrée (inView, marge 40), ni le
+   cadre brut de la caméra, qui la déborde sous certaines bascules. */
+function _lvHidden(x, y) {
+  if (x < _LV_MARGIN || x > K.ARENA_W - _LV_MARGIN || y < _LV_MARGIN || y > K.ARENA_H - _LV_MARGIN) return false;
+  if (inView(x, y, 40)) return false;
+  return Math.abs(x - S.cam.x) > S.view.w * 0.5 + 40 || Math.abs(y - S.cam.y) > S.view.h * 0.5 + 40;
+}
+/* même test, contre la caméra anticipée : sert au choix du point, pas à l'éclosion */
+function _lvHiddenSoon(x, y) {
+  if (!_lvHidden(x, y)) return false;
+  return Math.abs(x - _lvAntX) > S.view.w * 0.5 + 40 || Math.abs(y - _lvAntY) > S.view.h * 0.5 + 40;
+}
+
+/* Repli déterministe : bords et coins de l'arène. Le monde (2600x1600) est
+   toujours plus grand que la vue, donc l'un d'eux est caché. */
+var _LV_FBX = [0, 0, -1, 1, -1, -1, 1, 1], _LV_FBY = [-1, 1, 0, 0, -1, 1, -1, 1];
+function _lvFallback() {
+  var s = S.snake, lo = _LV_MARGIN + 20;
+  for (var k = 0; k < 8; k++) {
+    var x = _LV_FBX[k] ? (_LV_FBX[k] < 0 ? lo : K.ARENA_W - lo) : clamp(s.x, lo, K.ARENA_W - lo);
+    var y = _LV_FBY[k] ? (_LV_FBY[k] < 0 ? lo : K.ARENA_H - lo) : clamp(s.y, lo, K.ARENA_H - lo);
+    if (_lvHiddenSoon(x, y)) { _lvPX = x; _lvPY = y; return true; }
+  }
+  _lvClampPoint();
+  return false;
+}
+
+/* Tous les motifs tirent à R >= max(view.w, view.h)/2 + 150 et revérifient
+   !inView(x, y, 40) ; cinq essais, puis repli. */
 function _lvPoint(pat, i, n) {
   var s = S.snake;
   if (!s) { _lvPX = K.ARENA_W * 0.5; _lvPY = K.ARENA_H * 0.5; return; }
   _lvVisHalf();
-  var off = _lvVisW + 150;
-  var a, R, tries, ok;
-
-  if (pat === 'lane' && _lvLanes.length) {
-    var ln = _lvLanes[rndI(0, _lvLanes.length - 1)];
-    if (ln.ax === 0) {
-      _lvPX = s.x - ln.dir * (_lvVisW + rndR(180, 420));
-      _lvPY = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
-      _lvOut(-ln.dir > 0 ? 0 : Math.PI);
-    } else {
-      _lvPY = s.y - ln.dir * (_lvVisH + rndR(180, 380));
-      _lvPX = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
-      _lvOut(-ln.dir > 0 ? Math.PI / 2 : -Math.PI / 2);
-    }
-    _lvClampPoint();
-    return;
-  }
+  /* Rayon : la DIAGONALE de la demi-vue, pas son plus grand côté. Le point le
+     plus éloigné réellement visible est le COIN, à hypot(w, h) / 2 ; sur une
+     fenêtre presque carrée (rendue jouable par G2) max(w, h) / 2 + 150 ne le
+     domine pas, et le roulis de la caméra achève de faire naître l'ennemi sous
+     les yeux. hypot(demi-w, demi-h) + 150 domine le coin par construction,
+     quelle que soit la forme de la fenêtre et quel que soit le roulis ; il
+     reste >= max(view.w, view.h) / 2 + 150, la borne exigée. */
+  var off = Math.sqrt(_lvVisW * _lvVisW + _lvVisH * _lvVisH) + 150;
+  var a, R, k, ln;
 
   if (pat === 'corner') {
     _lvPX = (i % 2) ? K.ARENA_W - _LV_MARGIN * 2 : _LV_MARGIN * 2;
     _lvPY = (((i / 2) | 0) % 2) ? K.ARENA_H - _LV_MARGIN * 2 : _LV_MARGIN * 2;
+    if (!_lvHiddenSoon(_lvPX, _lvPY)) _lvFallback();
     return;
   }
 
-  if (pat === 'pack') {
-    // grappe serrée autour d'un point de bord tiré une seule fois par salve
-    if (i === 0) { _lvPoint('edge', 0, 1); _lvPackX = _lvPX; _lvPackY = _lvPY; }
-    _lvPX = _lvPackX + rndR(-70, 70);
-    _lvPY = _lvPackY + rndR(-70, 70);
-    _lvClampPoint();
+  // grappe : le point de bord est tiré une fois par salve, les suivants collent
+  if (pat === 'pack' && i > 0) {
+    for (k = 0; k < 5; k++) {
+      _lvPX = _lvPackX + rndR(-70, 70);
+      _lvPY = _lvPackY + rndR(-70, 70);
+      if (_lvHiddenSoon(_lvPX, _lvPY)) return;
+    }
+    _lvPX = _lvPackX; _lvPY = _lvPackY;
+    if (!_lvHiddenSoon(_lvPX, _lvPY)) _lvFallback();
     return;
   }
 
-  if (pat === 'ahead') {
-    a = s.ang + rndR(-0.45, 0.45);
-    R = off + rndR(0, 190);
-  } else if (pat === 'flank') {
-    a = s.ang + ((i & 1) ? 1 : -1) * (Math.PI * 0.5) + rndR(-0.28, 0.28);
-    R = _lvVisH + rndR(120, 300);
-  } else if (pat === 'ring') {
-    a = _lvRingA + (i / Math.max(1, n)) * TAU;
-    R = off + rndR(-40, 120);
-  } else {
-    // 'edge' : on cherche une direction qui tombe hors champ
-    ok = false;
-    for (tries = 0; tries < 5; tries++) {
-      a = rnd() * TAU;
-      R = off + rndR(0, 240);
+  for (k = 0; k < 5; k++) {
+    if (pat === 'lane' && _lvLanes.length) {
+      ln = _lvLanes[rndI(0, _lvLanes.length - 1)];
+      if (ln.ax === 0) {
+        _lvPX = s.x - ln.dir * (off + rndR(0, 240));
+        _lvPY = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      } else {
+        _lvPY = s.y - ln.dir * (off + rndR(0, 240));
+        _lvPX = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      }
+    } else {
+      if (pat === 'ahead') { a = s.ang + rndR(-0.45, 0.45); R = off + rndR(0, 190); }
+      else if (pat === 'flank') { a = s.ang + ((i & 1) ? 1 : -1) * (Math.PI * 0.5) + rndR(-0.28, 0.28); R = off + rndR(0, 300); }
+      else if (pat === 'ring') { a = _lvRingA + (i / Math.max(1, n)) * TAU + (k ? rndR(-0.35, 0.35) : 0); R = off + rndR(0, 160); }
+      else { a = rnd() * TAU; R = off + rndR(0, 240); }          // 'edge' et tout le reste
       _lvPX = s.x + Math.cos(a) * R;
       _lvPY = s.y + Math.sin(a) * R;
-      if (_lvPX > _LV_MARGIN && _lvPX < K.ARENA_W - _LV_MARGIN &&
-          _lvPY > _LV_MARGIN && _lvPY < K.ARENA_H - _LV_MARGIN &&
-          !inView(_lvPX, _lvPY, 40)) { ok = true; break; }
     }
-    if (!ok) _lvClampPoint();
-    return;
+    if (_lvHiddenSoon(_lvPX, _lvPY)) { if (pat === 'pack') { _lvPackX = _lvPX; _lvPackY = _lvPY; } return; }
   }
-
-  _lvPX = s.x + Math.cos(a) * R;
-  _lvPY = s.y + Math.sin(a) * R;
-  _lvOut(a);
-  _lvClampPoint();
+  _lvFallback();
+  if (pat === 'pack') { _lvPackX = _lvPX; _lvPackY = _lvPY; }
 }
 var _lvPackX = 0, _lvPackY = 0;
 
@@ -394,28 +427,106 @@ function _lvClampPoint() {
 }
 
 /* ======
+   PORTAILS D'APPARITION
+   Rien n'arrive sans prévenir : 600 ms avant chaque apparition, un chevron de
+   bord de la couleur du type (double pour une élite), un tic sonore, et une
+   ligne dans S.log si un test l'écoute.
+   ====== */
+
+var _LV_PORTAL = 600;
+var _lvPend = [], _lvPendPool = [], _lvPortalId = 0;
+
+function _lvLog(o) { if (S.log && S.log.push && S.log.length < 20000) S.log.push(o); }
+
+function _lvColorOf(type) {
+  var D = S2030.enemies && S2030.enemies.defs, d = D && D[type];
+  return (d && d.color) || '#ffffff';
+}
+
+function _lvPortal(type, x, y, elite, mod, boss) {
+  var p = _lvPendPool.length ? _lvPendPool.pop() : {};
+  p.type = type; p.x = x; p.y = y; p.elite = !!elite; p.mod = mod || null; p.boss = !!boss;
+  p.t = S.t + _LV_PORTAL; p.color = _lvColorOf(type); p.id = ++_lvPortalId;
+  _lvPend.push(p);
+  S2030.audio && S2030.audio.sfx('spawnTick', { x: x, vol: elite ? 1 : 0.8 });
+  S2030.fx && S2030.fx.edge(x, y, p.color, { dbl: p.elite, size: 24 });
+  _lvLog({ t: S.t, kind: 'portal', ev: 'portal', type: type, elite: p.elite, mod: p.mod,
+           boss: p.boss, x: Math.round(x), y: Math.round(y), lead: _LV_PORTAL, edge: 1, pid: p.id });
+  return p;
+}
+
+/* La caméra a bougé pendant les 600 ms d'annonce : si le point est entré dans
+   le champ, on le repousse vers l'extérieur avant de faire éclore. */
+function _lvHatchFix(p) {
+  if (_lvHidden(p.x, p.y)) return;
+  _lvVisHalf();
+  var a = angTo(S.cam.x, S.cam.y, p.x, p.y), k;
+  for (k = 0; k < 10; k++) {
+    p.x = clamp(p.x + Math.cos(a) * 80, _LV_MARGIN, K.ARENA_W - _LV_MARGIN);
+    p.y = clamp(p.y + Math.sin(a) * 80, _LV_MARGIN, K.ARENA_H - _LV_MARGIN);
+    if (_lvHidden(p.x, p.y)) return;
+  }
+  var sx = _lvPX, sy = _lvPY;
+  if (_lvFallback()) { p.x = _lvPX; p.y = _lvPY; }
+  _lvPX = sx; _lvPY = sy;
+}
+
+function _lvHatch(p) {
+  _lvHatchFix(p);
+  var m = null;
+  if (p.elite || p.mod) { m = _lvMods; m.elite = p.elite; m.mod = p.mod; }
+  var e = spawnEnemy(p.type, p.x, p.y, m);
+  if (!e) return;
+  _lvLog({ t: S.t, kind: 'spawn', ev: 'spawn', type: p.type, elite: p.elite, boss: p.boss,
+           id: e.id, x: Math.round(p.x), y: Math.round(p.y), pid: p.id });
+  // brève déchirure d'arrivée, aux couleurs de l'ennemi
+  if (S2030.fx) S2030.fx.ring(p.x, p.y, e.color, 4, 340, { w: 2, life: 0.3 });
+  if (p.boss) _lvBossBorn(e);
+}
+
+/* Éclosion dans l'ORDRE D'ANNONCE : une salve arrive dans l'ordre où ses
+   chevrons se sont allumés (et la composition d'une vague reste celle du
+   tableau de niveau). */
+var _lvPortalF = 0;
+function _lvPortalTick() {
+  var i = 0;
+  _lvPortalF++;
+  while (i < _lvPend.length) {
+    var p = _lvPend[i];
+    // le point corrigé est mémorisé dans p : une vérification sur quatre suffit
+    // pour suivre la caméra (elle avance de ~9 u par image), et l'éclosion la
+    // refait toujours. C'est ce qui évitait des salves de travail par image.
+    if (((_lvPortalF + p.id) & 3) === 0) _lvHatchFix(p);
+    if (S.t < p.t) {
+      S2030.fx && S2030.fx.edge(p.x, p.y, p.color, { dbl: p.elite, size: 24 });
+      i++; continue;
+    }
+    _lvPend.splice(i, 1);
+    _lvHatch(p);
+    if (_lvPendPool.length < 48) _lvPendPool.push(p);
+  }
+}
+
+function _lvPendClear() {
+  while (_lvPend.length) { var p = _lvPend.pop(); if (_lvPendPool.length < 48) _lvPendPool.push(p); }
+}
+
+/* ======
    VAGUES
    ====== */
 
 function _lvSpawnGroup(type, n, pat, eliteP, mods) {
   for (var i = 0; i < n; i++) {
-    if (S.enemies.length >= _LV_HARDCAP) return;
+    if (S.enemies.length + _lvPend.length >= _LV_HARDCAP) return;
     _lvPoint(pat, i, n);
-    var m = null;
+    var el = false, md = null;
     if (eliteP && chance(eliteP)) {
-      m = _lvMods;
-      m.elite = true;
-      m.mod = (mods && mods.length) ? pick(mods) : null;
+      el = true;
+      md = (mods && mods.length) ? pick(mods) : null;
     } else if (mods && mods.length && chance(0.10 + _lvCycle * 0.02)) {
-      m = _lvMods;
-      m.elite = false;
-      m.mod = pick(mods);
+      md = pick(mods);
     }
-    var e = spawnEnemy(type, _lvPX, _lvPY, m);
-    if (e && S2030.fx) {
-      // brève déchirure d'arrivée, aux couleurs de l'ennemi
-      S2030.fx.ring(_lvPX, _lvPY, e.color, 4, 340, { w: 2, life: 0.3 });
-    }
+    _lvPortal(type, _lvPX, _lvPY, el, md, false);
   }
 }
 var _lvMods = { elite: false, mod: null };   // objet de mods réutilisé
@@ -450,7 +561,7 @@ function _lvWaves(dt) {
     if (_lvWaveT[i] > 0) continue;
     _lvWaveT[i] = w.every * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
     var cap = Math.min(_LV_HARDCAP, Math.round((w.cap + capB) * capM));
-    if (S.enemies.length >= cap) continue;
+    if (S.enemies.length + _lvPend.length >= cap) continue;
     _lvFireWave(w);
   }
 }
@@ -473,7 +584,7 @@ function _lvEnterPhase(idx) {
 
   // amorce des minuteries de la phase : la première salve part tout de suite
   for (var w = 0; w < _lvDef.spawns.length; w++) {
-    if (_lvDef.spawns[w].p === ph) _lvWaveT[w] = rndR(0.2, 1.4);
+    if (_lvDef.spawns[w].p === ph) _lvWaveT[w] = Math.max(0.02, rndR(0.2, 1.4) - _LV_PORTAL / 1000);
   }
 
   if (ph === 'rise') {
@@ -501,25 +612,10 @@ function _lvClimax() {
 
   var count = b.n + ((_lvCycle / 2) | 0);
   if (count > 4) count = 4;
+  _lvBossName = b.name || '';
   for (var i = 0; i < count; i++) {
     _lvPoint('ring', i, count);
-    _lvMods.elite = true;
-    _lvMods.mod = b.mod || pick(_lvDef.mods || _LV_ALLMODS);
-    var e = spawnEnemy(b.type, _lvPX, _lvPY, _lvMods);
-  if (e) { e.name = b.name || e.name; e.boss = 1; }
-    if (e) {
-      if (_lvCycle > 0) { e.hp = e.maxHp = Math.round(e.maxHp * (1 + _lvCycle * 0.22)); }
-      _lvElites.push(e);
-      if (S2030.fx) {
-        S2030.fx.ring(e.x, e.y, _lvPal.danger, 12, 620, { w: 6, life: 0.6 });
-        S2030.fx.flare(e.x, e.y, _lvPal.danger, 150, { life: 0.5, a: 0.9 });
-      }
-    }
-  }
-  if (_lvElites.length) {
-    _lvBoss = _lvElites[0];
-    S.boss = _lvBoss;
-    S.bossHpMax = _lvBoss.maxHp;
+    _lvPortal(b.type, _lvPX, _lvPY, true, b.mod || pick(_lvDef.mods || _LV_ALLMODS), true);
   }
   if (b.escort) {
     for (var k = 0; k < b.escort.length; k++) {
@@ -551,6 +647,25 @@ function _lvClearPhase() {
                     clamp(s.y + rndR(-90, 90), 40, K.ARENA_H - 40));
 }
 
+/* Une élite de climax franchit son portail : elle rejoint le groupe et, si la
+   place est libre, prend la jauge de boss. */
+var _lvBossName = '';
+function _lvBossBorn(e) {
+  e.name = _lvBossName || e.name;
+  e.boss = 1;
+  if (_lvCycle > 0) { e.hp = e.maxHp = Math.round(e.maxHp * (1 + _lvCycle * 0.22)); }
+  _lvElites.push(e);
+  if (S2030.fx) {
+    S2030.fx.ring(e.x, e.y, _lvPal.danger, 12, 620, { w: 6, life: 0.6 });
+    S2030.fx.flare(e.x, e.y, _lvPal.danger, 150, { life: 0.5, a: 0.9 });
+  }
+  if (!_lvBoss || _lvBoss.dead) {
+    _lvBoss = e;
+    S.boss = _lvBoss;
+    S.bossHpMax = _lvBoss.maxHp;
+  }
+}
+
 function _lvPhaseTick(dt) {
   _lvPhaseT += dt;
   var ph = _LV_PHASES[_lvPhaseI];
@@ -568,7 +683,7 @@ function _lvPhaseTick(dt) {
       S.boss = _lvBoss;
       S.bossHpMax = _lvBoss ? _lvBoss.maxHp : 0;
     }
-    if ((_lvElites.length && alive === 0) || _lvPhaseT > _lvPhaseDur) {
+    if ((_lvElites.length && alive === 0 && !_lvPend.length) || _lvPhaseT > _lvPhaseDur) {
       _lvEnterPhase(4);
     }
     return;
@@ -1012,6 +1127,7 @@ function _lvStart(n) {
   }
 
   _lvHazClear();
+  _lvPendClear();
   _lvElites.length = 0;
   _lvBoss = null;
   _lvDanger = 0;
@@ -1019,7 +1135,9 @@ function _lvStart(n) {
   _lvRingA = rnd() * TAU;
 
   _lvWaveT.length = _lvDef.spawns.length;
-  for (var i = 0; i < _lvWaveT.length; i++) _lvWaveT[i] = rndR(0.3, 2.2);
+  // le préavis du portail est pris SUR L'AVANCE, pas ajouté au calendrier :
+  // la salve s'annonce 600 ms plus tôt et l'ennemi arrive à l'heure prévue
+  for (var i = 0; i < _lvWaveT.length; i++) _lvWaveT[i] = Math.max(0.02, rndR(0.3, 2.2) - _LV_PORTAL / 1000);
 
   _lvTotalDur = 0;
   for (var p = 0; p < _LV_PHASES.length; p++) _lvTotalDur += _lvDef.dur[_LV_PHASES[p]] || 10;
@@ -1070,6 +1188,7 @@ function _lvUpdate(dt) {
   _lvDanger *= Math.pow(0.02, dt);   // décroissance rapide, réarmée par les dangers
 
   _lvPhaseTick(dt);
+  _lvPortalTick();
   _lvWaves(dt);
   _lvRigs(dt);
   _lvNodes(dt);

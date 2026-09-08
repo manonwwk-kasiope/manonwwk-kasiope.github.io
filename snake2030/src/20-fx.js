@@ -649,6 +649,170 @@ function _fxVigGrad(ctx, col, w, h) {
   return g;
 }
 
+/* ------ marqueurs de bord (repère ÉCRAN)
+   Poussés pendant la mise à jour par levels (portails d'apparition) et par
+   enemies (armement dont la source est sortie du cadre) ; dessinés puis vidés
+   par drawScreen : un marqueur ne vit qu'une image. */
+
+var _FX_NEDGE = 48;          // marqueurs acceptés par image
+var _FX_NCHEV = 16;          // chevrons réellement tracés dans une image
+var _fxEdges = [];
+(function () { for (var i = 0; i < _FX_NEDGE; i++) _fxEdges.push({ x: 0, y: 0, color: '#ffffff', dbl: 0, blink: 0, sz: 24, a: 1, px: 0, py: 0, px0: 0, py0: 0, vert: 0, ang: 0, al: 1, done: 0 }); })();
+var _fxEdgeN = 0, _fxEdgeDrop = 0;
+var _fxDrawn = [], _fxDrawnN = 0;
+var _fxOffM = [];            // marqueurs déjà en px écran (ui.offscreen)
+(function () { for (var i = 0; i < 16; i++) _fxOffM.push({ px: 0, py: 0, px0: 0, py0: 0, vert: 0, ang: 0, sz: 16, color: '#ff2e63', al: 1, dbl: 0, done: 0 }); })();
+
+function _fxEdgeMark(x, y, color, opts) {
+  if (_fxEdgeN >= _FX_NEDGE) { _fxEdgeDrop++; return; }
+  var m = _fxEdges[_fxEdgeN++];
+  m.x = x; m.y = y; m.color = color || '#ffffff';
+  m.dbl = (opts && opts.dbl) ? 1 : 0;
+  m.blink = (opts && opts.blink) ? 1 : 0;
+  m.sz = (opts && opts.size) || 24;
+  m.a = (opts && opts.a !== undefined) ? opts.a : 1;
+  m.done = 0;
+}
+
+/* Point monde -> position sur le cadre (px écran), pointe vers l'extérieur.
+   Sous la bascule, phases.toScreen peut rendre un point NON FINI pour un point
+   très éloigné (division par un dénominateur nul) : on retombe alors sur la
+   projection caméra à plat, sinon le chevron partirait au centre de l'écran. */
+var _fxEP = { x: 0, y: 0 };
+function _fxEdgePos(w, h, m) {
+  var P = S2030.phases, p = null;
+  if (P && P.toScreen) p = P.toScreen(m.x, m.y, _fxEP);
+  if (!p || !isFinite(p.x) || !isFinite(p.y)) {
+    _fxEP.x = 0.5 + (m.x - S.cam.x) / Math.max(1, S.view.w);
+    _fxEP.y = 0.5 + (m.y - S.cam.y) / Math.max(1, S.view.h);
+    p = _fxEP;
+  }
+  var cx = w * 0.5, cy = h * 0.5, hw = cx - 20, hh = cy - 20;
+  if (hw < 10 || hh < 10) return false;
+  var dx = p.x * w - cx, dy = p.y * h - cy;
+  if (!isFinite(dx) || !isFinite(dy)) return false;
+  var ad = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
+  if (ad < 1e-4 && ay < 1e-4) {                      // projeté pile au centre : on prend la direction monde
+    dx = m.x - S.cam.x; dy = m.y - S.cam.y;
+    ad = dx < 0 ? -dx : dx; ay = dy < 0 ? -dy : dy;
+    if (ad < 1e-4 && ay < 1e-4) { dx = 0; dy = 1; ad = 0; ay = 1; }
+  }
+  var tx = ad > 1e-6 ? hw / ad : 1e9, ty = ay > 1e-6 ? hh / ay : 1e9, t = tx < ty ? tx : ty;
+  m.px = cx + dx * t; m.py = cy + dy * t; m.ang = Math.atan2(dy, dx);
+  m.vert = tx < ty ? 1 : 0;                          // posé sur un bord vertical : on l'écarte en y
+  m.px0 = m.px; m.py0 = m.py;
+  return true;
+}
+
+function _fxEdgeClamp(v, lim) { return v < 24 ? 24 : (v > lim - 24 ? lim - 24 : v); }
+function _fxEdgeBusy(m) {
+  for (var i = 0; i < _fxDrawnN; i++) {
+    var o = _fxDrawn[i];
+    if (Math.abs(o.px - m.px) < 26 && Math.abs(o.py - m.py) < 26) return true;
+  }
+  return false;
+}
+
+/* Chevron : trois points, ajoutés au CHEMIN COURANT. Un seul chemin sert à tous
+   les chevrons de même couleur et même opacité, et ce chemin est tracé deux fois
+   (halo large puis trait fin) : deux stroke() par groupe au lieu de deux par
+   chevron — c'est ce qui coûtait ~0,9 ms par image sur téléphone. */
+function _fxChevPath(ctx, m, k1, k2, k3) {
+  var s = m.sz * 0.5, c = Math.cos(m.ang), sn = Math.sin(m.ang), px = m.px, py = m.py;
+  var ax = s * k1, ay = s * k3, bx = s * k2;
+  ctx.moveTo(px + ax * c + ay * sn, py + ax * sn - ay * c);
+  ctx.lineTo(px + bx * c, py + bx * sn);
+  ctx.lineTo(px + ax * c - ay * sn, py + ax * sn + ay * c);
+}
+
+/* Trace la file _fxDrawn, groupée par (couleur, opacité). */
+function _fxChevFlush(ctx, list, n) {
+  var i, j, m, o;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -0.6, 0.7, 1);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -0.6, 0.7, 1); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al; ctx.lineWidth = 6; ctx.stroke();
+  }
+  // second chevron des élites, même groupement
+  for (i = 0; i < n; i++) { m = list[i]; if (m.dbl) m.done = 0; }
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done || !m.dbl) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -1.3, -0.1, 0.78);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || !o.dbl || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -1.3, -0.1, 0.78); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al * 0.85; ctx.lineWidth = 4; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* marqueurs permanents hors champ : la liste vient de ui.offscreen(), déjà en px écran */
+var _fxOffN = 0, _fxOffF = 0;
+function _fxCollectOff(w, h) {
+  var U = S2030.ui, i, o, m;
+  if (++_fxOffF >= 3) {
+    _fxOffF = 0; _fxOffN = 0;
+    if (U && U.offscreen) {
+      var l = U.offscreen();
+      if (l && l.length) {
+        var cx = w * 0.5, cy = h * 0.5, n = Math.min(l.length, _fxOffM.length, 8);
+        for (i = 0; i < n; i++) {
+          o = l[i]; m = _fxOffM[i];
+          m.px = o.x; m.py = o.y; m.ang = Math.atan2(o.y - cy, o.x - cx);
+          m.sz = o.sz || 16; m.color = o.color || '#ff2e63'; m.al = 0.9;
+          m.dbl = o.kind === 'boss' ? 1 : 0;
+          _fxOffN++;
+        }
+      }
+    }
+  }
+  for (i = 0; i < _fxOffN && _fxDrawnN < _FX_NCHEV; i++) { _fxOffM[i].done = 0; _fxDrawn[_fxDrawnN++] = _fxOffM[i]; }
+}
+
+/* Projette les marqueurs d'une image et les range le long du cadre, puis les
+   trace groupés par couleur et opacité. Coût borné : au plus _FX_NCHEV chevrons
+   et deux stroke() par groupe, quelle que soit la taille de la vague. */
+function _fxDrawEdges(ctx, w, h) {
+  _fxDrawnN = 0;
+  var i, j, m, o;
+  _fxCollectOff(w, h);            // menaces permanentes d'abord : elles ne cèdent pas la place à une vague
+  if (!_fxEdgeN && !_fxDrawnN) return;               // rien à tracer : pas de save/restore ni de chemin
+  for (i = 0; i < _fxEdgeN && _fxDrawnN < _FX_NCHEV; i++) {
+    m = _fxEdges[i];
+    m.done = 0;
+    if (!_fxEdgePos(w, h, m)) continue;
+    m.al = m.blink ? m.a * ((S.t % 166.7) < 83.35 ? 1 : 0.16) : m.a;    // clignotement 6 Hz
+    /* Une salve annonce plusieurs arrivées presque au même endroit du cadre :
+       on ÉCARTE les chevrons le long du bord (peigne) au lieu de les empiler,
+       sinon trois arrivées ne se lisent que comme une. */
+    for (var k = 0; k < 8 && _fxEdgeBusy(m); k++) {
+      var off = (k % 2 ? -1 : 1) * (((k >> 1) + 1) * 30);
+      if (m.vert) m.py = _fxEdgeClamp(m.py0 + off, h); else m.px = _fxEdgeClamp(m.px0 + off, w);
+    }
+    _fxDrawn[_fxDrawnN++] = m;
+  }
+  _fxEdgeN = 0;
+  if (_fxDrawnN) _fxChevFlush(ctx, _fxDrawn, _fxDrawnN);
+}
+
 function _fxDrawScreen(ctx, w, h) {
   // vignette de danger / dégâts
   if (_fxVigA > 0.004) {
@@ -688,6 +852,11 @@ function _fxDrawScreen(ctx, w, h) {
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
   }
+
+  // chevrons de bord : portails d'apparition, armements hors champ, menaces suivies
+  _fxDrawEdges(ctx, w, h);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
 }
 
 /* ------ reset */
@@ -699,6 +868,7 @@ function _fxReset() {
   for (i = 0; i < _FX_NFLARE; i++) _fxFlares[i].on = false;
   for (i = 0; i < _FX_NTEXT; i++) { _fxTexts[i].on = false; _fxTexts[i].s = ''; }
   _fxPi = _fxRi = _fxFi = _fxTi = 0;
+  _fxEdgeN = 0;
   _fxShake = 0; _fxHit = 0;
   _fxFlashA = 0; _fxVigA = 0; _fxGlitch = 0;
   if (typeof S !== 'undefined' && S) {
@@ -721,6 +891,8 @@ S2030.fx = {
   update: _fxUpdate,
   draw: _fxDraw,
   drawScreen: _fxDrawScreen,
+  edge: _fxEdgeMark,
+  edgeDrops: function () { return _fxEdgeDrop; },
   reset: _fxReset,
 
   // extras lus par le cœur

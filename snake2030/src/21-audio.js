@@ -79,7 +79,8 @@ var _audFxMax = {
   shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
   bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
-  boost: 1, boostEnd: 1, boostDry: 1, click: 3
+  boost: 1, boostEnd: 1, boostDry: 1, click: 3,
+  spawnTick: 3, absorb: 3
 };
 /* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
    plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
@@ -298,6 +299,19 @@ var _audFx = {
     _audTone(t, 'sawtooth', 110, 1760, 0.80, 0.07 * v, 0.05, 700, 6000, 3, d, 0);
     _audTone(t, 'sine', 1760, 110, 0.80, 0.05 * v, 0.05, 0, 0, 0, d, 0);
     _audSub(t + 0.62, 180, 30, 0.45, 0.35 * v, d);
+  },
+
+  /* Tic de portail : une apparition se prepare. 40 ms a 2 kHz, crete -18 dBFS
+     (0,16 avant le bus effets a 0,9 et le master a 0,88). */
+  spawnTick: function(t, v, d){
+    _audTone(t, 'sine', 2000, 2000, 0.04, 0.16 * v, 0.003, 0, 0, 0, d, 0);
+    _audTone(t, 'sine', 4000, 4000, 0.02, 0.05 * v, 0.002, 0, 0, 0, d, 0);
+  },
+
+  /* Le corps encaisse une balle au-dela du 8e anneau : bruit mat, tres court. */
+  absorb: function(t, v, d){
+    _audTone(t, 'sine', 520, 300, 0.05, 0.16 * v, 0.002, 0, 0, 0, d, 0);
+    _audNoise(t, 'bandpass', 900, 380, 0.045, 0.06 * v, 1.4, d);
   },
 
   /* --- interface et jalons ------ */
