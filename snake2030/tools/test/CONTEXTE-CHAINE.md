@@ -32,6 +32,12 @@ HONNÊTETÉ DE LA MESURE — LA RÈGLE QUI PRIME SUR TOUTES LES AUTRES
 - Quand la spec parle de rendu, mesure la SORTIE RÉELLE : pixels du canevas, images effectivement
   écoulées, DOM rendu, état S. Jamais l état interne seul. Un compteur d appels ne prouve pas qu un
   pixel a changé.
+- Mesure par le CHEMIN QUE LE JEU EMPRUNTE, pas seulement avec la bonne grandeur. Déclencher un effet
+  depuis une évaluation hors de la boucle d images produit un nombre qui n existe pas en jeu : le pilote
+  a ainsi conclu à tort qu un gel d image gelait une image, parce qu il le posait ENTRE deux images là
+  où un kill le pose AU MILIEU d une image, avant que la mise à jour des effets ne le vide. Quand une
+  spec décrit son protocole (« pose depuis un crochet sur weapons.update », « jamais dans l image de
+  pose »), ce protocole fait partie du seuil : le suivre n est pas un détail.
 - Si tu compares une API à un pixel, relève les deux DANS LA MÊME IMAGE. Une lecture désynchronisée
   d une capture a déjà produit un faux écart de 104 px qui a coûté une médiation.
 - Vérifie les prémisses de la spec avant d implémenter. L audit qui les a écrites a mesuré la mauvaise
