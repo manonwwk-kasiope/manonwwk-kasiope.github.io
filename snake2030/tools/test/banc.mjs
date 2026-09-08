@@ -34,6 +34,21 @@
  * l’était déjà. Les seuils (1,10 et 1,15) et la borne iPhone (16,7 ms) ne changent pas ; les séries de
  * p95 et leur étendue sont publiées dans le rapport pour que le bruit reste vérifiable.
  *
+ * Ce que la correction ne règle pas, et qu’il faut savoir en lisant un rapport. Après correction, deux
+ * expériences nulles de plus (même build des deux côtés, profil iPhone, quatre régimes) ne déclenchent
+ * plus aucun échec, mais iphone/bascule-charge publie encore 1,127 puis 1,114 alors que rien ne diffère.
+ * La dispersion nulle du p95 y reste donc de l’ordre de treize pour cent, contre quinze de tolérance :
+ * sur CE régime la porte n’a presque plus de marge, une régression réelle de cinq pour cent ne s’y
+ * distingue pas du bruit, et un rapport qui l’approche doit être relu plutôt que cru. Les trois autres
+ * régimes tiennent entre 0,91 et 1,04. La cause est structurelle : le p95 d’une série de trois cents
+ * images est sa quinzième pire image, une statistique intrinsèquement instable ; allonger les séries ne
+ * la stabilise qu’en racine carrée. Le vrai remède est de calculer le p95 sur la RÉUNION des images de
+ * toutes les séries d’un côté, soit deux mille quatre cents images, ce qui divise la dispersion par
+ * environ deux et demi. Ce changement appartient à G13, l’objectif qui porte le coût d’image ; il n’est
+ * pas fait ici pour ne pas déplacer l’instrument au milieu d’une médiation. En attendant, le critère qui
+ * décide vraiment pour la joueuse est la borne absolue : sur iPhone, p95 ≤ 16,7 ms, tenue avec marge
+ * (12,7 à 13,3 ms mesurés sur le régime le plus chargé).
+ *
  * La scène est construite avec les seules API présentes dans tous les builds (window.__S, __M.phases
  * forcePhase / forceGrid / forceZoom / state, window.__SEED, window.__DT) pour qu'un build ancien et un
  * build neuf soient mesurés par le MÊME code. Chaque régime rapporte ses champs de contrôle (vue, zoom,
