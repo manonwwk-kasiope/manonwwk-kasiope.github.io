@@ -47,6 +47,19 @@ HONNÊTETÉ DE LA MESURE — LA RÈGLE QUI PRIME SUR TOUTES LES AUTRES
 - Un test qui échoue se rapporte comme un échec, avec la valeur mesurée. N AFFAIBLIS JAMAIS un seuil de
   la spec pour faire passer un test. N invente jamais une mesure. Si tu n as pas réussi à mesurer
   quelque chose, écris que tu ne l as pas mesuré plutôt que de le déduire.
+- UNE LECTURE N EST PAS UNE MESURE, ET UN DOUTE N EST PAS UN ÉCART. Relire une valeur du code contre une
+  valeur de la spec ne prouve rien tant qu on n a pas vérifié ce que cette valeur SIGNIFIE : le pilote a
+  ainsi reproché au code une onde « de 2 000 unités au lieu de 600 » alors que le cinquième argument de
+  fx.ring est une vitesse amortie, pas un rayon ; mesurée au pixel, l onde livrée faisait bien 520 unités
+  et la « correction » demandée l aurait réduite à 152. Quand tu ne peux pas mesurer, écris « à vérifier »
+  et dis comment le vérifier — jamais « écart ». Le coût d un faux signalement n est pas nul : il détourne
+  un implémenteur, et une correction appliquée sur sa foi casse ce qu elle prétend réparer.
+- UN GARDE-FOU QUI ÉCHOUE EST SUSPECT AVANT LE BUILD. Avant de conclure à une régression, rejoue le même
+  contrôle sur le build précédent (« git show HEAD:snake2030/index.html » servi sur un port dédié). Si les
+  deux échouent à l identique, le défaut est dans le contrôle. Les deux premiers échecs du garde-fou des
+  invariants étaient tous deux les siens : une apostrophe échappée qu il ne savait pas reconnaître, et un
+  gabarit de fenêtre passé à un niveau où la bibliothèque l ignore, si bien qu il testait le portrait dans
+  une page restée en paysage.
 - Si un seuil de la spec est démontrablement inatteignable, écris la démonstration : c est une erreur de
   la spec, pas un manquement du build. C est déjà arrivé une fois.
 - Deux mesures simultanées se polluent. Avant toute mesure, attends que « cat /proc/loadavg » soit sous
