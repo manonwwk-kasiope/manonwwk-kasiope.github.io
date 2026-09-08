@@ -22,6 +22,18 @@
  * voit plus rien (un ralentissement de 30 % y passait inaperçu). Sans limiteur, le delta EST le coût de
  * l'image ; la question « tient-on 60 images par seconde ? » se lit alors directement : coût < 16,7 ms.
  *
+ * Pourquoi chaque statistique est agrégée par son propre minimum. Une version antérieure choisissait UNE
+ * série — celle dont la médiane était la plus basse — et publiait aussi le p95 de cette série. La médiane
+ * était donc stabilisée par la sélection, le p95 ne l’était pas : il valait la queue d’une seule série de
+ * 300 images, tirée au hasard parmi huit. La preuve est une expérience nulle, le MÊME build servi des deux
+ * côtés : sur iphone/bascule-charge, le côté « référence » a publié un p95 de 10,6 ms et le côté
+ * « courant » 12,9 ms, soit × 1,217 — au-delà du seuil de 1,15 alors qu’aucune ligne de code ne
+ * différait. La dispersion nulle du p95 (au moins 22 %) dépassait la tolérance de la porte (15 %) : la
+ * porte ne mesurait plus le build, elle tirait à pile ou face. Correction : médiane, p95 et p99 sont
+ * chacun agrégés par leur propre minimum sur toutes les séries et toutes les passes, comme la médiane
+ * l’était déjà. Les seuils (1,10 et 1,15) et la borne iPhone (16,7 ms) ne changent pas ; les séries de
+ * p95 et leur étendue sont publiées dans le rapport pour que le bruit reste vérifiable.
+ *
  * La scène est construite avec les seules API présentes dans tous les builds (window.__S, __M.phases
  * forcePhase / forceGrid / forceZoom / state, window.__SEED, window.__DT) pour qu'un build ancien et un
  * build neuf soient mesurés par le MÊME code. Chaque régime rapporte ses champs de contrôle (vue, zoom,
@@ -32,7 +44,8 @@
  * Variables : S2030_URL (build courant), S2030_BANC_REF (URL du build de référence ; par défaut le banc
  * écrit « git show HEAD:snake2030/index.html » dans snake2030/index-ref.html, le sert depuis le même
  * dossier que les mp3, et l'efface à la fin), S2030_BANC_FRAMES (1200, réparties sur S2030_BANC_REPETS
- * séries dont on garde la meilleure), S2030_BANC_REPETS (4), S2030_BANC_PROFILES (« desk,iphone »),
+ * séries ; chaque statistique — médiane, p95, p99 — est agrégée par son propre minimum sur toutes les
+ * séries et toutes les passes, le minimum étant la mesure la moins polluée par l'hôte), S2030_BANC_REPETS (4), S2030_BANC_PROFILES (« desk,iphone »),
  * S2030_BANC_PASSES (2 : ordre référence-courant puis courant-référence).
  * Seuils : par régime et par profil, p50 courant ≤ 1,10 × p50 référence et p95 courant ≤ 1,15 × p95
  * référence ; scène identique ; sur iPhone, p95 courant ≤ 16,7 ms (60 images par seconde tenues).
@@ -73,15 +86,34 @@ const REF_COMMIT = (() => { try { return execFileSync('git', ['-C', REPO, 'rev-p
    crochet dédié au banc. */
 function poser({ kind, n }) {
   const S = window.__S, M = window.__M;
-  const src = S.enemies.find(e => e.type === 'chaser') || S.enemies[0];
-  if (!src) return { ok: false, why: 'aucun ennemi à cloner' };
-  const tmpl = JSON.parse(JSON.stringify(src));
+  /* Modèle d'ennemi CONSTRUIT depuis defs.chaser, pas prélevé dans la partie en cours : le calendrier des
+     vagues change d'un objectif à l'autre, et cloner « le premier ennemi trouvé » comparait 24 mines d'un
+     côté à 24 traqueurs de l'autre (mesuré : ×1,4 de faux écart). Le type retenu entre dans la clé de scène.
+     Repli sur le clone si un build n'expose pas enemies.defs. */
+  const D = M.enemies && M.enemies.defs, d = D && D.chaser;
+  let tmpl, mtype;
+  if (d) {
+    const e = { id: 700000, type: 'chaser', x: 0, y: 0, vx: 0, vy: 0, ang: 0, t: 0, r: d.r || 14,
+      hp: 1e9, maxHp: 1e9, dmg: d.dmg || 1, speed: d.speed || 60, score: d.score || 10, xp: d.xp || 1,
+      color: d.color || '#ff2e63', elite: false, mod: null, dead: false, hitT: 0 };
+    for (const k in d) if (!(k in e)) e[k] = d[k];
+    if (d.init) d.init(e);
+    tmpl = JSON.parse(JSON.stringify(e));
+    mtype = 'defs:chaser';
+  } else {
+    const src = S.enemies.find(e => e.type === 'chaser') || S.enemies[0];
+    if (!src) return { ok: false, why: 'aucun ennemi à cloner' };
+    tmpl = JSON.parse(JSON.stringify(src));
+    mtype = 'clone:' + (src.type || '?');
+  }
+  window.__BANCTYPE = mtype;
   const X = Math.round(window.__K.ARENA_W / 2), Y = Math.round(window.__K.ARENA_H / 2);
   const R0 = S.view.w * 0.13, DR = S.view.w * 0.058;      // rayons proportionnels à la vue : même image sur téléphone et sur bureau
   const models = [];
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2, r = R0 + (i % 6) * DR;
     const e = JSON.parse(JSON.stringify(tmpl));
+    e.id = 700000 + i;
     e.x = X + Math.cos(a) * r; e.y = Y + Math.sin(a) * r;
     e.hp = 1e9; e.maxHp = 1e9; e.ang = a; e.t = i * 0.13; e.hitT = 0;
     models.push(e);
@@ -134,6 +166,7 @@ async function uneSerie(p, frames) {
       dts: window.__BL.slice(30),
       scene: { vw: Math.round(S.view.w), vh: Math.round(S.view.h), zoom: +s.zoom.toFixed(2), persp: Math.round(s.perspDeg),
                grille: s.diagT > 0, enn: S.enemies.length, segs: S.snake.segs.length, px: S.pxEff, part: S.partEff,
+               mtype: window.__BANCTYPE || '?',
                cw: document.getElementById('game').width, ch: document.getElementById('game').height },
       err: window.__ERR ? window.__ERR.count : -1,
     };
@@ -145,20 +178,28 @@ async function unRegime(ctx, reg) {
   const pose = await p.evaluate(poser, { kind: reg.kind, n: reg.n });
   if (!pose.ok) throw new Error('banc : ' + pose.why);
   await p.waitForTimeout(4000);                            // le zoom et la bascule s'installent
-  /* Plusieurs séries, on garde la meilleure : le minimum est la mesure la moins polluée par l'hôte,
-     c'est la pratique en banc d'essai. L'étendue est rapportée pour rester honnête sur le bruit. */
+  /* Plusieurs séries : le minimum est la mesure la moins polluée par l’hôte, c’est la pratique en banc
+     d’essai. Les étendues sont rapportées pour rester honnête sur le bruit. */
   const series = [];
   let o = null;
   for (let k = 0; k < REPETS; k++) {
     o = await uneSerie(p, Math.max(120, Math.round(FRAMES / REPETS)));
     series.push(frameStats(o.dts));
   }
+  /* Chaque statistique est agrégée par SON PROPRE minimum. Prendre « le p95 de la série dont la médiane
+     était la plus basse » revenait à comparer deux queues tirées au hasard : la médiane était stabilisée
+     par la sélection, le p95 ne l'était pas et héritait de toute la dispersion d'une seule série de 300
+     images. Mesuré à build identique des deux côtés (expérience nulle), ce choix faisait échouer la porte
+     p95 sur iphone/bascule-charge (× 1,217) alors que rien n'avait changé. Le seuil, lui, ne bouge pas. */
   const st = series.reduce((a, b) => (b.p50 < a.p50 ? b : a));
+  const min = f => +Math.min(...series.map(f)).toFixed(2);
   const r25 = v => Math.round(v / 25) * 25;
   const s = o.scene;
-  return { p50: st.p50, p95: st.p95, p99: st.p99, pct33: st.pct33, series: series.map(x => x.p50),
+  return { p50: st.p50, p95: min(x => x.p95), p99: min(x => x.p99), pct33: min(x => x.pct33),
+    series: series.map(x => x.p50), series95: series.map(x => x.p95),
     etendue: +(Math.max(...series.map(x => x.p50)) - Math.min(...series.map(x => x.p50))).toFixed(2),
-    scene: s, cle: `${r25(s.vw)}x${r25(s.vh)}/z${s.zoom.toFixed(2)}/p${s.persp}/g${s.grille ? 1 : 0}/e${s.enn}/c${s.cw}x${s.ch}/px${s.px}`, err: o.err };
+    etendue95: +(Math.max(...series.map(x => x.p95)) - Math.min(...series.map(x => x.p95))).toFixed(2),
+    scene: s, cle: `${r25(s.vw)}x${r25(s.vh)}/z${s.zoom.toFixed(2)}/p${s.persp}/g${s.grille ? 1 : 0}/e${s.enn}:${s.mtype || '?'}/c${s.cw}x${s.ch}/px${s.px}`, err: o.err };
 }
 
 /* Une session = un navigateur sur un build, les quatre régimes. */
@@ -178,7 +219,18 @@ async function uneSession(nom, url) {
   return out;
 }
 
-const mieux = (a, b) => (!a ? b : !b ? a : (b.p50 < a.p50 ? b : a));
+/* Fusion entre passes : même règle qu'entre séries, chaque statistique garde son propre minimum. */
+const mieux = (a, b) => {
+  if (!a) return b; if (!b) return a;
+  const base = b.p50 < a.p50 ? b : a;
+  return Object.assign({}, base, {
+    p50: Math.min(a.p50, b.p50), p95: Math.min(a.p95, b.p95), p99: Math.min(a.p99, b.p99),
+    pct33: Math.min(a.pct33, b.pct33),
+    series: a.series.concat(b.series), series95: (a.series95 || []).concat(b.series95 || []),
+    etendue: +Math.max(a.etendue, b.etendue).toFixed(2),
+    etendue95: +Math.max(a.etendue95 || 0, b.etendue95 || 0).toFixed(2),
+  });
+};
 
 async function unProfil(nom) {
   const best = { ref: {}, cur: {} };
