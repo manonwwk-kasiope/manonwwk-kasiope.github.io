@@ -112,13 +112,35 @@ S2030.phases = (function () {
      3D revient plus souvent que le reste, c'est elle qu'on vient voir. */
   var POOL = [3, 3, 2, 0, 3, 1];
 
+  /* Un profil qui a déjà joué a déjà vu l'ouverture : on ne lui rejoue pas
+     quatre bannières pour d'anciennes connaissances. */
+  function _phSeen() {
+    var st = S.stats;
+    if (!st.phSeen) {
+      st.phSeen = {};
+      if ((st.runs | 0) > 0) for (var i = 0; i < SCRIPT.length; i++) st.phSeen[SCRIPT[i].kind] = 1;
+    }
+    return st.phSeen;
+  }
+
   function startPhase(k) {
     phase.kind = k.kind; phase.dur = k.dur; phase.t = k.dur; phase.zoom = k.zoom;
     cam.rotT = k.rot || 0;
     perspT = (k.persp || 0) * Math.PI / 180;
     if (k.kind === 'ortho' || k.kind === 'roll' || k.kind === 'dive') startGrid(k.kind === 'ortho' ? 'ortho' : 'diag', k.dur);
     else endGrid();
-    S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    /* Quatre bannières plein écran en 22 s pour nommer des mouvements de
+       caméra : la joueuse les subissait sans y rien apprendre. Le nom devient
+       un tag de 11 px pendant une seconde à droite du nom de niveau ; seule la
+       TOUTE PREMIÈRE rencontre d'une phase, par profil, garde sa bannière. */
+    var seen = _phSeen();
+    if (!seen[k.kind]) {
+      seen[k.kind] = 1;
+      if (typeof saveStats === 'function') saveStats();
+      S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    } else {
+      S2030.ui && S2030.ui.phaseTag && S2030.ui.phaseTag(k.nom);
+    }
     S2030.audio && S2030.audio.sfx('warp');
     pulse(0.10);
   }

@@ -175,8 +175,14 @@ function _fxFlashF() {          // atténuation des flashs
   var o = _fxOpt();
   return (o && o.reduceFlash) ? 0.28 : 1;
 }
+/* « Réduire les mouvements » ne peut pas se contenter d'atténuer : à 0,3,
+   fx.shake(30) dépose encore 9 unités et l'amortissement met une dizaine
+   d'images (≈ 170 ms) à les ramener sous le seuil de remise à zéro. Le maître
+   rend donc 0 : rien n'est déposé, shakeAmount() et S.shakeX/S.shakeY valent 0
+   dès l'image suivante. Le réglage isolé « secousses » garde son 0,3. */
 function _fxShakeF() {          // atténuation des secousses
   var o = _fxOpt();
+  if (o && o.reduceMotion) return 0;
   return (o && o.reduceShake) ? 0.3 : 1;
 }
 

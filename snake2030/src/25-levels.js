@@ -374,8 +374,11 @@ function _lvFallback() {
   return false;
 }
 
-/* Tous les motifs tirent à R >= max(view.w, view.h)/2 + 150 et revérifient
-   !inView(x, y, 40) ; cinq essais, puis repli. */
+/* Tous les motifs tirent à R >= hypot(view.w, view.h)/2 + 150 — la DIAGONALE
+   de la demi-vue, pas son plus grand côté — et revérifient !inView(x, y, 40) ;
+   cinq essais, puis repli. (L'en-tête annonçait max(view.w, view.h)/2 + 150,
+   borne plus faible que ce que le corps applique depuis G6 : seule cette ligne
+   était fausse, le calcul est inchangé.) */
 function _lvPoint(pat, i, n) {
   var s = S.snake;
   if (!s) { _lvPX = K.ARENA_W * 0.5; _lvPY = K.ARENA_H * 0.5; return; }

@@ -121,10 +121,14 @@ function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
    L'ancienne donnait, pour un joueur passif : plus de 150 s / 88 / 90 / 62 /
    20 s — le premier cran ne finissait jamais, les deux du milieu étaient
    indiscernables, et le dernier tuait avant le premier contenu du jeu. */
+/* Les libellés disaient le contraire de l'échelle : le cran par DÉFAUT (1,55)
+   s'appelait SOUTENU, sous un STANDARD plus dur que lui. Multiplicateurs
+   inchangés, seuls les noms bougent — et ils vivent ICI, dans le moteur, parce
+   que le sélecteur des réglages les lit par DIFFS.map. */
 var DIFFS = [
-  { m: 1.25, nom: 'DÉTENDU' },
-  { m: 1.55, nom: 'SOUTENU' },
-  { m: 1.90, nom: 'STANDARD' },
+  { m: 1.25, nom: 'FACILE' },
+  { m: 1.55, nom: 'NORMAL' },
+  { m: 1.90, nom: 'DIFFICILE' },
   { m: 2.30, nom: 'BRUTAL' },
   { m: 2.75, nom: 'SUICIDE' }
 ];

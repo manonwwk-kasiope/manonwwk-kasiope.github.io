@@ -882,7 +882,7 @@ function readyTick() {
     if (!_rdyUlt) {
       _rdyUlt = 1;
       S2030.audio && S2030.audio.sfx('ultReady');
-      S2030.ui && S2030.ui.toast && S2030.ui.toast('ULTIME PRÊT', '★ / R');
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊTE', '★ / R');
     }
   } else _rdyUlt = 0;
   if (!_rdyPow) {
@@ -943,8 +943,13 @@ function startRun() {
   if (!S.desktop) goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
-  resetRun();
+  /* La phase est posée AVANT la remise à zéro : resetRun se termine par
+     levels.start(1), et _lvSay renonce tant que S.phase !== 'play'. Dans
+     l'ordre inverse, la bannière « NIVEAU 1 — LA GRILLE » n'était jamais
+     émise — la seule des onze qui manquait. S.levelT vient d'être remise à
+     zéro par resetRun, l'échéance « moins d'une seconde » est donc tenue. */
   S.phase = 'play';
+  resetRun();
   S.paused = false;
   S2030.ui.showScreen(null);
   S2030.audio && S2030.audio.start();
@@ -1125,7 +1130,11 @@ function buildFullscreenButton() {
     'bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
     'pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
-    'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
+    /* le seul texte de l'interface qui vivait hors de la feuille de 26-ui.js :
+        sans var(--uis) le réglage « Taille de l'interface » ne l'atteignait pas
+        et il restait sous le plancher typographique. */
+    'border-radius:8px;padding:8px 18px;' +
+    'font:600 calc(var(--uis,1)*max(var(--fmin,11px),10px))/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
     '#ui #fsb.on{display:block}' +
     '#ui #fsb:active{background:rgba(0,229,255,.22)}' +

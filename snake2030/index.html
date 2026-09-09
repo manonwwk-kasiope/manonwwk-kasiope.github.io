@@ -164,10 +164,14 @@ function dist(x1, y1, x2, y2) { return Math.sqrt(dist2(x1, y1, x2, y2)); }
    L'ancienne donnait, pour un joueur passif : plus de 150 s / 88 / 90 / 62 /
    20 s — le premier cran ne finissait jamais, les deux du milieu étaient
    indiscernables, et le dernier tuait avant le premier contenu du jeu. */
+/* Les libellés disaient le contraire de l'échelle : le cran par DÉFAUT (1,55)
+   s'appelait SOUTENU, sous un STANDARD plus dur que lui. Multiplicateurs
+   inchangés, seuls les noms bougent — et ils vivent ICI, dans le moteur, parce
+   que le sélecteur des réglages les lit par DIFFS.map. */
 var DIFFS = [
-  { m: 1.25, nom: 'DÉTENDU' },
-  { m: 1.55, nom: 'SOUTENU' },
-  { m: 1.90, nom: 'STANDARD' },
+  { m: 1.25, nom: 'FACILE' },
+  { m: 1.55, nom: 'NORMAL' },
+  { m: 1.90, nom: 'DIFFICILE' },
   { m: 2.30, nom: 'BRUTAL' },
   { m: 2.75, nom: 'SUICIDE' }
 ];
@@ -1283,8 +1287,14 @@ function _fxFlashF() {          // atténuation des flashs
   var o = _fxOpt();
   return (o && o.reduceFlash) ? 0.28 : 1;
 }
+/* « Réduire les mouvements » ne peut pas se contenter d'atténuer : à 0,3,
+   fx.shake(30) dépose encore 9 unités et l'amortissement met une dizaine
+   d'images (≈ 170 ms) à les ramener sous le seuil de remise à zéro. Le maître
+   rend donc 0 : rien n'est déposé, shakeAmount() et S.shakeX/S.shakeY valent 0
+   dès l'image suivante. Le réglage isolé « secousses » garde son 0,3. */
 function _fxShakeF() {          // atténuation des secousses
   var o = _fxOpt();
+  if (o && o.reduceMotion) return 0;
   return (o && o.reduceShake) ? 0.3 : 1;
 }
 
@@ -8380,8 +8390,11 @@ function _lvFallback() {
   return false;
 }
 
-/* Tous les motifs tirent à R >= max(view.w, view.h)/2 + 150 et revérifient
-   !inView(x, y, 40) ; cinq essais, puis repli. */
+/* Tous les motifs tirent à R >= hypot(view.w, view.h)/2 + 150 — la DIAGONALE
+   de la demi-vue, pas son plus grand côté — et revérifient !inView(x, y, 40) ;
+   cinq essais, puis repli. (L'en-tête annonçait max(view.w, view.h)/2 + 150,
+   borne plus faible que ce que le corps applique depuis G6 : seule cette ligne
+   était fausse, le calcul est inchangé.) */
 function _lvPoint(pat, i, n) {
   var s = S.snake;
   if (!s) { _lvPX = K.ARENA_W * 0.5; _lvPY = K.ARENA_H * 0.5; return; }
@@ -10262,11 +10275,13 @@ var _uiJoyMoved = false;
 var _uiRunMs = 0, _uiRunLast = 0, _uiRunOn = false;
 var _uiBanTo = 0, _uiToastTo = 0;
 var _uiBanQ = [], _uiBanBusy = 0;   // file des bannières : une à la fois (G9)
+var _uiAnnQ = [], _uiAnnOn = 0;     // file des toasts, exclusion mutuelle avec la bannière (G10)
+var _uiPhTo = 0;                    // tag de phase caméra (1 s)
 var _uiSafe = { t: 0, r: 0, b: 0, l: 0 };
 var _uiLvName = '', _uiLvCache = -1;
 var _uiKF = null, _uiOverLock = false;       // curseur clavier, verrou de l'écran de fin
 var _UI_INERT = 'inert' in document.createElement('div');
-var _UI_KEYS_D = '↑←↓→ / ZQSD / WASD diriger · SOURIS viser · ESPACE ou clic boost · E ou clic droit pouvoir · R ou molette ultime · P / ÉCHAP pause · F plein écran';
+var _UI_KEYS_D = '↑←↓→ / ZQSD / WASD diriger · SOURIS viser · ESPACE ou clic boost · E ou clic droit pouvoir · R ou molette APOGÉE · P / ÉCHAP pause · F plein écran';
 var _uiRects = {
   boost: { x: 0, y: 0, r: 46 },
   special: { x: 0, y: 0, r: 40 },
@@ -10293,7 +10308,7 @@ var _UI_UNLOCKS = [
   { id: 'u_len',    icon: '⌁', name: 'BIO-RALLONGE',  cost: 120, desc: 'Départ à +3 segments.' },
   { id: 'u_boost',  icon: '»', name: 'RÉACTEUR',      cost: 180, desc: 'Réserve de boost +25 %.' },
   { id: 'u_start',  icon: '▲', name: 'CANON LOURD',   cost: 240, desc: 'Le canon frontal démarre au niveau 2.' },
-  { id: 'u_ult',    icon: '★', name: 'CONDENSATEUR',  cost: 320, desc: 'L\'ultime se charge 20 % plus vite.' },
+  { id: 'u_ult',    icon: '★', name: 'CONDENSATEUR',  cost: 320, desc: 'L\'APOGÉE se charge 20 % plus vite.' },
   { id: 'u_shield', icon: '◈', name: 'PARE-CHOCS',    cost: 400, desc: 'Une seconde d\'invulnérabilité en plus.' },
   { id: 'u_luck',   icon: '◇', name: 'ORACLE',        cost: 520, desc: 'Meilleures chances de cartes rares.' }
 ];
@@ -10303,7 +10318,7 @@ var _UI_UNLOCKS = [
    ====== */
 var _UI_CSS = [
 '#ui{',
-'  --uis:1; --bl:1; --glow:1; --ca:1;',
+'  --uis:1; --bl:1; --glow:1; --ca:1; --fmin:11px;',
 '  --sat:env(safe-area-inset-top,0px); --sar:env(safe-area-inset-right,0px);',
 '  --sab:env(safe-area-inset-bottom,0px); --sal:env(safe-area-inset-left,0px);',
 '  --cy:#00e5ff; --mg:#ff2e63; --vi:#b388ff; --am:#ffd166; --li:#7cffb2;',
@@ -10328,12 +10343,12 @@ var _UI_CSS = [
 /* clavier : curseur de focus (.kb : bureau, ou dès la première touche), focus visible, légende, capuchons */
 '#ui.kb .kf{border:2px solid var(--cy)!important;transform:scale(1.04);transition:transform .08s,border-color .08s}',
 '#ui :focus-visible{outline:2px solid var(--cy);outline-offset:2px}',
-'.s2keys{font:600 12px/1.5 var(--fs);letter-spacing:.05em;color:var(--dim);text-align:center}',
+'.s2keys{font:600 calc(var(--uis)*max(12px,var(--fmin)))/1.5 var(--fs);letter-spacing:.05em;color:var(--dim);text-align:center}',
 '.s2menu .s2keys{text-align:left}',
 '.s2g{position:relative}.s2gs[hidden]{display:none}',
 '.s2gs>i>u{background:linear-gradient(90deg,var(--vi),#d9c4ff);box-shadow:0 0 calc(10px*var(--bl)) var(--vi)}',
 '.s2kcap{position:absolute;right:100%;top:50%;transform:translateY(-50%);margin-right:7px;',
-'  font:800 9px/1 var(--fm);letter-spacing:.08em;color:var(--ink);border:1px solid var(--line);',
+'  font:800 calc(var(--uis)*var(--fmin))/1 var(--fm);letter-spacing:.08em;color:var(--ink);border:1px solid var(--line);',
 '  border-radius:3px;padding:2px 4px;background:var(--pan);white-space:nowrap;opacity:0;transition:opacity .4s}',
 '.s2hud.kc .s2kcap{opacity:1}',
 '.s2p{position:fixed;inset:0;visibility:hidden;pointer-events:none;',
@@ -10356,11 +10371,11 @@ var _UI_CSS = [
 
 '.s2score{font:800 calc(var(--uis)*clamp(17px,4.4vh,30px))/1 var(--fm);letter-spacing:.04em;',
 '  color:#fff;text-shadow:0 0 calc(14px*var(--bl)*var(--glow)) rgba(0,229,255,.9),0 2px 0 rgba(0,0,0,.65)}',
-'.s2mult{display:flex;align-items:center;gap:6px;height:11px}',
+'.s2mult{display:flex;align-items:center;gap:6px;height:calc(var(--uis)*11px)}',
 '.s2mult>b{font:900 calc(var(--uis)*clamp(11px,2.6vh,16px))/1 var(--fm);color:var(--am);',
 '  text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) var(--am);opacity:.5;transition:opacity .15s}',
 '.s2mult.up>b{opacity:1}',
-'.s2mult>s{font:700 calc(var(--uis)*clamp(8px,1.9vh,11px))/1 var(--fm);color:var(--am);',
+'.s2mult>s{font:700 calc(var(--uis)*max(var(--fmin),clamp(8px,1.9vh,11px)))/1 var(--fm);color:var(--am);',
 '  opacity:.72;text-decoration:none;white-space:nowrap}',
 '.s2mult>i{display:block;width:calc(var(--uis)*54px);height:3px;background:rgba(255,209,102,.18);',
 '  border-radius:2px;overflow:hidden}',
@@ -10368,10 +10383,13 @@ var _UI_CSS = [
 '  background:var(--am)}',
 
 '.s2lv{display:flex;align-items:baseline;gap:7px;white-space:nowrap;max-width:100%}',
-'.s2lv>b{font:900 calc(var(--uis)*clamp(10px,2.4vh,14px))/1 var(--fs);letter-spacing:.18em;',
+'.s2lv>b{font:900 calc(var(--uis)*max(var(--fmin),clamp(10px,2.4vh,14px)))/1 var(--fs);letter-spacing:.18em;',
 '  color:var(--cy);text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) var(--cy)}',
-'.s2lv>s{text-decoration:none;font:700 calc(var(--uis)*clamp(9px,2vh,12px))/1.3 var(--fs);',
+'.s2lv>s{text-decoration:none;font:700 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.3 var(--fs);',
 '  letter-spacing:.14em;color:var(--dim);overflow:hidden;text-overflow:ellipsis}',
+'.s2ph{text-decoration:none;font:800 calc(var(--uis)*var(--fmin))/1.3 var(--fs);letter-spacing:.18em;',
+'  color:var(--vi);white-space:nowrap;opacity:0;transition:opacity .16s}',
+'.s2ph.on{opacity:.95}',
 '.s2prog{width:calc(var(--uis)*clamp(90px,26vw,220px));height:4px;border-radius:3px;',
 '  background:rgba(0,229,255,.14);overflow:hidden}',
 '.s2prog>u{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0);',
@@ -10380,7 +10398,7 @@ var _UI_CSS = [
 
 '.s2boss{display:none;flex-direction:column;align-items:center;gap:3px;width:calc(var(--uis)*clamp(150px,44vw,420px))}',
 '.s2boss.on{display:flex}',
-'.s2boss>b{font:900 calc(var(--uis)*clamp(10px,2.3vh,14px))/1 var(--fs);letter-spacing:.24em;',
+'.s2boss>b{font:900 calc(var(--uis)*max(var(--fmin),clamp(10px,2.3vh,14px)))/1 var(--fs);letter-spacing:.24em;',
 '  color:var(--mg);text-shadow:0 0 calc(14px*var(--bl)*var(--glow)) var(--mg)}',
 '.s2boss>i{display:block;width:100%;height:9px;background:rgba(255,46,99,.16);',
 '  border:1px solid rgba(255,46,99,.55);border-radius:2px;overflow:hidden;',
@@ -10391,21 +10409,21 @@ var _UI_CSS = [
 '.s2ann{min-height:0;text-align:center;opacity:0;transform:translateY(-6px);',
 '  transition:opacity .18s,transform .18s;pointer-events:none}',
 '.s2ann.on{opacity:1;transform:none}',
-'.s2ann>b{display:block;font:900 calc(var(--uis)*clamp(11px,2.6vh,16px))/1.1 var(--fs);',
+'.s2ann>b{display:block;font:900 calc(var(--uis)*max(var(--fmin),clamp(11px,2.6vh,16px)))/1.1 var(--fs);',
 '  letter-spacing:.16em;color:#fff;text-shadow:0 0 calc(16px*var(--bl)*var(--glow)) var(--cy)}',
 '.s2ann>s{display:block;text-decoration:none;margin-top:2px;',
-'  font:700 calc(var(--uis)*clamp(9px,2vh,12px))/1.1 var(--fs);letter-spacing:.1em;color:var(--dim)}',
+'  font:700 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.1 var(--fs);letter-spacing:.1em;color:var(--dim)}',
 
 '.s2seg{display:flex;align-items:center;gap:6px}',
 '.s2seg>b{font:800 calc(var(--uis)*clamp(13px,3.2vh,21px))/1 var(--fm);color:var(--cy);',
 '  text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) var(--cy)}',
-'.s2seg>s{text-decoration:none;font:800 calc(var(--uis)*clamp(8px,1.8vh,11px))/1 var(--fs);',
+'.s2seg>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(8px,1.8vh,11px)))/1 var(--fs);',
 '  letter-spacing:.18em;color:var(--dim)}',
 '.s2seg.low>b{color:#fff;animation:s2danger .5s infinite steps(2)}',
 '@keyframes s2danger{0%{color:#fff;text-shadow:0 0 18px var(--mg)}50%{color:var(--mg);text-shadow:none}}',
 '.s2g{display:flex;align-items:center;gap:5px}',
-'.s2g>s{text-decoration:none;font:800 calc(var(--uis)*clamp(7px,1.6vh,10px))/1 var(--fs);',
-'  letter-spacing:.14em;color:var(--dim);width:2.2em;text-align:right}',
+'.s2g>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(7px,1.6vh,10px)))/1 var(--fs);',
+'  letter-spacing:.14em;color:var(--dim);min-width:2.2em;text-align:right;white-space:nowrap}',
 '.s2g>i{display:block;width:calc(var(--uis)*clamp(54px,13vw,96px));height:6px;border-radius:3px;',
 '  background:rgba(255,255,255,.1);overflow:hidden}',
 '.s2g>i>u{display:block;height:100%;width:100%;transform-origin:0 50%;transform:scaleX(0)}',
@@ -10419,8 +10437,8 @@ var _UI_CSS = [
 '@keyframes s2blink{0%,100%{opacity:1}50%{opacity:.3}}',
 
 '#ui .s2pause{position:absolute;top:calc(var(--sat) + 4px);right:calc(var(--sar) + 6px);',
-'  width:38px;height:38px;display:flex;align-items:center;justify-content:center;',
-'  pointer-events:auto;opacity:.4;font-size:13px;letter-spacing:.1em;color:var(--cy)}',
+'  width:calc(var(--uis)*38px);height:calc(var(--uis)*38px);display:flex;align-items:center;justify-content:center;',
+'  pointer-events:auto;opacity:.4;font-size:calc(var(--uis)*max(13px,var(--fmin)));letter-spacing:.1em;color:var(--cy)}',
 '#ui .s2pause:active{opacity:.9}',
 '#ui .s2pause::after{content:"";position:absolute;inset:-12px}',
 
@@ -10460,12 +10478,28 @@ var _UI_CSS = [
 '#ui.nf .s2btn.rdy{animation:none}',
 '.s2b-boost{color:var(--am)} .s2b-special{color:var(--vi)} .s2b-ult{color:var(--mg)}',
 '.s2b-boost.dry{color:#ff2a2a} .s2b-boost.dry .trk{fill-opacity:.85;stroke-opacity:1}',   /* panne : bouton rouge */
+/* PANNE : l'ANNEAU aussi, et c'est un TRACÉ, pas une couleur. Mesuré sur le
+   build (tools/test/G10/r1-anneau-boost.mjs) : à la panne la réserve vaut zéro,
+   _uiArc pose donc un strokeDashoffset égal à toute la circonférence et l'arc ne
+   dessine RIEN — la couronne (0,80 à 1,00 du rayon) y perdait 77 points de rouge
+   au lieu d'en gagner, avec un écart rouge − vert de 2,8. Ajouter une couleur à
+   .arc n'aurait changé aucun pixel : on force la longueur de l'arc à sa
+   circonférence entière le temps de l'éclat, indépendamment de la valeur. Le
+   !important est nécessaire, _uiArc écrit strokeDashoffset en style en ligne. */
+'.s2b-boost.dry .arc{stroke-dashoffset:0!important;stroke-opacity:1}',
 
 /* ------ bannière - */
 '.s2ban{position:absolute;inset:0;display:none;align-items:center;justify-content:center;',
 '  pointer-events:none;overflow:hidden;z-index:2}',
 '.s2ban.on{display:flex}',
 '.s2ban>b{position:relative;font:900 calc(var(--uis)*clamp(26px,10vh,76px))/1 var(--fs);',
+/* Plafond par le nombre de caracteres (--n, pose en JS) : K = 0,95 em par
+   caractere, MESURE sur ce build (maximum des onze chaines de banniere :
+   DOUBLE LAME, 0,9466 ; letter-spacing .2em compris). Le garde-fou de
+   _uiBanFit reste seul juge : il reduit par pas de 4 % tant que le texte
+   deborde. Si le navigateur ne sait pas diviser par une var(), cette
+   declaration tombe et la taille du raccourci font: ci-dessus reste. */
+'  font-size:min(calc(var(--uis)*clamp(26px,10vh,76px)),calc(.9*100vw/(.95*var(--n,20))));',
 '  letter-spacing:.2em;color:#fff;white-space:nowrap;padding:0 .1em;',
 '  text-shadow:0 0 calc(26px*var(--bl)) var(--cy),0 0 calc(62px*var(--bl)) var(--mg);',
 '  animation:s2banIn 1.15s cubic-bezier(.14,1,.3,1) both}',
@@ -10504,12 +10538,12 @@ var _UI_CSS = [
 
 '.s2ttl{font:900 calc(var(--uis)*clamp(14px,3.4vh,22px))/1 var(--fs);letter-spacing:.26em;',
 '  color:var(--cy);text-shadow:0 0 calc(18px*var(--bl)*var(--glow)) var(--cy);text-align:center}',
-'.s2sub{font:700 calc(var(--uis)*clamp(9px,2vh,12px))/1.3 var(--fs);letter-spacing:.14em;color:var(--dim)}',
+'.s2sub{font:700 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.3 var(--fs);letter-spacing:.14em;color:var(--dim)}',
 '.s2row{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}',
 '.s2fill{flex:1 1 auto;min-height:0}',
 
 '#ui .s2big{position:relative;flex:0 0 auto;padding:0 clamp(20px,5vw,54px);',
-'  height:clamp(46px,13.5vh,78px);min-width:clamp(150px,34vw,320px);',
+'  height:calc(var(--uis)*clamp(46px,13.5vh,78px));min-width:calc(var(--uis)*clamp(150px,34vw,320px));',
 '  border-radius:9px;border:2px solid var(--cy);color:#031018;',
 '  background:linear-gradient(180deg,#9ffaff,#00e5ff 46%,#00a6c8);',
 '  font:900 calc(var(--uis)*clamp(15px,4vh,26px))/1 var(--fs);letter-spacing:.2em;',
@@ -10525,16 +10559,22 @@ var _UI_CSS = [
 '#ui .s2big.mag{border-color:var(--mg);background:linear-gradient(180deg,#ffc2d4,#ff2e63 46%,#c00c3c);',
 '  color:#22030b;box-shadow:0 0 calc(34px*var(--bl)) rgba(255,46,99,.55),inset 0 -3px 0 rgba(0,0,0,.28)}',
 
-'#ui .s2pill{flex:0 0 auto;padding:0 clamp(12px,3vw,24px);height:clamp(34px,9vh,50px);',
+'#ui .s2pill{flex:0 0 auto;padding:0 calc(var(--uis)*clamp(12px,3vw,24px));height:calc(var(--uis)*clamp(34px,9vh,50px));',
 '  border-radius:8px;border:1px solid var(--line);background:var(--pan);color:var(--ink);',
-'  font:800 calc(var(--uis)*clamp(10px,2.3vh,14px))/1 var(--fs);letter-spacing:.16em}',
+'  font:800 calc(var(--uis)*max(var(--fmin),clamp(10px,2.3vh,14px)))/1 var(--fs);letter-spacing:.16em}',
 '#ui .s2pill:active{background:rgba(0,229,255,.22);border-color:var(--cy)}',
 '#ui .s2pill.dim{color:var(--dim)}',
 
 /* menu */
-'.s2menu{flex-direction:row;align-items:center;gap:clamp(12px,4vw,48px)}',
-'.s2mL{flex:1 1 0;display:flex;flex-direction:column;gap:clamp(4px,1.4vh,12px);min-width:0}',
-'.s2mR{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2.4vh,18px)}',
+/* G10 : menu en COLONNE centree. En ligne, le logo et JOUER s'eloignaient
+   l'un de l'autre a mesure que la fenetre s'elargissait (3 000 px de vide a
+   3440 px). Les trois blocs sont empiles, centres, et bornes a 1100 px. */
+'.s2menu{flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,2.4vh,30px)}',
+'.s2mL,.s2mR,.s2mF{width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;min-width:0}',
+'.s2mL{gap:clamp(4px,1.4vh,12px);text-align:center}',
+'.s2mR{gap:clamp(8px,2.4vh,18px)}',
+'.s2mF{gap:clamp(4px,1.4vh,12px)}',
+'.s2menu .s2keys{text-align:center}',
 '.s2logo{display:flex;flex-direction:column;line-height:.86}',
 '.s2logo>b{font:900 calc(var(--uis)*clamp(30px,12vh,80px))/.86 var(--fs);letter-spacing:.06em;color:#dff3ff}',
 '.s2logo>i{font:900 calc(var(--uis)*clamp(24px,9vh,60px))/.9 var(--fs);letter-spacing:.3em;',
@@ -10546,7 +10586,7 @@ var _UI_CSS = [
 '  filter:drop-shadow(0 0 calc(16px*var(--bl)) rgba(0,229,255,.55))}}',
 '.s2stat2{display:flex;gap:clamp(10px,3vw,26px);flex-wrap:wrap}',
 '.s2kv{display:flex;flex-direction:column;gap:2px}',
-'.s2kv>s{text-decoration:none;font:800 calc(var(--uis)*clamp(8px,1.7vh,10px))/1 var(--fs);',
+'.s2kv>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(8px,1.7vh,10px)))/1 var(--fs);',
 '  letter-spacing:.2em;color:var(--dim)}',
 '.s2kv>b{font:800 calc(var(--uis)*clamp(14px,3.4vh,22px))/1 var(--fm);color:var(--am);',
 '  text-shadow:0 0 calc(12px*var(--bl)*var(--glow)) rgba(255,209,102,.7)}',
@@ -10555,8 +10595,11 @@ var _UI_CSS = [
 /* cartes */
 '.s2cards{align-items:center;justify-content:center;gap:clamp(6px,1.6vh,14px)}',
 '.s2cardrow{display:flex;gap:clamp(8px,2.2vw,20px);align-items:stretch;justify-content:center;',
-'  width:100%;flex:1 1 auto;min-height:0;max-height:clamp(120px,52vh,250px)}',
-'#ui .s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(150px,31%,300px);',
+'  width:100%;flex:1 1 auto;min-height:0;max-height:calc(var(--uis)*clamp(120px,52vh,250px))}',
+/* MAX-width, jamais une width imposee : flex:1 1 0 avec min-width:0 laisse la
+   carte retrecir sous 300 px la ou la place manque (iPhone paysage : trois
+   cartes dans ~680 px, soit 227 px chacune). */
+'#ui .s2card{position:relative;flex:1 1 0;min-width:0;max-width:clamp(300px,22vw,480px);',
 '  display:flex;flex-direction:column;align-items:center;justify-content:center;',
 '  gap:clamp(3px,1.1vh,10px);padding:clamp(8px,2.4vh,20px) clamp(6px,1.4vw,16px);',
 '  border-radius:12px;border:2px solid var(--rb,var(--r));transition:transform .08s,border-color .08s;',
@@ -10569,13 +10612,13 @@ var _UI_CSS = [
 '  box-shadow:0 0 calc(14px*var(--bl)) var(--r)}',
 '.s2card .ic{font:400 calc(var(--uis)*clamp(22px,8vh,54px))/1.1 var(--fs);color:var(--t,var(--r));',
 '  text-shadow:0 0 calc(18px*var(--bl)*var(--glow)) var(--t,var(--r))}',
-'.s2card .nm{font:900 calc(var(--uis)*clamp(12px,3vh,20px))/1.05 var(--fs);letter-spacing:.1em;',
+'.s2card .nm{font:900 calc(var(--uis)*max(var(--fmin),clamp(12px,3vh,20px)))/1.05 var(--fs);letter-spacing:.1em;',
 '  color:#fff;text-align:center;word-break:break-word}',
-'.s2card .ds{font:600 calc(var(--uis)*clamp(9px,2.1vh,13px))/1.28 var(--fs);color:var(--dim);',
+'.s2card .ds{font:600 calc(var(--uis)*max(var(--fmin),clamp(9px,2.1vh,13px)))/1.28 var(--fs);color:var(--dim);',
 '  text-align:center;flex:0 1 auto}',
-'.s2card .rr{margin-top:clamp(2px,1.2vh,9px);font:800 calc(var(--uis)*clamp(7px,1.6vh,10px))/1.3 var(--fs);letter-spacing:.24em;',
+'.s2card .rr{margin-top:clamp(2px,1.2vh,9px);font:800 calc(var(--uis)*max(var(--fmin),clamp(7px,1.6vh,10px)))/1.3 var(--fs);letter-spacing:.24em;',
 '  color:var(--r);opacity:.9}',
-'.s2card .lv{position:absolute;top:5px;right:8px;font:800 calc(var(--uis)*9px)/1.3 var(--fs);',
+'.s2card .lv{position:absolute;top:5px;right:8px;font:800 calc(var(--uis)*var(--fmin))/1.3 var(--fs);',
 '  letter-spacing:.12em;color:var(--r);opacity:.6}',
 '.s2card.ultra{animation:s2cardIn .34s cubic-bezier(.16,1,.3,1) both,s2ultra 1.8s linear infinite .34s}',
 '@keyframes s2ultra{0%,100%{box-shadow:0 0 calc(22px*var(--bl)) var(--rg),inset 0 0 30px var(--rg)}',
@@ -10583,34 +10626,49 @@ var _UI_CSS = [
 '#ui.nf .s2card,#ui.nf .s2card.ultra{animation:none}',
 
 /* fin de partie */
-'.s2grid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(5px,1.4vh,14px);width:100%}',
+'.s2grid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(5px,1.4vh,14px);width:100%;',
+'  max-width:900px;margin:0 auto}',
 '.s2tile{flex:1 1 clamp(78px,17%,140px);min-width:clamp(72px,16%,140px);max-width:clamp(120px,22%,210px);',
 '  padding:clamp(5px,1.4vh,12px) clamp(6px,1.2vw,14px);border-radius:8px;',
 '  border:1px solid var(--line);background:var(--pan);display:flex;flex-direction:column;gap:3px}',
-'.s2tile>s{text-decoration:none;font:800 calc(var(--uis)*clamp(7px,1.6vh,10px))/1.35 var(--fs);',
+'.s2tile>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(7px,1.6vh,10px)))/1.35 var(--fs);',
 '  letter-spacing:.18em;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-'.s2tile>b{font:800 calc(var(--uis)*clamp(12px,2.9vh,19px))/1.2 var(--fm);color:#fff;',
 /* La tuile ARME tronquait six noms sur huit sur petit écran : elle prend
    toute la largeur qu'il lui faut, et son texte rétrécit plutôt que de se
-   couper. */
-'.s2tile.wide{flex:1 1 100%;max-width:100%}',
-'.s2tile.wide>b{font-size:calc(var(--uis)*clamp(9px,2.1vh,14px));white-space:nowrap;'
-  + 'overflow:hidden;text-overflow:clip}',
+   couper. Les deux règles .s2tile.wide étaient jusqu'ici INSÉRÉES AU MILIEU
+   du bloc .s2tile>b, donc lues comme des règles imbriquées « & .s2tile.wide »
+   qui ne correspondent à rien : mesuré nul sur le build (cssRules), le
+   correctif était inerte. Elles sortent du bloc. */
+'.s2tile>b{font:800 calc(var(--uis)*max(var(--fmin),clamp(12px,2.9vh,19px)))/1.2 var(--fm);color:#fff;',
 '  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+'.s2tile.wide{flex:1 1 100%;max-width:100%}',
+'.s2tile.wide>b{font-size:calc(var(--uis)*max(var(--fmin),clamp(9px,2.1vh,14px)));white-space:nowrap;',
+'  overflow:hidden;text-overflow:clip}',
 '.s2tile.hi{border-color:var(--am)}.s2tile.hi>b{color:var(--am)}',
-'.s2rec{font:900 calc(var(--uis)*clamp(10px,2.4vh,15px))/1 var(--fs);letter-spacing:.22em;',
+'.s2rec{font:900 calc(var(--uis)*max(var(--fmin),clamp(10px,2.4vh,15px)))/1 var(--fs);letter-spacing:.22em;',
 '  color:var(--am);text-shadow:0 0 calc(16px*var(--bl)) var(--am);animation:s2blink 1s infinite;opacity:0}',
 '.s2rec.on{opacity:1}',
 
 /* réglages */
 '.s2scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;',
 '  -webkit-overflow-scrolling:touch;padding:2px 2px 6px;display:flex;flex-direction:column;gap:5px}',
-'.s2grp{font:800 calc(var(--uis)*clamp(8px,1.8vh,11px))/1 var(--fs);letter-spacing:.26em;',
+'.s2grp{font:800 calc(var(--uis)*max(var(--fmin),clamp(8px,1.8vh,11px)))/1 var(--fs);letter-spacing:.26em;',
 '  color:var(--cy);opacity:.85;margin:8px 0 1px}',
 '.s2opt{display:flex;align-items:center;gap:10px;padding:clamp(4px,1vh,9px) 10px;',
 '  border-radius:7px;background:var(--pan);border:1px solid rgba(255,255,255,.07)}',
-'.s2opt>s{text-decoration:none;flex:1 1 auto;font:700 calc(var(--uis)*clamp(10px,2.2vh,14px))/1.1 var(--fs);',
+'.s2optx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}',
+'.s2optx>s{text-decoration:none;font:700 calc(var(--uis)*max(var(--fmin),clamp(10px,2.2vh,14px)))/1.1 var(--fs);',
 '  letter-spacing:.06em}',
+'.s2optd{font:600 calc(var(--uis)*var(--fmin))/1.25 var(--fs);font-style:normal;color:var(--dim)}',
+/* panneau des reglages : centre, borne a 820 px, et un onglet a la fois */
+'.s2set{align-items:center}',
+'.s2set>.s2scroll,.s2set>.s2tabs,.s2set>.s2row{width:100%;max-width:820px}',
+'.s2scroll[hidden]{display:none}',
+'.s2tabs{flex:0 0 auto;display:flex;gap:6px;justify-content:center}',
+'#ui .s2tabs>button{flex:1 1 0;padding:0 calc(var(--uis)*10px);height:calc(var(--uis)*30px);',
+'  border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.03);',
+'  font:800 calc(var(--uis)*var(--fmin))/1 var(--fs);letter-spacing:.14em;color:var(--dim)}',
+'#ui .s2tabs>button.on{background:var(--cy);color:#03121a}',
 '.s2sw{position:relative;flex:0 0 auto;width:52px;height:28px;border-radius:14px;',
 '  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);transition:background .15s}',
 '.s2sw::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;',
@@ -10618,12 +10676,12 @@ var _UI_CSS = [
 '.s2sw.on{background:rgba(0,229,255,.3);border-color:var(--cy)}',
 '.s2sw.on::after{transform:translateX(24px);background:var(--cy);box-shadow:0 0 12px var(--cy)}',
 '.s2stp{flex:0 0 auto;display:flex;align-items:center;gap:6px}',
-'#ui .s2stp>button{width:42px;height:38px;border-radius:6px;border:1px solid var(--line);',
-'  background:rgba(0,229,255,.09);font:900 16px/1 var(--fs);color:var(--cy)}',
+'#ui .s2stp>button{width:calc(var(--uis)*42px);height:calc(var(--uis)*38px);border-radius:6px;border:1px solid var(--line);',
+'  background:rgba(0,229,255,.09);font:900 calc(var(--uis)*max(16px,var(--fmin)))/1 var(--fs);color:var(--cy)}',
 '#ui .s2stp>button:active{background:rgba(0,229,255,.3)}',
-'.s2stp>span{min-width:76px;text-align:center;font:800 calc(var(--uis)*12px)/1 var(--fm);color:#fff}',
+'.s2stp>span{min-width:calc(var(--uis)*76px);text-align:center;font:800 calc(var(--uis)*max(12px,var(--fmin)))/1 var(--fm);color:#fff}',
 '.s2seg2{flex:0 0 auto;display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}',
-'#ui .s2seg2>button{padding:0 12px;height:30px;font:800 calc(var(--uis)*10px)/1 var(--fs);',
+'#ui .s2seg2>button{padding:0 calc(var(--uis)*12px);height:calc(var(--uis)*30px);font:800 calc(var(--uis)*var(--fmin))/1 var(--fs);',
 '  letter-spacing:.12em;color:var(--dim);background:rgba(255,255,255,.03)}',
 '#ui .s2seg2>button.on{background:var(--cy);color:#03121a}',
 
@@ -10633,10 +10691,10 @@ var _UI_CSS = [
 '  padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--pan)}',
 '.s2u>i{font-style:normal;font-size:calc(var(--uis)*20px);color:var(--cy);width:1.3em;text-align:center}',
 '.s2u>div{flex:1 1 auto;min-width:0}',
-'.s2u b{display:block;font:900 calc(var(--uis)*11px)/1.1 var(--fs);letter-spacing:.1em}',
-'.s2u s{display:block;text-decoration:none;font:600 calc(var(--uis)*9px)/1.2 var(--fs);color:var(--dim)}',
-'#ui .s2u>button{flex:0 0 auto;padding:0 10px;height:30px;border-radius:6px;border:1px solid var(--am);',
-'  color:var(--am);font:900 calc(var(--uis)*10px)/1 var(--fm);background:rgba(255,209,102,.1)}',
+'.s2u b{display:block;font:900 calc(var(--uis)*max(11px,var(--fmin)))/1.1 var(--fs);letter-spacing:.1em}',
+'.s2u s{display:block;text-decoration:none;font:600 calc(var(--uis)*var(--fmin))/1.2 var(--fs);color:var(--dim)}',
+'#ui .s2u>button{flex:0 0 auto;padding:0 calc(var(--uis)*10px);height:calc(var(--uis)*30px);border-radius:6px;border:1px solid var(--am);',
+'  color:var(--am);font:900 calc(var(--uis)*var(--fmin))/1 var(--fm);background:rgba(255,209,102,.1)}',
 '.s2u.got{border-color:var(--ok)}#ui .s2u.got>button{border-color:var(--ok);color:var(--ok);background:none}',
 '#ui .s2u.no>button{opacity:.35}',
 ''].join('\n');
@@ -10760,6 +10818,7 @@ function _uiPlace(el, cx, cyb, d) {
 
 function _uiLayout() {
   if (!_uiBuilt) return;
+  _uiScaleVars();
   _uiMeasureSafe();
   var W = window.innerWidth, H = window.innerHeight;
   var o = S.opt;
@@ -10817,6 +10876,7 @@ function _uiBuildHud(root) {
   var lv = _uiMk('div', 's2lv', C);
   _uiE.lvN = _uiMk('b', '', lv, 'NIVEAU 1');
   _uiE.lvT = _uiMk('s', '', lv, '');
+  _uiE.phTag = _uiMk('s', 's2ph', lv, '');   // nom de phase caméra, 1 s
   _uiE.prog = _uiMk('u', '', _uiMk('div', 's2prog', C));
   var bo = _uiMk('div', 's2boss', C);
   _uiE.bossBox = bo;
@@ -10831,20 +10891,20 @@ function _uiBuildHud(root) {
   var R = _uiMk('div', 's2col s2hr', bar);
   var sg = _uiMk('div', 's2seg', R);
   _uiE.segBox = sg;
-  _uiMk('s', '', sg, 'SEG');
+  _uiMk('s', '', sg, 'VIE');
   _uiE.segN = _uiMk('b', '', sg, '9');
   var gb = _uiMk('div', 's2g s2gb', R);
   _uiE.gBoostBox = gb;
-  _uiMk('s', '', gb, 'BST');
+  _uiMk('s', '', gb, 'BOOST');
   _uiE.gBoost = _uiMk('u', '', _uiMk('i', '', gb));
   // bureau : recharge du pouvoir (sur tactile, l'arc du bouton ◈ la montre)
   var gs = _uiMk('div', 's2g s2gs', R);
   _uiE.gSpBox = gs; gs.hidden = true;
-  _uiMk('s', '', gs, 'PWR');
+  _uiMk('s', '', gs, 'POUVOIR');
   _uiE.gSp = _uiMk('u', '', _uiMk('i', '', gs));
   var gu = _uiMk('div', 's2g s2gu', R);
   _uiE.gUltBox = gu;
-  _uiMk('s', '', gu, 'ULT');
+  _uiMk('s', '', gu, 'APOGÉE');
   _uiE.gUlt = _uiMk('u', '', _uiMk('i', '', gu));
   // capuchons de touches (bureau, 3 premières parties, 6 s)
   _uiMk('kbd', 's2kcap', gb, 'ESPACE'); _uiMk('kbd', 's2kcap', gs, 'E'); _uiMk('kbd', 's2kcap', gu, 'R');
@@ -10879,7 +10939,7 @@ function _uiBuildCtl(root) {
   _uiE.knob = _uiMk('div', 's2knob', joy);
   _uiE.btnBoost = _uiMkBtn(ctl, 'boost', '»', 'Boost');
   _uiE.btnSpecial = _uiMkBtn(ctl, 'special', '◈', 'Pouvoir');
-  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★', 'Ultime');
+  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★', 'Apogée');
 }
 
 function _uiBuildBanner(root) {
@@ -10893,22 +10953,14 @@ function _uiBuildBanner(root) {
 function _uiBuildMenu(root) {
   var sc = _uiMk('div', 's2scr s2menu', root);
   _uiE.scrMenu = sc;
+  /* G10 : trois blocs EMPILÉS et centrés — le logo, puis l'accroche, puis
+     JOUER. Les statistiques et la légende descendent sous les boutons : le
+     logo touche ainsi le bouton, quelle que soit la largeur de la fenêtre. */
   var L = _uiMk('div', 's2mL', sc);
   var lg = _uiMk('div', 's2logo', L);
   _uiMk('b', '', lg, 'SNAKE');
   _uiMk('i', '', lg, '2030');
   _uiMk('div', 's2sub', L, 'ARCADE SURVIE — SURVIS À LA SURCHARGE');
-  var st = _uiMk('div', 's2stat2', L);
-  var k1 = _uiMk('div', 's2kv', st);
-  _uiMk('s', '', k1, 'MEILLEUR');
-  _uiE.mBest = _uiMk('b', '', k1, '0');
-  var k2 = _uiMk('div', 's2kv cy', st);
-  _uiMk('s', '', k2, 'CRÉDITS');
-  _uiE.mCoins = _uiMk('b', '', k2, '0');
-  var k3 = _uiMk('div', 's2kv cy', st);
-  _uiMk('s', '', k3, 'PARTIES');
-  _uiE.mRuns = _uiMk('b', '', k3, '0');
-  _uiE.keysMenu = _uiMk('div', 's2keys', L, '');
 
   var R = _uiMk('div', 's2mR', sc);
   _uiTap(_uiMk('button', 's2big', R, 'JOUER'), function () {
@@ -10918,6 +10970,19 @@ function _uiBuildMenu(root) {
   var row = _uiMk('div', 's2row', R);
   _uiTap(_uiMk('button', 's2pill', row, 'RÉGLAGES'), function () { _uiShow('settings'); });
   _uiTap(_uiMk('button', 's2pill', row, 'DÉBLOCAGES'), function () { _uiShow('unlocks'); });
+
+  var F = _uiMk('div', 's2mF', sc);
+  var st = _uiMk('div', 's2stat2', F);
+  var k1 = _uiMk('div', 's2kv', st);
+  _uiMk('s', '', k1, 'MEILLEUR');
+  _uiE.mBest = _uiMk('b', '', k1, '0');
+  var k2 = _uiMk('div', 's2kv cy', st);
+  _uiMk('s', '', k2, 'CRÉDITS');
+  _uiE.mCoins = _uiMk('b', '', k2, '0');
+  var k3 = _uiMk('div', 's2kv cy', st);
+  _uiMk('s', '', k3, 'PARTIES');
+  _uiE.mRuns = _uiMk('b', '', k3, '0');
+  _uiE.keysMenu = _uiMk('div', 's2keys', F, '');
 }
 
 /* ------ cartes -- */
@@ -11025,14 +11090,16 @@ function _uiBuildOver(root) {
 }
 
 /* ------ réglages -- */
-function _uiOptRow(parent, label) {
+function _uiOptRow(parent, label, desc) {
   var r = _uiMk('div', 's2opt', parent);
   r.tabIndex = 0;
-  _uiMk('s', '', r, label);
+  var t = _uiMk('div', 's2optx', r);
+  _uiMk('s', '', t, label);
+  _uiMk('em', 's2optd', t, desc || label);
   return r;
 }
-function _uiTog(parent, label, key, after) {
-  var r = _uiOptRow(parent, label);
+function _uiTog(parent, label, key, after, desc) {
+  var r = _uiOptRow(parent, label, desc);
   var sw = _uiMk('div', 's2sw', r);
   function refresh() { sw.classList.toggle('on', !!S.opt[key]); }
   _uiTap(sw, function () {
@@ -11045,8 +11112,8 @@ function _uiTog(parent, label, key, after) {
   refresh();
   return r;
 }
-function _uiStepper(parent, label, key, vals, fmt) {
-  var r = _uiOptRow(parent, label);
+function _uiStepper(parent, label, key, vals, fmt, desc) {
+  var r = _uiOptRow(parent, label, desc);
   var st = _uiMk('div', 's2stp', r);
   var minus = _uiMk('button', '', st, '−');
   var val = _uiMk('span', '', st, '');
@@ -11072,8 +11139,8 @@ function _uiStepper(parent, label, key, vals, fmt) {
   refresh();
   return r;
 }
-function _uiSeg2(parent, label, key, opts) {
-  var r = _uiOptRow(parent, label);
+function _uiSeg2(parent, label, key, opts, desc) {
+  var r = _uiOptRow(parent, label, desc);
   var g = _uiMk('div', 's2seg2', r);
   var btns = [];
   function refresh() {
@@ -11094,60 +11161,117 @@ function _uiSeg2(parent, label, key, opts) {
 }
 function _uiPct(v) { return Math.round(v * 100) + ' %'; }
 
+function _uiSetTab(k) {
+  var B = _uiE.setBoxes || [], T = _uiE.setTabs || [];
+  for (var i = 0; i < B.length; i++) {
+    B[i].hidden = (i !== k);
+    T[i].classList.toggle('on', i === k);
+  }
+  _uiE.setTab = k;
+}
+
+/* G10 : trois onglets (JEU / CONTRÔLES / CONFORT). Un seul est monté à la
+   fois : sur iPhone paysage la liste unique dépassait de deux hauteurs
+   d'écran, et rien ne disait à quoi servait un réglage — chaque ligne porte
+   maintenant une description. */
 function _uiBuildSettings(root) {
-  var sc = _uiMk('div', 's2scr', root);
+  var sc = _uiMk('div', 's2scr s2set', root);
   sc.style.gap = '6px';
   _uiE.scrSet = sc;
   _uiMk('div', 's2ttl', sc, 'RÉGLAGES');
-  var box = _uiMk('div', 's2scroll', sc);
-  _uiScrollable(box);
 
+  var tabs = _uiMk('div', 's2tabs', sc);
+  var noms = ['JEU', 'CONTRÔLES', 'CONFORT'];
+  var boxes = [], btns = [];
+  for (var i = 0; i < noms.length; i++) {
+    var tb = _uiMk('button', '', tabs, noms[i]);
+    btns.push(tb);
+    (function (k) { _uiTap(tb, function () { _uiSetTab(k); }); })(i);
+  }
+  for (var j = 0; j < noms.length; j++) {
+    var bx = _uiMk('div', 's2scroll', sc);
+    _uiScrollable(bx);
+    boxes.push(bx);
+  }
+  _uiE.setTabs = btns; _uiE.setBoxes = boxes;
+
+  /* ---- onglet JEU ---- */
+  var box = boxes[0];
   _uiMk('div', 's2grp', box, 'PARTIE');
   /* Les valeurs du sélecteur DOIVENT venir de la table du moteur. En les
      écrivant à la main, deux crans du sélecteur (2,7 et 3,5) tombaient sur le
      même palier moteur et les étiquettes annonçaient autre chose que ce qui
      était appliqué. */
   _uiStepper(box, 'Difficulté', 'diff', DIFFS.map(function (d) { return d.m; }),
-    function (v, i) { return DIFFS[i].nom; });
+    function (v, i) { return DIFFS[i].nom; },
+    'Vitesse et nombre des ennemis. NORMAL est le cran de référence.');
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
-  _uiStepper(box, 'Netteté', 'px', [1, 1.25, 1.5, 2],
-    function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.5 ? 'FLUIDE' : v >= 1.25 ? 'LÉGÈRE' : 'BASSE'; });
-
-  _uiMk('div', 's2grp', box, 'CONTRÔLES');
-  /* Les six lignes du manche et des boutons tactiles n'ont pas d'objet sur
-     bureau : elles reçoivent hidden (voir _uiSyncDesktop). */
-  var tr = _uiE.touchRows = [];
-  tr.push(_uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }]));
-  tr.push(_uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }]));
-  tr.push(_uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct));
-  tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct));
-  _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct);
-  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse', [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }]);
-  tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
-    function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
-  tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
-    function (v) { return (v > 0 ? '+' : '') + v + ' px'; }));
-
-  _uiMk('div', 's2grp', box, 'CONFORT');
-  _uiE.vibRow = _uiTog(box, 'Vibrations', 'haptics');
-  _uiTog(box, 'Réduire les flashs', 'reduceFlash');
-  _uiTog(box, 'Réduire les secousses', 'reduceShake');
-  _uiTog(box, 'Réduire le bloom', 'reduceBloom');
-  _uiTog(box, 'Contraste renforcé', 'contrast');
-  _uiStepper(box, 'Taille de l\'interface', 'uiScale', [0.85, 0.95, 1, 1.1, 1.25], _uiPct);
-  _uiStepper(box, 'Densité des particules', 'particles', [0.4, 0.7, 1], _uiPct);
+  _uiStepper(box, 'Qualité d\'image', 'px', [1, 1.5, 2],
+    function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.25 ? 'ÉQUILIBRÉE' : 'ÉCONOMIE'; },
+    'Finesse du rendu. ÉCONOMIE tient mieux les soixante images sur téléphone.');
 
   _uiMk('div', 's2grp', box, 'SON');
   _uiTog(box, 'Musique', 'music', function (v) {
     if (S2030.audio && S2030.audio.setMusic) S2030.audio.setMusic(v);
-  });
+  }, 'La bande-son en boucle pendant la partie.');
   _uiTog(box, 'Effets sonores', 'sfx', function (v) {
     if (S2030.audio && S2030.audio.setSfx) S2030.audio.setSfx(v);
-  });
+  }, 'Tirs, impacts, alertes et sons d\'interface.');
+
+  /* ---- onglet CONTRÔLES ---- */
+  box = boxes[1];
+  _uiMk('div', 's2grp', box, 'MANCHE ET BOUTONS');
+  /* Les six lignes du manche et des boutons tactiles n'ont pas d'objet sur
+     bureau : elles reçoivent hidden (voir _uiSyncDesktop). */
+  var tr = _uiE.touchRows = [];
+  tr.push(_uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }],
+    'FLOTTANT : le manche naît sous le pouce, où qu\'il se pose.'));
+  tr.push(_uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }],
+    'Échange le côté du manche et celui des boutons.'));
+  tr.push(_uiStepper(box, 'Taille des contrôles', 'joySize', [0.8, 0.9, 1, 1.1, 1.25, 1.4], _uiPct,
+    'Diamètre du manche et des trois boutons tactiles.'));
+  tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct,
+    'Plus discret laisse voir le jeu, plus opaque se vise mieux.'));
+  _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct,
+    'Réactivité de la direction au manche comme à la souris.');
+  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse',
+    [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }],
+    'AUTO : la souris pilote dès qu\'elle bouge, le clavier reprend la main.');
+  tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
+    function (v) { return (v > 0 ? '+' : '') + v + ' px'; },
+    'Remonte ou descend le manche et les boutons.'));
+  tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
+    function (v) { return (v > 0 ? '+' : '') + v + ' px'; },
+    'Éloigne les contrôles du bord de l\'écran.'));
+
+  /* ---- onglet CONFORT ---- */
+  box = boxes[2];
+  _uiMk('div', 's2grp', box, 'CONFORT');
+  /* Maître : coupe secousses, flashs, bloom et l'emphase des bannières d'un
+     seul geste ; pré-coché quand le système annonce prefers-reduced-motion. */
+  _uiTog(box, 'Réduire les mouvements', 'reduceMotion', function (v) {
+    S.opt.reduceShake = v; S.opt.reduceFlash = v; S.opt.reduceBloom = v;
+    _uiApplyOpt();
+  }, 'Coupe secousses, flashs, halos et l\'emphase des bannières.');
+  _uiTog(box, 'Réduire les flashs', 'reduceFlash', null,
+    'Atténue les éclats plein écran et les bannières animées.');
+  _uiTog(box, 'Réduire les secousses', 'reduceShake', null,
+    'Calme les tremblements de caméra aux impacts.');
+  _uiTog(box, 'Réduire le bloom', 'reduceBloom', null,
+    'Diminue les halos lumineux, plus lisible sur petit écran.');
+  _uiTog(box, 'Contraste renforcé', 'contrast', null,
+    'Fonds plus opaques et traits plus francs dans les menus.');
+  _uiE.vibRow = _uiTog(box, 'Vibrations', 'haptics', null,
+    'Retour haptique aux impacts, si l\'appareil le permet.');
+  _uiStepper(box, 'Taille de l\'interface', 'uiScale', [0.85, 0.95, 1, 1.15, 1.3, 1.5], _uiPct,
+    'Agrandit tous les textes et boutons de l\'interface.');
+  _uiStepper(box, 'Densité des particules', 'particles', [0.4, 0.7, 1], _uiPct,
+    'Moins de particules : moins joli, plus fluide.');
 
   var row = _uiMk('div', 's2row', sc);
   _uiTap(_uiMk('button', 's2pill', row, 'RETOUR'), function () { _uiShow(_uiPrevScr); });
+  _uiSetTab(0);
   _uiSyncDesktop();
 }
 
@@ -11228,6 +11352,12 @@ function _uiDefaults() {
   if (o.ctlY === undefined) o.ctlY = 0;
   if (o.reduceBloom === undefined) o.reduceBloom = false;
   if (o.uiScale === undefined) o.uiScale = 1;
+  /* pré-coché quand le système le demande — et il entraîne alors les trois
+     réglages qu'il commande */
+  if (o.reduceMotion === undefined) {
+    o.reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (o.reduceMotion) { o.reduceShake = true; o.reduceFlash = true; o.reduceBloom = true; }
+  }
   if (o.joyAlpha === undefined) o.joyAlpha = 1;
   if (o.joySize === undefined) o.joySize = 1;
   if (o.sens === undefined) o.sens = 1;
@@ -11239,11 +11369,23 @@ function _uiDefaults() {
   if (o.px === undefined) o.px = 1.5;
 }
 
+/* G10 : --uis suit la HAUTEUR de la fenêtre, pas seulement le réglage. Sur un
+   écran de 1440 px l'interface doublait de taille ; à 720 px elle est
+   inchangée (facteur 1 exactement, donc .s2score reste à 30 px). La borne
+   haute passe de 1,6 à 3,3 pour couvrir 2,2 × 1,5. */
+function _uiScaleVars() {
+  if (!_uiRoot) return;
+  var o = S.opt, h = window.innerHeight || 720;
+  var k = clamp(h / 720, 1, 2.2) * clamp(o.uiScale || 1, 0.85, 1.5);
+  _uiRoot.style.setProperty('--uis', '' + clamp(k, 0.7, 3.3));
+  _uiRoot.style.setProperty('--fmin', S.desktop ? '12px' : '11px');
+}
+
 function _uiApplyOpt() {
   if (!_uiBuilt) return;
   _uiDefaults();
   var o = S.opt, r = _uiRoot;
-  r.style.setProperty('--uis', '' + clamp(o.uiScale, 0.7, 1.6));
+  _uiScaleVars();
   r.style.setProperty('--bl', o.reduceBloom ? '.3' : '1');
   r.style.setProperty('--glow', o.reduceBloom ? '.3' : '1');
   r.style.setProperty('--ca', '' + clamp(o.joyAlpha, 0.2, 1.6));
@@ -11353,7 +11495,7 @@ function _uiInert(sc, on) {
   for (var i = 0; i < q.length; i++) q[i].tabIndex = on ? -1 : 0;
 }
 function _uiKeysTxt() {
-  var s = S.desktop ? _UI_KEYS_D : (S.opt.leftHanded ? 'Pouce droit' : 'Pouce gauche') + ' : diriger · » boost · ◈ pouvoir · ★ ultime';
+  var s = S.desktop ? _UI_KEYS_D : (S.opt.leftHanded ? 'Pouce droit' : 'Pouce gauche') + ' : diriger · » boost · ◈ pouvoir · ★ APOGÉE';
   if (_uiE.keysMenu) { _uiTxt(_uiE.keysMenu, s); _uiTxt(_uiE.keysPause, s); }
 }
 /* éléments navigables de l'écran affiché : boutons hors ligne de réglage, lignes .s2opt visibles */
@@ -11440,16 +11582,39 @@ function _uiKey(e) {
 /* ======
    ANNONCES
    ====== */
+/* EXCLUSION MUTUELLE (G10), DANS LES DEUX SENS. Un toast demandé pendant une
+   bannière attend, une bannière demandée pendant un toast attend. L'attente se
+   cale sur la fin RÉELLE de l'annonce — 1 200 ms pour la bannière (l'instant où
+   .on tombe), 1 900 ms pour le toast — et non sur les 1,15 s de l'animation
+   CSS, qui laisseraient 50 ms de recouvrement. */
 function _uiToast(title, sub) {
   if (!_uiBuilt) return;
+  if (_uiBanBusy) {
+    _uiAnnQ.push({ t: title, s: sub });
+    if (_uiAnnQ.length > 3) _uiAnnQ.shift();
+    return;
+  }
+  _uiToastShow(title, sub);
+}
+function _uiToastShow(title, sub) {
   _uiTxt(_uiE.annT, title == null ? '' : ('' + title));
   _uiTxt(_uiE.annS, sub == null ? '' : ('' + sub));
   _uiE.ann.classList.add('on');
+  _uiAnnOn = 1;
   if (_uiToastTo) clearTimeout(_uiToastTo);
   _uiToastTo = setTimeout(function () {
     _uiE.ann.classList.remove('on');
     _uiToastTo = 0;
+    _uiAnnOn = 0;
+    _uiBanNext();
+    _uiAnnNext();
   }, 1900);
+}
+function _uiAnnNext() {
+  if (_uiBanBusy || _uiAnnOn) return;
+  var it = _uiAnnQ.shift();
+  if (!it) return;
+  _uiToastShow(it.t, it.s);
 }
 
 /* FILE D'ATTENTE (G9) : deux annonces coup sur coup — le nom du boss puis
@@ -11461,17 +11626,34 @@ function _uiBanner(text, dur) {
   if (_uiBanQ.length > 5) _uiBanQ.splice(0, _uiBanQ.length - 5);
   if (!_uiBanBusy) _uiBanNext();
 }
+/* GARDE-FOU DE MESURE : le plafond CSS par --n repose sur un coefficient
+   moyen ; ici on lit la largeur RÉELLE et on réduit par pas de 4 %, au plus
+   dix fois, tant que le texte dépasse le cadre. C'est lui qui garantit
+   « la bannière tient dans l'écran », pas le coefficient. */
+function _uiBanFit() {
+  var ban = _uiE.ban, b = _uiE.banT;
+  b.style.fontSize = '';
+  for (var i = 0; i < 10; i++) {
+    var w = ban.clientWidth;
+    if (!w || b.scrollWidth <= w) break;
+    var fs = parseFloat(getComputedStyle(b).fontSize) || 26;
+    b.style.fontSize = (fs * 0.96).toFixed(2) + 'px';
+  }
+}
 function _uiBanNext() {
+  if (_uiAnnOn && _uiBanQ.length) { _uiBanBusy = 1; return; }   // un toast est à l'écran : attendre
   var it = _uiBanQ.shift();
-  if (!it) { _uiBanBusy = 0; return; }
+  if (!it) { _uiBanBusy = 0; _uiAnnNext(); return; }
   _uiBanBusy = 1;
   var b = _uiE.banT;
   b.textContent = it.s;
   b.setAttribute('data-t', it.s);
+  _uiE.ban.style.setProperty('--n', '' + Math.max(1, it.s.length));
   _uiE.ban.classList.remove('on');
   /* on force un reflow pour relancer proprement l'animation */
   void _uiE.ban.offsetWidth;
   _uiE.ban.classList.add('on');
+  _uiBanFit();
   if (_uiBanTo) clearTimeout(_uiBanTo);
   _uiBanTo = setTimeout(function () {
     _uiE.ban.classList.remove('on');
@@ -11479,6 +11661,20 @@ function _uiBanNext() {
     _uiBanBusy = 0;
     _uiBanNext();
   }, it.d);
+}
+
+/* Nom de phase caméra : un tag de 11 px à droite du nom de niveau, une
+   seconde. Quatre bannières plein écran en 22 s ne disaient rien de plus. */
+function _uiPhaseTag(text) {
+  if (!_uiBuilt || !_uiE.phTag) return;
+  _uiTxt(_uiE.phTag, ('' + text).toUpperCase());
+  _uiE.phTag.classList.add('on');
+  if (_uiPhTo) clearTimeout(_uiPhTo);
+  _uiPhTo = setTimeout(function () {
+    _uiE.phTag.classList.remove('on');
+    _uiTxt(_uiE.phTag, '');
+    _uiPhTo = 0;
+  }, 1000);
 }
 
 /* ======
@@ -11824,6 +12020,7 @@ S2030.ui = {
   showCards: function (cards, cb) { _uiShowCards(cards, cb); },
   toast: function (title, sub) { _uiToast(title, sub); },
   banner: function (text, dur) { _uiBanner(text, dur); },
+  phaseTag: function (text) { _uiPhaseTag(text); },
 
   /* ------ options */
   setControls: function (cfg) {
@@ -12043,13 +12240,35 @@ S2030.phases = (function () {
      3D revient plus souvent que le reste, c'est elle qu'on vient voir. */
   var POOL = [3, 3, 2, 0, 3, 1];
 
+  /* Un profil qui a déjà joué a déjà vu l'ouverture : on ne lui rejoue pas
+     quatre bannières pour d'anciennes connaissances. */
+  function _phSeen() {
+    var st = S.stats;
+    if (!st.phSeen) {
+      st.phSeen = {};
+      if ((st.runs | 0) > 0) for (var i = 0; i < SCRIPT.length; i++) st.phSeen[SCRIPT[i].kind] = 1;
+    }
+    return st.phSeen;
+  }
+
   function startPhase(k) {
     phase.kind = k.kind; phase.dur = k.dur; phase.t = k.dur; phase.zoom = k.zoom;
     cam.rotT = k.rot || 0;
     perspT = (k.persp || 0) * Math.PI / 180;
     if (k.kind === 'ortho' || k.kind === 'roll' || k.kind === 'dive') startGrid(k.kind === 'ortho' ? 'ortho' : 'diag', k.dur);
     else endGrid();
-    S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    /* Quatre bannières plein écran en 22 s pour nommer des mouvements de
+       caméra : la joueuse les subissait sans y rien apprendre. Le nom devient
+       un tag de 11 px pendant une seconde à droite du nom de niveau ; seule la
+       TOUTE PREMIÈRE rencontre d'une phase, par profil, garde sa bannière. */
+    var seen = _phSeen();
+    if (!seen[k.kind]) {
+      seen[k.kind] = 1;
+      if (typeof saveStats === 'function') saveStats();
+      S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    } else {
+      S2030.ui && S2030.ui.phaseTag && S2030.ui.phaseTag(k.nom);
+    }
     S2030.audio && S2030.audio.sfx('warp');
     pulse(0.10);
   }
@@ -13502,7 +13721,7 @@ function readyTick() {
     if (!_rdyUlt) {
       _rdyUlt = 1;
       S2030.audio && S2030.audio.sfx('ultReady');
-      S2030.ui && S2030.ui.toast && S2030.ui.toast('ULTIME PRÊT', '★ / R');
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊTE', '★ / R');
     }
   } else _rdyUlt = 0;
   if (!_rdyPow) {
@@ -13563,8 +13782,13 @@ function startRun() {
   if (!S.desktop) goFullscreen();
   armAudio();                       // le bouton JOUER est un geste utilisateur valide
   S2030.audio && S2030.audio.resume();
-  resetRun();
+  /* La phase est posée AVANT la remise à zéro : resetRun se termine par
+     levels.start(1), et _lvSay renonce tant que S.phase !== 'play'. Dans
+     l'ordre inverse, la bannière « NIVEAU 1 — LA GRILLE » n'était jamais
+     émise — la seule des onze qui manquait. S.levelT vient d'être remise à
+     zéro par resetRun, l'échéance « moins d'une seconde » est donc tenue. */
   S.phase = 'play';
+  resetRun();
   S.paused = false;
   S2030.ui.showScreen(null);
   S2030.audio && S2030.audio.start();
@@ -13745,7 +13969,11 @@ function buildFullscreenButton() {
     'bottom:calc(env(safe-area-inset-bottom,0px) + 10px);' +
     'pointer-events:auto;z-index:40;display:none;' +
     'border:1px solid rgba(0,229,255,.5);background:rgba(5,6,15,.8);color:#00e5ff;' +
-    'border-radius:8px;padding:8px 18px;font:600 10px/1.2 system-ui,sans-serif;' +
+    /* le seul texte de l'interface qui vivait hors de la feuille de 26-ui.js :
+        sans var(--uis) le réglage « Taille de l'interface » ne l'atteignait pas
+        et il restait sous le plancher typographique. */
+    'border-radius:8px;padding:8px 18px;' +
+    'font:600 calc(var(--uis,1)*max(var(--fmin,11px),10px))/1.2 system-ui,sans-serif;' +
     'letter-spacing:.16em;text-transform:uppercase;cursor:pointer;white-space:nowrap}' +
     '#ui #fsb.on{display:block}' +
     '#ui #fsb:active{background:rgba(0,229,255,.22)}' +
