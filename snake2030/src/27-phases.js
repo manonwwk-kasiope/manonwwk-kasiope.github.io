@@ -141,7 +141,7 @@ S2030.phases = (function () {
     } else {
       S2030.ui && S2030.ui.phaseTag && S2030.ui.phaseTag(k.nom);
     }
-    S2030.audio && S2030.audio.sfx('warp');
+    S2030.audio && S2030.audio.stinger && S2030.audio.stinger(0.7);
     pulse(0.10);
   }
 
@@ -520,7 +520,7 @@ S2030.phases = (function () {
         s.ghost = gt; s.invuln = Math.max(s.invuln, gt);
         S2030.fx && S2030.fx.ring(s.x, s.y, '#b388ff', 10, 900);
         S2030.fx && S2030.fx.flare(s.x, s.y, '#b388ff', 160);
-        S2030.audio && S2030.audio.sfx('shock', { x: s.x });
+        S2030.audio && S2030.audio.sfx('teleport', { x: s.x });
         var near = enemiesNear(s.x, s.y, 240);
         for (var i = 0; i < near.length; i++) {
           var e = near[i], a = angTo(s.x, s.y, e.x, e.y);
@@ -538,7 +538,7 @@ S2030.phases = (function () {
         slowT = 4200;
         S2030.fx && S2030.fx.ring(s.x, s.y, '#5ef1ff', 12, 1400);
         S2030.fx && S2030.fx.flash('#5ef1ff', 0.22);
-        S2030.audio && S2030.audio.sfx('warp');
+        S2030.audio && S2030.audio.sfx('boostEnd');
         S2030.ui && S2030.ui.banner && S2030.ui.banner('RALENTI');
         pulse(0.16);
         haptic([14, 40, 14]);

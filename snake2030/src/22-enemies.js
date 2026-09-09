@@ -436,7 +436,7 @@ function _enUpChaser(e, dt, s) {
     if (e.stT <= 0) {
       e.st = 2; e.stT = e.lungeDur;
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r * 0.6, 340, { w: 3, life: 0.24 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('boost', { x: e.x, vol: 0.55 });
     }
     return;
   }
@@ -479,7 +479,7 @@ function _enUpInter(e, dt, s) {
       e.st = 2; e.stT = e.dashMs;
       e.ang = angTo(e.x, e.y, e.lx, e.ly);
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_WHITE, e.r, 460, { w: 2.5, life: 0.22 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('zap', { x: e.x });
     }
     return;
   }
@@ -510,8 +510,7 @@ function _enUpMine(e, dt, s) {
     e.x += Math.cos(e.t / 1400 + e.id) * 5 * dt;
     e.y += Math.sin(e.t / 1700 + e.id) * 5 * dt;
     if (_enTouchesBody(e.x, e.y, e.armR)) {
-      e.st = 1; e.stT = e.fuse;
-      S2030.audio && S2030.audio.sfx('shock');
+      e.st = 1; e.stT = e.fuse; e.beepT = 0;
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_ALERT, e.r, 200, { w: 2, life: 0.3 });
     }
     return;
@@ -521,7 +520,7 @@ function _enUpMine(e, dt, s) {
   e.beepT -= dt * 1000;
   if (e.beepT <= 0) {
     e.beepT = 60 + 220 * (e.stT / e.fuse);
-    S2030.audio && S2030.audio.sfx('click');
+    S2030.audio && S2030.audio.sfx('click', { x: e.x, vol: 0.8 });
     S2030.fx && S2030.fx.flare(e.x, e.y, _EN_ALERT, e.r * 1.8, { life: 0.1, a: 0.6 });
   }
   if (e.stT <= 0) {
@@ -566,7 +565,7 @@ function _enUpShooter(e, dt, s) {
           r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma'
         });
       }
-      S2030.audio && S2030.audio.sfx('shoot');
+      S2030.audio && S2030.audio.sfx('eshoot', { x: e.x, vol: e.elite ? 1 : 0.85 });
       S2030.fx && S2030.fx.burst(e.x + Math.cos(e.aimA) * e.r, e.y + Math.sin(e.aimA) * e.r,
         _EN_EBULL, 6, 220, { ang: e.aimA, spread: 0.5, life: 0.2, size: 1.6 });
       S2030.fx && S2030.fx.flare(e.x, e.y, _EN_EBULL, e.r * 2.2, { life: 0.14, a: 0.8 });
@@ -693,7 +692,7 @@ function _enUpSpawner(e, dt, s) {
       }
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r * 0.7, 420, { w: 4, life: 0.35 });
       S2030.fx && S2030.fx.flare(e.x, e.y, _EN_WHITE, e.r * 2, { life: 0.16, a: 0.85 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('spawnTick', { x: e.x });
     }
     return;
   }
@@ -762,7 +761,7 @@ function _enUpParasite(e, dt, s) {
         e.side = angTo(t.x, t.y, e.x, e.y);
         _enParaN++; _enApplyPara();
         S2030.fx && S2030.fx.ring(e.x, e.y, e.color, 4, 300, { w: 3, life: 0.3 });
-        S2030.audio && S2030.audio.sfx('shock');
+        S2030.audio && S2030.audio.sfx('absorb', { x: e.x });
         return;
       }
     }
@@ -805,7 +804,7 @@ function _enUpJammer(e, dt, s) {
     if (e.zapT <= 0) {
       e.zapT = 340;
       S2030.fx && S2030.fx.glitch && S2030.fx.glitch(0.28);
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('shock', { x: e.x, vol: 0.7 });
     }
   }
 }
@@ -823,7 +822,7 @@ function _enUpThief(e, dt, s) {
     if (e.x < m || e.x > K.ARENA_W - m || e.y < m || e.y > K.ARENA_H - m) {
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, 8, 520, { w: 3, life: 0.4 });
       S2030.fx && S2030.fx.text(e.x, e.y - 20, 'BUTIN VOLÉ', e.color);
-      S2030.audio && S2030.audio.sfx('warp');
+      S2030.audio && S2030.audio.sfx('steal', { x: e.x });
       S.score = Math.max(0, S.score - 40 * e.carry);
       e.dead = true;                                   // s'échappe : aucune récompense
     }
@@ -977,7 +976,7 @@ function _enModTick(e, dt, s) {
     e.speed *= 1.55;
     S2030.fx && S2030.fx.burst(e.x, e.y, '#9fb6d0', 18, 300, { size: 2.4, life: 0.45, shape: 'shard' });
     S2030.fx && S2030.fx.ring(e.x, e.y, '#9fb6d0', e.r, 380, { w: 3, life: 0.3 });
-    S2030.audio && S2030.audio.sfx('hit');
+    S2030.audio && S2030.audio.sfx('bossHit', { x: e.x });
   }
 
   if (e.mFast && S2030.fx && chance(0.5)) S2030.fx.trail(e.x, e.y, e.ang, e.color);
@@ -990,7 +989,6 @@ function _enModTick(e, dt, s) {
       var dd = clamp(dist(e.x, e.y, s.x, s.y) * 0.6, 150, 340);
       e.tpX = clamp(e.x + Math.cos(a) * dd, 30, K.ARENA_W - 30);
       e.tpY = clamp(e.y + Math.sin(a) * dd, 30, K.ARENA_H - 30);
-      S2030.audio && S2030.audio.sfx('click');
     }
     if (e.tpT <= 0) {
       S2030.fx && S2030.fx.ring(e.x, e.y, '#b388ff', e.r, 420, { w: 3, life: 0.3 });
@@ -999,7 +997,7 @@ function _enModTick(e, dt, s) {
       e.ang = angTo(e.x, e.y, s.x, s.y);
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_WHITE, 3, 380, { w: 2.5, life: 0.26 });
       S2030.fx && S2030.fx.flare(e.x, e.y, '#b388ff', e.r * 2.4, { life: 0.2, a: 0.9 });
-      S2030.audio && S2030.audio.sfx('warp');
+      S2030.audio && S2030.audio.sfx('teleport', { x: e.x });
       e.tpT = rndR(2200, 3200); e.tpPh = 0;
     }
   }
@@ -1045,7 +1043,7 @@ function _enModTick(e, dt, s) {
           e.shDown = 3800;
           S2030.fx && S2030.fx.ring(e.x, e.y, '#00e5ff', e.r + 12, 460, { w: 4, life: 0.36 });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#00e5ff', 16, 280, { size: 2, life: 0.36 });
-          S2030.audio && S2030.audio.sfx('shock');
+          S2030.audio && S2030.audio.sfx('bossHit', { x: e.x });
           break;
         }
       }

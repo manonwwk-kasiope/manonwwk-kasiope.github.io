@@ -41,8 +41,10 @@ var _audCtx = null, _audOk = false;
 var _audMaster = null, _audComp = null;          // bus commun
 var _audMusicBus = null, _audDuck = null;        // musique
 var _audBaseIn = null, _audBaseFilt = null;      // base (piste ou secours)
+var _audTrackComp = null, _audTrackMk = null;    // lissage de la piste (avant le gain d'intensite)
 var _audTrackG = null, _audBaseG = null;
 var _audSfxIn = null, _audSfxComp = null;        // effets
+var _audStingIn = null;                          // accent de phase (hors compresseur d'effets)
 var _audNoiseBuf = null, _audDriveCurve = null;
 var _audPans = null;                             // panoramiques préalloués
 
@@ -52,10 +54,13 @@ var _audMuteAt = 1e9;                            // arrêt différé de la piste
 
 var _audTimer = null, _audStopTO = null;
 var _audStepI = 0, _audNextT = 0, _audStepsLoop = 64;
-var _audBpm = 112, _audLoopSec = 0;
+var _audBpm = 112, _audLoopSec = 0, _audBar = 60 / 112 * 4;
 var _audRate = 1, _audInt = 0, _audIntApplied = -1, _audIntT = -9;
 
 var _audLay = null;        // couches synthétiques
+var _audLayBus = null, _audLayComp = null;   // bus des couches + compression
+var _audLayMk = null;                        // rattrapage apres compression des couches
+var _audTrackOnly = 0;                       // 1 = couches seules (prise de mesure)
 var _audBaseSynth = true;  // true tant que la piste n'est pas lancée
 
 /* ------ motifs musicaux (alloués une fois) ------ */
@@ -76,23 +81,32 @@ var _audBASSP  = [0, 0, 12, 0, 0, 0, 7, 0];   /* offsets, un pas sur deux */
 var _audGuard = {};
 var _audBudgetT = -9, _audBudgetN = 0;
 var _audFxMax = {
-  shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 3, pickup: 2,
-  bigkill: 1, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
+  shoot: 1, hit: 3, laser: 2, zap: 3, shock: 2, kill: 99, pickup: 3,
+  bigkill: 2, explode: 1, missile: 2, hurt: 1, dead: 1, bossIn: 1,
   ultFire: 1, ultReady: 1, warp: 1, levelup: 1, card: 2, core: 2,
   boost: 1, boostEnd: 1, boostDry: 1, click: 3,
-  spawnTick: 3, absorb: 3, multUp: 1
+  spawnTick: 3, absorb: 3, multUp: 6,   /* 10-core.js franchit plusieurs paliers dans la MEME image (boucle while) : a 1, la garde avalait le 2e et le 3e — mesure av-garde, 3 demandes, 2 joues */
+  eshoot: 3, bossHit: 3, lowHp: 1, wallBump: 2, teleport: 2, steal: 1
 };
+
+/* Correction de niveau par son, appliquee juste avant la synthese.
+   Elle est CALIBREE PAR LA MESURE (tools/test/G12/calibre.mjs) : chaque
+   valeur est le facteur qui amene la crete reelle en sortie maitre sur la
+   cible dBFS de la spec. Ne pas la retoucher a la main sans remesurer. */
+var _audFxGain = { shoot: 2.073, hit: 1.681, pickup: 1.976, core: 2.240, kill: 1.379, bigkill: 2.667, explode: 1.848, hurt: 2.500, bossIn: 2.516, dead: 3.033, click: 1.690, card: 1.283, levelup: 2.545, boost: 1.393, boostEnd: 1.493, boostDry: 1.167, warp: 1.333, eshoot: 0.880, laser: 1.096, missile: 1.657, shock: 1.208, zap: 1.422, wallBump: 1.847, spawnTick: 0.481, absorb: 0.726, multUp: 1.914, ultReady: 2.269, ultFire: 1.947, bossHit: 1.052, lowHp: 1.109, teleport: 2.015, steal: 1.981 };
 /* Fenetre de garde propre a certains sons. Le tir automatique part jusqu'a
    plusieurs fois par seconde, tourelles comprises : au pas commun de 40 ms il
    passait vingt-cinq fois par seconde, ce qui donne une mitraillette de
    jouet plutot qu'une arme. Un tir toutes les 90 ms suffit a porter la
    cadence sans la marteler. */
-var _audFxWin = { shoot: 0.09, hit: 0.055, zap: 0.06 };
+var _audFxWin = { shoot: 0.06, hit: 0.055, zap: 0.06 };
 var _audPlayed = {};
 /* Dernier effet REELLEMENT joue : nom, fondamentale annoncee par le son
    (0 quand il n'en declare pas) et date du contexte audio. Sonde de test. */
 var _audF0 = 0;
 var _audLast = { name: '', f0: 0, t: 0 };
+var _audKillT = 0, _audKillN = 0;
+var _audPickT = -9, _audPickN = 0;
 function _audAllow(name, t){
   var g = _audGuard[name];
   if(!g){ g = { t0: t, n: 0 }; _audGuard[name] = g; }
@@ -101,7 +115,7 @@ function _audAllow(name, t){
   var mx = _audFxMax[name];
   if(g.n >= (mx === undefined ? 2 : mx)) return false;
   if(t - _audBudgetT > 0.04){ _audBudgetT = t; _audBudgetN = 0; }
-  if(_audBudgetN >= 18) return false;
+  if(_audBudgetN >= 28) return false;
   g.n++; _audBudgetN++; _audPlayed[name] = (_audPlayed[name] || 0) + 1;
   return true;
 }
@@ -212,21 +226,36 @@ var _audFx = {
        donc un souffle court filtre, un corps triangulaire discret et un
        coup de grave. Le desaccord aleatoire evite que la repetition ne
        forme un peigne. */
-    _audNoise(t, 'bandpass', 2600 * p, 900 * p, 0.032, 0.055 * v, 1.7, d);
-    _audTone(t, 'triangle', 540 * p, 160 * p, 0.055, 0.05 * v, 0.001, 2200, 620, 1.3, d, _audRR(-70, 70));
-    _audSub(t, 150 * p, 62, 0.05, 0.055 * v, d);
+    _audNoise(t, 'bandpass', 3000 * p, 1600 * p, 0.030, 0.075 * v, 1.4, d);
+    _audTone(t, 'square', 900 * p, 300 * p, 0.045, 0.085 * v, 0.002, 3600, 1100, 1.2, d, _audRR(-70, 70));
+    _audTone(t, 'triangle', 1800 * p, 700 * p, 0.030, 0.045 * v, 0.002, 0, 0, 0, d, 0);
+    _audSub(t, 150 * p, 62, 0.04, 0.030 * v, d);
+  },
+  /* Tir ENNEMI : jamais le meme son que celui du joueur. Dent de scie a
+     380 Hz filtree en passe-bande autour de 1,2 kHz, 120 ms : rugueux,
+     medium, il perce le haut-parleur du telephone sans imiter le tir joueur. */
+  eshoot: function(t, v, d){
+    _audF0 = 380;
+    _audTone(t, 'sawtooth', 380, 300, 0.12, 0.10 * v, 0.006, 1200, 1200, 6, d, 0);
+    _audNoise(t, 'bandpass', 1200, 1600, 0.11, 0.05 * v, 3.0, d);
+    _audTone(t + 0.012, 'sawtooth', 190, 150, 0.10, 0.035 * v, 0.008, 900, 700, 4, d, 9);
   },
   laser: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1;
     _audF0 = 1500 * p;
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.075 * v, 0.003, 5200, 700, 6, d, 6);
     _audTone(t, 'sawtooth', 1500 * p, 380 * p, 0.20, 0.05 * v, 0.003, 4200, 600, 6, d, -9);
-    _audNoise(t, 'bandpass', 5200, 900, 0.16, 0.05 * v, 3.2, d);
+    _audNoise(t, 'bandpass', 5600, 1800, 0.16, 0.10 * v, 3.2, d);
   },
   missile: function(t, v, d){
-    _audNoise(t, 'bandpass', 700, 3400, 0.30, 0.10 * v, 1.6, d);
-    _audTone(t, 'triangle', 180, 620, 0.28, 0.05 * v, 0.01, 2200, 3200, 1, d, 0);
-    _audSub(t, 120, 48, 0.18, 0.22 * v, d);
+    /* Le souffle du missile porte son timbre : sa bande part de 1500 Hz et non
+       de 700, et la composante aigue dure autant que le corps. Sous 700 Hz il
+       se confondait avec le tir joueur (centroides a 11 % d'ecart au lieu des
+       20 % exiges) ; la traine grave reste, mais courte. */
+    _audNoise(t, 'bandpass', 1400, 4200, 0.30, 0.17 * v, 1.4, d);
+    _audTone(t, 'triangle', 300, 900, 0.22, 0.032 * v, 0.01, 2600, 3600, 1, d, 0);
+    _audNoise(t, 'highpass', 2800, 5400, 0.18, 0.075 * v, 0.8, d);
+    _audSub(t, 120, 48, 0.10, 0.050 * v, d);
   },
   shock: function(t, v, d){
     _audNoise(t, 'highpass', 4200, 1800, 0.05, 0.10 * v, 0.9, d);
@@ -241,8 +270,18 @@ var _audFx = {
 
   /* --- impacts et morts ------ */
   hit: function(t, v, d){
-    _audNoise(t, 'bandpass', 1900, 900, 0.045, 0.055 * v, 1.4, d);
-    _audTone(t, 'triangle', 420, 190, 0.05, 0.035 * v, 0.001, 3000, 1200, 1, d, 0);
+    _audNoise(t, 'bandpass', 1600, 1100, 0.060, 0.075 * v, 1.6, d);
+    _audTone(t, 'square', 1500, 900, 0.055, 0.045 * v, 0.001, 4000, 1800, 1.4, d, 0);
+    _audTone(t, 'triangle', 420, 190, 0.05, 0.030 * v, 0.001, 3000, 1200, 1, d, 0);
+  },
+  /* Le mur : coup mat et sourd, mais pas grave — il doit se distinguer du
+     'hit' inflige a un ennemi, que le joueur entend cent fois par minute. */
+  wallBump: function(t, v, d){
+    _audF0 = 260;
+    _audNoise(t, 'bandpass', 790, 470, 0.075, 0.15 * v, 1.1, d);
+    _audTone(t, 'triangle', 480, 240, 0.065, 0.075 * v, 0.002, 1700, 850, 1.2, d, 0);
+    _audTone(t, 'triangle', 260, 130, 0.075, 0.028 * v, 0.002, 1400, 600, 1.2, d, 0);
+    _audNoise(t, 'highpass', 2200, 1500, 0.020, 0.012 * v, 0.8, d);
   },
   /* La hauteur monte avec le combo (opts.pitch) : une serie de kills se lit
      comme une montee. Le grave ne suit qu'a la racine, sinon la basse part
@@ -250,28 +289,35 @@ var _audFx = {
   kill: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
     _audF0 = 320 * p;
-    _audNoise(t, 'lowpass', 2600 * p, 260 * p, 0.20, 0.14 * v, 0.8, d);
-    _audTone(t, 'square', 320 * p, 80 * p, 0.17, 0.07 * v, 0.002, 1800, 400, 2, d, 0);
-    _audSub(t, 140 * ps, 42 * ps, 0.20, 0.20 * v, d);
+    _audNoise(t, 'bandpass', 2400 * p, 1000 * p, 0.10, 0.26 * v, 1.0, d);
+    _audNoise(t, 'bandpass', 2200 * p, 700 * p, 0.16, 0.07 * v, 0.8, d);
+    _audTone(t, 'square', 800 * p, 340 * p, 0.08, 0.12 * v, 0.001, 4200, 1900, 1.6, d, 0);
+    _audTone(t, 'square', 320 * p, 80 * p, 0.17, 0.05 * v, 0.002, 1800, 400, 2, d, 0);
+    _audSub(t, 140 * ps, 55 * ps, 0.15, 0.055 * v, d);
   },
   bigkill: function(t, v, d, o){
     var p = (o && o.pitch) ? o.pitch : 1, ps = Math.sqrt(p);
     _audF0 = 520 * p;
-    _audNoise(t, 'lowpass', 5200 * p, 180 * p, 0.50, 0.24 * v, 0.7, d);
-    _audSub(t, 190 * ps, 30 * ps, 0.55, 0.55 * v, d);
-    _audTone(t, 'sawtooth', 520 * p, 70 * p, 0.40, 0.09 * v, 0.004, 2600, 300, 2, d, -12);
-    _audNoise(t + 0.10, 'bandpass', 900 * p, 200 * p, 0.42, 0.09 * v, 1.1, d);
+    _audNoise(t, 'bandpass', 3400 * p, 1300 * p, 0.16, 0.26 * v, 1.0, d);
+    _audNoise(t, 'bandpass', 5200 * p, 700 * p, 0.34, 0.11 * v, 0.7, d);
+    _audSub(t, 190 * ps, 60 * ps, 0.34, 0.10 * v, d);
+    _audTone(t, 'sawtooth', 1040 * p, 300 * p, 0.22, 0.10 * v, 0.003, 6000, 2000, 2, d, -12);
+    _audTone(t, 'sawtooth', 520 * p, 70 * p, 0.40, 0.06 * v, 0.004, 2600, 300, 2, d, -12);
+    _audNoise(t + 0.10, 'bandpass', 2400 * p, 1100 * p, 0.30, 0.14 * v, 1.1, d);
   },
   explode: function(t, v, d){
-    _audNoise(t, 'lowpass', 3800, 120, 0.45, 0.26 * v, 0.6, d);
-    _audSub(t, 150, 26, 0.42, 0.45 * v, d);
-    _audNoise(t + 0.02, 'highpass', 6000, 2200, 0.09, 0.10 * v, 0.7, d);
+    _audNoise(t, 'bandpass', 2800, 1100, 0.20, 0.28 * v, 0.9, d);
+    _audNoise(t, 'bandpass', 3800, 500, 0.34, 0.13 * v, 0.6, d);
+    _audSub(t, 150, 50, 0.26, 0.075 * v, d);
+    _audNoise(t, 'highpass', 5200, 1800, 0.14, 0.22 * v, 0.7, d);
   },
 
   /* --- ressources : cristallin, cyan/vert ------ */
-  pickup: function(t, v, d){
-    _audTone(t, 'triangle', 720, 1080, 0.09, 0.075 * v, 0.002, 0, 0, 0, d, 0);
-    _audTone(t + 0.05, 'sine', 1440, 1620, 0.10, 0.05 * v, 0.002, 0, 0, 0, d, 0);
+  pickup: function(t, v, d, o){
+    var p = (o && o.pitch) ? o.pitch : 1;
+    _audF0 = 720 * p;
+    _audTone(t, 'triangle', 1080 * p, 1620 * p, 0.09, 0.075 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.05, 'sine', 2160 * p, 2430 * p, 0.10, 0.055 * v, 0.002, 0, 0, 0, d, 0);
   },
   core: function(t, v, d){
     _audTone(t, 'sine', _audHz(76), 0, 0.16, 0.08 * v, 0.002, 0, 0, 0, d, 0);
@@ -282,15 +328,19 @@ var _audFx = {
 
   /* --- joueur en danger : grave, rêche ------ */
   hurt: function(t, v, d){
-    _audTone(t, 'square', 300, 62, 0.28, 0.14 * v, 0.001, 1400, 220, 3, d, 0);
-    _audNoise(t, 'lowpass', 2400, 220, 0.24, 0.14 * v, 0.9, d);
-    _audSub(t, 90, 34, 0.30, 0.28 * v, d);
+    _audTone(t, 'square', 1200, 380, 0.14, 0.13 * v, 0.001, 5200, 1600, 2, d, 0);
+    _audTone(t, 'square', 300, 62, 0.28, 0.09 * v, 0.001, 1400, 220, 3, d, 0);
+    _audNoise(t, 'bandpass', 1800, 700, 0.16, 0.14 * v, 1.2, d);
+    _audNoise(t, 'lowpass', 2400, 220, 0.24, 0.07 * v, 0.9, d);
+    _audSub(t, 90, 34, 0.26, 0.11 * v, d);
   },
   dead: function(t, v, d){
-    _audTone(t, 'sawtooth', 440, 55, 1.30, 0.13 * v, 0.01, 2600, 180, 4, d, 0);
-    _audTone(t, 'sawtooth', 220, 41, 1.30, 0.10 * v, 0.01, 1800, 140, 4, d, 11);
-    _audNoise(t, 'lowpass', 2200, 90, 1.10, 0.10 * v, 0.7, d);
-    _audSub(t + 0.05, 110, 22, 1.00, 0.40 * v, d);
+    _audTone(t, 'sawtooth', 1320, 220, 0.55, 0.13 * v, 0.004, 6000, 900, 3, d, 0);
+    _audTone(t, 'sawtooth', 440, 55, 1.30, 0.10 * v, 0.01, 2600, 180, 4, d, 0);
+    _audTone(t, 'sawtooth', 660, 130, 0.85, 0.07 * v, 0.01, 3200, 900, 4, d, 11);
+    _audNoise(t, 'bandpass', 2400, 800, 0.45, 0.16 * v, 1.0, d);
+    _audNoise(t, 'bandpass', 2200, 600, 0.80, 0.09 * v, 0.7, d);
+    _audSub(t + 0.05, 110, 45, 0.55, 0.06 * v, d);
   },
 
   /* --- déplacement ------ */
@@ -304,14 +354,16 @@ var _audFx = {
   },
   // panne de boost : clic grave 90 ms, passe-bas 900 Hz, crete -16 dBFS (un seul, a la panne)
   boostDry: function(t, v, d){
-    _audTone(t, 'square', 150, 60, 0.09, 0.16 * v, 0.002, 900, 900, 1.1, d, 0);
-    _audNoise(t, 'lowpass', 900, 420, 0.06, 0.05 * v, 0.8, d);
+    _audTone(t, 'square', 260, 130, 0.075, 0.055 * v, 0.002, 1200, 900, 1.1, d, 0);
+    _audNoise(t, 'bandpass', 1500, 900, 0.06, 0.10 * v, 1.6, d);
+    _audTone(t, 'square', 700, 300, 0.035, 0.045 * v, 0.001, 3000, 1400, 1.2, d, 0);
   },
   warp: function(t, v, d){
-    _audNoise(t, 'bandpass', 260, 6400, 0.85, 0.13 * v, 1.3, d);
-    _audTone(t, 'sawtooth', 110, 1760, 0.80, 0.07 * v, 0.05, 700, 6000, 3, d, 0);
-    _audTone(t, 'sine', 1760, 110, 0.80, 0.05 * v, 0.05, 0, 0, 0, d, 0);
-    _audSub(t + 0.62, 180, 30, 0.45, 0.35 * v, d);
+    _audNoise(t, 'bandpass', 260, 6400, 0.85, 0.20 * v, 1.3, d);
+    _audTone(t, 'sawtooth', 330, 2200, 0.80, 0.10 * v, 0.05, 900, 6000, 3, d, 0);
+    _audTone(t, 'sine', 1760, 110, 0.80, 0.07 * v, 0.05, 0, 0, 0, d, 0);
+    _audNoise(t + 0.60, 'bandpass', 3000, 1500, 0.30, 0.20 * v, 1.2, d);
+    _audSub(t + 0.62, 180, 70, 0.26, 0.055 * v, d);
   },
 
   /* Tic de portail : une apparition se prepare. 40 ms a 2 kHz, crete -18 dBFS
@@ -323,13 +375,48 @@ var _audFx = {
 
   /* Le corps encaisse une balle au-dela du 8e anneau : bruit mat, tres court. */
   absorb: function(t, v, d){
-    _audTone(t, 'sine', 520, 300, 0.05, 0.16 * v, 0.002, 0, 0, 0, d, 0);
-    _audNoise(t, 'bandpass', 900, 380, 0.045, 0.06 * v, 1.4, d);
+    _audTone(t, 'sine', 430, 250, 0.05, 0.17 * v, 0.002, 0, 0, 0, d, 0);
+    _audNoise(t, 'bandpass', 720, 330, 0.045, 0.06 * v, 1.4, d);
+  },
+
+  /* Coup porte au boss : metallique, medium, il doit se distinguer du 'hit'
+     ordinaire pour qu'on sache qu'on entame la bonne cible. */
+  bossHit: function(t, v, d){
+    _audF0 = 1100;
+    _audTone(t, 'square', 1100, 820, 0.090, 0.11 * v, 0.001, 3200, 2000, 5, d, 0);
+    _audTone(t, 'square', 1650, 1230, 0.070, 0.06 * v, 0.001, 4200, 2600, 5, d, 9);
+    _audNoise(t, 'bandpass', 2600, 1400, 0.055, 0.07 * v, 2.2, d);
+  },
+  /* Vie basse : un battement de coeur a 1 Hz, deux coups rapproches. Jamais
+     grave au point d'etre inaudible sur telephone. */
+  lowHp: function(t, v, d){
+    _audF0 = 220;
+    _audTone(t, 'triangle', 1250, 625, 0.09, 0.100 * v, 0.004, 3600, 1700, 1.2, d, 0);
+    _audTone(t, 'triangle', 220, 110, 0.10, 0.020 * v, 0.004, 1200, 500, 1.2, d, 0);
+    _audNoise(t, 'bandpass', 1850, 1200, 0.08, 0.095 * v, 1.4, d);
+    _audTone(t + 0.16, 'triangle', 1080, 540, 0.11, 0.070 * v, 0.004, 3200, 1500, 1.2, d, 0);
+    _audNoise(t + 0.16, 'bandpass', 1600, 1080, 0.09, 0.070 * v, 1.4, d);
+  },
+  /* Teleportation : repli de l'espace, glissando descendant puis remontee. */
+  teleport: function(t, v, d){
+    _audF0 = 1400;
+    _audTone(t, 'sine', 1400, 320, 0.14, 0.09 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.10, 'sine', 480, 2200, 0.16, 0.075 * v, 0.004, 0, 0, 0, d, 0);
+    _audNoise(t, 'bandpass', 1800, 4200, 0.20, 0.06 * v, 2.0, d);
+  },
+  /* Butin vole : une chute, moqueuse, deux notes qui descendent. */
+  steal: function(t, v, d){
+    _audF0 = 1046;
+    _audTone(t, 'square', 1046, 1046, 0.10, 0.09 * v, 0.002, 3400, 2200, 2, d, 0);
+    _audTone(t + 0.10, 'square', 784, 784, 0.12, 0.09 * v, 0.002, 3000, 1800, 2, d, 0);
+    _audTone(t + 0.22, 'square', 523, 415, 0.26, 0.085 * v, 0.002, 2400, 900, 2, d, 0);
+    _audNoise(t + 0.22, 'bandpass', 1600, 700, 0.16, 0.045 * v, 1.4, d);
   },
 
   /* --- interface et jalons ------ */
   click: function(t, v, d){
-    _audTone(t, 'square', 1250, 950, 0.022, 0.05 * v, 0.001, 4200, 3000, 1, d, 0);
+    _audTone(t, 'square', 3200, 2400, 0.018, 0.055 * v, 0.001, 9000, 7000, 1, d, 0);
+    _audTone(t, 'square', 1600, 1100, 0.014, 0.015 * v, 0.001, 5200, 3600, 1, d, 0);
   },
   levelup: function(t, v, d){
     _audTone(t, 'triangle', _audHz(69), 0, 0.13, 0.08 * v, 0.003, 0, 0, 0, d, 0);
@@ -343,10 +430,10 @@ var _audFx = {
      Provisoire, affiné en G12. */
   multUp: function(t, v, d){
     _audF0 = _audHz(76);
-    _audTone(t,         'triangle', _audHz(76), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
-    _audTone(t + 0.040, 'triangle', _audHz(80), 0, 0.09, 0.055 * v, 0.002, 0, 0, 0, d, 0);
-    _audTone(t + 0.080, 'triangle', _audHz(83), 0, 0.12, 0.060 * v, 0.002, 0, 0, 0, d, 0);
-    _audTone(t + 0.080, 'sine',     _audHz(95), 0, 0.12, 0.030 * v, 0.004, 0, 0, 0, d, 6);
+    _audTone(t,         'triangle', _audHz(64), 0, 0.09, 0.060 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.040, 'triangle', _audHz(68), 0, 0.09, 0.060 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'triangle', _audHz(71), 0, 0.14, 0.065 * v, 0.002, 0, 0, 0, d, 0);
+    _audTone(t + 0.080, 'sine',     _audHz(83), 0, 0.12, 0.030 * v, 0.004, 0, 0, 0, d, 6);
   },
   card: function(t, v, d){
     _audTone(t, 'sine', _audHz(84), 0, 0.55, 0.06 * v, 0.01, 0, 0, 0, d, 0);
@@ -360,18 +447,23 @@ var _audFx = {
     _audNoise(t + 0.22, 'highpass', 3200, 7200, 0.35, 0.05 * v, 0.9, d);
   },
   ultFire: function(t, v, d){
-    _audNoise(t, 'lowpass', 8000, 150, 0.80, 0.30 * v, 0.7, d);
-    _audSub(t, 210, 26, 0.85, 0.60 * v, d);
+    _audNoise(t, 'lowpass', 8000, 150, 0.80, 0.18 * v, 0.7, d);
+    _audNoise(t, 'bandpass', 3200, 1400, 0.30, 0.30 * v, 0.9, d);
+    _audSub(t, 210, 26, 0.75, 0.22 * v, d);
     _audTone(t, 'sawtooth', 1400, 120, 0.60, 0.11 * v, 0.003, 6000, 400, 3, d, -14);
     _audTone(t, 'sawtooth', 1400, 120, 0.60, 0.09 * v, 0.003, 5200, 400, 3, d, 14);
     _audNoise(t + 0.18, 'bandpass', 1200, 220, 0.55, 0.10 * v, 1.2, d);
   },
   bossIn: function(t, v, d){
-    _audSub(t, 70, 30, 1.30, 0.55 * v, d);
-    _audTone(t, 'sawtooth', _audHz(33), 0, 1.25, 0.13 * v, 0.25, 260, 3400, 4, d, -11);
-    _audTone(t, 'sawtooth', _audHz(40), 0, 1.25, 0.10 * v, 0.25, 260, 3000, 4, d, 11);
-    _audNoise(t, 'lowpass', 300, 2600, 1.20, 0.08 * v, 0.8, d);
-    _audTone(t + 0.9, 'square', _audHz(45), _audHz(33), 0.55, 0.07 * v, 0.01, 1400, 400, 3, d, 0);
+    _audSub(t, 70, 30, 1.10, 0.14 * v, d);
+    _audTone(t, 'sawtooth', _audHz(33), 0, 1.25, 0.07 * v, 0.25, 260, 3400, 4, d, -11);
+    _audTone(t, 'sawtooth', _audHz(40), 0, 1.25, 0.055 * v, 0.25, 260, 3000, 4, d, 11);
+    /* corne d'alarme : c'est elle qui porte l'annonce sur un haut-parleur de
+       telephone — plus de 30 % de l'energie entre 600 et 2000 Hz */
+    _audTone(t, 'square', 1750, 1340, 1.15, 0.19 * v, 0.06, 3200, 2500, 3, d, 0);
+    _audTone(t + 0.05, 'square', 1960, 1470, 1.05, 0.13 * v, 0.06, 3100, 2400, 3, d, 7);
+    _audNoise(t, 'bandpass', 1950, 1500, 1.10, 0.16 * v, 1.6, d);
+    _audTone(t + 0.9, 'square', 1450, 950, 0.55, 0.10 * v, 0.01, 2900, 1800, 3, d, 0);
   }
 };
 
@@ -571,8 +663,20 @@ function _audPlaylist(urls, onfail){
     _audList.push(a);
   }
   _audListOn = true;
+  /* Chaque chargement rejouait les quinze premieres secondes d'intro, a
+     -32 dBFS mesure : la musique n'existait pas au moment ou la partie
+     commence. On entre donc DANS le morceau — soit a 18 s de la premiere
+     piste (cale sur une mesure), soit sur la seconde, tiree au sort. */
+  var _tir = 0;
+  try{ _tir = ((parseInt(localStorage.getItem('snake2030.mus'), 10) || 0) + 1) | 0;
+       localStorage.setItem('snake2030.mus', String(_tir & 1023)); }catch(e){}
+  _tir ^= (_audSeed >>> 5) ^ ((_audRnd() * 4096) | 0);
+  _audListI = (_tir & 1) && _audList.length > 1 ? 1 : 0;
   return true;
 }
+
+/* debut de lecture : 18 s cales sur une mesure pour la piste 1 */
+function _audEntree(){ return Math.ceil(18 / _audBar) * _audBar; }
 
 function _audEnded(){ _audEchecs = {}; _audListErr = 0; _audAdvance(); }
 
@@ -624,6 +728,13 @@ function _audStartStream(t0){
     if(_audList[k] !== a){ try{ _audList[k].pause(); }catch(e){} }
   }
   try{ a.playbackRate = _audRate; }catch(e){}
+  /* Premiere lecture : on entre dans le morceau. Reprise (apres une mort,
+     une pause) : on recale sur un DEBUT DE MESURE, sinon la musique repart
+     au milieu d'un temps et tout le morceau sonne decale. */
+  try{
+    if(!a._begun){ a._begun = 1; if(_audListI === 0) a.currentTime = _audEntree(); }
+    else if(a.currentTime > 0.2){ a.currentTime = Math.round(a.currentTime / _audBar) * _audBar; }
+  }catch(e){}
   a._ok = false; a._pauseVoulue = 0;
   a.addEventListener('playing', function(){ _audConfirme(a); });
   a.addEventListener('timeupdate', function(){ if(a.currentTime > 0.05) _audConfirme(a); });
@@ -815,6 +926,18 @@ function _audApplyInt(v, fade){
     l.amt = a;
     _audRamp(l.g.gain, a * l.vol, fade);
   }
+  /* Gain de PISTE : -7 dB quand rien ne se passe, 0 dB des que v >= 0,8.
+     C'est ce qui fait que la musique suit l'action au lieu de rester un
+     tapis constant — le passe-bas seul ne changeait le RMS que de 0,04 dB
+     (mesure de prémisse), parce que la piste est deja pauvre en aigu. */
+  var vb = v / 0.8; if(vb > 1) vb = 1;
+  /* +1,2 dB de plancher qui s'efface quand l'action monte : la joueuse doit
+     entendre la musique DES le clic sur JOUER (intensite ~0,21 a cet instant,
+     bus mesure a -25,4 dBFS pour un seuil de -24), sans rien ajouter a v = 1
+     ou le maitre doit garder la place de l'accent de phase. */
+  var bg = Math.pow(10, (-7 + 7 * vb + 0.8 * (1 - vb)) / 20);
+  if(_audTrackOnly) bg = 0;
+  _audRamp(_audBaseIn.gain, bg, 1.0);
   /* filtre de la base : ~700 Hz fermé, grand ouvert à fond */
   var cut = 700 * Math.pow(25.7, v);
   if(cut > 18000) cut = 18000;
@@ -911,6 +1034,9 @@ S2030.audio = {
       if(K.MUSIC_BPM) _audBpm = K.MUSIC_BPM;
       if(K.MUSIC_LOOP) _audLoopSec = K.MUSIC_LOOP;
     }
+    _audBar = 60 / _audBpm * 4;                 /* une mesure = 4 temps */
+    if(1){
+    }
     var sd1 = 60 / _audBpm / 4;
     _audStepsLoop = _audLoopSec > 0 ? Math.max(16, Math.round(_audLoopSec / sd1 / 16) * 16) : 64;
 
@@ -946,13 +1072,32 @@ S2030.audio = {
     _audBaseIn.gain.value = 1;
     _audBaseIn.connect(_audBaseFilt);
 
+    /* Lissage de la PISTE, en amont du gain d'intensite : le mp3 a ses propres
+       creux et ses propres cretes, qui n'ont rien a voir avec ce que fait la
+       joueuse. Sans ce lissage, le RMS du bus musique est domine par le
+       contenu du morceau et non par l'intensite (correlation mesuree a 0,46 -
+       0,52 pour un seuil de 0,50), et un passage creux du morceau fait tomber
+       le demarrage a -27,4 dBFS. Place AVANT _audBaseIn, il ne touche pas a la
+       reponse a l'intensite : son taux de reduction ne depend pas de v. */
+    _audTrackMk = _audCtx.createGain();
+    _audTrackMk.gain.value = 1.03;                 /* rattrapage : le niveau du bus a v = 1 reste celui deja valide (-19,8 dBFS) */
+    _audTrackMk.connect(_audBaseIn);
+
+    _audTrackComp = _audCtx.createDynamicsCompressor();
+    _audTrackComp.threshold.value = -18;
+    _audTrackComp.knee.value = 12;
+    _audTrackComp.ratio.value = 4;
+    _audTrackComp.attack.value = 0.015;
+    _audTrackComp.release.value = 0.28;
+    _audTrackComp.connect(_audTrackMk);
+
     _audTrackG = _audCtx.createGain();
     _audTrackG.gain.value = 1;
-    _audTrackG.connect(_audBaseIn);
+    _audTrackG.connect(_audTrackComp);
 
     _audBaseG = _audCtx.createGain();
     _audBaseG.gain.value = 1;
-    _audBaseG.connect(_audBaseIn);
+    _audBaseG.connect(_audTrackComp);
 
     /* --- bus effets : compresseur dédié puis compresseur commun --------- */
     _audSfxComp = _audCtx.createDynamicsCompressor();
@@ -966,6 +1111,15 @@ S2030.audio = {
     _audSfxIn = _audCtx.createGain();
     _audSfxIn.gain.value = 0.9;
     _audSfxIn.connect(_audSfxComp);
+
+    /* L'accent de phase est un evenement MUSICAL, pas un bruitage : il entre
+       dans le compresseur commun sans passer par celui des effets (seuil -18,
+       rapport 8), qui l'ecrasait au moment precis ou il doit s'entendre —
+       quand l'action bat son plein. Sans ce contournement, l'accent ne
+       depassait le plancher que de 0,7 dB. */
+    _audStingIn = _audCtx.createGain();
+    _audStingIn.gain.value = 1;
+    _audStingIn.connect(_audComp);
 
     /* panoramiques préalloués (aucune allocation dans la boucle chaude) */
     if(_audCtx.createStereoPanner){
@@ -986,16 +1140,41 @@ S2030.audio = {
 
     /* --- couches ------ */
     _audLay = {
-      perc: _audMkLayer(0.15, 0.55),
-      arp:  _audMkLayer(0.35, 0.45),
-      pad:  _audMkLayer(0.55, 0.40),
-      lead: _audMkLayer(0.75, 0.34),
-      clim: _audMkLayer(0.90, 0.42)
+      perc: _audMkLayer(0.07, 1.85),   /* entre des le calme : c'est elle qui porte le demarrage */
+      arp:  _audMkLayer(0.35, 1.27),
+      pad:  _audMkLayer(0.55, 0.99),
+      lead: _audMkLayer(0.75, 0.99),
+      clim: _audMkLayer(0.90, 1.27)
     };
-    _audLay.perc.g.connect(_audMusicBus);
-    _audLay.arp.g.connect(_audMusicBus);
-    _audLay.pad.g.connect(_audMusicBus);
-    _audLay.clim.g.connect(_audMusicBus);
+    /* Les couches passent par leur propre bus, compresse doucement : elles
+       montent a un niveau ou elles s'entendent vraiment sans que leur somme
+       ne fasse pomper la piste. */
+    _audLayComp = _audCtx.createDynamicsCompressor();
+    /* Compression FERME des couches : elles sont percussives (doubles-croches),
+       et leur RMS par fenetres de 93 ms sautait d'une fenetre a l'autre bien
+       plus que ne le fait l'intensite. C'est ce bruit-la qui noyait la
+       correlation intensite / RMS du bus musique (mesuree entre 0,32 et 0,73
+       d'une partie a l'autre pour un seuil de 0,50). Les serrer rend leur
+       niveau representatif de leur AMPLEUR, donc de v. */
+    _audLayComp.threshold.value = -26;
+    _audLayComp.knee.value = 14;
+    _audLayComp.ratio.value = 6;
+    _audLayComp.attack.value = 0.006;
+    _audLayComp.release.value = 0.20;
+    /* Rattrapage : serrer les couches leur coute 1,6 dB de RMS (mesure :
+       couches seules a v = 1, -23,69 dBFS avant, -25,34 apres, pour un
+       plancher de spec a -24). On le rend, pas plus. */
+    _audLayMk = _audCtx.createGain();
+    _audLayMk.gain.value = 1.29;
+    _audLayMk.connect(_audMusicBus);
+    _audLayComp.connect(_audLayMk);
+    _audLayBus = _audCtx.createGain();
+    _audLayBus.gain.value = 1;
+    _audLayBus.connect(_audLayComp);
+    _audLay.perc.g.connect(_audLayBus);
+    _audLay.arp.g.connect(_audLayBus);
+    _audLay.pad.g.connect(_audLayBus);
+    _audLay.clim.g.connect(_audLayBus);
 
     /* le lead passe par une saturation douce */
     var sh = _audCtx.createWaveShaper();
@@ -1003,7 +1182,7 @@ S2030.audio = {
     sh.curve = _audDriveCurve;
     sh.oversample = '2x';
     _audLay.lead.g.connect(sh);
-    sh.connect(_audMusicBus);
+    sh.connect(_audLayBus);
 
     _audOk = true;
     this.ready = true;
@@ -1022,7 +1201,7 @@ S2030.audio = {
     _audMuteAt = 1e9;
     if(_audStopTO){ clearTimeout(_audStopTO); _audStopTO = null; }
     if(_audMusicOn){
-      _audRamp(_audMusicBus.gain, 0.55, 0.4);
+      _audRamp(_audMusicBus.gain, 0.40, 0.4);
       _audRamp(_audDuck.gain, 1, 0.2);
       if(!_audTrackNode && !_audStartTrack(now + 0.06)){
         /* pas de piste : base entièrement synthétisée */
@@ -1083,7 +1262,7 @@ S2030.audio = {
     if(_audMusicOn){
       _audMuteAt = 1e9;
       if(_audStopTO){ clearTimeout(_audStopTO); _audStopTO = null; }
-      _audRamp(_audMusicBus.gain, 0.55, 0.3, now);
+      _audRamp(_audMusicBus.gain, 0.40, 0.3, now);
       if(_audPlaying){
         if(!_audTrackNode && !_audStartTrack(now + 0.06)){
           _audBaseSynth = true;
@@ -1118,7 +1297,6 @@ S2030.audio = {
     var fn = _audFx[name];
     if(!fn) return;
     var t = _audCtx.currentTime + 0.002;
-    if(!_audAllow(name, t)) return;
     var v = 1, d = _audSfxIn;
     if(opts){
       if(opts.vol !== undefined && opts.vol !== null) v = opts.vol;
@@ -1126,12 +1304,101 @@ S2030.audio = {
     }
     if(v <= 0) return;
     if(v > 2) v = 2;
+
+    /* --- KILL : aucune voix perdue -------------------------------------
+       Un kill qui tombe dans les 40 ms d'un autre ne rejoue pas le corps
+       grave (qui s'empilerait en boue) mais AJOUTE une note courte, un
+       demi-ton plus haut par kill de combo et 1 dB plus fort. Elle est
+       posee au moins 12 ms apres la precedente : huit kills demandes dans
+       la meme image restent huit attaques distinctes, ce qu'un seul
+       instant de depart ne permettrait pas. Le compte est tenu ici, donc
+       aucun kill ne peut etre avale par la garde. */
+    if(name === 'kill' || name === 'bigkill'){
+      if(t - _audKillT < 0.040 && _audKillT > 0){
+        var tk = _audKillT + 0.012; if(tk < t) tk = t;
+        _audKillN++; if(_audKillN > 12) _audKillN = 12;
+        var pk = Math.pow(2, _audKillN / 12);
+        var vk = v * Math.pow(10, _audKillN / 20) * 0.55 * (_audFxGain[name] || 1);
+        _audF0 = 640 * pk;
+        _audTone(tk, 'square', 640 * pk, 420 * pk, 0.030, 0.13 * vk, 0.001, 5200, 2200, 1.5, d, 0);
+        _audNoise(tk, 'bandpass', 2400 * pk, 1400 * pk, 0.026, 0.07 * vk, 1.8, d);
+        _audKillT = tk;
+        _audPlayed[name] = (_audPlayed[name] || 0) + 1;
+        _audLast.name = name; _audLast.f0 = _audF0; _audLast.t = tk;
+        return;
+      }
+      _audKillT = t; _audKillN = 0;
+      _audPlayed[name] = (_audPlayed[name] || 0) + 1;
+    } else if(!_audAllow(name, t)) return;
+
+    /* --- PICKUP : la hauteur monte sur les ramassages consecutifs ------ */
+    if(name === 'pickup'){
+      if(t - _audPickT < 1.2){ _audPickN++; if(_audPickN > 12) _audPickN = 12; }
+      else _audPickN = 0;
+      _audPickT = t;
+      if(!opts) opts = {};
+      opts.pitch = Math.pow(2, _audPickN / 12);
+    }
+
+    v *= (_audFxGain[name] || 1);
     _audF0 = 0;
     fn(t, v, d, opts);
     _audLast.name = name; _audLast.f0 = _audF0; _audLast.t = t;
   },
 
   lastSfx: function(){ return { name: _audLast.name, f0: _audLast.f0, t: _audLast.t }; },
+
+  /* Accent d'une mesure (4 temps au tempo du morceau) : la musique MARQUE
+     le changement de phase de niveau au lieu de le laisser passer. */
+  stinger: function(force){
+    if(!_audOk || !_audSfxOn) return;
+    var t = _audCtx.currentTime + 0.002, b = 60 / (_audBpm * _audRate);
+    /* Facteur 6 : mesure de la courbe de saturation du maitre (compresseur
+       seuil -13, rapport 5). Dans un plancher d'action a -17,4 dBFS, l'accent
+       au facteur 1 ne depasse que de 2,0 dB, a 2 de 4,0, a 3 de 5,6, a 4,5
+       d'environ 7, a 6 de 7,6 : le maitre sature ensuite. On prend 6. La
+       spec demande +4 dB sur la seconde precedente ; le pire passage mesure en
+       partie (climax -> clear) part d'un plancher a -15,6 dBFS. */
+    var d = _audStingIn || _audSfxIn, v = (force ? force : 1) * 6;
+    _audNoise(t, 'highpass', 3000, 7600, 0.32, 0.30 * v, 0.8, d);
+    _audTone(t, 'sawtooth', _audHz(69), 0, 0.30, 0.17 * v, 0.003, 1600, 5200, 3, d, -9);
+    _audTone(t, 'sawtooth', _audHz(76), 0, 0.30, 0.15 * v, 0.003, 1600, 5200, 3, d, 9);
+    _audSub(t, 160, 46, 0.26, 0.26 * v, d);
+    _audTone(t + b,     'square', _audHz(81), 0, 0.10, 0.10 * v, 0.002, 4200, 2200, 2, d, 0);
+    _audTone(t + b * 2, 'square', _audHz(83), 0, 0.10, 0.10 * v, 0.002, 4200, 2200, 2, d, 0);
+    _audTone(t + b * 3, 'square', _audHz(88), 0, 0.24, 0.13 * v, 0.002, 4600, 2400, 2, d, 0);
+    _audNoise(t + b * 3, 'highpass', 4200, 8000, 0.26, 0.16 * v, 0.8, d);
+    _audPlayed.stinger = (_audPlayed.stinger || 0) + 1;
+  },
+
+  /* Chute : 250 ms de silence, puis tout revient d'un coup. Reservee a
+     l'entree du boss — c'est le seul moment ou le jeu a le droit de se
+     taire. */
+  drop: function(){
+    if(!_audOk || !_audMusicBus) return;
+    var t = _audCtx.currentTime, g = _audMusicBus.gain;
+    try{
+      g.cancelScheduledValues(t);
+      g.setValueAtTime(g.value, t);
+      g.linearRampToValueAtTime(0.0001, t + 0.03);
+      g.setValueAtTime(0.0001, t + 0.25);
+      g.linearRampToValueAtTime(_audMusicOn ? 0.40 : 0, t + 0.30);
+    }catch(e){}
+    _audPlayed.drop = (_audPlayed.drop || 0) + 1;
+  },
+
+  /* Prise de mesure : coupe la PISTE pour n'entendre que les couches. Sans
+     elle, aucune verification ne peut dire si les couches s'entendent, la
+     piste couvrant tout. */
+  layersOnly: function(on){
+    _audTrackOnly = on ? 1 : 0;
+    if(!_audOk) return;
+    _audIntApplied = -1; _audIntT = -9;
+    _audApplyInt(_audInt, 0.05);
+  },
+
+  /* Duree d'une mesure, en secondes — la reprise apres une mort s'y cale. */
+  bar: function(){ return _audBar; },
 
   /* plongeon bref, battement grave, retour explosif */
   ultimate: function(){

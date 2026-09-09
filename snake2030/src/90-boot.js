@@ -306,7 +306,7 @@ function useSpecial() {
   s.invuln = Math.max(s.invuln, gt);
   S2030.fx && S2030.fx.ring(s.x, s.y, '#b388ff', 10, 900);
   S2030.fx && S2030.fx.flare(s.x, s.y, '#b388ff', 160);
-  S2030.audio && S2030.audio.sfx('shock');
+  S2030.audio && S2030.audio.sfx('teleport');
   var near = enemiesNear(s.x, s.y, 240);
   for (var i = 0; i < near.length; i++) {
     var e = near[i];
@@ -349,7 +349,7 @@ function ultTick() {
     // les dégâts suivent le SECTEUR (S.level = numéro de secteur) : 50 au secteur 1
     var udm = 40 + 10 * (S.level || 1);
     for (var i = 0; i < list.length; i++) damageEnemy(list[i], udm, { x: list[i].x, y: list[i].y });
-    S2030.audio && S2030.audio.sfx('explode');
+    S2030.audio && S2030.audio.sfx('bigkill', { vol: 0.8 });
     _ultStep++; _ultNext += 90;
   }
 }

@@ -473,7 +473,7 @@ function _lvPortal(type, x, y, elite, mod, boss) {
   p.lead = p.boss ? _LV_BOSS_PORTAL : _LV_PORTAL;
   p.t = S.t + p.lead; p.t0 = S.t; p.color = _lvColorOf(type); p.id = ++_lvPortalId;
   _lvPend.push(p);
-  if (p.boss) S2030.audio && S2030.audio.sfx('bossIn', { x: x });
+  if (p.boss) { S2030.audio && S2030.audio.sfx('bossIn', { x: x }); S2030.audio && S2030.audio.drop && S2030.audio.drop(); }
   else S2030.audio && S2030.audio.sfx('spawnTick', { x: x, vol: elite ? 1 : 0.8 });
   _lvPortalMark(p);
   _lvLog({ t: S.t, kind: 'portal', ev: 'portal', type: type, elite: p.elite, mod: p.mod,
@@ -659,7 +659,6 @@ function _lvEnterPhase(idx) {
   } else if (ph === 'surge') {
     _lvSay('SURCHARGE DU SECTEUR');
     if (S2030.fx) { S2030.fx.flash(_lvPal.gridHot, 0.16); S2030.fx.glitch(0.4); }
-    if (S2030.audio) S2030.audio.sfx('zap');
   } else if (ph === 'climax') {
     _lvClimax();
   } else if (ph === 'clear') {
@@ -1070,7 +1069,10 @@ function _lvIntensity(dt) {
   S.intensity = _lvIntens;
 
   S.levelProgress = clamp((_lvBefore + f * _lvPhaseRaw) / _lvTotalDur, 0, 1);
-  S.levelPhase = ph;
+  /* La musique MARQUE le changement de phase : une mesure d'accent. Sans lui
+     le passage calme -> pression -> surcharge -> climax ne s'entend pas. */
+  if (S.levelPhase !== ph) { S.levelPhase = ph; S2030.audio && S2030.audio.stinger && S2030.audio.stinger(); }
+  else S.levelPhase = ph;
 }
 
 /* ======

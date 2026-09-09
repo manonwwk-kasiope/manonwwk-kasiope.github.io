@@ -592,7 +592,7 @@ function _wpnTailPush(L) {
   S2030.fx.burst(cx, cy, _WPN_GOLD, 26, 320, { life: 0.5, size: 2.4 });
   S2030.fx.shake(10);
   S2030.fx.text(cx, cy - 20, 'ENCERCLÉ', _WPN_GOLD);
-  S2030.audio.sfx('explode', { vol: 0.8, x: cx });
+  S2030.audio.sfx('bigkill', { vol: 0.8, x: cx });
 }
 
 function _wpnUpTail(dt, L) {
@@ -963,7 +963,7 @@ function _wpnPulse(L) {
   S2030.fx.ring(s.x, s.y, _WPN_WHITE, r * 0.1, r * 3.4, { w: 2.5, life: 0.3 });
   S2030.fx.flare(s.x, s.y, _WPN_CREAM, r * 0.7, { life: 0.2, a: 0.55 });
   S2030.fx.shake(4 + L.r * 0.02);
-  S2030.audio.sfx('shock', { vol: 0.6, x: s.x });
+  S2030.audio.sfx('boost', { vol: 0.7, x: s.x });
 }
 
 function _wpnUpShock(dt, L) {
@@ -1091,7 +1091,7 @@ function _wpnUpMines(dt, L) {
       var ta = S.snake.segs.length ? S.snake.segs[S.snake.segs.length - 1].ang : S.snake.ang;
       _wpnMineDrop(tx - Math.sin(ta) * off, ty + Math.cos(ta) * off, L, 0);
     }
-    S2030.audio.sfx('click', { vol: 0.22, x: tx });
+    S2030.audio.sfx('boostDry', { vol: 0.35, x: tx });
   }
 
   var slot = _wpnFrame % 5;
@@ -1136,7 +1136,7 @@ function _wpnUpMines(dt, L) {
     if (m.sing) {
       m.singT = m.sing;
       S2030.fx.ring(m.x, m.y, _WPN_WHITE, m.blast * 1.4, -m.blast * 2.2, { w: 3, life: m.sing });
-      S2030.audio.sfx('warp', { vol: 0.35, x: m.x });
+      S2030.audio.sfx('absorb', { vol: 0.8, x: m.x });
     } else {
       _wpnMineBoom(m, L);
     }

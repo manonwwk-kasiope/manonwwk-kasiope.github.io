@@ -348,20 +348,25 @@ function updateSnake(dt) {
     }
   }
   // SURSIS : le temps ralentit quand il ne reste presque plus rien
+  var low = s.len <= 3;
   if (S.up.f_slowmo) {
-    var low = s.len <= 3;
     S.timeScale = low ? (1 - 0.18 * S.up.f_slowmo) : 1;
   }
+  /* Il ne reste presque plus rien : un battement de coeur a 1 Hz. C'est la
+     seule information de survie que l'oreille peut donner sans que le regard
+     quitte le serpent. */
+  if (low && !S.dead) { if (S.t - _lowHpT >= 1000) { _lowHpT = S.t; S2030.audio && S2030.audio.sfx('lowHp'); } }
+  else _lowHpT = -9999;
   hurtSlowTick();
 }
 
-var _wallT = 0;
+var _wallT = 0, _lowHpT = -9999;
 function wallBump() {
   if (S.t - _wallT < 260) return;
   _wallT = S.t;
   S2030.fx && S2030.fx.shake(3);
   S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ff5c8a', 8, 260);
-  S2030.audio && S2030.audio.sfx('hit');
+  S2030.audio && S2030.audio.sfx('wallBump');
 }
 
 /* ------ dégâts joueur
@@ -575,7 +580,7 @@ function damageEnemy(e, dmg, opts) {
     else S2030.fx && S2030.fx.burst(opts.x, opts.y, e.color, 3, 0.7, { glow: true });
   }
   if (e.hp <= 0) killEnemy(e, opts);
-  else if (S2030.audio) S2030.audio.sfx('hit');
+  else if (S2030.audio) S2030.audio.sfx(e.boss ? 'bossHit' : 'hit', { x: e.x });
 }
 
 /* ------ multiplicateur
@@ -879,7 +884,7 @@ function collide(dt) {
         var around = enemiesNear(b.x, b.y, b.aoe);
         for (var a = 0; a < around.length; a++) if (around[a] !== e) damageEnemy(around[a], b.dmg * 0.6, { x: b.x, y: b.y });
         S2030.fx && S2030.fx.ring(b.x, b.y, b.color || '#ffd166', 6, 520);
-        S2030.audio && S2030.audio.sfx('explode');
+        S2030.audio && S2030.audio.sfx('hit', { vol: 0.8, x: b.x });
       }
       if (b.pierce && b.pierce > 0) { b.pierce--; }
       else { S.bullets.splice(i, 1); }
