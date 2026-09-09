@@ -578,6 +578,15 @@ function frame(now) {
     if (S.multT > 0) { S.multT -= raw * 1000; if (S.multT <= 0) { S.mult = 1; S.combo = 0; } }
     if (S.specialCd > 0) S.specialCd -= raw * 1000;
     try { updateCam(dt); } catch (e) { errLog('updateCam', e); }
+    /* DERNIER MOT sur l'arrivée pilotée du boss, sur le ralenti d'entrée et sur
+       la fuite de fin de secteur. Placé APRÈS updateCam et après phases.update :
+       la projection que le boss doit viser est celle de l'image RÉELLEMENT
+       dessinée. Écrit plus tôt (avant updateCam), le cliquet de la cible jugeait
+       la caméra de l'image précédente et deux essais sur vingt sortaient du
+       cadre quand la caméra filait — sy 0,068 et sx 0,924, mesurés. S.timeScale
+       y est écrit après updateSnake, donc après DILATATION et après le ralenti
+       de blessure : le ralenti de boss garde la priorité. */
+    try { S2030.levels && S2030.levels.late && S2030.levels.late(dt); } catch (e) { errLog('levels.late', e); }
     try { S2030.audio && S2030.audio.setIntensity(S.intensity); } catch (e) { errLog('audio.setIntensity', e); }
     try { readyTick(); } catch (e) { errLog('readyTick', e); }
     if (S.lvlUps > 0) { try { openCards(); } catch (e) { errLog('openCards', e); } }
@@ -846,7 +855,12 @@ function openCards() {
   S.lvlUps--;                                     // sécurité : si la main sort vide, on ne reboucle pas
   S.phase = 'cards';
   S.timeScale = 1; _ultEnd = -1; _ultStep = 9;   // un ultime en cours s'arrête là, comme avant
-  var cards = S2030.upgrades ? S2030.upgrades.roll(pend >= 2 ? 4 : 3) : [];
+  /* TROPHÉE : la carte d'un boss abattu n'est jamais commune. */
+  var trophy = !!S.trophyNext;
+  S.trophyNext = 0;
+  var cards = S2030.upgrades
+    ? (trophy ? S2030.upgrades.roll(3, { trophy: true }) : S2030.upgrades.roll(pend >= 2 ? 4 : 3))
+    : [];
   if (!cards.length) { S.phase = 'play'; return; }
   S2030.audio && S2030.audio.sfx('card');
   S2030.ui.showCards(cards, function (id) {
@@ -895,7 +909,7 @@ function resetRun() {
   S.xp = 0; S.xpNext = 6; S.lvlUps = 0; S.cardsTaken = 0;
   S.up = {}; S.ult = 0; S.special = 0; S.specialCd = 0;
   S.coins = 0; S.level = 1; S.levelT = 0; S.intensity = 0; S.levelProgress = 0;
-  S.timeScale = 1; S.boss = null; _ultEnd = -1; _ultStep = 9;
+  S.timeScale = 1; S.boss = null; S.bossBornT = 0; S.bossKills = 0; S.trophyNext = 0; _ultEnd = -1; _ultStep = 9;
   _lvlSeq = 0; _cardsNext = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;

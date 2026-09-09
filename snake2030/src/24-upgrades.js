@@ -673,20 +673,30 @@ var _UP_WPN = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
 function _upIsSurv(c) { return _UP_SURV.indexOf(c.id) >= 0; }
 function _upIsNewWpn(c) { return _UP_WPN.indexOf(c.id) >= 0 && (S.up[c.id] | 0) === 0; }
 
-function _upRoll(n) {
+/* Signature étendue (G9) : roll(n, opts). opts.trophy = main de TROPHÉE d'un
+   boss abattu — aucune carte commune, et au moins une carte dans {epic, ultra}
+   ('epic' n'est PAS la rareté maximale : le vivier compte 20 common, 20 rare,
+   8 epic et 5 ultra). Sans opts, le comportement est celui d'avant. */
+var _UP_TROPHY = { rare: 1, epic: 1, ultra: 1 };
+var _UP_TOP = { epic: 1, ultra: 1 };
+function _upRoll(n, opts) {
   var out = [];
   n = n | 0;
   if (n <= 0) return out;
   var first = (S.cardsTaken | 0) === 0;   // première main de la partie
+  var trophy = !!(opts && opts.trophy);
+  var needTop = trophy;                   // au moins une carte {epic, ultra}
 
   _upCand.length = 0;
   _upWts.length = 0;
   for (var i = 0; i < _upPool.length; i++) {
     var c = _upPool[i];
     if (!_upEligible(c)) continue;
+    if (trophy && !_UP_TROPHY[c.rarity]) continue;
     _upCand.push(c);
     _upWts.push(_upWeight(c));
   }
+  if (trophy && !_upCand.length) return _upRoll(n);   // vivier épuisé : main ordinaire
   if (!_upCand.length) return out;   // plus rien d'éligible : main vide, jamais d'erreur
 
   for (var k in _upAxisN) _upAxisN[k] = 0;
@@ -694,10 +704,14 @@ function _upRoll(n) {
   while (out.length < n && _upCand.length) {
     // pondération de la passe : on étouffe (sans interdire) un troisième
     // choix dans un axe déjà servi deux fois, pour garder des mains lisibles.
+    /* dernière place d'une main de TROPHÉE sans epic/ultra servie : on
+       restreint le tirage à ces deux raretés, la garantie n'est pas un vœu */
+    var forceTop = needTop && (out.length === n - 1 || _upCand.length === 1);
     var tot = 0, j;
     for (j = 0; j < _upCand.length; j++) {
       var w = _upWts[j];
       if ((_upAxisN[_upCand[j].axis] | 0) >= 2) w *= 0.12;
+      if (forceTop && !_UP_TOP[_upCand[j].rarity]) w = 0;
       _upTmp[j] = w;
       tot += w;
     }
@@ -719,6 +733,7 @@ function _upRoll(n) {
     _upAxisN[card.axis] = (_upAxisN[card.axis] | 0) + 1;
     _upRefresh(card);
     out.push(card);
+    if (needTop && _UP_TOP[card.rarity]) needTop = false;
 
     // première main : une arme neuve sortie, les autres quittent le tirage
     if (first && _upIsNewWpn(card)) {

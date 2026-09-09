@@ -763,7 +763,9 @@ function _fxEdgeMark(x, y, color, opts) {
   var m = _fxEdges[_fxEdgeN++];
   m.x = x; m.y = y; m.color = color || '#ffffff';
   m.dbl = (opts && opts.dbl) ? 1 : 0;
+  m.tri = (opts && opts.tri) ? 1 : 0;
   m.blink = (opts && opts.blink) ? 1 : 0;
+  m.bhz = (opts && opts.blinkHz) || 6;
   m.sz = (opts && opts.size) || 24;
   m.a = (opts && opts.a !== undefined) ? opts.a : 1;
   m.done = 0;
@@ -856,6 +858,22 @@ function _fxChevFlush(ctx, list, n) {
     ctx.strokeStyle = m.color;
     ctx.globalAlpha = m.al * 0.85; ctx.lineWidth = 4; ctx.stroke();
   }
+  // troisième chevron : réservé au portail de boss
+  for (i = 0; i < n; i++) { m = list[i]; if (m.tri) m.done = 0; }
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done || !m.tri) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -2.0, -0.8, 0.6);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || !o.tri || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -2.0, -0.8, 0.6); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al * 0.7; ctx.lineWidth = 3; ctx.stroke();
+  }
   ctx.restore();
 }
 
@@ -894,7 +912,8 @@ function _fxDrawEdges(ctx, w, h) {
     m = _fxEdges[i];
     m.done = 0;
     if (!_fxEdgePos(w, h, m)) continue;
-    m.al = m.blink ? m.a * ((S.t % 166.7) < 83.35 ? 1 : 0.16) : m.a;    // clignotement 6 Hz
+    // clignotement : 6 Hz par défaut, cadence croissante pour un portail de boss
+    m.al = m.blink ? m.a * (((S.t * m.bhz / 1000) % 1) < 0.5 ? 1 : 0.16) : m.a;
     /* Une salve annonce plusieurs arrivées presque au même endroit du cadre :
        on ÉCARTE les chevrons le long du bord (peigne) au lieu de les empiler,
        sinon trois arrivées ne se lisent que comme une. */

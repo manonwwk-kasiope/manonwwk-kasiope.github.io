@@ -223,7 +223,8 @@ Une définition contient au minimum :
 ```js
 {
   pool: [ { id, name, desc, icon, rarity, max, weight, req(), apply() } ],
-  roll(n),      // -> n cartes distinctes et éligibles
+  roll(n, opts),// -> n cartes distinctes et éligibles ; opts.trophy (G9) : main de
+                // TROPHÉE d'un boss abattu — aucune commune, au moins une {epic, ultra}
   apply(id)
 }
 ```
@@ -237,6 +238,10 @@ Une définition contient au minimum :
 {
   defs: [ { n, name, palette:{...}, mech, spawns:[...], boss } ],
   start(n), update(dt),
+  late(dt),         // (G9) après updateEnemies : arrivée pilotée du boss, ralenti
+                    // d'entrée (S.timeScale), fuite des survivants pendant 'clear'
+  bossSlow(),       // (G9) -> true tant que le ralenti d'entrée de boss est armé
+  phaseT(), pend(), hardcap(),   // (G9) horloge de phase, portails en vol, plafond d'ennemis
   drawBack(ctx),    // décor, sous les entités
   drawFore(ctx),    // par-dessus les entités (brume, lasers d'arène…)
   hazards: []       // dangers d'arène, collision gérée par le module

@@ -1814,6 +1814,15 @@ function _enDraw(ctx, e) {
   if (f) f(ctx, e, col);
   _enModDraw(ctx, e, col);
   if (e.elite) _enElite(ctx, e, col);
+  if (e.enraged) {                       // liseré blanc : le boss a basculé en rage
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r + 7, 0, TAU);
+    ctx.strokeStyle = '#ffffff';
+    ctx.globalAlpha = 0.55 + 0.35 * Math.sin(S.t * 0.012);
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
   if (e.hitT > 30) {
     /* Silhouette REMPLIE de blanc opaque tant qu'il reste plus de 60 ms, puis
        fondue sur les 30 ms suivantes : un éclat additif à 55 % se perdait dans

@@ -26,6 +26,7 @@ var _uiCtlShown = -1, _uiHudShown = -1;
 var _uiJoyMoved = false;
 var _uiRunMs = 0, _uiRunLast = 0, _uiRunOn = false;
 var _uiBanTo = 0, _uiToastTo = 0;
+var _uiBanQ = [], _uiBanBusy = 0;   // file des bannières : une à la fois (G9)
 var _uiSafe = { t: 0, r: 0, b: 0, l: 0 };
 var _uiLvName = '', _uiLvCache = -1;
 var _uiKF = null, _uiOverLock = false;       // curseur clavier, verrou de l'écran de fin
@@ -1216,12 +1217,22 @@ function _uiToast(title, sub) {
   }, 1900);
 }
 
-function _uiBanner(text) {
+/* FILE D'ATTENTE (G9) : deux annonces coup sur coup — le nom du boss puis
+   « SECTEUR NETTOYÉ », ou « +60 ◆ » — s'écrasaient l'une l'autre. Elles
+   passent maintenant l'une APRÈS l'autre, chacune sa durée. */
+function _uiBanner(text, dur) {
   if (!_uiBuilt) return;
+  _uiBanQ.push({ s: ('' + text).toUpperCase(), d: (+dur > 0 ? +dur : 1200) });
+  if (_uiBanQ.length > 5) _uiBanQ.splice(0, _uiBanQ.length - 5);
+  if (!_uiBanBusy) _uiBanNext();
+}
+function _uiBanNext() {
+  var it = _uiBanQ.shift();
+  if (!it) { _uiBanBusy = 0; return; }
+  _uiBanBusy = 1;
   var b = _uiE.banT;
-  var s = ('' + text).toUpperCase();
-  b.textContent = s;
-  b.setAttribute('data-t', s);
+  b.textContent = it.s;
+  b.setAttribute('data-t', it.s);
   _uiE.ban.classList.remove('on');
   /* on force un reflow pour relancer proprement l'animation */
   void _uiE.ban.offsetWidth;
@@ -1230,7 +1241,9 @@ function _uiBanner(text) {
   _uiBanTo = setTimeout(function () {
     _uiE.ban.classList.remove('on');
     _uiBanTo = 0;
-  }, 1200);
+    _uiBanBusy = 0;
+    _uiBanNext();
+  }, it.d);
 }
 
 /* ======
@@ -1430,7 +1443,11 @@ function _uiHud() {
     var bn = boss.name || boss.type || 'BOSS';
     if (bn !== _uiP.bossName) { _uiP.bossName = bn; _uiTxt(_uiE.bossName, ('' + bn).toUpperCase()); }
     var bmax = S.bossHpMax || boss.maxHp || boss.hp || 1;
-    _uiBar(_uiE.bossBar, boss.hp / bmax);
+    /* la jauge se REMPLIT en 900 ms depuis l'éclosion — donc pleine avant que
+       le boss n'entre dans le cadre — puis suit les PV */
+    var bq = boss.hp / bmax, bel = S.t - (S.bossBornT || 0);
+    if (bel < 900) { var bf = bel / 900; if (bf < bq) bq = bf; }
+    _uiBar(_uiE.bossBar, bq);
   }
 
   /* vie, boost, ultime */
@@ -1478,11 +1495,15 @@ function _uiOffscreen() {
   var list = S.enemies, P = S2030.phases;
   var cx = CW * 0.5, cy = CH * 0.5, hw = cx - 20, hh = cy - 20;
   if (hw < 10 || hh < 10) return _uiOffL;
+  /* DEUX PASSES : les boss d'abord. Le plafond de douze marqueurs évinçait le
+     boss en approche quand la vague précédente tenait encore le cadre. */
+  for (var pass = 0; pass < 2; pass++)
   for (var i = 0; i < list.length && _uiOffL.length < 12; i++) {
     var e = list[i];
     if (e.dead) continue;
     var kind = _uiOffKind(e);
     if (!kind || inView(e.x, e.y, 8)) continue;
+    if ((kind === 'boss') !== (pass === 0)) continue;
     var sx, sy;
     var p = (P && P.toScreen) ? P.toScreen(e.x, e.y, _uiOffP) : null;
     if (p && isFinite(p.x) && isFinite(p.y)) { sx = p.x * CW; sy = p.y * CH; }
@@ -1567,7 +1588,7 @@ S2030.ui = {
   showScreen: function (name) { _uiShow(name); },
   showCards: function (cards, cb) { _uiShowCards(cards, cb); },
   toast: function (title, sub) { _uiToast(title, sub); },
-  banner: function (text) { _uiBanner(text); },
+  banner: function (text, dur) { _uiBanner(text, dur); },
 
   /* ------ options */
   setControls: function (cfg) {

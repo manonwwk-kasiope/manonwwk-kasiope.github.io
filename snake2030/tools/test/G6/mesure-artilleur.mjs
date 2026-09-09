@@ -24,7 +24,10 @@ const PROBE = `(function(){
   const push = S.ebullets.push.bind(S.ebullets);
   S.ebullets.push = function(o){ if (S.phase==='play') AR.shots++; return push(o); };
   const burst = M.fx.burst;
-  M.fx.burst = function(x,y,color,n){ if (color==='#ff2e63' && n===22 && S.phase==='play'){
+  /* G8 a changé la gerbe de blessure de (22 particules) à (12, puissance 210) :
+     la signature n === 22 ne correspondait plus à rien et le compteur de coups
+     rendait 0 sur LES DEUX builds — défaut de l'instrument, pas du jeu. */
+  M.fx.burst = function(x,y,color,n){ if (color==='#ff2e63' && (n===12 || n===22) && S.phase==='play'){
       for (const b of S.ebullets) if (Math.abs(b.x-x)<2 && Math.abs(b.y-y)<2){ AR.hits++; break; } }
     return burst.apply(M.fx, arguments); };
   function inView(x,y){ const P=M.phases, V=(P&&P.visibleExtent)?P.visibleExtent():null;

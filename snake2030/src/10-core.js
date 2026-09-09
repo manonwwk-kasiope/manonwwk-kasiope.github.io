@@ -23,7 +23,30 @@ var K = {
   INVULN: 900,              // ms après un dégât
   MUSIC_LOOP: 259.074979,
   MUSIC_BPM: 144.6,
-  GRID: 110                 // taille de cellule de la grille de collision
+  GRID: 110,                // taille de cellule de la grille de collision
+  /* DIRECTEUR DE DIFFICULTÉ (G9), trois pentes par SECTEUR (S.level), pour les
+     ennemis ordinaires et les élites non-boss. La pente linéaire de la spec
+     (+8 %/secteur) a été mesurée et ne fait rien : au secteur 6 elle vaut x 1,4
+     quand le pilote d'esquive frappe déjà à 3 400 PV/s (mesuré : 418 kills/min
+     sur des ennemis à 491 PV moyens au secteur 5). Il faut une pente
+     géométrique pour que l'endurance suive la puissance de feu.
+     - ENHP_LVL : endurance ;
+     - ENDMG_LVL : ce que COÛTE un coup encaissé ;
+     - ENSPD_LVL : l'allure, plafonnée — un pilote qui distance tout le monde
+       n'est jamais touché, quelle que soit la foule.
+     Réglage mesuré (dix parties dodge-greedy, cran STANDARD, plafond 900 s) :
+     à la pente précédente (1,90 / 0,90 / 0,07) le bilan de la joueuse restait
+     positif jusqu'au secteur 8 — 1 064 segments perdus contre 1 096 regagnés
+     par les ramassages en 900 s, len moyen 70 sur 90 — et dix parties sur dix
+     touchaient le plafond. Le basculement existait mais arrivait trop tard :
+     au secteur 9, 13 coups en 72 s pour 8 segments chacun contre 26 rendus par
+     minute, soit -80 segments/minute. Les pentes ci-dessous amènent ce même
+     régime autour du secteur 6, c'est-à-dire vers 550 s de partie. */
+  ENHP_LVL: 2.60,
+  ENDMG_LVL: 1.90,
+  ENSPD_LVL: 0.160,
+  ENSPD_MAX: 1.60,
+  SHIELD_CAP: 3            // segments qu'une charge de BOUCLIER encaisse
 };
 
 /* ------ bureau */
@@ -60,7 +83,7 @@ var S = {
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
   stats: { best: 0, coins: 0, runs: 0 },
-  boss: null, bossHpMax: 0, headR: 16, pxEff: 1.5, partEff: 1,
+  boss: null, bossHpMax: 0, bossBornT: 0, bossKills: 0, trophyNext: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,
   desktop: detectDesktop()
 };
@@ -181,6 +204,13 @@ function buildSegs() {
 function updateSnake(dt) {
   var s = S.snake, inp = S.input;
 
+  /* RALENTI D'ENTRÉE DE BOSS (G9) : le monde ralentit, pas la joueuse. Le pas
+     de temps du serpent est redivisé par S.timeScale — qui vaut exactement le
+     facteur ayant servi à fabriquer dt dans frame() — donc sa vitesse MONDE
+     reste celle d'avant le ralenti. */
+  var _bs = S2030.levels && S2030.levels.bossSlow && S2030.levels.bossSlow();
+  if (_bs && S.timeScale > 0.01 && S.timeScale < 1) dt = dt / S.timeScale;
+
   var want = inp.jmag > 0.12 ? Math.atan2(inp.jy, inp.jx) : null;
   var rail = !!(S2030.phases && S2030.phases.railed());
 
@@ -296,7 +326,15 @@ function updateSnake(dt) {
   // BOUCLIER : une charge se recharge lentement, jusqu'au maximum acheté
   if (S.up.f_shield) {
     s.shieldT += dt;
-    var cd = (S.up.f_shieldCd ? 11 - S.up.f_shieldCd : 14);
+    /* f_shieldCd est en MILLISECONDES (9000 / 7000 / 5200, src/24-upgrades.js,
+       et le contrat le dit) : « 11 - f_shieldCd » le lisait en secondes et
+       rendait -8989, donc une charge rendue À CHAQUE IMAGE. Une seule carte
+       BOUCLIER suffisait à rendre la joueuse définitivement intouchable —
+       mesuré : zéro coup encaissé du secteur 4 jusqu'au plafond de 900 s sur
+       les six parties du pilote d'esquive, 133 ennemis vivants en moyenne au
+       secteur 8. C'est la cause première du « passé 60 s plus personne ne
+       meurt » de G9 ; aucun réglage de cadence ni de PV ne pouvait la couvrir. */
+    var cd = (S.up.f_shieldCd ? S.up.f_shieldCd / 1000 : 14);
     if (s.shieldT >= cd) {
       s.shieldT = 0;
       if (s.shield < S.up.f_shield) {
@@ -346,15 +384,28 @@ function hurtSnake(dmg, x, y, src) {
   // BLINDAGE : plafonne chaque coup à un seul segment
   if (S.up.f_capDamage) dmg = 1;
 
-  // BOUCLIER : une charge absorbe le coup entier
+  /* BOUCLIER : une charge encaisse K.SHIELD_CAP segments. Jusqu'au secteur 3 un
+     coup coûte 1 à 3 segments : la charge le prend en entier et la carte tient
+     exactement la promesse d'avant. Passé le secteur 4 un coup en coûte 6 à 12
+     et le surplus PASSE. C'est le point que la mesure a désigné : une charge qui
+     absorbe un coup ENTIER quelle que soit sa taille annule le directeur de
+     difficulté pour qui prend la carte — sur les parties brouillonnes qui
+     touchaient le plafond de 600 s, 44 coups sur 95 étaient absorbés en entier
+     (graine 5107, trois BOUCLIER), et le bilan segments perdus / segments
+     regagnés restait à l'équilibre (616 contre 639) jusqu'au bout. */
   if (s.shield > 0) {
     s.shield--;
-    s.invuln = K.INVULN + 400;
-    S2030.fx && S2030.fx.ring(s.x, s.y, '#7CFFB2', 12, 700);
-    S2030.fx && S2030.fx.flare(s.x, s.y, '#7CFFB2', 120);
+    if (dmg <= K.SHIELD_CAP) {
+      s.invuln = K.INVULN + 400;
+      S2030.fx && S2030.fx.ring(s.x, s.y, '#7CFFB2', 12, 700);
+      S2030.fx && S2030.fx.flare(s.x, s.y, '#7CFFB2', 120);
+      S2030.audio && S2030.audio.sfx('shock');
+      haptic(16);
+      return;
+    }
+    dmg -= K.SHIELD_CAP;
+    S2030.fx && S2030.fx.ring(s.x, s.y, '#7CFFB2', 10, 560);
     S2030.audio && S2030.audio.sfx('shock');
-    haptic(16);
-    return;
   }
 
   s.len = Math.max(1, s.len - dmg);
@@ -457,9 +508,28 @@ function spawnEnemy(type, x, y, mods) {
       if (mdef && mdef.apply) mdef.apply(e);
     }
   }
+  /* DIRECTEUR DE DIFFICULTÉ (G9) : les ennemis ordinaires et les élites
+     NON-BOSS gagnent en endurance ET en mordant avec le NUMÉRO DE SECTEUR
+     (S.level, écrit seulement par _lvStart) et avec le cycle de surcharge. Les
+     boss en sont exclus — ils portent déjà leur propre facteur de cycle et le
+     facteur de _lvBossBorn — sans quoi quatre facteurs s'empileraient. */
+  if (!(mods && mods.boss)) {
+    var sec = Math.max(0, (((S.level | 0) || 1) - 1)), cyc = enemyCycle();
+    var lvF = Math.pow(K.ENHP_LVL, sec) * (1 + 0.04 * cyc);
+    if (lvF !== 1) e.hp = e.maxHp = Math.max(1, Math.round(e.maxHp * lvF));
+    var dgF = 1 + K.ENDMG_LVL * sec + 0.10 * cyc;
+    if (dgF !== 1) e.dmg = Math.max(1, Math.round(e.dmg * dgF));
+    var spF = Math.min(K.ENSPD_MAX, 1 + K.ENSPD_LVL * sec + 0.03 * cyc);
+    if (spF !== 1) e.speed = e.speed * spF;
+  }
   if (d.init) d.init(e);
   S.enemies.push(e);
   return e;
+}
+/* cycle de surcharge courant, 0 pour les secteurs 1 a 3 */
+function enemyCycle() {
+  var L = S2030.levels;
+  return (L && L.cycle) ? (L.cycle() | 0) : 0;
 }
 
 function addBullet(o) {
@@ -486,6 +556,9 @@ function addPickup(kind, x, y) {
 /* ------ dégâts ennemis */
 function damageEnemy(e, dmg, opts) {
   if (!e || e.dead) return;
+  /* ARRIVÉE DE BOSS (G9) : tant qu'il est piloté vers le cadre et pendant sa
+     bannière, il ne prend rien — on le voit venir, on ne le tue pas en chemin. */
+  if (e.noDmg) return;
   // ÉLAN : les dégâts montent avec la vitesse quand on est en boost
   if (S.up.f_momentum && S.snake && S.snake.boosting) dmg *= 1 + 0.18 * S.up.f_momentum;
   if (S2030.phases && S2030.phases.foldFactor()) dmg *= 1.8;   // REPLI : frappe lourde
@@ -853,6 +926,7 @@ function collide(dt) {
     var close = enemiesNear(s.x, s.y, 260);
     for (i = 0; i < close.length; i++) {
       e = close[i];
+      if (e.harmless) continue;          // il fuit le secteur : il ne blesse plus (G9)
       var cr = e.r + S.headR;
       if (dist2(s.x, s.y, e.x, e.y) < cr * cr) {
         if (S.up.f_ramDamage && s.boosting) {
