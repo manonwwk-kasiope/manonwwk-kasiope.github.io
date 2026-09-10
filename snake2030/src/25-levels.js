@@ -735,12 +735,13 @@ function _lvClearPhase() {
     S2030.fx.flash(_lvPal.accent, 0.22);
     S2030.fx.ring(s.x, s.y, _lvPal.accent, 20, 1100, { w: 7, life: 0.9 });
   }
-  // récompense de fin de secteur : de quoi souffler avant la suite
-  for (var i = 0; i < 3; i++) {
-    var a = rnd() * TAU, r = rndR(70, 150);
-    addPickup('core', clamp(s.x + Math.cos(a) * r, 40, K.ARENA_W - 40),
-                      clamp(s.y + Math.sin(a) * r, 40, K.ARENA_H - 40));
-  }
+  /* Récompense de fin de secteur : de quoi souffler avant la suite, EN UN SEUL
+     noyau de valeur triple. Trois noyaux dispersés, c'était trois halos et trois
+     détours pour la même chose. */
+  var a = rnd() * TAU, r = rndR(70, 150);
+  var pc = addPickup('core', clamp(s.x + Math.cos(a) * r, 40, K.ARENA_W - 40),
+                             clamp(s.y + Math.sin(a) * r, 40, K.ARENA_H - 40));
+  if (pc) pc.val = 3;
   addPickup('heal', clamp(s.x + rndR(-90, 90), 40, K.ARENA_W - 40),
                     clamp(s.y + rndR(-90, 90), 40, K.ARENA_H - 40));
 }
@@ -1572,6 +1573,8 @@ function _lvViewRect() {
 var _lvVX = 0, _lvVY = 0, _lvVW = 0, _lvVH = 0;
 
 function _lvDrawBlooms(ctx) {
+  // palier léger : les blooms de décor sont un remplissage plein écran de plus
+  if (typeof qLight === 'function' && qLight()) return;
   for (var i = 0; i < _lvBloomP.length; i++) {
     var p = _lvBloomP[i];
     if (!inView(p.x, p.y, p.r)) continue;
@@ -1591,6 +1594,7 @@ function _lvDrawBlooms(ctx) {
 }
 
 function _lvDrawDust(ctx) {
+  if (typeof qLight === 'function' && qLight()) return;   // palier léger : pas de poussière
   if (!_lvDust) return;
   // parallaxe : la poussière glisse par rapport au monde, ça creuse la profondeur
   var ox = S.cam.x * 0.10, oy = S.cam.y * 0.10;

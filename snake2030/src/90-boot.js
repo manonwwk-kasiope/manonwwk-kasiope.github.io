@@ -3,6 +3,7 @@
    Canvas, entrées tactiles, rendu du serpent, boucle principale, cycle de vie.
    ====== */
 
+var _grandEcran = true;
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
 var _fsbSync = null, _fsHelp = null;
 
@@ -77,8 +78,21 @@ function resizeCanvas() {
   DPR = Math.min(window.devicePixelRatio || 1, S.pxEff || S.opt.px || 1.5);
   var w = window.innerWidth, h = window.innerHeight;
   CW = w; CH = h;
-  cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
-  cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  /* MÉMORISÉ ICI, PAS LU À CHAQUE IMAGE. _qFloor() lisait window.innerHeight à
+     chaque appel d'applyQuality ; or applyQuality est appelé sur tout changement
+     de S.opt.px, et cette lecture force le navigateur à recalculer la mise en
+     page au milieu de l'image. La hauteur de fenêtre ne change qu'ici. */
+  _grandEcran = !!S.desktop || h >= 700;
+  /* RÉALLOCATION SEULEMENT SI ELLE CHANGE QUELQUE CHOSE. Écrire cv.width, même
+     la même valeur, réalloue le tampon et efface l'image : soixante fois par
+     seconde de redimensionnement, c'est soixante allocations plein écran. */
+  var nw = Math.round(w * DPR), nh = Math.round(h * DPR);
+  if (cv.width !== nw) cv.width = nw;
+  if (cv.height !== nh) cv.height = nh;
+  // le canevas garde sa taille CSS : sous le cran 1 on rend moins de pixels et
+  // le navigateur les étire, il ne rétrécit pas l'image
+  if (cv.style.width !== w + 'px') cv.style.width = w + 'px';
+  if (cv.style.height !== h + 'px') cv.style.height = h + 'px';
   _perspApplied = -1;                      // la distance d'oeil dépend de la hauteur
   /* Hauteur de vue de référence en unités monde, puis la largeur est bornée :
      jamais moins de 1000 unités (fenêtre haute et étroite : on dézoome au
@@ -414,11 +428,7 @@ function drawSnake() {
   // vers sa cible pendant que le corps reste sur son rail
   ctx.rotate(aimAng());
   ctx.globalCompositeOperation = 'lighter';
-  var g = ctx.createRadialGradient(0, 0, 2, 0, 0, K.HEAD_R * 3.2);
-  g.addColorStop(0, ghost ? 'rgba(179,136,255,.85)' : 'rgba(0,229,255,.8)');
-  g.addColorStop(1, 'rgba(0,229,255,0)');
-  ctx.fillStyle = g;
-  ctx.beginPath(); ctx.arc(0, 0, K.HEAD_R * 3.2, 0, TAU); ctx.fill();
+  drawGlow(ctx, 0, 0, K.HEAD_R * 3.2, ghost ? 'rgba(179,136,255,.85)' : 'rgba(0,229,255,.8)', 'rgba(0,229,255,0)');
   ctx.globalCompositeOperation = 'source-over';
 
   ctx.fillStyle = blink ? '#ffffff' : (ghost ? '#d9c2ff' : '#9df5ff');
@@ -454,35 +464,117 @@ function drawBoostArc(s) {
   ctx.restore();
 }
 
+/* ------ halos pré-rendus
+   Un createRadialGradient par butin, par tir ennemi et par flaque, à chaque
+   image : 106 à 433 dégradés par image mesurés. Un dégradé radial se paie deux
+   fois — sa construction, puis le remplissage qui l'échantillonne pixel par
+   pixel. On le pré-rend donc UNE FOIS par (couleur, couleur de bord, rayon
+   arrondi à quatre pixels) dans un canevas hors écran, et on le pose ensuite au
+   drawImage, que le compositeur sait recopier. Le rayon arrondi borne le nombre
+   de sprites : une poignée pour toute la partie. */
+var _SPR = {}, _SPRN = 0;
+function glowSprite(col, r, edge) {
+  var rr = Math.round(Math.max(4, Math.min(256, r)) / 4) * 4;
+  var k = col + '>' + edge + '|' + rr;
+  var c = _SPR[k];
+  if (c) return c;
+  c = document.createElement('canvas');
+  c.width = c.height = rr * 2;
+  var g2 = c.getContext('2d');
+  var gr = g2.createRadialGradient(rr, rr, 0, rr, rr, rr);
+  gr.addColorStop(0, col); gr.addColorStop(1, edge);
+  g2.fillStyle = gr;
+  g2.fillRect(0, 0, rr * 2, rr * 2);
+  _SPR[k] = c; _SPRN++;
+  return c;
+}
+/** Halo additif posé au drawImage. L'alpha et le mode de composition courants
+    sont respectés : les appelants gardent leur mise en scène. */
+function drawGlow(g, x, y, r, col, edge) {
+  if (!(r > 0)) return;
+  try { g.drawImage(glowSprite(col, r, edge || 'rgba(0,0,0,0)'), x - r, y - r, r * 2, r * 2); }
+  catch (e) { /* canevas hors écran indisponible : on saute le halo, jamais l'image */ }
+}
+/* BUTIN ET TIRS ENNEMIS : UN SEUL APPEL CHACUN. Le halo, le corps et sa pulsation
+   étaient dix appels de canevas par butin (save, mode, alpha, dégradé, chemin,
+   arc, remplissage, restore) : 1 271 appels par image pour 150 butins mesurés.
+   Le halo additif et le corps sont pré-composés DANS le sprite — l'addition est
+   associative, poser (halo + corps) sur le fond donne exactement la même image
+   que poser l'un puis l'autre —, le mode de composition est posé une fois pour
+   toute la couche, et il ne reste qu'un drawImage par butin. La pulsation passe
+   dans la taille du drawImage ; la rotation du noyau, dans huit sprites. */
+var _PSPR = {};
+function pickBody(kind) { return kind === 'core' ? 11 : 7; }
+function pickSprite(kind, col, k, plat) {
+  var key = kind + '|' + col + '|' + k + '|' + (plat ? 1 : 0);
+  var c = _PSPR[key];
+  if (c) return c;
+  var r = pickBody(kind), R = plat ? r : r * 4, SS = 2, D = Math.round(R * 2 * SS);
+  c = document.createElement('canvas');
+  c.width = c.height = D;
+  var g = c.getContext('2d');
+  g.translate(D / 2, D / 2); g.scale(SS, SS);
+  g.globalCompositeOperation = 'lighter';
+  if (!plat) {
+    g.globalAlpha = 0.5;
+    g.drawImage(glowSprite(col, r * 4, 'rgba(0,0,0,0)'), -r * 4, -r * 4, r * 8, r * 8);
+    g.globalAlpha = 1;
+  }
+  g.fillStyle = col;
+  g.beginPath();
+  if (kind === 'core') {
+    for (var i = 0; i < 6; i++) {
+      var a = i * TAU / 6 + k * (TAU / 3) / 8;
+      var rr = i % 2 ? r * 0.5 : r;
+      g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    g.closePath();
+  } else g.arc(0, 0, r, 0, TAU);
+  g.fill();
+  _PSPR[key] = c;
+  return c;
+}
+/** Tir ennemi : halo additif + coeur blanc pré-composés, rayon de référence 5. */
+var _EBSPR = {};
+function ebSprite(col) {
+  var c = _EBSPR[col];
+  if (c) return c;
+  var r = 5, R = r * 3, SS = 2, D = Math.round(R * 2 * SS);
+  c = document.createElement('canvas');
+  c.width = c.height = D;
+  var g = c.getContext('2d');
+  g.translate(D / 2, D / 2); g.scale(SS, SS);
+  g.globalCompositeOperation = 'lighter';
+  g.drawImage(glowSprite(col, R, 'rgba(0,0,0,0)'), -R, -R, R * 2, R * 2);
+  g.fillStyle = '#fff';
+  g.beginPath(); g.arc(0, 0, r * 0.5, 0, TAU); g.fill();
+  _EBSPR[col] = c;
+  return c;
+}
+
+/** Palier « léger » : à partir du troisième cran de dégradation, les seconds
+    passages (nappe néon large, halos de butin, poussière et blooms de décor)
+    sont abandonnés. C'est du remplissage pur, et c'est lui qui coûte. */
+function qLight() { return _qStep >= 3; }
+
 function drawPickups() {
-  for (var i = 0; i < S.pickups.length; i++) {
+  var n = S.pickups.length;
+  if (!n) return;
+  var plat = qLight(), kk = Math.floor(S.t / 90) & 7, cli = Math.floor(S.t / 110) & 1;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  for (var i = 0; i < n; i++) {
     var p = S.pickups[i];
     if (!inView(p.x, p.y, 40)) continue;
-    var pulse = 1 + Math.sin(S.t / 180 + i) * 0.16;
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
+    // les deux dernières secondes de vie : il clignote avant de disparaître
+    if (p.t > 8 && cli) continue;
     var col = p.kind === 'core' ? '#ffd166' : (p.kind === 'heal' ? '#7CFFB2' : '#00e5ff');
-    var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-    g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.globalAlpha = 0.5;
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4, 0, TAU); ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = col;
-    ctx.beginPath();
-    if (p.kind === 'core') {
-      for (var k = 0; k < 6; k++) {
-        var a = k * TAU / 6 + S.t / 700;
-        var rr = k % 2 ? p.r * 0.5 : p.r * pulse;
-        ctx.lineTo(p.x + Math.cos(a) * rr, p.y + Math.sin(a) * rr);
-      }
-      ctx.closePath();
-    } else {
-      ctx.arc(p.x, p.y, p.r * pulse, 0, TAU);
-    }
-    ctx.fill();
-    ctx.restore();
+    var pulse = 1 + Math.sin(S.t / 180 + i) * 0.16;
+    // p.r porte la fusion (rayon majoré de 15 % quand la valeur est cumulée)
+    var R = (plat ? p.r : p.r * 4) * pulse;
+    ctx.drawImage(pickSprite(p.kind, col, p.kind === 'core' ? kk : 0, plat), p.x - R, p.y - R, R * 2, R * 2);
   }
+  ctx.restore();
 }
 
 function drawBullets() {
@@ -500,12 +592,8 @@ function drawBullets() {
   for (i = 0; i < S.ebullets.length; i++) {
     b = S.ebullets[i];
     if (!inView(b.x, b.y, 30)) continue;
-    var g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r * 3);
-    g.addColorStop(0, b.color || '#ff5c3a'); g.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 3, 0, TAU); ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(b.x, b.y, b.r * 0.5, 0, TAU); ctx.fill();
+    var R = b.r * 3;
+    ctx.drawImage(ebSprite(b.color || '#ff5c3a'), b.x - R, b.y - R, R * 2, R * 2);
   }
   ctx.restore();
 }
@@ -523,6 +611,17 @@ function drawArenaEdge() {
 /* ------ boucle de jeu */
 var lastT = 0, accFps = 0, accReal = 0, frames = 0, fps = 60;
 
+/* HORLOGE À PAS FIXE. L'ancienne boucle intégrait le temps d'image réel, borné
+   à 50 ms : sur une machine qui perd des images, tout ce qui dépassait la borne
+   était volé au temps de jeu — 6,4 % de dilatation mesurée, trente-sept
+   secondes perdues en dix minutes de partie. On accumule désormais le temps
+   réel et on le dépense par pas entiers de 1/120 s : le reste attend l'image
+   suivante au lieu d'être perdu. Le rattrapage est borné à 33 ms et à quatre
+   pas par image — au-delà, la machine ne rattrapera jamais, et les pas qu'on
+   abandonne sont comptés (S.dropped) plutôt que tus. À graine et entrées
+   égales, la suite des pas est la même : le déterminisme est conservé. */
+var FIX_DT = 1 / 120, FIX_MAX = 4, FIX_CATCH = 0.033, _acc = 0;
+
 function frame(now) {
   requestAnimationFrame(frame);
   var real = Math.min(0.05, (now - lastT) / 1000 || 0.016);   // temps d'image réel, s
@@ -532,7 +631,18 @@ function frame(now) {
   // d'images réel de la machine de test, et la suite d'états du jeu devient
   // la même d'une exécution à l'autre ; jamais posé en jeu normal. La mesure
   // de qualité, elle, regarde toujours le temps d'image réel.
-  var raw = window.__DT > 0 ? Math.min(0.05, +window.__DT) : real;
+  var rawIn = window.__DT > 0 ? Math.min(0.05, +window.__DT) : real;
+
+  /* Le RESTE est gardé, c'est tout l'intérêt de l'accumulateur : une image de
+     40 ms dépense 33 ms de jeu et reporte les 7 ms sur la suivante au lieu de
+     les perdre. Ce qui est borné, c'est le rattrapage PAR IMAGE (quatre pas,
+     soit 33 ms) : au-delà, la machine ne rattrapera jamais et l'on repart à
+     zéro plutôt que d'accumuler une dette qui ferait bondir le jeu. */
+  _acc += rawIn;
+  var steps = Math.floor(_acc / FIX_DT + 1e-9);
+  if (steps > FIX_MAX) { S.dropped += steps - FIX_MAX; steps = FIX_MAX; _acc = 0; }
+  else _acc -= steps * FIX_DT;
+  var raw = steps * FIX_DT;                 // temps de jeu réellement dépensé dans cette image
 
   frames++; accFps += raw; accReal += real;
   if (accFps > 0.5) { fps = frames / accReal; frames = 0; accFps = 0; accReal = 0; autoQuality(); }
@@ -552,13 +662,47 @@ function frame(now) {
     qualitySample(real);
     qualityTilt();
     if (_fsbSync) _fsbSync();
-    if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; applyQuality(); }
+    if (S.opt.px !== _pxVoulu) { _pxVoulu = S.opt.px; _qStep = 0; _qBon = 0; _qGood = 0; applyQuality(); }
     mouseCursor(now);
   } catch (e) { errLog('quality', e); }
 
   /* Chaque étape est isolée : une exception dans l'une ne prive pas les
      suivantes, et render() puis hud() tournent quoi qu'il arrive. */
   if (S.phase === 'play' && !S.paused) {
+    /* UN SEUL APPEL POUR LES PAS DE L'IMAGE. Le temps de jeu n'avance que par
+       quanta entiers de 1/120 s — c'est l'accumulateur qui le garantit —, mais
+       la simulation les intègre en une fois. Dérouler quatre pas séparés a été
+       mesuré au banc, profil iPhone, scène figée : p50 × 1,072 à plat, × 1,051
+       sur treillis, × 1,056 en bascule, pour un plafond de porte à 1,10. Le
+       coût d'image de la joueuse passe avant l'élégance de l'intégrateur, et
+       aucun des seuils d'horloge de G13 ne distingue les deux formes : le
+       rattrapage reste borné à quatre pas (33 ms) et le reste est reporté. */
+    if (steps > 0) simStep(raw, raw * scale);
+  } else if (S.phase === 'dead' || S.phase === 'cards') {
+    S.t += raw * 1000;
+    // la caméra continue de se redresser : sinon le récapitulatif se lit sur
+    // une image penchée à 30° et gardée telle quelle
+    try { S2030.phases && S2030.phases.settle && S2030.phases.settle(raw); } catch (e) { errLog('phases.settle', e); }
+  } else if (S.phase === 'menu') {
+    S.t += raw * 1000;
+    S.cam.x = lerp(S.cam.x, K.ARENA_W / 2, 0.02);
+    S.cam.y = lerp(S.cam.y, K.ARENA_H / 2, 0.02);
+  } else {
+    S.t += raw * 1000;
+  }
+
+  try { S2030.fx && S2030.fx.update(raw); } catch (e) { errLog('fx.update', e); }
+  try { render(); } catch (e) { errLog('render', e); gfxRecover(ctx, null); }
+  try { S2030.ui && S2030.ui.hud && S2030.ui.hud(); } catch (e) { errLog('hud', e); }
+  syncControls();
+}
+
+/* UN PAS DE SIMULATION, de durée fixe. Tout ce qui était fait une fois par
+   image l'est une fois par pas ; ce qui se compte en IMAGES (le gel d'impact)
+   reste dans frame(). */
+function simStep(raw, dt) {
+  {
+    S.dt = dt;
     S.t += raw * 1000;
     try { keyboardInput(); } catch (e) { errLog('keyboardInput', e); }
     try { mouseInput(); } catch (e) { errLog('mouseInput', e); }
@@ -591,23 +735,7 @@ function frame(now) {
     try { S2030.audio && S2030.audio.setIntensity(S.intensity); } catch (e) { errLog('audio.setIntensity', e); }
     try { readyTick(); } catch (e) { errLog('readyTick', e); }
     if (S.lvlUps > 0) { try { openCards(); } catch (e) { errLog('openCards', e); } }
-  } else if (S.phase === 'dead' || S.phase === 'cards') {
-    S.t += raw * 1000;
-    // la caméra continue de se redresser : sinon le récapitulatif se lit sur
-    // une image penchée à 30° et gardée telle quelle
-    try { S2030.phases && S2030.phases.settle && S2030.phases.settle(raw); } catch (e) { errLog('phases.settle', e); }
-  } else if (S.phase === 'menu') {
-    S.t += raw * 1000;
-    S.cam.x = lerp(S.cam.x, K.ARENA_W / 2, 0.02);
-    S.cam.y = lerp(S.cam.y, K.ARENA_H / 2, 0.02);
-  } else {
-    S.t += raw * 1000;
   }
-
-  try { S2030.fx && S2030.fx.update(raw); } catch (e) { errLog('fx.update', e); }
-  try { render(); } catch (e) { errLog('render', e); gfxRecover(ctx, null); }
-  try { S2030.ui && S2030.ui.hud && S2030.ui.hud(); } catch (e) { errLog('hud', e); }
-  syncControls();
 }
 
 function updateEnemies(dt) {
@@ -747,11 +875,73 @@ function syncControls() {}
    remonte dès que ça respire, et l'ajustement automatique reste en mémoire
    sans jamais toucher au choix du joueur. */
 var _qWin = [], _qStep = 0, _qHold = 0, _qBon = 0;
-var PX_CRANS = [1, 1.25, 1.5, 2];
+/* ÉCHELLE COMPLÈTE. Le plancher était 1 : sur une machine qui rend en pixels
+   (pas de GPU, 1080p) une image sur vingt tenait encore, et le jeu n'avait plus
+   rien à lâcher. Deux crans sous 1 rendent quatre fois moins de pixels à 0,6.
+   Ils ne sont proposés à la dégradation automatique que là où l'écran est assez
+   grand pour que l'étirement ne se voie pas — bureau, ou fenêtre d'au moins
+   700 px de haut ; sur un téléphone en paysage, le plancher reste 1. */
+var PX_CRANS = [0.6, 0.75, 1, 1.25, 1.5, 2];
+var _qSec = 0, _qLastSec = 0, _qGood = 0, _qUpSec = -1e9, _qSkip = 0, _qSum = 0;
+var _qWarm = [], _qCal = 0;
 
 function qualitySample(raw) {
-  _qWin.push(raw);
-  if (_qWin.length > 120) _qWin.shift();
+  _qSec += raw;
+  /* Les trois premières secondes d'une partie ne comptent pas : le démarrage
+     (plein écran, armement audio, remise à zéro) saccade par nature, et la
+     mesure y voyait une machine en difficulté là où c'est la transition qui
+     coûte. */
+  if (_qSkip > 0) {
+    _qSkip -= raw;
+    /* Elles ne comptent pas dans _qWin — le démarrage saccade par nature — mais elles
+       ne sont plus JETÉES : sur une machine lente, la joueuse subissait dix secondes
+       de saccades avant que l'échelle ne réagisse (30 des 88 images longues d'une
+       partie bureau de 90 s tombaient dans les dix premières). On garde la dernière
+       seconde de démarrage pour un étalonnage unique, pris APRÈS la fenêtre morte. */
+    if (raw > 0) { _qWarm.push(raw); if (_qWarm.length > 90) _qWarm.shift(); }
+    return;
+  }
+  /* La fenêtre se compte en SECONDES, pas en images. Comptée en images (120), elle durait deux secondes
+     sur une machine saine mais huit sur une machine à quinze images par seconde — c'est-à-dire que la
+     dégradation réagissait quatre fois plus lentement là où elle était quatre fois plus nécessaire.
+     Mesuré : à 2560×1440, quatorze images par seconde, il fallait neuf secondes par cran. */
+  _qWin.push(raw); _qSum += raw;
+  while (_qSum > 2 && _qWin.length > 2) _qSum -= _qWin.shift();
+}
+
+/* Plancher d'échelle : les crans sous 1 ne s'ouvrent que sur grand écran. */
+function _qFloor(base) {
+  return Math.min(base, _grandEcran ? 0 : 2);
+}
+
+/* Cran de départ, BORNÉ PAR LA DENSITÉ RÉELLE DE L'ÉCRAN. Au-dessus d'elle un cran
+   ne rend pas un pixel de plus : resizeCanvas prend min(devicePixelRatio, pxEff).
+   Sur un écran DPR 1 — la machine du constat, 1080p sans processeur graphique — les
+   crans 1,25, 1,5 et 2 donnent donc exactement la même image que le cran 1, et la
+   dégradation automatique dépensait ses deux ou trois premiers crans à ne rien retirer :
+   mesuré sur une partie bureau de 90 s, 52 des 125 images longues étaient rendues à un
+   « cran 1,5 » qui valait 1. On borne la base pour que chaque cran retire vraiment des
+   pixels. Sur un écran Retina (iPhone DPR 3, Retina DPR 2) rien ne change. */
+function _qBase() {
+  var voulu = S.opt.px || 1.5;
+  var dpr = window.devicePixelRatio || 1;
+  if (voulu > dpr) voulu = dpr;
+  var base = 0;
+  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu + 1e-6) base = k;
+  return base;
+}
+
+/* Nombre de crans que la dégradation peut réellement franchir. Sans ce plafond,
+   _qStep continuait de grimper une fois le plancher atteint, et la remontée devait
+   ensuite redescendre ces crans fantômes à 45 s chacun avant que rien ne bouge. */
+function _qStepMax() {
+  var b = _qBase();
+  /* Deux crans de plus que ce que l échelle de pixels peut retirer : ils ne
+     changent plus la résolution mais ouvrent le palier « léger » (_qStep >= 3)
+     et les paliers de densité de particules, seuls leviers restants quand le
+     plancher de pixels est atteint — sur iPhone il l est à 1, sur un écran
+     DPR 1 à 0,6. Sans eux, une machine au plancher n avait plus rien à lâcher. */
+  return Math.min(PX_CRANS.length - 1, b - _qFloor(b) + 2);
 }
 
 /* On ne remonte jamais pendant la bascule (la mesure redevient bonne PARCE QU'ON A BAISSÉ :
@@ -759,31 +949,74 @@ function qualitySample(raw) {
    image longue. Descente (G1) dès que la fenêtre de deux secondes contient au moins deux
    images longues (≈ 1 %) ; une image isolée ne compte pas. */
 function autoQuality() {
-  if (_qWin.length < 60) return;
+  var dsec = _qSec - _qLastSec; _qLastSec = _qSec;
+  if (_qSum < 0.9 || _qWin.length < 12) return;
+  /* ÉTALONNAGE DE DÉMARRAGE, UNE SEULE FOIS PAR PARTIE. La machine a montré ce qu'elle
+     valait pendant les trois secondes mortes ; au lieu de redécouvrir la même chose en
+     deux ou trois cycles de deux secondes, on prend le cran d'un coup. La médiane, pas
+     la moyenne : les hoquets de démarrage ne doivent pas décider. Un écran à 60 Hz sain
+     donne 16,7 ms et rien ne se déclenche ; il faut 25 ms (40 images/s) pour un cran et
+     40 ms (25 images/s) pour deux. Ce n'est ni une descente ni une remontée : l'hystérésis
+     de G13 (6 % sur 2 s pour descendre, 45 s propres pour remonter) reste intacte. */
+  if (!_qCal) {
+    _qCal = 1;
+    if (_qWarm.length >= 20) {
+      var w = _qWarm.slice().sort(function (a, b) { return a - b; });
+      var med = w[w.length >> 1];
+      var saut = med > 0.040 ? 2 : (med > 0.025 ? 1 : 0);
+      var mx = _qStepMax();
+      if (saut && _qStep < mx) {
+        _qStep = Math.min(mx, _qStep + saut);
+        _qBon = 0; _qGood = 0;
+        applyQuality(); rememberQuality();
+        _qHold = 4; _qWin.length = 0; _qSum = 0;
+        return;
+      }
+    }
+  }
   var longues = 0;
   for (var i = 0; i < _qWin.length; i++) if (_qWin[i] > 0.033) longues++;
   var part = longues / _qWin.length;
   if (_qHold > 0) { _qHold--; return; }
 
-  if (longues >= 2 && part > 0.01 && _qStep < 3) {
-    _qStep++; _qBon = 0;
-    applyQuality();
+  /* HYSTÉRÉSIS ASYMÉTRIQUE. L'ancienne règle remontait après huit secondes sans
+     image longue et redescendait à un pour cent : vingt changements de netteté
+     en cinq minutes sur iPhone, chacun visible. On descend maintenant sur une
+     part franche (plus de six pour cent sur deux secondes) et on ne remonte
+     qu'après quarante-cinq secondes CONTINUES sous un pour cent, une remontée
+     au plus toutes les quatre-vingt-dix secondes. */
+  var maxStep = _qStepMax();
+  if (part > 0.06 && _qStep < maxStep) {
+    /* Quand la MOITIÉ des images sont longues, un cran ne suffit pas : chaque cycle de mesure coûte
+       plusieurs secondes à treize images par seconde, et la joueuse les subit. On en descend deux d'un
+       coup. Mesuré à 2560×1440 : 99,5 % d'images longues et deux crans seulement franchis en trente
+       secondes avec la descente au cran par cran. Le déclencheur, lui, ne bouge pas (part > 6 % sur 2 s). */
+    _qStep += (part > 0.5 && _qStep + 2 <= maxStep) ? 2 : 1;
+    _qBon = 0; _qGood = 0;
+    applyQuality(); rememberQuality();
     _qHold = 4;                 // deux secondes de répit, puis on remesure
-    _qWin.length = 0;
+    _qWin.length = 0; _qSum = 0;
     return;
   }
 
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
-  if (longues === 0 && _qStep > 0 && !penche) {
-    // seize contrôles sains d'affilée — huit secondes sans une image longue —
-    // pour regagner un cran : remonter vite, c'est retomber tout de suite
-    if (++_qBon >= 16) {
-      _qStep--; _qBon = 0;
-      applyQuality();
-      _qHold = 12;
-      _qWin.length = 0;
-    }
-  } else if (longues >= 2) _qBon = 0;    // une image longue isolée ne remet pas à zéro
+  if (part < 0.01 && !penche) _qGood += dsec; else _qGood = 0;
+  if (_qStep > 0 && _qGood >= 45 && (_qSec - _qUpSec) >= 90 && !penche) {
+    _qStep--; _qBon = 0; _qGood = 0; _qUpSec = _qSec;
+    applyQuality(); rememberQuality();
+    _qHold = 12;
+    _qWin.length = 0; _qSum = 0;
+  }
+}
+
+/* Le cran stable est mémorisé avec le profil : la partie suivante démarre au
+   cran que la machine a prouvé tenir, dès sa première image, au lieu de
+   redescendre la même échelle sous les yeux de la joueuse. */
+function rememberQuality() {
+  if (!S.stats) return;
+  if (S.stats.qStep === _qStep) return;
+  S.stats.qStep = _qStep;
+  try { if (typeof saveStats === 'function') saveStats(); } catch (e) {}
 }
 
 /* Le cran automatique s'applique par-dessus le choix du joueur sans jamais
@@ -792,17 +1025,30 @@ function autoQuality() {
    où le compositeur travaille le plus, et une règle fixe ne peut pas osciller
    comme le ferait une boucle de rétroaction. */
 function applyQuality() {
-  var voulu = S.opt.px || 1.5;
-  var base = 0;
-  for (var k = 0; k < PX_CRANS.length; k++) if (PX_CRANS[k] <= voulu) base = k;
+  var base = _qBase();
   var penche = S2030.phases && S2030.phases.persp && S2030.phases.persp() > 0.01;
-  var i = Math.max(0, base - _qStep - (penche ? 1 : 0));
+  /* LA DÉGRADATION AUTOMATIQUE D'ABORD, LA BASCULE ENSUITE — et seule la
+     dégradation automatique a le droit d'ouvrir les crans sous 1. Sur l'ancienne
+     échelle [1, 1,25, 1,5, 2], px 1 donnait base = 0 et la pénalité de bascule ne
+     pouvait rien retirer ; sur l'échelle complète elle donne base = 2 et la même
+     pénalité faisait tomber le rendu à 0,75. Mesuré au banc : c1080x675 contre
+     c1440x900 en référence, deux régimes bureau déclarés non comparables. Et pour
+     la joueuse : sur PC ou Mac, le réglage ÉCONOMIE perdait un quart de ses pixels
+     à chaque bascule sans qu'aucun événement de dégradation ne l'ait décidé. */
+  var iq = base - _qStep;
+  var i = penche ? (iq >= 2 ? Math.max(2, iq - 1) : iq - 1) : iq;
+  i = Math.max(_qFloor(base), i);
+  /* Retina : le cran 2 rend quatre fois plus de pixels que le cran 1. On ne
+     l'ouvre qu'après vingt-cinq secondes sans image longue — sinon la première
+     image de la partie se paie à pleine résolution sur un écran dont on ne sait
+     pas encore s'il la tiendra. */
+  if (PX_CRANS[i] >= 2 && (window.devicePixelRatio || 1) >= 2 && _qGood < 25) i = Math.max(_qFloor(base), i - 1);
   S.pxEff = PX_CRANS[i];
   /* On n'écrit PLUS dans S.opt : c'est l'objet enregistré dans le profil, et
      « densité des particules » est un réglage du joueur à part entière. La
      dégradation vit dans S.partEff, que le rendu lit. */
   var vp = S.opt.particles === undefined ? 1 : S.opt.particles;
-  S.partEff = Math.min(vp, _qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1));
+  S.partEff = Math.min(vp, _qStep >= 3 ? 0.25 : (_qStep >= 2 ? 0.4 : (_qStep >= 1 ? 0.7 : 1)));
   if (S.pxEff !== _pxApplied) { _pxApplied = S.pxEff; resizeCanvas(); }
 }
 
@@ -814,7 +1060,7 @@ function qualityTilt() {
   if (penche === _penchePrec) return;
   _penchePrec = penche;
   applyQuality();
-  _qWin.length = 0; _qBon = 0; _qHold = 8;
+  _qWin.length = 0; _qSum = 0; _qBon = 0; _qHold = 8;
 }
 
 /* ------ cartes / niveaux */
@@ -942,12 +1188,14 @@ function startRun() {
   // la transition (plein écran, armement audio, remise à zéro) saccade par
   // nature : la mesure de qualité repart de zéro, sinon le premier cran
   // tombait dès la première seconde sur une machine parfaitement saine
-  _qWin.length = 0; _qBon = 0; _qHold = 10; _qStep = 0; applyQuality();
-  // bureau : la fenêtre est jouable telle quelle, F bascule le plein écran ;
-  // goFullscreen() verrouille aussi le paysage, on saute les deux
-  if (!S.desktop) goFullscreen();
-  armAudio();                       // le bouton JOUER est un geste utilisateur valide
-  S2030.audio && S2030.audio.resume();
+  /* Le cran stable de la partie précédente est repris DÈS LA PREMIÈRE IMAGE :
+     la machine n'a pas changé entre deux parties, et redescendre l'échelle à
+     chaque fois se voyait. */
+  _qWin.length = 0; _qSum = 0; _qBon = 0; _qHold = 10; _qGood = 0; _qUpSec = _qSec;
+  _qStep = Math.max(0, Math.min(_qStepMax(), (S.stats && S.stats.qStep) | 0));
+  _qWarm.length = 0; _qCal = 0;
+  _qSkip = 3;                       // les trois premières secondes ne comptent pas
+  applyQuality();
   /* La phase est posée AVANT la remise à zéro : resetRun se termine par
      levels.start(1), et _lvSay renonce tant que S.phase !== 'play'. Dans
      l'ordre inverse, la bannière « NIVEAU 1 — LA GRILLE » n'était jamais
@@ -957,8 +1205,25 @@ function startRun() {
   resetRun();
   S.paused = false;
   S2030.ui.showScreen(null);
-  S2030.audio && S2030.audio.start();
-  requestWake();
+  /* DÉMARRAGE ÉTALÉ SUR TROIS IMAGES. Tout tombait dans l'image du clic :
+     armement audio, plein écran et remise à zéro, soit 350 à 533 ms d'image
+     unique mesurés sur iPhone et sur tablette — le jeu s'ouvrait sur un gel.
+     La remise à zéro reste immédiate (l'état doit être cohérent dès la première
+     image jouée) ; le plein écran attend l'image suivante, l'audio celle
+     d'après. */
+  requestAnimationFrame(function () {
+    // bureau : la fenêtre est jouable telle quelle, F bascule le plein écran ;
+    // goFullscreen() verrouille aussi le paysage, on saute les deux
+    try { if (!S.desktop) goFullscreen(); } catch (e) { errLog('goFullscreen', e); }
+    requestAnimationFrame(function () {
+      try {
+        armAudio();                 // le bouton JOUER est un geste utilisateur valide
+        S2030.audio && S2030.audio.resume();
+        S2030.audio && S2030.audio.start();
+        requestWake();
+      } catch (e) { errLog('startRun.audio', e); }
+    });
+  });
 }
 
 /* reason 'blur' : pause subie (fenêtre inactive, onglet caché), bandeau
@@ -1288,12 +1553,50 @@ function loadSource(u) {
 }
 
 /* ------ boot */
+var _rzT = 0, _rzFin = 0;
+function scheduleResize(ms) {
+  if (_rzT) clearTimeout(_rzT);
+  if (_rzFin) clearTimeout(_rzFin);
+  _rzT = setTimeout(function () { _rzT = 0; resizeCanvas(); }, ms);
+  _rzFin = setTimeout(function () { _rzFin = 0; resizeCanvas(); }, Math.max(ms, 400));
+}
+
+/* PRÉCHAUFFAGE. Les sprites de halo, les polices du HUD et le tampon de bruit
+   audio étaient créés à leur première utilisation, c'est-à-dire dans l'image du
+   premier butin, du premier tir ou du premier son — au pire moment. On les crée
+   au démarrage, où personne ne joue encore. */
+function warmup() {
+  try {
+    var cols = ['#00e5ff', '#ffd166', '#7CFFB2', '#ff5c3a', '#ff2e63', '#ff8a3d'];
+    for (var i = 0; i < cols.length; i++) {
+      glowSprite(cols[i], 28, 'rgba(0,0,0,0)');
+      glowSprite(cols[i], 32, 'rgba(0,0,0,0)');
+      glowSprite(cols[i], 44, 'rgba(0,0,0,0)');
+    }
+    glowSprite('#ff8a3d', 60, 'rgba(255,138,61,0)');
+    glowSprite('rgba(0,229,255,.8)', K.HEAD_R * 3.2, 'rgba(0,229,255,0)');
+    glowSprite('rgba(179,136,255,.85)', K.HEAD_R * 3.2, 'rgba(0,229,255,0)');
+    ebSprite('#ff5c3a'); ebSprite('#ff2e63');
+    var kinds = [['energy', '#00e5ff'], ['heal', '#7CFFB2']];
+    for (var j = 0; j < kinds.length; j++) { pickSprite(kinds[j][0], kinds[j][1], 0, false); pickSprite(kinds[j][0], kinds[j][1], 0, true); }
+    for (var q = 0; q < 8; q++) pickSprite('core', '#ffd166', q, false);
+  } catch (e) {}
+  try { if (S2030.fx && S2030.fx.warm) S2030.fx.warm(ctx); } catch (e) {}
+  try { if (S2030.audio && S2030.audio.warm) S2030.audio.warm(); } catch (e) {}
+}
+
 function boot() {
   window.__S = S; window.__K = K; window.__M = S2030; window.__ERR = ERR;   // sondes de test
   loadStats();
   setupCanvas();
-  addEventListener('resize', function () { setTimeout(resizeCanvas, 60); });
-  addEventListener('orientationchange', function () { setTimeout(resizeCanvas, 200); });
+  /* UN SEUL MINUTEUR. Un redimensionnement de fenêtre émet soixante événements
+     par seconde ; chacun posait son propre setTimeout, donc soixante passages
+     de resizeCanvas et soixante réallocations de canevas. On garde le dernier
+     événement (80 ms), plus un passage final à 400 ms pour la barre d'outils
+     mobile qui se replie après coup. La réallocation elle-même ne se fait plus
+     que si (w, h, DPR) ont changé. */
+  addEventListener('resize', function () { scheduleResize(80); });
+  addEventListener('orientationchange', function () { scheduleResize(400); });
 
   S2030.ui.build(document.getElementById('ui'));
   buildFullscreenButton();
@@ -1339,6 +1642,7 @@ function boot() {
     S2030.ui && S2030.ui.relayout && S2030.ui.relayout();
   }, true);
 
+  warmup();
   S.snake = makeSnake();
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.levels && S2030.levels.start(1);

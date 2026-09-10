@@ -84,9 +84,9 @@ var S = {
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
   /* G14 : un record PAR CRAN (bestByDiff[5]), plus les repères de progression
      et la dernière partie, pour le delta de l'écran de fin. */
-  stats: { best: 0, coins: 0, runs: 0, bestByDiff: [0, 0, 0, 0, 0],
+  stats: { best: 0, coins: 0, runs: 0, bestByDiff: [0, 0, 0, 0, 0], qStep: 0,
            bestLevel: 0, bestTime: 0, bossKills: 0, lastScore: 0, lastTime: 0 },
-  lastHit: null, run: null,
+  lastHit: null, run: null, dropped: 0,
   boss: null, bossHpMax: 0, bossBornT: 0, bossKills: 0, trophyNext: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,
   desktop: detectDesktop()
@@ -594,7 +594,9 @@ function addEBullet(o) {
 }
 function addPickup(kind, x, y) {
   if (S.pickups.length > 400) return;
-  S.pickups.push({ kind: kind, x: x, y: y, vx: rndR(-40, 40), vy: rndR(-40, 40), t: 0, r: kind === 'core' ? 11 : 7 });
+  var p = { kind: kind, x: x, y: y, vx: rndR(-40, 40), vy: rndR(-40, 40), t: 0, r: kind === 'core' ? 11 : 7, val: 1 };
+  S.pickups.push(p);
+  return p;
 }
 
 /* ------ dégâts ennemis */
@@ -802,10 +804,7 @@ function drawPools(ctx) {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = clamp(p.life / 2.2, 0, 1) * 0.4;
-    var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-    g.addColorStop(0, '#ff8a3d'); g.addColorStop(1, 'rgba(255,138,61,0)');
-    ctx.fillStyle = g;
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill();
+    drawGlow(ctx, p.x, p.y, p.r, '#ff8a3d', 'rgba(255,138,61,0)');
     ctx.restore();
   }
 }
@@ -995,14 +994,15 @@ function collide(dt) {
   }
 
   // ramassage
-  var magnetR = 120 + (S.up.f_magnet || 0) * 90;
+  var magnetR = 200 + (S.up.f_magnet || 0) * 90;
+  fusePickups();
   for (i = S.pickups.length - 1; i >= 0; i--) {
     var p = S.pickups[i];
     p.t += dt;
     /* Sans expiration ils s'accumulaient — 128 mesurés après trois minutes —
        jusqu'au plafond de 400, où le jeu cessait silencieusement de produire
-       le moindre butin. Ils clignotent avant de partir. */
-    if (p.t > 26) { S.pickups.splice(i, 1); continue; }
+       le moindre butin. Ils clignotent les deux dernières secondes (drawPickups). */
+    if (p.t > 10) { S.pickups.splice(i, 1); continue; }
     var d = dist(p.x, p.y, s.x, s.y);
     if (d < magnetR) {
       var pull = (1 - d / magnetR) * 900;
@@ -1018,15 +1018,49 @@ function collide(dt) {
   }
 }
 
+/* FUSION DU BUTIN. Trois pièces d'énergie tombées au même endroit sont trois
+   halos à dessiner, trois ramassages à jouer et trois sons, pour la valeur
+   d'une seule : 299 butins vivants mesurés en pointe. Dès que trois pièces
+   tiennent dans trente unités — ou de force au-delà de soixante butins vivants,
+   deux suffisent alors — elles n'en font plus qu'une, de valeur cumulée et de
+   rayon majoré de quinze pour cent. Rien n'est perdu : la valeur voyage. */
+function fusePickups() {
+  var P = S.pickups, n = P.length;
+  if (n < 3) return;
+  var force = n > 60, R2 = 30 * 30, i, j;
+  for (i = 0; i < P.length; i++) {
+    var a = P[i];
+    if (a.kind !== 'energy') continue;
+    var grp = null;
+    for (j = P.length - 1; j > i; j--) {
+      var b = P[j];
+      if (b.kind !== 'energy') continue;
+      var dx = b.x - a.x, dy = b.y - a.y;
+      if (dx * dx + dy * dy > R2) continue;
+      if (!grp) grp = [];
+      grp.push(j);
+    }
+    if (!grp) continue;
+    if (!force && grp.length < 2) continue;      // moins de trois pièces : on laisse
+    for (var k = 0; k < grp.length; k++) {
+      a.val = (a.val || 1) + (P[grp[k]].val || 1);
+      P.splice(grp[k], 1);                       // indices décroissants : sûr
+    }
+    a.r = 7 * 1.15;
+  }
+}
+
 function grabPickup(p) {
   if (p.kind === 'energy') {
-    addXp(1); addScore(5);
+    var v = p.val || 1;
+    addXp(v); addScore(5 * v);
     // GLOUTON : ramasser soigne plus souvent
     if (chance(0.35 + 0.18 * (S.up.f_pickHeal || 0))) healSnake(1);
     S2030.audio && S2030.audio.sfx('pickup');
   } else if (p.kind === 'core') {
-    addXp(8); addScore(60);
-    S.ult = Math.min(S.ultMax, S.ult + 20);
+    var vc = p.val || 1;
+    addXp(8 * vc); addScore(60 * vc);
+    S.ult = Math.min(S.ultMax, S.ult + 20 * vc);
     healSnake(1);
     S2030.audio && S2030.audio.sfx('core');
     S2030.fx && S2030.fx.flare(p.x, p.y, '#ffd166', 90);

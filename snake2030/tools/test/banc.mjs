@@ -45,7 +45,11 @@
  * la stabilise qu’en racine carrée. Le vrai remède est de calculer le p95 sur la RÉUNION des images de
  * toutes les séries d’un côté, soit deux mille quatre cents images, ce qui divise la dispersion par
  * environ deux et demi. Ce changement appartient à G13, l’objectif qui porte le coût d’image ; il n’est
- * pas fait ici pour ne pas déplacer l’instrument au milieu d’une médiation. En attendant, le critère qui
+ * FAIT PAR G13 : p95, p99 et part > 33 ms sont calculés sur la réunion des images de toutes les séries et
+ * de toutes les passes d’un côté (2 400 images), et c’est cette valeur qui entre dans les rapports de porte.
+ * La médiane garde son minimum. La borne ABSOLUE iPhone (p95 ≤ 16,7 ms) se lit sur p95min, le minimum des
+ * séries : c’est la statistique sur laquelle elle a été calibrée. Ce qui suit décrit l’état d’avant ; il
+ * n’était En attendant, le critère qui
  * décide vraiment pour la joueuse est la borne absolue : sur iPhone, p95 ≤ 16,7 ms, tenue avec marge
  * (12,7 à 13,3 ms mesurés sur le régime le plus chargé).
  *
@@ -76,12 +80,27 @@ const PASSES = +(process.env.S2030_BANC_PASSES || 2);
 const PROFILS = (process.env.S2030_BANC_PROFILES || 'desk,iphone').split(',').map(s => s.trim()).filter(Boolean);
 const SEUIL_P50 = 1.10, SEUIL_P95 = 1.15, IPHONE_60FPS_MS = 16.7;
 
+/* Les quatre premiers régimes ne portent NI butin NI tir : ils sont la série historique, et la borne
+   absolue iPhone (p95 ≤ 16,7 ms) a été calibrée sur eux. Le cinquième est nouveau (G13) : sans lui le
+   banc était aveugle à drawPickups et drawBullets — exactement les deux boucles qui appelaient
+   createRadialGradient par objet et par image (106 à 433 dégradés par image mesurés en référence) —
+   parce que la boucle de maintien remettait S.pickups et S.ebullets à zéro à CHAQUE image. Les comptes
+   sont MESURÉS sur une partie iPhone réelle de 90 s : butins p99 42 et pointe 49, tirs ennemis p99 1.
+   Les poser dans les régimes penchés chargés donnait une scène où NI l'un NI l'autre build ne tient
+   les 60 images par seconde (p95 18,0 ms en référence, 18,7 en courant), c'est-à-dire une scène sur
+   laquelle la borne absolue ne veut plus rien dire : le butin a donc son propre régime, à plat. */
 const REGIMES = [
   { id: 'plat', kind: 'flat', n: 24 },
   { id: 'plat-treillis', kind: 'grid', n: 24 },
   { id: 'bascule', kind: 'dive', n: 24 },
   { id: 'bascule-charge', kind: 'dive', n: 48 },
+  { id: 'plat-butin', kind: 'flat', n: 24, np: 40, nb: 20 },
 ];
+
+/* Sous-ensemble de régimes pour une mise au point rapide (S2030_BANC_REGIMES=bascule-charge). La
+   batterie ne le pose jamais : elle mesure les cinq. */
+const SEUL = (process.env.S2030_BANC_REGIMES || '').split(',').map(x => x.trim()).filter(Boolean);
+const REGIMES_ACTIFS = SEUL.length ? REGIMES.filter(r => SEUL.includes(r.id)) : REGIMES;
 
 /* ---------------------------------------------------------- référence --- */
 const REPO = path.resolve(HERE, '..', '..', '..');
@@ -99,7 +118,7 @@ const REF_COMMIT = (() => { try { return execFileSync('git', ['-C', REPO, 'rev-p
 /* ------------------------------------------------------------- scène ---- */
 /* Construit la scène et la maintient image par image. Tout est posé depuis le test : le jeu n'a aucun
    crochet dédié au banc. */
-function poser({ kind, n }) {
+function poser({ kind, n, np, nb }) {
   const S = window.__S, M = window.__M;
   /* Modèle d'ennemi CONSTRUIT depuis defs.chaser, pas prélevé dans la partie en cours : le calendrier des
      vagues change d'un objectif à l'autre, et cloner « le premier ennemi trouvé » comparait 24 mines d'un
@@ -135,7 +154,37 @@ function poser({ kind, n }) {
   }
   const path = [];
   for (let i = 0; i < 400; i++) path.push({ x: X - i * 4, y: Y });
-  window.__BANC = { X, Y, models, path, kind };
+  /* BUTIN ET TIRS ENNEMIS DANS LA SCÈNE. Sans eux le banc était aveugle à ce que G13 change :
+     drawPickups et drawBullets sont exactement les deux boucles qui appelaient createRadialGradient
+     par objet et par image (106 à 433 dégradés par image mesurés dans le build de référence), et la
+     boucle de maintien remettait S.pickups et S.ebullets à zéro à CHAQUE image — la scène n'en
+     contenait jamais un seul. On en pose donc un nombre CONSTANT des deux côtés, 40 butins et 20
+     tirs — comptes MESURÉS sur une partie iPhone réelle de 90 s : butins p99 42 et pointe 49, tirs
+     ennemis p99 1 ; les 60 et 120 suggérés donnaient une scène où NI l'un NI l'autre build ne tient
+     les 60 images par seconde (p95 23,1 ms en référence, 21,6 en courant sur bascule-charge), donc une
+     scène sur laquelle la borne absolue du banc n'a pas de sens —, sur une spirale d'angle d'or : plus de quatre-vingts unités entre voisins, donc ni la
+     fusion (rayon 30 u) ni le ramassage (rayon tête + 4 u) ne peuvent changer le compte d'un build
+     à l'autre, et le seuil de fusion forcée (plus de 60 vivants) n'est pas franchi. Le compte entre
+     dans la clé de scène : deux builds qui n'en dessinent pas autant ne sont pas comparables. */
+  const NPICK = np | 0, NEB = nb | 0, RA = S.view.w * 0.36, RB = S.view.h * 0.36, PHI = 2.399963;
+  const pick = [], ebul = [];
+  for (let i = 0; i < NPICK; i++) {
+    const a = i * PHI, u = 0.35 + 0.65 * (i / NPICK);
+    const pk = (i % 10 === 0) ? 'core' : (i % 10 === 5 ? 'heal' : 'energy');
+    pick.push({ kind: pk, x: X + Math.cos(a) * RA * u, y: Y + Math.sin(a) * RB * u, r: pk === 'core' ? 11 : 7 });
+  }
+  for (let i = 0; i < NEB; i++) {
+    const a = i * PHI + 1.1, u = 0.30 + 0.70 * (i / NEB);
+    ebul.push({ x: X + Math.cos(a) * RA * u, y: Y + Math.sin(a) * RB * u, r: 5, color: '#ff5c3a' });
+  }
+  window.__BANC = { X, Y, models, path, kind, pick, ebul };
+  /* Une boucle de maintien PAR RÉGIME s'empilait sans jamais s'arrêter : au quatrième régime, quatre
+     boucles réécrivaient le même état à chaque image. Tant qu'elles ne faisaient que reposer les mêmes
+     valeurs, cela ne se voyait pas ; dès qu'il a fallu ALTERNER une valeur pour tenir la résolution, deux
+     écritures successives s'annulaient et le réglage ne changeait plus. On arrête la précédente. */
+  if (window.__BANCSTOP) window.__BANCSTOP();
+  var vivant = true;
+  window.__BANCSTOP = function () { vivant = false; };
   // résolution de rendu figée au cran 1 : sinon la qualité adaptative la fait descendre pendant la mesure
   // et deux mesures ne portent plus sur la même image. Le banc compare des builds, pas des réglages.
   S.opt.px = 1; S.pxEff = 1;
@@ -144,6 +193,7 @@ function poser({ kind, n }) {
   else M.phases.forcePhase(3);                             // « plongée » : treillis diagonal + bascule 30°
   M.phases.forceZoom(0);
   const tenir = () => {
+    if (!vivant) return;
     const S = window.__S, M = window.__M, P = window.__BANC;
     // la vitesse n'est PAS figée : elle pilote le recul de caméra, et la figer changerait le cadrage
     // d'un build à l'autre (la montée en vitesse n'est pas la même partout)
@@ -154,9 +204,23 @@ function poser({ kind, n }) {
     S.cam.x = P.X; S.cam.y = P.Y;
     S.enemies.length = 0;
     for (const m of P.models) S.enemies.push(JSON.parse(JSON.stringify(m)));
-    S.bullets.length = 0; S.ebullets.length = 0; S.pickups.length = 0;
+    S.bullets.length = 0;
+    // reposés EN PLACE, sans allocation : même scène à chaque image et des deux côtés
+    if (S.pickups.length !== P.pick.length) { S.pickups.length = 0; for (const q of P.pick) S.pickups.push({ kind: q.kind, x: q.x, y: q.y, vx: 0, vy: 0, t: 0, r: q.r, val: 1 }); }
+    else for (let i2 = 0; i2 < P.pick.length; i2++) { const p2 = S.pickups[i2], q = P.pick[i2]; p2.kind = q.kind; p2.x = q.x; p2.y = q.y; p2.vx = 0; p2.vy = 0; p2.t = 0; p2.r = q.r; p2.val = 1; }
+    if (S.ebullets.length !== P.ebul.length) { S.ebullets.length = 0; for (const q of P.ebul) S.ebullets.push({ x: q.x, y: q.y, vx: 0, vy: 0, r: q.r, life: 4, dmg: 1, color: q.color }); }
+    else for (let i2 = 0; i2 < P.ebul.length; i2++) { const b2 = S.ebullets[i2], q = P.ebul[i2]; b2.x = q.x; b2.y = q.y; b2.vx = 0; b2.vy = 0; b2.r = q.r; b2.life = 4; b2.dmg = 1; b2.color = q.color; }
     if (S.drones) S.drones.length = 0;
     S.pxEff = 1; S.partEff = 1; S.paused = false;
+    /* Le cran automatique peut désormais descendre SOUS 1 (G13) : poser S.pxEff ne suffit plus à figer la
+       résolution de rendu, car le canevas, lui, a déjà été réalloué plus petit — mesuré c864x540 contre
+       c1440x900, scènes déclarées non comparables, la porte bureau ne jugeait plus rien. On remet donc le
+       cran automatique à zéro À CHAQUE IMAGE, par le chemin du jeu : frame() lit S.opt.px, le compare à ce
+       qu'il avait retenu, et sur changement remet _qStep à 0 puis rappelle applyQuality. La valeur alterne
+       entre 1 et 1,0001, deux écritures qui donnent le même cran (le plus grand cran ≤ 1) sur les DEUX
+       builds ; le coût est le même des deux côtés et resizeCanvas n'est jamais rappelé, puisque la
+       résolution ne change plus. */
+    S.opt.px = (S.opt.px === 1 ? 1.0001 : 1);
     if (P.kind === 'dive' && M.phases.state().diagT < 3) M.phases.forcePhase(3);   // le treillis de plongée expire au bout de 22 s
     window.__BANCF = (window.__BANCF || 0) + 1;
     requestAnimationFrame(tenir);
@@ -181,6 +245,7 @@ async function uneSerie(p, frames) {
       dts: window.__BL.slice(30),
       scene: { vw: Math.round(S.view.w), vh: Math.round(S.view.h), zoom: +s.zoom.toFixed(2), persp: Math.round(s.perspDeg),
                grille: s.diagT > 0, enn: S.enemies.length, segs: S.snake.segs.length, px: S.pxEff, part: S.partEff,
+               pick: S.pickups.length, eb: S.ebullets.length,
                mtype: window.__BANCTYPE || '?',
                cw: document.getElementById('game').width, ch: document.getElementById('game').height },
       err: window.__ERR ? window.__ERR.count : -1,
@@ -190,31 +255,39 @@ async function uneSerie(p, frames) {
 
 async function unRegime(ctx, reg) {
   const p = ctx.page;
-  const pose = await p.evaluate(poser, { kind: reg.kind, n: reg.n });
+  const pose = await p.evaluate(poser, { kind: reg.kind, n: reg.n, np: reg.np || 0, nb: reg.nb || 0 });
   if (!pose.ok) throw new Error('banc : ' + pose.why);
   await p.waitForTimeout(4000);                            // le zoom et la bascule s'installent
   /* Plusieurs séries : le minimum est la mesure la moins polluée par l’hôte, c’est la pratique en banc
      d’essai. Les étendues sont rapportées pour rester honnête sur le bruit. */
   const series = [];
-  let o = null;
+  let o = null, toutes = [];
   for (let k = 0; k < REPETS; k++) {
     o = await uneSerie(p, Math.max(120, Math.round(FRAMES / REPETS)));
     series.push(frameStats(o.dts));
+    toutes = toutes.concat(o.dts);
   }
   /* Chaque statistique est agrégée par SON PROPRE minimum. Prendre « le p95 de la série dont la médiane
      était la plus basse » revenait à comparer deux queues tirées au hasard : la médiane était stabilisée
      par la sélection, le p95 ne l'était pas et héritait de toute la dispersion d'une seule série de 300
      images. Mesuré à build identique des deux côtés (expérience nulle), ce choix faisait échouer la porte
      p95 sur iphone/bascule-charge (× 1,217) alors que rien n'avait changé. Le seuil, lui, ne bouge pas. */
+  /* … mais le minimum des p95 par série reste la quinzième pire image d'une série de trois cents,
+     et sa dispersion nulle valait encore treize pour cent sur iphone/bascule-charge contre quinze de
+     tolérance. G13 applique le remède annoncé : le p95 (et le p99, et la part > 33 ms) sont calculés sur
+     la RÉUNION des images de toutes les séries et de toutes les passes d'un côté — 2 400 images au lieu
+     de 300 —, ce qui divise la dispersion par environ deux et demi. La médiane garde son minimum : elle
+     était déjà stable, et le minimum reste la mesure la moins polluée par l'hôte. */
   const st = series.reduce((a, b) => (b.p50 < a.p50 ? b : a));
-  const min = f => +Math.min(...series.map(f)).toFixed(2);
+  const U = frameStats(toutes);
   const r25 = v => Math.round(v / 25) * 25;
   const s = o.scene;
-  return { p50: st.p50, p95: min(x => x.p95), p99: min(x => x.p99), pct33: min(x => x.pct33),
+  return { p50: st.p50, p95: U.p95, p99: U.p99, pct33: U.pct33, nUnion: U.n, dts: toutes,
+    p95min: +Math.min(...series.map(x => x.p95)).toFixed(2),
     series: series.map(x => x.p50), series95: series.map(x => x.p95),
     etendue: +(Math.max(...series.map(x => x.p50)) - Math.min(...series.map(x => x.p50))).toFixed(2),
     etendue95: +(Math.max(...series.map(x => x.p95)) - Math.min(...series.map(x => x.p95))).toFixed(2),
-    scene: s, cle: `${r25(s.vw)}x${r25(s.vh)}/z${s.zoom.toFixed(2)}/p${s.persp}/g${s.grille ? 1 : 0}/e${s.enn}:${s.mtype || '?'}/c${s.cw}x${s.ch}/px${s.px}`, err: o.err };
+    scene: s, cle: `${r25(s.vw)}x${r25(s.vh)}/z${s.zoom.toFixed(2)}/p${s.persp}/g${s.grille ? 1 : 0}/e${s.enn}:${s.mtype || '?'}/k${s.pick}:${s.eb}/c${s.cw}x${s.ch}/px${s.px}`, err: o.err };
 }
 
 /* Une session = un navigateur sur un build, les quatre régimes. */
@@ -226,10 +299,10 @@ async function uneSession(nom, url) {
     await ctx.page.evaluate(() => { window.__SEED = 2030; window.__DT = 1 / 60; });
     await startGame(ctx, { seed: 2030 });
     await ctx.page.waitForFunction(() => window.__S.enemies.length > 0, null, { timeout: 25000 });
-    for (const reg of REGIMES) out.regimes[reg.id] = await unRegime(ctx, reg);
+    for (const reg of REGIMES_ACTIFS) out.regimes[reg.id] = await unRegime(ctx, reg);
     out.pageErrors = ctx.pageErrors.length; out.consoleErrors = ctx.consoleErrors.length;
     out.firstPageError = ctx.pageErrors[0] || null; out.firstConsoleError = ctx.consoleErrors[0] || null;
-    out.errCount = Math.max(...REGIMES.map(r => out.regimes[r.id].err));
+    out.errCount = Math.max(...REGIMES_ACTIFS.map(r => out.regimes[r.id].err));
   } finally { await ctx.close(); }
   return out;
 }
@@ -237,9 +310,13 @@ async function uneSession(nom, url) {
 /* Fusion entre passes : même règle qu'entre séries, chaque statistique garde son propre minimum. */
 const mieux = (a, b) => {
   if (!a) return b; if (!b) return a;
+  // la réunion s'étend aussi d'une passe à l'autre : p95 et p99 se lisent sur toutes les images du côté
+  const dts = (a.dts || []).concat(b.dts || []);
+  const U = dts.length ? frameStats(dts) : null;
   const base = b.p50 < a.p50 ? b : a;
   return Object.assign({}, base, {
-    p50: Math.min(a.p50, b.p50), p95: Math.min(a.p95, b.p95), p99: Math.min(a.p99, b.p99),
+    p50: Math.min(a.p50, b.p50), p95: U ? U.p95 : Math.min(a.p95, b.p95), p99: U ? U.p99 : Math.min(a.p99, b.p99), nUnion: U ? U.n : 0, dts,
+    p95min: Math.min(a.p95min, b.p95min),
     pct33: Math.min(a.pct33, b.pct33),
     series: a.series.concat(b.series), series95: (a.series95 || []).concat(b.series95 || []),
     etendue: +Math.max(a.etendue, b.etendue).toFixed(2),
@@ -255,22 +332,29 @@ async function unProfil(nom) {
     for (const b of ordre) {
       const s = await uneSession(nom, b === 'ref' ? refUrl : CUR_URL);
       erreurs[b] = { pageErrors: s.pageErrors, consoleErrors: s.consoleErrors, errCount: s.errCount, firstPageError: s.firstPageError, firstConsoleError: s.firstConsoleError };
-      for (const reg of REGIMES) best[b][reg.id] = mieux(best[b][reg.id], s.regimes[reg.id]);
-      console.log(`[banc] ${nom} passe ${pass} ${b === 'ref' ? 'référence' : 'courant  '} ` + REGIMES.map(r => `${r.id} ${String(s.regimes[r.id].p50).padStart(5)}`).join(' | '));
+      for (const reg of REGIMES_ACTIFS) best[b][reg.id] = mieux(best[b][reg.id], s.regimes[reg.id]);
+      console.log(`[banc] ${nom} passe ${pass} ${b === 'ref' ? 'référence' : 'courant  '} ` + REGIMES_ACTIFS.map(r => `${r.id} ${String(s.regimes[r.id].p50).padStart(5)}`).join(' | '));
     }
   }
   const regimes = {}, fails = [];
-  for (const reg of REGIMES) {
+  for (const reg of REGIMES_ACTIFS) {
     const R = best.ref[reg.id], C = best.cur[reg.id];
     const meme = R.cle === C.cle;
     const r50 = +(C.p50 / R.p50).toFixed(3), r95 = +(C.p95 / R.p95).toFixed(3);
-    regimes[reg.id] = { ref: R, cur: C, ratio50: r50, ratio95: r95, sceneIdentique: meme };
+    const sansDts = o => { const c = Object.assign({}, o); delete c.dts; return c; };   // les 2 400 images ne vont pas dans le rapport
+    regimes[reg.id] = { ref: sansDts(R), cur: sansDts(C), ratio50: r50, ratio95: r95, sceneIdentique: meme };
     if (!meme) fails.push(`${nom}/${reg.id} : scène différente (${C.cle} ≠ ${R.cle}) — mesures non comparables`);
     else {
       if (!(r50 <= SEUIL_P50)) fails.push(`${nom}/${reg.id} : p50 ${C.p50} ms contre ${R.p50} en référence (× ${r50} > ${SEUIL_P50})`);
       if (!(r95 <= SEUIL_P95)) fails.push(`${nom}/${reg.id} : p95 ${C.p95} ms contre ${R.p95} en référence (× ${r95} > ${SEUIL_P95})`);
     }
-    if (nom === 'iphone' && !(C.p95 <= IPHONE_60FPS_MS)) fails.push(`iphone/${reg.id} : p95 ${C.p95} ms > ${IPHONE_60FPS_MS} — les 60 images par seconde ne sont pas tenues`);
+    /* La borne ABSOLUE se lit sur le p95 le moins pollué par l'hôte (minimum des séries), pas sur la
+       réunion. La réunion est le bon estimateur pour un RAPPORT entre deux builds mesurés en alternance
+       — elle divise la dispersion par deux et demi — mais elle inclut par construction les séries que la
+       machine a perturbées ; l'appliquer à un seuil absolu calibré sur le minimum le déplacerait en
+       douce. Vérifié : sur ce conteneur, la réunion publie 17,1 ms sur iphone/bascule-charge pour le
+       build courant ET 18,4 ms pour le build de référence, qui a pourtant passé la porte. */
+    if (nom === 'iphone' && !(C.p95min <= IPHONE_60FPS_MS)) fails.push(`iphone/${reg.id} : p95 ${C.p95min} ms > ${IPHONE_60FPS_MS} — les 60 images par seconde ne sont pas tenues`);
     console.log(`[banc] ${nom} ${reg.id.padEnd(15)} référence p50 ${String(R.p50).padStart(5)} p95 ${String(R.p95).padStart(5)} | courant p50 ${String(C.p50).padStart(5)} p95 ${String(C.p95).padStart(5)} | × ${r50} / × ${r95} | ${meme ? 'même scène' : 'SCÈNE DIFFÉRENTE'} ${C.cle}`);
   }
   for (const b of ['ref', 'cur']) {

@@ -88,7 +88,9 @@ export const PROBE_SRC = `
   // --- coups reçus : signature du burst rouge de hurtSnake (22 particules, #ff2e63) ---
   const origBurst = M.fx.burst;
   M.fx.burst = function(x, y, color, n, power, opts) {
-    if (color === '#ff2e63' && n === 22 && S.phase === 'play') EP.logHurt(x, y);
+    // 10-core.js émet burst(hx, hy, '#ff2e63', 12, 210, ...) depuis G8 ; le filtre
+    // sur 22 ne voyait plus aucune blessure et G6/t1-sim.mjs sortait code 2.
+    if (color === '#ff2e63' && (n === 22 || n === 12) && S.phase === 'play') EP.logHurt(x, y);
     return origBurst.apply(M.fx, arguments);
   };
   EP.logHurt = function(x, y) {

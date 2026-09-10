@@ -94,6 +94,12 @@ function nr() {
     if (m.consoleErrors !== 0) fails.push(`${k} consoleErrors=${m.consoleErrors} (${m.firstConsoleError})`);
     if (m.errCount !== 0) fails.push(`${k} __ERR.count=${m.errCount}`);
   }
+  /* SEUIL ABSOLU DE LA PARTIE PILOTÉE (G13) : diag.mjs juge désormais son p99 sur lui-même — bureau
+     1440×900 comme iPhone, p99 ≤ 33 ms — au lieu de le comparer à baseline.json, c'est-à-dire à une
+     autre machine à un autre instant. Ce verdict est celui de diag.mjs et il est rapporté ici ; la
+     porte de performance de nr reste le banc, seule mesure à contenu constant : la partie pilotée
+     change avec la façon dont le jeu se joue, et un objectif qui change le jeu déplacerait sa part
+     d'images longues sans qu'un seul pixel ne coûte plus cher (mesuré sur G5 : 5 % → 14 %). */
   if (bc && Array.isArray(bc.fails)) for (const f of bc.fails) fails.push('banc ' + f);
   if (s && !s.pass) fails.push('son-ios : ' + JSON.stringify(s.measured && s.measured.checks));
   const inv = R.invariants.json;
@@ -120,7 +126,7 @@ function nr() {
   if (bc && bc.refCommit) notes.push(`banc : référence = build du commit ${bc.refCommit}, mesurée dans la même fenêtre que le build courant`);
   // la partie jouée par le pilote reste mesurée, mais sans seuil : elle dépend de la façon dont le jeu se
   // joue, qui change à chaque objectif. Elle est conservée comme relevé de suivi.
-  if (d && base && base.desk1440) notes.push(`partie pilotée (indicatif) : bureau part>33ms ${d.desk1440.pct33} (réf ${base.desk1440.pct33}), p99 ${d.desk1440.p99} ; iPhone part ${d.iphone.pct33}, p99 ${d.iphone.p99}`);
+  if (d && base && base.desk1440) notes.push(`partie pilotée : bureau part>33ms ${d.desk1440.pct33} (réf ${base.desk1440.pct33}), p99 ${d.desk1440.p99} ; iPhone part ${d.iphone.pct33}, p99 ${d.iphone.p99}`);
   if (base && cur.rail2 && base.rail2 && base.rail2.orthoMed != null) {
     if (!(cur.rail2.orthoMed <= base.rail2.orthoMed)) fails.push(`rail2 ortho médiane=${cur.rail2.orthoMed} > base ${base.rail2.orthoMed}`);
   }
@@ -134,7 +140,7 @@ function nr() {
   const result = { pass, measured: { current: cur, baseline: base && { desk1440: base.desk1440, iphone: base.iphone, rail2: base.rail2 }, wroteBaseline, fails, notes,
     sonIos: s && s.measured && { playingAtMs: s.measured.playingAtMs, rms3to6: s.measured.rms3to6, resume: s.measured.resume && { runningAtMs: s.measured.resume.runningAtMs, okAtMs: s.measured.resume.okAtMs }, checks: s.measured.checks },
     codes: { banc: R.banc.code, diag: R.diag.code, sonIos: R.sonIos.code, rail2: R.rail2.code }, secs: +(R.banc.secs + R.diag.secs + R.sonIos.secs + R.rail2.secs).toFixed(0) },
-    threshold: '0 pageerror, 0 console.error, __ERR.count === 0 ; banc (scène à contenu constant, référence = dernier commit mesuré dans la même fenêtre) : p50 ≤ 1,10 × référence et p95 ≤ 1,15 × référence par régime et par profil, scène identique, iPhone p95 ≤ 16,7 ms ; rail2 ortho médiane ≤ base, p90 ≤ 40, max ≤ 45, 0 > 42 images, ortho et diag 20/20 ; son-ios OK ; la partie pilotée est relevée sans seuil' };
+    threshold: '0 pageerror, 0 console.error, __ERR.count === 0 ; banc (scène à contenu constant, référence = dernier commit mesuré dans la même fenêtre) : p50 ≤ 1,10 × référence et p95 ≤ 1,15 × référence par régime et par profil, scène identique, iPhone p95 ≤ 16,7 ms ; rail2 ortho médiane ≤ base, p90 ≤ 40, max ≤ 45, 0 > 42 images, ortho et diag 20/20 ; son-ios OK ; partie pilotée relevée et jugée par diag.mjs (p99 ≤ 33 ms sur bureau 1440×900 comme sur iPhone, seuil absolu depuis G13), le banc restant la porte de performance de nr' };
   fs.writeFileSync(path.join(OUT, 'nr-last.json'), JSON.stringify({ result, raw: R }, null, 1));
   for (const f of fails) console.log('[run] ÉCHEC :', f);
   for (const n of notes) console.log('[run]', n);

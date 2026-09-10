@@ -18,7 +18,7 @@ const SECS = +(process.env.S2030_DIAG_SECS || 90);
 // l'autre, part > 33 ms et p99 comparables ; S2030_SEED pour en changer
 const SEED = +(process.env.S2030_SEED || 2030);
 const SHOTS = [2, 15, 40, 80].filter(s => s < SECS);
-const THRESH = 'par profil : pageErrors == 0, consoleErrors == 0, __ERR.count === 0 ; iPhone p99 ≤ 33 ms ; bureau : part > 33 ms et p99 comparés à baseline.json par run.mjs';
+const THRESH = 'par profil : pageErrors == 0, consoleErrors == 0, __ERR.count === 0 ; iPhone p99 ≤ 33 ms ; bureau 1440×900 p99 ≤ 33 ms (seuil ABSOLU depuis G13 : il était comparé à baseline.json, donc à une machine et un instant, et une régression pouvait passer si la référence était mauvaise)';
 
 export async function runProfile(kind, secs = SECS) {
   const ctx = kind === 'iphone' ? await launchPhone() : await launchDesktop(1440, 900, { unthrottled: !process.env.S2030_DESK_VSYNC });
@@ -64,9 +64,13 @@ export async function run(secs = SECS) {
   const errOk = [d, i].every(m => m.pageErrors === 0 && m.consoleErrors === 0 && m.errCount === 0);
   const errNull = [d, i].some(m => m.errCount == null);
   const iphoneOk = i.p99 != null && i.p99 <= 33;
-  const pass = errOk && iphoneOk;
-  const code = pass ? 0 : (errNull && [d, i].every(m => m.pageErrors === 0 && m.consoleErrors === 0) && iphoneOk ? 2 : 1);
-  return { pass, measured, threshold: THRESH, code };
+  /* SEUIL BUREAU ABSOLU (G13). Il était « comparé à baseline.json par run.mjs », c'est-à-dire à une
+     mesure prise sur une autre machine à un autre instant ; une partie qui saccade passait dès que la
+     référence saccadait autant. Le p99 est maintenant jugé sur lui-même, comme sur iPhone. */
+  const deskOk = d.p99 != null && d.p99 <= 33;
+  const pass = errOk && iphoneOk && deskOk;
+  const code = pass ? 0 : (errNull && [d, i].every(m => m.pageErrors === 0 && m.consoleErrors === 0) && iphoneOk && deskOk ? 2 : 1);
+  return { pass, measured, threshold: THRESH, code, gates: { errOk, iphoneOk, deskOk, deskP99: d.p99, iphoneP99: i.p99 } };
 }
 
 if (isMain(import.meta.url)) {

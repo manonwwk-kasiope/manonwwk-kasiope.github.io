@@ -85,6 +85,17 @@ function _enGlow(ctx, x, y, r, color, a) {
     est conservé entre les deux passes, on ne le reconstruit pas. */
 function _enNeon(ctx, color, wOut, wIn, a) {
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  /* PALIER LÉGER (troisième cran de dégradation) : la nappe large est un second
+     passage de remplissage additif sur toute la silhouette, et c'est le
+     remplissage qui coûte. On garde le coeur clair, qui porte la lisibilité. */
+  if (typeof qLight === 'function' && qLight()) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = (a === undefined ? 1 : a);
+    ctx.strokeStyle = _enLite(color); ctx.lineWidth = wIn;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    return;
+  }
   ctx.globalCompositeOperation = 'lighter';
   ctx.globalAlpha = 0.3 * (a === undefined ? 1 : a);
   ctx.strokeStyle = color; ctx.lineWidth = wOut;
@@ -1896,11 +1907,13 @@ function _enOnDeath(e) {
       break;
 
     case 'thief':
-      // il rend tout ce qu'il portait, plus une prime
-      for (var k = 0; k < e.carry; k++) {
-        addPickup('energy', e.x + rndR(-18, 18), e.y + rndR(-18, 18));
+      /* Il rend tout ce qu'il portait, plus une prime — mais EN UN SEUL BUTIN.
+         Dix pièces lâchées d'un coup, c'était dix halos, dix ramassages et dix
+         sons pour la même valeur. La valeur est portée par le noyau (val). */
+      if (e.carry > 0) {
+        var pc = addPickup('core', e.x, e.y);
+        if (pc) pc.val = Math.max(1, Math.round((e.carry + (e.carry >= 2 ? 8 : 0)) / 8));
       }
-      if (e.carry >= 2) addPickup('core', e.x, e.y);
       if (e.carry > 0) S2030.fx && S2030.fx.text(e.x, e.y - 22, 'RÉCUPÉRÉ', '#00e5ff');
       break;
 

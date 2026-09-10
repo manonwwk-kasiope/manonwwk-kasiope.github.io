@@ -1006,6 +1006,15 @@ function _fxReset() {
 /* ------ API module */
 
 S2030.fx = {
+  /* Préchauffage (appelé au boot) : dégradés unitaires et polices créés une
+     fois pour toutes, hors de l'image du premier effet. */
+  warm: function (ctx) {
+    try {
+      var c = ['#00e5ff', '#ff2e63', '#ffd166', '#7CFFB2', '#ff5c3a', '#b388ff', '#ffffff'];
+      for (var i = 0; i < c.length; i++) _fxGlowGrad(ctx, c[i]);
+      for (var z = 8; z <= 48; z += 4) _fxFont(z);
+    } catch (e) {}
+  },
   burst: _fxBurst,
   ring: _fxRing,
   flare: _fxFlare,

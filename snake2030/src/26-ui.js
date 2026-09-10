@@ -1066,9 +1066,9 @@ function _uiBuildSettings(root) {
     'Vitesse et nombre des ennemis, et facteur de score. NORMAL est le cran de référence.');
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
-  _uiStepper(box, 'Qualité d\'image', 'px', [1, 1.5, 2],
-    function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.25 ? 'ÉQUILIBRÉE' : 'ÉCONOMIE'; },
-    'Finesse du rendu. ÉCONOMIE tient mieux les soixante images sur téléphone.');
+  _uiStepper(box, 'Qualité d\'image', 'px', [0.6, 0.75, 1, 1.5, 2],
+    function (v) { return v >= 2 ? 'MAXIMALE' : v >= 1.25 ? 'ÉQUILIBRÉE' : v >= 1 ? 'ÉCONOMIE' : (Math.round(v * 100) + ' %'); },
+    'Finesse du rendu. Sous ÉCONOMIE, le jeu rend moins de pixels et le navigateur les étire : c\'est ce qui rend les soixante images sur une machine lente.');
 
   _uiMk('div', 's2grp', box, 'SON');
   _uiTog(box, 'Musique', 'music', function (v) {
@@ -2036,8 +2036,12 @@ S2030.ui = {
     _uiRefreshMenu();
 
     var self = this;
-    window.addEventListener('resize', function () { setTimeout(_uiLayout, 70); });
-    window.addEventListener('orientationchange', function () { setTimeout(_uiLayout, 220); });
+    /* Un seul minuteur, comme pour le canevas : un redimensionnement émet
+       soixante événements par seconde et chacun posait sa propre mise en page. */
+    var lt = 0;
+    var plan = function (ms) { if (lt) clearTimeout(lt); lt = setTimeout(function () { lt = 0; _uiLayout(); }, ms); };
+    window.addEventListener('resize', function () { plan(80); });
+    window.addEventListener('orientationchange', function () { plan(220); });
     return self;
   },
 
