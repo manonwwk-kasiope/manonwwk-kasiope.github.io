@@ -18,7 +18,31 @@
    ====== */
 
 /* ------ palette */
-var _WPN_WHITE = '#ffffff';
+/* G11 : les modules d'arme sont dessinés SUR le corps du serpent (drawMounts est
+   appelé depuis drawSnake) ; en blanc pur ils produisaient des taches blanches
+   de 33 à 47 px² à un demi-anneau d'un segment, indiscernables de la tête. Un
+   blanc très légèrement bleuté (232 sur le rouge) garde la lecture « chrome »
+   et sort du seuil de 235 sur les trois canaux qui définit la tache de tête. */
+/* COMPOSITION DES MODULES POSÉS SUR LE SERPENT (G11).
+   drawMounts est appelé depuis drawSnake : tout ce qu'il trace est posé SUR un
+   corps #00e5ff, dont le vert (229) et le bleu (255) sont déjà au plafond. En
+   composition additive, il suffit alors que la somme des rouges des couches
+   dépasse 235 pour écrire du blanc pur — et cette somme n'est bornée par rien :
+   traînée ambre 117, écailles 54, éclair de bouche 217, arcs dorés 71. Mesuré
+   sur le build précédent : (246, 248, 251) sur 85 à 113 px CSS de corps.
+   Toutes les couches de module passent donc en composition NORMALE, où le
+   résultat vaut au plus la couleur du trait. Le blanc pur reste à la tête.
+   Les BALLES aussi : la supposition « elles volent devant le décor, pas sur le
+   corps » est FAUSSE, et mesurée fausse — le serpent s'enroule devant son propre
+   tir. Empilées en additif, la lueur crème (#fff3b0, alpha cumulé 0,90) et le
+   coeur (#e6f0ff, alpha 1) portent le rouge à 459 et le bleu à 413 : sur le
+   corps cyan, un tiret de balle écrit du blanc pur de 25 à 38 px CSS, rattaché
+   à aucun objet parce que le tiret (8 à 22 u) est plus long que le rayon de la
+   balle qui sert à l'attribution. Identifié en instrumentant fill et stroke :
+   2 407 traits en quarante secondes. Elles passent donc en composition normale
+   comme le reste de ce qui peut se poser sur le joueur. */
+var _WPN_OP = 'source-over';
+var _WPN_WHITE = '#e6f0ff';
 var _WPN_CREAM = '#fff3b0';
 var _WPN_GOLD = '#ffd166';
 var _WPN_AMBER = '#ffb347';
@@ -1221,7 +1245,7 @@ function _wpnDrawAll(ctx) {
   var i, b, k, st, any;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1342,7 +1366,7 @@ function _wpnDrawTrail(ctx, L) {
   if (!c) return;
   var i, nd, seg, drawn;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1363,10 +1387,22 @@ function _wpnDrawTrail(ctx, L) {
     var a = 1 - seg * 0.32;
     var w = L.w * (1 - seg * 0.22);
     ctx.strokeStyle = _WPN_AMBER;
-    ctx.globalAlpha = 0.20 * a; ctx.lineWidth = w * 1.9; ctx.stroke();
-    ctx.globalAlpha = 0.38 * a; ctx.lineWidth = w; ctx.stroke();
+    ctx.globalAlpha = 0.16 * a; ctx.lineWidth = w * 1.9; ctx.stroke();
+    ctx.globalAlpha = 0.30 * a; ctx.lineWidth = w; ctx.stroke();
+    /* G11 — LE LEVIER EST LA COMPOSITION, PAS L'ALPHA. Ce coeur est posé SUR le
+       corps du serpent (drawMounts est appelé depuis drawSnake) : en 'lighter'
+       il s'ajoute à un cyan dont le vert (229) et le bleu (255) sont déjà au
+       plafond, si bien qu'il suffit que le rouge cumulé des couches dépasse 235
+       pour écrire du blanc pur. Mesuré ainsi : (246, 248, 251) sur 85 à 113 px²,
+       alpha déjà descendu à 0,45 — la baisse d'alpha ne fermait pas la porte.
+       En source-over l'encre REMPLACE le fond : le résultat vaut au plus la
+       couleur du trait, dont le bleu (176 pour la crème, 255 mais le rouge à 230
+       pour le blanc bleuté) reste sous le seuil. La lueur ambre autour, elle,
+       garde son additif : c'est elle qui porte le néon. */
+    ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = L.block ? _WPN_WHITE : _WPN_CREAM;
     ctx.globalAlpha = 0.75 * a; ctx.lineWidth = w * 0.34; ctx.stroke();
+    ctx.globalCompositeOperation = _WPN_OP;
   }
 
   /* halo de détonation de boucle */
@@ -1426,7 +1462,7 @@ function _wpnDrawTurrets(ctx, L) {
 
   /* éclairs de bouche */
   if (fl) {
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     ctx.globalAlpha = 0.85;
     ctx.beginPath();
     for (i = 0; i < n; i++) {
@@ -1453,7 +1489,7 @@ function _wpnDrawDrones(ctx, L) {
 
   /* filin / anneau */
   if (L.tether && n > 1) {
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     var pairs = L.ring ? n : n - 1;
     ctx.beginPath();
     for (i = 0; i < pairs; i++) {
@@ -1475,7 +1511,7 @@ function _wpnDrawDrones(ctx, L) {
   for (i = 0; i < n; i++) {
     d = S.drones[i];
     if (d.shield <= 0 || !inView(d.x, d.y, 50)) continue;
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     ctx.globalAlpha = 0.5 * Math.min(1, d.shield);
     ctx.strokeStyle = _WPN_CHROME; ctx.lineWidth = 2.4;
     ctx.beginPath(); ctx.arc(d.x, d.y, 15 + (1 - Math.min(1, d.shield)) * 6, 0, TAU); ctx.stroke();
@@ -1503,7 +1539,7 @@ function _wpnDrawDrones(ctx, L) {
   ctx.strokeStyle = _WPN_CHROME; ctx.lineWidth = 1.8; ctx.stroke();
 
   /* yeux */
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.globalAlpha = 0.9;
   for (var pass = 0; pass < 2; pass++) {
     var got = 0;
@@ -1546,7 +1582,7 @@ function _wpnDrawArcs(ctx) {
   if (!live) return;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1579,9 +1615,13 @@ function _wpnDrawArcs(ctx) {
     if (pass === 0) {
       ctx.strokeStyle = _WPN_GOLD; ctx.globalAlpha = 0.28; ctx.lineWidth = 9;
     } else {
+      /* G11 : coeur d'arc en composition NORMALE, même raison que la traînée.
+         L'alpha revient à 0,95 : ce n'est pas lui qui écrivait du blanc. */
+      ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = _WPN_WHITE; ctx.globalAlpha = 0.95; ctx.lineWidth = 2.2;
     }
     ctx.stroke();
+    if (pass === 1) ctx.globalCompositeOperation = _WPN_OP;
   }
 
   /* nœuds lumineux */
@@ -1610,7 +1650,7 @@ function _wpnDrawBeam(ctx, L) {
   var puls = 1 + Math.sin(S.t * 0.045) * 0.16;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.strokeStyle = _WPN_GOLD;
   ctx.globalAlpha = 0.22 * p;
@@ -1620,6 +1660,12 @@ function _wpnDrawBeam(ctx, L) {
   ctx.globalAlpha = 0.55 * p;
   ctx.lineWidth = L.w * puls;
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  /* G11 : le coeur du rayon part DE LA TÊTE. En additif à plein alpha il
+     écrivait une bande blanche continue depuis la tête, et la composante blanche
+     la plus proche de la tête n'était alors plus la tête mais le rayon — le
+     critère (a) du test 3 tombait. En source-over le coeur vaut au plus
+     #e6f0ff, dont le rouge (230) reste sous 235. */
+  ctx.globalCompositeOperation = 'source-over';
   ctx.strokeStyle = _WPN_WHITE;
   ctx.globalAlpha = 1;
   ctx.lineWidth = L.w * 0.3 * puls;
@@ -1653,7 +1699,7 @@ function _wpnDrawBeam(ctx, L) {
 function _wpnDrawShock(ctx, L) {
   var s = S.snake;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
 
   /* aura permanente */
   if (L.aura) {
@@ -1712,7 +1758,7 @@ function _wpnDrawMines(ctx) {
   if (!any && !anyB) return;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
 
   /* cratères incandescents */
   for (i = 0; i < _WPN_BURNN; i++) {
@@ -1784,7 +1830,10 @@ function _wpnDrawMines(ctx) {
     ctx.stroke();
   }
 
-  /* implosions : rares, tracées individuellement */
+  /* implosions : rares, tracées individuellement.
+     G11 : en composition normale — elles sont posées sur la queue du serpent et
+     leur blanc additif empilé (0,7 + 0,9) y saturait les trois canaux. */
+  ctx.globalCompositeOperation = 'source-over';
   for (i = 0; i < _WPN_MINEN; i++) {
     m = _wpnMines[i];
     if (!m.on || m.singT <= 0 || !inView(m.x, m.y, 90)) continue;

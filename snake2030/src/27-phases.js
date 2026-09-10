@@ -386,7 +386,13 @@ S2030.phases = (function () {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'butt';
-    ctx.globalAlpha = a; ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff'; ctx.lineWidth = warn ? 2 : HALF * 2;
+    /* G11 — LE RAIL N'EST PLUS CYAN. #5ef1ff donnait 1,14:1 contre le corps du
+       serpent et #22e0ff 1,04:1 : le treillis et le serpent étaient la même
+       couleur. #2a55cc donne 4,18:1, l'avertissement #142c72 8,36:1, et les deux
+       rails se séparent l'un de l'autre par ΔL* = 19,5 (>= 18). Le trait
+       d'avertissement passe de 2 u (1,39 px CSS sur iPhone) au plancher. */
+    ctx.globalAlpha = a; ctx.strokeStyle = warn ? '#142c72' : '#2a55cc';
+    ctx.lineWidth = warn ? (_LWWORLD > 2 ? _LWWORLD : 2) : HALF * 2;
     ctx.beginPath();
     for (var fm = 0; fm < 2; fm++) {
       var ra = grid.a0 + fm * QUAD, dx = Math.cos(ra), dy = Math.sin(ra), nx = -dy, ny = dx;
@@ -403,7 +409,7 @@ S2030.phases = (function () {
     // nœud d'attente : disque pulsé de 10 u (couleur de la tête, alpha 0,8) et flèche fantôme de 24 u
     var pd = warn ? null : pending();
     if (pd && S.snake) {
-      var col = S.snake.ghost > 0 ? '#d9c2ff' : '#9df5ff', pr = 10 * (1 + 0.18 * Math.sin(S.t / 90));
+      var col = S.snake.ghost > 0 ? '#d9c2ff' : '#fff3b0', pr = 10 * (1 + 0.18 * Math.sin(S.t / 90));
       var ax = Math.cos(pd.ang), ay = Math.sin(pd.ang);
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -425,10 +431,21 @@ S2030.phases = (function () {
      ici ce que l'oeil voit, en u monde autour de la caméra. Calculée une fois par état de caméra. */
   var VIS_D = 4.6;
   function visCover(t) { var c = Math.cos(t); return c < 0.2 ? 1 : (VIS_D + Math.sin(t)) / (VIS_D * c) * 1.015; }
-  var _vis = { x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, left: 0, right: 0, top: 0, bottom: 0, persp: 0, vw: -1, vh: -1 };
+  var _vis = { x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, left: 0, right: 0, top: 0, bottom: 0, persp: 0, rt: 0, vw: -1, vh: -1 };
+  /* ROULIS. visibleExtent publiait un rectangle DROIT alors que toScreen tient
+     compte du roulis : les coins du rectangle tourné qui débordent du rectangle
+     droit étaient à l'écran et déclarés hors champ — un ennemi y apparaissait
+     sous les yeux de la joueuse, et _lvPoint pouvait y faire tirer. L'erreur va
+     dans les deux sens et on ne peut pas annuler les deux : on choisit
+     l'INCLUSION EXCESSIVE, qui ne fait qu'armer et dessiner un peu trop tôt,
+     contre l'exclusion d'un point visible, qui casse la promesse de G6.
+     La rotation se fait en pixels, donc avec le rapport d'aspect : dans le
+     repère normalisé du tampon, le domaine visible est le parallélogramme
+     |X c − Y s/asp| <= 1, |X asp s + Y c| <= 1, dont les demi-étendues valent
+     |c| + |s|/asp en X et |c| + asp|s| en Y. */
   function visibleExtent() {
-    var V = _vis, cx = S.cam.x, cy = S.cam.y;
-    if (V.vw !== S.view.w || V.vh !== S.view.h || V.persp !== persp) {
+    var V = _vis, cx = S.cam.x, cy = S.cam.y, rt = rot();
+    if (V.vw !== S.view.w || V.vh !== S.view.h || V.persp !== persp || V.rt !== rt) {
       var hw = S.view.w / 2, hh = S.view.h / 2, top = hh, bottom = hh, side = hw;
       if (persp > 0.001) {
         var q = persp, c = visCover(q), D = VIS_D, cq = Math.cos(q), sq = Math.sin(q);
@@ -437,7 +454,13 @@ S2030.phases = (function () {
         bottom = hh * vb; top = hh * vt;
         side = hw * Math.min(1, (D + c * vt * sq) / (c * D));     // demi-largeur visible la plus grande (ligne du haut)
       }
-      V.left = V.right = side; V.top = top; V.bottom = bottom; V.persp = persp; V.vw = S.view.w; V.vh = S.view.h; V.cx = cx + 1;
+      if (rt) {
+        var ac = Math.abs(Math.cos(rt)), as = Math.abs(Math.sin(rt));
+        var asp2 = (Math.abs(S.view.h) > 0.001 ? Math.abs(S.view.w) / Math.abs(S.view.h) : 1) / Math.max(0.2, 1 - tilt() * 0.42);
+        var kx = ac + as / asp2, ky = ac + as * asp2;
+        side *= kx; top *= ky; bottom *= ky;
+      }
+      V.left = V.right = side; V.top = top; V.bottom = bottom; V.persp = persp; V.rt = rt; V.vw = S.view.w; V.vh = S.view.h; V.cx = cx + 1;
       V.fx = hw > 0 ? side / hw : 1; V.ft = hh > 0 ? top / hh : 1; V.fb = hh > 0 ? bottom / hh : 1;   // fractions du tampon
     }
     if (V.cx !== cx || V.cy !== cy) { V.cx = cx; V.cy = cy; V.x0 = cx - V.left; V.x1 = cx + V.right; V.y0 = cy - V.top; V.y1 = cy + V.bottom; }
@@ -487,7 +510,7 @@ S2030.phases = (function () {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = a * 0.35;
-    ctx.strokeStyle = '#00e5ff';
+    ctx.strokeStyle = '#3a7bff';
     ctx.lineWidth = 1.5;
     var step = 210;
     var vy0 = Math.max(0, S.cam.y - S.view.h * 0.6), vy1 = Math.min(K.ARENA_H, S.cam.y + S.view.h * 0.6);
@@ -531,13 +554,13 @@ S2030.phases = (function () {
       }
     },
     slow: {
-      nom: 'RALENTI', glyph: '◐', cd: 11000, col: '#5ef1ff',
+      nom: 'RALENTI', glyph: '◐', cd: 11000, col: '#9fc2ff',
       run: function () {
         var s = S.snake;
         // le monde ralentit, pas le joueur : c'est lui qui gagne du temps
         slowT = 4200;
-        S2030.fx && S2030.fx.ring(s.x, s.y, '#5ef1ff', 12, 1400);
-        S2030.fx && S2030.fx.flash('#5ef1ff', 0.22);
+        S2030.fx && S2030.fx.ring(s.x, s.y, '#9fc2ff', 12, 1400);
+        S2030.fx && S2030.fx.flash('#9fc2ff', 0.22);
         S2030.audio && S2030.audio.sfx('boostEnd');
         S2030.ui && S2030.ui.banner && S2030.ui.banner('RALENTI');
         pulse(0.16);

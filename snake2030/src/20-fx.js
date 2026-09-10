@@ -48,7 +48,7 @@ var _fxPi = 0, _fxRi = 0, _fxFi = 0, _fxTi = 0;
     };
   }
   for (i = 0; i < _FX_NFLARE; i++) {
-    _fxFlares[i] = { on: false, x: 0, y: 0, r: 20, r0: 20, l: 0, ml: 1, c: '#fff', a0: 1 };
+    _fxFlares[i] = { on: false, x: 0, y: 0, r: 20, r0: 20, l: 0, ml: 1, c: '#fff', a0: 1, so: 0 };
   }
   for (i = 0; i < _FX_NTEXT; i++) {
     _fxTexts[i] = { on: false, x: 0, y: 0, vy: -34, l: 0, ml: 1, s: '', c: '#fff', sz: 15, out: 1 };
@@ -284,7 +284,7 @@ function _fxRing(x, y, color, r0, speed, opts) {
   r.r = (r0 === undefined ? 6 : r0);
   r.sp = (speed === undefined ? 320 : speed);
   r.ml = r.l = (o && o.life !== undefined) ? o.life : 0.42;
-  r.c = color || '#7df9ff';
+  r.c = color || '#9fc2ff';
   r.w = (o && o.w !== undefined) ? o.w : 4;
   r.gl = (o && o.glow === false) ? 0 : 1;
   r.sq = (o && o.squash !== undefined) ? o.squash : 1;
@@ -302,6 +302,13 @@ function _fxFlare(x, y, color, rad, opts) {
   f.ml = f.l = (o && o.life !== undefined) ? o.life : 0.26;
   f.c = color || '#ffffff';
   f.a0 = ((o && o.a !== undefined) ? o.a : 0.95) * _fxFlashF() * 0.6 + ((o && o.a !== undefined) ? o.a : 0.95) * 0.4;
+  /* G11 : 'so' = composition NORMALE au lieu d'additive. Sur le corps du serpent
+     (#00e5ff) tout ajout de lumiere chaude sature G et B, deja a 229 et 255 : le
+     seul canal libre est le rouge, et une gerbe creme le pousse a 255. Le halo
+     devient alors une tache blanche indiscernable de la tete. En source-over la
+     creme REMPLACE le fond : son bleu vaut 176, sous le seuil de 235, et aucune
+     tache blanche ne peut naitre. */
+  f.so = (o && o.so) ? 1 : 0;
   if (f.a0 > 1) f.a0 = 1;
 }
 
@@ -318,7 +325,7 @@ function _fxTrail(x, y, ang, color) {
   p.g = 0; p.dr = 3.4;
   p.s = p.s0 = rndR(1.2, 2.8);
   p.ml = p.l = rndR(0.12, 0.26);
-  p.c = color || '#7df9ff';
+  p.c = color || '#9fc2ff';
   p.gl = 1; p.sh = 1;
   p.rot = a; p.spin = 0;
   p.st = 0.05; p.fd = 1; p.sk = 0.9;
@@ -552,7 +559,20 @@ function _fxDrawParts(ctx, glow) {
     if (ab < 1) continue;
 
     if (!any) {
-      ctx.globalCompositeOperation = glow ? 'lighter' : 'source-over';
+      /* PLUS AUCUNE COUCHE D'EFFET N'EST ADDITIVE (G11).
+         Le corps du serpent est #00e5ff : son vert (229) et son bleu (255) sont
+         au plafond, donc toute lumiere chaude ajoutee au-dessus ou a cote de lui
+         sature les trois canaux des que la somme des rouges depasse 235 — et une
+         somme de couches ne se borne ni par un alpha ni par un choix de teinte.
+         Mesure sur 320 images : apres avoir passe les balles, les modules, les
+         telegraphes et la mort en composition normale, il restait 13 taches de
+         261 a 720 px CSS en (255, 255, 240), toutes a un rayon de segment et
+         rattachables a aucune entite — de la lumiere d'effet posee a cote du
+         corps. En composition normale, un pixel ne vaut jamais plus que la
+         couleur de la couche qui l'ecrit, et aucune couleur d'effet n'est
+         blanche : la borne existe enfin. Les effets gardent leur couleur, leur
+         forme et leur duree ; ils ne peuvent plus blanchir le joueur. */
+      ctx.globalCompositeOperation = 'source-over';
       ctx.lineCap = 'round';
       any = true;
     }
@@ -602,7 +622,7 @@ function _fxDrawParts(ctx, glow) {
 }
 
 function _fxDrawFlares(ctx) {
-  var any = false;
+  var any = false, cur = "";
   for (var i = 0; i < _FX_NFLARE; i++) {
     var f = _fxFlares[i];
     if (!f.on) continue;
@@ -610,7 +630,8 @@ function _fxDrawFlares(ctx) {
     var tl = f.l / f.ml;
     var a = f.a0 * tl * tl;
     if (a <= 0.01) continue;
-    if (!any) { ctx.globalCompositeOperation = 'lighter'; any = true; }
+    var op = 'source-over';   // voir _fxDrawParts : plus aucune couche additive
+    if (op !== cur) { ctx.globalCompositeOperation = op; cur = op; any = true; }
     ctx.save();
     ctx.globalAlpha = a;
     ctx.translate(f.x, f.y);
@@ -640,7 +661,7 @@ function _fxDrawRings(ctx) {
       var ab = (a * _FX_AQ) | 0;
       if (ab < 1) continue;
 
-      if (pass === 1 && !anyG) { ctx.globalCompositeOperation = 'lighter'; anyG = true; }
+      if (pass === 1 && !anyG) { ctx.globalCompositeOperation = 'source-over'; anyG = true; }
       if (pass === 0 && !anyN) { ctx.globalCompositeOperation = 'source-over'; anyN = true; }
 
       if (r.c !== curC) { ctx.strokeStyle = r.c; curC = r.c; }
@@ -832,7 +853,11 @@ function _fxChevPath(ctx, m, k1, k2, k3) {
 function _fxChevFlush(ctx, list, n) {
   var i, j, m, o;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  /* G11 : chevrons de bord en composition NORMALE. Ils sont poses au RAS DU
+     CADRE, par-dessus tout, et le serpent longe le bord : en additif, un chevron
+     blanc sur le corps cyan ecrivait une tache blanche de 25 a 29 px CSS a un
+     rayon de segment. Ce sont des reperes d'interface, pas de la lumiere. */
+  ctx.globalCompositeOperation = 'source-over';
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   for (i = 0; i < n; i++) {
     m = list[i];
@@ -961,7 +986,7 @@ function _fxDrawScreen(ctx, w, h) {
       var off = (_fxHash(seed + i * 5.7 + 91) - 0.5) * 52 * _fxGlitch;
       ctx.fillStyle = '#ff2b6d';
       ctx.fillRect(off, y, w, bh);
-      ctx.fillStyle = '#22e0ff';
+      ctx.fillStyle = '#5b8cff';
       ctx.fillRect(-off, y, w, bh);
     }
     ctx.globalAlpha = 1;
@@ -1010,7 +1035,7 @@ S2030.fx = {
      fois pour toutes, hors de l'image du premier effet. */
   warm: function (ctx) {
     try {
-      var c = ['#00e5ff', '#ff2e63', '#ffd166', '#7CFFB2', '#ff5c3a', '#b388ff', '#ffffff'];
+      var c = ['#64ff9a', '#ff2e63', '#ffc94d', '#7CFFB2', '#ff6a00', '#8a4dff', '#ffffff'];
       for (var i = 0; i < c.length; i++) _fxGlowGrad(ctx, c[i]);
       for (var z = 8; z <= 48; z += 4) _fxFont(z);
     } catch (e) {}
@@ -1051,8 +1076,9 @@ S2030.fx = {
 
   // combos prêts à l'emploi (aucune allocation)
   hit: function (x, y, color, power) {
-    _fxBurst(x, y, color || '#fff2c0', 5, power || 190, { life: 0.2, size: 1.6, spread: 1.0, ang: rndR(-3.14159, 3.14159) });
-    _fxFlare(x, y, color || '#fff2c0', 22, { life: 0.14, a: 0.7 });
+    /* G11 : gerbes en composition NORMALE (glow:false). Voir fx.kill. */
+    _fxBurst(x, y, color || '#fff2c0', 5, power || 190, { life: 0.2, size: 1.6, spread: 1.0, ang: rndR(-3.14159, 3.14159), glow: false });
+    _fxFlare(x, y, color || '#fff2c0', 22, { life: 0.14, a: 0.7, so: 1 });
   },
   /* Mort d'un ennemi. `ang` = direction du tir qui l'a tué : la caméra recule
      de 3 u dans le sens opposé. `r` = rayon de la silhouette (flash blanc).
@@ -1065,21 +1091,48 @@ S2030.fx = {
     var iz = 1 / z;
     var col = color || '#ff5ad6';
     var rad = (r > 0 ? r : (big ? 22 : 13));
-    _fxBurst(x, y, col, n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
-    _fxBurst(x, y, '#ffffff', big ? 12 : 6, big ? 300 : 190, { size: 1.6, life: 0.2 });
+    /* AUCUNE COUCHE ADDITIVE AU POINT DE MORT (G11). Un kill empile une gerbe,
+       deux gerbes cremes, un anneau et deux halos. En additif, leurs rouges,
+       verts et bleus s'ajoutent sans borne : mesure sur 320 images, une tache de
+       640 a 720 px CSS en (255, 255, 240) a un rayon de segment, rattachable a
+       aucune entite puisque l'ennemi mort a deja quitte la liste. Baisser un
+       alpha ne borne pas une somme ; supprimer l'additif la borne. Chaque couche
+       vaut desormais au plus sa propre couleur, dont aucune n'est blanche. */
+    _fxBurst(x, y, col, n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0, glow: false });
+    /* G11 : crème, et non blanc pur. Le blanc pur est réservé à la tête — c'est
+       ce qui permet de l'isoler d'un coup d'oeil, et une gerbe d'étincelles
+       blanches posée sur le corps à chaque impact la noyait. */
+    /* G11 — POURQUOI CES GERBES NE SONT PLUS ADDITIVES. Mesuré sur 320 images :
+       des composantes blanches de 40 a 47 px CSS a moins d'un rayon de segment,
+       rgb (255, 255, 240). Le corps du serpent est #00e5ff : G = 229 et B = 255
+       y sont deja au plafond, donc TOUTE lumiere chaude ajoutee sature les trois
+       canaux des que son rouge depasse 235 — ce qu'une creme a 255 fait toujours,
+       quel que soit son alpha au-dela de 0,93 et des que deux gerbes se croisent.
+       Baisser l'alpha ne ferme pas la porte, changer la COMPOSITION la ferme :
+       en source-over la creme remplace le fond et son bleu (176) reste sous le
+       seuil de 235. Le blanc pur appartient a la tete, a elle seule. */
+    _fxBurst(x, y, '#fff3b0', big ? 12 : 6, big ? 300 : 190, { size: 1.6, life: 0.2, glow: false });
     // éclats francs : 6 shards à 300 u/s pendant 0,35 s
-    _fxBurst(x, y, '#ffffff', 6, 300, { shape: 'shard', life: 0.35, size: 2.1, drag: 0.6, spin: 9, fade: 1 });
-    _fxRing(x, y, col, (big ? 14 : 8) * iz, (big ? 520 : 330) * iz, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
-    _fxFlare(x, y, col, (big ? 110 : 54) * iz, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
+    _fxBurst(x, y, '#fff3b0', 6, 300, { shape: 'shard', life: 0.35, size: 2.1, drag: 0.6, spin: 9, fade: 1, glow: false });
+    _fxRing(x, y, col, (big ? 14 : 8) * iz, (big ? 520 : 330) * iz, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38, glow: false });
+    _fxFlare(x, y, col, (big ? 110 : 54) * iz, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8, so: 1 });
     // flash blanc de la silhouette : 60 ms, taille de l'ennemi, pleine opacité
-    _fxFlare(x, y, '#ffffff', rad * 1.35, { life: 0.06, a: 1 });
+    /* Flash de silhouette : plein alpha, donc additif il ecrivait du blanc pur.
+       En source-over il garde sa force ET sa couleur. */
+    /* 1 -> 0,72 : a plein alpha ce disque creme vaut (255, 243, 176), et le
+       halo colore additif de la meme mort, pose par-dessus, y ajoutait jusqu'a
+       79 sur le bleu — soit (255, 255, 240), une tache blanche de 310 px CSS a
+       un rayon de segment. A 0,72 le disque vaut (191, 182, 132) sur le fond du
+       jeu : il reste deux canaux avec plus de cinquante points de marge, et
+       aucune couche additive de la mort ne peut plus les saturer tous les trois. */
+    _fxFlare(x, y, '#fff3b0', rad * 1.35, { life: 0.06, a: 0.72, so: 1 });
     _fxShakeAdd(big ? 14 : 4.5);
     _fxHitstop(big ? 5 : 2);
     if (ang !== undefined && ang !== null) _fxRecoil(ang + Math.PI, 3);
   },
   pickup: function (x, y, color) {
-    _fxBurst(x, y, color || '#7df9ff', 8, 150, { size: 1.6, life: 0.28, shape: 'dot', drag: 3.2 });
-    _fxRing(x, y, color || '#7df9ff', 4, 220, { w: 2.2, life: 0.3 });
-    _fxFlare(x, y, color || '#7df9ff', 34, { life: 0.2, a: 0.65 });
+    _fxBurst(x, y, color || '#9fc2ff', 8, 150, { size: 1.6, life: 0.28, shape: 'dot', drag: 3.2 });
+    _fxRing(x, y, color || '#9fc2ff', 4, 220, { w: 2.2, life: 0.3 });
+    _fxFlare(x, y, color || '#9fc2ff', 34, { life: 0.2, a: 0.65 });
   }
 };

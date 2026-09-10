@@ -5,6 +5,68 @@
 
 var _grandEcran = true;
 var cv, ctx, DPR = 1, CW = 0, CH = 0, SCALE = 1, _pxApplied = 1.5, _pxVoulu = 1.5;
+
+/* ------ PLANCHER D'ÉPAISSEUR DE TRAIT (G11)
+   Un trait d'entité ou de télégraphe doit faire au moins 2 px CSS À L'ÉCRAN.
+   « 2 / (SCALE x zoom) » ne le garantit que sur l'axe horizontal : drawWorld
+   pose sy = SCALE x zoom x (1 − tilt x 0,42), et à tilt 0,5 la même largeur ne
+   rend que 1,58 px sur l'axe vertical. Le plancher se calcule donc sur la PLUS
+   PETITE des deux échelles, roulis compris (min(|a|,|d|) de la matrice vaut
+   DPR x sy x |cos(roulis)|), et le facteur CSS de la bascule (perspCover >= 1)
+   n'est pas compté : il ne peut qu'agrandir.
+   Plutôt que de reprendre quarante sites d'affectation — et d'en oublier —, le
+   plancher est posé UNE FOIS, dans stroke(), et il est DÉSARMÉ autour des quatre
+   couches de décor de profondeur que la spec exclut nommément (levels.drawBack,
+   levels.drawFore, phases.drawFloor, phases.gridDraw) : c'est leur finesse qui
+   porte la hiérarchie visuelle. Hors de la passe monde il est désarmé aussi :
+   en repère écran, lineWidth est déjà en pixels de tampon. */
+var _LWWORLD = 2, _LWMIN = 0;
+function lwPatch(g) {
+  if (!g || g.__lwPatched) return;
+  g.__lwPatched = 1;
+  /* Le plancher est posé AU MOMENT DU TRAIT, pas à l'affectation de lineWidth :
+     la grandeur qui décide est min(|a|,|d|) de la matrice COURANTE, et les
+     fonctions de dessin d'entité tournent le repère (ctx.rotate(e.ang)) après
+     que la caméra a été posée — un plancher calculé sur la seule caméra rendait
+     1,74 px pour une consigne de 2. On lit donc la matrice à chaque stroke().
+     La méthode est posée sur l'INSTANCE (pas sur le prototype) : les canevas
+     hors écran des sprites gardent la leur, et l'appel est relayé au prototype
+     par recherche dynamique, ce qui laisse une sonde de test s'y insérer. */
+  g.stroke = function () {
+    if (_LWMIN > 0) {
+      try {
+        var m = this.getTransform();
+        /* LARGEUR RÉELLEMENT RENDUE = PLUS PETITE VALEUR SINGULIÈRE de la
+           matrice, PAS min(|a|,|d|). Sous une rotation d'angle t avec une
+           échelle uniforme s, la matrice vaut s x R(t) : |a| = |d| = s|cos t|,
+           qui TEND VERS ZÉRO quand l'entité pointe vers le haut, alors que le
+           trait, lui, garde sa largeur s x w dans toutes les directions.
+           Diviser 2 px par cette quantité demandait donc une largeur non bornée
+           — mesuré : x 58 à un degré de la verticale. Le liseré sombre de la
+           marque de tête (#05060f, la couleur du fond) gonflait alors jusqu'à
+           recouvrir le triangle blanc qu'il borde, et la tête disparaissait :
+           sur 88 images de bureau, le pixel relevé à la position de la tête
+           valait exactement (5, 6, 15) sur 16 d'entre elles, et le critère de
+           la tache blanche tombait à 81,8 % pour 95 exigés.
+           sigma_min vaut s pour toute rotation à échelle uniforme, et
+           min(sx, sy) pour une échelle non uniforme sans rotation : c'est la
+           même grandeur que la spec vise, correctement calculée. */
+        var _a = m.a, _b = m.b, _c = m.c, _d = m.d;
+        var _F = _a * _a + _b * _b + _c * _c + _d * _d;
+        var _D = Math.abs(_a * _d - _b * _c);
+        var _t = _F * _F - 4 * _D * _D; if (_t < 0) _t = 0;
+        var _s2 = (_F - Math.sqrt(_t)) * 0.5; if (_s2 < 0) _s2 = 0;
+        var sc = Math.sqrt(_s2);
+        if (sc > 1e-6) {
+          var need = 2 * DPR / sc;
+          if (this.lineWidth < need) this.lineWidth = need;
+        }
+      } catch (e) { /* pas de matrice : on trace tel quel */ }
+    }
+    return Object.getPrototypeOf(this).stroke.apply(this, arguments);
+  };
+}
+
 var _fsbSync = null, _fsHelp = null;
 
 /* ------ quarantaine des erreurs
@@ -376,8 +438,10 @@ function drawSnake() {
   var ghost = s.ghost > 0;
 
   var body = ghost ? '#b388ff' : '#00e5ff';
-  var edge = ghost ? '#5b2fa8' : '#0077a8';
-  if (blink) body = '#ffffff';
+  /* INVULNÉRABILITÉ : seul le LISERÉ clignote. Blanchir tout le corps le
+     faisait disparaître dans le décor une image sur deux, et surtout le blanc
+     pur est réservé à la tête — c'est lui qui permet de l'isoler. */
+  var edge = blink ? '#fff3b0' : (ghost ? '#5b2fa8' : '#0077a8');
 
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
@@ -385,7 +449,10 @@ function drawSnake() {
   // traînée de boost
   if (s.boosting) {
     ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
+    /* G11 : composition NORMALE. Cette bande ambre est posée sur le corps sur
+       dix anneaux ; en additif elle portait le rouge du corps à 115 et servait
+       de socle aux couches suivantes pour franchir 235 sur les trois canaux. */
+    ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'rgba(255,214,102,.45)';
     ctx.lineWidth = S.headR * 2.4;
     ctx.beginPath();
@@ -404,14 +471,20 @@ function drawSnake() {
       if (!inView(segs[i].x, segs[i].y, 120) && i > 2) { ctx.moveTo(segs[i].x, segs[i].y); continue; }
       ctx.lineTo(segs[i].x, segs[i].y);
     }
-    ctx.lineWidth = S.headR * (pass === 0 ? 1.9 : 1.5);
+    /* Liseré porté à 2,3 x S.headR — la valeur VARIABLE qui suit le pliage
+       (16 à 24 u), et non la constante K.HEAD_R : avec K.HEAD_R le liseré
+       vaudrait 36,8 u contre un corps de 1,5 x 24 = 36 u à pliage maximal,
+       soit 0,4 u par côté, invisible. */
+    ctx.lineWidth = S.headR * (pass === 0 ? 2.3 : 1.5);
     ctx.stroke();
   }
 
-  // écailles lumineuses tous les trois segments
+  // écailles lumineuses tous les trois segments — composition NORMALE (G11) :
+  // additives, elles ajoutaient 54 au rouge du corps et servaient de socle aux
+  // couches d'arme pour franchir 235 sur les trois canaux.
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.fillStyle = ghost ? 'rgba(179,136,255,.5)' : 'rgba(120,255,255,.45)';
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = ghost ? 'rgba(179,136,255,.5)' : 'rgba(190,255,255,.55)';
   for (var k = 2; k < n; k += 3) {
     if (!inView(segs[k].x, segs[k].y, 40)) continue;
     ctx.beginPath(); ctx.arc(segs[k].x, segs[k].y, S.headR * 0.32, 0, TAU); ctx.fill();
@@ -428,25 +501,59 @@ function drawSnake() {
   // vers sa cible pendant que le corps reste sur son rail
   ctx.rotate(aimAng());
   ctx.globalCompositeOperation = 'lighter';
-  drawGlow(ctx, 0, 0, K.HEAD_R * 3.2, ghost ? 'rgba(179,136,255,.85)' : 'rgba(0,229,255,.8)', 'rgba(0,229,255,0)');
+  /* CÔNE DE VISÉE : 30 degrés sur 120 u devant la tête, dans la couleur du
+     joueur. Il dit où la tête pointe quand le corps suit un rail. Écrit ici
+     parce que le cyan #00e5ff appartient au serpent, et à lui seul. */
+  ctx.globalAlpha = 0.25;
+  ctx.fillStyle = ghost ? '#b388ff' : '#00e5ff';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.arc(0, 0, 120, -0.2618, 0.2618);
+  ctx.closePath(); ctx.fill();
+  ctx.globalAlpha = 1;
+  /* Halo de tête : 3,2 -> 1,6 K.HEAD_R, et BLANC. Un halo deux fois plus large
+     que la tête noyait la tête elle-même ; resserré, il la désigne. */
+  drawGlow(ctx, 0, 0, K.HEAD_R * 1.6, ghost ? 'rgba(179,136,255,.85)' : 'rgba(255,255,255,.85)', 'rgba(255,255,255,0)');
   ctx.globalCompositeOperation = 'source-over';
 
-  ctx.fillStyle = blink ? '#ffffff' : (ghost ? '#d9c2ff' : '#9df5ff');
-  ctx.strokeStyle = edge; ctx.lineWidth = 3;
+  ctx.restore();
+
+  drawBoostArc(s);
+}
+
+/* MARQUE DE TÊTE, POSÉE EN DERNIER (G11).
+   Le triangle blanc est le seul repère qui dit « c'est toi » ; il ne peut pas
+   dépendre de ce qui passe par-dessus. Or deux voiles pleine largeur sont
+   dessinés APRÈS le serpent — la brume d'ambiance et la vignette de danger de
+   levels.drawFore, toutes deux en source-over. Mesuré : la tête cessait d'être
+   la tache blanche la plus proche d'elle-même sur une image sur sept, et le
+   pixel relevé à sa position tombait à (255, 229, 246) — plus blanc du tout.
+   On dessine donc la MARQUE de tête APRÈS ces voiles : le triangle, son liseré
+   et l'oeil, six appels de canevas, rien de plus. Le halo, le cône de visée et
+   le corps restent à leur place, sous les voiles, où ils font partie de la
+   scène. Le blanc pur reste réservé à cette marque, et à elle seule. */
+function drawHeadMark() {
+  var s = S.snake;
+  if (!s) return;
+  var blink = s.invuln > 0 && ((S.t / 60) | 0) % 2 === 0;
+  ctx.save();
+  ctx.translate(s.x, s.y);
+  ctx.rotate(aimAng());
+  ctx.fillStyle = '#ffffff';
   ctx.beginPath();
   ctx.moveTo(K.HEAD_R * 1.55, 0);
   ctx.lineTo(-K.HEAD_R * 0.7, -K.HEAD_R * 1.05);
   ctx.lineTo(-K.HEAD_R * 0.25, 0);
   ctx.lineTo(-K.HEAD_R * 0.7, K.HEAD_R * 1.05);
   ctx.closePath();
-  ctx.fill(); ctx.stroke();
-
+  ctx.fill();
+  ctx.strokeStyle = blink ? '#fff3b0' : '#05060f'; ctx.lineWidth = 2;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
   ctx.fillStyle = '#06131c';
-  ctx.beginPath(); ctx.arc(K.HEAD_R * 0.35, -K.HEAD_R * 0.3, 2.6, 0, TAU); ctx.fill();
-  ctx.beginPath(); ctx.arc(K.HEAD_R * 0.35, K.HEAD_R * 0.3, 2.6, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(K.HEAD_R * 0.42, -K.HEAD_R * 0.34, 2.2, 0, TAU); ctx.fill();
+  ctx.beginPath(); ctx.arc(K.HEAD_R * 0.42, K.HEAD_R * 0.34, 2.2, 0, TAU); ctx.fill();
   ctx.restore();
-
-  drawBoostArc(s);
 }
 
 // jauge de boost autour de la tête : arc de 270°, rayon 2,2 × HEAD_R, 3 px d'écran, ambre (rouge sous 20 %)
@@ -529,12 +636,32 @@ function pickSprite(kind, col, k, plat) {
       g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
     }
     g.closePath();
+  } else if (kind === 'energy') {
+    /* LOSANGE. Le vert du butin et le cyan du serpent ne sont séparés que de
+       ΔE 10,2 en TRITANOPIE (67,4 en vision normale, 64,4 protan, 62,2 deutan) :
+       la couleur seule ne suffit pas pour cette vision-là. La forme, si — comme
+       la croix du soin. Le glyphe est pré-rendu, il ne coûte rien par image. */
+    g.moveTo(r * 1.15, 0); g.lineTo(0, r * 1.15); g.lineTo(-r * 1.15, 0); g.lineTo(0, -r * 1.15);
+    g.closePath();
   } else g.arc(0, 0, r, 0, TAU);
   g.fill();
+  if (kind === 'heal') {                       // croix du soin, gravée dans le disque
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = '#05060f';
+    g.fillRect(-r * 0.66, -r * 0.2, r * 1.32, r * 0.4);
+    g.fillRect(-r * 0.2, -r * 0.66, r * 0.4, r * 1.32);
+  }
   _PSPR[key] = c;
   return c;
 }
-/** Tir ennemi : halo additif + coeur blanc pré-composés, rayon de référence 5. */
+/** TIR ENNEMI (G11) : halo orange, CONTOUR BLANC, NOYAU SOMBRE — dans cet ordre.
+    Le coeur était blanc : la balle se lisait comme une tache claire de plus au
+    milieu d'un halo clair, sans bord net. Un noyau sombre cerclé de blanc donne
+    au contraire un bord franc, et c'est le contour qui porte le contraste.
+    Le rayon de référence du sprite est 5 pour un rayon de balle b.r : une unité
+    de sprite vaut b.r/5 en monde, donc le contour (5,4 ± 1,5) couvre 0,78 à
+    1,38 b.r et contient toujours le point relevé à b.r + 1. Le sprite est posé
+    en 'lighter' : le noyau n'ajoute que 5,6,15 au fond, il reste sombre. */
 var _EBSPR = {};
 function ebSprite(col) {
   var c = _EBSPR[col];
@@ -546,8 +673,11 @@ function ebSprite(col) {
   g.translate(D / 2, D / 2); g.scale(SS, SS);
   g.globalCompositeOperation = 'lighter';
   g.drawImage(glowSprite(col, R, 'rgba(0,0,0,0)'), -R, -R, R * 2, R * 2);
-  g.fillStyle = '#fff';
-  g.beginPath(); g.arc(0, 0, r * 0.5, 0, TAU); g.fill();
+  g.globalCompositeOperation = 'source-over';
+  g.fillStyle = '#05060f';
+  g.beginPath(); g.arc(0, 0, r * 0.68, 0, TAU); g.fill();
+  g.strokeStyle = '#ffffff'; g.lineWidth = 3; g.lineCap = 'butt';
+  g.beginPath(); g.arc(0, 0, r * 1.08, 0, TAU); g.stroke();
   _EBSPR[col] = c;
   return c;
 }
@@ -568,7 +698,7 @@ function drawPickups() {
     if (!inView(p.x, p.y, 40)) continue;
     // les deux dernières secondes de vie : il clignote avant de disparaître
     if (p.t > 8 && cli) continue;
-    var col = p.kind === 'core' ? '#ffd166' : (p.kind === 'heal' ? '#7CFFB2' : '#00e5ff');
+    var col = p.kind === 'core' ? '#ffc94d' : (p.kind === 'heal' ? '#7CFFB2' : '#64ff9a');
     var pulse = 1 + Math.sin(S.t / 180 + i) * 0.16;
     // p.r porte la fusion (rayon majoré de 15 % quand la valeur est cumulée)
     var R = (plat ? p.r : p.r * 4) * pulse;
@@ -588,7 +718,14 @@ function drawBullets() {
     } catch (x) { b.life = 0; errLog('bullet.draw:' + (b.kind || '?'), x); gfxRecover(ctx, _WX); }
   }
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  /* G11 : le sprite de balle ennemie n'est PLUS posé en additif. Son noyau est
+     sombre par construction (#05060f) et son contour blanc ; en 'lighter' le
+     noyau n'était que « fond + 5 » et remontait au-dessus de 60/255 dès que la
+     balle passait sur un halo — mesuré : 17,3 % des relevés hors critère. En
+     source-over le noyau REMPLACE le fond, donc il vaut toujours 6,4/255 et le
+     bord reste franc. Le halo du sprite garde son dégradé, seulement composé
+     normalement. */
+  ctx.globalCompositeOperation = 'source-over';
   for (i = 0; i < S.ebullets.length; i++) {
     b = S.ebullets[i];
     if (!inView(b.x, b.y, 30)) continue;
@@ -789,18 +926,38 @@ function drawWorld(g, bw, bh) {
   var zm = 1, tl = 0, rt = 0;
   try { if (P) { zm = P.zoom(); tl = P.tilt(); rt = P.rot(); } } catch (x) { errLog('phases.camera', x); }
   var sx2 = SCALE * zm, sy2 = SCALE * zm * (1 - tl * 0.42);
+  var _cr = Math.abs(Math.cos(rt)); if (!(_cr > 0.2)) _cr = 0.2;
+  _LWWORLD = 2 / (sy2 * _cr);   // consigne indicative, reprise par le rail d'avertissement
+  lwPatch(g);
   // la vue change de taille avec le zoom et avec la cible : le tri du visible
   // doit suivre, sinon la perspective révèle les trous là où l'on a coupé
   S.view.w = bw / sx2; S.view.h = bh / sy2;
-  _WX.bw = bw; _WX.bh = bh; _WX.rt = rt; _WX.sx = sx2; _WX.sy = sy2; _WX.ox = ox; _WX.oy = oy;
+  _WX.bw = bw; _WX.bh = bh; _WX.rt = rt; _WX.sx = sx2; _WX.sy = sy2; _WX.ox = ox; _WX.oy = oy; _WX.dpr = DPR;
+  _WX.cx = S.cam.x; _WX.cy = S.cam.y;
+  /* HORODATAGE DE L'IMAGE ET POSITION DE TÊTE AU MOMENT DU TRAIT. Une sonde
+     qui lit S.snake APRÈS coup compare des pixels d'une image à un état d'une
+     autre : le décalage mesuré atteint 154 px sur 1440x900, soit un demi-tour
+     de queue, et la tête paraît absente là où elle n'a jamais été dessinée.
+     Ces trois nombres SONT ceux de l'image qu'on vient de peindre ; une sonde
+     qui les emploie ne peut plus se tromper d'image. */
+  _WX.t = S.t; _WX.hx = S.snake ? S.snake.x : 0; _WX.hy = S.snake ? S.snake.y : 0;
+  /* REPÈRE RÉELLEMENT EMPLOYÉ PAR L'IMAGE, publié pour les sondes de mesure.
+     Une sonde qui reprojette un point monde à partir de S.cam et de S.view
+     ignore la SECOUSSE de caméra (ox, oy, jusqu'à ±18 u, soit ±17 px) : elle
+     relève alors le fond là où le jeu a dessiné la tête, et conclut à tort que
+     la tête n'est plus blanche. Ce n'est pas un état interne de plus — c'est la
+     matrice que worldXf vient de poser, celle des pixels qu'on va lire. */
+  S.rx = _WX;
   g.save();
   worldXf(g, _WX);
 
   /* Chaque couche est isolée : si l'une lève au milieu d'un save(), on
      déroule la pile et on repose la caméra avant de passer à la suivante. */
   try {
+    _LWMIN = 0;   // décor de profondeur : exclu du plancher, nommément
     try { S2030.levels && S2030.levels.drawBack && S2030.levels.drawBack(g); } catch (x) { errLog('levels.drawBack', x); gfxRecover(g, _WX); }
     try { P && P.drawFloor(g); } catch (x) { errLog('phases.drawFloor', x); gfxRecover(g, _WX); }
+    _LWMIN = 1;
     try { drawArenaEdge(); } catch (x) { errLog('drawArenaEdge', x); gfxRecover(g, _WX); }
     try { drawPools(g); } catch (x) { errLog('drawPools', x); gfxRecover(g, _WX); }
     try { drawPickups(); } catch (x) { errLog('drawPickups', x); gfxRecover(g, _WX); }
@@ -815,11 +972,48 @@ function drawWorld(g, bw, bh) {
     }
 
     try { drawBullets(); } catch (x) { errLog('drawBullets', x); gfxRecover(g, _WX); }
-    try { if (S.snake) drawSnake(); } catch (x) { errLog('drawSnake', x); gfxRecover(g, _WX); }
+    _LWMIN = 0;   // treillis : décor, exclu nommément (le rail d'avertissement pose son propre plancher)
     try { P && P.drawDiag(g); } catch (x) { errLog('phases.drawDiag', x); gfxRecover(g, _WX); }
+    _LWMIN = 1;
     try { S2030.fx && S2030.fx.draw(g); } catch (x) { errLog('fx.draw', x); gfxRecover(g, _WX); }
+    /* LE SERPENT PASSE AU-DESSUS DES EFFETS (G11).
+       C'est le seul remède qui ferme la porte au lieu de la rétrécir. Le corps
+       est #00e5ff : son vert (229) et son bleu (255) sont déjà au plafond, si
+       bien que TOUTE lumière chaude composée en 'lighter' par-dessus lui sature
+       les trois canaux dès que le rouge cumulé des couches dépasse 235. Les
+       couches en question sont innombrables et empilables — gerbes de mort,
+       anneaux d'onde, halos, flashs de silhouette —, et aucune baisse d'alpha ni
+       aucun choix de teinte ne borne une somme. Mesuré sur le build précédent :
+       274 composantes blanches de corps sur 320 images, rgb (255, 255, 240).
+       En dessinant le serpent APRÈS fx, la lumière des effets tombe DERRIÈRE le
+       corps : elle ne peut plus l'éclaircir. Ce qui reste au-dessus du corps est
+       fini et vérifiable — les couches propres au serpent et drawMounts, toutes
+       repassées en composition normale. Le treillis passe du même coup sous le
+       serpent, ce qui va dans le sens de l'objectif : le joueur devant le décor. */
+    /* LES VOILES DE NIVEAU AUSSI PASSENT SOUS LE SERPENT (G11). Mesuré sur
+       320 images : 13 composantes blanches de 20 à 35 px CSS restaient POSÉES
+       SUR le corps, à 0,25 à 1,05 rayon de segment — donc dessinées après lui —
+       en (255, 255, 255) et rattachables à aucun objet. Ce qui passe encore
+       au-dessus du corps à cet endroit, ce sont les couches de levels.drawFore :
+       poussières du champ magnétique, noeuds, stries de couloir, composées en
+       additif sur un corps dont le vert et le bleu sont déjà au plafond.
+       La brume et la vignette de danger sont de l'ambiance : elles appartiennent
+       au décor, pas au joueur. Sous le serpent, elles font le même travail sans
+       pouvoir le blanchir — et la tête n'a plus besoin d'être repêchée après
+       coup pour rester lisible. */
+    _LWMIN = 0;
     try { S2030.levels && S2030.levels.drawFore && S2030.levels.drawFore(g); } catch (x) { errLog('levels.drawFore', x); gfxRecover(g, _WX); }
+    _LWMIN = 1;
+    try { if (S.snake) drawSnake(); } catch (x) { errLog('drawSnake', x); gfxRecover(g, _WX); }
+    /* TÉLÉGRAPHES LONGS, REDESSINÉS EN DERNIER (G11). Voir _enTeleTard dans
+       22-enemies.js : le couloir de tir de l'artilleur et le cercle d'armement
+       de la mine sont posés ici, après les corps, le serpent, les effets et les
+       voiles, pour que rien ne recouvre plus leur gaine sombre. Ils ne sont pas
+       dessinés deux fois : la passe des corps les saute. */
+    try { E && E.drawTeleLate && E.drawTeleLate(g); } catch (x) { errLog('enemies.drawTeleLate', x); gfxRecover(g, _WX); }
+    try { if (S.snake && S.phase === 'play') drawHeadMark(); } catch (x) { errLog('drawHeadMark', x); gfxRecover(g, _WX); }
   } finally {
+    _LWMIN = 0;
     g.restore();
     ctx = _prev;
   }
@@ -1083,7 +1277,7 @@ function openCards() {
     S.timeScale = 0.15;
     s.invuln = Math.max(s.invuln, 900);
     S2030.fx && S2030.fx.flash('#ffffff', 0.3);
-    S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 2000, { w: 6, life: 0.5 });
+    S2030.fx && S2030.fx.ring(s.x, s.y, '#e6f0ff', 10, 2000, { w: 6, life: 0.5 });
     S2030.phases && S2030.phases.pulse(0.08);
     S2030.audio && S2030.audio.sfx('levelup');
     haptic(14);
@@ -1567,19 +1761,19 @@ function scheduleResize(ms) {
    au démarrage, où personne ne joue encore. */
 function warmup() {
   try {
-    var cols = ['#00e5ff', '#ffd166', '#7CFFB2', '#ff5c3a', '#ff2e63', '#ff8a3d'];
+    var cols = [(S2030.ui && S2030.ui.PCOL) || '#fff3b0', '#64ff9a', '#ffc94d', '#7CFFB2', '#ff6a00', '#ff2e63', '#8a4dff'];
     for (var i = 0; i < cols.length; i++) {
       glowSprite(cols[i], 28, 'rgba(0,0,0,0)');
       glowSprite(cols[i], 32, 'rgba(0,0,0,0)');
       glowSprite(cols[i], 44, 'rgba(0,0,0,0)');
     }
-    glowSprite('#ff8a3d', 60, 'rgba(255,138,61,0)');
-    glowSprite('rgba(0,229,255,.8)', K.HEAD_R * 3.2, 'rgba(0,229,255,0)');
-    glowSprite('rgba(179,136,255,.85)', K.HEAD_R * 3.2, 'rgba(0,229,255,0)');
-    ebSprite('#ff5c3a'); ebSprite('#ff2e63');
-    var kinds = [['energy', '#00e5ff'], ['heal', '#7CFFB2']];
+    glowSprite('#ff6a00', 60, 'rgba(255,106,0,0)');
+    glowSprite('rgba(255,255,255,.85)', K.HEAD_R * 1.6, 'rgba(255,255,255,0)');
+    glowSprite('rgba(179,136,255,.85)', K.HEAD_R * 1.6, 'rgba(255,255,255,0)');
+    ebSprite('#ff6a00'); ebSprite('#ff2e63');
+    var kinds = [['energy', '#64ff9a'], ['heal', '#7CFFB2']];
     for (var j = 0; j < kinds.length; j++) { pickSprite(kinds[j][0], kinds[j][1], 0, false); pickSprite(kinds[j][0], kinds[j][1], 0, true); }
-    for (var q = 0; q < 8; q++) pickSprite('core', '#ffd166', q, false);
+    for (var q = 0; q < 8; q++) pickSprite('core', '#ffc94d', q, false);
   } catch (e) {}
   try { if (S2030.fx && S2030.fx.warm) S2030.fx.warm(ctx); } catch (e) {}
   try { if (S2030.audio && S2030.audio.warm) S2030.audio.warm(); } catch (e) {}

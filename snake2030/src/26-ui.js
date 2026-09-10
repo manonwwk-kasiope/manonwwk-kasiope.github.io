@@ -1987,6 +1987,14 @@ function _uiOffscreen() {
 
 S2030.ui = {
 
+  /* COULEUR D'IDENTITÉ DE LA JOUEUSE. G11 réserve le cyan #00e5ff au serpent :
+     hors drawSnake, tout ce qui porte encore cette couleur parce qu'il EST le
+     serpent (l'explosion de mort, l'absorption d'un tir par le corps, le
+     préchauffage des halos) la lit ici, dans le seul module que la spec
+     autorise à l'écrire avec la feuille de style du HUD. Une seule définition,
+     donc aucune dérive possible entre le corps et ses effets. */
+  PCOL: '#00e5ff',
+
   /* menaces hors champ, en px écran : [{x, y, kind}] */
   offscreen: _uiOffscreen,
 

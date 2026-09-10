@@ -36,10 +36,10 @@ var _LV_ALLMODS = ['armored', 'fast', 'teleporter', 'explosive', 'regen', 'shiel
 var _LV_OVERPAL = [
   { bg: '#12030f', bg2: '#3a0736', grid: '#5d1246', gridHot: '#ff2e9a',
     accent: '#ff4fd8', warm: '#ffd166', danger: '#ff2b2b', bloom: '#8a1060',
-    pull: '#00e5ff', push: '#ffb43c', lane: '#ff2e9a', chrome: '#cfe9ff' },
-  { bg: '#030f12', bg2: '#06343a', grid: '#0b4a52', gridHot: '#00e5ff',
-    accent: '#00e5ff', warm: '#ffe45e', danger: '#ff2b2b', bloom: '#0a5f6b',
-    pull: '#7CFFB2', push: '#ff8a3d', lane: '#00e5ff', chrome: '#cfe9ff' },
+    pull: '#3a7bff', push: '#ffb43c', lane: '#ff2e9a', chrome: '#cfe9ff' },
+  { bg: '#050a18', bg2: '#101a44', grid: '#1b2a66', gridHot: '#3a7bff',
+    accent: '#5b8cff', warm: '#ffe45e', danger: '#ff2b2b', bloom: '#1c3f96',
+    pull: '#7CFFB2', push: '#ff8a3d', lane: '#3a7bff', chrome: '#cfe9ff' },
   { bg: '#10060a', bg2: '#3d0d12', grid: '#5a1420', gridHot: '#ff5c3a',
     accent: '#ffb43c', warm: '#fff3b0', danger: '#ff2b2b', bloom: '#7a1418',
     pull: '#b388ff', push: '#ff5c3a', lane: '#ffb43c', chrome: '#e6d2ff' }
@@ -63,8 +63,8 @@ var _lvDefs = [
     mech: 'none',
     palette: {
       bg: '#03060f', bg2: '#071433', grid: '#0f2e63', gridHot: '#2f7fff',
-      accent: '#00e5ff', warm: '#7df9ff', danger: '#ff2e63', bloom: '#0b3f8f',
-      dust: '#4f9bff', chrome: '#cfe9ff', lane: '#2f7fff', pull: '#00e5ff', push: '#ffb43c'
+      accent: '#2f7fff', warm: '#9fc2ff', danger: '#ff2e63', bloom: '#0b3f8f',
+      dust: '#4f9bff', chrome: '#cfe9ff', lane: '#2f7fff', pull: '#3a7bff', push: '#ffb43c'
     },
     back: { grid: 1, cell: 132, scan: 1, lanes: 0, field: 0, overload: 0 },
     fore: { fog: 0.10, streaks: 0 },
@@ -105,7 +105,7 @@ var _lvDefs = [
     palette: {
       bg: '#0a0316', bg2: '#26063f', grid: '#3a0d5e', gridHot: '#b388ff',
       accent: '#ff2e9a', warm: '#ffd166', danger: '#ff2b2b', bloom: '#5c0f7a',
-      dust: '#d18cff', chrome: '#cfe9ff', lane: '#ff2e9a', pull: '#00e5ff', push: '#ffb43c'
+      dust: '#d18cff', chrome: '#cfe9ff', lane: '#ff2e9a', pull: '#3a7bff', push: '#ffb43c'
     },
     back: { grid: 1, cell: 168, scan: 0, lanes: 1, field: 0, overload: 0 },
     fore: { fog: 0.13, streaks: 1 },
@@ -141,12 +141,12 @@ var _lvDefs = [
     n: 3,
     name: 'ZONE MAGNÉTIQUE',
     sub: 'RÉACTEUR ORBITAL — CHAMPS INSTABLES',
-    hint: 'CYAN ATTIRE, AMBRE REPOUSSE',
+    hint: 'BLEU ATTIRE, AMBRE REPOUSSE',
     mech: 'field',
     palette: {
-      bg: '#020a0e', bg2: '#04292f', grid: '#0a3d45', gridHot: '#00e5ff',
-      accent: '#00e5ff', warm: '#ffb43c', danger: '#ff2b2b', bloom: '#06555f',
-      dust: '#6fe8ff', chrome: '#cfe9ff', lane: '#00e5ff', pull: '#00e5ff', push: '#ffb43c'
+      bg: '#04030f', bg2: '#0b1440', grid: '#17255e', gridHot: '#3a7bff',
+      accent: '#5b8cff', warm: '#ffb43c', danger: '#ff2b2b', bloom: '#1a3a8f',
+      dust: '#8aa8ff', chrome: '#cfe9ff', lane: '#3a7bff', pull: '#3a7bff', push: '#ffb43c'
     },
     back: { grid: 1, cell: 96, scan: 0, lanes: 0, field: 1, overload: 0 },
     fore: { fog: 0.11, streaks: 0 },

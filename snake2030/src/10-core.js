@@ -505,10 +505,10 @@ function die() {
   S2030.fx && S2030.fx.shake(30);
   S2030.fx && S2030.fx.hitstop(8);
   S2030.fx && S2030.fx.flash('#ffffff', 0.7);
-  S2030.fx && S2030.fx.burst(s.x, s.y, '#00e5ff', 70, 3, { glow: true });
-  S2030.fx && S2030.fx.ring(s.x, s.y, '#ffffff', 10, 700);
+  S2030.fx && S2030.fx.burst(s.x, s.y, _pcol(), 70, 3, { glow: true });
+  S2030.fx && S2030.fx.ring(s.x, s.y, '#e6f0ff', 10, 700);
   for (var i = 0; i < s.segs.length; i += 2) {
-    S2030.fx && S2030.fx.burst(s.segs[i].x, s.segs[i].y, '#00e5ff', 5, 1.4, { glow: true });
+    S2030.fx && S2030.fx.burst(s.segs[i].x, s.segs[i].y, _pcol(), 5, 1.4, { glow: true });
   }
   S2030.audio && S2030.audio.sfx('dead');
   S2030.audio && S2030.audio.stop();
@@ -744,8 +744,8 @@ function deathEffects(e) {
       }
       if (!cible) break;
       S2030.fx && S2030.fx.bolt
-        ? S2030.fx.bolt(from.x, from.y, cible.x, cible.y, '#7bdcff')
-        : S2030.fx && S2030.fx.ring(cible.x, cible.y, '#7bdcff', 5, 260);
+        ? S2030.fx.bolt(from.x, from.y, cible.x, cible.y, '#9fc2ff')
+        : S2030.fx && S2030.fx.ring(cible.x, cible.y, '#9fc2ff', 5, 260);
       damageEnemy(cible, 7, { x: cible.x, y: cible.y, type: 'shock' });
       from = cible; hop++;
     }
@@ -783,7 +783,7 @@ function auraTick(dt) {
   for (var i = 0; i < list.length; i++) {
     damageEnemy(list[i], 1.6 * n * dt * 15, { x: list[i].x, y: list[i].y, type: 'shock' });
   }
-  if (list.length && chance(0.25)) S2030.fx && S2030.fx.ring(s.x, s.y, '#7bdcff', r * 0.7, 420);
+  if (list.length && chance(0.25)) S2030.fx && S2030.fx.ring(s.x, s.y, '#9fc2ff', r * 0.7, 420);
 }
 
 /* Flaques brûlantes laissées par les morts. */
@@ -878,10 +878,13 @@ function inView(x, y, m) {
 /* Au-delà de cet indice d'anneau, une balle ennemie est absorbée par le corps :
    pas de dégât, pas d'invulnérabilité, pas de combo cassé. Les 8 premiers
    anneaux (0..7) et la tête blessent comme avant. */
+/* Couleur d'identité du serpent, définie une seule fois dans 26-ui.js (G11). */
+function _pcol() { return (S2030.ui && S2030.ui.PCOL) || '#fff3b0'; }
+
 var BODY_ABSORB = 8;
 function absorbEBullet(b) {
   var s = S.snake;
-  S2030.fx && S2030.fx.burst(b.x, b.y, '#00e5ff', 6, 170, { size: 1.5, life: 0.22, drag: 2.2 });
+  S2030.fx && S2030.fx.burst(b.x, b.y, _pcol(), 6, 170, { size: 1.5, life: 0.22, drag: 2.2 });
   s.boostE = Math.min(s.boostMax, s.boostE + 1);
   S2030.audio && S2030.audio.sfx('absorb', { vol: 0.8 });
 }
@@ -1063,12 +1066,12 @@ function grabPickup(p) {
     S.ult = Math.min(S.ultMax, S.ult + 20 * vc);
     healSnake(1);
     S2030.audio && S2030.audio.sfx('core');
-    S2030.fx && S2030.fx.flare(p.x, p.y, '#ffd166', 90);
+    S2030.fx && S2030.fx.flare(p.x, p.y, '#ffc94d', 90);
   } else if (p.kind === 'heal') {
     healSnake(3);
     S2030.audio && S2030.audio.sfx('core');
   }
-  S2030.fx && S2030.fx.burst(p.x, p.y, p.kind === 'core' ? '#ffd166' : '#00e5ff', 6, 0.8, { glow: true });
+  S2030.fx && S2030.fx.burst(p.x, p.y, p.kind === 'core' ? '#ffc94d' : (p.kind === 'heal' ? '#7CFFB2' : '#64ff9a'), 6, 0.8, { glow: true });
   haptic(6);
 }
 

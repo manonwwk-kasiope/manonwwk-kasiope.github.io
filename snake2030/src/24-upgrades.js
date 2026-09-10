@@ -114,7 +114,7 @@
    ====== */
 
 /* ------ palette */
-var _UP_ELEC  = '#7cf3ff';
+var _UP_ELEC  = '#9fc2ff';
 var _UP_LASER = '#fff3b0';
 var _UP_EXPLO = '#ffb347';
 var _UP_SPEED = '#ff6ad5';
@@ -187,7 +187,7 @@ function _upWpnStep(id) {
     var fx = S2030.fx, s = S.snake;
     if (fx && s) {
       fx.flash && fx.flash('#ffffff', 0.4);
-      fx.ring && fx.ring(s.x, s.y, '#ffffff', 18, 900);
+      fx.ring && fx.ring(s.x, s.y, '#e6f0ff', 18, 900);
     }
   }
 }

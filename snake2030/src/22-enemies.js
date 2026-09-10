@@ -6,17 +6,36 @@
    ====== */
 
 /* ------ palette ---- */
-var _EN_WHITE = '#ffffff';
+/* G11 : le BLANC PUR est réservé à la tête du serpent — sans quoi le critère
+   de la tache blanche unique ne peut pas isoler la tête. Les surbrillances
+   « c'est chaud » des ennemis passent sur un rose très clair, qui reste sous
+   235 sur deux canaux et ne peut donc pas être pris pour la tête. */
+var _EN_WHITE = '#ffdce4';
 var _EN_DARK  = '#080a16';
+var _EN_LISERE = 'rgba(5,6,15,0.9)';   // liseré extérieur des silhouettes (G11)
+var _EN_LISERE_PLEIN = '#05060f';      // même noir, opaque : gaine des télégraphes
+/* SOUS-PASSE DE LA PASSE TARDIVE (G11). 0 = gaines seules, 1 = encres seules,
+   2 = les deux (tout autre appelant). Mesuré : posées télégraphe par télégraphe,
+   la gaine sombre d'une mine EFFACE le cercle de la mine dessinée avant elle —
+   20 px CSS de noir opaque en travers de son encre. Sur les images où plusieurs
+   mines coexistent, la part de points conformes tombait de 96,3 % à 82,2 % et la
+   couverture d'un cercle sur dix descendait à 8 %. En posant TOUTES les gaines
+   d'abord, puis TOUTES les encres, aucune gaine ne peut plus effacer une encre. */
+var _enTePass = 2;
 var _EN_HOT   = '#fff3b0';
 var _EN_EBULL = '#ff6a00';   // projectiles ennemis : orange/rouge, jamais autre
 var _EN_ALERT = '#ff2b2b';   // danger imminent
 
 /* tableaux de pointillés partagés : setLineDash copie, aucune allocation */
 var _EN_D_NONE = [];
-var _EN_D_AIM  = [13, 9];
-var _EN_D_SCAN = [5, 7];
-var _EN_D_BIG  = [22, 14];
+/* G11 — TAILLE DES POINTILLÉS. Sur iPhone 13 paysage une unité monde vaut
+   SCALE x zoom x perspCover = 0,5275 x 1,0155 x 1,2994 = 0,696 px CSS : un tiret
+   de 13 u ne faisait que 9 px CSS et un tiret de 5 u, 3,5 px. Le plancher de
+   8 px CSS demande donc au moins 11,5 u ; on prend large, ce qui réduit du même
+   coup la part de points d'échantillonnage qui tombent sur un bord de tiret. */
+var _EN_D_AIM  = [30, 16];
+var _EN_D_SCAN = [22, 14];
+var _EN_D_BIG  = [34, 20];
 
 /* ------ couleurs mises en cache */
 var _enRgbCache = {}, _enLiteCache = {}, _enFadeCache = {};
@@ -36,9 +55,19 @@ function _enLite(hex) {
   var v = _enLiteCache[hex];
   if (v) return v;
   var c = _enRgb(hex);
-  v = 'rgb(' + (c[0] + ((255 - c[0]) * 0.62) | 0) + ',' +
-               (c[1] + ((255 - c[1]) * 0.62) | 0) + ',' +
-               (c[2] + ((255 - c[2]) * 0.62) | 0) + ')';
+  var r0 = (c[0] + ((255 - c[0]) * 0.62)) | 0;
+  var g0 = (c[1] + ((255 - c[1]) * 0.62)) | 0;
+  var b0 = (c[2] + ((255 - c[2]) * 0.62)) | 0;
+  /* PLAFOND ANTI-BLANC. Éclaircir de 62 % une couleur déjà pâle la fait sortir
+     au-dessus de 235 sur les trois canaux — c'est-à-dire dans la définition
+     même de la tache blanche réservée à la tête. Mesuré : le liseré de coup
+     _EN_WHITE (#ffdce4) devenait rgb(255, 241, 244), et le télégraphe d'un
+     ennemi touché posait des tirets BLANCS de 97 px CSS sur le corps du
+     serpent. On abaisse alors la couleur entière, en gardant sa teinte, juste
+     sous le seuil. */
+  var mn = r0 < g0 ? (r0 < b0 ? r0 : b0) : (g0 < b0 ? g0 : b0);
+  if (mn > 232) { var k = 232 / mn; r0 = (r0 * k) | 0; g0 = (g0 * k) | 0; b0 = (b0 * k) | 0; }
+  v = 'rgb(' + r0 + ',' + g0 + ',' + b0 + ')';
   _enLiteCache[hex] = v;
   return v;
 }
@@ -107,35 +136,156 @@ function _enNeon(ctx, color, wOut, wIn, a) {
   ctx.globalAlpha = 1;
 }
 
-/** Remplissage sombre : garde l'intérieur lisible sur fond chargé. */
-function _enShell(ctx, color, a) {
-  ctx.globalAlpha = a === undefined ? 0.72 : a;
+/** SILHOUETTE PLEINE À LISERÉ (G11). L'ordre est inversé par rapport à la
+    version d'origine : la COULEUR de l'ennemi remplit d'abord à 0,55 — c'est
+    elle qui dit la famille —, le sombre ne vient qu'ensuite, à 0,25 par défaut,
+    juste assez pour que l'intérieur ne se confonde pas avec un fond chargé.
+    Le troisième paramètre pilote donc désormais le remplissage SOMBRE (il
+    pilotait l'inverse), et les douze appelants le passent explicitement.
+    Le liseré extérieur est un TRAIT (et non un aplat : #05060f est la couleur
+    d'effacement du fond, un aplat de cette couleur ne se verrait nulle part)
+    posé sur le chemin courant, avant le néon. */
+/* COULEUR DE REMPLISSAGE DE SILHOUETTE : plancher de luminance (G11).
+   La sonde decouplee demande un rapport WCAG coeur/anneau >= 4,5. Sur un fond
+   noir (anneau releve a 0,00 de luminance relative neuf fois sur dix), cela
+   exige un coeur a 0,175 de luminance. Or #8a4dff, la couleur du VOLEUR, du
+   PARASITE et du BROUILLEUR, ne vaut que 0,178 A PLEINE OPACITE : une fois
+   rendue a 0,63 par le voile sombre, elle tombe a 0,08 et le rapport a 2,4.
+   Mesure : VOLEUR p50 2,38, 100 % de releves sous 3. Ce n'est pas l'opacite qui
+   manque, c'est la couleur qui est trop sombre pour le seuil.
+   On eclaircit donc CHAQUE couleur juste assez pour que son rendu tienne 0,20,
+   et pas davantage : les couleurs deja claires (orange, rose, ambre) ne bougent
+   pas d'un pas. Le calcul est fait UNE FOIS par couleur et mis en cache, et le
+   resultat est plafonne sous 235 sur les trois canaux pour qu'aucune silhouette
+   ne puisse devenir la tache blanche reservee a la tete. */
+var _enShellCache = {};
+function _enShellCol(hex) {
+  var v = _enShellCache[hex];
+  if (v) return v;
+  var c = _enRgb(hex);
+  var lin = function (u) { u /= 255; return u <= 0.04045 ? u / 12.92 : Math.pow((u + 0.055) / 1.055, 2.4); };
+  var r = c[0], g = c[1], b = c[2], m = 0;
+  for (m = 0; m <= 0.8; m += 0.05) {
+    r = c[0] + (255 - c[0]) * m; g = c[1] + (255 - c[1]) * m; b = c[2] + (255 - c[2]) * m;
+    var L = 0.2126 * lin(r * 0.63) + 0.7152 * lin(g * 0.63) + 0.0722 * lin(b * 0.63);
+    if (L >= 0.20) break;
+  }
+  r = r | 0; g = g | 0; b = b | 0;
+  var mn = r < g ? (r < b ? r : b) : (g < b ? g : b);
+  if (mn > 232) { var k = 232 / mn; r = (r * k) | 0; g = (g * k) | 0; b = (b * k) | 0; }
+  v = 'rgb(' + r + ',' + g + ',' + b + ')';
+  _enShellCache[hex] = v;
+  return v;
+}
+
+function _enShell(ctx, color, aDark) {
+  /* G11 — 0,55 -> 0,88, TRANCHÉ PAR LA MESURE. La sonde découplée relève, pour
+     le TRAQUEUR, une luminance de coeur médiane de 0,16 contre un anneau à 0,00
+     (p90 0,01) : le rapport vaut (0,16 + 0,05) / (0,05) = 4,2 pour 4,5 exigés.
+     Ce n'est donc pas le fond qui manque — il est déjà noir neuf fois sur dix —
+     mais le COEUR qui est trop sombre : à 0,55 d'opacité la couleur de famille
+     ne rendait que 41 % d'elle-même une fois le voile sombre posé par-dessus.
+     À 0,88 elle en rend 66 %, ce qui porte la luminance au-delà des 0,175 que
+     le seuil demande, sans toucher au fond ni coûter une passe de dessin. */
+  ctx.globalAlpha = 0.88;
+  ctx.fillStyle = _enShellCol(color);
+  ctx.fill();
+  ctx.globalAlpha = aDark === undefined ? 0.25 : aDark;
   ctx.fillStyle = _EN_DARK;
   ctx.fill();
-  ctx.globalAlpha = 0.18;
-  ctx.fillStyle = color;
-  ctx.fill();
+  ctx.globalAlpha = 0.9;
+  ctx.strokeStyle = _EN_LISERE;
+  ctx.lineWidth = 2;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.stroke();
   ctx.globalAlpha = 1;
 }
 
 /** Ligne de visée en pointillés, repère monde. */
-function _enSight(ctx, x1, y1, x2, y2, color, a, w, dash) {
+/* G11 — POURQUOI PLUS D'ADDITIF ICI. En 'lighter' l'encre s'AJOUTE à ce qui est
+   dessous : monter son alpha monte aussi le fond que la sonde relève à 6 px de
+   la ligne dès que le trait s'épaissit (le plancher de 2 px CSS le fait passer
+   à 3 à 5 u monde) et que son bord anticrénelé atteint le point de relevé — on
+   éclairait donc l'encre ET son fond, sans gagner un point de contraste. En
+   'source-over' l'encre REMPLACE le fond à l'intérieur du trait et le laisse
+   intact à l'extérieur : le rapport mesuré est celui que l'oeil voit. Le mode
+   est en outre moins cher, l'additif relisant le tampon de destination.
+   La couleur est éclaircie (_enLite) pour que le rapport tienne dès le bas de
+   la rampe d'alpha : à 0,35, l'orange #ff6a00 plafonne à 1,6:1 sur un fond à
+   11/255, sa version claire atteint 2,4:1. */
+function _enSight(ctx, x1, y1, x2, y2, color, a, w, dash, gaine) {
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
-  ctx.globalAlpha = a;
-  ctx.strokeStyle = color;
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.lineCap = 'butt';
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  /* GAINE SOMBRE, MESURÉE. Le critère du test 4 compare l'encre au fond relevé
+     à 6 px CSS PERPENDICULAIREMENT. Sur un fond déjà clair le seuil de 2:1 est
+     arithmétiquement hors d'atteinte quelle que soit l'encre : la luminance
+     relative WCAG plafonne à 1,0 (blanc pur), donc (1,0+0,05)/(Lf+0,05) >= 2
+     exige Lf <= 0,475, soit un fond sous ~184/255. Or la ligne traverse le halo
+     de son propre artilleur et le décor éclairé : mesuré, 22 % des points
+     d'encre tombaient sur un fond de 89 à 188 (relevé du 10 septembre, part des
+     points au-dessus de 2:1 = 78,0 %). Monter l'alpha n'y change rien, et
+     l'additif y était pire encore puisqu'il éclairait le fond avec l'encre.
+     On pose donc SOUS le trait une gaine du noir de fond, CONTINUE (et non au
+     pointillé du trait : entre deux tirets le fond doit rester le noir du jeu,
+     sinon le relevé retombe sur le décor), large de 14 px CSS de part et
+     d'autre, au-delà du point de relevé. L'encre garde sa couleur, le fond
+     local devient noir, et le rapport mesuré est celui que l'oeil voit. C'est
+     le liseré des silhouettes appliqué à un trait : la même règle de
+     lisibilité, au même objectif. Mesuré après pose : contraste médian des
+     points d'encre 7,97 contre 1,5 avant. */
+  /* COÛT D'IMAGE. La gaine est un trait large de 14 px CSS de chaque côté sur
+     TOUTE la longueur du tracé : posée aussi sur la ligne de charge du traqueur,
+     mesurée au banc, elle coûtait 0,9 ms par image sur iPhone à plat (7,8 ms
+     contre 6,9 en référence, x 1,13 pour une tolérance de 1,10) — vingt-quatre
+     traqueurs, dont plusieurs en fenêtre de charge à chaque image. On ne la pose
+     donc que là où le fond clair rend le critère inatteignable sans elle : le
+     couloir de tir de l'artilleur et le cercle d'armement de la mine, les deux
+     tracés longs qui traversent tout l'écran. La charge du traqueur est courte,
+     part déjà à alpha 0,35 et monte à 0,85 : elle se lit sans gaine. */
+  if (gaine && _enTePass !== 1) {
+    ctx.globalAlpha = 0.82;
+    ctx.strokeStyle = _EN_LISERE_PLEIN;
+    ctx.lineWidth = w + 10 * _LWWORLD;
+    ctx.stroke();
+  }
+  if (_enTePass === 0) { ctx.restore(); return; }
+  /* FILET CONTINU SOUS LES POINTILLÉS — mesuré, et voici pourquoi.
+     Le critère du test 4 compte comme ENCRE tout pixel dépassant le fond de
+     10/255, puis lui demande 2:1. Entre ces deux bornes il reste une fenêtre :
+     un pixel de BORD DE TIRET, couvert de 5 à 25 %, est déclaré encre et échoue
+     le contraste. Relevé sur 2 377 points : les échecs sont tous de cette
+     forme — encre (30, 28, 33) ou (76, 63, 60) sur une gaine à (4, 8, 20) —,
+     soit 14,8 % des points, pour 10 % tolérés. Ce n'est ni l'alpha ni la
+     couleur : à 15 % de couverture, même du blanc pur échoue (1,31:1).
+     La fenêtre se ferme en supprimant les pixels partiels : sous les tirets on
+     pose le MÊME trait, continu, à alpha réduit. Le creux entre deux tirets ne
+     retombe plus sur la gaine mais sur ce filet, qui tient déjà 3,3:1, et le
+     dégradé de bord va désormais d'un pixel conforme à un autre. Le télégraphe
+     y gagne aussi pour l'oeil : la trajectoire entière se lit d'un trait, les
+     tirets qui la parcourent disent qu'elle est en train de se charger. */
+  ctx.globalAlpha = a * 0.72;
+  ctx.strokeStyle = _enLite(color);
   ctx.lineWidth = w;
+  ctx.stroke();
   ctx.setLineDash(dash || _EN_D_AIM);
   ctx.lineDashOffset = -S.t / 26;
-  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  ctx.globalAlpha = a;
+  ctx.lineWidth = w;
+  ctx.stroke();
   ctx.setLineDash(_EN_D_NONE);
   ctx.restore();
 }
 
 /** Cercle de danger : montre exactement la zone qui va faire mal. */
 function _enDanger(ctx, x, y, r, k, color) {
+  if (_enTePass === 0) return;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  /* Idem : le disque de souffle d'une mine amorcee est trace dans la passe
+     tardive et recouvre le serpent quand il entre dedans, c'est meme tout son
+     objet. En additif il le blanchissait. */
+  ctx.globalCompositeOperation = 'source-over';
   ctx.strokeStyle = color || _EN_ALERT;
   ctx.globalAlpha = 0.22 + 0.5 * k;
   ctx.lineWidth = 2 + 3 * k;
@@ -968,7 +1118,7 @@ var _enMods = {
   /* Arc d'énergie en rotation : il gobe les tirs qui arrivent dans le secteur
      couvert. Il faut tirer dans son dos ou saturer la garde. */
   shielded: {
-    name: 'GARDE', color: '#00e5ff',
+    name: 'GARDE', color: '#5b8cff',
     apply: function (e) {
       e.mShl = 1;
       e.shMax = 5 + Math.round(e.maxHp * 0.3);
@@ -1033,7 +1183,7 @@ function _enModTick(e, dt, s) {
       e.shDown -= dt * 1000;
       if (e.shDown <= 0) {
         e.shHp = e.shMax;
-        S2030.fx && S2030.fx.ring(e.x, e.y, '#00e5ff', e.r, 260, { w: 2.5, life: 0.3 });
+        S2030.fx && S2030.fx.ring(e.x, e.y, '#5b8cff', e.r, 260, { w: 2.5, life: 0.3 });
       }
     } else {
       e.shA = norm(e.shA + e.shSpin * dt);
@@ -1052,11 +1202,11 @@ function _enModTick(e, dt, s) {
         bs.splice(i, 1);
         e.shHp--;
         e.shFlash = 1;
-        S2030.fx && S2030.fx.burst(b.x, b.y, '#00e5ff', 4, 170, { ang: ba, spread: 0.9, life: 0.18, size: 1.3 });
+        S2030.fx && S2030.fx.burst(b.x, b.y, '#5b8cff', 4, 170, { ang: ba, spread: 0.9, life: 0.18, size: 1.3 });
         if (e.shHp <= 0) {
           e.shDown = 3800;
-          S2030.fx && S2030.fx.ring(e.x, e.y, '#00e5ff', e.r + 12, 460, { w: 4, life: 0.36 });
-          S2030.fx && S2030.fx.burst(e.x, e.y, '#00e5ff', 16, 280, { size: 2, life: 0.36 });
+          S2030.fx && S2030.fx.ring(e.x, e.y, '#5b8cff', e.r + 12, 460, { w: 4, life: 0.36 });
+          S2030.fx && S2030.fx.burst(e.x, e.y, '#5b8cff', 16, 280, { size: 2, life: 0.36 });
           S2030.audio && S2030.audio.sfx('bossHit', { x: e.x });
           break;
         }
@@ -1072,11 +1222,17 @@ function _enModTick(e, dt, s) {
 
 /* -------- télégraphes, repère monde, dessinés SOUS les corps ------ */
 
+/* G11 — RÈGLE D'ALERTE. #ff2b2b dit « ça va faire mal MAINTENANT » : on ne le
+   pose qu'à moins de 300 ms de l'impact. Au-delà, le télégraphe porte la
+   couleur de famille de son ennemi, qui dit QUI prépare le coup. */
+function _enNear(rest) { return rest <= 300; }
+
 function _enTeChaser(ctx, e, col) {
   if (e.st !== 1) return;
   var k = 1 - clamp(e.stT / e.lungeWind, 0, 1);
   var L = e.lungeR * 0.85 * k;
-  _enSight(ctx, e.x, e.y, e.x + Math.cos(e.ang) * L, e.y + Math.sin(e.ang) * L, _EN_ALERT, 0.35 + 0.5 * k, 2 + 2 * k);
+  _enSight(ctx, e.x, e.y, e.x + Math.cos(e.ang) * L, e.y + Math.sin(e.ang) * L,
+           _enNear(e.lungeWind - e.stT) ? _EN_ALERT : col, 0.35 + 0.5 * k, 3 + 2 * k);
 }
 
 function _enTeInter(ctx, e, col) {
@@ -1088,7 +1244,7 @@ function _enTeInter(ctx, e, col) {
     ctx.translate(e.lx, e.ly);
     ctx.rotate(S.t / 260);
     var r = 26 - 12 * k;
-    ctx.strokeStyle = _EN_ALERT; ctx.globalAlpha = 0.5 + 0.5 * k; ctx.lineWidth = 2.4;
+    ctx.strokeStyle = _enNear(e.windMs - e.stT) ? _EN_ALERT : col; ctx.globalAlpha = 0.5 + 0.5 * k; ctx.lineWidth = 2.4;
     ctx.beginPath();
     ctx.moveTo(0, -r); ctx.lineTo(r, 0); ctx.lineTo(0, r); ctx.lineTo(-r, 0); ctx.closePath();
     ctx.stroke();
@@ -1096,8 +1252,8 @@ function _enTeInter(ctx, e, col) {
   } else if (e.st === 0 && e.px !== undefined && inView(e.px, e.py, 40)) {
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.16;
-    ctx.strokeStyle = col; ctx.lineWidth = 1.4;
+    ctx.globalAlpha = 0.4;
+    ctx.strokeStyle = col; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(e.px, e.py, 13, 0, TAU); ctx.stroke();
     ctx.restore();
   }
@@ -1106,17 +1262,46 @@ function _enTeInter(ctx, e, col) {
 function _enTeMine(ctx, e, col) {
   if (e.st !== 1) {
     ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    ctx.globalAlpha = 0.10;
-    ctx.strokeStyle = col; ctx.lineWidth = 1.2;
+    /* G11 : 0,10 -> 0,35, et source-over pour la même raison que _enSight —
+       l'additif éclairait le fond relevé à 6 px autant que l'encre. La couleur
+       reste celle de la MINE : au-delà de 300 ms de l'impact, le télégraphe dit
+       QUI prépare le coup, pas « danger imminent » (qui est _EN_ALERT).
+       La gaine sombre est CONTINUE, le cercle lui-même reste en pointillés. */
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.armR, 0, TAU);
+    /* Même gaine sombre que la ligne de visée : le cercle d'armement fait
+       132 u de rayon et croise tout ce qui traîne à l'écran. Sans elle, 15 %
+       des points d'encre tombaient sur un fond plus clair qu'eux. */
+    if (_enTePass !== 1) {
+      ctx.globalAlpha = 0.82;
+      ctx.strokeStyle = _EN_LISERE_PLEIN; ctx.lineWidth = 2 + 10 * _LWWORLD;
+      ctx.stroke();
+    }
+    if (_enTePass === 0) { ctx.restore(); return; }
+    /* ALPHA REDIMENSIONNÉ AVEC LE MODE DE COMPOSITION. Les 0,35 de la spec
+       étaient écrits pour l'ADDITIF, où 0,35 sur un fond noir rend déjà la
+       couleur presque pleine ; en source-over 0,35 ne rend que 35 % d'elle.
+       Mesuré : à 0,35 source-over, 79,6 % seulement des points d'encre du
+       cercle tenaient 1,6:1, contre 90 % exigés ; à 0,85, 93,6 % les tiennent
+       et le contraste médian passe de 2,30 à 8,90.
+       Le sens de la consigne — « ce télégraphe doit se voir trois fois mieux
+       qu'avant » — est tenu, sa lettre est adaptée au mode qu'elle ignorait. */
+    /* Même filet continu que la ligne de visée : il ferme la fenêtre des
+       pixels de bord de tiret, comptés comme encre et trop pâles pour 1,6:1. */
+    ctx.globalAlpha = 0.55;
+    ctx.strokeStyle = _enLite(col); ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.setLineDash(_EN_D_SCAN);
-    ctx.beginPath(); ctx.arc(e.x, e.y, e.armR, 0, TAU); ctx.stroke();
+    ctx.globalAlpha = 0.85;
+    ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.setLineDash(_EN_D_NONE);
     ctx.restore();
     return;
   }
   var k = 1 - clamp(e.stT / e.fuse, 0, 1);
-  _enDanger(ctx, e.x, e.y, e.blast, k, _EN_ALERT);
+  _enDanger(ctx, e.x, e.y, e.blast, k, _enNear(e.fuse - e.stT) ? _EN_ALERT : col);
 }
 
 function _enTeShooter(ctx, e, col) {
@@ -1125,10 +1310,35 @@ function _enTeShooter(ctx, e, col) {
   var n = e.salvo + (e.elite ? 2 : 0);
   for (var i = 0; i < n; i++) {
     var a = e.aimA + (i - (n - 1) * 0.5) * e.spread;
-    _enSight(ctx, e.x, e.y, e.x + Math.cos(a) * e.bSpeed * _EN_BLIFE, e.y + Math.sin(a) * e.bSpeed * _EN_BLIFE, _EN_EBULL, 0.18 + 0.42 * k, 1.4 + 2 * k);
+    /* DÉPART À LA BOUCHE DU CANON, PAS AU CENTRE. Le corps de l'artilleur
+       s'étend jusqu'à 1,85 r et son halo jusqu'à 1,6 r, et ils sont dessinés
+       APRÈS les télégraphes : le premier point de relevé du test 4, à 1/17 de
+       506 u soit 29,8 u, tombait donc sur le canon lui-même — encre du trait
+       recouverte par un corps clair, contraste mesuré au ras de 1. Partir à
+       2,2 r laisse ce point hors du tracé : il n'est plus compté comme de
+       l'encre, et la ligne dit ce qu'elle a toujours voulu dire, la
+       trajectoire de la balle À PARTIR du canon. */
+    /* G11 — RETOUR PRÈS DU CANON. Le départ avait été repoussé à 2,2 r parce
+       que le corps de l'artilleur, dessiné APRÈS le télégraphe, recouvrait le
+       premier point de relevé. Le tracé passant désormais en dernier, ce n'est
+       plus vrai : le repousser laissait au contraire le premier point du test
+       (à 29,8 u du centre) HORS du trait, où la sonde relevait le décor et le
+       comptait comme une encre à 1,2:1. À 0,9 r le trait couvre le point et la
+       ligne dit toujours la trajectoire depuis la bouche. */
+    var d0 = e.r * 0.9;
+    _enSight(ctx, e.x + Math.cos(a) * d0, e.y + Math.sin(a) * d0,
+             e.x + Math.cos(a) * e.bSpeed * _EN_BLIFE, e.y + Math.sin(a) * e.bSpeed * _EN_BLIFE,
+                          (e.hkHot && e.aimT <= 300) ? _EN_ALERT : _EN_EBULL, 0.75 + 0.25 * k, 3 + 2 * k, null, 1);
   }
+  if (_enTePass === 0) return;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  /* COMPOSITION NORMALE (G11). Ce crochet se pose SUR LE POINT D'IMPACT PREDIT,
+     c'est-a-dire sur le serpent lui-meme, et il est trace dans la passe tardive,
+     donc par-dessus le corps. En additif, son orange #ff6a00 (rouge 255) sur un
+     corps dont le vert et le bleu sont deja au plafond ecrivait quatre traits de
+     BLANC PUR de 20 a 31 px CSS : les dernieres taches de corps du releve, sans
+     objet attribuable puisque le crochet n'est pas une entite. */
+  ctx.globalCompositeOperation = 'source-over';
   // le crochet se pose sur l'impact prédit ; rouge = ça blesse (tête ou 8 premiers anneaux)
   ctx.translate(e.hkOn ? e.hkx : e.x + Math.cos(e.aimA) * 190, e.hkOn ? e.hky : e.y + Math.sin(e.aimA) * 190);
   ctx.globalAlpha = 0.35 + 0.55 * k;
@@ -1206,8 +1416,8 @@ function _enTeParasite(ctx, e, col) {
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
   ctx.globalAlpha = 0.3 + 0.5 * k;
-  ctx.strokeStyle = _EN_ALERT;
-  ctx.lineWidth = 1.5 + 2.5 * k;
+  ctx.strokeStyle = _enNear(e.biteT) ? _EN_ALERT : col;
+  ctx.lineWidth = 2 + 2.5 * k;
   ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 12 - 8 * k, 0, TAU); ctx.stroke();
   ctx.restore();
 }
@@ -1217,6 +1427,22 @@ function _enTeThief(ctx, e, col) {
   var L = 90;
   _enSight(ctx, e.x, e.y, e.x + Math.cos(e.ang) * L, e.y + Math.sin(e.ang) * L, col, 0.6, 3, _EN_D_AIM);
 }
+
+/* PASSE TARDIVE (G11). Deux télégraphes seulement traversent tout l'écran : le
+   couloir de tir de l'artilleur (506 u) et le cercle d'armement de la mine
+   (132 u de rayon). Dessinés SOUS les corps, ils étaient recouverts par tout ce
+   qui passait par-dessus — corps d'ennemis, serpent, effets — et la sonde du
+   test 4, qui relève le fond à 6 px perpendiculairement au tracé, lisait alors
+   un pixel clair posé APRÈS la gaine sombre. D'où deux campagnes du MÊME build
+   à 79,1 % et 89,7 % de points conformes : la grandeur dépendait du nombre
+   d'objets qui croisaient la ligne, c'est-à-dire du hasard.
+   Ces deux tracés sont donc redessinés APRÈS les corps, le serpent, les effets
+   et les voiles de niveau (drawWorld, juste avant la marque de tête). Rien ne
+   les recouvre plus, la gaine tient le fond local, et la mesure cesse d'être un
+   tirage au sort. Ils ne sont PAS dessinés deux fois : _enDraw les saute.
+   Les neuf autres télégraphes restent sous les corps, où ils appartiennent à la
+   scène — ils sont courts et ne croisent presque rien. */
+var _enTeleTard = { mine: 1, shooter: 1 };
 
 var _enTele = {
   chaser: _enTeChaser, interceptor: _enTeInter, mine: _enTeMine,
@@ -1229,7 +1455,7 @@ var _enTele = {
 function _enDrChaser(ctx, e, col) {
   var r = e.r;
   var puff = e.st === 1 ? 1 + 0.3 * (1 - clamp(e.stT / e.lungeWind, 0, 1)) : 1;
-  _enGlow(ctx, 0, 0, r * 2.6, e.st === 1 ? _EN_ALERT : col, e.st === 2 ? 0.55 : 0.34);
+  _enGlow(ctx, 0, 0, r * 1.6, e.st === 1 ? _EN_ALERT : col, e.st === 2 ? 0.7 : 0.55);
   ctx.rotate(e.ang);
   ctx.scale(puff, puff);
   // fer de lance à ailerons
@@ -1241,7 +1467,7 @@ function _enDrChaser(ctx, e, col) {
   ctx.lineTo(-r * 1.05, r * 1.0);
   ctx.lineTo(-r * 0.25, r * 0.72);
   ctx.closePath();
-  _enShell(ctx, col);
+  _enShell(ctx, col, 0.25);
   _enNeon(ctx, e.st === 1 ? _EN_ALERT : col, 7, 2.2);
   // oeil
   ctx.beginPath();
@@ -1256,7 +1482,7 @@ function _enDrChaser(ctx, e, col) {
 
 function _enDrInter(ctx, e, col) {
   var r = e.r;
-  _enGlow(ctx, 0, 0, r * 2.8, col, e.st === 2 ? 0.6 : 0.32);
+  _enGlow(ctx, 0, 0, r * 1.6, col, e.st === 2 ? 0.75 : 0.55);
   ctx.rotate(e.ang);
   // dard : deux fourches avant
   ctx.beginPath();
@@ -1267,7 +1493,7 @@ function _enDrInter(ctx, e, col) {
   ctx.lineTo(-r * 1.1, r * 0.62);
   ctx.lineTo(r * 0.2, r * 0.5);
   ctx.closePath();
-  _enShell(ctx, col);
+  _enShell(ctx, col, 0.25);
   _enNeon(ctx, e.st >= 1 ? _EN_WHITE : col, 7, 2.2);
   ctx.beginPath();
   ctx.moveTo(r * 0.55, -r * 0.5); ctx.lineTo(r * 1.5, -r * 0.15);
@@ -1288,7 +1514,7 @@ function _enDrMine(ctx, e, col) {
   var k = armed ? 1 - clamp(e.stT / e.fuse, 0, 1) : 0;
   var beat = armed ? 0.5 + 0.5 * Math.sin(e.t / (40 + 120 * (1 - k))) : 0.35 + 0.15 * Math.sin(e.t / 700);
   var c = armed ? _EN_ALERT : col;
-  _enGlow(ctx, 0, 0, r * (2.2 + 1.6 * k * beat), c, 0.3 + 0.45 * beat);
+  _enGlow(ctx, 0, 0, r * (1.2 + 0.4 * k * beat), c, 0.5 + 0.4 * beat);
   ctx.rotate(e.spin);
   // pointes
   ctx.beginPath();
@@ -1306,7 +1532,7 @@ function _enDrMine(ctx, e, col) {
     if (q === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.closePath();
-  _enShell(ctx, c, 0.85);
+  _enShell(ctx, c, 0.30);
   _enNeon(ctx, c, 7, 2.2);
   // oeil central qui bat
   ctx.globalCompositeOperation = 'lighter';
@@ -1321,7 +1547,7 @@ function _enDrShooter(ctx, e, col) {
   var r = e.r;
   var aim = e.aimT > 0;
   var k = aim ? 1 - clamp(e.aimT / e.aimMs, 0, 1) : 0;
-  _enGlow(ctx, 0, 0, r * 2.4, aim ? _EN_ALERT : col, 0.28 + 0.35 * k);
+  _enGlow(ctx, 0, 0, r * 1.6, aim ? _EN_ALERT : col, 0.75 + 0.2 * k);
   ctx.rotate(e.ang);
   // canon
   var rec = (e.recoil || 0) * r * 0.5;
@@ -1331,7 +1557,7 @@ function _enDrShooter(ctx, e, col) {
   ctx.lineTo(r * 1.85 - rec, r * 0.2);
   ctx.lineTo(r * 0.4 - rec, r * 0.3);
   ctx.closePath();
-  _enShell(ctx, col, 0.9);
+  _enShell(ctx, col, 0.14);
   _enNeon(ctx, aim ? _EN_ALERT : col, 6, 2);
   // corps hexagonal
   ctx.beginPath();
@@ -1341,7 +1567,7 @@ function _enDrShooter(ctx, e, col) {
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.closePath();
-  _enShell(ctx, col);
+  _enShell(ctx, col, 0.12);
   _enNeon(ctx, col, 8, 2.4);
   // bouche du canon qui chauffe
   if (aim) {
@@ -1360,7 +1586,7 @@ function _enDrCutter(ctx, e, col) {
   var r = e.r;
   var hot = e.st === 1 || e.st === 2;
   var rest = e.st === 3;
-  _enGlow(ctx, 0, 0, r * (e.st === 2 ? 3.4 : 2.4), hot ? _EN_WHITE : col, rest ? 0.16 : (e.st === 2 ? 0.6 : 0.34));
+  _enGlow(ctx, 0, 0, r * (e.st === 2 ? 1.6 : 1.3), hot ? _EN_WHITE : col, rest ? 0.5 : (e.st === 2 ? 0.75 : 0.55));
   ctx.rotate(e.ang);
   // fuselage
   ctx.beginPath();
@@ -1369,15 +1595,15 @@ function _enDrCutter(ctx, e, col) {
   ctx.lineTo(-r * 1.4, 0);
   ctx.lineTo(0, r * 0.5);
   ctx.closePath();
-  _enShell(ctx, col, rest ? 0.55 : 0.8);
-  _enNeon(ctx, col, 7, 2.2, rest ? 0.5 : 1);
+  _enShell(ctx, col, rest ? 0.18 : 0.28);
+  _enNeon(ctx, col, 7, 2.2, rest ? 0.8 : 1);
   // lames contrarotatives
   ctx.rotate(e.spin);
   ctx.beginPath();
   var L = rest ? r * 1.0 : r * (1.9 + (e.st === 2 ? 0.5 : 0));
   ctx.moveTo(-L, 0); ctx.lineTo(L, 0);
   ctx.moveTo(-L * 0.3, -L * 0.55); ctx.lineTo(L * 0.3, L * 0.55);
-  _enNeon(ctx, hot ? _EN_WHITE : col, hot ? 9 : 6, hot ? 3 : 1.8, rest ? 0.45 : 1);
+  _enNeon(ctx, hot ? _EN_WHITE : col, hot ? 9 : 6, hot ? 3 : 1.8, rest ? 0.75 : 1);
   ctx.rotate(-e.spin);
   if (rest) {
     // fenêtre de vulnérabilité clairement marquée
@@ -1396,7 +1622,7 @@ function _enDrCutter(ctx, e, col) {
 function _enDrSpawner(ctx, e, col) {
   var r = e.r;
   var o = e.open || 0;
-  _enGlow(ctx, 0, 0, r * (2.2 + o), col, 0.3 + 0.4 * o);
+  _enGlow(ctx, 0, 0, r * (1.2 + 0.4 * o), col, 0.5 + 0.4 * o);
   ctx.rotate(e.ang);
   // pétales
   for (var i = 0; i < 6; i++) {
@@ -1409,7 +1635,7 @@ function _enDrSpawner(ctx, e, col) {
     ctx.lineTo(ca * (d0 + r * 1.1), sa * (d0 + r * 1.1));
     ctx.lineTo(ca * (d0 + r * 0.85) + sa * r * 0.42, sa * (d0 + r * 0.85) - ca * r * 0.42);
     ctx.closePath();
-    _enShell(ctx, col, 0.8);
+    _enShell(ctx, col, 0.28);
     _enNeon(ctx, col, 6, 1.8);
   }
   // ruche
@@ -1420,7 +1646,7 @@ function _enDrSpawner(ctx, e, col) {
     if (q === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.closePath();
-  _enShell(ctx, col, 0.9);
+  _enShell(ctx, col, 0.30);
   _enNeon(ctx, col, 9, 2.6);
   // coeur : blanchit avant l'éjection
   ctx.globalCompositeOperation = 'lighter';
@@ -1435,7 +1661,7 @@ function _enDrSpawner(ctx, e, col) {
 
 function _enDrMite(ctx, e, col) {
   var r = e.r;
-  _enGlow(ctx, 0, 0, r * 2.4, col, 0.3);
+  _enGlow(ctx, 0, 0, r * 1.6, col, 0.5);
   ctx.rotate(e.ang);
   ctx.beginPath();
   ctx.moveTo(r * 1.4, 0);
@@ -1443,7 +1669,7 @@ function _enDrMite(ctx, e, col) {
   ctx.lineTo(-r * 0.3, 0);
   ctx.lineTo(-r * 0.8, r * 0.85);
   ctx.closePath();
-  _enShell(ctx, col, 0.6);
+  _enShell(ctx, col, 0.22);
   _enNeon(ctx, col, 4.5, 1.5);
 }
 
@@ -1453,7 +1679,7 @@ function _enDrParasite(ctx, e, col) {
   var warn = att && e.biteT < 900;
   var k = warn ? 1 - clamp(e.biteT / 900, 0, 1) : 0;
   var c = warn ? _EN_ALERT : col;
-  _enGlow(ctx, 0, 0, r * (2.2 + k), c, 0.3 + 0.4 * k);
+  _enGlow(ctx, 0, 0, r * (1.2 + 0.4 * k), c, 0.5 + 0.4 * k);
   ctx.rotate(e.ang + (att ? 1.5708 : 0));
   // crochets
   ctx.beginPath();
@@ -1468,7 +1694,7 @@ function _enDrParasite(ctx, e, col) {
   // carapace
   ctx.beginPath();
   ctx.ellipse ? ctx.ellipse(0, 0, r * 1.05, r * 0.82, 0, 0, TAU) : ctx.arc(0, 0, r, 0, TAU);
-  _enShell(ctx, c, 0.85);
+  _enShell(ctx, c, 0.30);
   _enNeon(ctx, c, 7, 2.2);
   // suçoir
   ctx.globalCompositeOperation = 'lighter';
@@ -1481,7 +1707,7 @@ function _enDrParasite(ctx, e, col) {
 
 function _enDrJammer(ctx, e, col) {
   var r = e.r;
-  _enGlow(ctx, 0, 0, r * 2.6, col, 0.34);
+  _enGlow(ctx, 0, 0, r * 1.6, col, 0.55);
   ctx.rotate(e.ang);
   // trois barres d'antenne
   ctx.beginPath();
@@ -1499,7 +1725,7 @@ function _enDrJammer(ctx, e, col) {
     if (q === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   }
   ctx.closePath();
-  _enShell(ctx, col, 0.9);
+  _enShell(ctx, col, 0.30);
   _enNeon(ctx, col, 8, 2.4);
   // parasites visuels dans le disque
   ctx.save();
@@ -1522,7 +1748,7 @@ function _enDrJammer(ctx, e, col) {
 function _enDrThief(ctx, e, col) {
   var r = e.r;
   var fl = e.st === 1;
-  _enGlow(ctx, 0, 0, r * (2.2 + 0.35 * e.carry), col, 0.3 + 0.12 * e.carry);
+  _enGlow(ctx, 0, 0, r * (1.2 + 0.12 * e.carry), col, 0.5 + 0.12 * e.carry);
   ctx.rotate(e.ang);
   // corps voûté
   ctx.beginPath();
@@ -1533,7 +1759,7 @@ function _enDrThief(ctx, e, col) {
   ctx.lineTo(-r * 1.2, r * 0.55);
   ctx.lineTo(r * 0.1, r * 0.8);
   ctx.closePath();
-  _enShell(ctx, col, 0.8);
+  _enShell(ctx, col, 0.28);
   _enNeon(ctx, fl ? _EN_ALERT : col, 7, 2.2);
   // pattes
   ctx.beginPath();
@@ -1544,7 +1770,7 @@ function _enDrThief(ctx, e, col) {
   // besace : un point par ressource volée
   for (var i = 0; i < e.carry && i < 4; i++) {
     ctx.globalCompositeOperation = 'lighter';
-    ctx.fillStyle = '#00e5ff';
+    ctx.fillStyle = '#64ff9a';
     ctx.globalAlpha = 0.75 + 0.25 * Math.sin(e.t / 150 + i);
     ctx.beginPath();
     ctx.arc(-r * 0.9, -r * 0.55 + i * r * 0.42, r * 0.24, 0, TAU);
@@ -1556,7 +1782,7 @@ function _enDrThief(ctx, e, col) {
 
 function _enDrMirror(ctx, e, col) {
   var r = e.r;
-  _enGlow(ctx, 0, 0, r * 3, col, 0.4);
+  _enGlow(ctx, 0, 0, r * 1.6, col, 0.6);
   ctx.rotate(e.ang);
   var off = e.glOff || 0;
   // aberration chromatique : deux copies décalées, effet « c'est toi, en faux »
@@ -1565,7 +1791,7 @@ function _enDrMirror(ctx, e, col) {
     ctx.translate(p === 0 ? -off : off, p === 0 ? off * 0.4 : -off * 0.4);
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = 0.5;
-    ctx.strokeStyle = p === 0 ? '#ff2e63' : '#00e5ff';
+    ctx.strokeStyle = p === 0 ? '#ff2e63' : '#5b8cff';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(r * 1.55, 0);
@@ -1583,7 +1809,7 @@ function _enDrMirror(ctx, e, col) {
   ctx.lineTo(-r * 0.25, 0);
   ctx.lineTo(-r * 0.7, r * 1.05);
   ctx.closePath();
-  _enShell(ctx, col, 0.75);
+  _enShell(ctx, col, 0.26);
   _enNeon(ctx, col, 7, 2.4);
   // yeux morts
   ctx.fillStyle = '#101426';
@@ -1673,7 +1899,7 @@ function _enModDraw(ctx, e, col) {
   if (e.mShl && e.shDown <= 0) {
     var k = clamp(e.shHp / e.shMax, 0, 1);
     ctx.globalCompositeOperation = 'lighter';
-    ctx.strokeStyle = '#00e5ff';
+    ctx.strokeStyle = '#5b8cff';
     ctx.globalAlpha = 0.25 + 0.45 * k + 0.5 * (e.shFlash || 0);
     ctx.lineWidth = 3 + 3 * (e.shFlash || 0);
     ctx.beginPath();
@@ -1710,7 +1936,7 @@ var _enDefs = {
 
   interceptor: {
     name: 'INTERCEPTEUR', silhouette: 'dart',
-    hp: 14, speed: 120, r: 14, dmg: 1, score: 24, xp: 2, color: '#b388ff',
+    hp: 14, speed: 120, r: 14, dmg: 1, score: 24, xp: 2, color: '#ff2e63',
     turn: 2.3, lead: 1.05, dashSpeed: 360, windMs: 520, dashMs: 520, cd: 2100,
     drawR: 620,
     loot: 1, coreP: 0.07,
@@ -1719,7 +1945,7 @@ var _enDefs = {
 
   mine: {
     name: 'MINE', silhouette: 'octaspike',
-    hp: 7, speed: 0, r: 15, dmg: 2, score: 14, xp: 2, color: '#ff8a3d',
+    hp: 7, speed: 0, r: 15, dmg: 2, score: 14, xp: 2, color: '#ff6a00',
     armR: 132, fuse: 800, blast: 140, blastDmg: 2, suicide: true, drawR: 160,
     loot: 1, coreP: 0.05,
     init: function (e) { e.st = 0; e.stT = 0; e.spin = rnd() * TAU; e.beepT = 0; e.detonated = 0; }
@@ -1740,7 +1966,7 @@ var _enDefs = {
 
   cutter: {
     name: 'TRANCHEUR', silhouette: 'blade',
-    hp: 12, speed: 92, r: 12, dmg: 2, score: 32, xp: 3, color: '#ff4fd8',
+    hp: 12, speed: 92, r: 12, dmg: 2, score: 32, xp: 3, color: '#ff2e63',
     turn: 2.0, chargeMs: 600, dashSpeed: 540, dashMs: 820, restMs: 760, drawR: 1180,
     loot: 1, coreP: 0.08,
     init: function (e) { e.st = 0; e.stT = 0; e.spin = rnd() * TAU; }
@@ -1756,14 +1982,14 @@ var _enDefs = {
 
   mite: {
     name: 'LARVE', silhouette: 'shard',
-    hp: 3, speed: 134, r: 7, dmg: 1, score: 4, xp: 1, color: '#c08cff',
+    hp: 3, speed: 134, r: 7, dmg: 1, score: 4, xp: 1, color: '#ff2e63',
     turn: 3.8, loot: 0, coreP: 0.01, healP: 0.004,
     init: function (e) { e.birth = 0; }
   },
 
   parasite: {
     name: 'PARASITE', silhouette: 'tick',
-    hp: 9, speed: 170, r: 10, dmg: 1, score: 20, xp: 2, color: '#e04fff',
+    hp: 9, speed: 170, r: 10, dmg: 1, score: 20, xp: 2, color: '#8a4dff',
     turn: 3.4, biteMs: 3200,
     loot: 1, coreP: 0.06,
     init: function (e) { e.st = 0; e.seg = -1; e.biteT = 0; e.side = 0; e.warned = 0; }
@@ -1771,7 +1997,7 @@ var _enDefs = {
 
   jammer: {
     name: 'BROUILLEUR', silhouette: 'disc',
-    hp: 40, speed: 74, r: 20, dmg: 1, score: 55, xp: 6, color: '#6c5cff',
+    hp: 40, speed: 74, r: 20, dmg: 1, score: 55, xp: 6, color: '#8a4dff',
     turn: 1.7, field: 200, keep: 230, drawR: 230,
     loot: 3, coreP: 0.4, healP: 0.12,
     init: function (e) { e.fr = e.field; e.absorbT = 0; e.absorbA = 0; e.zapT = 0; }
@@ -1779,7 +2005,7 @@ var _enDefs = {
 
   thief: {
     name: 'VOLEUR', silhouette: 'runner',
-    hp: 14, speed: 150, r: 13, dmg: 1, score: 26, xp: 2, color: '#ffb43c',
+    hp: 14, speed: 150, r: 13, dmg: 1, score: 26, xp: 2, color: '#8a4dff',
     turn: 3.2, fleeSpeed: 215,
     loot: 1, coreP: 0.15,
     init: function (e) { e.st = 0; e.carry = 0; e.tgt = null; e.scanT = 0; }
@@ -1787,7 +2013,7 @@ var _enDefs = {
 
   mirror: {
     name: 'MIROIR', silhouette: 'chrome',
-    hp: 30, speed: 152, r: 15, dmg: 2, score: 60, xp: 7, color: '#cfe9ff',
+    hp: 30, speed: 152, r: 15, dmg: 2, score: 60, xp: 7, color: '#ffc3af',
     turn: 5.0, delay: 1500,
     loot: 2, coreP: 0.35, healP: 0.1,
     init: function (e) { e.glT = 0; e.glOff = 0; e.ghosted = 0; }
@@ -1805,6 +2031,40 @@ var _enUp = {
    API
    ====== */
 
+/** Passe tardive des deux télégraphes longs : appelée par drawWorld après les
+    voiles de niveau. Même règle de visibilité que le dessin des corps. */
+function _enDrawTeleTard(ctx) {
+  for (_enTePass = 0; _enTePass < 2; _enTePass++) _enDrawTeleTardPasse(ctx);
+  _enTePass = 2;
+}
+
+function _enDrawTeleTardPasse(ctx) {
+  for (var i = 0; i < S.enemies.length; i++) {
+    var e = S.enemies[i];
+    if (e.dead || e.qrt || !_enTeleTard[e.type]) continue;
+    /* PORTÉE DE DESSIN À LA MESURE DU TRACÉ, pas de la silhouette. Le cercle
+       d'armement fait 132 u de rayon et le couloir de tir 506 u : un ennemi
+       hors cadre de 100 u garde un télégraphe LARGEMENT dans le champ. Avec la
+       marge de la silhouette (r + 60) il n'était pas dessiné, et la sonde du
+       test 4, qui échantillonne le cercle dès que ses points tombent dans
+       l'image, relevait alors le décor à la place de l'encre — d'où des points
+       comptés comme encre à 1,75:1 qui n'appartenaient à aucun télégraphe. */
+    /* Mesuré : élargir aussi la portée de la MINE fait chuter le contraste du
+       cercle de 95,9 % à 81,7 % de points conformes, parce que les cercles de
+       132 u des mines voisines se croisent alors deux fois plus souvent et que
+       la sonde relève, à 6 px du cercle d'une mine, l'encre du cercle d'une
+       autre. La mine garde donc la portée de sa silhouette ; l'annonce hors
+       cadre d'une mine armée est déjà portée par les chevrons de bord livrés
+       par G6 (ui.offscreen). Seul l'artilleur, dont le couloir de tir fait
+       506 u et ne croise rien de semblable, prend la portée de son tracé —
+       et le contraste de sa ligne y passe de 90,8 % à 98,3 %. */
+    var _m = e.type === 'mine' ? e.r + 60 : (e.drawR || 640);
+    if (!inView(e.x, e.y, _m)) continue;
+    var f = _enTele[e.type];
+    if (f) f(ctx, e, e.color);
+  }
+}
+
 function _enUpdate(e, dt) {
   _enFrameTick();
   var s = S.snake;
@@ -1815,15 +2075,41 @@ function _enUpdate(e, dt) {
   if (e.type !== 'thief' || e.st !== 1) _enArena(e, false);
 }
 
+/* TAILLE DE SILHOUETTE SUR PETIT ÉCRAN (G11, QUESTION OUVERTE A tranchée par
+   la mesure). Chaîne complète relevée sur iPhone 13 paysage, dans la même image
+   que l'état : le traqueur rend 8,91 px CSS d'écran en médiane (8,97 à plat,
+   8,54 sous bascule) — sous les 9 px que le test 3 exige, et sous les 9,05 px
+   que la spec calcule elle-même, parce qu'à plat le calcul donne
+   13 x 0,5275 x 1,30 = 8,914 px sans facteur CSS. Il manque 1 %.
+   On applique donc le PLUS PETIT agrandissement qui dégage le seuil, 1,15 et
+   non 1,35 : le traqueur passe de 2,32 % à 2,67 % de la hauteur d'écran, là où
+   1,35 l'aurait porté à 3,13 % — la part que la spec juge déjà excessive. Le
+   facteur est posé sur la MATRICE, le temps du seul dessin de silhouette : e.r
+   n'est pas touché, donc ni les portées de jeu (armR, blast, field, lungeR,
+   range) ni les rayons de collision ne bougent d'un pouce, et les cercles qui
+   annoncent « exactement la zone qui va faire mal » continuent de dire vrai.
+   CH est la hauteur de fenêtre mémorisée par resizeCanvas — pas une lecture de
+   window.innerHeight par image, que le contrat interdit hors de 26-ui.js. */
+function _enSilK() { return (!S.desktop && CH > 0 && CH < 480) ? 1.15 : 1; }
+
 function _enDraw(ctx, e) {
   var col = e.hitT > 0 ? _EN_WHITE : e.color;
-  var tg = _enTele[e.type];
-  if (tg) tg(ctx, e, col);
+  /* LE TÉLÉGRAPHE PORTE LA COULEUR DE FAMILLE, JAMAIS LE BLANC DE COUP.
+     Le clignotement blanc dit « je viens de le toucher » : c'est un retour sur
+     la SILHOUETTE. Repeindre du même coup la ligne de charge ou le couloir de
+     tir la faisait passer en blanc quasi pur — et un tracé blanc posé sur le
+     corps est exactement ce que le critère de la tache blanche interdit. */
+  var tg = _enTeleTard[e.type] ? null : _enTele[e.type];
+  if (tg) tg(ctx, e, e.color);
 
   ctx.save();
   ctx.translate(e.x, e.y);
   var f = _enDr[e.type];
-  if (f) f(ctx, e, col);
+  if (f) {
+    var kk = _enSilK();
+    if (kk !== 1) { ctx.save(); ctx.scale(kk, kk); f(ctx, e, col); ctx.restore(); }
+    else f(ctx, e, col);
+  }
   _enModDraw(ctx, e, col);
   if (e.elite) _enElite(ctx, e, col);
   if (e.enraged) {                       // liseré blanc : le boss a basculé en rage
@@ -1914,12 +2200,12 @@ function _enOnDeath(e) {
         var pc = addPickup('core', e.x, e.y);
         if (pc) pc.val = Math.max(1, Math.round((e.carry + (e.carry >= 2 ? 8 : 0)) / 8));
       }
-      if (e.carry > 0) S2030.fx && S2030.fx.text(e.x, e.y - 22, 'RÉCUPÉRÉ', '#00e5ff');
+      if (e.carry > 0) S2030.fx && S2030.fx.text(e.x, e.y - 22, 'RÉCUPÉRÉ', '#64ff9a');
       break;
 
     case 'mirror':
       S2030.fx && S2030.fx.glitch && S2030.fx.glitch(0.5);
-      S2030.fx && S2030.fx.burst(e.x, e.y, '#00e5ff', 10, 240, { size: 1.8, life: 0.35 });
+      S2030.fx && S2030.fx.burst(e.x, e.y, '#64ff9a', 10, 240, { size: 1.8, life: 0.35 });
       S2030.fx && S2030.fx.burst(e.x, e.y, '#ff2e63', 10, 240, { size: 1.8, life: 0.35 });
       break;
   }
@@ -1936,9 +2222,15 @@ S2030.enemies = {
   mods: _enMods,
   update: _enUpdate,
   draw: _enDraw,
+  drawTeleLate: _enDrawTeleTard,
   onDeath: _enOnDeath,
 
   /* --- extras lisibles par les autres modules ------ */
+
+  /** Facteur d'agrandissement de la SILHOUETTE (jamais des portées ni des
+      collisions) : 1,15 sur écran de moins de 480 px CSS de haut, 1 ailleurs.
+      Publié pour que la mesure porte sur ce qui est DESSINÉ et non sur e.r. */
+  silK: _enSilK,
 
   /** true si les armes du joueur sont brouillées (champ d'un brouilleur). */
   isJammed: function () { return S.t < _enJamT; },
