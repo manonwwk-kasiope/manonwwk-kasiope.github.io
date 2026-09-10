@@ -142,12 +142,30 @@ Le cœur garantit ces champs après `spawnEnemy` :
   flare(x, y, color, r),                // halo lumineux additif
   trail(x, y, ang, color),              // traînée courte
   shake(amount),                        // secousse caméra, unités monde
-  hitstop(ms),                          // gel très bref
-  text(x, y, str, color),               // texte flottant monde
-  flash(color, a),                      // flash plein écran
+  hitstop(n),                           // gel de n IMAGES (G8) — plus des ms
+  hitstopStep(),                        // consomme une image ; frame() SEUL l'appelle
+  hitstopLeft(),                        // images de gel restantes
+  recoil(ang, amount),                  // impulsion de caméra, unités monde
+  text(x, y, str, color, opts),         // texte flottant monde
+  flash(color, a, mode, ang, ms),       // 'edge' => vignette, orientée par ang (repère ÉCRAN)
+  flashStats(),                         // { full, vignette } : flashs réellement joués
   update(dt), draw(ctx), drawScreen(ctx, w, h), reset()
 }
 ```
+
+`hitstop` se compte en **images** depuis G8 : `frame()` (90-boot.js) lit
+`hitstopLeft()`, gèle l'image, **puis** appelle `hitstopStep()`. Le décrément
+n'a donc jamais lieu dans l'image de pose. Aucun autre appelant ne doit
+appeler `hitstopStep`.
+
+Le cinquième argument de `ring` est une **vitesse amortie** (u/s), pas un rayon
+d'arrivée : `r.r += r.sp · dt` avec `r.sp *= 1/(1 + 3,2 · dt)`. Écrire 2 000
+donne une onde d'environ 600 unités. Une relecture qui l'a pris pour un rayon a
+signalé un écart qui n'existait pas.
+
+`flash` obéit à un budget : une nappe **plein écran** toutes les 4 s de jeu et
+seulement au-dessus d'une amplitude de 0,28 ; sinon l'appel est rendu en
+vignette.
 
 `update` et `draw` sont appelés par le cœur. `drawScreen` est appelé **après**
 restauration du repère caméra, en coordonnées écran.
@@ -159,14 +177,15 @@ restauration du repère caméra, en coordonnées écran.
   init(), start(), stop(), resume(),
   setIntensity(v),        // 0..1, fait apparaître/disparaître les couches
   setMusic(on), setSfx(on),
-  sfx(name, opts),        // voir la liste des noms ci-dessous
+  sfx(name, opts),        // voir la liste des noms ci-dessous ; opts.pitch multiplie les fréquences
+  lastSfx(),              // { name, f0, t } : dernier effet RÉELLEMENT joué (sonde de test)
   ultimate(),             // enchaînement sonore de l'ultime
   ready                   // bool
 }
 ```
 
 Noms d'effets attendus : `shoot`, `laser`, `hit`, `kill`, `bigkill`, `pickup`,
-`core`, `hurt`, `boost`, `boostEnd`, `levelup`, `card`, `ultReady`, `ultFire`,
+`core`, `hurt`, `boost`, `boostEnd`, `boostDry`, `levelup`, `card`, `ultReady`, `ultFire`,
 `bossIn`, `warp`, `click`, `dead`, `shock`, `zap`, `missile`, `explode`.
 
 La musique est bâtie sur `neonvelocity.mp3` (fourni au cœur, décodé en
@@ -204,7 +223,8 @@ Une définition contient au minimum :
 ```js
 {
   pool: [ { id, name, desc, icon, rarity, max, weight, req(), apply() } ],
-  roll(n),      // -> n cartes distinctes et éligibles
+  roll(n, opts),// -> n cartes distinctes et éligibles ; opts.trophy (G9) : main de
+                // TROPHÉE d'un boss abattu — aucune commune, au moins une {epic, ultra}
   apply(id)
 }
 ```
@@ -218,6 +238,10 @@ Une définition contient au minimum :
 {
   defs: [ { n, name, palette:{...}, mech, spawns:[...], boss } ],
   start(n), update(dt),
+  late(dt),         // (G9) après updateEnemies : arrivée pilotée du boss, ralenti
+                    // d'entrée (S.timeScale), fuite des survivants pendant 'clear'
+  bossSlow(),       // (G9) -> true tant que le ralenti d'entrée de boss est armé
+  phaseT(), pend(), hardcap(),   // (G9) horloge de phase, portails en vol, plafond d'ennemis
   drawBack(ctx),    // décor, sous les entités
   drawFore(ctx),    // par-dessus les entités (brume, lasers d'arène…)
   hazards: []       // dangers d'arène, collision gérée par le module

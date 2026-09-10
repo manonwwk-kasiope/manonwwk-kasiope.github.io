@@ -1,13 +1,13 @@
-/* =========================================================================
+/* ======
    SNAKE 2030 — 20-fx.js
    Module S2030.fx : particules, ondes, halos, secousse, hitstop, textes,
    flashs plein écran. Tout est préalloué : zéro allocation par image.
 
    Dépendances (fournies par 10-core.js dans la closure partagée) :
      S, K, rnd, rndR, rndI, pick, chance, clamp, lerp, inView
-   ========================================================================= */
+   ====== */
 
-/* ---------------------------------------------------------------- réglages */
+/* ------ réglages */
 
 var _FX_NPART  = 800;   // particules
 var _FX_NRING  = 60;    // ondes de choc
@@ -15,13 +15,15 @@ var _FX_NFLARE = 40;    // halos additifs
 var _FX_NTEXT  = 30;    // textes flottants
 
 var _FX_AQ        = 20;    // quantification de l'alpha (batching)
-var _FX_SHAKE_MAX = 30;    // unités monde
-var _FX_HIT_MAX   = 140;   // ms
+var _FX_SHAKE_MAX = 18;    // unités monde (G8 : plafond global de secousse)
+var _FX_HIT_MAX   = 6;     // hitstop : borne documentaire des demandes ordinaires (kill 2, elite 5, blessure 4) ; la mort en vaut 8
+var _FX_FLASH_GAP = 4000;  // un seul flash plein écran toutes les 4 s (ms de jeu)
+var _FX_FLASH_MIN = 0.28;  // en dessous, c'est de l'ambiance : vignette, pas nappe
 var _FX_STREAK_MAX = 96;   // longueur max d'une traînée, unités monde
 
 var _fxFontFam = "'Rajdhani','Orbitron',ui-sans-serif,system-ui,sans-serif";
 
-/* ------------------------------------------------------------------- pools */
+/* ------ pools */
 
 var _fxParts  = new Array(_FX_NPART);
 var _fxRings  = new Array(_FX_NRING);
@@ -53,17 +55,24 @@ var _fxPi = 0, _fxRi = 0, _fxFi = 0, _fxTi = 0;
   }
 })();
 
-/* ------------------------------------------------------- état global du fx */
+/* ------ état global du fx */
 
 var _fxShake   = 0;   // amplitude courante, unités monde
-var _fxHit     = 0;   // hitstop restant, ms
+var _fxShakeNew = 0;  // part posée DANS l'image en cours : jamais amortie avant d'être vue
+var _fxHit     = 0;   // hitstop restant, en IMAGES (décrémenté par frame(), pas ici)
 var _fxFlashA  = 0;   // flash plein écran
 var _fxFlashC  = '#ffffff';
+var _fxFlashK  = 0;   // décroissance linéaire /s quand une durée est imposée
+var _fxFlashT  = -1e9; // date du dernier flash plein écran réellement joué (S.t)
+var _fxFlashN  = 0;   // compteur de flashs plein écran joués (sonde)
+var _fxVigN    = 0;   // compteur de vignettes (sonde)
 var _fxVigA    = 0;   // flash en vignette (bords)
 var _fxVigC    = '#ff2b52';
+var _fxVigDx   = 0, _fxVigDy = 0, _fxVigDir = 0;   // direction d'impact (repère écran)
+var _fxCamRx   = 0, _fxCamRy = 0;   // recul de caméra restant, unités monde
 var _fxGlitch  = 0;   // 0..1
 
-/* ------------------------------------------------------- caches sans alloc */
+/* ------ caches sans alloc */
 
 var _fxRgbCache  = {};   // '#ff0' -> '255,255,0'
 var _fxGradCache = {};   // couleur -> { g: CanvasGradient, c: ctx }
@@ -144,7 +153,7 @@ function _fxHash(i) {
   return v - Math.floor(v);
 }
 
-/* ------------------------------------------------------------- préférences */
+/* ------ préférences */
 
 function _fxOpt() {
   return (typeof S !== 'undefined' && S && S.opt) ? S.opt : null;
@@ -166,12 +175,18 @@ function _fxFlashF() {          // atténuation des flashs
   var o = _fxOpt();
   return (o && o.reduceFlash) ? 0.28 : 1;
 }
+/* « Réduire les mouvements » ne peut pas se contenter d'atténuer : à 0,3,
+   fx.shake(30) dépose encore 9 unités et l'amortissement met une dizaine
+   d'images (≈ 170 ms) à les ramener sous le seuil de remise à zéro. Le maître
+   rend donc 0 : rien n'est déposé, shakeAmount() et S.shakeX/S.shakeY valent 0
+   dès l'image suivante. Le réglage isolé « secousses » garde son 0,3. */
 function _fxShakeF() {          // atténuation des secousses
   var o = _fxOpt();
+  if (o && o.reduceMotion) return 0;
   return (o && o.reduceShake) ? 0.3 : 1;
 }
 
-/* ------------------------------------------------------------- allocateurs */
+/* ------ allocateurs */
 
 function _fxNextPart() {
   var p = _fxParts[_fxPi];
@@ -194,7 +209,7 @@ function _fxNextText() {
   return t;
 }
 
-/* ---------------------------------------------------------------- émission */
+/* ------ émission */
 
 /**
  * Gerbe de particules.
@@ -325,25 +340,71 @@ function _fxText(x, y, str, color, opts) {
 
 function _fxShakeAdd(amount) {
   if (!amount) return;
-  _fxShake += amount * _fxShakeF();
-  if (_fxShake > _FX_SHAKE_MAX) _fxShake = _FX_SHAKE_MAX;
+  var v = amount * _fxShakeF();
+  _fxShake += v; _fxShakeNew += v;
+  if (_fxShake > _FX_SHAKE_MAX) { _fxShake = _FX_SHAKE_MAX; if (_fxShakeNew > _FX_SHAKE_MAX) _fxShakeNew = _FX_SHAKE_MAX; }
 }
 
-function _fxHitstop(ms) {
-  if (!ms) return;
-  if (ms > _FX_HIT_MAX) ms = _FX_HIT_MAX;
-  if (ms > _fxHit) _fxHit = ms;
+/** Hitstop compté en IMAGES. n images gelées à timeScale 0,08 ; le décrément
+   appartient à frame() (90-boot.js), APRÈS la lecture de hitstopLeft() : la
+   pose ne peut donc pas être consommée par l'image qui la pose. Plafond de 6
+   images cumulées, sauf pour une demande plus grande (la mort en vaut 8). */
+function _fxHitstop(n) {
+  if (!n) return;
+  n = n | 0;
+  if (n <= 0) return;
+  /* « max, jamais somme » : le plafond borne la DEMANDE ENTRANTE, jamais un
+     gel DÉJÀ POSÉ. Une demande au-delà du plafond ordinaire porte son propre
+     plafond (mort 8), donc min(n, cap(n)) vaut toujours n et _FX_HIT_MAX ne
+     sert qu'à documenter la borne des demandes ordinaires (kill 2, élite 5,
+     blessure 4). Le rabattre sur _fxHit ramenait le 8 de la mort à 6 dès
+     qu'un fx.kill(2) arrivait dans la MÊME image — ce que collide() fait à
+     chaque mort par ennemi suicide (mine) : hurtSnake() puis killEnemy(). */
+  if (n > _fxHit) _fxHit = n;
 }
 
-/** Flash plein écran. mode 'edge' => vignette (idéal pour les dégâts). */
-function _fxFlash(color, a, mode) {
+/** Une image de hitstop consommée. Appelé par frame() seulement. */
+function _fxHitStep() {
+  if (_fxHit > 0) _fxHit--;
+}
+
+/** Flash. mode 'edge' => vignette de bord, orientée par `ang` (repère écran).
+   Budget global : un seul flash PLEIN ÉCRAN toutes les 4 s de jeu ; les
+   suivants sont rendus en vignette, qui laisse le centre lisible.
+   `ms` impose une durée (décroissance linéaire) ; sinon décroissance libre. */
+function _fxFlash(color, a, mode, ang, ms) {
   if (a === undefined) a = 0.5;
   a *= _fxFlashF();
+  if (a <= 0) return;
+  var t = (typeof S !== 'undefined' && S) ? (S.t || 0) : 0;
+  /* Budget : une nappe plein écran toutes les 4 s, et seulement pour un
+     événement franc. En dessous de 0,28 le flash n'annonce rien qu'une
+     bannière ne dise déjà — il ne fait que blanchir l'écran. */
+  if (mode !== 'edge' && (t - _fxFlashT < _FX_FLASH_GAP || a < _FX_FLASH_MIN)) mode = 'edge';
   if (mode === 'edge') {
-    if (a > _fxVigA) { _fxVigA = a > 1 ? 1 : a; _fxVigC = color || '#ff2b52'; }
+    if (a > _fxVigA) {
+      _fxVigA = a > 1 ? 1 : a;
+      _fxVigC = color || '#ff2b52';
+      _fxVigN++;
+      if (ang === undefined || ang === null) { _fxVigDir = 0; }
+      else { _fxVigDir = 1; _fxVigDx = Math.cos(ang); _fxVigDy = Math.sin(ang); }
+    }
   } else {
-    if (a > _fxFlashA) { _fxFlashA = a > 1 ? 1 : a; _fxFlashC = color || '#ffffff'; }
+    if (a > _fxFlashA) {
+      _fxFlashA = a > 1 ? 1 : a;
+      _fxFlashC = color || '#ffffff';
+      _fxFlashK = (ms > 0) ? (_fxFlashA / (ms / 1000)) : 0;
+      _fxFlashT = t; _fxFlashN++;
+    }
   }
+}
+
+/** Recul de caméra : impulsion de `amount` unités monde dans la direction
+   `ang`, étalée sur deux à trois images (jamais un saut sec). */
+function _fxRecoil(ang, amount) {
+  if (!amount) return;
+  _fxCamRx += Math.cos(ang) * amount;
+  _fxCamRy += Math.sin(ang) * amount;
 }
 
 function _fxGlitchAdd(a) {
@@ -351,7 +412,7 @@ function _fxGlitchAdd(a) {
   if (a > _fxGlitch) _fxGlitch = a > 1 ? 1 : a;
 }
 
-/* ------------------------------------------------------------------ update */
+/* ------ update */
 
 function _fxUpdate(dt) {
   if (!dt || dt < 0) dt = 0;
@@ -402,26 +463,47 @@ function _fxUpdate(dt) {
     t.vy *= 1 / (1 + 2.6 * dt);
   }
 
-  // secousse : amortissement exponentiel (demi-vie ~90 ms)
+  /* Secousse : plus haute mais BEAUCOUP plus courte. Deux corrections liées.
+     (1) La part posée PENDANT cette image n'est pas amortie : sinon
+     l'amplitude demandée n'est jamais celle qui s'affiche (4,5 u posés ne
+     rendaient que 3,9 u). (2) L'amortissement passe de 0,00045 à 1e-13 par
+     seconde : une secousse de kill retombe sous 0,5 u en 4 images au lieu de
+     17. Mesuré sur 5 min increvables : part d'images secouées 23,4 % → voir
+     le rapport ; l'ancienne queue rendait l'écran tremblant en permanence
+     sans jamais rien signifier. */
   if (_fxShake > 0) {
-    _fxShake *= Math.pow(0.00045, dt);
-    _fxShake -= 1.2 * dt;
+    var old = _fxShake - _fxShakeNew;
+    if (old > 0) {
+      old *= Math.pow(1e-13, dt);
+      old -= 1.2 * dt;
+      if (old < 0) old = 0;
+    } else old = 0;
+    _fxShake = old + _fxShakeNew;
     if (_fxShake < 0.02) _fxShake = 0;
   }
+  _fxShakeNew = 0;
 
-  // hitstop : décrément garanti même si le cœur ralentit dt
-  if (_fxHit > 0) {
-    var d = dt * 1000;
-    if (d < 4) d = 4;
-    _fxHit -= d;
-    if (_fxHit < 0) _fxHit = 0;
+  // hitstop : compté en images, décrémenté par frame() — rien à faire ici
+
+  // recul de caméra : ~93 % du reste par image à 60 Hz, vu en deux à trois images
+  if (_fxCamRx !== 0 || _fxCamRy !== 0) {
+    var kr = dt / 0.018;
+    if (kr > 1) kr = 1; else if (kr < 0) kr = 0;
+    var rx = _fxCamRx * kr, ry = _fxCamRy * kr;
+    _fxCamRx -= rx; _fxCamRy -= ry;
+    if (Math.abs(_fxCamRx) < 0.01 && Math.abs(_fxCamRy) < 0.01) { _fxCamRx = 0; _fxCamRy = 0; }
+    if (typeof S !== 'undefined' && S && S.cam) { S.cam.x += rx; S.cam.y += ry; }
   }
 
   // flashs
   if (_fxFlashA > 0) {
-    _fxFlashA *= 1 / (1 + 9 * dt);
-    _fxFlashA -= 0.7 * dt;
-    if (_fxFlashA < 0.004) _fxFlashA = 0;
+    if (_fxFlashK > 0) {
+      _fxFlashA -= _fxFlashK * dt;
+    } else {
+      _fxFlashA *= 1 / (1 + 9 * dt);
+      _fxFlashA -= 0.7 * dt;
+    }
+    if (_fxFlashA < 0.004) { _fxFlashA = 0; _fxFlashK = 0; }
   }
   if (_fxVigA > 0) {
     _fxVigA *= 1 / (1 + 4.5 * dt);
@@ -449,7 +531,7 @@ function _fxUpdate(dt) {
   }
 }
 
-/* ------------------------------------------------------------ dessin monde */
+/* ------ dessin monde */
 
 /* Un seul passage par couche, avec regroupement des états pour limiter
    les changements de contexte. glow = 1 -> composition 'lighter'. */
@@ -632,7 +714,7 @@ function _fxDraw(ctx) {
   _fxDrawTexts(ctx);
 }
 
-/* ------------------------------------------------------------ dessin écran */
+/* ------ dessin écran */
 
 function _fxVigGrad(ctx, col, w, h) {
   if (_fxVig.g && _fxVig.c === ctx && _fxVig.col === col && _fxVig.w === w && _fxVig.h === h) {
@@ -649,12 +731,219 @@ function _fxVigGrad(ctx, col, w, h) {
   return g;
 }
 
+/* Vignette DIRECTIONNELLE : le centre du dégradé est posé sur le bord touché,
+   rayon = un quart de la diagonale. Le bord côté impact prend toute la
+   couleur, le centre de l'écran et le bord opposé n'en reçoivent rien — c'est
+   ce qui distingue « je me fais toucher par la droite » d'un flash blanc. */
+function _fxVigDirGrad(ctx, col, w, h, dx, dy) {
+  var base = _fxRgb(col);
+  var px = w * 0.5 + dx * w * 0.5, py = h * 0.5 + dy * h * 0.5;
+  var r = 0.5 * Math.sqrt(w * w * 0.25 + h * h * 0.25);
+  var g = ctx.createRadialGradient(px, py, 0, px, py, r);
+  /* Plateau à pleine couleur sur la moitié du rayon, puis extinction : le
+     gain de luminance doit tenir même quand le bord touché est déjà la partie
+     claire de la scène (mesuré : +14 points seulement sur un tiers d'écran à
+     31/255 avec un dégradé linéaire, contre +23 avec le plateau). */
+  g.addColorStop(0, 'rgba(' + base + ',1)');
+  g.addColorStop(0.55, 'rgba(' + base + ',1)');
+  g.addColorStop(1, 'rgba(' + base + ',0)');
+  return g;
+}
+
+/* ------ marqueurs de bord (repère ÉCRAN)
+   Poussés pendant la mise à jour par levels (portails d'apparition) et par
+   enemies (armement dont la source est sortie du cadre) ; dessinés puis vidés
+   par drawScreen : un marqueur ne vit qu'une image. */
+
+var _FX_NEDGE = 48;          // marqueurs acceptés par image
+var _FX_NCHEV = 16;          // chevrons réellement tracés dans une image
+var _fxEdges = [];
+(function () { for (var i = 0; i < _FX_NEDGE; i++) _fxEdges.push({ x: 0, y: 0, color: '#ffffff', dbl: 0, blink: 0, sz: 24, a: 1, px: 0, py: 0, px0: 0, py0: 0, vert: 0, ang: 0, al: 1, done: 0 }); })();
+var _fxEdgeN = 0, _fxEdgeDrop = 0;
+var _fxDrawn = [], _fxDrawnN = 0;
+var _fxOffM = [];            // marqueurs déjà en px écran (ui.offscreen)
+(function () { for (var i = 0; i < 16; i++) _fxOffM.push({ px: 0, py: 0, px0: 0, py0: 0, vert: 0, ang: 0, sz: 16, color: '#ff2e63', al: 1, dbl: 0, done: 0 }); })();
+
+function _fxEdgeMark(x, y, color, opts) {
+  if (_fxEdgeN >= _FX_NEDGE) { _fxEdgeDrop++; return; }
+  var m = _fxEdges[_fxEdgeN++];
+  m.x = x; m.y = y; m.color = color || '#ffffff';
+  m.dbl = (opts && opts.dbl) ? 1 : 0;
+  m.tri = (opts && opts.tri) ? 1 : 0;
+  m.blink = (opts && opts.blink) ? 1 : 0;
+  m.bhz = (opts && opts.blinkHz) || 6;
+  m.sz = (opts && opts.size) || 24;
+  m.a = (opts && opts.a !== undefined) ? opts.a : 1;
+  m.done = 0;
+}
+
+/* Point monde -> position sur le cadre (px écran), pointe vers l'extérieur.
+   Sous la bascule, phases.toScreen peut rendre un point NON FINI pour un point
+   très éloigné (division par un dénominateur nul) : on retombe alors sur la
+   projection caméra à plat, sinon le chevron partirait au centre de l'écran. */
+var _fxEP = { x: 0, y: 0 };
+function _fxEdgePos(w, h, m) {
+  var P = S2030.phases, p = null;
+  if (P && P.toScreen) p = P.toScreen(m.x, m.y, _fxEP);
+  if (!p || !isFinite(p.x) || !isFinite(p.y)) {
+    _fxEP.x = 0.5 + (m.x - S.cam.x) / Math.max(1, S.view.w);
+    _fxEP.y = 0.5 + (m.y - S.cam.y) / Math.max(1, S.view.h);
+    p = _fxEP;
+  }
+  var cx = w * 0.5, cy = h * 0.5, hw = cx - 20, hh = cy - 20;
+  if (hw < 10 || hh < 10) return false;
+  var dx = p.x * w - cx, dy = p.y * h - cy;
+  if (!isFinite(dx) || !isFinite(dy)) return false;
+  var ad = dx < 0 ? -dx : dx, ay = dy < 0 ? -dy : dy;
+  if (ad < 1e-4 && ay < 1e-4) {                      // projeté pile au centre : on prend la direction monde
+    dx = m.x - S.cam.x; dy = m.y - S.cam.y;
+    ad = dx < 0 ? -dx : dx; ay = dy < 0 ? -dy : dy;
+    if (ad < 1e-4 && ay < 1e-4) { dx = 0; dy = 1; ad = 0; ay = 1; }
+  }
+  var tx = ad > 1e-6 ? hw / ad : 1e9, ty = ay > 1e-6 ? hh / ay : 1e9, t = tx < ty ? tx : ty;
+  m.px = cx + dx * t; m.py = cy + dy * t; m.ang = Math.atan2(dy, dx);
+  m.vert = tx < ty ? 1 : 0;                          // posé sur un bord vertical : on l'écarte en y
+  m.px0 = m.px; m.py0 = m.py;
+  return true;
+}
+
+function _fxEdgeClamp(v, lim) { return v < 24 ? 24 : (v > lim - 24 ? lim - 24 : v); }
+function _fxEdgeBusy(m) {
+  for (var i = 0; i < _fxDrawnN; i++) {
+    var o = _fxDrawn[i];
+    if (Math.abs(o.px - m.px) < 26 && Math.abs(o.py - m.py) < 26) return true;
+  }
+  return false;
+}
+
+/* Chevron : trois points, ajoutés au CHEMIN COURANT. Un seul chemin sert à tous
+   les chevrons de même couleur et même opacité, et ce chemin est tracé deux fois
+   (halo large puis trait fin) : deux stroke() par groupe au lieu de deux par
+   chevron — c'est ce qui coûtait ~0,9 ms par image sur téléphone. */
+function _fxChevPath(ctx, m, k1, k2, k3) {
+  var s = m.sz * 0.5, c = Math.cos(m.ang), sn = Math.sin(m.ang), px = m.px, py = m.py;
+  var ax = s * k1, ay = s * k3, bx = s * k2;
+  ctx.moveTo(px + ax * c + ay * sn, py + ax * sn - ay * c);
+  ctx.lineTo(px + bx * c, py + bx * sn);
+  ctx.lineTo(px + ax * c - ay * sn, py + ax * sn + ay * c);
+}
+
+/* Trace la file _fxDrawn, groupée par (couleur, opacité). */
+function _fxChevFlush(ctx, list, n) {
+  var i, j, m, o;
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -0.6, 0.7, 1);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -0.6, 0.7, 1); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al; ctx.lineWidth = 6; ctx.stroke();
+  }
+  // second chevron des élites, même groupement
+  for (i = 0; i < n; i++) { m = list[i]; if (m.dbl) m.done = 0; }
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done || !m.dbl) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -1.3, -0.1, 0.78);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || !o.dbl || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -1.3, -0.1, 0.78); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al * 0.85; ctx.lineWidth = 4; ctx.stroke();
+  }
+  // troisième chevron : réservé au portail de boss
+  for (i = 0; i < n; i++) { m = list[i]; if (m.tri) m.done = 0; }
+  for (i = 0; i < n; i++) {
+    m = list[i];
+    if (m.done || !m.tri) continue;
+    ctx.beginPath();
+    _fxChevPath(ctx, m, -2.0, -0.8, 0.6);
+    m.done = 1;
+    for (j = i + 1; j < n; j++) {
+      o = list[j];
+      if (o.done || !o.tri || o.color !== m.color || Math.abs(o.al - m.al) > 0.02) continue;
+      _fxChevPath(ctx, o, -2.0, -0.8, 0.6); o.done = 1;
+    }
+    ctx.strokeStyle = m.color;
+    ctx.globalAlpha = m.al * 0.7; ctx.lineWidth = 3; ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* marqueurs permanents hors champ : la liste vient de ui.offscreen(), déjà en px écran */
+var _fxOffN = 0, _fxOffF = 0;
+function _fxCollectOff(w, h) {
+  var U = S2030.ui, i, o, m;
+  if (++_fxOffF >= 3) {
+    _fxOffF = 0; _fxOffN = 0;
+    if (U && U.offscreen) {
+      var l = U.offscreen();
+      if (l && l.length) {
+        var cx = w * 0.5, cy = h * 0.5, n = Math.min(l.length, _fxOffM.length, 8);
+        for (i = 0; i < n; i++) {
+          o = l[i]; m = _fxOffM[i];
+          m.px = o.x; m.py = o.y; m.ang = Math.atan2(o.y - cy, o.x - cx);
+          m.sz = o.sz || 16; m.color = o.color || '#ff2e63'; m.al = 0.9;
+          m.dbl = o.kind === 'boss' ? 1 : 0;
+          _fxOffN++;
+        }
+      }
+    }
+  }
+  for (i = 0; i < _fxOffN && _fxDrawnN < _FX_NCHEV; i++) { _fxOffM[i].done = 0; _fxDrawn[_fxDrawnN++] = _fxOffM[i]; }
+}
+
+/* Projette les marqueurs d'une image et les range le long du cadre, puis les
+   trace groupés par couleur et opacité. Coût borné : au plus _FX_NCHEV chevrons
+   et deux stroke() par groupe, quelle que soit la taille de la vague. */
+function _fxDrawEdges(ctx, w, h) {
+  _fxDrawnN = 0;
+  var i, j, m, o;
+  _fxCollectOff(w, h);            // menaces permanentes d'abord : elles ne cèdent pas la place à une vague
+  if (!_fxEdgeN && !_fxDrawnN) return;               // rien à tracer : pas de save/restore ni de chemin
+  for (i = 0; i < _fxEdgeN && _fxDrawnN < _FX_NCHEV; i++) {
+    m = _fxEdges[i];
+    m.done = 0;
+    if (!_fxEdgePos(w, h, m)) continue;
+    // clignotement : 6 Hz par défaut, cadence croissante pour un portail de boss
+    m.al = m.blink ? m.a * (((S.t * m.bhz / 1000) % 1) < 0.5 ? 1 : 0.16) : m.a;
+    /* Une salve annonce plusieurs arrivées presque au même endroit du cadre :
+       on ÉCARTE les chevrons le long du bord (peigne) au lieu de les empiler,
+       sinon trois arrivées ne se lisent que comme une. */
+    for (var k = 0; k < 8 && _fxEdgeBusy(m); k++) {
+      var off = (k % 2 ? -1 : 1) * (((k >> 1) + 1) * 30);
+      if (m.vert) m.py = _fxEdgeClamp(m.py0 + off, h); else m.px = _fxEdgeClamp(m.px0 + off, w);
+    }
+    _fxDrawn[_fxDrawnN++] = m;
+  }
+  _fxEdgeN = 0;
+  if (_fxDrawnN) _fxChevFlush(ctx, _fxDrawn, _fxDrawnN);
+}
+
 function _fxDrawScreen(ctx, w, h) {
-  // vignette de danger / dégâts
+  // vignette de danger / dégâts (directionnelle quand l'angle est connu)
   if (_fxVigA > 0.004) {
-    ctx.globalAlpha = _fxVigA;
+    ctx.globalAlpha = _fxVigDir ? _fxVigA * 0.10 : _fxVigA;
     ctx.fillStyle = _fxVigGrad(ctx, _fxVigC, w, h);
     ctx.fillRect(0, 0, w, h);
+    if (_fxVigDir) {
+      ctx.globalAlpha = _fxVigA;
+      ctx.fillStyle = _fxVigDirGrad(ctx, _fxVigC, w, h, _fxVigDx, _fxVigDy);
+      ctx.fillRect(0, 0, w, h);
+    }
     ctx.globalAlpha = 1;
   }
 
@@ -688,9 +977,14 @@ function _fxDrawScreen(ctx, w, h) {
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
   }
+
+  // chevrons de bord : portails d'apparition, armements hors champ, menaces suivies
+  _fxDrawEdges(ctx, w, h);
+  ctx.globalAlpha = 1;
+  ctx.globalCompositeOperation = 'source-over';
 }
 
-/* ------------------------------------------------------------------- reset */
+/* ------ reset */
 
 function _fxReset() {
   var i;
@@ -699,33 +993,51 @@ function _fxReset() {
   for (i = 0; i < _FX_NFLARE; i++) _fxFlares[i].on = false;
   for (i = 0; i < _FX_NTEXT; i++) { _fxTexts[i].on = false; _fxTexts[i].s = ''; }
   _fxPi = _fxRi = _fxFi = _fxTi = 0;
-  _fxShake = 0; _fxHit = 0;
-  _fxFlashA = 0; _fxVigA = 0; _fxGlitch = 0;
+  _fxEdgeN = 0;
+  _fxShake = 0; _fxShakeNew = 0; _fxHit = 0;
+  _fxFlashA = 0; _fxFlashK = 0; _fxVigA = 0; _fxVigDir = 0; _fxGlitch = 0;
+  _fxFlashT = -1e9; _fxFlashN = 0; _fxVigN = 0;
+  _fxCamRx = 0; _fxCamRy = 0;
   if (typeof S !== 'undefined' && S) {
     S.shake = 0; S.hitstop = 0; S.shakeX = 0; S.shakeY = 0;
   }
 }
 
-/* -------------------------------------------------------------- API module */
+/* ------ API module */
 
 S2030.fx = {
+  /* Préchauffage (appelé au boot) : dégradés unitaires et polices créés une
+     fois pour toutes, hors de l'image du premier effet. */
+  warm: function (ctx) {
+    try {
+      var c = ['#00e5ff', '#ff2e63', '#ffd166', '#7CFFB2', '#ff5c3a', '#b388ff', '#ffffff'];
+      for (var i = 0; i < c.length; i++) _fxGlowGrad(ctx, c[i]);
+      for (var z = 8; z <= 48; z += 4) _fxFont(z);
+    } catch (e) {}
+  },
   burst: _fxBurst,
   ring: _fxRing,
   flare: _fxFlare,
   trail: _fxTrail,
   shake: _fxShakeAdd,
   hitstop: _fxHitstop,
+  hitstopStep: _fxHitStep,
   text: _fxText,
   flash: _fxFlash,
+  recoil: _fxRecoil,
 
   update: _fxUpdate,
   draw: _fxDraw,
   drawScreen: _fxDrawScreen,
+  edge: _fxEdgeMark,
+  edgeDrops: function () { return _fxEdgeDrop; },
   reset: _fxReset,
 
   // extras lus par le cœur
   shakeAmount: function () { return _fxShake; },
   hitstopLeft: function () { return _fxHit; },
+  // sondes : flashs PLEIN ÉCRAN réellement joués, et vignettes
+  flashStats: function () { return { full: _fxFlashN, vignette: _fxVigN }; },
   shakeX: function () { return (typeof S !== 'undefined' && S) ? (S.shakeX || 0) : 0; },
   shakeY: function () { return (typeof S !== 'undefined' && S) ? (S.shakeY || 0) : 0; },
 
@@ -742,14 +1054,28 @@ S2030.fx = {
     _fxBurst(x, y, color || '#fff2c0', 5, power || 190, { life: 0.2, size: 1.6, spread: 1.0, ang: rndR(-3.14159, 3.14159) });
     _fxFlare(x, y, color || '#fff2c0', 22, { life: 0.14, a: 0.7 });
   },
-  kill: function (x, y, color, big) {
+  /* Mort d'un ennemi. `ang` = direction du tir qui l'a tué : la caméra recule
+     de 3 u dans le sens opposé. `r` = rayon de la silhouette (flash blanc).
+     Anneau et halo sont divisés par le zoom courant pour que l'impact garde la
+     même taille À L'ÉCRAN de 0,78× à 1,35×. */
+  kill: function (x, y, color, big, ang, r) {
     var n = big ? 34 : 16;
-    _fxBurst(x, y, color || '#ff5ad6', n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
+    var z = 1;
+    if (S2030.phases && S2030.phases.zoom) { z = S2030.phases.zoom() || 1; if (z < 0.2) z = 0.2; }
+    var iz = 1 / z;
+    var col = color || '#ff5ad6';
+    var rad = (r > 0 ? r : (big ? 22 : 13));
+    _fxBurst(x, y, col, n, big ? 420 : 260, { size: big ? 3.2 : 2.2, life: big ? 0.5 : 0.34, drag: 2.0 });
     _fxBurst(x, y, '#ffffff', big ? 12 : 6, big ? 300 : 190, { size: 1.6, life: 0.2 });
-    _fxRing(x, y, color || '#ff5ad6', big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
-    _fxFlare(x, y, color || '#ff5ad6', big ? 110 : 54, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
-    _fxShakeAdd(big ? 9 : 2.4);
-    _fxHitstop(big ? 55 : 12);
+    // éclats francs : 6 shards à 300 u/s pendant 0,35 s
+    _fxBurst(x, y, '#ffffff', 6, 300, { shape: 'shard', life: 0.35, size: 2.1, drag: 0.6, spin: 9, fade: 1 });
+    _fxRing(x, y, col, (big ? 14 : 8) * iz, (big ? 520 : 330) * iz, { w: big ? 6 : 3.5, life: big ? 0.55 : 0.38 });
+    _fxFlare(x, y, col, (big ? 110 : 54) * iz, { life: big ? 0.35 : 0.22, a: big ? 1 : 0.8 });
+    // flash blanc de la silhouette : 60 ms, taille de l'ennemi, pleine opacité
+    _fxFlare(x, y, '#ffffff', rad * 1.35, { life: 0.06, a: 1 });
+    _fxShakeAdd(big ? 14 : 4.5);
+    _fxHitstop(big ? 5 : 2);
+    if (ang !== undefined && ang !== null) _fxRecoil(ang + Math.PI, 3);
   },
   pickup: function (x, y, color) {
     _fxBurst(x, y, color || '#7df9ff', 8, 150, { size: 1.6, life: 0.28, shape: 'dot', drag: 3.2 });

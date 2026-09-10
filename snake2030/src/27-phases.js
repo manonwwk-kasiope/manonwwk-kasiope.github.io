@@ -1,12 +1,12 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — mise en scène
    Rig de caméra (zoom, bascule 3D, roulis), phases perspective façon Tron,
    treillis diagonal, et pouvoirs supplémentaires.
-   ========================================================================== */
+   ====== */
 
 S2030.phases = (function () {
 
-  /* ---------------------------------------------------------------- caméra */
+  /* ------ caméra */
   var cam = {
     zoom: 1, zoomT: 1, pulse: 0,
     tilt: 0, tiltT: 0,        // 0 = vue du dessus, 1 = bascule maximale
@@ -19,19 +19,15 @@ S2030.phases = (function () {
     cam.pulse = Math.max(cam.pulse, amount);
   }
 
-  /* Bascule réelle autour de l'axe horizontal, en radians. C'est elle qui
-     fait la 3D : le monde est rendu à plat dans un tampon, puis déformé en
-     bandes avec une division perspective. Une transformation affine — la
-     seule que sache poser un contexte 2D — ne peut pas l'exprimer, d'où le
-     détour par le tampon. */
+  // bascule réelle autour de l'axe horizontal, en radians : c'est elle qui fait la 3D (transformation CSS, voir applyPersp)
   var persp = 0, perspT = 0;
   function perspAng() { return persp; }
 
-  /* Le plateau est cadré serré par défaut, et le cadrage respire : de temps
-     en temps la caméra plonge à 200 %, puis se recule jusqu'à 100 % — la
-     vue d'ensemble qui suit le rapprochement se lit comme une respiration,
-     pas comme un réglage qui dérive. */
-  var ZOOM_BASE = 1.30, ZOOM_NEAR = 2.00, ZOOM_WIDE = 1.00;
+  /* Cadrage serré qui respire (plongée à 200 % puis recul à 100 %). Mobile : base 1,30 ;
+     bureau : 1,05. Lus à chaque image : S.desktop peut tomber au premier toucher. */
+  function ZOOM_BASE() { return S.desktop ? 1.05 : 1.30; }
+  function ZOOM_NEAR() { return 1.54 * ZOOM_BASE(); }
+  function ZOOM_WIDE() { return 0.77 * ZOOM_BASE(); }
   var zc = { mode: 0, t: 0, next: 20 };      // 0 repos, 1 rapproché, 2 reculé
 
   function zoomCycle(dt) {
@@ -50,7 +46,7 @@ S2030.phases = (function () {
     }
   }
   function zoomBase() {
-    var z = zc.mode === 1 ? ZOOM_NEAR : zc.mode === 2 ? ZOOM_WIDE : ZOOM_BASE;
+    var z = zc.mode === 1 ? ZOOM_NEAR() : zc.mode === 2 ? ZOOM_WIDE() : ZOOM_BASE();
     /* La bascule agrandit l'image pour couvrir l'écran : sans compensation
        elle se lirait comme un coup de zoom au lieu d'un basculement. */
     if (persp > 0.001) {
@@ -100,21 +96,12 @@ S2030.phases = (function () {
   function tilt() { return cam.tilt + jolt.tilt; }
   function rot() { return cam.rot + jolt.rot; }
 
-  /* ================================================== mise en scène ordonnée
-     La partie s'ouvre sur une progression écrite, pas sur un tirage : grille
-     orthogonale vue du dessus, puis l'espace nu, puis la grille qui roule
-     autour de l'axe de vue, puis la bascule autour de l'axe horizontal — et
-     là seulement le jeu devient réellement tridimensionnel. Le tirage
+  /* ====== mise en scène ordonnée
+     Ouverture écrite (grille ortho → espace → roulis → bascule), le tirage
      aléatoire ne reprend qu'une fois la progression jouée. */
   var phase = { t: 0, dur: 0, kind: '', zoom: 1, next: 2, step: 0 };
 
-  /* Durées serrées : mesuré en conditions réelles, une partie dure trente à
-     quarante secondes au réglage de difficulté par défaut. Une ouverture qui
-     n'amenait la bascule qu'à cinquante-cinq secondes ne se voyait jamais.
-     Resserrée à 23 s, elle restait hors d'atteinte pour quatre parties sur
-     trente (survie médiane 34,2 s) — elle démarre maintenant vers 19 s. Reste
-     c'est exactement ce que le joueur a signalé. Elle arrive maintenant vers
-     vingt-trois secondes. */
+  // durées serrées : une partie dure 30 à 40 s (survie médiane 34,2 s), la bascule doit arriver vers 19 s
   var SCRIPT = [
     { kind: 'ortho', dur: 6,  zoom: 1.00, rot: 0,     persp: 0,    nom: 'GRILLE' },
     { kind: 'space', dur: 4,  zoom: 1.04, rot: 0,     persp: 0,    nom: 'ESPACE' },
@@ -125,14 +112,36 @@ S2030.phases = (function () {
      3D revient plus souvent que le reste, c'est elle qu'on vient voir. */
   var POOL = [3, 3, 2, 0, 3, 1];
 
+  /* Un profil qui a déjà joué a déjà vu l'ouverture : on ne lui rejoue pas
+     quatre bannières pour d'anciennes connaissances. */
+  function _phSeen() {
+    var st = S.stats;
+    if (!st.phSeen) {
+      st.phSeen = {};
+      if ((st.runs | 0) > 0) for (var i = 0; i < SCRIPT.length; i++) st.phSeen[SCRIPT[i].kind] = 1;
+    }
+    return st.phSeen;
+  }
+
   function startPhase(k) {
     phase.kind = k.kind; phase.dur = k.dur; phase.t = k.dur; phase.zoom = k.zoom;
     cam.rotT = k.rot || 0;
     perspT = (k.persp || 0) * Math.PI / 180;
     if (k.kind === 'ortho' || k.kind === 'roll' || k.kind === 'dive') startGrid(k.kind === 'ortho' ? 'ortho' : 'diag', k.dur);
     else endGrid();
-    S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
-    S2030.audio && S2030.audio.sfx('warp');
+    /* Quatre bannières plein écran en 22 s pour nommer des mouvements de
+       caméra : la joueuse les subissait sans y rien apprendre. Le nom devient
+       un tag de 11 px pendant une seconde à droite du nom de niveau ; seule la
+       TOUTE PREMIÈRE rencontre d'une phase, par profil, garde sa bannière. */
+    var seen = _phSeen();
+    if (!seen[k.kind]) {
+      seen[k.kind] = 1;
+      if (typeof saveStats === 'function') saveStats();
+      S2030.ui && S2030.ui.banner && S2030.ui.banner(k.nom);
+    } else {
+      S2030.ui && S2030.ui.phaseTag && S2030.ui.phaseTag(k.nom);
+    }
+    S2030.audio && S2030.audio.stinger && S2030.audio.stinger(0.7);
     pulse(0.10);
   }
 
@@ -142,34 +151,27 @@ S2030.phases = (function () {
     endGrid();
   }
 
-  /* ================================================================ treillis
-     Deux orientations : orthogonale (lignes horizontales et verticales) et
-     diagonale. Toute la géométrie passe par la normale d'une famille, ce qui
-     évite d'écrire deux fois les mêmes formules avec un facteur racine de
-     deux qui traîne. */
-  var grid = { t: 0, warn: 0, spacing: 330, axis: 'ortho', a0: 0, on: 0 };
+  /* ====== treillis
+     Deux orientations (ortho, diagonale) ; toute la géométrie passe par la normale d'une famille. */
+  // pas 165 u (330 avant : un virage attendait en médiane 61 images le prochain nœud)
+  var grid = { t: 0, warn: 0, spacing: 165, axis: 'ortho', a0: 0, on: 0 };
 
   function startGrid(axis, dur) {
     if (grid.t > 0 && grid.axis === axis) { grid.t = dur; return; }
-    /* La position de référence de chaque ennemi n'est écrite que par la passe
-       de rail : après une coupure, elle date d'avant. Le déplacement de toute
-       la coupure était alors pris pour celui d'une image et reprojeté, ce qui
-       téléportait tout le monde de près d'un pas de treillis. */
-    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; }
-    if (S.snake) S.snake._ra = undefined;
+    // la position de référence date d'avant la coupure : la reprojeter téléportait tout le monde d'un pas
+    for (var i = 0; i < S.enemies.length; i++) { S.enemies[i]._rx = undefined; S.enemies[i]._ra = undefined; S.enemies[i]._rlx = undefined; }
+    if (S.snake) { S.snake._ra = undefined; S.snake._rlx = undefined; }
     grid.axis = axis;
     grid.a0 = axis === 'ortho' ? 0 : Math.PI / 4;
     grid.t = dur; grid.warn = 1.4; grid.on = 0;
   }
   function endGrid() { grid.t = 0; grid.warn = 0; grid.on = 0; }
 
-  var HALF = 7;      // demi-épaisseur du faisceau, en unités monde
+  var HALF = 3.5;    // demi-épaisseur du faisceau, u : à 165 u de pas, même densité lumineuse (et même coût) qu'à 330 u avec 7
 
-  /* ------------------------------------------ circulation sur le treillis */
-  /* Les lignes ne blessent pas : elles canalisent. Tant que le treillis est
-     là, serpent et ennemis n'ont plus que quatre caps possibles et glissent
-     sur la droite la plus proche. Personne ne peut plus couper à travers —
-     c'est la contrainte qui fait le sel de la séquence. */
+  /* ------ circulation sur le treillis */
+  /* Les lignes ne blessent pas : elles canalisent. Sur le treillis, serpent et
+     ennemis n'ont que quatre caps et glissent sur la droite la plus proche. */
   var QUAD = Math.PI / 2;
 
   function railed() { return grid.t > 0 && grid.warn <= 0; }
@@ -177,26 +179,10 @@ S2030.phases = (function () {
   /* cap utile le plus proche, parmi les quatre de l'orientation courante */
   function railAng(a) { return grid.a0 + Math.round((a - grid.a0) / QUAD) * QUAD; }
 
-  /* Normale à la droite que longe ce cap. Les deux familles se distinguent
-     par la parité du quadrant ; la normale suffit à tout calculer. */
-  function railNorm(a, out) {
-    var ra = railAng(a);
-    out.x = -Math.sin(ra); out.y = Math.cos(ra);
-    return out;
-  }
-  var _n = { x: 0, y: 1 }, _n2 = { x: 0, y: 1 };
-
-  /* ------------------------------------------- circulation, seconde version
-     Première version : on arrondissait le cap, puis on ramenait le corps vers
-     la droite la plus proche avec un plafond de vitesse. Mesuré en partie
-     réelle, ça ne tenait pas : à chaque virage le serpent traversait la maille
-     en biais pendant près d'une seconde, et il n'était réellement sur ses
-     droites que 13 % du temps en orthogonal, 37 % en diagonal. Baisser le
-     plafond n'y changeait rien — ça allongeait la traversée.
-
-     Le bon modèle est celui d'une moto-lumière : on ne tourne qu'en ATTEIGNANT
-     une droite de la famille visée. Entre deux virages on ne quitte jamais sa
-     droite, et le virage est net. */
+  /* ------ circulation, seconde version
+     Modèle moto-lumière : on ne tourne qu'en ATTEIGNANT une droite de la famille visée (ou en
+     revenant au nœud qu'on vient de franchir, RAIL_BACK) ; entre deux virages on ne quitte
+     jamais sa droite (la version « cap arrondi » laissait le serpent hors rails 63 à 87 % du temps). */
   var RAIL_HYST = 0.62;      // ~35° : un pouce qui tremble ne change pas de rail
 
   function railNormOf(a) { return { x: -Math.sin(a), y: Math.cos(a) }; }
@@ -218,23 +204,15 @@ S2030.phases = (function () {
     railClamp(o);
   }
 
-  /* La passe de rail rejouait le déplacement à partir d'une position déjà
-     sortie de l'arène, ce qui repoussait l'objet plus loin dehors à chaque
-     image — croissance géométrique mesurée, jusqu'à 265 u en une image et
-     des ennemis vivants hors du cadre visible. On borne systématiquement. */
+  // borne systématique : rejouer le déplacement depuis une position hors arène divergeait (265 u en une image)
   function railClamp(o) {
     var r = o.r || K.HEAD_R;
     if (o.x < r) o.x = r; else if (o.x > K.ARENA_W - r) o.x = K.ARENA_W - r;
     if (o.y < r) o.y = r; else if (o.y > K.ARENA_H - r) o.y = K.ARENA_H - r;
   }
 
-  /* Rebond sur le bord de l'arène. Le cap est réfléchi par le coeur, mais le
-     rail verrouillé continuait de pointer vers le mur : le serpent y restait
-     collé. Et se contenter du cap réfléchi ne suffit pas — sur le treillis
-     diagonal, une diagonale réfléchie repointe très souvent vers le bord,
-     surtout dans un coin. Mesuré avant correction : le serpent passait 66 %
-     de la séquence collé au bord. On choisit donc, parmi les quatre rails,
-     celui qui rentre le plus franchement dans l'arène. */
+  // rebond sur le bord : le cap réfléchi repointe souvent vers le mur (66 % du temps collé, mesuré) ;
+  // on prend, parmi les quatre rails, celui qui rentre le plus franchement dans l'arène
   function railBounce(o, nx, ny) {
     if (o._ra === undefined) return;
     var best = null, bestS = -1e9;
@@ -248,10 +226,8 @@ S2030.phases = (function () {
       if (s2 > bestS) { bestS = s2; best = r; }
     }
     if (best === null) best = railAng(o.ang || 0);
-    o._ra = best; o._rw = best;
-    /* Sans verrou, le manche tenu contre le mur ramenait le cap dans le mur
-       dès l'image suivante : cycle limite mesuré à 6 Hz, le serpent avançant
-       de 4 u en 6 s. On lui laisse le temps de décoller. */
+    o._ra = best; o._rw = best; o._rw2 = undefined; o._rlx = undefined;
+    // verrou : sans lui le manche tenu contre le mur y ramenait le cap dès l'image suivante (cycle à 6 Hz)
     o._rLock = 0.45;
     railPlace(o, best);
     railClamp(o);
@@ -259,15 +235,44 @@ S2030.phases = (function () {
 
   /* Rend le cap à suivre cette image. « step » est la distance qui sera
      parcourue : c'est elle qui dit si l'intersection est atteinte. */
-  /* Arrivée sur le réseau : on ne pose PAS l'objet sur sa droite d'un coup —
-     mesuré, 84 % des ennemis et le serpent sautaient jusqu'à 166 u en une
-     image, la tête se détachant du corps. On rejoint en glissant, plafonné,
-     pendant une demi-seconde. */
+  // arrivée sur le réseau : on rejoint sa droite en glissant (plafonné) pendant une demi-seconde, pas d'un coup
   var RAIL_EASE = 0.5;
+
+  // retour au nœud : une droite franchie depuis < RAIL_BACK u vaut encore (serpent et chemin rembobinés,
+  // virage dans la même image) ; 72 u = 44 % du pas, pire cas 105 u ≈ 42 images à 150 u/s
+  var RAIL_BACK = 72, PEND_LINGER = 120;     // ms : après un virage exécuté, le nœud reste signalé
+  function sameAng(a, b) { return Math.abs(norm(a - b)) < 0.01; }
+  function railRewind(o, back) {              // rembobine le chemin du serpent de « back » u
+    if (o !== S.snake || !o.path || o.pathLen === undefined) return;
+    var p = o.path;
+    o.pathLen -= back;
+    while (p.length > (o.p0 || 0) + 2 && p[p.length - 1].d > o.pathLen) p.pop();
+    if (p.length && p[p.length - 1].d > o.pathLen) p[p.length - 1].d = o.pathLen;
+  }
+  // nœud d'attente : prochaine droite de la famille visée dans le sens de marche, ou null
+  function pendingOf(o, out) {
+    if (!o || o._ra === undefined || o._rw === undefined || sameAng(o._rw, o._ra)) return null;
+    var n = railNormOf(o._rw), fwd = Math.cos(o._ra) * n.x + Math.sin(o._ra) * n.y, sp = grid.spacing;
+    if (Math.abs(fwd) < 0.5) return null;
+    var u = o.x * n.x + o.y * n.y;
+    var d = ((fwd > 0 ? Math.ceil(u / sp - 1e-6) : Math.floor(u / sp + 1e-6)) * sp - u) * fwd;
+    if (d < 0) d = 0;
+    out = out || {};
+    out.nx = o.x + Math.cos(o._ra) * d; out.ny = o.y + Math.sin(o._ra) * d; out.ang = o._rw; out.dist = d; out.done = false;
+    return out;
+  }
+  var _pend = { nx: 0, ny: 0, ang: 0, dist: 0, done: false }, _last = { t: -1e9, nx: 0, ny: 0, ang: 0 };
+  // API : nœud où le serpent va tourner, ou null ; après un virage il reste signalé PEND_LINGER ms (dist 0, done:true)
+  function pending() {
+    var s = S.snake, on = s && railed(), p = on ? pendingOf(s, _pend) : null;
+    if (p || !on || S.t - _last.t >= PEND_LINGER) return p;
+    _pend.nx = _last.nx; _pend.ny = _last.ny; _pend.ang = _last.ang; _pend.dist = 0; _pend.done = true;
+    return _pend;
+  }
 
   function railSteer(o, want, step) {
     if (o._ra === undefined) {
-      o._ra = railAng(o.ang || 0); o._rw = o._ra;
+      o._ra = railAng(o.ang || 0); o._rw = o._ra; o._rw2 = undefined; o._rlx = undefined;
       o._rEase = RAIL_EASE;
     }
 
@@ -278,16 +283,36 @@ S2030.phases = (function () {
       // battre le cap jusqu'à quinze fois par seconde.
       if (Math.abs(norm(want - o._ra)) > RAIL_HYST) {
         var t = railAng(want);
-        if (Math.abs(norm(t - o._ra)) < Math.PI * 0.75) o._rw = t;   // demi-tour refusé
-      } else o._rw = o._ra;
+        var dv = norm(want - o._ra);
+        if (Math.abs(norm(t - o._ra)) >= Math.PI * 0.75) {
+          // demi-tour : deux quarts enchaînés aux deux prochains nœuds, le premier du côté de la demande
+          var side = dv >= 0 ? 1 : -1;
+          o._rw = norm(o._ra + side * QUAD); o._rw2 = t;
+        } else { o._rw = t; o._rw2 = undefined; }
+      } else { o._rw = o._ra; o._rw2 = undefined; }
     }
 
-    if (o._rw !== undefined && o._rw !== o._ra) {
-      // la droite visée se rapproche à mesure qu'on avance : on tourne pile
-      // dessus, jamais entre deux
-      if (Math.abs(railOff(o, o._rw)) <= step * 0.75 + 2) {
-        railPlace(o, o._rw);
-        o._ra = o._rw;
+    if (o._rw !== undefined && !sameAng(o._rw, o._ra)) {
+      var d = railOff(o, o._rw), nn = railNormOf(o._rw);              // écart signé à la droite visée la plus proche
+      var behind = d * (Math.cos(o._ra) * nn.x + Math.sin(o._ra) * nn.y);   // > 0 : droite derrière nous, à |d|
+      var turned = Math.abs(d) <= step * 0.75 + 2;                     // on tourne pile sur la droite, jamais entre deux
+      /* VERROU DE NŒUD. On ne tourne pas deux fois au même nœud. Sans lui le
+         second quart d'un demi-tour s'exécutait à l'image SUIVANTE, au même
+         nœud (mesuré : 3,5 u et 1 image entre les deux quarts), parce qu'après
+         le premier quart la droite visée est exactement celle qu'on vient de
+         quitter — et parce qu'une demande maintenue redemande le quart restant
+         à chaque image. Un demi-pas de latence ne coûte aucun virage légitime :
+         le nœud suivant est à un pas entier (165 u). */
+      var lockR = grid.spacing * 0.5;
+      var locked = o._rlx !== undefined
+                && (o.x - o._rlx) * (o.x - o._rlx) + (o.y - o._rly) * (o.y - o._rly) < lockR * lockR;
+      if (locked) turned = false;
+      else if (!turned && o === S.snake && behind > 0 && behind < RAIL_BACK) { railRewind(o, behind); turned = true; }   // retour au nœud
+      if (turned) {
+        railPlace(o, o._rw); o._ra = o._rw;
+        o._rlx = o.x; o._rly = o.y;                    // nœud consommé
+        if (o === S.snake) { _last.t = S.t; _last.nx = o.x; _last.ny = o.y; _last.ang = o._ra; }
+        if (o._rw2 !== undefined) { o._rw = o._rw2; o._rw2 = undefined; }
       }
     }
     if (o._rEase > 0) {
@@ -301,10 +326,7 @@ S2030.phases = (function () {
     return o._ra;
   }
 
-  /* Les ennemis se déplacent chacun à leur façon — vitesse, position posée à
-     la main, téléportation. On leur applique la même règle : on récupère la
-     distance qu'ils viennent de parcourir, et on la refait dans la direction
-     autorisée. Ils gardent leur allure, ils perdent le droit de couper. */
+  // ennemis : la distance qu'ils viennent de parcourir est refaite dans la direction autorisée
   function railEnemies(dt) {
     for (var i = 0; i < S.enemies.length; i++) {
       var e = S.enemies[i];
@@ -338,62 +360,124 @@ S2030.phases = (function () {
     if (S.phase !== 'play') return;
   }
 
-  /* Passe de fin d'image : les ennemis sont ramenés sur leurs rails une fois
-     que plus rien ne les déplacera. La séparation entre corps, appliquée
-     après la mise à jour des phases, défaisait sinon une partie du travail. */
+  // passe de fin d'image : ennemis ramenés sur leurs rails une fois que plus rien ne les déplacera
   function railLate(dt) {
     if (!railed() || S.phase !== 'play') return;
     railEnemies(dt);
   }
 
-  /* On ne trace que les droites qui traversent la vue : une ligne d'arène
-     mesure plusieurs milliers d'unités, et rasteriser un faisceau lumineux
-     hors écran coûtait à lui seul un tiers des images par seconde. */
+  /* Treillis : une famille = un chemin, un tracé, et seulement les droites qui coupent vraiment le
+     tampon. gridSupp(n) = demi-étendue monde du tampon le long de n (roulis + échelle anisotrope) :
+     l'ancien disque de rayon 0,75 (w + h) + 200 traçait 2,7 fois trop de droites, 2,3 fois trop longues.
+     À 165 u de pas il y a deux fois plus de droites qu'à 330 : le faisceau est deux fois plus fin (même
+     surface éclairée) et le liseré blanc, second rasterisage complet, est retiré — mesuré 4,1 ms par
+     image avec, 2,4 sans, pour 2,7 ms au pas de 330. */
+  function gridSupp(nx, ny, hw, hh, asp, c, sn) {
+    return Math.abs(nx * c * hw - ny * sn * hh * asp) + Math.abs(nx * sn * hw / asp + ny * c * hh);
+  }
+
   function gridDraw(ctx) {
     if (grid.t <= 0) return;
-    var fade = Math.min(1, grid.t / 1.2);
-    var warn = grid.warn > 0;
-    var q = S.partEff === undefined ? S.opt.particles : S.partEff;
-    var R = (Math.abs(S.view.w) + Math.abs(S.view.h)) * 0.75 + 200;
-    var cx = S.cam.x, cy = S.cam.y;
-
+    var fade = Math.min(1, grid.t / 1.2), warn = grid.warn > 0, a = (warn ? 0.10 : 0.5 * grid.on) * fade;
+    if (a <= 0.01) return;
+    var cx = S.cam.x, cy = S.cam.y, sp = grid.spacing, m = HALF + 2;
+    var hw = Math.abs(S.view.w) / 2, hh = Math.abs(S.view.h) / 2, rt = rot(), c = Math.cos(rt), sn = Math.sin(rt);
+    var asp = (hh > 0.001 ? hw / hh : 1) / Math.max(0.2, 1 - tilt() * 0.42);
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.lineCap = 'butt';
-    for (var fam = 0; fam < 2; fam++) {
-      var ra = grid.a0 + fam * QUAD;                 // cap longeant la famille
-      var dx = Math.cos(ra), dy = Math.sin(ra);
-      var nx = -dy, ny = dx;                         // normale
-      var uc = cx * nx + cy * ny;                    // caméra projetée
-      var k0 = Math.ceil((uc - R) / grid.spacing);
-      var k1 = Math.floor((uc + R) / grid.spacing);
-      for (var k = k0; k <= k1; k++) {
-        var c = k * grid.spacing;
-        // point de la droite le plus proche de la caméra, puis on étend
-        var px = cx + nx * (c - uc), py = cy + ny * (c - uc);
-        var a = (warn ? 0.10 : 0.5 * grid.on) * fade;
-        if (a <= 0.01) continue;
-        ctx.globalAlpha = a;
-        ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff';
-        ctx.lineWidth = warn ? 2 : HALF * 2;
-        ctx.beginPath();
-        ctx.moveTo(px - dx * R, py - dy * R);
-        ctx.lineTo(px + dx * R, py + dy * R);
-        ctx.stroke();
-        if (!warn && q > 0.6) {
-          // le liseré blanc ne survit qu'en qualité pleine : c'est un second
-          // rasterisage complet du faisceau, pour un gain visuel marginal
-          ctx.globalAlpha = a * 0.5;
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-        }
+    ctx.globalAlpha = a; ctx.strokeStyle = warn ? '#22e0ff' : '#5ef1ff'; ctx.lineWidth = warn ? 2 : HALF * 2;
+    ctx.beginPath();
+    for (var fm = 0; fm < 2; fm++) {
+      var ra = grid.a0 + fm * QUAD, dx = Math.cos(ra), dy = Math.sin(ra), nx = -dy, ny = dx;
+      var uc = cx * nx + cy * ny, un = gridSupp(nx, ny, hw, hh, asp, c, sn) + m;
+      var L = gridSupp(dx, dy, hw, hh, asp, c, sn) + m;
+      for (var k = Math.ceil((uc - un) / sp); k * sp <= uc + un; k++) {
+        var o = k * sp - uc, px = cx + nx * o, py = cy + ny * o;
+        ctx.moveTo(px - dx * L, py - dy * L); ctx.lineTo(px + dx * L, py + dy * L);
       }
     }
+    ctx.stroke();
     ctx.restore();
+
+    // nœud d'attente : disque pulsé de 10 u (couleur de la tête, alpha 0,8) et flèche fantôme de 24 u
+    var pd = warn ? null : pending();
+    if (pd && S.snake) {
+      var col = S.snake.ghost > 0 ? '#d9c2ff' : '#9df5ff', pr = 10 * (1 + 0.18 * Math.sin(S.t / 90));
+      var ax = Math.cos(pd.ang), ay = Math.sin(pd.ang);
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = 0.8 * fade; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.arc(pd.nx, pd.ny, pr, 0, TAU); ctx.fill();
+      if (!pd.done) {
+        ctx.globalAlpha = 0.55 * fade; ctx.strokeStyle = col; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        var x0 = pd.nx + ax * 10, y0 = pd.ny + ay * 10, x1 = x0 + ax * 24, y1 = y0 + ay * 24;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1);
+        ctx.moveTo(x1 - ax * 8 - ay * 6, y1 - ay * 8 + ax * 6); ctx.lineTo(x1, y1); ctx.lineTo(x1 - ax * 8 + ay * 6, y1 - ay * 8 - ax * 6);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
   }
 
-  /* --------------------------------- sol en perspective pendant les phases */
+  /* ------ étendue réellement visible
+     Sous la bascule l'écran ne montre qu'un trapèze du tampon (bas agrandi et rogné, haut rétréci) :
+     ici ce que l'oeil voit, en u monde autour de la caméra. Calculée une fois par état de caméra. */
+  var VIS_D = 4.6;
+  function visCover(t) { var c = Math.cos(t); return c < 0.2 ? 1 : (VIS_D + Math.sin(t)) / (VIS_D * c) * 1.015; }
+  var _vis = { x0: 0, y0: 0, x1: 0, y1: 0, cx: 0, cy: 0, left: 0, right: 0, top: 0, bottom: 0, persp: 0, vw: -1, vh: -1 };
+  function visibleExtent() {
+    var V = _vis, cx = S.cam.x, cy = S.cam.y;
+    if (V.vw !== S.view.w || V.vh !== S.view.h || V.persp !== persp) {
+      var hw = S.view.w / 2, hh = S.view.h / 2, top = hh, bottom = hh, side = hw;
+      if (persp > 0.001) {
+        var q = persp, c = visCover(q), D = VIS_D, cq = Math.cos(q), sq = Math.sin(q);
+        // bas de l'écran ↔ fraction du tampon D / (c (D cos q + sin q)), haut ↔ D / (c (D cos q − sin q)), plafonnées au bord
+        var vb = Math.min(1, D / (c * (D * cq + sq))), vt = Math.min(1, D / (c * (D * cq - sq)));
+        bottom = hh * vb; top = hh * vt;
+        side = hw * Math.min(1, (D + c * vt * sq) / (c * D));     // demi-largeur visible la plus grande (ligne du haut)
+      }
+      V.left = V.right = side; V.top = top; V.bottom = bottom; V.persp = persp; V.vw = S.view.w; V.vh = S.view.h; V.cx = cx + 1;
+      V.fx = hw > 0 ? side / hw : 1; V.ft = hh > 0 ? top / hh : 1; V.fb = hh > 0 ? bottom / hh : 1;   // fractions du tampon
+    }
+    if (V.cx !== cx || V.cy !== cy) { V.cx = cx; V.cy = cy; V.x0 = cx - V.left; V.x1 = cx + V.right; V.y0 = cy - V.top; V.y1 = cy + V.bottom; }
+    return V;
+  }
+
+  // position écran d'un point monde en fractions (0..1) : roulis, échelle, bascule CSS
+  function toScreen(wx, wy, out) {
+    var X = (wx - S.cam.x) / (S.view.w / 2), Y = (wy - S.cam.y) / (S.view.h / 2), rt = rot();   // ±1 aux bords du tampon
+    if (rt) {                                                          // la rotation se fait en pixels : rapport d'aspect
+      var asp = (S.view.w / S.view.h) / (1 - tilt() * 0.42), px = X * asp, c = Math.cos(rt), sn = Math.sin(rt);
+      X = (px * c - Y * sn) / asp; Y = px * sn + Y * c;
+    }
+    if (persp > 0.001) {
+      var cv = visCover(persp), cY = cv * Y, f = VIS_D / (VIS_D - cY * Math.sin(persp));
+      X = cv * X * f; Y = cY * Math.cos(persp) * f;
+    }
+    out = out || {};
+    out.x = 0.5 + X / 2; out.y = 0.5 + Y / 2;
+    return out;
+  }
+
+  /* Point monde → px CSS : caméra, SCALE, zoom, roulis, bascule (cv, CW, CH, SCALE : globales du coeur),
+     puis la matrice CSS du canvas, relue par getComputedStyle quand le style change. */
+  var _w2m = null, _w2k = '';
+  function worldToScreen(wx, wy, out) {
+    var sx = SCALE * zoom(), sy = sx * (1 - tilt() * 0.42), rt = rot(), c = Math.cos(rt), sn = Math.sin(rt);
+    var px = (wx - S.cam.x) * sx, py = (wy - S.cam.y) * sy, x = px * c - py * sn, y = px * sn + py * c;
+    var key = cv ? cv.style.transform + '|' + CW + 'x' + CH : '';
+    if (key !== _w2k) { _w2k = key; _w2m = cv ? new DOMMatrix(getComputedStyle(cv).transform) : null; }
+    if (_w2m && !_w2m.isIdentity) {         // origine 50 % 50 %, division par w
+      var p = _w2m.transformPoint({ x: x, y: y, z: 0, w: 1 });
+      x = p.x / p.w; y = p.y / p.w;
+    }
+    out = out || {};
+    out.sx = x + CW / 2; out.sy = y + CH / 2;
+    return out;
+  }
+
+  /* ------ sol en perspective pendant les phases */
   function drawFloor(ctx) {
     // le sol de repère n'a de sens que sous la bascule réelle
     var lean = Math.max(cam.tilt, persp * 1.6);
@@ -424,7 +508,7 @@ S2030.phases = (function () {
     ctx.restore();
   }
 
-  /* ------------------------------------------------------------- pouvoirs */
+  /* ------ pouvoirs */
   /* Trois pouvoirs au maximum, utilisés à tour de rôle par le même bouton :
      le cahier des charges plafonne à trois boutons, on ne les multiplie pas. */
   var POWERS = {
@@ -436,7 +520,7 @@ S2030.phases = (function () {
         s.ghost = gt; s.invuln = Math.max(s.invuln, gt);
         S2030.fx && S2030.fx.ring(s.x, s.y, '#b388ff', 10, 900);
         S2030.fx && S2030.fx.flare(s.x, s.y, '#b388ff', 160);
-        S2030.audio && S2030.audio.sfx('shock', { x: s.x });
+        S2030.audio && S2030.audio.sfx('teleport', { x: s.x });
         var near = enemiesNear(s.x, s.y, 240);
         for (var i = 0; i < near.length; i++) {
           var e = near[i], a = angTo(s.x, s.y, e.x, e.y);
@@ -454,7 +538,7 @@ S2030.phases = (function () {
         slowT = 4200;
         S2030.fx && S2030.fx.ring(s.x, s.y, '#5ef1ff', 12, 1400);
         S2030.fx && S2030.fx.flash('#5ef1ff', 0.22);
-        S2030.audio && S2030.audio.sfx('warp');
+        S2030.audio && S2030.audio.sfx('boostEnd');
         S2030.ui && S2030.ui.banner && S2030.ui.banner('RALENTI');
         pulse(0.16);
         haptic([14, 40, 14]);
@@ -509,6 +593,7 @@ S2030.phases = (function () {
     if (!id) return false;
     POWERS[id].run();
     cds[id] = POWERS[id].cd;
+    if (S.run) S.run.usedSpecial = 1;
     pick = (owned.indexOf(id) + 1) % owned.length;
     return true;
   }
@@ -517,7 +602,7 @@ S2030.phases = (function () {
   function buttonState() {
     var id = nextReady() || owned[pick % owned.length];
     var p = POWERS[id];
-    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col,
+    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col, cd: Math.max(0, cds[id]), cdMax: p.cd,
              ready: cds[id] <= 0, fill: cds[id] <= 0 ? 1 : 1 - cds[id] / p.cd };
   }
 
@@ -533,10 +618,14 @@ S2030.phases = (function () {
         S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ffd166', 8, 700);
       }
     }
-    // le compte à rebours du bouton reste lisible par l'interface d'origine
+    /* G14 : S.specialCd portait 0 ou 1, si bien qu'un compte à rebours en
+       secondes affichait « 1 » du début à la fin de la recharge. Il porte
+       désormais les MILLISECONDES restantes du pouvoir courant, et
+       S.specialCdMax sa durée totale : la jauge du bouton (1 − cd/cdMax) est
+       inchangée, le chiffre au centre devient vrai. */
     var st = buttonState();
-    S.specialCd = st.ready ? 0 : 1;
-    S.specialCdMax = 1;
+    S.specialCd = st.ready ? 0 : Math.ceil(st.cd);
+    S.specialCdMax = st.cdMax || 7000;
   }
 
   /* Multiplicateur de temps appliqué aux ennemis et à leurs projectiles. */
@@ -573,9 +662,7 @@ S2030.phases = (function () {
     if (S.kills >= 25 && owned.indexOf('slow') < 0) grant('slow');
     if (S.kills >= 60 && owned.indexOf('fold') < 0) grant('fold');
 
-    /* La progression s'enchaîne sans temps mort tant qu'elle n'est pas
-       jouée : c'est une ouverture, pas une loterie. Ensuite seulement on
-       laisse respirer entre deux mises en scène. */
+    // l'ouverture s'enchaîne sans temps mort ; ensuite seulement on laisse respirer
     if (phase.t > 0) { phase.t -= dt; if (phase.t <= 0) endPhase(); }
     else {
       phase.next -= dt;
@@ -602,14 +689,13 @@ S2030.phases = (function () {
     railed: railed, railAng: railAng, railSteer: railSteer, railHold: railHold,
     railBounce: railBounce, railLate: railLate,
     railSpacing: grid.spacing,
+    pending: pending, visibleExtent: visibleExtent, toScreen: toScreen, worldToScreen: worldToScreen,
     // déclencheurs directs, utiles pour la mise au point et les tests
     forcePhase: function (i) {
       startPhase(SCRIPT[(i || 0) % SCRIPT.length]);
       phase.step = SCRIPT.length; phase.t = 1e9; phase.next = 1e9;
     },
-    /* Les déclencheurs suspendent la progression : sans cela elle reprenait la
-       main deux secondes plus tard et remplaçait l'état forcé, ce qui rendait
-       le crochet inutilisable pour observer quoi que ce soit. */
+    // les déclencheurs suspendent la progression (sinon elle remplaçait l'état forcé deux secondes plus tard)
     forceDiag: function () { this.forceGrid('diag'); },
     forceGrid: function (axis) {
       phase.t = 0; phase.kind = ''; phase.next = 1e9; phase.step = SCRIPT.length;

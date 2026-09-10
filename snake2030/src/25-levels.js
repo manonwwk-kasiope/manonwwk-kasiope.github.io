@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 25-levels.js
    S2030.levels : les arènes, leur décor animé, leurs dangers, et la montée
    en intensité (vagues, phases, élites, transitions).
@@ -18,12 +18,17 @@
    Contraintes tenues : aucune allocation dans les boucles chaudes (tampons
    et pools préalloués, dégradés mis en cache), aucun Math.random, aucun
    Date.now, aucun accès au DOM.
-   ========================================================================== */
+   ====== */
 
-/* --------------------------------------------------------------- constantes */
+/* ------ constantes */
 
 var _LV_PHASES = ['calm', 'rise', 'surge', 'climax', 'clear'];
 var _LV_HARDCAP = 130;          // plafond absolu d'ennemis vivants, garde-fou perf
+/* G9 : le plafond ne s'ouvre à 160 que si la qualité automatique n'a retiré
+   AUCUN cran (_qStep === 0, 90-boot.js) — c'est-à-dire si la machine tient la
+   cadence. autoQuality ne calcule aucune moyenne d'images/s : elle compte la
+   part d'images longues, et _qStep est sa seule sortie. */
+function _lvHardcap() { return (typeof _qStep === 'number' && _qStep === 0) ? 160 : _LV_HARDCAP; }
 var _LV_MARGIN = 70;            // marge d'apparition par rapport aux bords
 var _LV_ALLMODS = ['armored', 'fast', 'teleporter', 'explosive', 'regen', 'shielded'];
 
@@ -40,16 +45,16 @@ var _LV_OVERPAL = [
     pull: '#b388ff', push: '#ff5c3a', lane: '#ffb43c', chrome: '#e6d2ff' }
 ];
 
-/* ==========================================================================
+/* ======
    DÉFINITIONS DES NIVEAUX
    Une vague : { p:phase, every:s, jit:0..1, cap:plafond, g:[[type,n,motif]],
                  eliteP:probabilité, mods:[modificateurs] }
    Les motifs d'apparition : edge, ring, ahead, flank, pack, lane, corner.
-   ========================================================================== */
+   ====== */
 
 var _lvDefs = [
 
-  /* ---------------------------------------------------------------- 1 : GRILLE */
+  /* ------ 1 : GRILLE */
   {
     n: 1,
     name: 'LA GRILLE',
@@ -63,29 +68,34 @@ var _lvDefs = [
     },
     back: { grid: 1, cell: 132, scan: 1, lanes: 0, field: 0, overload: 0 },
     fore: { fog: 0.10, streaks: 0 },
-    dur: { calm: 16, rise: 24, surge: 24, climax: 34, clear: 6 },
+    dur: { calm: 10, rise: 24, surge: 24, climax: 34, clear: 6 },
     rigs: 0, nodes: 0, fieldTurn: 0,
     mods: ['armored'],
-    boss: { name: 'PROTOTYPE ZÉRO', type: 'chaser', mod: 'armored', n: 1,
-            escort: [['chaser', 5, 'ring'], ['shooter', 2, 'flank']] },
+    boss: { name: 'PROTOTYPE ZÉRO', type: 'chaser', mod: 'armored', n: 1, hpF: 1.55,
+            escort: [['chaser', 5, 'ring'], ['shooter', 1, 'flank']] },
     spawns: [
-      { p: 'calm',  every: 4.4, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
+      { p: 'calm',  every: 3.2, jit: 0.9, cap: 18, g: [['chaser', 2, 'edge']] },
       { p: 'calm',  every: 9.0, jit: 0.6, cap: 14, g: [['mine', 1, 'ahead']] },
 
-      { p: 'rise',  every: 3.6, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
-      { p: 'rise',  every: 6.4, jit: 0.8, cap: 28, g: [['shooter', 1, 'flank']] },
+      { p: 'rise',  every: 3.6, every0: 5.0, ramp: 10, jit: 0.8, cap: 30, g: [['chaser', 3, 'edge']] },
+      { p: 'rise',  every: 8.0, jit: 0.8, cap: 28, g: [['chaser', 1, 'flank']] },
       { p: 'rise',  every: 8.5, jit: 0.7, cap: 26, g: [['mine', 2, 'ahead']] },
+      /* G9 — l'ARTILLEUR retrouve sa place : G6 l'avait raréfié (10,6 % de la
+         population -> 2,9 %) en le rendant lisible. Il reste derrière la porte
+         de la première carte, mais il revient plus tôt et en nombre. */
+      { p: 'rise',  every: 6.5, jit: 0.7, cap: 26, g: [['shooter', 1, 'flank']] },
 
       { p: 'surge', every: 3.0, jit: 0.7, cap: 44, g: [['chaser', 4, 'ring']], eliteP: 0.08 },
       { p: 'surge', every: 5.0, jit: 0.7, cap: 42, g: [['interceptor', 2, 'flank']], eliteP: 0.06 },
-      { p: 'surge', every: 6.0, jit: 0.6, cap: 40, g: [['shooter', 2, 'edge']] },
+      { p: 'surge', every: 5.0, jit: 0.6, cap: 40, g: [['shooter', 2, 'edge'], ['chaser', 1, 'edge']] },
       { p: 'surge', every: 9.0, jit: 0.5, cap: 38, g: [['mine', 3, 'pack']] },
 
-      { p: 'climax', every: 4.2, jit: 0.6, cap: 46, g: [['chaser', 3, 'edge'], ['shooter', 1, 'flank']] }
+      { p: 'climax', every: 4.2, jit: 0.6, cap: 46, g: [['chaser', 3, 'edge']] },
+      { p: 'climax', every: 6.0, jit: 0.6, cap: 46, g: [['shooter', 1, 'flank']] }
     ]
   },
 
-  /* ------------------------------------------------------------ 2 : AUTOROUTE */
+  /* ------ 2 : AUTOROUTE */
   {
     n: 2,
     name: 'AUTOROUTE NÉON',
@@ -105,8 +115,8 @@ var _lvDefs = [
     laneH: 148,
     rigSpd: [215, 330],
     mods: ['fast', 'explosive'],
-    boss: { name: 'DOUBLE LAME', type: 'cutter', mod: 'fast', n: 2,
-            escort: [['interceptor', 4, 'lane'], ['shooter', 2, 'ring']] },
+    boss: { name: 'DOUBLE LAME', type: 'cutter', mod: 'fast', n: 2, hpF: 14.0,
+            escort: [['interceptor', 5, 'lane'], ['shooter', 1, 'ring']] },
     spawns: [
       { p: 'calm',  every: 4.2, jit: 0.8, cap: 20, g: [['chaser', 2, 'lane']] },
       { p: 'calm',  every: 7.5, jit: 0.7, cap: 18, g: [['interceptor', 1, 'ahead']] },
@@ -114,17 +124,19 @@ var _lvDefs = [
       { p: 'rise',  every: 3.4, jit: 0.8, cap: 34, g: [['interceptor', 2, 'lane']] },
       { p: 'rise',  every: 5.2, jit: 0.7, cap: 32, g: [['cutter', 1, 'flank']], eliteP: 0.05, mods: ['fast'] },
       { p: 'rise',  every: 7.0, jit: 0.6, cap: 30, g: [['chaser', 3, 'edge']] },
+      { p: 'rise',  every: 6.5, jit: 0.7, cap: 30, g: [['shooter', 1, 'flank']] },
 
       { p: 'surge', every: 2.9, jit: 0.6, cap: 50, g: [['interceptor', 3, 'lane'], ['chaser', 2, 'edge']], eliteP: 0.09, mods: ['fast', 'explosive'] },
       { p: 'surge', every: 4.6, jit: 0.6, cap: 48, g: [['cutter', 2, 'flank']], eliteP: 0.08, mods: ['fast'] },
-      { p: 'surge', every: 6.2, jit: 0.6, cap: 46, g: [['shooter', 2, 'ring']] },
+      { p: 'surge', every: 5.0, jit: 0.6, cap: 46, g: [['shooter', 2, 'ring'], ['interceptor', 1, 'lane']] },
       { p: 'surge', every: 8.0, jit: 0.5, cap: 44, g: [['thief', 1, 'edge']] },
 
-      { p: 'climax', every: 3.8, jit: 0.5, cap: 52, g: [['interceptor', 3, 'lane'], ['mine', 2, 'ahead']] }
+      { p: 'climax', every: 3.8, jit: 0.5, cap: 52, g: [['interceptor', 3, 'lane'], ['mine', 2, 'ahead']] },
+      { p: 'climax', every: 6.0, jit: 0.6, cap: 52, g: [['shooter', 1, 'ring']] }
     ]
   },
 
-  /* ------------------------------------------------------------ 3 : MAGNÉTIQUE */
+  /* ------ 3 : MAGNÉTIQUE */
   {
     n: 3,
     name: 'ZONE MAGNÉTIQUE',
@@ -142,26 +154,28 @@ var _lvDefs = [
     rigs: 0, nodes: 4, fieldTurn: 1.55,
     nodeR: [190, 300], nodeDrift: 26,
     mods: ['shielded', 'teleporter', 'regen'],
-    boss: { name: 'NOYAU MAGNÉTIQUE', type: 'spawner', mod: 'shielded', n: 1,
+    boss: { name: 'NOYAU MAGNÉTIQUE', type: 'spawner', mod: 'shielded', n: 1, hpF: 2.50,
             escort: [['jammer', 1, 'edge'], ['parasite', 3, 'ring']] },
     spawns: [
       { p: 'calm',  every: 4.0, jit: 0.8, cap: 22, g: [['chaser', 2, 'ring']] },
       { p: 'calm',  every: 8.0, jit: 0.6, cap: 20, g: [['parasite', 1, 'edge']] },
 
       { p: 'rise',  every: 3.4, jit: 0.8, cap: 36, g: [['chaser', 3, 'ring'], ['parasite', 1, 'flank']] },
-      { p: 'rise',  every: 5.6, jit: 0.7, cap: 34, g: [['shooter', 2, 'edge']], eliteP: 0.05, mods: ['shielded'] },
+      { p: 'rise',  every: 5.6, jit: 0.7, cap: 34, g: [['parasite', 1, 'flank'], ['chaser', 2, 'ring']], eliteP: 0.05, mods: ['shielded'] },
       { p: 'rise',  every: 9.0, jit: 0.6, cap: 32, g: [['mirror', 1, 'ahead']] },
+      { p: 'rise',  every: 6.5, jit: 0.7, cap: 32, g: [['shooter', 1, 'flank']] },
 
       { p: 'surge', every: 2.8, jit: 0.6, cap: 54, g: [['mite', 5, 'pack'], ['chaser', 2, 'edge']] },
       { p: 'surge', every: 4.4, jit: 0.6, cap: 52, g: [['parasite', 2, 'flank'], ['mine', 2, 'ahead']] },
       { p: 'surge', every: 6.0, jit: 0.6, cap: 50, g: [['jammer', 1, 'edge']], eliteP: 0.10, mods: ['shielded', 'regen'] },
-      { p: 'surge', every: 7.4, jit: 0.5, cap: 48, g: [['mirror', 1, 'ring'], ['shooter', 2, 'ring']], eliteP: 0.08, mods: ['teleporter'] },
+      { p: 'surge', every: 7.4, jit: 0.5, cap: 48, g: [['mirror', 1, 'ring'], ['mite', 3, 'pack']], eliteP: 0.08, mods: ['teleporter'] },
+      { p: 'surge', every: 5.0, jit: 0.5, cap: 48, g: [['shooter', 2, 'ring']], eliteP: 0.06, mods: ['teleporter'] },
 
       { p: 'climax', every: 3.6, jit: 0.5, cap: 56, g: [['mite', 6, 'pack'], ['parasite', 2, 'flank']] }
     ]
   },
 
-  /* -------------------------------------------------------------- 4+ SURCHARGE */
+  /* ------ 4+ SURCHARGE */
   {
     n: 4,
     name: 'SURCHARGE',
@@ -178,28 +192,30 @@ var _lvDefs = [
     rigSpd: [240, 380],
     nodeR: [180, 280], nodeDrift: 34,
     mods: _LV_ALLMODS,
-    boss: { name: 'SURCHARGE', type: 'spawner', mod: null, n: 1,
+    boss: { name: 'SURCHARGE', type: 'spawner', mod: null, n: 1, hpF: 2.50,
             escort: [['mirror', 2, 'ring'], ['cutter', 2, 'flank'], ['jammer', 1, 'edge']] },
     spawns: [
       { p: 'calm',  every: 3.4, jit: 0.7, cap: 26, g: [['chaser', 3, 'ring'], ['interceptor', 1, 'lane']] },
       { p: 'calm',  every: 6.5, jit: 0.6, cap: 24, g: [['mine', 2, 'ahead']] },
 
       { p: 'rise',  every: 3.0, jit: 0.7, cap: 44, g: [['interceptor', 3, 'lane'], ['cutter', 1, 'flank']], eliteP: 0.08 },
-      { p: 'rise',  every: 5.0, jit: 0.6, cap: 42, g: [['shooter', 2, 'ring'], ['parasite', 1, 'edge']] },
+      { p: 'rise',  every: 5.0, jit: 0.6, cap: 42, g: [['parasite', 2, 'edge'], ['chaser', 2, 'ring']] },
 
       { p: 'surge', every: 2.5, jit: 0.6, cap: 64, g: [['chaser', 4, 'ring'], ['mite', 4, 'pack']], eliteP: 0.12 },
       { p: 'surge', every: 3.8, jit: 0.6, cap: 62, g: [['cutter', 2, 'flank'], ['interceptor', 2, 'lane']], eliteP: 0.12 },
-      { p: 'surge', every: 5.2, jit: 0.5, cap: 60, g: [['jammer', 1, 'edge'], ['mirror', 1, 'ahead'], ['shooter', 2, 'ring']], eliteP: 0.14 },
+      { p: 'surge', every: 5.2, jit: 0.5, cap: 60, g: [['jammer', 1, 'edge'], ['mirror', 1, 'ahead'], ['chaser', 2, 'ring']], eliteP: 0.14 },
+      { p: 'surge', every: 4.6, jit: 0.5, cap: 60, g: [['shooter', 2, 'ring']], eliteP: 0.14 },
       { p: 'surge', every: 7.0, jit: 0.5, cap: 58, g: [['spawner', 1, 'edge'], ['thief', 1, 'edge']] },
 
-      { p: 'climax', every: 3.2, jit: 0.5, cap: 70, g: [['chaser', 4, 'ring'], ['interceptor', 2, 'lane'], ['mite', 4, 'pack']], eliteP: 0.10 }
+      { p: 'climax', every: 3.2, jit: 0.5, cap: 70, g: [['chaser', 4, 'ring'], ['interceptor', 2, 'lane'], ['mite', 4, 'pack']], eliteP: 0.10 },
+      { p: 'climax', every: 6.0, jit: 0.6, cap: 70, g: [['shooter', 1, 'ring']], eliteP: 0.10 }
     ]
   }
 ];
 
-/* ==========================================================================
+/* ======
    ÉTAT D'EXÉCUTION
-   ========================================================================== */
+   ====== */
 
 var _lvHaz = [];            // dangers vivants, exposés par l'API
 var _lvHazPool = [];        // recyclage, aucune allocation en régime établi
@@ -249,9 +265,9 @@ var _lvVigG = null, _lvVigKey = '';
 var _lvDngG = null, _lvDngKey = '';
 var _lvGradW = 0, _lvGradH = 0;
 
-/* ==========================================================================
+/* ======
    PETITES AIDES
-   ========================================================================== */
+   ====== */
 
 var _lvRgbC = {};
 function _lvRgb(hex) {
@@ -287,9 +303,9 @@ function _lvHazClear() {
   _lvMag.length = 0;
 }
 
-function _lvSay(title) {
+function _lvSay(title, dur) {
   if (S.phase !== 'play') return;
-  if (S2030.ui && S2030.ui.banner) S2030.ui.banner(title);
+  if (S2030.ui && S2030.ui.banner) S2030.ui.banner(title, dur);
 }
 function _lvHint(title, sub) {
   if (S.phase !== 'play') return;
@@ -305,73 +321,119 @@ function _lvCollect(x, y, r) {
   return _lvNear;
 }
 
-/* ==========================================================================
+/* ======
    POINTS D'APPARITION
    Remplit _lvPX / _lvPY. Toujours dans l'arène, de préférence hors champ.
-   ========================================================================== */
+   ====== */
 
+var _lvVisW = 640, _lvVisH = 390;
+/* demi-étendue à couvrir : le plus grand du tampon caméra et de l'étendue
+   réellement montrée (phases.visibleExtent) — R part de là, +150 u */
+var _lvAntX = 0, _lvAntY = 0;
+function _lvVisHalf() {
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null, s = S.snake;
+  _lvVisW = S.view.w * 0.5; _lvVisH = S.view.h * 0.5;
+  // caméra anticipée : pendant les 600 ms du portail elle avance d'environ
+  // 0,6 s de course plus son avance (0,55 s) — un point tout juste caché
+  // maintenant serait dans le champ à l'éclosion
+  _lvAntX = s ? s.x + Math.cos(s.ang) * s.speed * 1.15 : S.cam.x;
+  _lvAntY = s ? s.y + Math.sin(s.ang) * s.speed * 1.15 : S.cam.y;
+  if (V) {
+    if (V.left > _lvVisW) _lvVisW = V.left;
+    if (V.right > _lvVisW) _lvVisW = V.right;
+    if (V.top > _lvVisH) _lvVisH = V.top;
+    if (V.bottom > _lvVisH) _lvVisH = V.bottom;
+  }
+}
+
+/* Un point d'apparition n'est bon que s'il est DANS l'arène et HORS de tout
+   ce que le joueur peut voir : ni l'étendue montrée (inView, marge 40), ni le
+   cadre brut de la caméra, qui la déborde sous certaines bascules. */
+function _lvHidden(x, y) {
+  if (x < _LV_MARGIN || x > K.ARENA_W - _LV_MARGIN || y < _LV_MARGIN || y > K.ARENA_H - _LV_MARGIN) return false;
+  if (inView(x, y, 40)) return false;
+  return Math.abs(x - S.cam.x) > S.view.w * 0.5 + 40 || Math.abs(y - S.cam.y) > S.view.h * 0.5 + 40;
+}
+/* même test, contre la caméra anticipée : sert au choix du point, pas à l'éclosion */
+function _lvHiddenSoon(x, y) {
+  if (!_lvHidden(x, y)) return false;
+  return Math.abs(x - _lvAntX) > S.view.w * 0.5 + 40 || Math.abs(y - _lvAntY) > S.view.h * 0.5 + 40;
+}
+
+/* Repli déterministe : bords et coins de l'arène. Le monde (2600x1600) est
+   toujours plus grand que la vue, donc l'un d'eux est caché. */
+var _LV_FBX = [0, 0, -1, 1, -1, -1, 1, 1], _LV_FBY = [-1, 1, 0, 0, -1, 1, -1, 1];
+function _lvFallback() {
+  var s = S.snake, lo = _LV_MARGIN + 20;
+  for (var k = 0; k < 8; k++) {
+    var x = _LV_FBX[k] ? (_LV_FBX[k] < 0 ? lo : K.ARENA_W - lo) : clamp(s.x, lo, K.ARENA_W - lo);
+    var y = _LV_FBY[k] ? (_LV_FBY[k] < 0 ? lo : K.ARENA_H - lo) : clamp(s.y, lo, K.ARENA_H - lo);
+    if (_lvHiddenSoon(x, y)) { _lvPX = x; _lvPY = y; return true; }
+  }
+  _lvClampPoint();
+  return false;
+}
+
+/* Tous les motifs tirent à R >= hypot(view.w, view.h)/2 + 150 — la DIAGONALE
+   de la demi-vue, pas son plus grand côté — et revérifient !inView(x, y, 40) ;
+   cinq essais, puis repli. (L'en-tête annonçait max(view.w, view.h)/2 + 150,
+   borne plus faible que ce que le corps applique depuis G6 : seule cette ligne
+   était fausse, le calcul est inchangé.) */
 function _lvPoint(pat, i, n) {
   var s = S.snake;
   if (!s) { _lvPX = K.ARENA_W * 0.5; _lvPY = K.ARENA_H * 0.5; return; }
-  var off = S.view.w * 0.5 + 150;
-  var a, R, tries, ok;
-
-  if (pat === 'lane' && _lvLanes.length) {
-    var ln = _lvLanes[rndI(0, _lvLanes.length - 1)];
-    if (ln.ax === 0) {
-      _lvPX = s.x - ln.dir * (S.view.w * 0.5 + rndR(180, 420));
-      _lvPY = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
-    } else {
-      _lvPY = s.y - ln.dir * (S.view.h * 0.5 + rndR(180, 380));
-      _lvPX = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
-    }
-    _lvClampPoint();
-    return;
-  }
+  _lvVisHalf();
+  /* Rayon : la DIAGONALE de la demi-vue, pas son plus grand côté. Le point le
+     plus éloigné réellement visible est le COIN, à hypot(w, h) / 2 ; sur une
+     fenêtre presque carrée (rendue jouable par G2) max(w, h) / 2 + 150 ne le
+     domine pas, et le roulis de la caméra achève de faire naître l'ennemi sous
+     les yeux. hypot(demi-w, demi-h) + 150 domine le coin par construction,
+     quelle que soit la forme de la fenêtre et quel que soit le roulis ; il
+     reste >= max(view.w, view.h) / 2 + 150, la borne exigée. */
+  var off = Math.sqrt(_lvVisW * _lvVisW + _lvVisH * _lvVisH) + 150;
+  var a, R, k, ln;
 
   if (pat === 'corner') {
     _lvPX = (i % 2) ? K.ARENA_W - _LV_MARGIN * 2 : _LV_MARGIN * 2;
     _lvPY = (((i / 2) | 0) % 2) ? K.ARENA_H - _LV_MARGIN * 2 : _LV_MARGIN * 2;
+    if (!_lvHiddenSoon(_lvPX, _lvPY)) _lvFallback();
     return;
   }
 
-  if (pat === 'pack') {
-    // grappe serrée autour d'un point de bord tiré une seule fois par salve
-    if (i === 0) { _lvPoint('edge', 0, 1); _lvPackX = _lvPX; _lvPackY = _lvPY; }
-    _lvPX = _lvPackX + rndR(-70, 70);
-    _lvPY = _lvPackY + rndR(-70, 70);
-    _lvClampPoint();
+  // grappe : le point de bord est tiré une fois par salve, les suivants collent
+  if (pat === 'pack' && i > 0) {
+    for (k = 0; k < 5; k++) {
+      _lvPX = _lvPackX + rndR(-70, 70);
+      _lvPY = _lvPackY + rndR(-70, 70);
+      if (_lvHiddenSoon(_lvPX, _lvPY)) return;
+    }
+    _lvPX = _lvPackX; _lvPY = _lvPackY;
+    if (!_lvHiddenSoon(_lvPX, _lvPY)) _lvFallback();
     return;
   }
 
-  if (pat === 'ahead') {
-    a = s.ang + rndR(-0.45, 0.45);
-    R = off + rndR(0, 190);
-  } else if (pat === 'flank') {
-    a = s.ang + ((i & 1) ? 1 : -1) * (Math.PI * 0.5) + rndR(-0.28, 0.28);
-    R = S.view.h * 0.5 + rndR(120, 300);
-  } else if (pat === 'ring') {
-    a = _lvRingA + (i / Math.max(1, n)) * TAU;
-    R = off + rndR(-40, 120);
-  } else {
-    // 'edge' : on cherche une direction qui tombe hors champ
-    ok = false;
-    for (tries = 0; tries < 5; tries++) {
-      a = rnd() * TAU;
-      R = off + rndR(0, 240);
+  for (k = 0; k < 5; k++) {
+    if (pat === 'lane' && _lvLanes.length) {
+      ln = _lvLanes[rndI(0, _lvLanes.length - 1)];
+      if (ln.ax === 0) {
+        _lvPX = s.x - ln.dir * (off + rndR(0, 240));
+        _lvPY = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      } else {
+        _lvPY = s.y - ln.dir * (off + rndR(0, 240));
+        _lvPX = ln.pos + rndR(-ln.h * 0.32, ln.h * 0.32);
+      }
+    } else {
+      if (pat === 'ahead') { a = s.ang + rndR(-0.45, 0.45); R = off + rndR(0, 190); }
+      else if (pat === 'flank') { a = s.ang + ((i & 1) ? 1 : -1) * (Math.PI * 0.5) + rndR(-0.28, 0.28); R = off + rndR(0, 300); }
+      else if (pat === 'ring') { a = _lvRingA + (i / Math.max(1, n)) * TAU + (k ? rndR(-0.35, 0.35) : 0); R = off + rndR(0, 160); }
+      else { a = rnd() * TAU; R = off + rndR(0, 240); }          // 'edge' et tout le reste
       _lvPX = s.x + Math.cos(a) * R;
       _lvPY = s.y + Math.sin(a) * R;
-      if (_lvPX > _LV_MARGIN && _lvPX < K.ARENA_W - _LV_MARGIN &&
-          _lvPY > _LV_MARGIN && _lvPY < K.ARENA_H - _LV_MARGIN &&
-          !inView(_lvPX, _lvPY, 40)) { ok = true; break; }
     }
-    if (!ok) _lvClampPoint();
-    return;
+    if (_lvHiddenSoon(_lvPX, _lvPY)) { if (pat === 'pack') { _lvPackX = _lvPX; _lvPackY = _lvPY; } return; }
   }
-
-  _lvPX = s.x + Math.cos(a) * R;
-  _lvPY = s.y + Math.sin(a) * R;
-  _lvClampPoint();
+  _lvFallback();
+  if (pat === 'pack') { _lvPackX = _lvPX; _lvPackY = _lvPY; }
 }
 var _lvPackX = 0, _lvPackY = 0;
 
@@ -380,38 +442,145 @@ function _lvClampPoint() {
   _lvPY = clamp(_lvPY, _LV_MARGIN, K.ARENA_H - _LV_MARGIN);
 }
 
-/* ==========================================================================
+/* ======
+   PORTAILS D'APPARITION
+   Rien n'arrive sans prévenir : 600 ms avant chaque apparition, un chevron de
+   bord de la couleur du type (double pour une élite), un tic sonore, et une
+   ligne dans S.log si un test l'écoute.
+   ====== */
+
+var _LV_PORTAL = 600;
+/* G9 — mise en scène du boss : préavis long, chevron triple de taille 40,
+   clignotement qui s'accélère, son bossIn AU PORTAIL (et non à l'éclosion). */
+var _LV_BOSS_PORTAL = 1400;      // ms de préavis pour un boss
+var _LV_BOSS_SILENCE = 3.4;      // s de climax sans aucun portail non-boss
+var _LV_BOSS_ARRIVE = 1.8;       // s de temps de jeu d'arrivée pilotée
+var _LV_BOSS_SLOW = 2200;        // ms d'horloge S.t de ralenti à l'entrée en vue
+var _LV_BOSS_SLOWTS = 0.3;       // facteur de ralenti
+var _LV_BOSS_RAGE = 45;          // s d'horloge de phase avant l'enragement
+var _lvPend = [], _lvPendPool = [], _lvPortalId = 0;
+
+function _lvLog(o) { if (S.log && S.log.push && S.log.length < 20000) S.log.push(o); }
+
+function _lvColorOf(type) {
+  var D = S2030.enemies && S2030.enemies.defs, d = D && D[type];
+  return (d && d.color) || '#ffffff';
+}
+
+function _lvPortal(type, x, y, elite, mod, boss) {
+  var p = _lvPendPool.length ? _lvPendPool.pop() : {};
+  p.type = type; p.x = x; p.y = y; p.elite = !!elite; p.mod = mod || null; p.boss = !!boss;
+  p.lead = p.boss ? _LV_BOSS_PORTAL : _LV_PORTAL;
+  p.t = S.t + p.lead; p.t0 = S.t; p.color = _lvColorOf(type); p.id = ++_lvPortalId;
+  _lvPend.push(p);
+  if (p.boss) { S2030.audio && S2030.audio.sfx('bossIn', { x: x }); S2030.audio && S2030.audio.drop && S2030.audio.drop(); }
+  else S2030.audio && S2030.audio.sfx('spawnTick', { x: x, vol: elite ? 1 : 0.8 });
+  _lvPortalMark(p);
+  _lvLog({ t: S.t, kind: 'portal', ev: 'portal', type: type, elite: p.elite, mod: p.mod,
+           boss: p.boss, x: Math.round(x), y: Math.round(y), lead: p.lead, edge: 1, pid: p.id });
+  return p;
+}
+
+/* chevron du cadre : triple et grand pour un boss, cadence de clignotement
+   croissante à mesure que l'échéance approche (3 Hz -> 12 Hz) */
+function _lvPortalMark(p) {
+  if (!S2030.fx) return;
+  if (!p.boss) { S2030.fx.edge(p.x, p.y, p.color, { dbl: p.elite, size: 24 }); return; }
+  var k = clamp((S.t - p.t0) / Math.max(1, p.lead), 0, 1);
+  S2030.fx.edge(p.x, p.y, p.color, { dbl: 1, tri: 1, size: 40, blink: 1, blinkHz: 3 + 9 * k });
+}
+
+/* La caméra a bougé pendant les 600 ms d'annonce : si le point est entré dans
+   le champ, on le repousse vers l'extérieur avant de faire éclore. */
+function _lvHatchFix(p) {
+  if (_lvHidden(p.x, p.y)) return;
+  _lvVisHalf();
+  var a = angTo(S.cam.x, S.cam.y, p.x, p.y), k;
+  for (k = 0; k < 10; k++) {
+    p.x = clamp(p.x + Math.cos(a) * 80, _LV_MARGIN, K.ARENA_W - _LV_MARGIN);
+    p.y = clamp(p.y + Math.sin(a) * 80, _LV_MARGIN, K.ARENA_H - _LV_MARGIN);
+    if (_lvHidden(p.x, p.y)) return;
+  }
+  var sx = _lvPX, sy = _lvPY;
+  if (_lvFallback()) { p.x = _lvPX; p.y = _lvPY; }
+  _lvPX = sx; _lvPY = sy;
+}
+
+function _lvHatch(p) {
+  _lvHatchFix(p);
+  var m = null;
+  if (p.elite || p.mod || p.boss) { m = _lvMods; m.elite = p.elite; m.mod = p.mod; m.boss = p.boss; }
+  var e = spawnEnemy(p.type, p.x, p.y, m);
+  if (!e) return;
+  _lvLog({ t: S.t, kind: 'spawn', ev: 'spawn', type: p.type, elite: p.elite, boss: p.boss,
+           id: e.id, x: Math.round(p.x), y: Math.round(p.y), pid: p.id });
+  // brève déchirure d'arrivée, aux couleurs de l'ennemi
+  if (S2030.fx) S2030.fx.ring(p.x, p.y, e.color, 4, 340, { w: 2, life: 0.3 });
+  if (p.boss) _lvBossBorn(e);
+}
+
+/* Éclosion dans l'ORDRE D'ANNONCE : une salve arrive dans l'ordre où ses
+   chevrons se sont allumés (et la composition d'une vague reste celle du
+   tableau de niveau). */
+var _lvPortalF = 0;
+function _lvPortalTick() {
+  var i = 0;
+  /* G9 : pendant 'clear' plus rien n'éclôt — un ennemi né en fin de secteur
+     n'aurait pas le temps de fuir et serait reporté au secteur suivant. */
+  if (_LV_PHASES[_lvPhaseI] === 'clear') return;
+  _lvPortalF++;
+  while (i < _lvPend.length) {
+    var p = _lvPend[i];
+    // le point corrigé est mémorisé dans p : une vérification sur quatre suffit
+    // pour suivre la caméra (elle avance de ~9 u par image), et l'éclosion la
+    // refait toujours. C'est ce qui évitait des salves de travail par image.
+    if (((_lvPortalF + p.id) & 3) === 0) _lvHatchFix(p);
+    if (S.t < p.t || (!p.boss && _LV_PHASES[_lvPhaseI] === 'climax' && _lvPhaseT < _LV_BOSS_SILENCE + 0.6)) {
+      _lvPortalMark(p);
+      i++; continue;
+    }
+    _lvPend.splice(i, 1);
+    _lvHatch(p);
+    if (_lvPendPool.length < 48) _lvPendPool.push(p);
+  }
+}
+
+function _lvPendClear() {
+  while (_lvPend.length) { var p = _lvPend.pop(); if (_lvPendPool.length < 48) _lvPendPool.push(p); }
+}
+
+/* ======
    VAGUES
-   ========================================================================== */
+   ====== */
 
 function _lvSpawnGroup(type, n, pat, eliteP, mods) {
   for (var i = 0; i < n; i++) {
-    if (S.enemies.length >= _LV_HARDCAP) return;
+    if (S.enemies.length + _lvPend.length >= _lvHardcap()) return;
     _lvPoint(pat, i, n);
-    var m = null;
+    var el = false, md = null;
     if (eliteP && chance(eliteP)) {
-      m = _lvMods;
-      m.elite = true;
-      m.mod = (mods && mods.length) ? pick(mods) : null;
+      el = true;
+      /* dès le cycle 2, une élite porte TOUJOURS un modificateur : si la table
+         du secteur n'en propose pas, on pioche dans la liste complète */
+      md = (mods && mods.length) ? pick(mods) : (_lvCycle >= 2 ? pick(_LV_ALLMODS) : null);
     } else if (mods && mods.length && chance(0.10 + _lvCycle * 0.02)) {
-      m = _lvMods;
-      m.elite = false;
-      m.mod = pick(mods);
+      md = pick(mods);
     }
-    var e = spawnEnemy(type, _lvPX, _lvPY, m);
-    if (e && S2030.fx) {
-      // brève déchirure d'arrivée, aux couleurs de l'ennemi
-      S2030.fx.ring(_lvPX, _lvPY, e.color, 4, 340, { w: 2, life: 0.3 });
-    }
+    _lvPortal(type, _lvPX, _lvPY, el, md, false);
   }
 }
-var _lvMods = { elite: false, mod: null };   // objet de mods réutilisé
+var _lvMods = { elite: false, mod: null, boss: false };   // objet de mods réutilisé
 
 function _lvFireWave(w) {
   var mods = w.mods || _lvDef.mods;
-  var eliteP = (w.eliteP || 0) + _lvCycle * 0.02;
+  var eliteP = (w.eliteP || 0) + _lvCycle * 0.03;
   for (var i = 0; i < w.g.length; i++) {
     var g = w.g[i];
+    /* Les artilleurs n'entrent qu'une fois la première carte prise : tirer sur
+       un serpent qui n'a encore aucune réponse n'apprend rien. Vrai pour tous
+       les secteurs ; au secteur 1 le premier 'shooter' est en surge, la porte
+       n'y mord donc qu'à partir de t = 34 s. */
+    if (g[0] === 'shooter' && (S.cardsTaken | 0) < 1) continue;
     var n = g[1];
     if (_lvCycle > 0) n = Math.min(n + ((_lvCycle / 3) | 0), n + 3);
     _lvSpawnGroup(g[0], n, g[2], eliteP, mods);
@@ -421,9 +590,22 @@ function _lvFireWave(w) {
 function _lvWaves(dt) {
   var ph = _LV_PHASES[_lvPhaseI];
   if (ph === 'clear') return;
+  /* G9 : au climax, AUCUN portail non-boss avant 3,4 s de phase. Sans cette
+     clause le premier chaser éclôt vers 0,62 s (l'amorce des minuteries tombe
+     un tirage sur trois sur son plancher de 0,02 s) et masque l'entrée du
+     boss. Les minuteries de vagues sont GELÉES pendant ce silence (l'appel sort
+     avant leur décompte) : elles repartent à 3,4 s, et le portail de 600 ms
+     reporte la première éclosion non-boss à 4,0 s. */
+  if (ph === 'climax' && _lvPhaseT < _LV_BOSS_SILENCE) return;
   var sp = _lvDef.spawns;
-  var rate = _lvCycle > 0 ? Math.max(0.55, 1 - _lvCycle * 0.055) : 1;
-  var capB = _lvCycle > 0 ? Math.min(46, _lvCycle * 6) : 0;
+  /* SURCHARGE DU SECTEUR : plancher de cadence 0,55 -> 0,30 et capB 46 -> 80,
+     indexés sur le CYCLE DE SURCHARGE comme le veut la spec. Les indexer aussi
+     sur le numéro de secteur (essai mesuré) triple la cadence du secteur 6 par
+     rapport au secteur 3 et fait sauter le critère « kills/min du secteur 6
+     <= 1,5 x celui du secteur 3 » : 2,19 mesuré sur dix parties. La montée
+     d'après 60 s est portée par les PV et par le mordant des ennemis. */
+  var rate = _lvCycle > 0 ? Math.max(0.30, 1 - _lvCycle * 0.055) : 1;
+  var capB = _lvCycle > 0 ? Math.min(80, _lvCycle * 6) : 0;
   // la difficulté resserre les salves et relève le plafond simultané : c'est
   // là qu'elle se sent le plus, bien avant les points de vie des ennemis
   var dm = diffMul();
@@ -435,16 +617,25 @@ function _lvWaves(dt) {
     if (w.p !== ph) continue;
     _lvWaveT[i] -= dt;
     if (_lvWaveT[i] > 0) continue;
-    _lvWaveT[i] = w.every * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
-    var cap = Math.min(_LV_HARDCAP, Math.round((w.cap + capB) * capM));
-    if (S.enemies.length >= cap) continue;
+    /* Montée en deux temps : une vague peut annoncer une cadence de début de
+       phase (every0) tenue pendant « ramp » secondes. Le rise du secteur 1
+       ouvre ainsi à 5,0 s avant de reprendre ses 3,6 s. */
+    var ev = (w.every0 && _lvPhaseT < (w.ramp || 0)) ? w.every0 : w.every;
+    _lvWaveT[i] = ev * rate * rndR(1 - (w.jit || 0.5) * 0.35, 1 + (w.jit || 0.5) * 0.35);
+    /* Tant que le serpent est intact (9 segments au départ, 13 après la
+       première CROISSANCE), le plafond simultané de la table est ramené à 22 :
+       moins de corps à l'écran quand on n'a encore rien pour s'en défaire. */
+    var wcap = w.cap;
+    if (S.snake && S.snake.len < 12 && wcap > 22) wcap = 22;
+    var cap = Math.min(_lvHardcap(), Math.round((wcap + capB) * capM));
+    if (S.enemies.length + _lvPend.length >= cap) continue;
     _lvFireWave(w);
   }
 }
 
-/* ==========================================================================
+/* ======
    PHASES
-   ========================================================================== */
+   ====== */
 
 function _lvEnterPhase(idx) {
   _lvPhaseI = idx;
@@ -460,7 +651,7 @@ function _lvEnterPhase(idx) {
 
   // amorce des minuteries de la phase : la première salve part tout de suite
   for (var w = 0; w < _lvDef.spawns.length; w++) {
-    if (_lvDef.spawns[w].p === ph) _lvWaveT[w] = rndR(0.2, 1.4);
+    if (_lvDef.spawns[w].p === ph) _lvWaveT[w] = Math.max(0.02, rndR(0.2, 1.4) - _LV_PORTAL / 1000);
   }
 
   if (ph === 'rise') {
@@ -468,7 +659,6 @@ function _lvEnterPhase(idx) {
   } else if (ph === 'surge') {
     _lvSay('SURCHARGE DU SECTEUR');
     if (S2030.fx) { S2030.fx.flash(_lvPal.gridHot, 0.16); S2030.fx.glitch(0.4); }
-    if (S2030.audio) S2030.audio.sfx('zap');
   } else if (ph === 'climax') {
     _lvClimax();
   } else if (ph === 'clear') {
@@ -482,70 +672,344 @@ function _lvClimax() {
   _lvBoss = null;
   if (!b) return;
 
-  _lvSay(b.name);
-  if (S2030.audio) S2030.audio.sfx('bossIn');
+  _lvSay(b.name, 2200);                 // bannière du boss : 2,2 s, seule à l'écran
   if (S2030.fx) { S2030.fx.flash(_lvPal.danger, 0.30); S2030.fx.shake(16); S2030.fx.glitch(0.7); }
 
   var count = b.n + ((_lvCycle / 2) | 0);
   if (count > 4) count = 4;
+  _lvBossName = b.name || '';
   for (var i = 0; i < count; i++) {
     _lvPoint('ring', i, count);
-    _lvMods.elite = true;
-    _lvMods.mod = b.mod || pick(_lvDef.mods || _LV_ALLMODS);
-    var e = spawnEnemy(b.type, _lvPX, _lvPY, _lvMods);
-  if (e) { e.name = b.name || e.name; e.boss = 1; }
-    if (e) {
-      if (_lvCycle > 0) { e.hp = e.maxHp = Math.round(e.maxHp * (1 + _lvCycle * 0.22)); }
-      _lvElites.push(e);
-      if (S2030.fx) {
-        S2030.fx.ring(e.x, e.y, _lvPal.danger, 12, 620, { w: 6, life: 0.6 });
-        S2030.fx.flare(e.x, e.y, _lvPal.danger, 150, { life: 0.5, a: 0.9 });
-      }
-    }
+    _lvPortal(b.type, _lvPX, _lvPY, true, b.mod || pick(_lvDef.mods || _LV_ALLMODS), true);
   }
-  if (_lvElites.length) {
-    _lvBoss = _lvElites[0];
-    S.boss = _lvBoss;
-    S.bossHpMax = _lvBoss.maxHp;
+  /* ESCORTE : plus rien au moment de l'entrée. Une salve d'entrée quand le
+     silence de 3,4 s se lève, puis deux salves de renfort à 66 % et 33 % des
+     PV du boss — trois salves au total. */
+  _lvEsc = 0;
+}
+
+var _lvEsc = 0;                 // nombre de salves d'escorte déjà tirées
+function _lvEscort() {
+  var b = _lvDef && _lvDef.boss;
+  if (!b || !b.escort) return;
+  for (var k = 0; k < b.escort.length; k++) {
+    var g = b.escort[k];
+    _lvSpawnGroup(g[0], g[1], g[2], 0, null);
   }
-  if (b.escort) {
-    for (var k = 0; k < b.escort.length; k++) {
-      var g = b.escort[k];
-      _lvSpawnGroup(g[0], g[1], g[2], 0, null);
-    }
-  }
+  _lvEsc++;
 }
 
 function _lvClearPhase() {
+  /* Le secteur se referme : on annule les portails en attente et on solde les
+     ennemis restants (score simple, gerbe). Ce qui survit ensuite — une couvée
+     tardive, une entrée par la soupape — fuit vers le bord dans _lvLate. */
+  _lvPendClear();
+  var won = _lvWon, killed = 0, i;
+  for (i = 0; i < _lvElites.length; i++) if (_lvElites[i].dead) killed++;
+  for (i = 0; i < S.enemies.length; i++) {
+    var e = S.enemies[i];
+    if (e.dead) continue;
+    e.dead = true; e.noDmg = 1;
+    S.score += (e.score || 0);          // score x 1 : la purge n'est pas une série de kills
+    S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 6, 0.9, { glow: true });
+  }
   S.boss = null;
   _lvBoss = null;
   _lvElites.length = 0;
   var s = S.snake;
   if (!s) return;
   _lvSay('SECTEUR NETTOYÉ');
+  if (won) {
+    /* Un boss abattu se paie : une carte de TROPHÉE, soixante crédits, la
+       moitié d'une jauge d'ultime. Le forfait par soupape ne paie rien. */
+    S.bossKills = (S.bossKills | 0) + (killed || 1);
+    S.lvlUps = (S.lvlUps | 0) + 1;
+    S.trophyNext = 1;
+    S.coins = (S.coins | 0) + 60;
+    S.ult = Math.min(S.ultMax, S.ult + 50);
+    _lvSay('+60 \u25c6');
+  }
+  _lvWon = 0;
   if (S2030.audio) S2030.audio.sfx('warp');
   if (S2030.fx) {
     S2030.fx.flash(_lvPal.accent, 0.22);
     S2030.fx.ring(s.x, s.y, _lvPal.accent, 20, 1100, { w: 7, life: 0.9 });
   }
-  // récompense de fin de secteur : de quoi souffler avant la suite
-  for (var i = 0; i < 3; i++) {
-    var a = rnd() * TAU, r = rndR(70, 150);
-    addPickup('core', clamp(s.x + Math.cos(a) * r, 40, K.ARENA_W - 40),
-                      clamp(s.y + Math.sin(a) * r, 40, K.ARENA_H - 40));
-  }
+  /* Récompense de fin de secteur : de quoi souffler avant la suite, EN UN SEUL
+     noyau de valeur triple. Trois noyaux dispersés, c'était trois halos et trois
+     détours pour la même chose. */
+  var a = rnd() * TAU, r = rndR(70, 150);
+  var pc = addPickup('core', clamp(s.x + Math.cos(a) * r, 40, K.ARENA_W - 40),
+                             clamp(s.y + Math.sin(a) * r, 40, K.ARENA_H - 40));
+  if (pc) pc.val = 3;
   addPickup('heal', clamp(s.x + rndR(-90, 90), 40, K.ARENA_W - 40),
                     clamp(s.y + rndR(-90, 90), 40, K.ARENA_H - 40));
 }
+
+/* Une élite de climax franchit son portail : elle rejoint le groupe et, si la
+   place est libre, prend la jauge de boss. */
+var _lvBossName = '';
+function _lvBossBorn(e) {
+  e.name = _lvBossName || e.name;
+  e.boss = 1;
+  if (_lvCycle > 0) { e.hp = e.maxHp = Math.round(e.maxHp * (1 + _lvCycle * 0.22)); }
+  /* Facteur de PV PAR BOSS, porté par la définition de secteur (_lvDefs[].boss.hpF),
+     appliqué APRÈS l'élite et après le modificateur : le bouclier de GARDE, posé
+     par le modificateur, reste calculé sur la valeur d'avant. Un facteur unique
+     de 2,5 ne pouvait pas tenir les deux bornes du test 3 à la fois — un boss
+     seul de 228 PV au secteur 1 et DEUX boss de 95 PV au secteur 2 ne se
+     combattent pas au même rythme. */
+  var _bf = (_lvDef && _lvDef.boss && _lvDef.boss.hpF) || 2.5;
+  e.hp = e.maxHp = Math.round(e.maxHp * _bf);
+  /* POURSUITE. Mesuré sur six climax du secteur 1 à 96 PV : la durée n'est pas
+     portée par les PV mais par la DISTANCE. 62 % du temps sous 400 u -> 12,1 s ;
+     44 % -> 77,1 s ; 2 % -> 65,2 s avec une distance moyenne de 1 110 u. Un boss
+     plus lent que le serpent (137 u/s mesurés contre 150 de croisière) ne
+     rattrape jamais un pilote qui le fuit : il n'y a pas de combat, il y a une
+     course, et c'est elle qui a donné les 61 s de médiane du secteur 1. On pose
+     donc un PLANCHER D'ALLURE juste au-dessus de la vitesse de croisière du
+     serpent : le boss vient à la joueuse, et la durée redevient une affaire de
+     points de vie — ce que le test 3 mesure. */
+  if (e.speed < K.BASE_SPEED * 1.08) e.speed = K.BASE_SPEED * 1.08;
+  e.bandM = 1;
+  /* ARRIVÉE PILOTÉE : de l'éclosion à +1,8 s de temps de jeu, le boss n'a pas
+     son comportement propre — il est tiré vers le cadre par _lvLate, et rien
+     ne peut le toucher pendant ce trajet ni pendant sa bannière. */
+  /* Le point de naissance n'est garanti que HORS du champ, à quarante unités
+     près (_lvHatchFix). Quarante unités, c'est cinq images de caméra : le boss
+     entrait dans le cadre avant même d'avoir commencé son approche. On l'écarte
+     d'abord à 1,35 fois les demi-étendues visibles dans SA direction — toujours
+     hors champ, et cette fois avec une vraie distance à parcourir. */
+  _lvBossPush(e);
+  /* Point de départ MÉMORISÉ RELATIVEMENT À LA CAMÉRA, et non en monde absolu.
+     La caméra suit la joueuse qui fuit : sur 1,8 s d'arrivée, ralenti compris,
+     elle parcourt trois à cinq cents unités. Avec une origine fixée en monde,
+     le reste d'interpolation (14 % à f = 0,86) se mesure sur un vecteur qui
+     s'allonge d'autant et rejette le boss hors du cadre — mesuré sy 0,913 et
+     0,930, sx 0,841, quatre essais sur quarante. En repère caméra, l'origine
+     suit le cadre : le boss reste hors champ au début et tombe exactement sur
+     la cible à l'échéance, quelle que soit la course de la caméra. */
+  e.arrT = 0; e.arrDX = e.x - S.cam.x; e.arrDY = e.y - S.cam.y;
+  e.noDmg = 1; e.seen = 0; e.arrS = 1;
+  _lvArr.push(e);
+  _lvElites.push(e);
+  if (S2030.fx) {
+    S2030.fx.ring(e.x, e.y, _lvPal.danger, 12, 620, { w: 6, life: 0.6 });
+    S2030.fx.flare(e.x, e.y, _lvPal.danger, 150, { life: 0.5, a: 0.9 });
+  }
+  if (!_lvBoss || _lvBoss.dead) {
+    _lvBoss = e;
+    S.boss = _lvBoss;
+    S.bossHpMax = _lvBoss.maxHp;
+    S.bossBornT = S.t;
+  }
+}
+
+/* ======
+   ARRIVÉE DE BOSS, RALENTI, FUITE DE FIN DE SECTEUR
+   Tout ce bloc tourne dans levels.late(dt), APRÈS updateEnemies : le boss garde
+   sa mise à jour normale (les sondes la voient), mais c'est nous qui avons le
+   dernier mot sur sa position. S.timeScale y est écrit après updateSnake, donc
+   après DILATATION et après le ralenti de blessure : le ralenti de boss gagne.
+   ====== */
+var _lvArr = [];                 // boss en cours d'arrivée
+var _lvSlowT = -1;               // fin de la fenêtre de ralenti, en S.t
+var _lvWon = 0;                  // le climax a-t-il été gagné (et non soldé par la soupape)
+
+function _lvBossPush(e) {
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
+  if (!V) return;
+  var ax = e.x - S.cam.x, ay = e.y - S.cam.y;
+  var hx = V.left || 1, hy = (ay < 0 ? V.top : V.bottom) || 1;
+  var kx = Math.abs(ax) / hx, ky = Math.abs(ay) / hy;
+  var m = kx > ky ? kx : ky;
+  if (!(m > 0.01) || m >= 1.35) return;
+  /* on prend le plus grand écartement encore CACHÉ : près d'un bord de l'arène,
+     1,35 n'entre pas et il faut redescendre plutôt que renoncer */
+  for (var f = 1.35; f > 1.0; f -= 0.05) {
+    if (f / m <= 1) break;
+    var nx = clamp(S.cam.x + ax * (f / m), _LV_MARGIN, K.ARENA_W - _LV_MARGIN);
+    var ny = clamp(S.cam.y + ay * (f / m), _LV_MARGIN, K.ARENA_H - _LV_MARGIN);
+    if (_lvHidden(nx, ny)) { e.x = nx; e.y = ny; return; }
+  }
+}
+
+function _lvBossTarget(e, out) {
+  var P = S2030.phases, V = (P && P.visibleExtent) ? P.visibleExtent() : null;
+  var dx = e.arrDX, dy = e.arrDY;
+  var sx = dx < 0 ? -1 : 1, sy = dy < 0 ? -1 : 1;
+  /* COMPOSANTE PAR COMPOSANTE, jamais un rayon : un rayon fixe de 0,8 x la
+     demi-diagonale vaut 1,5 fois la demi-hauteur sur bureau et 1,9 sur iPhone,
+     il ne tomberait dans le cadre que pour une minorité de directions. On prend
+     l'étendue du BON côté (top au-dessus, bottom en dessous). */
+  var hw = V ? V.left : S.view.w * 0.5;
+  var hh = V ? (sy < 0 ? V.top : V.bottom) : S.view.h * 0.5;
+  var ox = 0.55 * hw * e.arrS, oy = 0.55 * hh * e.arrS;
+  /* visibleExtent() ignore le ROULIS et la bascule déforme le bas du cadre :
+     0,55 de l'étendue peut encore se projeter sur un bord. On resserre alors la
+     cible jusqu'à ce que la PROJECTION RÉELLE tombe dans [0,15 ; 0,85] — c'est
+     la sortie mesurée, pas une grandeur interne, et sur une caméra à plat le
+     premier essai passe, donc la règle des 0,55 reste la règle. */
+  if (P && P.toScreen) {
+    /* [0,22 ; 0,78] et non [0,10 ; 0,90] : la marge restante couvre le seul
+       déplacement qui suive encore cette écriture — aucun, puisque _lvLate
+       tourne maintenant APRÈS updateCam et phases.update. Elle ne sert donc
+       plus qu'à absorber le pas de la caméra de l'image SUIVANTE si le boss
+       sort de l'arrivée sur cette image-là. */
+    for (var k = 0; k < 12; k++) {
+      var q = P.toScreen(S.cam.x + sx * ox, S.cam.y + sy * oy, _lvTS);
+      if (isFinite(q.x) && isFinite(q.y) && q.x > 0.22 && q.x < 0.78 && q.y > 0.22 && q.y < 0.78) break;
+      ox *= 0.85; oy *= 0.85;
+      /* CLIQUET : le resserrement ne se relâche jamais. Sans lui, une image sur
+         deux repartait de 0,55 et la cible sautait de cent cinquante unités
+         d'une image à l'autre — l'arrivée tremblait au lieu de glisser. */
+      e.arrS *= 0.85;
+    }
+  }
+  out.x = S.cam.x + sx * ox;
+  out.y = S.cam.y + sy * oy;
+  return out;
+}
+var _lvBT = { x: 0, y: 0 }, _lvTS = { x: 0, y: 0 };
+
+function _lvArrTick(dt) {
+  for (var i = _lvArr.length - 1; i >= 0; i--) {
+    var e = _lvArr[i];
+    if (e.dead) { _lvArr.splice(i, 1); continue; }
+    e.arrT += dt;
+    var k = e.arrT / _LV_BOSS_ARRIVE;
+    if (k > 1) k = 1;
+    /* fondu ENTRANT ET SORTANT (k³(6k²−15k+10)) : un fondu purement sortant
+       avançait de 2,8 % de la distance dès la PREMIÈRE image — jusqu'à 42 u,
+       de quoi franchir la marge de 40 u qui sépare le point de naissance du
+       champ et faire entrer le boss en vue avant qu'on l'ait vu venir. */
+    var f = k * k * k * (k * (k * 6 - 15) + 10);
+    if (k < 1) {
+      _lvBossTarget(e, _lvBT);
+      var o0x = S.cam.x + e.arrDX, o0y = S.cam.y + e.arrDY;   // origine en repère caméra
+      e.x = o0x + (_lvBT.x - o0x) * f;
+      e.y = o0y + (_lvBT.y - o0y) * f;
+    }
+    /* SUR LA SORTIE, PAS SUR LA CIBLE. Le cliquet de _lvBossTarget juge la
+       projection du POINT VISÉ ; ce qui est mesuré, c'est la projection du BOSS,
+       et sur la seconde moitié du trajet les deux diffèrent encore de ce qui
+       reste d'interpolation. Passé la mi-course on ramène donc le boss lui-même
+       vers la caméra tant que sa PROPRE projection sort de [0,18 ; 0,82] —
+       mesuré sy 0,994 / 1,015 / 1,114 sur trois essais bureau sur vingt sans
+       cette passe. La bande laisse 0,08 de marge sous le seuil de la spec
+       ([0,10 ; 0,90]) pour le pas de caméra de l'image suivante. */
+    if (f > 0.5 && S2030.phases && S2030.phases.toScreen && !e.dead) {
+      for (var g = 0; g < 24; g++) {
+        var qq = S2030.phases.toScreen(e.x, e.y, _lvTS);
+        if (isFinite(qq.x) && isFinite(qq.y) && qq.x > 0.18 && qq.x < 0.82 && qq.y > 0.18 && qq.y < 0.82) break;
+        e.x = S.cam.x + (e.x - S.cam.x) * 0.85;
+        e.y = S.cam.y + (e.y - S.cam.y) * 0.85;
+      }
+    }
+    if (k < 1) { e.vx = 0; e.vy = 0; }
+    if (S2030.fx && (_lvPortalF & 1) === 0) S2030.fx.burst(e.x, e.y, e.color, 2, 0.5, { glow: true });
+    if (!e.seen && inView(e.x, e.y, 0)) {
+      /* PREMIÈRE image où le boss est en vue : le monde ralentit 2,2 s. */
+      e.seen = 1;
+      if (_lvSlowT < S.t) _lvSlowT = S.t + _LV_BOSS_SLOW;
+    }
+    /* RETENUE DE 0,35 s APRÈS L'ARRIVÉE : le boss reprend sa marche propre dès
+       que k atteint 1 (on ne force plus sa position), mais la passe de cadrage
+       ci-dessus continue de le retenir dans le cadre pendant une poignée
+       d'images. Sans elle, l'image où l'échéance de 1,8 s est relevée pouvait
+       tomber une image APRÈS la dernière image corrigée, et deux essais sur
+       quarante s'y échappaient par un bord (sx 0,066 ; sy 0,017). */
+    if (k >= 1) { e.noDmg = 0; if (e.arrT >= _LV_BOSS_ARRIVE + 0.35) _lvArr.splice(i, 1); }
+  }
+  if (_lvSlowT > S.t) S.timeScale = _LV_BOSS_SLOWTS;
+  else if (_lvSlowT > 0) { _lvSlowT = -1; if (S.timeScale === _LV_BOSS_SLOWTS) S.timeScale = 1; }
+}
+
+/* Entrée d'un secteur : ce qui reste vivant pendant 'clear' fuit vers le bord
+   le plus proche à 400 u/s et disparaît. Zéro ennemi reporté. */
+function _lvFlee(dt) {
+  for (var i = S.enemies.length - 1; i >= 0; i--) {
+    var e = S.enemies[i];
+    if (e.dead) continue;
+    if (!e.flee) {
+      e.flee = 1; e.noDmg = 1; e.harmless = 1;
+      var dx = Math.min(e.x, K.ARENA_W - e.x), dy = Math.min(e.y, K.ARENA_H - e.y);
+      e.fa = dx < dy ? (e.x < K.ARENA_W * 0.5 ? Math.PI : 0) : (e.y < K.ARENA_H * 0.5 ? -Math.PI / 2 : Math.PI / 2);
+    }
+    e.x += Math.cos(e.fa) * 400 * dt;
+    e.y += Math.sin(e.fa) * 400 * dt;
+    if (e.x < -60 || e.x > K.ARENA_W + 60 || e.y < -60 || e.y > K.ARENA_H + 60) e.dead = true;
+  }
+}
+
+/* LAISSE DE POURSUITE. Mesuré : à 91 PV la médiane du climax du secteur 1 vaut
+   52,8 s, à 228 PV elle vaut 52,9 s — la durée ne dépend PAS des points de vie,
+   elle dépend de la distance. Quand le boss est tenu sous 400 u, le même boss
+   tombe en 12 à 19 s ; quand le pilote le sème (2 % du temps sous 400 u, 1 110 u
+   de distance moyenne), le climax dure 65 à 108 s. Un plancher d'allure ne suffit
+   pas : porté à 1,22 x la vitesse de croisière il a AGGRAVÉ la médiane (64,6 s),
+   parce qu'un boss plus rapide fait fuir le pilote plus fort et ne passe jamais
+   devant ses canons. Ce qu'il faut, c'est que le boss ne puisse pas être SEMÉ
+   sans pour autant coller au serpent : il accélère à mesure que l'écart grandit
+   et retrouve son allure propre dès qu'il est au contact. Le multiplicateur est
+   posé en RELATIF (e.bandM), pour ne pas effacer la nervosité que le blindage
+   rompu donne à la bête (e.speed *= 1,55, src/22-enemies.js). */
+var _LV_LEASH_D0 = 300, _LV_LEASH_D1 = 900, _LV_LEASH_MAX = 3.5;
+function _lvLeash() {
+  var s = S.snake;
+  if (!s) return;
+  for (var i = 0; i < _lvElites.length; i++) {
+    var e = _lvElites[i];
+    if (!e || e.dead || !e.boss || e.noDmg) continue;
+    var d = Math.sqrt(dist2(e.x, e.y, s.x, s.y));
+    var m = 1;
+    if (d > _LV_LEASH_D0) {
+      m = 1 + (_LV_LEASH_MAX - 1) * Math.min(1, (d - _LV_LEASH_D0) / (_LV_LEASH_D1 - _LV_LEASH_D0));
+    }
+    var prev = e.bandM || 1;
+    if (m !== prev) { e.speed = e.speed / prev * m; e.bandM = m; }
+  }
+}
+
+function _lvLate(dt) {
+  if (dt > 0.05) dt = 0.05;
+  if (_lvArr.length || _lvSlowT > 0) _lvArrTick(dt);
+  if (_LV_LEASH_MAX > 1 && _LV_PHASES[_lvPhaseI] === 'climax') _lvLeash();
+  if (_LV_PHASES[_lvPhaseI] === 'clear') _lvFlee(dt);
+}
+
+/* lu par updateSnake : la joueuse garde sa vitesse monde pendant le ralenti */
+function _lvBossSlow() { return _lvSlowT > S.t; }
 
 function _lvPhaseTick(dt) {
   _lvPhaseT += dt;
   var ph = _LV_PHASES[_lvPhaseI];
 
   if (ph === 'climax') {
-    // le climax tombe quand les élites tombent — ou par forfait de temps
+    // le climax tombe quand les élites tombent — la soupape de temps est très longue
     var alive = 0;
     for (var i = 0; i < _lvElites.length; i++) if (!_lvElites[i].dead) alive++;
+    /* ENRAGEMENT : passé 45 s d'horloge de PHASE (celle qui avance au dt
+       ralenti, pas S.t), le boss accélère de 30 %, ses annonces raccourcissent
+       d'un quart et il prend un liseré blanc. */
+    if (_lvPhaseT >= _LV_BOSS_RAGE) {
+      for (var r = 0; r < _lvElites.length; r++) {
+        var er = _lvElites[r];
+        if (er.dead || er.enraged) continue;
+        er.enraged = 1;
+        er.speed = (er.speed || 60) * 1.3;
+        er.cdScale = (er.cdScale || 1) * 0.75;
+      }
+    }
+    /* ESCORTE : salve d'entrée quand le silence se lève, renforts à 66 % et
+       33 % des PV du boss. */
+    if (_lvDef.boss && _lvDef.boss.escort) {
+      if (_lvEsc === 0 && _lvPhaseT >= _LV_BOSS_SILENCE) _lvEscort();
+      else if (_lvEsc > 0 && _lvBoss && !_lvBoss.dead && S.bossHpMax > 0) {
+        var q = _lvBoss.hp / S.bossHpMax;
+        if ((_lvEsc === 1 && q <= 0.66) || (_lvEsc === 2 && q <= 0.33)) _lvEscort();
+      }
+    }
     if (_lvBoss && _lvBoss.dead) {
       // on relaie sur l'élite suivante encore debout, pour la jauge de l'UI
       _lvBoss = null;
@@ -555,7 +1019,18 @@ function _lvPhaseTick(dt) {
       S.boss = _lvBoss;
       S.bossHpMax = _lvBoss ? _lvBoss.maxHp : 0;
     }
-    if ((_lvElites.length && alive === 0) || _lvPhaseT > _lvPhaseDur) {
+    /* Plus de « && !_lvPend.length » : un portail encore en vol retardait la
+       sortie du climax de tout son préavis — 550 ms mesurées entre la mort du
+       boss et la bannière, pour un seuil de 200 ms — alors que _lvClearPhase
+       purge justement _lvPend à l'entrée. */
+    if (_lvElites.length && alive === 0) {
+      _lvWon = 1;                       // le secteur est gagné, pas soldé au chrono
+      _lvEnterPhase(4);
+    } else if (_lvPhaseT > _lvPhaseDur + 180) {
+      /* SOUPAPE. Ce n'est plus un forfait : 180 s de rabiot, jamais atteintes
+         en jeu, mais une sortie reste si _lvBossBorn n'a pas pu être appelé
+         (spawnEnemy peut rendre null) — sans quoi la partie se bloquerait. */
+      _lvWon = 0;
       _lvEnterPhase(4);
     }
     return;
@@ -567,9 +1042,9 @@ function _lvPhaseTick(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    INTENSITÉ ET PROGRESSION
-   ========================================================================== */
+   ====== */
 
 var _LV_BASE_INT = { calm: 0.20, rise: 0.46, surge: 0.76, climax: 0.94, clear: 0.22 };
 
@@ -595,12 +1070,15 @@ function _lvIntensity(dt) {
   S.intensity = _lvIntens;
 
   S.levelProgress = clamp((_lvBefore + f * _lvPhaseRaw) / _lvTotalDur, 0, 1);
-  S.levelPhase = ph;
+  /* La musique MARQUE le changement de phase : une mesure d'accent. Sans lui
+     le passage calme -> pression -> surcharge -> climax ne s'entend pas. */
+  if (S.levelPhase !== ph) { S.levelPhase = ph; S2030.audio && S2030.audio.stinger && S2030.audio.stinger(); }
+  else S.levelPhase = ph;
 }
 
-/* ==========================================================================
+/* ======
    MÉCANIQUE 2 — VOIES DE CIRCULATION
-   ========================================================================== */
+   ====== */
 
 function _lvBuildLanes() {
   _lvLanes.length = 0;
@@ -719,7 +1197,7 @@ function _lvRigs(dt) {
     var hr = K.HEAD_R * 0.92;
     if (dist2(s.x, s.y, cx, cy) < hr * hr) {
       if (s.invuln <= 0) {
-        hurtSnake(1, cx, cy);
+        hurtSnake(1, cx, cy, { type: 'convoy', name: 'UN CONVOI' });
         if (S2030.fx) {
           S2030.fx.ring(cx, cy, _lvPal.danger, 10, 640, { w: 5, life: 0.5 });
           S2030.fx.shake(12);
@@ -746,9 +1224,9 @@ function _lvRigs(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MÉCANIQUE 3 — CHAMPS MAGNÉTIQUES
-   ========================================================================== */
+   ====== */
 
 function _lvBuildNodes() {
   var d = _lvDef;
@@ -815,7 +1293,7 @@ function _lvNodes(dt) {
       var cr = nd.r * 0.15 + K.HEAD_R;
       if (dist2(s.x, s.y, nd.x, nd.y) < cr * cr) {
         if (s.invuln <= 0) {
-          hurtSnake(1, nd.x, nd.y);
+          hurtSnake(1, nd.x, nd.y, { type: 'node', name: 'UN NŒUD' });
           if (S2030.fx) S2030.fx.ring(nd.x, nd.y, _lvPal.danger, 12, 620, { w: 5, life: 0.5 });
         }
         var a = angTo(nd.x, nd.y, s.x, s.y);
@@ -893,9 +1371,9 @@ function _lvFieldApply(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    PARTICULES DE DÉCOR (poussière, limaille, traits de vitesse)
-   ========================================================================== */
+   ====== */
 
 function _lvBuildDust() {
   if (!_lvDust) {
@@ -975,9 +1453,9 @@ function _lvStreaks(dt) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DÉMARRAGE D'UN NIVEAU
-   ========================================================================== */
+   ====== */
 
 function _lvStart(n) {
   n = n || 1;
@@ -998,15 +1476,30 @@ function _lvStart(n) {
     _lvPal = _LV_OVERPAL[(_lvCycle - 1) % _LV_OVERPAL.length];
   }
 
+  /* Deux compteurs de module survivaient à resetRun et repartaient, d'une
+     partie à l'autre, avec un décalage qui dépendait du nombre d'images jouées
+     par la partie PRÉCÉDENTE : _lvPortalF cadence _lvHatchFix (une image sur
+     quatre, `(_lvPortalF + p.id) & 3`) et _lvPortalId décale p.id. Deux
+     exécutions des mêmes graines ne donnaient donc pas les mêmes parties —
+     climax1Med 41,6 s puis 50,0 s sur le même build. Ils sont remis à zéro à
+     l'entrée du premier secteur, avec le reste de l'état de partie. */
+  if (n === 1) { _lvPortalF = 0; _lvPortalId = 0; }
   _lvHazClear();
+  _lvPendClear();
   _lvElites.length = 0;
+  _lvArr.length = 0;
+  _lvSlowT = -1;
+  _lvEsc = 0;
+  _lvWon = 0;
   _lvBoss = null;
   _lvDanger = 0;
   _lvRigT = rndR(0.3, 1.2);
   _lvRingA = rnd() * TAU;
 
   _lvWaveT.length = _lvDef.spawns.length;
-  for (var i = 0; i < _lvWaveT.length; i++) _lvWaveT[i] = rndR(0.3, 2.2);
+  // le préavis du portail est pris SUR L'AVANCE, pas ajouté au calendrier :
+  // la salve s'annonce 600 ms plus tôt et l'ennemi arrive à l'heure prévue
+  for (var i = 0; i < _lvWaveT.length; i++) _lvWaveT[i] = Math.max(0.02, rndR(0.3, 2.2) - _LV_PORTAL / 1000);
 
   _lvTotalDur = 0;
   for (var p = 0; p < _LV_PHASES.length; p++) _lvTotalDur += _lvDef.dur[_LV_PHASES[p]] || 10;
@@ -1045,9 +1538,9 @@ function _lvStart(n) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MISE À JOUR
-   ========================================================================== */
+   ====== */
 
 function _lvUpdate(dt) {
   if (!_lvDef) _lvStart(S.level || 1);
@@ -1057,6 +1550,7 @@ function _lvUpdate(dt) {
   _lvDanger *= Math.pow(0.02, dt);   // décroissance rapide, réarmée par les dangers
 
   _lvPhaseTick(dt);
+  _lvPortalTick();
   _lvWaves(dt);
   _lvRigs(dt);
   _lvNodes(dt);
@@ -1066,9 +1560,9 @@ function _lvUpdate(dt) {
   _lvIntensity(dt);
 }
 
-/* ==========================================================================
+/* ======
    DESSIN — FOND
-   ========================================================================== */
+   ====== */
 
 function _lvViewRect() {
   _lvVX = S.cam.x - S.view.w * 0.5 - 60;
@@ -1079,6 +1573,8 @@ function _lvViewRect() {
 var _lvVX = 0, _lvVY = 0, _lvVW = 0, _lvVH = 0;
 
 function _lvDrawBlooms(ctx) {
+  // palier léger : les blooms de décor sont un remplissage plein écran de plus
+  if (typeof qLight === 'function' && qLight()) return;
   for (var i = 0; i < _lvBloomP.length; i++) {
     var p = _lvBloomP[i];
     if (!inView(p.x, p.y, p.r)) continue;
@@ -1098,6 +1594,7 @@ function _lvDrawBlooms(ctx) {
 }
 
 function _lvDrawDust(ctx) {
+  if (typeof qLight === 'function' && qLight()) return;   // palier léger : pas de poussière
   if (!_lvDust) return;
   // parallaxe : la poussière glisse par rapport au monde, ça creuse la profondeur
   var ox = S.cam.x * 0.10, oy = S.cam.y * 0.10;
@@ -1437,9 +1934,9 @@ function _lvDrawRigShadows(ctx) {
   ctx.restore();
 }
 
-/* ==========================================================================
+/* ======
    DESSIN — PREMIER PLAN
-   ========================================================================== */
+   ====== */
 
 /* Sept passes au total, quel que soit le nombre de convois à l'écran. */
 function _lvDrawRigs(ctx) {
@@ -1709,9 +2206,9 @@ function _lvDrawFore(ctx) {
   ctx.globalCompositeOperation = 'source-over';
 }
 
-/* ==========================================================================
+/* ======
    API
-   ========================================================================== */
+   ====== */
 
 S2030.levels = {
   defs: _lvDefs,
@@ -1727,7 +2224,12 @@ S2030.levels = {
     if (out) { out.x = _lvFFX; out.y = _lvFFY; }
     return _lvFFX;
   },
+  late: _lvLate,
+  bossSlow: _lvBossSlow,
   phaseName: function () { return _LV_PHASES[_lvPhaseI]; },
+  phaseT: function () { return _lvPhaseT; },
+  pend: function () { return _lvPend.length; },
   cycle: function () { return _lvCycle; },
+  hardcap: _lvHardcap,
   palette: function () { return _lvPal; }
 };

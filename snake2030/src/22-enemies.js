@@ -1,11 +1,11 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 22-enemies.js — le bestiaire
    Onze silhouettes, onze menaces lisibles, six modificateurs d'élite.
    Règle d'or : le joueur doit toujours comprendre pourquoi il meurt.
    Tout ce qui va tuer se télégraphie une demi-seconde avant.
-   ========================================================================== */
+   ====== */
 
-/* ------------------------------------------------------------- palette ---- */
+/* ------ palette ---- */
 var _EN_WHITE = '#ffffff';
 var _EN_DARK  = '#080a16';
 var _EN_HOT   = '#fff3b0';
@@ -18,7 +18,7 @@ var _EN_D_AIM  = [13, 9];
 var _EN_D_SCAN = [5, 7];
 var _EN_D_BIG  = [22, 14];
 
-/* ------------------------------------------------- couleurs mises en cache */
+/* ------ couleurs mises en cache */
 var _enRgbCache = {}, _enLiteCache = {}, _enFadeCache = {};
 
 function _enRgb(hex) {
@@ -67,7 +67,7 @@ function _enGrad(ctx, color) {
   return g;
 }
 
-/* ------------------------------------------------------ primitives de dessin */
+/* ------ primitives de dessin */
 
 /** Halo additif centré, sans allocation (dégradé mis en cache). */
 function _enGlow(ctx, x, y, r, color, a) {
@@ -85,6 +85,17 @@ function _enGlow(ctx, x, y, r, color, a) {
     est conservé entre les deux passes, on ne le reconstruit pas. */
 function _enNeon(ctx, color, wOut, wIn, a) {
   ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  /* PALIER LÉGER (troisième cran de dégradation) : la nappe large est un second
+     passage de remplissage additif sur toute la silhouette, et c'est le
+     remplissage qui coûte. On garde le coeur clair, qui porte la lisibilité. */
+  if (typeof qLight === 'function' && qLight()) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = (a === undefined ? 1 : a);
+    ctx.strokeStyle = _enLite(color); ctx.lineWidth = wIn;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    return;
+  }
   ctx.globalCompositeOperation = 'lighter';
   ctx.globalAlpha = 0.3 * (a === undefined ? 1 : a);
   ctx.strokeStyle = color; ctx.lineWidth = wOut;
@@ -183,7 +194,7 @@ function _enElite(ctx, e, color) {
   ctx.globalCompositeOperation = 'source-over';
 }
 
-/* ------------------------------------------------ tampon de trajectoire ---- */
+/* ------ tampon de trajectoire ---- */
 /* Un seul enregistrement partagé de la tête : les miroirs y puisent avec un
    décalage. Index direct, aucune recherche, aucune allocation en jeu.        */
 var _EN_MIR_N = 256, _EN_MIR_STEP = 25;   // 6.4 s d'historique
@@ -191,7 +202,7 @@ var _enMirBuf = new Array(_EN_MIR_N);
 for (var _enI = 0; _enI < _EN_MIR_N; _enI++) _enMirBuf[_enI] = { t: -1e9, x: 0, y: 0, a: 0, sp: 0 };
 var _enMirI = 0, _enMirLast = -1e9;
 
-/* -------------------------------------------------------- état de module --- */
+/* ------ état de module --- */
 var _enFrameT = -1;      // horodatage de la dernière passe globale
 var _enParaN = 0;        // parasites accrochés
 var _enParaScanT = -1e9; // dernière resynchronisation du compte
@@ -245,7 +256,7 @@ function _enFrameTick() {
   }
 }
 
-/* ------------------------------------------------------------ déplacement -- */
+/* ------ déplacement -- */
 
 function _enSteer(e, tx, ty, dt, turn, speed) {
   var want = angTo(e.x, e.y, tx, ty);
@@ -296,9 +307,9 @@ function _enTouchesBody(x, y, r) {
   return false;
 }
 
-/* ------------------------------------------------------------- explosions -- */
+/* ------ explosions -- */
 
-function _enBlast(x, y, radius, dmg, color, srcId) {
+function _enBlast(x, y, radius, dmg, color, srcId, src) {
   if (_enBlastDepth > 3) return;
   _enBlastDepth++;
   var fx = S2030.fx;
@@ -321,11 +332,11 @@ function _enBlast(x, y, radius, dmg, color, srcId) {
     // de vie pour les ennemis, avec atténuation au bord du souffle.
     damageEnemy(o, dmg * 9 * (0.4 + 0.6 * f), { x: o.x, y: o.y, type: 'shock' });
   }
-  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y);
+  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y, src);
   _enBlastDepth--;
 }
 
-/* ------------------------------------------------------------------ butin -- */
+/* ------ butin -- */
 
 function _enLoot(e) {
   var n = e.loot === undefined ? 1 : e.loot;
@@ -338,11 +349,90 @@ function _enLoot(e) {
   if (chance((e.healP || 0.015) + (e.elite ? 0.12 : 0))) addPickup('heal', e.x + rndR(-8, 8), e.y + rndR(-8, 8));
 }
 
-/* ==========================================================================
-   COMPORTEMENTS
-   ========================================================================== */
+/* ======
+   LISIBILITÉ : ARMER SEULEMENT SOUS LES YEUX DU JOUEUR
+   ====== */
 
-/* -------------------------------------------------------------- chasseur --- */
+/* inView() tolère une marge : pour ARMER une attaque on exige au contraire
+   40 u À L'INTÉRIEUR du cadre. Au bord exact, l'ennemi est déjà en train de
+   sortir et le coup partirait d'un point que le joueur n'a pas vu. */
+function _enShown(e) {
+  return inView(e.x, e.y, -40) &&
+         Math.abs(e.x - S.cam.x) < S.view.w * 0.5 - 40 &&
+         Math.abs(e.y - S.cam.y) < S.view.h * 0.5 - 40;
+}
+
+/* Chevron clignotant (6 Hz) au bord, à l'intersection de la ligne d'attaque
+   et du cadre : l'armement continue, mais on sait d'où il vient. */
+function _enEdgeWarn(e, tx, ty) {
+  var F = S2030.fx;
+  if (!F || !F.edge) return;
+  var dx = tx - e.x, dy = ty - e.y, l = Math.sqrt(dx * dx + dy * dy);
+  var px = e.x, py = e.y;
+  if (l > 1) {
+    dx /= l; dy /= l;
+    var t0 = 0, t1 = l, ok = true, k;
+    for (k = 0; k < 2; k++) {
+      var d = k ? dy : dx, o = k ? e.y : e.x;
+      var lo = (k ? S.cam.y - S.view.h * 0.5 : S.cam.x - S.view.w * 0.5);
+      var hi = (k ? S.cam.y + S.view.h * 0.5 : S.cam.x + S.view.w * 0.5);
+      if (d > -1e-6 && d < 1e-6) { if (o < lo || o > hi) { ok = false; break; } continue; }
+      var a = (lo - o) / d, b = (hi - o) / d, sw;
+      if (a > b) { sw = a; a = b; b = sw; }
+      if (a > t0) t0 = a;
+      if (b < t1) t1 = b;
+      if (t0 > t1) { ok = false; break; }
+    }
+    if (ok) { px = e.x + dx * t0; py = e.y + dy * t0; }
+  }
+  F.edge(px, py, e.color, { blink: 1, dbl: !!e.elite, size: 22 });
+}
+
+/* Pendant un armement : true si la source est sortie du cadre (chevron posé). */
+function _enOffWarn(e, tx, ty) {
+  if (_enShown(e)) return false;
+  _enEdgeWarn(e, tx, ty);
+  return true;
+}
+
+/* Journal de test facultatif (S.log), même forme que les portails de levels. */
+function _enLog(o) { if (S.log && S.log.push && S.log.length < 20000) S.log.push(o); }
+
+/* Premier point du rayon (x0,y0,dx,dy) qui touche le disque (cx,cy,r) ; -1 sinon. */
+function _enRayHit(x0, y0, dx, dy, cx, cy, r) {
+  var ox = cx - x0, oy = cy - y0, pr = ox * dx + oy * dy;
+  if (pr < 0) return -1;
+  var px = ox - pr * dx, py = oy - pr * dy, d2 = px * px + py * py, rr = r * r;
+  if (d2 > rr) return -1;
+  return pr - Math.sqrt(rr - d2);
+}
+
+/* Crochet de visée de l'artilleur : point d'impact prédit sur le corps, et
+   « chaud » si c'est la tête ou l'un des 8 premiers anneaux (le reste absorbe). */
+var _EN_BLIFE = 2.2;
+function _enAimHook(e, a) {
+  var s = S.snake;
+  if (!s) return;
+  var dx = Math.cos(a), dy = Math.sin(a);
+  var x0 = e.x + dx * e.r * 1.25, y0 = e.y + dy * e.r * 1.25;
+  var best = e.bSpeed * _EN_BLIFE, idx = -1, t;
+  t = _enRayHit(x0, y0, dx, dy, s.x, s.y, e.bR + S.headR);
+  if (t >= 0 && t < best) { best = t; idx = 0; }
+  var segs = s.segs, sr = e.bR + S.headR * 0.72;
+  for (var i = 0; i < segs.length; i++) {
+    t = _enRayHit(x0, y0, dx, dy, segs[i].x, segs[i].y, sr);
+    if (t >= 0 && t < best) { best = t; idx = i + 1; }
+  }
+  e.hkx = x0 + dx * best; e.hky = y0 + dy * best;
+  e.hkHot = (idx >= 0 && idx <= 8) ? 1 : 0;
+  e.hkOn = idx >= 0 ? 1 : 0;
+}
+
+/* ======
+   COMPORTEMENTS
+   ====== */
+
+/* ------ chasseur --- */
 /* Fonce sur la tête, ondule pour ne pas être un rail, arme un bond quand il
    arrive à portée : il se fige, gonfle, puis se jette en ligne droite.       */
 function _enUpChaser(e, dt, s) {
@@ -350,19 +440,21 @@ function _enUpChaser(e, dt, s) {
 
   if (e.st === 1) {                                   // armement du bond
     e.stT -= dt * 1000;
+    if (_enOffWarn(e, s.x, s.y) && !e.holdX) { e.holdX = 1; e.stT += 300; }
     var wa = angTo(e.x, e.y, s.x, s.y), d1 = norm(wa - e.ang), m1 = 1.5 * dt;
     e.ang = norm(e.ang + (d1 < -m1 ? -m1 : (d1 > m1 ? m1 : d1)));
     _enGo(e, e.ang, dt, e.speed * 0.12);
     if (e.stT <= 0) {
       e.st = 2; e.stT = e.lungeDur;
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r * 0.6, 340, { w: 3, life: 0.24 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('boost', { x: e.x, vol: 0.55 });
     }
     return;
   }
   if (e.st === 2) {                                   // bond
     e.stT -= dt * 1000;
-    _enGo(e, e.ang, dt, e.speed * e.lungeMul);
+    // le mod RAPIDE DOUBLE la vitesse du bond ; il ne raccourcit plus l'annonce
+    _enGo(e, e.ang, dt, e.speed * e.lungeMul * (e.mFast ? 2 : 1));
     if (S2030.fx && chance(0.55)) S2030.fx.trail(e.x, e.y, e.ang, e.color);
     if (e.stT <= 0) { e.st = 0; e.cdT = e.cd * cs; }
     return;
@@ -375,10 +467,10 @@ function _enUpChaser(e, dt, s) {
   var diff = norm(ta - e.ang), m = e.turn * dt;
   e.ang = norm(e.ang + (diff < -m ? -m : (diff > m ? m : diff)));
   _enGo(e, e.ang, dt, e.speed);
-  if (e.cdT <= 0 && d < e.lungeR && d > 44) { e.st = 1; e.stT = e.lungeWind * cs; }
+  if (e.cdT <= 0 && d < e.lungeR && d > 44) { e.st = 1; e.stT = e.lungeWind; e.holdX = 0; }
 }
 
-/* ----------------------------------------------------------- intercepteur -- */
+/* ------ intercepteur -- */
 /* Vise le point où la tête SERA. Il gèle sa cible pendant l'armement : la
    ligne affichée est exactement la trajectoire qu'il prendra.                */
 function _enUpInter(e, dt, s) {
@@ -390,6 +482,7 @@ function _enUpInter(e, dt, s) {
 
   if (e.st === 1) {                                   // verrouillage
     e.stT -= dt * 1000;
+    if (_enOffWarn(e, e.lx, e.ly) && !e.holdX) { e.holdX = 1; e.stT += 300; }
     var a2 = angTo(e.x, e.y, e.lx, e.ly), df = norm(a2 - e.ang), mm = 3.2 * dt;
     e.ang = norm(e.ang + (df < -mm ? -mm : (df > mm ? mm : df)));
     _enGo(e, e.ang, dt, e.speed * 0.2);
@@ -397,7 +490,7 @@ function _enUpInter(e, dt, s) {
       e.st = 2; e.stT = e.dashMs;
       e.ang = angTo(e.x, e.y, e.lx, e.ly);
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_WHITE, e.r, 460, { w: 2.5, life: 0.22 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('zap', { x: e.x });
     }
     return;
   }
@@ -413,13 +506,13 @@ function _enUpInter(e, dt, s) {
   e.cdT -= dt * 1000;
   _enSteer(e, e.px, e.py, dt, e.turn, e.speed);
   var al = Math.abs(norm(angTo(e.x, e.y, e.px, e.py) - e.ang));
-  if (e.cdT <= 0 && al < 0.3 && d > 110 && d < 560) {
-    e.st = 1; e.stT = e.windMs * cs;
+  if (e.cdT <= 0 && al < 0.3 && d > 110 && d < 560 && _enShown(e)) {
+    e.st = 1; e.stT = e.windMs * cs; e.holdX = 0;
     e.lx = e.px; e.ly = e.py;
   }
 }
 
-/* ------------------------------------------------------------------ mine --- */
+/* ------ mine --- */
 /* Immobile, dort. S'amorce quand le serpent entre dans son rayon : la mèche
    brûle, le disque de souffle grandit à l'écran, puis tout saute.            */
 function _enUpMine(e, dt, s) {
@@ -428,8 +521,7 @@ function _enUpMine(e, dt, s) {
     e.x += Math.cos(e.t / 1400 + e.id) * 5 * dt;
     e.y += Math.sin(e.t / 1700 + e.id) * 5 * dt;
     if (_enTouchesBody(e.x, e.y, e.armR)) {
-      e.st = 1; e.stT = e.fuse;
-      S2030.audio && S2030.audio.sfx('shock');
+      e.st = 1; e.stT = e.fuse; e.beepT = 0;
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_ALERT, e.r, 200, { w: 2, life: 0.3 });
     }
     return;
@@ -439,7 +531,7 @@ function _enUpMine(e, dt, s) {
   e.beepT -= dt * 1000;
   if (e.beepT <= 0) {
     e.beepT = 60 + 220 * (e.stT / e.fuse);
-    S2030.audio && S2030.audio.sfx('click');
+    S2030.audio && S2030.audio.sfx('click', { x: e.x, vol: 0.8 });
     S2030.fx && S2030.fx.flare(e.x, e.y, _EN_ALERT, e.r * 1.8, { life: 0.1, a: 0.6 });
   }
   if (e.stT <= 0) {
@@ -448,7 +540,7 @@ function _enUpMine(e, dt, s) {
   }
 }
 
-/* --------------------------------------------------------------- tireur ---- */
+/* ------ tireur ---- */
 /* Garde sa bande de distance, tourne autour, et arme un tir lent en montrant
    la ligne exacte du projectile pendant 0,7 s.                               */
 function _enUpShooter(e, dt, s) {
@@ -467,17 +559,27 @@ function _enUpShooter(e, dt, s) {
 
   if (e.aimT > 0) {
     e.aimT -= dt * 1000;
+    if (_enOffWarn(e, e.x + Math.cos(e.aimA) * 900, e.y + Math.sin(e.aimA) * 900) && !e.holdX) { e.holdX = 1; e.aimT += 300; }
+    e.hkT -= dt * 1000;
+    if (e.hkT <= 0) { e.hkT = 60; _enAimHook(e, e.aimA); }
     if (e.aimT <= 0) {
+      /* Le coup ne part pas d'un point que le joueur ne voit plus : après
+         l'unique rallonge de 300 ms, un artilleur toujours hors cadre annule
+         sa salve et reprend son temps de recharge. */
+      if (!_enShown(e)) { e.aimT = 0; e.cdT = e.cd * cs; e.hkOn = 0; return; }
       var n = e.salvo + (e.elite ? 2 : 0);
       for (var i = 0; i < n; i++) {
         var a = e.aimA + (i - (n - 1) * 0.5) * e.spread;
         addEBullet({
           x: e.x + Math.cos(a) * e.r * 1.25, y: e.y + Math.sin(a) * e.r * 1.25,
           vx: Math.cos(a) * e.bSpeed, vy: Math.sin(a) * e.bSpeed,
-          r: e.bR, dmg: e.dmg, life: 4.2, color: _EN_EBULL, kind: 'plasma'
+          r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma',
+          /* G14 : la balle emporte l'identité de son tireur — l'écran de fin dit
+             « Détruit par ARTILLEUR » et non « Détruit par LA ZONE ». */
+          owner: e.type, ownerName: e.name, ownerElite: !!e.elite
         });
       }
-      S2030.audio && S2030.audio.sfx('shoot');
+      S2030.audio && S2030.audio.sfx('eshoot', { x: e.x, vol: e.elite ? 1 : 0.85 });
       S2030.fx && S2030.fx.burst(e.x + Math.cos(e.aimA) * e.r, e.y + Math.sin(e.aimA) * e.r,
         _EN_EBULL, 6, 220, { ang: e.aimA, spread: 0.5, life: 0.2, size: 1.6 });
       S2030.fx && S2030.fx.flare(e.x, e.y, _EN_EBULL, e.r * 2.2, { life: 0.14, a: 0.8 });
@@ -487,15 +589,17 @@ function _enUpShooter(e, dt, s) {
   } else {
     e.cdT -= dt * 1000;
     if (e.recoil > 0) e.recoil = Math.max(0, e.recoil - dt * 4);
-    if (e.cdT <= 0 && d < e.range + 300) {
+    if (e.cdT <= 0 && d < e.range + 300 && _enShown(e)) {
       e.aimT = e.aimMs * cs;
       e.aimA = toS;
+      e.holdX = 0; e.hkT = 0;
+      _enAimHook(e, e.aimA);
       S2030.audio && S2030.audio.sfx('click');
     }
   }
 }
 
-/* -------------------------------------------------------------- trancheur -- */
+/* ------ trancheur -- */
 /* Se met en garde, montre une ligne laser d'un bout à l'autre de l'arène,
    puis traverse tout en ligne droite. Coupe le corps, pas seulement la tête. */
 function _enUpCutter(e, dt, s) {
@@ -503,12 +607,23 @@ function _enUpCutter(e, dt, s) {
 
   if (e.st === 1) {                                   // charge
     e.stT -= dt * 1000;
+    if (_enOffWarn(e, s.x, s.y) && !e.holdX) { e.holdX = 1; e.stT += 300; }
     e.spin += dt * 22;
-    var df = norm(angTo(e.x, e.y, s.x, s.y) - e.ang), m = 2.4 * dt;
+    /* Sur le treillis, il traverse la famille de droites que suit le serpent :
+       il choisit donc la famille perpendiculaire (railAng + pi/2). Sinon il
+       courait DANS le corps et le tranchait sur toute sa longueur. */
+    var P = S2030.phases, ta = angTo(e.x, e.y, s.x, s.y), m = 2.4 * dt;
+    if (P && P.railed && P.railed() && P.railAng) {
+      ta = P.railAng(s.ang) + Math.PI / 2;
+      if (Math.abs(norm(ta - angTo(e.x, e.y, s.x, s.y))) > Math.PI / 2) ta = norm(ta + Math.PI);
+      e.cutA = ta; m = 5.0 * dt;
+    } else e.cutA = undefined;
+    var df = norm(ta - e.ang);
     e.ang = norm(e.ang + (df < -m ? -m : (df > m ? m : df)));
     _enGo(e, e.ang, dt, -e.speed * 0.35);            // recule pour prendre son élan
     if (e.stT <= 0) {
-      e.st = 2; e.stT = e.dashMs;
+      e.st = 2; e.stT = e.dashMs; e.cutHit = 0;
+      if (e.cutA !== undefined) e.ang = e.cutA;      // départ exactement sur la droite
       S2030.audio && S2030.audio.sfx('laser');
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r, 620, { w: 3, life: 0.24 });
     }
@@ -520,11 +635,14 @@ function _enUpCutter(e, dt, s) {
     _enGo(e, e.ang, dt, e.dashSpeed);
     if (S2030.fx) { S2030.fx.trail(e.x, e.y, e.ang, e.color); S2030.fx.trail(e.x, e.y, e.ang, _EN_WHITE); }
     var segs = s.segs, rr = (e.r + K.HEAD_R * 0.8) * (e.r + K.HEAD_R * 0.8);
-    for (var i = 0; i < segs.length; i += 2) {
-      if (dist2(e.x, e.y, segs[i].x, segs[i].y) < rr) {
-        hurtSnake(e.dmg, e.x, e.y);
-        S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 12, 300, { size: 2, life: 0.3 });
-        break;
+    if (!e.cutHit) {                                 // une seule coupe par passe
+      for (var i = 0; i < segs.length; i += 2) {
+        if (dist2(e.x, e.y, segs[i].x, segs[i].y) < rr) {
+          e.cutHit = 1;
+          hurtSnake(e.dmg, e.x, e.y, e);
+          S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 12, 300, { size: 2, life: 0.3 });
+          break;
+        }
       }
     }
     var b = e.r + 4;
@@ -544,10 +662,10 @@ function _enUpCutter(e, dt, s) {
   e.spin += dt * 6;
   var d = dist(e.x, e.y, s.x, s.y);
   _enSteer(e, s.x, s.y, dt, e.turn, e.speed);
-  if (d < 620) { e.st = 1; e.stT = e.chargeMs * cs; }
+  if (d < 620 && _enShown(e)) { e.st = 1; e.stT = e.chargeMs * cs; e.holdX = 0; }
 }
 
-/* -------------------------------------------------------------- pondeuse --- */
+/* ------ pondeuse --- */
 /* Lente, encaisse, garde ses distances et ouvre ses pétales pour cracher une
    nichée. L'ouverture est visible bien avant l'éjection.                     */
 function _enUpSpawner(e, dt, s) {
@@ -560,7 +678,19 @@ function _enUpSpawner(e, dt, s) {
 
   if (e.st === 1) {
     e.stT -= dt * 1000;
-    e.open = 1 - clamp(e.stT / (e.openMs * cs), 0, 1);
+    if (_enOffWarn(e, s.x, s.y) && !e.holdX) { e.holdX = 1; e.stT += 300; e.openW += 300; }
+    e.open = 1 - clamp(e.stT / e.openW, 0, 1);
+    // portail de couvée : 600 ms avant l'éjection, même préavis que les vagues
+    if (!e.brWarn && e.stT <= 600) {
+      e.brWarn = 1;
+      S2030.audio && S2030.audio.sfx('spawnTick', { x: e.x, vol: 0.8 });
+      S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r * 0.5, 260, { w: 2, life: 0.3 });
+      var nb = e.brood + (e.elite ? 2 : 0);
+      for (var q = 0; q < nb; q++) {
+        _enLog({ t: S.t, kind: 'portal', ev: 'portal', type: e.child, elite: false, mod: null,
+                 boss: false, x: Math.round(e.x), y: Math.round(e.y), lead: 600, edge: 0, src: 'brood' });
+      }
+    }
     if (e.stT <= 0) {
       e.st = 0; e.open = 0; e.cdT = e.cd * cs;
       var alive = 0, list = S.enemies;
@@ -570,22 +700,26 @@ function _enUpSpawner(e, dt, s) {
         var a = e.ang + k * (TAU / n) + rndR(-0.3, 0.3);
         var c = spawnEnemy(e.child, e.x + Math.cos(a) * (e.r + 10), e.y + Math.sin(a) * (e.r + 10),
           e.elite && chance(0.25) ? { mod: 'fast' } : null);
-        if (c) { c.ang = a; c.birth = 1; }
+        if (c) { c.ang = a; c.birth = 1; _enLog({ t: S.t, kind: 'spawn', ev: 'spawn', type: e.child, elite: false, boss: false, id: c.id, x: Math.round(c.x), y: Math.round(c.y), src: 'brood' }); }
         S2030.fx && S2030.fx.burst(e.x + Math.cos(a) * e.r, e.y + Math.sin(a) * e.r, e.color, 8, 260,
           { ang: a, spread: 0.6, life: 0.3, size: 1.8 });
       }
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, e.r * 0.7, 420, { w: 4, life: 0.35 });
       S2030.fx && S2030.fx.flare(e.x, e.y, _EN_WHITE, e.r * 2, { life: 0.16, a: 0.85 });
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('spawnTick', { x: e.x });
     }
     return;
   }
   e.cdT -= dt * 1000;
   e.open = Math.max(0, e.open - dt * 3);
-  if (e.cdT <= 0 && d < 900) { e.st = 1; e.stT = e.openMs * cs; }
+  // fenêtre d'ouverture d'au moins 640 ms : le portail de couvée tombe à 600
+  if (e.cdT <= 0 && d < 900 && _enShown(e)) {
+    e.st = 1; e.openW = Math.max(640, e.openMs * cs); e.stT = e.openW;
+    e.holdX = 0; e.brWarn = 0;
+  }
 }
 
-/* ---------------------------------------------------------------- larve ---- */
+/* ------ larve ---- */
 function _enUpMite(e, dt, s) {
   if (e.birth > 0) {
     e.birth -= dt * 2.6;
@@ -599,7 +733,7 @@ function _enUpMite(e, dt, s) {
   _enGo(e, e.ang, dt, e.speed);
 }
 
-/* -------------------------------------------------------------- parasite --- */
+/* ------ parasite --- */
 /* Se colle à un anneau du corps, l'étouffe (le serpent tourne moins bien) et
    mord périodiquement. Il faut le décrocher au tir.                          */
 function _enUpParasite(e, dt, s) {
@@ -622,7 +756,7 @@ function _enUpParasite(e, dt, s) {
     }
     if (e.biteT <= 0) {
       e.biteT = e.biteMs; e.warned = 0;
-      hurtSnake(1, e.x, e.y);
+      hurtSnake(1, e.x, e.y, e);
       S2030.fx && S2030.fx.burst(e.x, e.y, e.color, 14, 280, { size: 2, life: 0.32 });
       S2030.audio && S2030.audio.sfx('hurt');
     }
@@ -641,7 +775,7 @@ function _enUpParasite(e, dt, s) {
         e.side = angTo(t.x, t.y, e.x, e.y);
         _enParaN++; _enApplyPara();
         S2030.fx && S2030.fx.ring(e.x, e.y, e.color, 4, 300, { w: 3, life: 0.3 });
-        S2030.audio && S2030.audio.sfx('shock');
+        S2030.audio && S2030.audio.sfx('absorb', { x: e.x });
         return;
       }
     }
@@ -649,7 +783,7 @@ function _enUpParasite(e, dt, s) {
   _enSteer(e, tx, ty, dt, e.turn, e.speed);
 }
 
-/* -------------------------------------------------------------- brouilleur - */
+/* ------ brouilleur - */
 /* Champ nul : tout projectile du joueur qui franchit la coque est absorbé.
    Pour le tuer il faut entrer dans le champ — où les armes se coupent.       */
 function _enUpJammer(e, dt, s) {
@@ -684,12 +818,12 @@ function _enUpJammer(e, dt, s) {
     if (e.zapT <= 0) {
       e.zapT = 340;
       S2030.fx && S2030.fx.glitch && S2030.fx.glitch(0.28);
-      S2030.audio && S2030.audio.sfx('zap');
+      S2030.audio && S2030.audio.sfx('shock', { x: e.x, vol: 0.7 });
     }
   }
 }
 
-/* ---------------------------------------------------------------- voleur --- */
+/* ------ voleur --- */
 /* Vise le butin au sol, l'empoche, puis file vers le bord de l'arène. Tué,
    il rend tout — et un peu plus.                                             */
 function _enUpThief(e, dt, s) {
@@ -702,7 +836,7 @@ function _enUpThief(e, dt, s) {
     if (e.x < m || e.x > K.ARENA_W - m || e.y < m || e.y > K.ARENA_H - m) {
       S2030.fx && S2030.fx.ring(e.x, e.y, e.color, 8, 520, { w: 3, life: 0.4 });
       S2030.fx && S2030.fx.text(e.x, e.y - 20, 'BUTIN VOLÉ', e.color);
-      S2030.audio && S2030.audio.sfx('warp');
+      S2030.audio && S2030.audio.sfx('steal', { x: e.x });
       S.score = Math.max(0, S.score - 40 * e.carry);
       e.dead = true;                                   // s'échappe : aucune récompense
     }
@@ -748,7 +882,7 @@ function _enUpThief(e, dt, s) {
   }
 }
 
-/* ---------------------------------------------------------------- miroir --- */
+/* ------ miroir --- */
 /* Rejoue ta propre trajectoire avec 1,5 s de retard. On ne le sème pas : on
    le tue, ou on lui fait traverser ses propres alliés.                       */
 function _enUpMirror(e, dt, s) {
@@ -771,9 +905,9 @@ function _enUpMirror(e, dt, s) {
   }
 }
 
-/* ==========================================================================
+/* ======
    MODIFICATEURS D'ÉLITE — statistiques ET comportement ET visuel
-   ========================================================================== */
+   ====== */
 
 var _enMods = {
 
@@ -856,7 +990,7 @@ function _enModTick(e, dt, s) {
     e.speed *= 1.55;
     S2030.fx && S2030.fx.burst(e.x, e.y, '#9fb6d0', 18, 300, { size: 2.4, life: 0.45, shape: 'shard' });
     S2030.fx && S2030.fx.ring(e.x, e.y, '#9fb6d0', e.r, 380, { w: 3, life: 0.3 });
-    S2030.audio && S2030.audio.sfx('hit');
+    S2030.audio && S2030.audio.sfx('bossHit', { x: e.x });
   }
 
   if (e.mFast && S2030.fx && chance(0.5)) S2030.fx.trail(e.x, e.y, e.ang, e.color);
@@ -869,7 +1003,6 @@ function _enModTick(e, dt, s) {
       var dd = clamp(dist(e.x, e.y, s.x, s.y) * 0.6, 150, 340);
       e.tpX = clamp(e.x + Math.cos(a) * dd, 30, K.ARENA_W - 30);
       e.tpY = clamp(e.y + Math.sin(a) * dd, 30, K.ARENA_H - 30);
-      S2030.audio && S2030.audio.sfx('click');
     }
     if (e.tpT <= 0) {
       S2030.fx && S2030.fx.ring(e.x, e.y, '#b388ff', e.r, 420, { w: 3, life: 0.3 });
@@ -878,7 +1011,7 @@ function _enModTick(e, dt, s) {
       e.ang = angTo(e.x, e.y, s.x, s.y);
       S2030.fx && S2030.fx.ring(e.x, e.y, _EN_WHITE, 3, 380, { w: 2.5, life: 0.26 });
       S2030.fx && S2030.fx.flare(e.x, e.y, '#b388ff', e.r * 2.4, { life: 0.2, a: 0.9 });
-      S2030.audio && S2030.audio.sfx('warp');
+      S2030.audio && S2030.audio.sfx('teleport', { x: e.x });
       e.tpT = rndR(2200, 3200); e.tpPh = 0;
     }
   }
@@ -924,7 +1057,7 @@ function _enModTick(e, dt, s) {
           e.shDown = 3800;
           S2030.fx && S2030.fx.ring(e.x, e.y, '#00e5ff', e.r + 12, 460, { w: 4, life: 0.36 });
           S2030.fx && S2030.fx.burst(e.x, e.y, '#00e5ff', 16, 280, { size: 2, life: 0.36 });
-          S2030.audio && S2030.audio.sfx('shock');
+          S2030.audio && S2030.audio.sfx('bossHit', { x: e.x });
           break;
         }
       }
@@ -933,11 +1066,11 @@ function _enModTick(e, dt, s) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DESSIN
-   ========================================================================== */
+   ====== */
 
-/* -------- télégraphes, repère monde, dessinés SOUS les corps -------------- */
+/* -------- télégraphes, repère monde, dessinés SOUS les corps ------ */
 
 function _enTeChaser(ctx, e, col) {
   if (e.st !== 1) return;
@@ -992,13 +1125,14 @@ function _enTeShooter(ctx, e, col) {
   var n = e.salvo + (e.elite ? 2 : 0);
   for (var i = 0; i < n; i++) {
     var a = e.aimA + (i - (n - 1) * 0.5) * e.spread;
-    _enSight(ctx, e.x, e.y, e.x + Math.cos(a) * 620, e.y + Math.sin(a) * 620, _EN_EBULL, 0.18 + 0.42 * k, 1.4 + 2 * k);
+    _enSight(ctx, e.x, e.y, e.x + Math.cos(a) * e.bSpeed * _EN_BLIFE, e.y + Math.sin(a) * e.bSpeed * _EN_BLIFE, _EN_EBULL, 0.18 + 0.42 * k, 1.4 + 2 * k);
   }
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
-  ctx.translate(e.x + Math.cos(e.aimA) * 190, e.y + Math.sin(e.aimA) * 190);
+  // le crochet se pose sur l'impact prédit ; rouge = ça blesse (tête ou 8 premiers anneaux)
+  ctx.translate(e.hkOn ? e.hkx : e.x + Math.cos(e.aimA) * 190, e.hkOn ? e.hky : e.y + Math.sin(e.aimA) * 190);
   ctx.globalAlpha = 0.35 + 0.55 * k;
-  ctx.strokeStyle = _EN_ALERT; ctx.lineWidth = 2;
+  ctx.strokeStyle = e.hkHot ? _EN_ALERT : _EN_EBULL; ctx.lineWidth = 2;
   var r = 30 - 16 * k;
   ctx.beginPath();
   for (var q = 0; q < 4; q++) {
@@ -1090,7 +1224,7 @@ var _enTele = {
   parasite: _enTeParasite, thief: _enTeThief
 };
 
-/* -------- corps, repère local (déjà translaté sur l'ennemi) --------------- */
+/* -------- corps, repère local (déjà translaté sur l'ennemi) ------ */
 
 function _enDrChaser(ctx, e, col) {
   var r = e.r;
@@ -1466,7 +1600,7 @@ var _enDr = {
   thief: _enDrThief, mirror: _enDrMirror
 };
 
-/* -------- surcouche des modificateurs, repère local ---------------------- */
+/* -------- surcouche des modificateurs, repère local ------ */
 
 function _enModDraw(ctx, e, col) {
   if (e.mArm && !e.armBroken) {
@@ -1559,16 +1693,16 @@ function _enModDraw(ctx, e, col) {
   }
 }
 
-/* ==========================================================================
+/* ======
    DÉFINITIONS
-   ========================================================================== */
+   ====== */
 
 var _enDefs = {
 
   chaser: {
     name: 'TRAQUEUR', silhouette: 'delta',
     hp: 9, speed: 104, r: 13, dmg: 1, score: 10, xp: 1, color: '#ff2e63',
-    turn: 3.0, lungeR: 205, lungeMul: 2.1, lungeWind: 300, lungeDur: 380, cd: 1700,
+    turn: 3.0, lungeR: 205, lungeMul: 2.1, lungeWind: 470, lungeDur: 380, cd: 1700,
     drawR: 220,
     loot: 1, coreP: 0.03,
     init: function (e) { e.st = 0; e.stT = 0; e.cdT = rndR(200, 1200); }
@@ -1594,10 +1728,14 @@ var _enDefs = {
   shooter: {
     name: 'ARTILLEUR', silhouette: 'hexgun',
     hp: 18, speed: 66, r: 16, dmg: 1, score: 28, xp: 3, color: '#ff6a00',
-    turn: 2.4, range: 340, band: 90, aimMs: 720, cd: 1500,
-    bSpeed: 195, bR: 6, salvo: 1, spread: 0.2, drawR: 640,
+    /* Cadence et distance revues pour G6 : une menace se lit si elle laisse le
+       temps de la lire. Annonce 950 ms (spec : >= 450), recharge 3,6 s, bande
+       tenue à 400 u — le vol dure alors ~1,7 s de plus que l'annonce, et la
+       ligne de tir montrée reste la portée réelle (bSpeed x vie = 506 u). */
+    turn: 2.4, range: 400, band: 90, aimMs: 950, cd: 3600,
+    bSpeed: 230, bR: 6, salvo: 1, spread: 0.2, drawR: 640,
     loot: 2, coreP: 0.09,
-    init: function (e) { e.aimT = 0; e.aimA = 0; e.cdT = rndR(300, 1500); e.orbit = chance(0.5) ? 1 : -1; e.recoil = 0; }
+    init: function (e) { e.aimT = 0; e.aimA = 0; e.cdT = rndR(300, 1500); e.orbit = chance(0.5) ? 1 : -1; e.recoil = 0; e.hkT = 0; e.hkx = e.x; e.hky = e.y; e.hkHot = 0; e.hkOn = 0; }
   },
 
   cutter: {
@@ -1611,9 +1749,9 @@ var _enDefs = {
   spawner: {
     name: 'PONDEUSE', silhouette: 'hive',
     hp: 100, speed: 32, r: 27, dmg: 2, score: 95, xp: 11, color: '#8a4dff',
-    turn: 1.1, keep: 430, cd: 2500, openMs: 720, brood: 2, child: 'mite', maxBrood: 16,
+    turn: 1.1, keep: 430, cd: 2500, openMs: 720, brood: 2, child: 'mite', maxBrood: 16, openW: 720,
     loot: 4, coreP: 0.85, healP: 0.3,
-    init: function (e) { e.st = 0; e.stT = 0; e.cdT = rndR(600, 1800); e.open = 0; e.orbit = chance(0.5) ? 1 : -1; }
+    init: function (e) { e.st = 0; e.stT = 0; e.cdT = rndR(600, 1800); e.open = 0; e.orbit = chance(0.5) ? 1 : -1; e.openW = 720; e.brWarn = 0; }
   },
 
   mite: {
@@ -1663,9 +1801,9 @@ var _enUp = {
   thief: _enUpThief, mirror: _enUpMirror
 };
 
-/* ==========================================================================
+/* ======
    API
-   ========================================================================== */
+   ====== */
 
 function _enUpdate(e, dt) {
   _enFrameTick();
@@ -1688,8 +1826,25 @@ function _enDraw(ctx, e) {
   if (f) f(ctx, e, col);
   _enModDraw(ctx, e, col);
   if (e.elite) _enElite(ctx, e, col);
-  if (e.hitT > 0) {
-    // éclat blanc franc : l'impact doit se sentir même dans le fouillis
+  if (e.enraged) {                       // liseré blanc : le boss a basculé en rage
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r + 7, 0, TAU);
+    ctx.strokeStyle = '#ffffff';
+    ctx.globalAlpha = 0.55 + 0.35 * Math.sin(S.t * 0.012);
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  if (e.hitT > 30) {
+    /* Silhouette REMPLIE de blanc opaque tant qu'il reste plus de 60 ms, puis
+       fondue sur les 30 ms suivantes : un éclat additif à 55 % se perdait dans
+       le fouillis, on ne voyait pas ce qu'on touchait. */
+    var ha = e.hitT > 60 ? 1 : (e.hitT - 30) / 30;
+    ctx.globalAlpha = ha;
+    ctx.fillStyle = _EN_WHITE;
+    ctx.beginPath(); ctx.arc(0, 0, e.r, 0, TAU); ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (e.hitT > 0) {
     ctx.globalCompositeOperation = 'lighter';
     ctx.globalAlpha = clamp(e.hitT / 90, 0, 1) * 0.55;
     ctx.fillStyle = _EN_WHITE;
@@ -1705,12 +1860,11 @@ function _enOnDeath(e) {
   var big = e.elite || e.maxHp >= 40;
 
   if (fx) {
-    if (fx.kill) fx.kill(e.x, e.y, e.color, big);
+    if (fx.kill) fx.kill(e.x, e.y, e.color, big, e.killAng, e.r);
     else {
       fx.burst(e.x, e.y, e.color, big ? 34 : 16, big ? 420 : 260, { size: big ? 3 : 2, life: 0.4 });
       fx.ring(e.x, e.y, e.color, big ? 14 : 8, big ? 520 : 330, { w: big ? 6 : 3.5, life: 0.4 });
     }
-    if (e.elite) fx.text(e.x, e.y - e.r - 12, '+' + Math.round(e.score * S.mult), _EN_HOT);
   }
 
   _enLoot(e);
@@ -1722,7 +1876,7 @@ function _enOnDeath(e) {
       // abattue en sommeil, elle ne fait qu'un pétard.
       var live = e.detonated || e.st === 1;
       _enBlast(e.x, e.y, live ? e.blast : e.blast * 0.75,
-        live ? e.blastDmg : 1, '#ff8a3d', e.id);
+        live ? e.blastDmg : 1, '#ff8a3d', e.id, e);
       break;
 
     case 'spawner':
@@ -1753,11 +1907,13 @@ function _enOnDeath(e) {
       break;
 
     case 'thief':
-      // il rend tout ce qu'il portait, plus une prime
-      for (var k = 0; k < e.carry; k++) {
-        addPickup('energy', e.x + rndR(-18, 18), e.y + rndR(-18, 18));
+      /* Il rend tout ce qu'il portait, plus une prime — mais EN UN SEUL BUTIN.
+         Dix pièces lâchées d'un coup, c'était dix halos, dix ramassages et dix
+         sons pour la même valeur. La valeur est portée par le noyau (val). */
+      if (e.carry > 0) {
+        var pc = addPickup('core', e.x, e.y);
+        if (pc) pc.val = Math.max(1, Math.round((e.carry + (e.carry >= 2 ? 8 : 0)) / 8));
       }
-      if (e.carry >= 2) addPickup('core', e.x, e.y);
       if (e.carry > 0) S2030.fx && S2030.fx.text(e.x, e.y - 22, 'RÉCUPÉRÉ', '#00e5ff');
       break;
 
@@ -1769,7 +1925,7 @@ function _enOnDeath(e) {
   }
 
   // coeur instable : détonation à la mort, quel que soit le type
-  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id);
+  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id, e);
   if (e.mArm && !e.armBroken) {
     S2030.fx && S2030.fx.burst(e.x, e.y, '#9fb6d0', 12, 280, { size: 2.2, life: 0.4, shape: 'shard' });
   }
@@ -1782,7 +1938,7 @@ S2030.enemies = {
   draw: _enDraw,
   onDeath: _enOnDeath,
 
-  /* --- extras lisibles par les autres modules --------------------------- */
+  /* --- extras lisibles par les autres modules ------ */
 
   /** true si les armes du joueur sont brouillées (champ d'un brouilleur). */
   isJammed: function () { return S.t < _enJamT; },
