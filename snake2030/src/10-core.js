@@ -82,7 +82,11 @@ var S = {
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
-  stats: { best: 0, coins: 0, runs: 0 },
+  /* G14 : un record PAR CRAN (bestByDiff[5]), plus les repères de progression
+     et la dernière partie, pour le delta de l'écran de fin. */
+  stats: { best: 0, coins: 0, runs: 0, bestByDiff: [0, 0, 0, 0, 0],
+           bestLevel: 0, bestTime: 0, bossKills: 0, lastScore: 0, lastTime: 0 },
+  lastHit: null, run: null,
   boss: null, bossHpMax: 0, bossBornT: 0, bossKills: 0, trophyNext: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,
   desktop: detectDesktop()
@@ -140,6 +144,10 @@ function diffIdx() {
   }
   return b;
 }
+/* G14 : le score dépend du cran. Sans lui, une partie à FACILE et une partie à
+   SUICIDE tombaient dans le même classement. Facteur appliqué dans addScore. */
+var DIFF_SCORE = [0.8, 1, 1.25, 1.6, 2.0];
+function diffScoreMul() { return DIFF_SCORE[diffIdx()] || 1; }
 function diffMul() { return DIFFS[diffIdx()].m; }
 function diffNom() { return DIFFS[diffIdx()].nom; }
 
@@ -253,7 +261,7 @@ function updateSnake(dt) {
   var drain = K.BOOST_DRAIN * (1 - 0.16 * (S.up.f_boostDrain || 0));  // RÉSERVE
   if (wantBoost) {
     s.boostE -= drain * dt;
-    if (!s.boosting) { s.boosting = true; s.boostKick = 3; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
+    if (!s.boosting) { s.boosting = true; s.boostKick = 3; if (S.run) S.run.boosted = 1; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
     if (s.boostE < 1.5) {                              // panne, dans la même image (pas de boostEnd)
       s.boostE = 0; s.boosting = false; s.boostDry = true; s.boostDryT = S.t; s.boostHeld = press;
       S2030.audio && S2030.audio.sfx('boostDry'); haptic([10, 30, 10]);
@@ -385,9 +393,29 @@ function hurtSlowTick() {
   if (el >= 300) { _hurtSlowT = 0; _hurtPrevTs = -1; }
 }
 
+/* G14 — JOURNAL DE PARTIE. L'écran de fin ne savait rien de la partie qu'il
+   résumait : ni qui avait tué, ni ce qui n'avait pas servi. Tout est posé ici,
+   au fil du jeu, jamais reconstitué après coup. */
+function newRunLog() {
+  return { t0: S.t, killedBy: null, killedByName: null, usedUlt: 0, usedSpecial: 0,
+           boosted: 0, cardsTaken: 0, peakLen: S.snake ? S.snake.len : K.START_LEN,
+           ultReadyAt: 0, comboMax: 0, bossKills: 0 };
+}
+/* src peut être un ennemi (e.type et e.name viennent des définitions), une balle
+   ennemie (owner / ownerName posés à la création) ou rien : le décor blesse aussi. */
+function hitSrcInfo(src) {
+  if (!src) return { type: 'zone', name: 'LA ZONE' };
+  if (typeof src === 'string') return { type: src, name: src.toUpperCase() };
+  var t = src.type || src.owner || 'zone';
+  var n = src.name || src.ownerName || (t === 'zone' ? 'LA ZONE' : ('' + t).toUpperCase());
+  if (src.elite || src.ownerElite) n += ' D\u2019ÉLITE';
+  return { type: t, name: n };
+}
 function hurtSnake(dmg, x, y, src) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
+  var _hi = hitSrcInfo(src);
+  S.lastHit = { type: _hi.type, name: _hi.name, level: S.level, progress: S.levelProgress };
   dmg = Math.max(1, dmg | 0);
 
   // BLINDAGE : plafonne chaque coup à un seul segment
@@ -460,12 +488,19 @@ function healSnake(n) {
   var s = S.snake;
   s.len = Math.min(K.MAX_LEN, s.len + n);
   s.hp = s.len;
+  if (S.run && s.len > S.run.peakLen) S.run.peakLen = s.len;
   if (s.len > s.maxHp) s.maxHp = s.len;
 }
 
 function die() {
   if (S.phase === 'dead') return;
   S.phase = 'dead';
+  if (S.run) {
+    S.run.killedBy = S.lastHit ? S.lastHit.type : null;
+    S.run.killedByName = S.lastHit ? S.lastHit.name : null;
+    S.run.cardsTaken = S.cardsTaken | 0;
+    S.run.bossKills = S.bossKills | 0;
+  }
   var s = S.snake;
   S2030.fx && S2030.fx.shake(30);
   S2030.fx && S2030.fx.hitstop(8);
@@ -612,6 +647,7 @@ function killEnemy(e, opts) {
   e.dead = true;
   S.kills++;
   S.combo++;
+  if (S.run && S.combo > S.run.comboMax) S.run.comboMax = S.combo;
   setMult(multOf(S.combo));
   /* la fenêtre s'allonge avec le multiplicateur : trois secondes deux dixièmes
      ne laissaient jamais le temps d'enchaîner hors d'une nuée */
@@ -774,7 +810,7 @@ function drawPools(ctx) {
   }
 }
 
-function addScore(n) { S.score += Math.round(n * S.mult); }
+function addScore(n) { S.score += Math.round(n * S.mult * diffScoreMul()); }
 function addXp(n) {
   if (S.up.f_xp) n *= 1 + 0.25 * S.up.f_xp;   // SAVOIR : plus d'expérience
   S.xp += n;
@@ -902,7 +938,7 @@ function collide(dt) {
     }
     var hr = b.r + S.headR;
     if (s.invuln <= 0 && dist2(b.x, b.y, s.x, s.y) < hr * hr) {
-      hurtSnake(b.dmg, b.x, b.y);
+      hurtSnake(b.dmg, b.x, b.y, b);
       S.ebullets.splice(i, 1); continue;
     }
     /* Anneaux : les 8 premiers d'abord (ils blessent et l'emportent sur le reste
@@ -927,7 +963,7 @@ function collide(dt) {
       }
     }
     if (bi >= BODY_ABSORB) { absorbEBullet(b); S.ebullets.splice(i, 1); continue; }
-    if (bi >= 0 && s.invuln <= 0) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
+    if (bi >= 0 && s.invuln <= 0) { hurtSnake(b.dmg, b.x, b.y, b); S.ebullets.splice(i, 1); }
   }
 
   // ennemis contre la tête et le corps

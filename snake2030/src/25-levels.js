@@ -1196,7 +1196,7 @@ function _lvRigs(dt) {
     var hr = K.HEAD_R * 0.92;
     if (dist2(s.x, s.y, cx, cy) < hr * hr) {
       if (s.invuln <= 0) {
-        hurtSnake(1, cx, cy);
+        hurtSnake(1, cx, cy, { type: 'convoy', name: 'UN CONVOI' });
         if (S2030.fx) {
           S2030.fx.ring(cx, cy, _lvPal.danger, 10, 640, { w: 5, life: 0.5 });
           S2030.fx.shake(12);
@@ -1292,7 +1292,7 @@ function _lvNodes(dt) {
       var cr = nd.r * 0.15 + K.HEAD_R;
       if (dist2(s.x, s.y, nd.x, nd.y) < cr * cr) {
         if (s.invuln <= 0) {
-          hurtSnake(1, nd.x, nd.y);
+          hurtSnake(1, nd.x, nd.y, { type: 'node', name: 'UN NŒUD' });
           if (S2030.fx) S2030.fx.ring(nd.x, nd.y, _lvPal.danger, 12, 620, { w: 5, life: 0.5 });
         }
         var a = angTo(nd.x, nd.y, s.x, s.y);

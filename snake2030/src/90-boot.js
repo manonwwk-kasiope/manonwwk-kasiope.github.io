@@ -319,6 +319,7 @@ function useSpecial() {
 
 function useUlt() {
   if (S.phase !== 'play' || S.ult < S.ultMax) return;
+  if (S.run) S.run.usedUlt = 1;
   S.ult = 0;
   S.timeScale = 0.25;
   S2030.audio && S2030.audio.ultimate();
@@ -882,7 +883,9 @@ function readyTick() {
     if (!_rdyUlt) {
       _rdyUlt = 1;
       S2030.audio && S2030.audio.sfx('ultReady');
-      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊTE', '★ / R');
+      /* « apogée » est masculin : un apogée, prêt. */
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊT', '★ / R');
+      if (S.run && !S.run.ultReadyAt) S.run.ultReadyAt = Math.max(1, S.t - S.run.t0);
     }
   } else _rdyUlt = 0;
   if (!_rdyPow) {
@@ -913,6 +916,8 @@ function resetRun() {
   _lvlSeq = 0; _cardsNext = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
+  S.lastHit = null;
+  S.run = newRunLog();
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
   S2030.phases && S2030.phases.reset();
@@ -991,6 +996,12 @@ function loadStats() {
     if (raw) {
       var o = JSON.parse(raw);
       if (o.stats) S.stats = Object.assign(S.stats, o.stats);
+      /* G14 : un profil écrit avant les records par cran n'a pas bestByDiff —
+         on le rétablit plutôt que de laisser l'écran de fin lire undefined. */
+      var bd = S.stats.bestByDiff;
+      if (!bd || !bd.length) bd = S.stats.bestByDiff = [0, 0, 0, 0, 0];
+      for (var bi = 0; bi < 5; bi++) bd[bi] = bd[bi] | 0;
+      bd.length = 5;
       if (o.opt) S.opt = Object.assign(S.opt, o.opt);
     }
   } catch (e) {}

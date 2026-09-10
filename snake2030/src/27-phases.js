@@ -593,6 +593,7 @@ S2030.phases = (function () {
     if (!id) return false;
     POWERS[id].run();
     cds[id] = POWERS[id].cd;
+    if (S.run) S.run.usedSpecial = 1;
     pick = (owned.indexOf(id) + 1) % owned.length;
     return true;
   }
@@ -601,7 +602,7 @@ S2030.phases = (function () {
   function buttonState() {
     var id = nextReady() || owned[pick % owned.length];
     var p = POWERS[id];
-    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col,
+    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col, cd: Math.max(0, cds[id]), cdMax: p.cd,
              ready: cds[id] <= 0, fill: cds[id] <= 0 ? 1 : 1 - cds[id] / p.cd };
   }
 
@@ -617,10 +618,14 @@ S2030.phases = (function () {
         S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ffd166', 8, 700);
       }
     }
-    // le compte à rebours du bouton reste lisible par l'interface d'origine
+    /* G14 : S.specialCd portait 0 ou 1, si bien qu'un compte à rebours en
+       secondes affichait « 1 » du début à la fin de la recharge. Il porte
+       désormais les MILLISECONDES restantes du pouvoir courant, et
+       S.specialCdMax sa durée totale : la jauge du bouton (1 − cd/cdMax) est
+       inchangée, le chiffre au centre devient vrai. */
     var st = buttonState();
-    S.specialCd = st.ready ? 0 : 1;
-    S.specialCdMax = 1;
+    S.specialCd = st.ready ? 0 : Math.ceil(st.cd);
+    S.specialCdMax = st.cdMax || 7000;
   }
 
   /* Multiplicateur de temps appliqué aux ennemis et à leurs projectiles. */

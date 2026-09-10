@@ -298,7 +298,7 @@ function _enTouchesBody(x, y, r) {
 
 /* ------ explosions -- */
 
-function _enBlast(x, y, radius, dmg, color, srcId) {
+function _enBlast(x, y, radius, dmg, color, srcId, src) {
   if (_enBlastDepth > 3) return;
   _enBlastDepth++;
   var fx = S2030.fx;
@@ -321,7 +321,7 @@ function _enBlast(x, y, radius, dmg, color, srcId) {
     // de vie pour les ennemis, avec atténuation au bord du souffle.
     damageEnemy(o, dmg * 9 * (0.4 + 0.6 * f), { x: o.x, y: o.y, type: 'shock' });
   }
-  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y);
+  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y, src);
   _enBlastDepth--;
 }
 
@@ -562,7 +562,10 @@ function _enUpShooter(e, dt, s) {
         addEBullet({
           x: e.x + Math.cos(a) * e.r * 1.25, y: e.y + Math.sin(a) * e.r * 1.25,
           vx: Math.cos(a) * e.bSpeed, vy: Math.sin(a) * e.bSpeed,
-          r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma'
+          r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma',
+          /* G14 : la balle emporte l'identité de son tireur — l'écran de fin dit
+             « Détruit par ARTILLEUR » et non « Détruit par LA ZONE ». */
+          owner: e.type, ownerName: e.name, ownerElite: !!e.elite
         });
       }
       S2030.audio && S2030.audio.sfx('eshoot', { x: e.x, vol: e.elite ? 1 : 0.85 });
@@ -1862,7 +1865,7 @@ function _enOnDeath(e) {
       // abattue en sommeil, elle ne fait qu'un pétard.
       var live = e.detonated || e.st === 1;
       _enBlast(e.x, e.y, live ? e.blast : e.blast * 0.75,
-        live ? e.blastDmg : 1, '#ff8a3d', e.id);
+        live ? e.blastDmg : 1, '#ff8a3d', e.id, e);
       break;
 
     case 'spawner':
@@ -1909,7 +1912,7 @@ function _enOnDeath(e) {
   }
 
   // coeur instable : détonation à la mort, quel que soit le type
-  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id);
+  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id, e);
   if (e.mArm && !e.armBroken) {
     S2030.fx && S2030.fx.burst(e.x, e.y, '#9fb6d0', 12, 280, { size: 2.2, life: 0.4, shape: 'shard' });
   }

@@ -125,7 +125,11 @@ var S = {
   opt: { reduceFlash: false, reduceShake: false, particles: 1, contrast: false,
          haptics: true, music: true, sfx: true, leftHanded: false,
          joyFloat: true, joySize: 1, joyAlpha: 1, sens: 1, uiScale: 1, diff: 1.55, px: 1.5, mouse: 'auto' },
-  stats: { best: 0, coins: 0, runs: 0 },
+  /* G14 : un record PAR CRAN (bestByDiff[5]), plus les repères de progression
+     et la dernière partie, pour le delta de l'écran de fin. */
+  stats: { best: 0, coins: 0, runs: 0, bestByDiff: [0, 0, 0, 0, 0],
+           bestLevel: 0, bestTime: 0, bossKills: 0, lastScore: 0, lastTime: 0 },
+  lastHit: null, run: null,
   boss: null, bossHpMax: 0, bossBornT: 0, bossKills: 0, trophyNext: 0, headR: 16, pxEff: 1.5, partEff: 1,
   timeScale: 1,
   desktop: detectDesktop()
@@ -183,6 +187,10 @@ function diffIdx() {
   }
   return b;
 }
+/* G14 : le score dépend du cran. Sans lui, une partie à FACILE et une partie à
+   SUICIDE tombaient dans le même classement. Facteur appliqué dans addScore. */
+var DIFF_SCORE = [0.8, 1, 1.25, 1.6, 2.0];
+function diffScoreMul() { return DIFF_SCORE[diffIdx()] || 1; }
 function diffMul() { return DIFFS[diffIdx()].m; }
 function diffNom() { return DIFFS[diffIdx()].nom; }
 
@@ -296,7 +304,7 @@ function updateSnake(dt) {
   var drain = K.BOOST_DRAIN * (1 - 0.16 * (S.up.f_boostDrain || 0));  // RÉSERVE
   if (wantBoost) {
     s.boostE -= drain * dt;
-    if (!s.boosting) { s.boosting = true; s.boostKick = 3; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
+    if (!s.boosting) { s.boosting = true; s.boostKick = 3; if (S.run) S.run.boosted = 1; S2030.audio && S2030.audio.sfx('boost'); haptic(12); }
     if (s.boostE < 1.5) {                              // panne, dans la même image (pas de boostEnd)
       s.boostE = 0; s.boosting = false; s.boostDry = true; s.boostDryT = S.t; s.boostHeld = press;
       S2030.audio && S2030.audio.sfx('boostDry'); haptic([10, 30, 10]);
@@ -428,9 +436,29 @@ function hurtSlowTick() {
   if (el >= 300) { _hurtSlowT = 0; _hurtPrevTs = -1; }
 }
 
+/* G14 — JOURNAL DE PARTIE. L'écran de fin ne savait rien de la partie qu'il
+   résumait : ni qui avait tué, ni ce qui n'avait pas servi. Tout est posé ici,
+   au fil du jeu, jamais reconstitué après coup. */
+function newRunLog() {
+  return { t0: S.t, killedBy: null, killedByName: null, usedUlt: 0, usedSpecial: 0,
+           boosted: 0, cardsTaken: 0, peakLen: S.snake ? S.snake.len : K.START_LEN,
+           ultReadyAt: 0, comboMax: 0, bossKills: 0 };
+}
+/* src peut être un ennemi (e.type et e.name viennent des définitions), une balle
+   ennemie (owner / ownerName posés à la création) ou rien : le décor blesse aussi. */
+function hitSrcInfo(src) {
+  if (!src) return { type: 'zone', name: 'LA ZONE' };
+  if (typeof src === 'string') return { type: src, name: src.toUpperCase() };
+  var t = src.type || src.owner || 'zone';
+  var n = src.name || src.ownerName || (t === 'zone' ? 'LA ZONE' : ('' + t).toUpperCase());
+  if (src.elite || src.ownerElite) n += ' D\u2019ÉLITE';
+  return { type: t, name: n };
+}
 function hurtSnake(dmg, x, y, src) {
   var s = S.snake;
   if (s.invuln > 0 || S.phase !== 'play') return;
+  var _hi = hitSrcInfo(src);
+  S.lastHit = { type: _hi.type, name: _hi.name, level: S.level, progress: S.levelProgress };
   dmg = Math.max(1, dmg | 0);
 
   // BLINDAGE : plafonne chaque coup à un seul segment
@@ -503,12 +531,19 @@ function healSnake(n) {
   var s = S.snake;
   s.len = Math.min(K.MAX_LEN, s.len + n);
   s.hp = s.len;
+  if (S.run && s.len > S.run.peakLen) S.run.peakLen = s.len;
   if (s.len > s.maxHp) s.maxHp = s.len;
 }
 
 function die() {
   if (S.phase === 'dead') return;
   S.phase = 'dead';
+  if (S.run) {
+    S.run.killedBy = S.lastHit ? S.lastHit.type : null;
+    S.run.killedByName = S.lastHit ? S.lastHit.name : null;
+    S.run.cardsTaken = S.cardsTaken | 0;
+    S.run.bossKills = S.bossKills | 0;
+  }
   var s = S.snake;
   S2030.fx && S2030.fx.shake(30);
   S2030.fx && S2030.fx.hitstop(8);
@@ -655,6 +690,7 @@ function killEnemy(e, opts) {
   e.dead = true;
   S.kills++;
   S.combo++;
+  if (S.run && S.combo > S.run.comboMax) S.run.comboMax = S.combo;
   setMult(multOf(S.combo));
   /* la fenêtre s'allonge avec le multiplicateur : trois secondes deux dixièmes
      ne laissaient jamais le temps d'enchaîner hors d'une nuée */
@@ -817,7 +853,7 @@ function drawPools(ctx) {
   }
 }
 
-function addScore(n) { S.score += Math.round(n * S.mult); }
+function addScore(n) { S.score += Math.round(n * S.mult * diffScoreMul()); }
 function addXp(n) {
   if (S.up.f_xp) n *= 1 + 0.25 * S.up.f_xp;   // SAVOIR : plus d'expérience
   S.xp += n;
@@ -945,7 +981,7 @@ function collide(dt) {
     }
     var hr = b.r + S.headR;
     if (s.invuln <= 0 && dist2(b.x, b.y, s.x, s.y) < hr * hr) {
-      hurtSnake(b.dmg, b.x, b.y);
+      hurtSnake(b.dmg, b.x, b.y, b);
       S.ebullets.splice(i, 1); continue;
     }
     /* Anneaux : les 8 premiers d'abord (ils blessent et l'emportent sur le reste
@@ -970,7 +1006,7 @@ function collide(dt) {
       }
     }
     if (bi >= BODY_ABSORB) { absorbEBullet(b); S.ebullets.splice(i, 1); continue; }
-    if (bi >= 0 && s.invuln <= 0) { hurtSnake(b.dmg, b.x, b.y); S.ebullets.splice(i, 1); }
+    if (bi >= 0 && s.invuln <= 0) { hurtSnake(b.dmg, b.x, b.y, b); S.ebullets.splice(i, 1); }
   }
 
   // ennemis contre la tête et le corps
@@ -3926,7 +3962,7 @@ function _enTouchesBody(x, y, r) {
 
 /* ------ explosions -- */
 
-function _enBlast(x, y, radius, dmg, color, srcId) {
+function _enBlast(x, y, radius, dmg, color, srcId, src) {
   if (_enBlastDepth > 3) return;
   _enBlastDepth++;
   var fx = S2030.fx;
@@ -3949,7 +3985,7 @@ function _enBlast(x, y, radius, dmg, color, srcId) {
     // de vie pour les ennemis, avec atténuation au bord du souffle.
     damageEnemy(o, dmg * 9 * (0.4 + 0.6 * f), { x: o.x, y: o.y, type: 'shock' });
   }
-  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y);
+  if (_enTouchesBody(x, y, radius)) hurtSnake(dmg, x, y, src);
   _enBlastDepth--;
 }
 
@@ -4190,7 +4226,10 @@ function _enUpShooter(e, dt, s) {
         addEBullet({
           x: e.x + Math.cos(a) * e.r * 1.25, y: e.y + Math.sin(a) * e.r * 1.25,
           vx: Math.cos(a) * e.bSpeed, vy: Math.sin(a) * e.bSpeed,
-          r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma'
+          r: e.bR, dmg: e.dmg, life: _EN_BLIFE, color: _EN_EBULL, kind: 'plasma',
+          /* G14 : la balle emporte l'identité de son tireur — l'écran de fin dit
+             « Détruit par ARTILLEUR » et non « Détruit par LA ZONE ». */
+          owner: e.type, ownerName: e.name, ownerElite: !!e.elite
         });
       }
       S2030.audio && S2030.audio.sfx('eshoot', { x: e.x, vol: e.elite ? 1 : 0.85 });
@@ -5490,7 +5529,7 @@ function _enOnDeath(e) {
       // abattue en sommeil, elle ne fait qu'un pétard.
       var live = e.detonated || e.st === 1;
       _enBlast(e.x, e.y, live ? e.blast : e.blast * 0.75,
-        live ? e.blastDmg : 1, '#ff8a3d', e.id);
+        live ? e.blastDmg : 1, '#ff8a3d', e.id, e);
       break;
 
     case 'spawner':
@@ -5537,7 +5576,7 @@ function _enOnDeath(e) {
   }
 
   // coeur instable : détonation à la mort, quel que soit le type
-  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id);
+  if (e.mExp) _enBlast(e.x, e.y, e.expR, e.expDmg, '#ff8a3d', e.id, e);
   if (e.mArm && !e.armBroken) {
     S2030.fx && S2030.fx.burst(e.x, e.y, '#9fb6d0', 12, 280, { size: 2.2, life: 0.4, shape: 'shard' });
   }
@@ -9482,7 +9521,7 @@ function _lvRigs(dt) {
     var hr = K.HEAD_R * 0.92;
     if (dist2(s.x, s.y, cx, cy) < hr * hr) {
       if (s.invuln <= 0) {
-        hurtSnake(1, cx, cy);
+        hurtSnake(1, cx, cy, { type: 'convoy', name: 'UN CONVOI' });
         if (S2030.fx) {
           S2030.fx.ring(cx, cy, _lvPal.danger, 10, 640, { w: 5, life: 0.5 });
           S2030.fx.shake(12);
@@ -9578,7 +9617,7 @@ function _lvNodes(dt) {
       var cr = nd.r * 0.15 + K.HEAD_R;
       if (dist2(s.x, s.y, nd.x, nd.y) < cr * cr) {
         if (s.invuln <= 0) {
-          hurtSnake(1, nd.x, nd.y);
+          hurtSnake(1, nd.x, nd.y, { type: 'node', name: 'UN NŒUD' });
           if (S2030.fx) S2030.fx.ring(nd.x, nd.y, _lvPal.danger, 12, 620, { w: 5, life: 0.5 });
         }
         var a = angTo(nd.x, nd.y, s.x, s.y);
@@ -10581,9 +10620,20 @@ var _UI_UNLOCKS = [
   { id: 'u_boost',  icon: '»', name: 'RÉACTEUR',      cost: 180, desc: 'Réserve de boost +25 %.' },
   { id: 'u_start',  icon: '▲', name: 'CANON LOURD',   cost: 240, desc: 'Le canon frontal démarre au niveau 2.' },
   { id: 'u_ult',    icon: '★', name: 'CONDENSATEUR',  cost: 320, desc: 'L\'APOGÉE se charge 20 % plus vite.' },
-  { id: 'u_shield', icon: '◈', name: 'PARE-CHOCS',    cost: 400, desc: 'Une seconde d\'invulnérabilité en plus.' },
+  /* Le texte annonçait une seconde d'invulnérabilité ; le code (resetRun)
+     donne une charge de bouclier, qui absorbe un coup. */
+  { id: 'u_shield', icon: '◈', name: 'PARE-CHOCS',    cost: 400, desc: 'Absorbe un coup par partie.' },
   { id: 'u_luck',   icon: '◇', name: 'ORACLE',        cost: 520, desc: 'Meilleures chances de cartes rares.' }
 ];
+
+/* G14 — libellé de build : axe dominant des cartes prises + arme la plus haute.
+   Les noms d'arme sont RACCOURCIS : « ARC ÉLECTRIQUE 6 » déborde la ligne, et
+   c'est le niveau qui porte l'information. */
+var _UI_AXES = { elec: 'ÉLECTRICIEN', laser: 'TIREUR', explo: 'ARTIFICIER',
+                 speed: 'COUREUR', fort: 'BLINDÉ', ghost: 'SPECTRE', core: 'TECHNICIEN' };
+var _UI_WSHORT = { frontCannon: 'CANON', sideTurrets: 'TOURELLES', tailLaser: 'QUEUE',
+                   arcLightning: 'ARC', missiles: 'MISSILES', drones: 'DRONES',
+                   shockwave: 'ONDE', tailMines: 'MINES' };
 
 /* ======
    FEUILLE DE STYLE
@@ -10692,6 +10742,20 @@ var _UI_CSS = [
 '.s2seg>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(8px,1.8vh,11px)))/1 var(--fs);',
 '  letter-spacing:.18em;color:var(--dim)}',
 '.s2seg.low>b{color:#fff;animation:s2danger .5s infinite steps(2)}',
+/* G14 : une pastille par segment. Le chiffre seul ne se lit pas d'un coup
+   d'oeil ; la rangée, si. Largeur totale bornée (84 px de gabarit) : la
+   pastille et l'écart rétrécissent quand le serpent s'allonge, le COMPTE
+   reste exact quelle que soit la longueur. */
+'.s2pels{display:flex;align-items:center;gap:var(--pg,3px)}',
+/* Pas de halo sur les pastilles : elles peuvent être 53 en fin de partie, et
+   cinquante-trois ombres portées floues coûtent une image sur le téléphone
+   (banc iphone/bascule-charge, p95 17,3 ms contre 16,7 de plafond). Le trait
+   plein suffit à les lire, il est même plus net. */
+'.s2pels>i{display:block;width:calc(var(--uis)*var(--pw,5px));height:calc(var(--uis)*9px);',
+'  border-radius:2px;background:var(--cy)}',
+'.s2seg.low .s2pels>i{background:var(--mg);box-shadow:none;animation:s2pelLow .5s infinite steps(2)}',
+'@keyframes s2pelLow{0%{background:#fff}50%{background:var(--mg)}}',
+'#ui.nf .s2seg.low .s2pels>i{animation:none}',
 '@keyframes s2danger{0%{color:#fff;text-shadow:0 0 18px var(--mg)}50%{color:var(--mg);text-shadow:none}}',
 '.s2g{display:flex;align-items:center;gap:5px}',
 '.s2g>s{text-decoration:none;font:800 calc(var(--uis)*max(var(--fmin),clamp(7px,1.6vh,10px)))/1 var(--fs);',
@@ -10729,10 +10793,18 @@ var _UI_CSS = [
 '.s2knob{position:absolute;left:50%;top:50%;width:44%;height:44%;margin:-22% 0 0 -22%;',
 '  border-radius:50%;background:radial-gradient(circle at 35% 30%,#bffaff,#00e5ff 60%,#0091b0);',
 '  box-shadow:0 0 calc(20px*var(--bl)) rgba(0,229,255,.75);will-change:transform}',
+/* G14 : trois boutons à 0,26 d'opacité, sans nom, ne se lisaient ni au repos
+   ni prêts. Base 0,45, prêt 0,90 — et une étiquette de 11 px dessous. */
 '.s2btn{position:absolute;transform:translate(-50%,50%);border-radius:50%;',
 '  display:flex;align-items:center;justify-content:center;',
-'  opacity:calc(.26*var(--ca));transition:opacity .1s ease;will-change:opacity}',
-'.s2btn.on{opacity:calc(.55*var(--ca))}',
+'  opacity:calc(.45*var(--ca));transition:opacity .1s ease;will-change:opacity}',
+'.s2btn.on{opacity:calc(.72*var(--ca))}',
+'.s2blab{position:absolute;left:50%;top:100%;transform:translate(-50%,3px);white-space:nowrap;',
+'  font:800 max(11px,calc(var(--uis)*11px))/1 var(--fs);font-style:normal;letter-spacing:.08em;',
+'  color:currentColor;text-shadow:0 0 5px rgba(0,0,0,.85);pointer-events:none}',
+'.s2bcd{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-style:normal;',
+'  font:900 calc(var(--uis)*clamp(15px,4vh,22px))/1 var(--fm);color:#fff;pointer-events:none;',
+'  text-shadow:0 0 8px rgba(0,0,0,.8)}',
 '.s2btn>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}',
 '.s2btn .trk{fill:currentColor;fill-opacity:.16;stroke:currentColor;stroke-opacity:.5;stroke-width:2}',
 '.s2btn .arc{fill:none;stroke:currentColor;stroke-width:7;stroke-linecap:round;',
@@ -10740,10 +10812,10 @@ var _UI_CSS = [
 '  filter:drop-shadow(0 0 calc(6px*var(--bl)) currentColor)}',
 '.s2btn>span{position:relative;font:900 1em/1 var(--fs);color:#04101a;',
 '  text-shadow:0 0 6px rgba(255,255,255,.5)}',
-'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite;opacity:calc(.42*var(--ca))}',
+'.s2btn.rdy{animation:s2rdy .9s ease-in-out infinite;opacity:calc(.9*var(--ca))}',
 /* prêt ET pressé : .rdy suit .on à specificite egale, un bouton pret s'assombrissait
    sous le doigt (0,42 au lieu de 0,55). L'appui reste l'etat le plus lumineux. */
-'.s2btn.rdy.on{opacity:calc(.62*var(--ca))}',
+'.s2btn.rdy.on{opacity:calc(1*var(--ca))}',
 /* prêt : halo de l'arc × 1,3 — la jauge pleine se voyait à peine */
 '.s2btn.rdy .arc{stroke-width:8;filter:drop-shadow(0 0 calc(7.8px*var(--bl)) currentColor)}',
 '@keyframes s2rdy{0%,100%{filter:none}50%{filter:brightness(1.7)}}',
@@ -10920,6 +10992,36 @@ var _UI_CSS = [
 '.s2rec{font:900 calc(var(--uis)*max(var(--fmin),clamp(10px,2.4vh,15px)))/1 var(--fs);letter-spacing:.22em;',
 '  color:var(--am);text-shadow:0 0 calc(16px*var(--bl)) var(--am);animation:s2blink 1s infinite;opacity:0}',
 '.s2rec.on{opacity:1}',
+/* G14 — écran de fin qui explique */
+'.s2kill{font:700 calc(var(--uis)*max(var(--fmin),clamp(10px,2.3vh,15px)))/1.35 var(--fs);',
+'  color:var(--ink);text-align:center;max-width:900px}',
+'.s2kill>b{color:var(--mg);font-weight:900;letter-spacing:.06em}',
+'.s2tip{font:700 calc(var(--uis)*max(var(--fmin),clamp(10px,2.2vh,14px)))/1.35 var(--fs);',
+'  color:var(--am);text-align:center;max-width:860px}',
+'.s2tip:empty{display:none}',
+'.s2build{font:900 calc(var(--uis)*max(var(--fmin),clamp(10px,2.2vh,14px)))/1.2 var(--fs);',
+'  letter-spacing:.14em;color:var(--vi);text-align:center}',
+'.s2delta{font:700 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.3 var(--fs);',
+'  color:var(--dim);text-align:center}',
+'.s2delta:empty{display:none}',
+'.s2bcards{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:900px}',
+'.s2bcards>span{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:999px;',
+'  border:1px solid var(--line);background:var(--pan);color:var(--ink);',
+'  font:800 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.5 var(--fs)}',
+'.s2bcards>span>u{text-decoration:none;color:var(--am)}',
+'#ui .s2next{position:relative;display:block;flex:0 0 auto;width:min(620px,94%);padding:0;overflow:hidden;',
+'  border-radius:9px;border:1px solid var(--line);background:var(--pan);text-align:left}',
+'#ui .s2next>s{display:block;text-decoration:none;padding:6px 12px 7px;',
+'  font:800 calc(var(--uis)*max(var(--fmin),clamp(9px,2vh,12px)))/1.25 var(--fs);',
+'  letter-spacing:.1em;color:var(--ink)}',
+'#ui .s2next::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;',
+'  background:rgba(255,255,255,.1)}',
+'#ui .s2next>u{position:relative;z-index:1;display:block;height:6px;width:0;',
+'  background:var(--am);box-shadow:0 0 calc(9px*var(--bl)) var(--am)}',
+'.s2first{font:700 calc(var(--uis)*max(var(--fmin),clamp(10px,2.2vh,13px)))/1.3 var(--fs);',
+'  letter-spacing:.06em;color:var(--am);text-align:center}',
+'#ui .s2next[hidden]{display:none}',
+'.s2crank{display:flex;gap:clamp(10px,3vw,26px);flex-wrap:wrap;justify-content:center}',
 
 /* réglages */
 '.s2scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;',
@@ -11165,6 +11267,7 @@ function _uiBuildHud(root) {
   _uiE.segBox = sg;
   _uiMk('s', '', sg, 'VIE');
   _uiE.segN = _uiMk('b', '', sg, '9');
+  _uiE.segPel = _uiMk('div', 's2pels', sg);
   var gb = _uiMk('div', 's2g s2gb', R);
   _uiE.gBoostBox = gb;
   _uiMk('s', '', gb, 'BOOST');
@@ -11198,7 +11301,10 @@ function _uiMkBtn(parent, key, glyph, label) {
   arc.setAttribute('stroke-dasharray', c.toFixed(2));
   arc.style.strokeDashoffset = c.toFixed(2);
   arc._uc0 = c;
-  _uiMk('span', '', b, glyph);
+  b._gl = _uiMk('span', '', b, glyph);
+  b._cd = _uiMk('em', 's2bcd', b, '');
+  b._cd.style.display = 'none';
+  b._lab = _uiMk('em', 's2blab', b, label);
   b._arc = arc;
   return b;
 }
@@ -11209,9 +11315,12 @@ function _uiBuildCtl(root) {
   var joy = _uiMk('div', 's2joy', ctl);
   _uiE.joy = joy;
   _uiE.knob = _uiMk('div', 's2knob', joy);
-  _uiE.btnBoost = _uiMkBtn(ctl, 'boost', '»', 'Boost');
-  _uiE.btnSpecial = _uiMkBtn(ctl, 'special', '◈', 'Pouvoir');
-  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★', 'Apogée');
+  /* Le nom sous le bouton est aussi son aria-label : ce que la joueuse lit est
+     ce que le lecteur d'écran dit. Le pouvoir change de nom en cours de partie
+     (phases.buttonState), _uiSyncCtl le remet à jour. */
+  _uiE.btnBoost = _uiMkBtn(ctl, 'boost', '»', 'BOOST');
+  _uiE.btnSpecial = _uiMkBtn(ctl, 'special', '◈', 'TRAVERSÉE');
+  _uiE.btnUlt = _uiMkBtn(ctl, 'ult', '★', 'APOGÉE');
 }
 
 function _uiBuildBanner(root) {
@@ -11244,7 +11353,15 @@ function _uiBuildMenu(root) {
   _uiTap(_uiMk('button', 's2pill', row, 'DÉBLOCAGES'), function () { _uiShow('unlocks'); });
 
   var F = _uiMk('div', 's2mF', sc);
+  /* Le cran et SON record vivent hors du bloc de statistiques : ils restent
+     visibles sur un profil vierge, où MEILLEUR / CRÉDITS / PARTIES ne diraient
+     que des zéros. */
+  var cr = _uiMk('div', 's2crank', F);
+  var k0 = _uiMk('div', 's2kv', cr);
+  _uiE.mCranS = _uiMk('s', '', k0, 'CRAN');
+  _uiE.mCran = _uiMk('b', '', k0, '0');
   var st = _uiMk('div', 's2stat2', F);
+  _uiE.mStat = st;
   var k1 = _uiMk('div', 's2kv', st);
   _uiMk('s', '', k1, 'MEILLEUR');
   _uiE.mBest = _uiMk('b', '', k1, '0');
@@ -11254,6 +11371,7 @@ function _uiBuildMenu(root) {
   var k3 = _uiMk('div', 's2kv cy', st);
   _uiMk('s', '', k3, 'PARTIES');
   _uiE.mRuns = _uiMk('b', '', k3, '0');
+  _uiE.mFirst = _uiMk('div', 's2first', F, 'Première partie : les cartes tombent à 12 s');
   _uiE.keysMenu = _uiMk('div', 's2keys', F, '');
 }
 
@@ -11344,20 +11462,46 @@ function _uiBuildOver(root) {
   var head = _uiMk('div', 's2row', sc);
   _uiMk('div', 's2ttl', head, 'SIGNAL PERDU');
   _uiE.rec = _uiMk('div', 's2rec', head, 'NOUVEAU RECORD');
+  /* L'écran de fin déborde en paysage téléphone dès qu'il explique quelque
+     chose : il défile, et « safe center » garde le haut atteignable (un
+     centrage simple coupe le titre au lieu de le laisser défiler). */
+  sc.style.overflowY = 'auto';
+  sc.style.justifyContent = 'safe center';
+  _uiE.oKill = _uiMk('div', 's2kill', sc, '');
   var g = _uiMk('div', 's2grid', sc);
   _uiE.oScore = _uiTile(g, 'SCORE', true);
   _uiE.oTime = _uiTile(g, 'DURÉE');
   _uiE.oLvl = _uiTile(g, 'NIVEAU');
+  _uiE.oProg = _uiTile(g, 'PROGRESSION');
   _uiE.oKills = _uiTile(g, 'DÉTRUITS');
+  _uiE.oCombo = _uiTile(g, 'COMBO MAX');
   _uiE.oWpn = _uiTile(g, 'ARME');
   _uiE.oWpn.parentNode.classList.add('wide');
   _uiE.oBest = _uiTile(g, 'RECORD');
   _uiE.oCoins = _uiTile(g, 'CRÉDITS', true);
+  _uiE.oBuild = _uiMk('div', 's2build', sc, '');
+  _uiE.oCards = _uiMk('div', 's2bcards', sc);
+  _uiE.oDelta = _uiMk('div', 's2delta', sc, '');
+  _uiE.oTip = _uiMk('div', 's2tip', sc, '');
+  /* La barre du prochain déblocage est un BOUTON : elle mène là où l'on dépense
+     ce qu'on vient de gagner. */
+  var nx = _uiMk('button', 's2next', sc);
+  _uiE.oNextS = _uiMk('s', '', nx, '');
+  _uiE.oNextU = _uiMk('u', '', nx);
+  _uiE.oNext = nx;
+  _uiTap(nx, function () { _uiShow('unlocks'); });
   var row = _uiMk('div', 's2row', sc);
   _uiE.btnReplay = _uiTap(_uiMk('button', 's2big mag', row, 'REJOUER'), function () {
     _uiNewRun();
     if (typeof startRun === 'function') startRun();
   });
+  _uiE.btnUp = _uiTap(_uiMk('button', 's2pill', row, 'REJOUER AU CRAN SUPÉRIEUR'), function () {
+    var i = diffIdx();
+    if (i < DIFFS.length - 1) { S.opt.diff = DIFFS[i + 1].m; if (typeof saveStats === 'function') saveStats(); }
+    _uiNewRun();
+    if (typeof startRun === 'function') startRun();
+  });
+  _uiE.btnUp.hidden = true;
   _uiTap(_uiMk('button', 's2pill dim', row, 'MENU'), function () { _uiQuit(); });
 }
 
@@ -11474,9 +11618,11 @@ function _uiBuildSettings(root) {
      écrivant à la main, deux crans du sélecteur (2,7 et 3,5) tombaient sur le
      même palier moteur et les étiquettes annonçaient autre chose que ce qui
      était appliqué. */
+  /* Le cran multiplie le score (DIFF_SCORE) : le facteur s'affiche à côté du
+     nom, sinon le classement par cran resterait une règle cachée. */
   _uiStepper(box, 'Difficulté', 'diff', DIFFS.map(function (d) { return d.m; }),
-    function (v, i) { return DIFFS[i].nom; },
-    'Vitesse et nombre des ennemis. NORMAL est le cran de référence.');
+    function (v, i) { return DIFFS[i].nom + '  ×' + ('' + DIFF_SCORE[i]).replace('.', ','); },
+    'Vitesse et nombre des ennemis, et facteur de score. NORMAL est le cran de référence.');
   /* Netteté contre fluidité : au maximum, une image sur dix est perdue sur
      un téléphone. Le repère par défaut tient les soixante images. */
   _uiStepper(box, 'Qualité d\'image', 'px', [1, 1.5, 2],
@@ -11493,10 +11639,12 @@ function _uiBuildSettings(root) {
 
   /* ---- onglet CONTRÔLES ---- */
   box = boxes[1];
-  _uiMk('div', 's2grp', box, 'MANCHE ET BOUTONS');
-  /* Les six lignes du manche et des boutons tactiles n'ont pas d'objet sur
-     bureau : elles reçoivent hidden (voir _uiSyncDesktop). */
+  /* Les lignes du manche et des boutons tactiles n'ont pas d'objet sur bureau :
+     elles reçoivent hidden (voir _uiSyncDesktop) — LE TITRE AUSSI. Sans lui
+     dans la liste, un bureau affichait « MANCHE ET BOUTONS » au-dessus des deux
+     seules lignes qui restaient, Sensibilité et Mode souris. */
   var tr = _uiE.touchRows = [];
+  tr.push(_uiMk('div', 's2grp', box, 'MANCHE ET BOUTONS'));
   tr.push(_uiSeg2(box, 'Manche', 'joyFloat', [{ v: false, t: 'FIXE' }, { v: true, t: 'FLOTTANT' }],
     'FLOTTANT : le manche naît sous le pouce, où qu\'il se pose.'));
   tr.push(_uiSeg2(box, 'Main directrice', 'leftHanded', [{ v: false, t: 'DROITIER' }, { v: true, t: 'GAUCHER' }],
@@ -11505,17 +11653,19 @@ function _uiBuildSettings(root) {
     'Diamètre du manche et des trois boutons tactiles.'));
   tr.push(_uiStepper(box, 'Opacité des contrôles', 'joyAlpha', [0.5, 0.75, 1, 1.25, 1.5], _uiPct,
     'Plus discret laisse voir le jeu, plus opaque se vise mieux.'));
-  _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct,
-    'Réactivité de la direction au manche comme à la souris.');
-  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse',
-    [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }],
-    'AUTO : la souris pilote dès qu\'elle bouge, le clavier reprend la main.');
   tr.push(_uiStepper(box, 'Hauteur des contrôles', 'ctlY', [-24, -12, 0, 14, 28, 44],
     function (v) { return (v > 0 ? '+' : '') + v + ' px'; },
     'Remonte ou descend le manche et les boutons.'));
   tr.push(_uiStepper(box, 'Écart du bord', 'ctlX', [-14, -7, 0, 10, 22, 36],
     function (v) { return (v > 0 ? '+' : '') + v + ' px'; },
     'Éloigne les contrôles du bord de l\'écran.'));
+  /* Sur bureau, ces deux lignes SONT tout l'onglet : elles méritent leur titre. */
+  _uiE.kbGrp = _uiMk('div', 's2grp', box, 'CLAVIER & SOURIS');
+  _uiStepper(box, 'Sensibilité', 'sens', [0.7, 0.85, 1, 1.2, 1.4, 1.6], _uiPct,
+    'Réactivité de la direction au manche comme à la souris.');
+  _uiE.mouseRow = _uiSeg2(box, 'Mode souris', 'mouse',
+    [{ v: 'auto', t: 'AUTO' }, { v: 'always', t: 'TOUJOURS' }, { v: 'never', t: 'JAMAIS' }],
+    'AUTO : la souris pilote dès qu\'elle bouge, le clavier reprend la main.');
 
   /* ---- onglet CONFORT ---- */
   box = boxes[2];
@@ -11555,6 +11705,7 @@ function _uiSyncDesktop() {
   var d = !!S.desktop, rows = _uiE.touchRows || [];
   for (var i = 0; i < rows.length; i++) rows[i].hidden = d;
   if (_uiE.mouseRow) _uiE.mouseRow.hidden = !d;
+  if (_uiE.kbGrp) _uiE.kbGrp.hidden = !d;
   if (_uiE.vibRow) _uiE.vibRow.hidden = d || !navigator.vibrate;
   _uiKeysTxt();
 }
@@ -11703,14 +11854,31 @@ function _uiShow(name) {
     setTimeout(function () { _uiOverLock = false; }, 600);
   }
   if (_uiScreen === 'menu' || _uiScreen === 'pause') _uiKeysTxt();
-  if (el) _uiKMove(1);                      // curseur sur le premier élément
+  /* Curseur sur le premier élément — SAUF à l'écran de fin, dont le premier
+     élément est désormais la barre du prochain déblocage : Entrée doit
+     continuer de relancer la partie, pas d'ouvrir la boutique. */
+  if (el && _uiScreen === 'over' && _uiE.btnReplay) _uiKFocus(_uiE.btnReplay);
+  else if (el) _uiKMove(1);
   if (_uiScreen === null && (prev === _uiE.scrMenu || prev === _uiE.scrOver)) _uiNewRun();
 }
 
+function _uiBestByDiff() {
+  var st = S.stats, bd = st.bestByDiff;
+  if (!bd || bd.length !== 5) bd = st.bestByDiff = [(bd && bd[0]) | 0, 0, 0, 0, 0];
+  return bd;
+}
 function _uiRefreshMenu() {
-  _uiTxt(_uiE.mBest, _uiNum(S.stats.best || 0));
-  _uiTxt(_uiE.mCoins, _uiNum(S.stats.coins || 0));
-  _uiTxt(_uiE.mRuns, _uiNum(S.stats.runs || 0));
+  var st = S.stats, di = diffIdx(), bd = _uiBestByDiff();
+  var vierge = (st.runs | 0) === 0;
+  _uiTxt(_uiE.mCranS, 'CRAN ' + DIFFS[di].nom);
+  _uiTxt(_uiE.mCran, _uiNum(bd[di] | 0));
+  _uiTxt(_uiE.mBest, _uiNum(st.best || 0));
+  _uiTxt(_uiE.mCoins, _uiNum(st.coins || 0));
+  _uiTxt(_uiE.mRuns, _uiNum(st.runs || 0));
+  /* Un profil vierge n'a rien à classer : trois zéros n'apprennent rien, la
+     phrase qui les remplace apprend quand tombe la première carte. */
+  _uiE.mStat.style.display = vierge ? 'none' : '';
+  _uiE.mFirst.style.display = vierge ? '' : 'none';
 }
 
 function _uiBestWeapon() {
@@ -11726,20 +11894,129 @@ function _uiBestWeapon() {
   return (best.name || '?') + ' ' + lv;
 }
 
-function _uiFillOver() {
-  var rec = false;
-  if (S.score > (S.stats.best || 0)) { S.stats.best = S.score; rec = true; }
-  S.stats.coins = (S.stats.coins || 0) + (S.coins || 0);
-  S.stats.runs = (S.stats.runs || 0) + 1;
+/* Libellé de build : axe dominant des cartes prises, puis l'arme la plus haute.
+   Les huit cartes d'ARME portent l'id de l'arme, leur compte EST le niveau. */
+function _uiBuildLabel() {
+  var wid = null, wlv = 0, defs = S2030.weapons && S2030.weapons.defs, k;
+  if (defs) for (k in defs) { var n = S.up[k] | 0; if (n > wlv) { wlv = n; wid = k; } }
+  var pool = S2030.upgrades && S2030.upgrades.pool, ax = {}, bax = null, bn = 0;
+  if (pool) for (var i = 0; i < pool.length; i++) {
+    var c = pool[i], q = S.up[c.id] | 0;
+    if (q > 0 && c.axis) ax[c.axis] = (ax[c.axis] || 0) + q;
+  }
+  for (k in ax) if (ax[k] > bn) { bn = ax[k]; bax = k; }
+  return (_UI_AXES[bax] || 'PILOTE') + ' — ' + (_UI_WSHORT[wid] || 'CANON') + ' ' + (wlv || 1);
+}
+/* Les cartes du build, en icônes, avec leur niveau. */
+function _uiFillBuildCards() {
+  var box = _uiE.oCards, pool = S2030.upgrades && S2030.upgrades.pool;
+  while (box.firstChild) box.removeChild(box.firstChild);
+  if (!pool) return;
+  for (var i = 0; i < pool.length; i++) {
+    var c = pool[i], n = S.up[c.id] | 0;
+    if (n <= 0) continue;
+    var sp = _uiMk('span', '', box, (c.icon || '◆') + ' ');
+    sp.title = c.name || c.id;
+    _uiMk('u', '', sp, '' + n);
+  }
+}
+/* Article le moins cher encore à acquérir. */
+function _uiNextUnlock() {
+  var own = _uiOwned(), best = null;
+  for (var i = 0; i < _UI_UNLOCKS.length; i++) {
+    var d = _UI_UNLOCKS[i];
+    if (own[d.id]) continue;
+    if (!best || d.cost < best.cost) best = d;
+  }
+  return best;
+}
+/* Une seule phrase-conseil, la première règle qui s'applique : deux conseils
+   à la fois n'en font lire aucun. */
+function _uiOverTip() {
+  var r = S.run || {};
+  if ((r.ultReadyAt | 0) > 0 && !r.usedUlt)
+    return 'Ton ultime ★ / R était prêt à ' + _uiTime(r.ultReadyAt) + ' et n\'a pas servi';
+  if (!r.usedSpecial) return 'E / ◈ : traverse les ennemis 2 s';
+  if (!r.boosted) return 'Espace / » : fuis';
+  if ((r.cardsTaken | 0) === 0) return 'Les cartes tombent à 12 s : survis jusque-là';
+  return '';
+}
+
+/* Clôture de la partie : une seule fois, quoi qu'il arrive ensuite. L'écran de
+   fin mène maintenant aux DÉBLOCAGES et RETOUR y ramène — sans ce verrou, le
+   simple aller-retour ajoutait une partie au compteur et recréditait les
+   crédits de la partie. Rend l'état d'AVANT l'enregistrement, dont la peinture
+   a besoin (record du cran, partie précédente, nombre de parties). */
+var _uiOverSnap = null;
+function _uiCloseRun() {
+  var st = S.stats, di = diffIdx(), bd = _uiBestByDiff();
+  var ms = Math.round(_uiRunMs);
+  var q = { di: di, ms: ms, recAvant: bd[di] | 0, runsAvant: st.runs | 0,
+            prevScore: st.lastScore | 0, prevMs: st.lastTime | 0 };
+  q.rec = q.runsAvant > 0 && S.score > q.recAvant;
+  if (S.score > (st.best || 0)) st.best = S.score;
+  if (S.score > q.recAvant) bd[di] = S.score;
+  if (S.level > (st.bestLevel | 0)) st.bestLevel = S.level;
+  if (ms > (st.bestTime | 0)) st.bestTime = ms;
+  st.bossKills = (st.bossKills | 0) + (S.bossKills | 0);
+  st.coins = (st.coins || 0) + (S.coins || 0);
+  st.runs = q.runsAvant + 1;
+  st.lastScore = S.score; st.lastTime = ms;
   if (typeof saveStats === 'function') saveStats();
+  return q;
+}
+
+function _uiFillOver() {
+  var st = S.stats, r = S.run || {};
+  if (!_uiOverSnap) _uiOverSnap = _uiCloseRun();
+  var q = _uiOverSnap, di = q.di, bd = _uiBestByDiff(), ms = q.ms;
+  var recAvant = q.recAvant, runsAvant = q.runsAvant;
+  var prevScore = q.prevScore, prevMs = q.prevMs, rec = q.rec;
+
+  var lh = S.lastHit;
+  var prog = Math.round(((lh ? lh.progress : S.levelProgress) || 0) * 100);
+  _uiTxt(_uiE.oKill, 'Détruit par ' + (lh ? lh.name : 'LA ZONE')
+    + ' — niveau ' + (lh ? lh.level : S.level)
+    + ' — ' + prog + ' % du secteur — ' + _uiTime(ms));
 
   _uiTxt(_uiE.oScore, _uiNum(S.score));
-  _uiTxt(_uiE.oTime, _uiTime(_uiRunMs));
+  _uiTxt(_uiE.oTime, _uiTime(ms));
   _uiTxt(_uiE.oLvl, '' + S.level);
+  _uiTxt(_uiE.oProg, prog + ' %');
   _uiTxt(_uiE.oKills, _uiNum(S.kills));
+  _uiTxt(_uiE.oCombo, '' + (r.comboMax | 0));
   _uiTxt(_uiE.oWpn, _uiBestWeapon());
-  _uiTxt(_uiE.oBest, _uiNum(S.stats.best || 0));
+  _uiTxt(_uiE.oBest, _uiNum(bd[di] | 0));
   _uiTxt(_uiE.oCoins, '+' + _uiNum(S.coins || 0));
+  _uiTxt(_uiE.oBuild, _uiBuildLabel());
+  _uiFillBuildCards();
+
+  var dl = '';
+  if (runsAvant > 0) {
+    var ds = S.score - prevScore, dt = ms - prevMs;
+    dl = 'Partie précédente : ' + (ds >= 0 ? '+' : '−') + _uiNum(Math.abs(ds)) + ' pts, '
+       + (dt >= 0 ? '+' : '−') + _uiTime(Math.abs(dt))
+       + '  ·  Record ' + DIFFS[di].nom + ' : ' + (S.score - recAvant >= 0 ? '+' : '−')
+       + _uiNum(Math.abs(S.score - recAvant)) + ' pts';
+  }
+  _uiTxt(_uiE.oDelta, dl);
+  _uiTxt(_uiE.oTip, _uiOverTip());
+
+  var nx = _uiNextUnlock();
+  if (nx) {
+    var coins = st.coins || 0;
+    var manque = Math.max(0, nx.cost - coins);
+    var f = Math.min(1, coins / nx.cost);
+    _uiTxt(_uiE.oNextS, 'PROCHAIN DÉBLOCAGE : ' + nx.name + ' dans ' + manque + ' ◆');
+    _uiE.oNextU.style.width = (f * 100).toFixed(3) + '%';
+    _uiE.oNext.hidden = false;
+  } else {
+    _uiE.oNext.hidden = true;
+  }
+
+  /* Monter d'un cran n'a de sens qu'après avoir tenu trois secteurs, et
+     seulement s'il reste un cran au-dessus. */
+  _uiE.btnUp.hidden = !(S.level >= 3 && di < DIFFS.length - 1);
   _uiE.rec.classList.toggle('on', rec);
 }
 
@@ -11753,6 +12030,7 @@ function _uiQuit() {
 }
 
 function _uiNewRun() {
+  _uiOverSnap = null;
   _uiRunMs = 0;
   _uiRunLast = S.t;
   _uiRunOn = false;
@@ -12052,6 +12330,11 @@ function _uiSyncCtl() {
   _uiBtnState(_uiE.btnBoost, inp.boost, fb > 0.98);
   _uiBtnState(_uiE.btnSpecial, inp.special, fs >= 1);
   _uiBtnState(_uiE.btnUlt, inp.ult, fu >= 1);
+  /* Nom du pouvoir courant sous le bouton ◈, et secondes restantes au centre
+     pendant la recharge (S.specialCd est en millisecondes depuis G14). */
+  var bs = S2030.phases && S2030.phases.buttonState ? S2030.phases.buttonState() : null;
+  _uiBtnLabel(_uiE.btnSpecial, bs ? bs.nom : 'TRAVERSÉE');
+  _uiBtnCd(_uiE.btnSpecial, S.specialCd > 0 ? Math.ceil(S.specialCd / 1000) : 0);
   var dry = _uiDryOn(s) ? 1 : 0;
   if (dry !== _uiP.dryBtn) { _uiP.dryBtn = dry; _uiE.btnBoost.classList.toggle('dry', !!dry); }
 }
@@ -12063,6 +12346,19 @@ function _uiDryOn(s) {
   return d >= 0 && d < 480 && ((d / 120) | 0) % 2 === 0;
 }
 
+/* étiquette d'un bouton tactile : texte ET nom accessible, changés ensemble */
+function _uiBtnLabel(el, txt) {
+  if (!el || !el._lab || el._lab._uv === txt) return;
+  _uiTxt(el._lab, txt);
+  el.setAttribute('aria-label', txt);
+}
+/* n secondes au centre du bouton pendant la recharge ; 0 rend le glyphe */
+function _uiBtnCd(el, n) {
+  if (!el || !el._cd || el._cdv === n) return;
+  el._cdv = n;
+  if (n > 0) { _uiTxt(el._cd, '' + n); el._cd.style.display = ''; el._gl.style.visibility = 'hidden'; }
+  else { _uiTxt(el._cd, ''); el._cd.style.display = 'none'; el._gl.style.visibility = ''; }
+}
 function _uiBtnState(el, on, rdy) {
   var v = (on ? 1 : 0) | (rdy ? 2 : 0);
   if (el._us === v) return;
@@ -12159,6 +12455,7 @@ function _uiHud() {
     if (len !== _uiP.len) {
       _uiP.len = len;
       _uiTxt(_uiE.segN, '' + len);
+      _uiPellets(len);
       var low = len <= 3 ? 1 : 0;
       if (low !== _uiP.low) { _uiP.low = low; _uiE.segBox.classList.toggle('low', !!low); }
     }
@@ -12170,6 +12467,25 @@ function _uiHud() {
   _uiBar(_uiE.gUlt, fu);
   var rdy = fu >= 1 ? 1 : 0;
   if (rdy !== _uiP.ready) { _uiP.ready = rdy; _uiE.gUltBox.classList.toggle('rdy', !!rdy); }
+}
+
+/* Une pastille par segment, dans un gabarit de 84 px : au-delà d'une vingtaine
+   de segments la pastille et l'écart rétrécissent ensemble, le COMPTE reste
+   exact — c'est lui que la joueuse lit d'un coup d'oeil quand il tombe à 3. */
+function _uiPellets(n) {
+  var box = _uiE.segPel;
+  if (!box) return;
+  n = n < 0 ? 0 : (n | 0);
+  if (box._n === n) return;
+  box._n = n;
+  while (box.children.length > n) box.removeChild(box.lastChild);
+  while (box.children.length < n) _uiMk('i', '', box);
+  var unit = 84 / (n < 1 ? 1 : n);
+  var w = unit * 0.72, g = unit * 0.28;
+  if (w > 5) w = 5;
+  if (g > 3) g = 3;
+  box.style.setProperty('--pw', w.toFixed(2) + 'px');
+  box.style.setProperty('--pg', g.toFixed(2) + 'px');
 }
 
 /* ======
@@ -12993,6 +13309,7 @@ S2030.phases = (function () {
     if (!id) return false;
     POWERS[id].run();
     cds[id] = POWERS[id].cd;
+    if (S.run) S.run.usedSpecial = 1;
     pick = (owned.indexOf(id) + 1) % owned.length;
     return true;
   }
@@ -13001,7 +13318,7 @@ S2030.phases = (function () {
   function buttonState() {
     var id = nextReady() || owned[pick % owned.length];
     var p = POWERS[id];
-    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col,
+    return { id: id, nom: p.nom, glyph: p.glyph, col: p.col, cd: Math.max(0, cds[id]), cdMax: p.cd,
              ready: cds[id] <= 0, fill: cds[id] <= 0 ? 1 : 1 - cds[id] / p.cd };
   }
 
@@ -13017,10 +13334,14 @@ S2030.phases = (function () {
         S2030.fx && S2030.fx.ring(S.snake.x, S.snake.y, '#ffd166', 8, 700);
       }
     }
-    // le compte à rebours du bouton reste lisible par l'interface d'origine
+    /* G14 : S.specialCd portait 0 ou 1, si bien qu'un compte à rebours en
+       secondes affichait « 1 » du début à la fin de la recharge. Il porte
+       désormais les MILLISECONDES restantes du pouvoir courant, et
+       S.specialCdMax sa durée totale : la jauge du bouton (1 − cd/cdMax) est
+       inchangée, le chiffre au centre devient vrai. */
     var st = buttonState();
-    S.specialCd = st.ready ? 0 : 1;
-    S.specialCdMax = 1;
+    S.specialCd = st.ready ? 0 : Math.ceil(st.cd);
+    S.specialCdMax = st.cdMax || 7000;
   }
 
   /* Multiplicateur de temps appliqué aux ennemis et à leurs projectiles. */
@@ -13430,6 +13751,7 @@ function useSpecial() {
 
 function useUlt() {
   if (S.phase !== 'play' || S.ult < S.ultMax) return;
+  if (S.run) S.run.usedUlt = 1;
   S.ult = 0;
   S.timeScale = 0.25;
   S2030.audio && S2030.audio.ultimate();
@@ -13993,7 +14315,9 @@ function readyTick() {
     if (!_rdyUlt) {
       _rdyUlt = 1;
       S2030.audio && S2030.audio.sfx('ultReady');
-      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊTE', '★ / R');
+      /* « apogée » est masculin : un apogée, prêt. */
+      S2030.ui && S2030.ui.toast && S2030.ui.toast('APOGÉE PRÊT', '★ / R');
+      if (S.run && !S.run.ultReadyAt) S.run.ultReadyAt = Math.max(1, S.t - S.run.t0);
     }
   } else _rdyUlt = 0;
   if (!_rdyPow) {
@@ -14024,6 +14348,8 @@ function resetRun() {
   _lvlSeq = 0; _cardsNext = 0; _rdyUlt = 0; _rdyPow = 0; _rdyPowArm = 0;
   mouse.on = false; mouse.acc = 0; mouse.aim = null;
   S.specialCdMax = 7000;
+  S.lastHit = null;
+  S.run = newRunLog();
   S.cam.x = S.snake.x; S.cam.y = S.snake.y;
   S2030.fx && S2030.fx.reset();
   S2030.phases && S2030.phases.reset();
@@ -14102,6 +14428,12 @@ function loadStats() {
     if (raw) {
       var o = JSON.parse(raw);
       if (o.stats) S.stats = Object.assign(S.stats, o.stats);
+      /* G14 : un profil écrit avant les records par cran n'a pas bestByDiff —
+         on le rétablit plutôt que de laisser l'écran de fin lire undefined. */
+      var bd = S.stats.bestByDiff;
+      if (!bd || !bd.length) bd = S.stats.bestByDiff = [0, 0, 0, 0, 0];
+      for (var bi = 0; bi < 5; bi++) bd[bi] = bd[bi] | 0;
+      bd.length = 5;
       if (o.opt) S.opt = Object.assign(S.opt, o.opt);
     }
   } catch (e) {}
