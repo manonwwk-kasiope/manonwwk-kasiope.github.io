@@ -148,7 +148,7 @@ function eclipse(D, k) {
     else if (r > R - 8) { c = dither(x, y, 0.5) ? brasier : sang; }
     else if (r > R - 11 && dither(x, y, 0.25)) c = sang;
     else if (r > R - 5 && dither(x + 1, y, 0.25)) c = sang;
-    if (r > R - 2 && Rk() < 0.25) c = jaune;           // la couronne crépite d'une image à l'autre
+    if (r > R - 5 && c !== sang && Rk() < 0.35) c = c === jaune ? brasier : jaune;           // la couronne crépite d'une image à l'autre
     img.d[y * D + x] = c;
   }
   return img;
@@ -156,7 +156,7 @@ function eclipse(D, k) {
 function planche(D, fn) { const p = new Img(D * 8, D); for (let k = 0; k < 8; k++) p.blit(fn(k), k * D, 0); return p; }
 for (const D of [80, 64]) {
   for (const [nom, v] of Object.entries(VAR_SOLEIL)) sauve(`soleil-${nom}-${D}`, planche(D, k => soleil(D, v, k)), { plan: 'P2', images: 8, imageW: D, diametre: D, note: 'image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures' }, () => true);
-  sauve(`soleil-eclipse-${D}`, planche(D, k => eclipse(D, k)), { plan: 'P2', images: 8, imageW: D, diametre: D, note: 'disque de nuit profonde cerclé de brasier ; l image k fait crépiter la couronne' }, () => true);
+  sauve(`soleil-eclipse-${D}`, planche(D, k => eclipse(D, k)), { plan: 'P2', images: 8, imageW: D, diametre: D, note: 'disque de nuit profonde cerclé de brasier ; avancer d une image à chaque temps : la couronne crépite' }, () => true);
 }
 /* halo autour du disque : sang tramé de 50 % à 0, brasier tramé à 25 % au plus près du bord */
 function halo(D, fort) {
@@ -456,7 +456,7 @@ function planchePlans(q, defs) {
   sauve('structures-' + q, img, { plan: 'P5', tuiles: meta.map(m => m.nom), note: 'tuiles posées sur le sol ; base = rangée 63 de la tuile' });
 }
 const corpsS = (x, y) => dither(x, y, 0.25) ? indigo : ardoise;
-const lampadaire = (t, m, x = 16) => { t.rect(x, 22, 2, 42, ardoise); t.rect(x - 4, 20, 8, 2, ardoise); t.set(x - 4, 22, ambre); t.set(x + 3, 22, ambre); for (let j = 1; j < 30; j++) for (let i = -j / 3; i <= j / 3; i++) if (dither(x + i, 23 + j, 0.12)) t.set(Math.round(x + i), 23 + j, os); m.balises.push([x, 19, 'ambre']); };
+const lampadaire = (t, m, x = 16) => { t.rect(x, 22, 2, 42, ardoise); t.rect(x - 4, 20, 8, 2, ardoise); t.set(x - 4, 22, ambre); t.set(x + 3, 22, ambre); m.balises.push([x, 19, 'ambre']); };
 planchePlans('docks', [
   { nom: 'grue', w: 64, f: (t, m) => { treillis(t, 10, 14, 10, 63, 5); treillis(t, 0, 10, 63, 10, 4); t.rect(4, 8, 8, 6, ardoise); t.rect(5, 9, 3, 2, ambre); t.line(12, 4, 0, 10, ardoise); t.line(12, 4, 62, 10, ardoise); t.line(12, 3, 12, 9, ardoise);
     t.line(52, 14, 52, 38, ardoise); t.rect(49, 38, 7, 3, indigo); t.rect(1, 14, 6, 6, nuit); m.balises.push([12, 2, 'sang'], [63, 10, 'sang']); } },
@@ -541,7 +541,7 @@ planchePlans('eclipse', [
     }
   }
   garde3x3(img, sang, true);
-  sauve('nuages-ciel', img, { plan: 'P5', boucleX: W, note: 'structures du quartier LE CIEL : bande posée à mi-hauteur du ciel, facteur 0,60' });
+  sauve('nuages-ciel', img, { plan: 'P5', boucleX: W, note: 'structures du quartier LE CIEL : bande posée à mi-hauteur du ciel, facteur 0,60, dérive de 3 px/s' });
 }
 /* flammes de la centrale : 4 images de 8 × 14, brasier, ambre, jaune tramés, à poser sur m.flammes */
 {
@@ -606,10 +606,10 @@ const QUARTIERS = {
   docks:    { nom: 'LES DOCKS', ciel: 'ciel-docks', soleil: { haut: 46, variante: 'plein' }, cite: 'cite-docks', structures: 'structures-docks', lumiere: 'aube : reflets d or sur le sol', sol: { reflet: [jaune, ambre, ambre], grille: violet, eau: true }, lut: {}, enseignes: { tempo: 1 } },
   artere:   { nom: 'L ARTÈRE', ciel: 'ciel-calme', soleil: { haut: 48, variante: 'plein' }, cite: 'cite-artere', structures: 'structures-artere', lumiere: 'néons ambre et jaune qui tournent vite', sol: { reflet: [jaune, ambre, brasier], grille: violet }, lut: {}, enseignes: { tempo: 2 } },
   centrale: { nom: 'LA CENTRALE', ciel: 'ciel-centrale', soleil: { haut: 42, variante: 'plein' }, cite: 'cite-centrale', structures: 'structures-centrale', lumiere: 'brasier, fumées de nuit', sol: { reflet: [ambre, brasier, brasier], grille: violet }, lut: { [indigo]: sang }, enseignes: { tempo: 1 } },
-  ciel:     { nom: 'LE CIEL', ciel: 'ciel-ciel', soleil: { haut: 50, variante: 'plein' }, cite: 'cite-ciel', structures: 'nuages-ciel', lumiere: 'soleil haut et entier, étoiles nombreuses, calme', sol: { reflet: [jaune, ambre, brasier], grille: indigo }, lut: {}, enseignes: { tempo: 0.5 }, etoiles: 2 },
+  ciel:     { nom: 'LE CIEL', ciel: 'ciel-ciel', soleil: { haut: 50, variante: 'plein' }, cite: 'cite-ciel', structures: 'nuages-ciel', lumiere: 'soleil haut et entier, étoiles nombreuses, calme', sol: { reflet: [jaune, ambre, brasier], grille: indigo }, lut: {}, enseignes: { tempo: 2 }, etoiles: 2 },
   tours:    { nom: 'LES TOURS', ciel: 'ciel-tours', soleil: { haut: 34, variante: 'plein' }, cite: 'cite-tours', structures: 'structures-tours', lumiere: 'crépuscule ambre et sang', sol: { reflet: [ambre, brasier, sang], grille: violet }, lut: {}, enseignes: { tempo: 1 } },
   coeur:    { nom: 'LE CŒUR', ciel: 'ciel-coeur', soleil: { haut: 40, variante: 'plein' }, cite: 'cite-coeur', structures: 'structures-coeur', lumiere: 'incendie : brasier et sang, éclairs lointains', sol: { reflet: [brasier, brasier, sang], grille: violet }, lut: { [violet]: sang }, enseignes: { tempo: 2 }, colosseLoin: true },
-  eclipse:  { nom: 'L ÉCLIPSE', ciel: 'ciel-colosse', soleil: { haut: 46, variante: 'eclipse' }, cite: 'cite-eclipse', structures: 'structures-eclipse', lumiere: 'soleil éclipsé, cerclé de brasier', sol: { reflet: [brasier, brasier, sang], grille: violet }, lut: {}, enseignes: { tempo: 1 }, colosseMi: true },
+  eclipse:  { nom: 'L ÉCLIPSE', ciel: 'ciel-colosse', soleil: { haut: 46, variante: 'eclipse' }, cite: 'cite-eclipse', structures: 'structures-eclipse', lumiere: 'soleil éclipsé, cerclé de brasier', sol: { reflet: [brasier, brasier, sang], grille: violet }, lut: {}, enseignes: { tempo: 2 }, colosseMi: true },
 };
 /* rangées de structures : une ligne par quartier, période 768 px, positions à graine */
 const RANGEES = {};
@@ -619,7 +619,7 @@ for (const q of Object.keys(QUARTIERS)) if (RANGEES[q]) QUARTIERS[q].rangee = { 
 const ETATS = {
   calme:     { ciel: null, soleil: null, soleilBaisse: 0, sol: { cases: 1, braiseProche: 0 }, enseignes: 1 },
   montee:    { ciel: 'ciel-montee', soleil: null, soleilBaisse: 6, sol: { cases: 1, braiseProche: 0.25 }, enseignes: 2 },
-  chaos:     { ciel: 'ciel-chaos', soleil: 'chaos', soleilBaisse: 99, sol: { cases: 2, braiseProche: 0.25, epaisseur: 2 }, enseignes: 2, braises: true },
+  chaos:     { ciel: 'ciel-chaos', soleil: 'chaos', soleilBaisse: 'horizon', sol: { cases: 2, braiseProche: 0.25, epaisseur: 2 }, enseignes: 2, braises: true },
   inversion: { ciel: 'ciel-inversion', soleil: 'inversion', soleilBaisse: -4, sol: { cases: 1, braiseProche: 0, pulse: true }, enseignes: 2 },
   colosse:   { ciel: 'ciel-colosse', soleil: 'eclipse', soleilBaisse: 0, sol: { cases: 1, braiseProche: 0, reflet: [sang, sang, sang] }, enseignes: 0 },
   victoire:  { ciel: 'ciel-victoire', soleil: 'victoire', soleilBaisse: 0, sol: { cases: 0.5, braiseProche: 0 }, enseignes: 0.5 },

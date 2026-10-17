@@ -29,6 +29,8 @@ export function composer(o) {
   const { W, H } = o, Q = M.quartiers[o.q], E = M.etats[o.etat || 'calme'], t = o.t || 0;
   const img = new Img(W, H, vide), own = new Uint8Array(W * H);
   const lut = new Uint8Array(17).map((_, i) => i); for (const [k, v] of Object.entries(Q.lut || {})) lut[+k] = v;
+  /* vrai si ni le pixel ni ses quatre voisins ne sont vifs : y poser une lumière ne peut pas fermer un bloc 3 × 3 */
+  const sombreAutour = (x, y) => !VIF.has(img.get(x, y)) && !VIF.has(img.get(x - 1, y)) && !VIF.has(img.get(x + 1, y)) && !VIF.has(img.get(x, y - 1)) && !VIF.has(img.get(x, y + 1));
   const put = (x, y, c, code) => { if (c === T || x < 0 || y < 0 || x >= W || y >= H) return; img.d[y * W + x] = c; own[y * W + x] = code; };
   const portrait = H > W;
   const c = Math.max(0, Math.min(1, o.cy / (MONDE.h - H)));
@@ -52,11 +54,11 @@ export function composer(o) {
   /* P2 : halo, soleil, silhouette lointaine du CYCLOPE, montagnes. Bande de 512 px centrée sous le soleil */
   const D = portrait ? 64 : 80, bandX = Math.round(W / 2 - 256 - 0.08 * (o.cx - cxMid));
   const variante = E.soleil || Q.soleil.variante;
-  const baisse = E.soleilBaisse === 99 ? Q.soleil.haut - Math.round(D * 0.22) : (E.soleilBaisse || 0);
+  const baisse = E.soleilBaisse === 'horizon' ? Q.soleil.haut - Math.round(D * 0.22) : (E.soleilBaisse || 0);
   const sx = bandX + 256, sy = yh - Math.round(Q.soleil.haut * D / 80) + baisse;
   const hal = png(`halo${variante === 'eclipse' ? '-eclipse' : ''}-${D}`);
   for (let y = 0; y < hal.h; y++) for (let x = 0; x < hal.w; x++) { const v = hal.d[y * hal.w + x]; const X = sx - (hal.w >> 1) + x, Y = sy - (hal.h >> 1) + y; if (v !== T && Y < yh) put(X, Y, lut[v], CODE.ciel); }
-  const sol = png(`soleil-${variante}-${D}`), fr = Math.floor(t / (8 * TEMPS)) % 8;
+  const sol = png(`soleil-${variante}-${D}`), fr = (variante === 'eclipse' ? Math.floor(temps) : Math.floor(t / (8 * TEMPS))) % 8;   // la couronne crépite à chaque temps
   for (let y = 0; y < D; y++) for (let x = 0; x < D; x++) { const v = sol.d[y * sol.w + fr * D + x]; const X = sx - D / 2 + x, Y = sy - D / 2 + y; if (v !== T && Y < yh) put(X, Y, v, CODE.soleil); }
   if (Q.colosseLoin) { const cl = png('colosse-loin'); for (let y = 0; y < cl.h; y++) for (let x = 0; x < cl.w; x++) { const v = cl.d[y * cl.w + x]; if (v !== T) put(sx - (cl.w >> 1) + x + 6, yh - cl.h + y, v, CODE.montagnes); } }
   const mt = png('montagnes');
@@ -118,7 +120,7 @@ export function composer(o) {
 
   /* P5 structures : rangée du quartier, période 768, base à 30 % de la hauteur du sol */
   const ox5 = -Math.round(0.60 * (o.cx - cxMid)), yb = yh + Math.round(0.30 * dyMax);
-  if (o.q === 'ciel') { const nu = png('nuages-ciel'); const y0 = Math.round(yh * 0.38); for (let y = 0; y < nu.h; y++) for (let x = 0; x < W; x++) { const v = nu.getw(x - ox5, y); if (v !== T) put(x, y0 + y, v, CODE.structures); } }
+  if (o.q === 'ciel') { const nu = png('nuages-ciel'); const y0 = Math.round(yh * 0.38); for (let y = 0; y < nu.h; y++) for (let x = 0; x < W; x++) { const v = nu.getw(x - ox5 + Math.round(3 * t), y); if (v !== T) put(x, y0 + y, v, CODE.structures); } }
   else if (Q.rangee) {
     const pl = png(Q.structures), tu = M.tuiles[o.q], beat = Math.floor(temps);
     for (let rep = -1; rep <= Math.ceil(W / 768) + 1; rep++) for (const p of Q.rangee.poses) {
@@ -126,7 +128,7 @@ export function composer(o) {
       for (let y = 0; y < 64; y++) for (let x = 0; x < d.w; x++) { const v = pl.d[y * pl.w + d.x + x]; if (v !== T) put(X0 + x, Y0 + y, v, CODE.structures); }
       for (const [bx, by, k] of d.balises) put(X0 + bx, Y0 + by, k === 'sang' ? M.cycleBalises[mod(beat + bx, 3)] : (beat & 1 ? ambre : sang), CODE.structures);
       for (const [fx, fy] of d.flammes) { const fl = png('flammes'), fk = Math.floor(temps * 2) & 3; for (let y = 0; y < fl.h; y++) for (let x = 0; x < 8; x++) { const v = fl.d[y * fl.w + fk * 8 + x]; if (v !== T) put(X0 + fx - 4 + x, Y0 + fy - fl.h + y, v, CODE.structures); } }
-      for (const [px, py] of d.projecteurs) { const a = -Math.PI / 2 + 0.55 * Math.sin(2 * Math.PI * 0.2 * t + px + p.x); for (let r = 4; r < 160; r++) for (let w = -Math.floor(r * 0.1); w <= Math.floor(r * 0.1); w++) { const X = Math.round(X0 + px + Math.cos(a) * r - Math.sin(a) * w), Y = Math.round(Y0 + py + Math.sin(a) * r + Math.cos(a) * w); if (Y < yh && Y >= 0 && dither(X, Y, 0.12)) put(X, Y, os, CODE.structures); } }
+      for (const [px, py] of d.projecteurs) { const a = -Math.PI / 2 + 0.55 * Math.sin(2 * Math.PI * 0.2 * t + px + p.x); for (let r = 4; r < 160; r++) for (let w = -Math.floor(r * 0.1); w <= Math.floor(r * 0.1); w++) { const X = Math.round(X0 + px + Math.cos(a) * r - Math.sin(a) * w), Y = Math.round(Y0 + py + Math.sin(a) * r + Math.cos(a) * w); if (Y < yh && Y >= 0 && dither(X, Y, 0.12) && sombreAutour(X, Y)) put(X, Y, os, CODE.structures); /* un faisceau n'éclaire que le sombre */ } }
     }
     if (Q.colosseMi) { const cm = png('colosse-mi'); const X0 = Math.round(W * 0.62) + ox5; for (let y = 0; y < cm.h; y++) for (let x = 0; x < cm.w; x++) { const v = cm.d[y * cm.w + x]; if (v !== T) put(X0 + x, yb - cm.h + y, v, CODE.structures); } }
   }
@@ -159,9 +161,32 @@ export function mesurer(r) {
   return { lumineux: lum / n, luminance: Ls / n, vide: vid / n, cyan, magenta: mag, blocs3x3: blocs };
 }
 
+/* ---- vérification : critères du lot 2 mesurables sur le décor seul (paysage iPhone 422 × 195) ----
+   lumière en calme entre 18 et 28 % sur 15 positions de caméra, luminance moyenne ≥ 0,06, vide < 30 %,
+   0 cyan, 0 magenta ni rose pâle, 0 bloc 3 × 3 vif hors du soleil (tous états, trois orientations),
+   pixels changés : ≥ 3 % en 1 s caméra fixe, ≥ 15 % en 0,5 s en croisière. Rend le nombre d'échecs. */
+export function verifier() {
+  let ko = 0; const W = 422, H = 195, dire = (ok, m) => { if (!ok) ko++; console.log((ok ? 'ok    ' : 'ÉCHEC ') + m); };
+  const diff = (a, b) => { let n = 0; for (let i = 0; i < a.img.d.length; i++) if (a.img.d[i] !== b.img.d[i]) n++; return n / a.img.d.length; };
+  for (const q of Object.keys(M.quartiers)) {
+    let mn = 1, mx = 0, lm = 1, vd = 0;
+    for (const fx of [0, 0.5, 1]) for (const fy of [0, 0.25, 0.5, 0.75, 1]) { const m = mesurer(composer({ q, etat: 'calme', W, H, cx: (MONDE.w - W) * fx, cy: (MONDE.h - H) * fy, t: 2.3 })); mn = Math.min(mn, m.lumineux); mx = Math.max(mx, m.lumineux); lm = Math.min(lm, m.luminance); vd = Math.max(vd, m.vide); }
+    dire(mn >= 0.18 && mx <= 0.28 && lm >= 0.06 && vd < 0.3, `${q.padEnd(9)} calme : lumineux ${(mn * 100).toFixed(1)} à ${(mx * 100).toFixed(1)} %, luminance ≥ ${lm.toFixed(3)}, vide ≤ ${(vd * 100).toFixed(1)} %`);
+    let bad = 0;
+    for (const etat of Object.keys(M.etats)) for (const [w, h] of [[422, 195], [195, 422], [360, 225]]) { const m = mesurer(composer({ q, etat, W: w, H: h, cx: (MONDE.w - w) / 2 + 40, cy: (MONDE.h - h) / 2, t: 1.7 })); bad += m.cyan + m.magenta + m.blocs3x3; }
+    dire(bad === 0, `${q.padEnd(9)} 6 états × 3 orientations : ${bad} pixel(s) cyan, magenta ou bloc 3 × 3 vif`);
+    const cx0 = (MONDE.w - W) / 2, cy0 = (MONDE.h - H) / 2;
+    const fixe = diff(composer({ q, W, H, cx: cx0, cy: cy0, t: 3, plateau: false }), composer({ q, W, H, cx: cx0, cy: cy0, t: 4, plateau: false }));
+    const crois = diff(composer({ q, W, H, cx: cx0, cy: cy0, t: 3, plateau: false }), composer({ q, W, H, cx: cx0 + 40, cy: cy0 + 10, t: 3.5, plateau: false }));
+    dire(fixe >= 0.03 && crois >= 0.15, `${q.padEnd(9)} vivant : ${(fixe * 100).toFixed(1)} % changés en 1 s caméra fixe, ${(crois * 100).toFixed(1)} % en 0,5 s de croisière`);
+  }
+  return ko;
+}
+
 /* ---- programme ---- */
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const arg = k => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : null; };
+  if (process.argv.includes('--verifie')) process.exit(verifier());
   const X = +(arg('x') || 3), OUT = path.join(ICI, 'out'); fs.mkdirSync(OUT, { recursive: true });
   const ORIENT = { paysage: [422, 195], portrait: [195, 422], bureau: [360, 225] };
   const quartiers = arg('q') ? [arg('q')] : Object.keys(M.quartiers);

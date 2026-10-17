@@ -202,7 +202,7 @@
    },
    "lut": {},
    "enseignes": {
-    "tempo": 0.5
+    "tempo": 2
    },
    "etoiles": 2
   },
@@ -321,7 +321,7 @@
    },
    "lut": {},
    "enseignes": {
-    "tempo": 1
+    "tempo": 2
    },
    "colosseMi": true,
    "rangee": {
@@ -379,7 +379,7 @@
   "chaos": {
    "ciel": "ciel-chaos",
    "soleil": "chaos",
-   "soleilBaisse": 99,
+   "soleilBaisse": "horizon",
    "sol": {
     "cases": 2,
     "braiseProche": 0.25,
@@ -913,7 +913,7 @@
    "images": 8,
    "imageW": 80,
    "diametre": 80,
-   "note": "disque de nuit profonde cerclé de brasier ; l image k fait crépiter la couronne"
+   "note": "disque de nuit profonde cerclé de brasier ; avancer d une image à chaque temps : la couronne crépite"
   },
   "soleil-plein-64": {
    "fichier": "soleil-plein-64.png",
@@ -963,7 +963,7 @@
    "images": 8,
    "imageW": 64,
    "diametre": 64,
-   "note": "disque de nuit profonde cerclé de brasier ; l image k fait crépiter la couronne"
+   "note": "disque de nuit profonde cerclé de brasier ; avancer d une image à chaque temps : la couronne crépite"
   },
   "halo-80": {
    "fichier": "halo-80.png",
@@ -1260,7 +1260,7 @@
    "h": 64,
    "plan": "P5",
    "boucleX": 512,
-   "note": "structures du quartier LE CIEL : bande posée à mi-hauteur du ciel, facteur 0,60"
+   "note": "structures du quartier LE CIEL : bande posée à mi-hauteur du ciel, facteur 0,60, dérive de 3 px/s"
   },
   "flammes": {
    "fichier": "flammes.png",
