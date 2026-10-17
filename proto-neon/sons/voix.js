@@ -161,6 +161,8 @@ var VOIX_2975 = (function () {
     souffleSourd: 1,   // facteur sur le souffle de friction pendant l'aspiration des sourdes (0 = sans)
     prevoise: true,    // murmure voisé dans l'occlusion des b, d, g en attaque
     nasal: 18,         // profondeur (dB) de l'anti-formant des nasales
+    eclat: 0,          // gain de la branche parallèle d'éclat (0 = sans ; mesuré : plus de mordant, moins intelligible)
+    eclatHz: 3500,
     presence: 7,       // dB d'étagère aiguë à 1,6 kHz (le haut-parleur du téléphone)
     metal: 0.34,       // réinjection du peigne (0 = sans)
     metalMs: 3.4,      // délai du peigne en ms (≥ 2,9 ms : une boucle Web Audio retarde d'au moins 128 images)
@@ -445,6 +447,12 @@ var VOIX_2975 = (function () {
     av.connect(r1); ah.connect(r1);
     if (o.souffle > 0) { var gs = G(o.souffle); nz.connect(gs); gs.connect(av); }
     r1.connect(r2); r2.connect(r3); r3.connect(r4); r4.connect(r5); r5.connect(zn); zn.connect(pres); pres.connect(hp);
+    /* l'éclat : la source voisée prise autour de F4, en parallèle (formants parallèles de Klatt), qui donne
+       à la voix le mordant d'une puce et la fait passer au-dessus de la musique sur un petit haut-parleur */
+    if (o.eclat > 0) {
+      var ecl = F('bandpass', o.eclatHz * o.taille, 2.2), ge = G(o.eclat);
+      av.connect(ecl); ecl.connect(ge); ge.connect(pres);
+    }
     /* la friction, en parallèle */
     var bp = F('bandpass', 4000, 1); poser(bp.frequency, T.FF.pts, T0); poser(bp.Q, T.QF.pts, T0);
     var af = G(0); nz.connect(bp); bp.connect(af); poser(af.gain, T.AF.pts, T0);
