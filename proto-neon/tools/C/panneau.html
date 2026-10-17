@@ -1,0 +1,55 @@
+<!-- tools/C/panneau.html — panneau d'essai du lot C (musique). Inséré par build.mjs avant </body> dans tools/C/index.html.
+     Un bouton par section, par cue, par couche et par son ; deux curseurs (tension, danger) ; l'état de la piste. -->
+<style>
+#pnC{position:fixed;left:0;right:0;bottom:0;max-height:62vh;overflow:auto;z-index:50;background:rgba(13,2,33,.94);color:#fffce8;
+  font:12px/1.3 ui-monospace,Menlo,monospace;padding:8px 10px 14px;border-top:2px solid #541388;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#pnC h4{margin:8px 0 4px;font-size:11px;letter-spacing:.08em;color:#ff9e00;font-weight:600}
+#pnC button{font:inherit;color:#fffce8;background:#2d1b69;border:1px solid #541388;border-radius:6px;padding:9px 11px;margin:2px;min-height:44px;cursor:pointer}
+#pnC button.on{background:#ff2a6d;border-color:#ff8fab}
+#pnC button.go{background:#05d9e8;color:#0d0221;font-weight:700}
+#pnC label{display:inline-block;min-width:92px}
+#pnC input[type=range]{width:min(60vw,320px);vertical-align:middle}
+#pnC pre{margin:6px 0 0;white-space:pre-wrap;color:#d1f7ff}
+#pnC .row{display:flex;flex-wrap:wrap;align-items:center}
+</style>
+<div id="pnC">
+  <div class="row"><button id="pnGo" class="go">DÉMARRER</button><button id="pnMute">MUTE TOUT</button><button id="pnMus">MUTE MUSIQUE</button><button id="pnFx">MUTE EFFETS</button><button id="pnSus">SUSPEND</button></div>
+  <h4>SECTIONS</h4><div class="row" id="pnSec"></div>
+  <h4>CUES / COUCHES</h4><div class="row" id="pnCue"></div>
+  <h4>TENSION / DANGER</h4>
+  <div class="row"><label>tension <b id="pnTv">0.00</b></label><input id="pnT" type="range" min="0" max="1" step="0.01" value="0"></div>
+  <div class="row"><label>danger <b id="pnDv">0.00</b></label><input id="pnD" type="range" min="0" max="1" step="0.01" value="0"></div>
+  <h4>SONS</h4><div class="row" id="pnSfx"></div>
+  <pre id="pnSt">état…</pre>
+</div>
+<script>
+(function () {
+  /* en essai, la boucle de la démo ne doit pas écraser la tension réglée à la main : le curseur fait foi */
+  var N = window.__N, music = N && N.music;
+  if (!music) { document.getElementById('pnSt').textContent = 'N.music absent'; return; }
+  var held = { tension: false }, realTension = music.tension, tv = 0;
+  music.tension = function (v) { if (held.tension) return realTension.call(music, tv); };
+  function $(id) { return document.getElementById(id); }
+  function btn(parent, label, fn, cls) { var b = document.createElement('button'); b.textContent = label; if (cls) b.className = cls; b.addEventListener('click', function () { fn(b); }); $(parent).appendChild(b); return b; }
+  $('pnGo').addEventListener('click', function () { try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} music.init(); music.start(); held.tension = true; music.resume(); });
+  ['titre', 'attraction', 'briefing', 'jeu', 'repit', 'alerte', 'boss', 'victoire', 'defaite', 'initiales'].forEach(function (s) { btn('pnSec', s, function () { music.section(s); }); });
+  ['mort', 'gameover', 'stinger', 'drop', 'plongee', 'vague', 'inversion'].forEach(function (c) { btn('pnCue', 'cue ' + c, function () { music.cue(c); }); });
+  var inv = false; btn('pnCue', 'couche inversion', function (b) { inv = !inv; music.couche('inversion', inv); b.className = inv ? 'on' : ''; });
+  $('pnT').addEventListener('input', function (e) { tv = +e.target.value; $('pnTv').textContent = tv.toFixed(2); held.tension = true; realTension.call(music, tv); });
+  $('pnD').addEventListener('input', function (e) { var v = +e.target.value; $('pnDv').textContent = v.toFixed(2); music.danger(v); });
+  var all = false, mus = false, fx = false;
+  $('pnMute').addEventListener('click', function (e) { all = !all; music.mute(all); e.target.className = all ? 'on' : ''; });
+  $('pnMus').addEventListener('click', function (e) { mus = !mus; music.mute('musique', mus); e.target.className = mus ? 'on' : ''; });
+  $('pnFx').addEventListener('click', function (e) { fx = !fx; music.mute('effets', fx); e.target.className = fx ? 'on' : ''; });
+  var sus = false; $('pnSus').addEventListener('click', function (e) { sus = !sus; if (sus) music.suspend(); else music.resume(); e.target.className = sus ? 'on' : ''; });
+  var sons = (N.ids && N.ids.sons ? N.ids.sons.slice() : []).concat(['degat', 'intro', 'inconnu']);
+  sons.forEach(function (s, i) { var k = 0; btn('pnSfx', s, function () { music.sfx(s, { pitch: (k++) % 10, pan: [-1, -0.66, -0.33, 0, 0.33, 0.66, 1][i % 7], type: ['bond', 'verrouillage', 'visee', 'recul', 'meche', 'laser', 'coupe-route'][(k + i) % 7] }); }); });
+  ['READY', 'GO', 'WARNING', 'DANGER', 'EXCELLENT', 'GAMEOVER'].forEach(function (m) { btn('pnSfx', 'voix ' + m, function () { music.voix(m); }); });
+  setInterval(function () {
+    var p = music.piste(), i = music.info(), c = music.chargeur ? music.chargeur() : {};
+    $('pnSt').textContent = 'piste ' + JSON.stringify(p) + '\ninfo ' + JSON.stringify(i && { bar: i.bar, bpm: Math.round(i.bpm * 100) / 100, over: i.over, perc: i.perc, spark: i.spark, inv: i.inv, heart: i.heart, state: i.state }) +
+      '\nchargeur ' + JSON.stringify(c) + '\nnœuds/s ' + music.noeuds() + '  beat ' + JSON.stringify(music.beat());
+  }, 250);
+  window.__PNC = { held: held };
+})();
+</script>
