@@ -60,3 +60,7 @@ diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un p
 | 5. Jury | pas encore | — |
 | 6. Publication | version du 17/10 en ligne, antérieure | — |
 | 7. JALON | à demander quand la version candidate sera prête | — |
+
+## Diagnostic de non-convergence — codex-01c
+
+Mis à jour à 18/10/2026 · 00 h 45 (Paris), Codex. Deux méthodes de prototype option A échouent au précontrôle V4/paysage (15 relevés chacune) : ciel lumineux min 5,69 %, puis 8,58 %, contre 12 %. Le sol et les erreurs restent conformes. Arrêt de cette méthode ; aucune modification de source 01c appliquée. Diagnostic et reçus : `tools/lisibilite/01c/diagnostic.md`. Fenêtres violet/indigo sont sous L=0,10 ; le soleil est en partie masqué par les tours. Avant toute nouvelle passe complète, une méthode de lumière différente doit être décidée et prouvée sur un seul cas. Question déposée dans COORDINATION.md ; les seuils ne sont pas modifiés par Codex. Les lots 01b et 02 acceptés restent conservés.
