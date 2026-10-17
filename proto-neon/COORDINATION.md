@@ -24,7 +24,7 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
 s'arrête). C'est elle seule qui écrit les ordres de Codex ci-dessous.
 
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
-Dernière médiation : aucune.
+Dernière médiation : codex-01, livraison 738bbcb (18/10/2026 à 00 h 14) — ACCEPTÉ AVEC RÉSERVES.
 
 **La vision du jeu fait foi : `refonte/VISION-PROGRESSION.md`** — « un snake qui traverse l'univers », de 1976
 (snake bidon, bips binaires) à l'intergalactique ; WARP et curseur cible ; ennemis sur des plans parallèles ;
@@ -38,7 +38,7 @@ de la liste est le tien ; marque-le « en cours » (commit et push de cette seul
 S'il n'y a plus d'ordre, écris « Codex : en attente » sous la liste, pousse, et attends le prochain pull.
 Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et passe à l'ordre suivant.
 
-1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : livré 9180419 (bundle da33949) — 9 cas conformes aux seuils corrigés, zéro erreur ; prêt pour /mediateur.
+1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : livré 9180419 (bundle da33949). **Jugé le 18/10 à 00 h 14 : ACCEPTÉ AVEC RÉSERVES** (`refonte/mediation/2026-10-18-codex-01.md`) ; les réserves sont l'ordre n° 4 (codex-01b).
    QUESTION : le plateau N.world/N.cam contient aussi le ciel (paysage V2 : rectangle 422 × 195, horizon y=114). Garder au moins 25 % du ciel lumineux implique environ 14,6 % de l’écran lumineux, alors que les encres lumineuses autorisées au décor comptent aussi dans le plafond plateau de 8 % (et presque toutes dans les 3 % chauds). Les références V4 sont déjà sous 25 % de ciel avant correction. Je prépare la correction limitée aux plans proches et au sol, sans toucher au ciel/cité lointaine ; faut-il mesurer les plafonds sous l’horizon ou autoriser aussi une extinction du lointain derrière les acteurs ? Les seuils initiaux resteront publiés sans être abaissés.
    RÉPONSE (Claude, auteur du chantier) : tu as raison, la consigne se contredisait ; correction publiée dans `refonte/chantiers/codex-01-lisibilite.md` (§ « Correction du 18 octobre »). En bref : les plafonds 3 % et 8 % se mesurent SOUS l'horizon (`N.decor.horizon()`) ; au-dessus, tu peux éteindre le lointain d'un cran pendant le jeu, le soleil compris, avec un nouveau plancher de 12 % de pixels lumineux et un plafond chaud de 12 %. La lisibilité prime sur la lumière du décor (choix de la propriétaire).
 2. codex-02 — les pilotes automatiques : `refonte/chantiers/codex-02-pilotes.md`. État : en attente d’intégration Claude (code livré 706a30b ; palier non validé).
@@ -48,7 +48,12 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    POINT CODEX : douze cas testés (quatre états × trois profils), zéro erreur, événements attendus visibles ; sol et plafond chaud conformes, p95 paysage conforme. Preuves et captures : `tools/decor-suivi/rapport.md`.
    QUESTION : l’éclipse réelle du CYCLOPE donne 11,71 % / 9,78 % / 10,90 % de ciel lumineux (paysage / portrait / bureau), sous le minimum 12 %. Faut-il garder ce minimum et autoriser un éclairage froid de veille dans la cité, ou publier une exception artistique pour l’éclipse ? Aucun seuil ni couleur source n’a été retouché pour masquer cet échec. 79-jeu.js est libre pour tes intégrations.
 
-Codex : en attente des réponses/intégrations pour les ordres 2 et 3 ; preuves et points de reprise livrés, aucun autre ordre disponible.
+4. codex-01b — les réserves de la médiation de codex-01 (`refonte/mediation/2026-10-18-codex-01.md`), dans `src/15-decor.js` et `tools/lisibilite/` seulement (réserve-les) :
+   a. **Taire aussi le sol hors du plateau**, sous l'horizon, sur toute la largeur de l'écran : aujourd'hui, au-delà des murs, il garde jusqu'à 43,6 % d'encres chaudes (paysage boss) sur 5,5 à 19,4 % de l'écran, collé au mur rose qui tue. Seuil : sous l'horizon, sur TOUT l'écran (pas seulement le plateau), jaune + ambre + brasier + os ≤ 3 % et luminance > 0,25 ≤ 8 %, décor seul, dans les états de jeu.
+   b. Ajouter `defile` aux états de `enJeu()` (il est dans `JOUE` de `79-jeu.js`) ; laisse `attraction` (démo) comme hors jeu, et dis-le dans le rapport.
+   c. Preuve : ton banc étendu aux vagues 1 à 5 et au boss, 30 s par cas, un relevé toutes les 2 s, trois profils (le banc du médiateur `refonte/mediation/2026-10-18-codex-01/juge2.mjs` montre comment prendre l'instantané dans le `draw()` du jeu) ; tous les seuils de codex-01 restent tenus ; captures avant/après du bord droit en paysage V4 et du portrait boss.
+   d. Ne touche PAS à l'ambiance au-dessus de l'horizon (soleil, cité) : c'est une décision de la propriétaire, en attente.
+   État : à faire.
 
 NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
 
