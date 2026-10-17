@@ -11,8 +11,21 @@
    Le décodage est asynchrone (le navigateur décode le PNG) mais prend quelques millisecondes : get()
    rend null tant qu'une image n'est pas prête, et l'appelant dessine son repli procédural en attendant. */
 
+/* Neuf panneaux existent aussi en vidéo (cine/<nom>.mp4, 384 x 216, douze images par seconde, sans son).
+   Chaque image de la vidéo est tramée par Bayer 4x4 et forcée dans la palette des seize À LA VOLÉE, avec
+   la même distance de couleur que le convertisseur hors ligne des panneaux fixes : la palette reste
+   fermée pendant les cinématiques. Pendant la lecture, get(nom) rend l'image courante du clip au même
+   format que le panneau ; sans vidéo (fichier absent, lecture refusée, mode économie d'énergie de
+   l'iPhone, page ouverte en file://), il rend le panneau fixe et ended(nom) rend true. Rien ne casse. */
+
 N.art = (function () {
   var cache = {}, ready = false, pending = null;
+  /* [boucle, cyan permis] : le cyan n'apparaît que là où le serpent, c'est-à-dire la joueuse, est à l'image */
+  var CLIPS = { affiche: [1, 1], briefing: [1, 0], victoire: [1, 1], defaite: [1, 1],
+    exterieur: [0, 0], connexion: [0, 1], eveil: [0, 1], alerte: [0, 0], boss: [0, 0] };
+  var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
+  var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+  var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;
   var SRC = (typeof ART_SRC !== 'undefined') ? ART_SRC : {};
 
   function table() {
@@ -59,18 +72,125 @@ N.art = (function () {
     });
   }
 
+  /* table 32 x 32 x 32 -> index de palette, distance pondérée « redmean » du convertisseur hors ligne */
+  function lut(cy) {
+    if (LUT[cy]) return LUT[cy];
+    var T = table(), cand = [], t = new Uint8Array(32768);
+    for (var i = 0; i < 16; i++) if (cy || (i !== 7 && i !== 8)) cand.push(i);
+    for (var r = 0; r < 32; r++) for (var g = 0; g < 32; g++) for (var b = 0; b < 32; b++) {
+      var R = r * 8 + 4, G = g * 8 + 4, B = b * 8 + 4, best = cand[0], bd = 1e18;
+      for (var k = 0; k < cand.length; k++) {
+        var P = T[cand[k]], rm = (R + P[0]) / 2, dr = R - P[0], dg = G - P[1], db = B - P[2];
+        var d = (2 + rm / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rm) / 256) * db * db;
+        if (d < bd) { bd = d; best = cand[k]; }
+      }
+      t[(r << 10) | (g << 5) | b] = best === 0 ? 15 : best;     // 0 réservé à la transparence
+    }
+    return (LUT[cy] = t);
+  }
+
+  /* 16 x 256 : canal 8 bits + décalage de Bayer du pixel -> canal 5 bits, bornes comprises */
+  function qtab() {
+    if (Q) return Q;
+    Q = new Uint8Array(16 * 256);
+    for (var k = 0; k < 16; k++) {
+      var o = ((k + 0.5) / 16 - 0.5) * 40;
+      for (var v = 0; v < 256; v++) { var x = v + o; Q[(k << 8) | v] = (x < 0 ? 0 : x > 255 ? 255 : x) >> 3; }
+    }
+    return Q;
+  }
+
+  function vid(name) {
+    if (vids[name] !== undefined) return vids[name];
+    var v = null;
+    try {
+      v = document.createElement('video');
+      v.muted = true; v.defaultMuted = true; v.playsInline = true;
+      v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+      v.preload = 'auto'; v.loop = !!CLIPS[name][0];
+      v.addEventListener('error', function () { vids[name] = null; if (cur[name]) cur[name].failed = true; });
+      v.addEventListener('ended', function () { if (cur[name]) cur[name].ended = true; });
+      v.src = 'cine/' + name + '.mp4';
+    } catch (e) { v = null; }
+    return (vids[name] = v);
+  }
+
+  /* convertit l'image courante de la vidéo si elle a avancé ; garde la précédente sinon */
+  function frameOf(name, c) {
+    var v = c.v;
+    if (!v || v.readyState < 2) return c.frame;
+    var k = Math.floor(v.currentTime * 12 + 1e-3);       // les clips sont à douze images par seconde
+    if (k === c.last && c.frame) return c.frame;
+    c.last = k;
+    var w = 384, h = 216;
+    if (!c.ctx) {
+      var cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      c.ctx = cv.getContext('2d', { willReadFrequently: true });
+      c.frame = null; c.buf = { w: w, h: h, data: new Uint8Array(w * h) };
+    }
+    try {
+      c.ctx.drawImage(v, 0, 0, w, h);
+      var px = c.ctx.getImageData(0, 0, w, h).data, out = c.buf.data, L = c.lut, q = Q;
+      for (var y = 0, i = 0, j = 0; y < h; y++) {
+        var row = (y & 3) << 2;
+        for (var x = 0; x < w; x++, i++, j += 4) {
+          var ob = BAYER[row | (x & 3)] << 8;
+          out[i] = L[(q[ob | px[j]] << 10) | (q[ob | px[j + 1]] << 5) | q[ob | px[j + 2]]];
+        }
+      }
+      c.frame = c.buf;
+    } catch (e) { c.failed = true; return null; }     // canvas souillé (file://) ou vidéo illisible
+    return c.frame;
+  }
+
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', function () {
+    for (var n in cur) { var v = cur[n].v; if (!v) continue; try { if (document.hidden) v.pause(); else if (!cur[n].ended) v.play().catch(function () {}); } catch (e) {} }
+  });
+
   return {
-    /* noms disponibles : affiche, horizon, briefing, logo */
+    /* noms disponibles : affiche, horizon, briefing, logo, et les sept panneaux de cinématique */
     names: function () { return Object.keys(SRC); },
     /* lance le décodage de toutes les illustrations ; rend une promesse */
     load: function () {
       if (pending) return pending;
       var jobs = Object.keys(SRC).map(function (n) { return decode(n, SRC[n]); });
-      pending = Promise.all(jobs).then(function () { ready = true; });
+      pending = Promise.all(jobs).then(function () { ready = true; setTimeout(function () { lut(0); lut(1); qtab(); }, 0); });
+      OUVERTURE.forEach(vid);
       return pending;
     },
     ready: function () { return ready; },
-    /* {w, h, data} ou null tant que ce n'est pas décodé */
-    get: function (name) { return cache[name] || null; },
+    /* {w, h, data} ou null tant que ce n'est pas décodé ; pendant la lecture d'un clip, son image courante */
+    get: function (name) {
+      var c = cur[name];
+      if (c && !c.failed) { var f = frameOf(name, c); if (f) return f; }
+      return cache[name] || null;
+    },
+    /* lance le clip depuis le début ; true si la lecture est tentée, false s'il n'y a pas de vidéo */
+    play: function (name) {
+      if (!CLIPS[name]) return false;
+      var v = vid(name); if (!v) return false;
+      var c = cur[name] = { v: v, last: -1, frame: null, failed: false, ended: false, lut: lut(CLIPS[name][1]) };
+      qtab();
+      try { v.currentTime = 0; var p = v.play(); if (p && p.catch) p.catch(function () { c.failed = true; }); }
+      catch (e) { c.failed = true; return false; }
+      return true;
+    },
+    stop: function (name) { var c = cur[name]; if (c && c.v) { try { c.v.pause(); } catch (e) {} } delete cur[name]; },
+    /* true quand un clip joué une fois est fini, ou n'a pas pu jouer */
+    ended: function (name) { var c = cur[name]; return !c || c.failed || c.ended || !c.v; },
+    /* prépare un clip à l'avance (chargement), pour qu'il démarre sans attente le moment venu */
+    prepare: function (name) { if (CLIPS[name]) vid(name); },
+    /* appelé par 90-boot.js à chaque geste : sur iPhone, une vidéo lancée une fois pendant un geste
+       peut ensuite se relancer seule, même en mode économie d'énergie */
+    unlock: function () {
+      Object.keys(vids).forEach(function (n) {
+        var v = vids[n]; if (!v || blessed[n]) return; blessed[n] = true;
+        if (cur[n]) return;
+        try {
+          var p = v.play();
+          if (p && p.then) p.then(function () { if (!cur[n]) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }).catch(function () {});
+        } catch (e) {}
+      });
+    },
   };
 })();

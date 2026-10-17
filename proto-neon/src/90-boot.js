@@ -62,7 +62,7 @@ function mire() {
   for (var i = 0; i < n; i++) { octx.fillStyle = C[i]; octx.fillRect(i * bw, 0, bw, h); }
   octx.fillStyle = C[12];
   octx.font = '16px ui-monospace,monospace';
-  octx.fillText('NEON 2084 — en construction', 12, 24);
+  octx.fillText('SNAKE 2975 — en construction', 12, 24);
   octx.fillText('modules : ' + Object.keys(N).filter(function (k) { return k !== 'S'; }).join(' '), 12, 44);
 }
 
@@ -78,19 +78,21 @@ function onKey(e, down) {
   S.input.x = (r ? 1 : 0) - (l ? 1 : 0); S.input.y = (d ? 1 : 0) - (u ? 1 : 0);
   S.input.mag = (S.input.x || S.input.y) ? 1 : 0;
   S.input.fire = !!(keys.Space || keys.KeyK);
-  if (down && (e.code === 'Space' || e.code === 'Enter')) startAudio();
+  if (down && (e.code === 'Space' || e.code === 'Enter')) gesture();
   if (down) e.preventDefault();
 }
 function onTouch(e) {
-  S.input.any = true; startAudio();
+  S.input.any = true; gesture();
   var t = e.touches && e.touches[0]; if (!t) { S.input.mag = 0; return; }
   var cx = window.innerWidth * 0.5, cy = window.innerHeight * 0.5;
   var dx = t.clientX - cx, dy = t.clientY - cy, m = Math.hypot(dx, dy) || 1;
   S.input.x = dx / m; S.input.y = dy / m; S.input.mag = Math.min(1, m / (window.innerHeight * 0.3));
   if (e.cancelable) e.preventDefault();
 }
+/* chaque geste débloque les vidéos préparées depuis le précédent ; le premier lance aussi le son */
 var audioStarted = false;
-function startAudio() {
+function gesture() {
+  step('art.unlock', N.art && N.art.unlock ? function () { N.art.unlock(); } : null);
   if (audioStarted) return; audioStarted = true;
   step('music.init', N.music && N.music.init ? function () { N.music.init(); N.music.start(); } : null);
 }
@@ -158,7 +160,7 @@ function boot() {
   app.addEventListener('touchstart', onTouch, { passive: false });
   app.addEventListener('touchmove', onTouch, { passive: false });
   app.addEventListener('touchend', function (e) { S.input.mag = 0; if (e.cancelable) e.preventDefault(); }, { passive: false });
-  app.addEventListener('pointerdown', startAudio);
+  app.addEventListener('pointerdown', gesture);
   window.addEventListener('blur', function () { keys = {}; S.input.mag = 0; S.input.fire = false; });
 
   step('intro.reset', N.intro && N.intro.reset ? function () { N.intro.reset(); } : null);

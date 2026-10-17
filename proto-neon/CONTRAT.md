@@ -1,5 +1,8 @@
 # Contrat des modules du prototype
 
+Le jeu s'appelle **SNAKE 2975** (NEON 2084 n'est que le nom de code du dossier). Tout texte affiché dit
+SNAKE 2975 et l'histoire se passe en 2975.
+
 Les modules de `src/` sont concaténés par ordre de nom dans UNE SEULE fermeture par `build.mjs`. Il n'y a
 ni `import` ni `export` : un module publie son interface sur l'objet global `N` et consomme celle des
 autres par `N.<nom>`. Chaque module déclare `N.<nom> = { … }` UNE fois et ne touche à rien d'autre.
@@ -77,7 +80,7 @@ que le jeu. Elles sont dans `art/`, injectées par `build.mjs`, et servies par `
 | `affiche` | 384 x 216 | écran-titre : le serpent de données cyan devant un soleil en bandes et une cité de monolithes |
 | `horizon` | 512 x 220 | fond de la séquence d ouverture et arrière-plan parallaxe du jeu ; plus large que l écran pour défiler |
 | `briefing` | 384 x 216 | panneau de cinématique : salle de contrôle, écrans, opérateur de dos, porte de coffre |
-| `logo` | 200 x 113 | logo NEON 2084 chromé, liseré magenta en haut et cyan en bas, fond transparent |
+| `logo` | 200 x 113 | logo SNAKE 2975 chromé sur deux lignes (SNAKE, puis 2975), liseré magenta en haut et cyan en bas, fond transparent |
 | `exterieur` | 384 x 216 | panneau : la cité de monolithes la nuit, soleil en bandes, reflets sur la grille — sans cyan |
 | `connexion` | 384 x 216 | panneau : une main gantée branche un câble, une étincelle cyan jaillit — la naissance du serpent |
 | `eveil` | 384 x 216 | panneau : le serpent de données cyan se dresse, gueule ouverte, au-dessus de la grille |
@@ -124,6 +127,40 @@ Pour un fond de la taille de l écran, recadre au centre ; pour un écran plus g
 répète-la ou centre-la sur le vide. Jamais d agrandissement non entier : un pixel d illustration doit
 rester un carré net, exactement comme un pixel de sprite.
 
+## Les cinématiques animées : `cine/*.mp4`
+
+Neuf panneaux existent aussi en vidéo (générées par Kling 3.0 à partir des panneaux eux-mêmes, 384 x 216,
+douze images par seconde, cinq secondes, sans son) : `affiche`, `briefing`, `victoire` et `defaite`
+bouclent sans couture ; `exterieur`, `connexion`, `eveil`, `alerte` et `boss` se jouent une fois.
+05-art.js les charge paresseusement et les convertit À LA VOLÉE en vrai pixel art : chaque image de la
+vidéo est réduite au tampon, tramée par Bayer et forcée dans la palette des seize. Le critère de palette
+fermée tient donc aussi pendant les cinématiques. L interface, pour 60-intro.js et 70-game.js :
+
+```
+N.art.play(nom)        // lance le clip depuis le début ; -> true si la vidéo va jouer, false sinon
+N.art.stop(nom)        // l arrête ; N.art.get(nom) redevient le panneau fixe
+N.art.get(nom)         // pendant la lecture : l image COURANTE du clip, même format {w,h,data} ;
+                       // sinon le panneau fixe. Le même appel sert donc aux deux.
+N.art.ended(nom)      // true quand un clip joué une fois est fini, ou n a pas pu jouer
+```
+
+Il suffit donc d appeler `N.art.play(nom)` en entrant dans un panneau, de poser `N.art.get(nom)` à
+chaque image, et `N.art.stop(nom)` en sortant. Sans vidéo (fichier absent, lecture refusée, mode
+économie d énergie de l iPhone), tout retombe sur le panneau fixe sans erreur : ne fais jamais dépendre
+l enchaînement de la vidéo, cadence-le sur ton propre chronomètre. 90-boot.js déverrouille les vidéos
+au premier geste, en même temps que le son.
+
+## La planche des ennemis : `ref/ennemis-planche.png`
+
+Ce n est PAS un actif du jeu, jamais chargé ni injecté : c est le modèle des silhouettes pour
+40-sprites.js, la planche de concept générée réduite en pixel art à 16, 24 et 32 pixels (une colonne par
+ennemi). Regarde-la avec l outil Read avant de dessiner. Les quatre types, de gauche à droite : la
+**flèche** (triangle à visière lumineuse, trois pattes), la **tourelle** (bloc blindé au canon central,
+deux pattes), la **sentinelle** (losange à œil central dans un croissant), la **mine** (sphère à piques,
+cœur lumineux). Le gros ennemi reprend le colosse à l œil unique du panneau `boss`. Tous en magenta,
+sang et rose pâle, jamais en cyan. À la taille du jeu, simplifie : une silhouette lisible d abord, un
+détail lumineux ensuite.
+
 ## Crochets de test, obligatoires
 
 Le bundle expose sur `window` : `__N` (l'objet N), `__S` (l'état), `__PAL` (la table),
@@ -133,6 +170,6 @@ Sans ces crochets les tests ne peuvent pas mesurer, et un module qui les casse f
 
 ## Interdits
 
-Aucun `import`, aucun `require`, aucune URL, aucune police web. Aucun actif binaire hors de `art/`, qui est injecté par `build.mjs` : n en ajoute pas toi-même.
+Aucun `import`, aucun `require`, aucune URL (seul 05-art.js charge les clips `cine/*.mp4`), aucune police web. Aucun actif binaire hors de `art/`, qui est injecté par `build.mjs` : n en ajoute pas toi-même.
 Aucun `Math.random` — utiliser le générateur à graine de `N.S`. Aucun `Date.now` ni `performance.now`
 hors de `90-boot.js`. Aucune couleur littérale hors `00-pal.js`. Aucun fichier touché hors de `proto-neon/`.

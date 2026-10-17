@@ -27,7 +27,7 @@ const html = `<!doctype html><html lang="fr"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0d0221">
-<title>NEON 2084</title>
+<title>SNAKE 2975</title>
 <style>
 html,body{margin:0;padding:0;background:#0d0221;overflow:hidden;height:100%;
   -webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;touch-action:none}

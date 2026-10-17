@@ -1,11 +1,15 @@
-# NEON 2084 — direction artistique et contrat technique du prototype
+# SNAKE 2975 — direction artistique et contrat technique du prototype
+
+Le jeu s'appelle **SNAKE 2975**. NEON 2084 n'était qu'un nom de travail : le dossier `proto-neon/` le
+garde, mais le titre de la page, le logo et tout texte affiché à l'écran disent SNAKE 2975, et
+l'histoire se passe en 2975.
 
 Prototype de style. Deux minutes de jeu, une seule scène, dont le seul but est de faire dire oui ou non
 à la joueuse sur le style. Il ne remplace pas `snake2030/`, qui reste jouable et intact.
 
 ## L'intention, en une phrase
 
-Une borne d'arcade de 1984 qu'on aurait retrouvée en 2084 : gros pixels, néon, balayage cathodique,
+Une borne d'arcade des années 80 qu'on aurait retrouvée en 2975 : gros pixels, néon, balayage cathodique,
 synthwave — mais avec la réactivité et la lisibilité d'un jeu d'aujourd'hui.
 
 ## Ce qui est non négociable
