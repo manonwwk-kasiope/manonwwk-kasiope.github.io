@@ -3227,7 +3227,7 @@ N.art = (function () {
   var FOND = 14;                          // rangées de l'horizon embrasé (seize dans la spec : 14 + la ligne et la brume)
 
   /* ================================ la palette, résolue une fois ================================ */
-  var C = null, lutCalmeJeu = null;
+  var C = null, lutCalmeJeu = null, lutLointainJeu = null, lutAccentJeu = null;
   function pal() {
     if (C) return true;
     if (!N.pal || !N.pal.i) return false;
@@ -3239,6 +3239,12 @@ N.art = (function () {
        Indigo/violet/sang → nuit, ardoise → nuit profonde. Pas d'alpha ni d'encre nouvelle. */
     lutCalmeJeu = new Uint8Array([C.V, C.NP, C.NP, C.NU, C.NU, C.AR, C.AR, C.AR,
       C.AR, C.AR, C.AR, C.NU, C.AR, C.AR, C.NU, C.NP]);
+    /* Arbitrage Claude : le lointain baisse et se refroidit pendant le jeu. Acier remplace les
+       grandes surfaces chaudes ; une braise sur seize garde la teinte du soleil, sans aplat chaud. */
+    lutLointainJeu = mk();
+    lutLointainJeu[C.JA] = lutLointainJeu[C.AM] = lutLointainJeu[C.BR] = lutLointainJeu[C.OS] = C.AC;
+    lutAccentJeu = mk(lutLointainJeu);
+    lutAccentJeu[C.JA] = C.AM; lutAccentJeu[C.AM] = C.BR; lutAccentJeu[C.BR] = C.BR;
     return true;
   }
 
@@ -3998,20 +4004,29 @@ N.art = (function () {
           else { var lim = p * 16; for (var x2 = 0; x2 < W; x2++) if (!(lim > B[br | (x2 & 3)])) buf[o + x2] = scratch[o + x2]; }
         }
         if (trans.u >= 1) trans = null;
-        taireSol(cam);
+        taireFondJeu(cam);
         return;
       }
       trans = null;
     }
     rendreFar(cur.q, cur.e, camX, camY, t);
-    taireSol(cam);
+    taireFondJeu(cam);
   }
-  function taireSol(cam) {
+  function taireFondJeu(cam) {
     if (!enJeu()) return;
-    var g = N.gfx, b = g.buf(), w = N.world;
+    var g = N.gfx, b = g.buf(), w = N.world, B = N.pal.BAYER;
+    /* Ciel, soleil, cité : garder les détails et les étoiles, baisser les encres chaudes et
+       leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
+    for (var sy = 0; sy < YH; sy++) {
+      var row = sy * g.W, br = (sy & 3) << 2;
+      for (var sx = 0; sx < g.W; sx++) {
+        var table = B[br | (sx & 3)] === 0 ? lutAccentJeu : lutLointainJeu;
+        b[row + sx] = table[b[row + sx]];
+      }
+    }
     if (!w) return;
     /* Le plateau se déplace : ne taire que son intersection avec le sol écran.
-       Le lointain, les murs et les acteurs ne passent jamais dans cette table. */
+       Les murs et les acteurs ne passent jamais dans cette table. */
     var cx = cam.x | 0, cy = cam.y | 0;
     var x0 = Math.max(0, w.x0 - cx), x1 = Math.min(g.W - 1, w.x1 - cx);
     var y0 = Math.max(YH, 0, w.y0 - cy), y1 = Math.min(g.H - 1, w.y1 - cy);
