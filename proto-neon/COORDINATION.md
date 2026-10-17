@@ -20,6 +20,9 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
    chacune écrit sa position en trois lignes dans « Désaccords » ; la propriétaire tranche, ou à défaut la
    session qui a réservé le fichier le premier.
 
+**Chef d'orchestre : la session Claude du Mac**, depuis le 18 octobre (relais pris de la session cloud, qui
+s'arrête). C'est elle seule qui écrit les ordres de Codex ci-dessous.
+
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
 Dernière médiation : aucune.
 
@@ -52,11 +55,16 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 1. Trancher le tempo de Neon Velocity (144,6 / 143,8 / 115 BPM) et l'aligner partout (N.R, piste.json, sons).
 2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`.
 3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
-4. Donner un effet aux cartes BOUCLIER et RÉPARATION (bonus protégés et régénérés), puis les régénérateurs à ramasser.
-5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury.
+4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain.
+5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury. **Ordre n° 2 de Codex.**
 6. Scènes d'immersion : intégrer `refonte/prototypes/la-grille.html` (isométrique incliné, serpent sur grille)
    comme un nouvel état de jeu.
-7. Cartes sans effet (ÉPERON, GRAPPE, BRAISE), DÉFILÉ jamais lancé, clavier incomplet.
+7. Cartes sans effet (ÉPERON, GRAPPE, BRAISE), DÉFILÉ jamais lancé, clavier incomplet (boost, E, R). RALENTI et
+   REPLI s'équipent depuis 232c778.
+8. Les causes communes de `refonte/couverture-snake2030.md` : brancher l'horloge à pas fixe dans `90-boot.js`
+   (aucun ralenti n'agit), injecter la banque de 48 sons (`sons/banque.js`) par `build.mjs`, `N.decor.build()`
+   (ordre n° 3 de Codex), puis les ennemis « serpent » de 2030 (tique, voleur, miroir, brouilleur).
+9. Le jury indépendant (lot 10), après le JALON A joué par la propriétaire sur iPhone.
 
 ## Désaccords
 
