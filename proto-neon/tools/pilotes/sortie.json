@@ -1,0 +1,621 @@
+{
+  "dateParis": "18/10/2026 00:04:16",
+  "bundleSha256": "e21c812f9e95ba6a1e2add06641856f01e856c8ce617891d123d990a9783bfd0",
+  "protocoleSha256": "47674bb62aa2130005a667b1b98fba7707fa8a84d44009ca8ae0f1e36f331f7c",
+  "navigateur": "140.0.7339.16",
+  "profil": {
+    "width": 844,
+    "height": 390
+  },
+  "graines": 1,
+  "borneTempsJeu": 60,
+  "cas": [
+    {
+      "pilote": "inerte",
+      "graine": 1,
+      "raison": "fin",
+      "fin": true,
+      "tempsJeu": 25.291666666665872,
+      "tempsCombat": 21.074999999999445,
+      "pas": 3121,
+      "tempsSimule": 26,
+      "vague": 1,
+      "score": 10,
+      "morts": [
+        {
+          "cause": "mur",
+          "auteur": "mur",
+          "auteurId": null,
+          "x": 1021,
+          "y": 256,
+          "t": 9.366666666666775,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 0,
+          "teleDuree": 0
+        },
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 7,
+          "x": 833.8470726518258,
+          "y": 288.13866333490523,
+          "t": 11.066666666666679,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 4.35833333333334,
+          "teleDuree": 0
+        },
+        {
+          "cause": "mur",
+          "auteur": "mur",
+          "auteurId": null,
+          "x": 45.87331209001573,
+          "y": 3,
+          "t": 21.074999999999445,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 0,
+          "teleDuree": 0
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 76,
+        "mort": 16,
+        "reapparition": 8,
+        "fin": 1
+      },
+      "erreursConsole": [],
+      "journalSha256": "a6c68b6144e3a009f10b2b28fec8de9a5fa92a3776f67a60a3f540a7bb0c2e5a",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-inerte-1.json.gz",
+      "decisions": 1,
+      "evenements": 23
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 1,
+      "raison": "fin",
+      "fin": true,
+      "tempsJeu": 17.233333333332997,
+      "tempsCombat": 13.016666666666568,
+      "pas": 2161,
+      "tempsSimule": 18,
+      "vague": 1,
+      "score": 230,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 1,
+          "x": 394.86514026018045,
+          "y": 276.199972838753,
+          "t": 7.525000000000164,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 3.4833333333333236,
+          "teleDuree": 0.6
+        },
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 1,
+          "x": 474.2316378613499,
+          "y": 216.03197742012534,
+          "t": 9.883333333333413,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 5.841666666666747,
+          "teleDuree": 0.6
+        },
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 6,
+          "x": 593.8356871421136,
+          "y": 135.91415833875087,
+          "t": 13.016666666666568,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 8.525000000000157,
+          "teleDuree": 0.6
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 45,
+        "mort": 15,
+        "reapparition": 8,
+        "fin": 1
+      },
+      "erreursConsole": [],
+      "journalSha256": "b9977330b5575ea5c24a95990bb26d1b2496adb39a2c0dffe41d39a1c70724b7",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-tourneur-1.json.gz",
+      "decisions": 54,
+      "evenements": 93
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 23.55083333502146,
+      "tempsCombat": 21.60083333502157,
+      "pas": 4201,
+      "tempsSimule": 35,
+      "vague": 1,
+      "score": 10800,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 2,
+          "x": 491.00170153037215,
+          "y": 184.97978507462096,
+          "t": 4.841666666666697,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 1.7666666666666628,
+          "teleDuree": 0
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 76,
+        "mort": 5,
+        "reapparition": 4,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "f31b348478ae5abd55fa846b0ef05880294e544cd6567a6b1551e02fe08f093d",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-maladroit-1.json.gz",
+      "decisions": 91,
+      "evenements": 187
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 23.85083333502144,
+      "tempsCombat": 20.767500001688283,
+      "pas": 4231,
+      "tempsSimule": 35.25,
+      "vague": 1,
+      "score": 8000,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 2,
+          "x": 585.7375631391508,
+          "y": 150.5597260215774,
+          "t": 5.558333333333399,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 1.2083333333333315,
+          "teleDuree": 0.6
+        },
+        {
+          "cause": "mur",
+          "auteur": "mur",
+          "auteurId": null,
+          "x": 776.4999266099557,
+          "y": 3,
+          "t": 15.992500001688553,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 0,
+          "teleDuree": 0
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 67,
+        "mort": 10,
+        "reapparition": 9,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "c4d7cd2578e92e1d722a16ccd4476dd7e6a94fed15d793a9b95f75535a483afc",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-kamikaze-1.json.gz",
+      "decisions": 105,
+      "evenements": 197
+    },
+    {
+      "pilote": "humain",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 39.599999999998396,
+      "tempsCombat": 36.51666666666524,
+      "pas": 6031,
+      "tempsSimule": 50.25,
+      "vague": 1,
+      "score": 1010,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 10,
+          "x": 816.1000924331898,
+          "y": 415.3416252539974,
+          "t": 14.883333333333129,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 2.4416666666666607,
+          "teleDuree": 0
+        },
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 5,
+          "x": 212.073236909721,
+          "y": 66.7875190567205,
+          "t": 29.291666666665645,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 2.4083333333333274,
+          "teleDuree": 0.6
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 128,
+        "mort": 10,
+        "reapparition": 8,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "2f8c38dd459358afec6c8bdb97e7f5a0b8fda6822765b1b834e4cc53cd14df8a",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-humain-1.json.gz",
+      "decisions": 154,
+      "evenements": 205
+    },
+    {
+      "pilote": "bon",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 39.599999999998396,
+      "tempsCombat": 36.51666666666524,
+      "pas": 6061,
+      "tempsSimule": 50.5,
+      "vague": 1,
+      "score": 1170,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 10,
+          "x": 819.0258839141419,
+          "y": 415.90452623982725,
+          "t": 14.824999999999799,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 2.499999999999994,
+          "teleDuree": 0
+        },
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 10,
+          "x": 134.32420166466062,
+          "y": 365.1467893843874,
+          "t": 32.67499999999879,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 1.3666666666666643,
+          "teleDuree": 0
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 129,
+        "mort": 10,
+        "reapparition": 8,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "d0a6a4391a74c2911c8fe6dd5fe187d01e3e23aa40ee79a0bf764f7c24d6d274",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-bon-1.json.gz",
+      "decisions": 156,
+      "evenements": 210
+    },
+    {
+      "pilote": "expert",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 38.46666666666513,
+      "tempsCombat": 36.51666666666524,
+      "pas": 5881,
+      "tempsSimule": 49,
+      "vague": 1,
+      "score": 1010,
+      "morts": [
+        {
+          "cause": "ennemi",
+          "auteur": "fleche",
+          "auteurId": 7,
+          "x": 1005.3933930385405,
+          "y": 435.10075095288215,
+          "t": 15.341666666666436,
+          "vague": 1,
+          "quartier": "docks",
+          "visibleDepuis": 8.633333333333484,
+          "teleDuree": 0.6
+        }
+      ],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 132,
+        "mort": 5,
+        "reapparition": 4,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "1da26c3c92bcbd53aec1affbac8571e90c0f07a26efa55356c058d8b199feadf",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-expert-1.json.gz",
+      "decisions": 148,
+      "evenements": 200
+    },
+    {
+      "pilote": "dieu",
+      "graine": 1,
+      "raison": "bloque:panneau",
+      "fin": false,
+      "tempsJeu": 37.33333333333186,
+      "tempsCombat": 36.51666666666524,
+      "pas": 5731,
+      "tempsSimule": 47.75,
+      "vague": 1,
+      "score": 1020,
+      "morts": [],
+      "cartes": [],
+      "err": 0,
+      "erreurs": {},
+      "donneesDebut": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "donneesFin": {
+        "butin": false,
+        "vue": false,
+        "voies": false,
+        "vol": false,
+        "tele": true,
+        "pouvoir": false,
+        "niveaux": false
+      },
+      "etats": {
+        "plongee": 3,
+        "jeu": 136,
+        "nettoyage": 10,
+        "panneau": 42
+      },
+      "erreursConsole": [],
+      "journalSha256": "867344ebcade07749f40ecbcd65d7d78c466a489fb57ad7e4bf20fbe4cb965fa",
+      "cache": "recus/e21c812f9e95-47674bb6-lim60-dieu-1.json.gz",
+      "decisions": 166,
+      "evenements": 228
+    }
+  ],
+  "determinisme": [
+    {
+      "pilote": "inerte",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-inerte-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-inerte-1-bis.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-tourneur-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-tourneur-1-bis.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-maladroit-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-maladroit-1-bis.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-kamikaze-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-kamikaze-1-bis.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-humain-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-humain-1-bis.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-bon-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-bon-1-bis.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-expert-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-expert-1-bis.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 1,
+      "identique": true,
+      "premier": "recus/e21c812f9e95-47674bb6-lim60-dieu-1.json.gz",
+      "second": "recus/e21c812f9e95-47674bb6-lim60-dieu-1-bis.json.gz"
+    }
+  ],
+  "collecteComplete": true,
+  "conforme": false
+}
