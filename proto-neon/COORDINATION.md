@@ -31,7 +31,7 @@ de la liste est le tien ; marque-le « en cours » (commit et push de cette seul
 S'il n'y a plus d'ordre, écris « Codex : en attente » sous la liste, pousse, et attends le prochain pull.
 Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et passe à l'ordre suivant.
 
-1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : à faire.
+1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : en cours (Codex).
 
 ## Réservations en cours
 
