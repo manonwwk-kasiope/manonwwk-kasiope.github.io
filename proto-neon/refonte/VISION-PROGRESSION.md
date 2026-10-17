@@ -55,6 +55,14 @@ notes, presque ridicule. Mais sous elle, de plus en plus, des signes que quelque
 À l'image, la même menace : la grille qui tremble au rythme de la sous-basse, une case qui clignote en couleur
 une image sur deux cents, un reflet de néon qui passe sous l'écran (petite surface, jamais un flash plein écran).
 
+### Une musique créée pour chaque époque
+
+Consigne de la propriétaire (18 octobre) : « crée à chaque fois des musiques appropriées ». Chaque époque a SA
+musique, composée pour elle, jamais un morceau d'une autre époque recyclé : 1976 un bip carré à une voix (écrit
+dans `src/68-terminal.js`, avec ses menaces), 1982 une puce à trois voix, 1987 Neon Velocity, 1993 l'électro Suno,
+2001 le warp en demi-temps, 2975 l'épique Suno ; et un thème propre à chaque personnage (§ 6). Chaque passage
+d'époque change la musique ET le tempo.
+
 ## 2. Le WARP et le curseur cible
 
 - **Quand** : par moments choisis (pas au hasard) — jauge de warp pleine, pick-up WARP, ou automatiquement
@@ -127,7 +135,43 @@ d'ascenseur, les décors qui vivent, et un intermède de transition par époque.
 À chaque époque, une **liste d'animations** chiffrée (nom, taille, nombre d'images, cadence, palette) est écrite
 avant la production, puis vérifiée image par image (capture, palette fermée, lisibilité sur iPhone).
 
-## 6. Ordre de construction conseillé
+## 6. Deux personnages, deux aventures, une fin
+
+Décisions de la propriétaire (18 octobre) :
+
+> « On peut choisir une femme ou un homme au début. Tout le reste de l'aventure aura donc des vidéos d'animation
+> adaptées, histoire de vouloir rejouer pour voir les animations avec l'autre personnage. Il faut que chaque
+> animation soit propre à chaque personnage. »
+>
+> « Il faut aussi finir les deux personnages depuis le début afin de voir une end scene grandiose où les deux
+> personnages de mondes parallèles se retrouvent pour de nouvelles aventures, à deux cette fois-ci. Puis teaser
+> vers SNAKE 3019. »
+
+- **Le choix** : à l'écran-titre, LA PILOTE ou LE PILOTE — deux personnes de deux **mondes parallèles**, chacune
+  reliée à son serpent (l'ouverture « TU ES EN LIGNE » prend tout son sens : c'est elle ou lui qui se connecte).
+  Le serpent reste cyan, la règle de lecture ne change pas ; ce qui change, c'est qui le pilote et ce qu'on voit.
+- **Des films propres à chaque personnage, pas des doublons** : chaque intermède et chaque passage d'époque
+  existe en deux versions qui ne se contentent pas d'échanger un visage — décor, action, cadrage, émotion propres
+  à chaque personnage et à son monde. Rejouer avec l'autre, c'est voir une autre histoire du même voyage.
+  Production : un personnage de référence par pilote sur Higgsfield (fiche de personnage, pour un visage et une
+  silhouette constants d'un film à l'autre), puis images clés et clips Kling, convertis comme les intermèdes ;
+  un **thème musical** par personnage, décliné à chaque époque.
+- **Les deux fins** : chaque personnage a sa propre fin. Le profil (`77-score`, persistance) retient qui a été
+  mené au bout.
+- **La scène finale grandiose** : quand LES DEUX ont été finis, une fin supplémentaire se débloque — les deux
+  mondes parallèles se touchent, les deux pilotes et leurs deux serpents se retrouvent dans l'espace, et partent
+  ensemble « pour de nouvelles aventures, à deux cette fois-ci ». Le film le plus long et le plus soigné du jeu.
+- **Le teaser SNAKE 3019** : après la scène finale, un court teaser de la suite (titre, une image, une date,
+  la promesse du jeu à deux) — et un écran qui donne envie d'y revenir.
+- Rejouer doit se sentir : sur l'écran-titre, la silhouette du personnage déjà fini est marquée ; une fois les
+  deux finis, l'écran-titre lui-même change (les deux mondes côte à côte).
+
+Volume de films à prévoir (ordre de grandeur) : environ 15 intermèdes et passages d'époque × 2 personnages, plus
+2 fins, la scène finale et le teaser — soit environ 35 films. À 7,5 crédits le clip Kling de 5 s (plusieurs
+clips pour les longs films), il faut compter environ 400 à 600 crédits Higgsfield, dans le budget autorisé
+(environ 2 960, dont environ 315 dépensés).
+
+## 7. Ordre de construction conseillé
 
 1. **L'horloge à pas fixe** dans `90-boot.js` : sans elle, ni warp ni ralenti (prérequis de tout le reste).
 2. **L'époque 1976** (palette à 2 couleurs, très gros pixels) : intégrer le mode grille de `la-grille.html` comme premier état de la partie, en palette
@@ -140,6 +184,8 @@ avant la production, puis vérifiée image par image (capture, palette fermée, 
    animations 16 bits par le chemin Higgsfield (§ 5).
 7. À chaque étape : un intermède Higgsfield de transition d'époque, le changement de musique et de tempo, et la
    liste d'animations de l'époque.
+8. **Les deux personnages** : écran de choix, fiches de personnage Higgsfield, puis chaque film en deux versions
+   au fur et à mesure des étapes ; les deux fins, la scène finale à deux, le teaser SNAKE 3019 en dernier.
 
 Chaque étape passe par `/mediateur` avant la suivante, et la propriétaire joue sur iPhone à la fin des étapes
 2, 3 et 4.

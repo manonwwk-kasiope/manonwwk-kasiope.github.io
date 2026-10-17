@@ -1,0 +1,15 @@
+<script>
+/* page d'essai de l'époque 1976 : le jeu principal reste à l'arrêt, N.terminal prend la main sur la boucle */
+(function () {
+  var N = window.__N;
+  function lancer() {
+    var S = N.S; S.phase = 'terminal';
+    N.terminal.start({ graine: window.__SEED || 1976, surFin: function () { window.__TERMINAL_FINI = true; } });
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop;
+    g.update = function (dt) { if (N.terminal.actif()) N.terminal.update(dt); else u0.call(g, dt); };
+    g.draw = function () { if (N.terminal.actif() || N.terminal.phase() === 'fini' && !window.__TERMINAL_RENDU) N.terminal.draw(); else d0.call(g); };
+    g.drawTop = function () { if (!N.terminal.actif()) t0.call(g); };
+  }
+  if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
+})();
+</script>

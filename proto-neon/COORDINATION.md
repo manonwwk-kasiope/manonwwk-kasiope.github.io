@@ -67,7 +67,6 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 |---|---|---|---|
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 00 h 17 | codex-01b, sol plein écran et defile ; ciel inchangé |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
-| `src/68-terminal.js` (nouveau), `tools/terminal/` | Claude cloud | 18/10 à 00 h 20 | l'époque 1976, module autonome (`refonte/VISION-PROGRESSION.md` § 1, étape 2) ; branchement dans `79-jeu.js` et musique demandés à la cheffe d'orchestre, pas faits par moi |
 | `src/79-jeu.js`, `03-socle.js`, `12-cam.js`, `17-vol.js`, `50-fx.js`, `70-joueuse.js`, `71-butin.js`, `72-ennemis.js`, `73-arene.js`, `80-ecrans.js`, `tools/I/` | Claude Mac (cheffe d'orchestre, lot I) | 18/10 à 00 h 26 | dépendances de codex-02 (`refonte/lots/demandes.md` § codex-02) : vues S, crochet du pilote dans tous les états, `pouvoir` et `niveaux`, pas réel des écrans en simulation |
 
 ## Prochains chantiers (à prendre)
@@ -98,6 +97,11 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
    (aucun ralenti n'agit), injecter la banque de 48 sons (`sons/banque.js`) par `build.mjs`, `N.decor.build()`
    (ordre n° 3 de Codex), puis les ennemis « serpent » de 2030 (tique, voleur, miroir, brouilleur).
 9. Le jury indépendant (lot 10), après le JALON A joué par la propriétaire sur iPhone.
+
+## Livré par la session cloud (à brancher)
+
+- `src/68-terminal.js` — l'époque 1976 (le snake « bidon » troublant, sa musique, la fissure) : voir
+  `refonte/lots/demandes.md`, « brancher l'époque 1976 ». Réservation libérée.
 
 ## Désaccords
 

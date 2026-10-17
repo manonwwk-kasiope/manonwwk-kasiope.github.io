@@ -59,3 +59,17 @@ jamais deux fois le même dans une partie.
 | codex-02 | producteurs `71-butin.js`, `12-cam.js`, `73-arene.js`, `17-vol.js`, `72-ennemis.js` / `50-fx.js` | publier les vues contractuelles `S.butin`, `S.vue`, `S.voies`, `S.vol` et les télégraphes vivants dans `S.tele` | ces champs sont absents ou vides sur la branche ; impossible d’appliquer les attractions, les règles de vue/VOL et les dangers annoncés en ne lisant que S |
 | codex-02 | `03-socle.js`, `70-joueuse.js`, `80-ecrans.js` | accepter et publier `S.player.pouvoir` et `S.ecran.niveaux` selon la spécification des pilotes ; préciser si niveaux est indexé par carte | la spécification les exige mais les schémas et les producteurs actuels les omettent ; pas d’accès privé de contournement dans le pilote |
 | codex-02 | `79-jeu.js` / banc | préciser l’avancement des écrans à horloge arrêtée en simulation : `dbg.simuler` passe dt=0 aux cartes/panneaux | le jeu simulé doit laisser passer les séquences sans `valider` ni saut ; les écrans ont besoin du pas réel pour leurs gardes et films |
+
+## Demande du cloud (18 octobre, 00 h 40) — brancher l'époque 1976 (`src/68-terminal.js`)
+Livré : `N.terminal`, l'époque 1976 (refonte/VISION-PROGRESSION.md § 1), autonome, essayée par
+`tools/terminal/` (page d'essai : `node build.mjs tools/terminal/index.html`). À brancher par qui tient `79-jeu.js` :
+1. au lancement d'une partie, AVANT la plongée : `N.terminal.start({ surFin: function () { aller('plongee'); } })` et
+   un état de jeu (par exemple `terminal`, à ajouter à `N.ids.etats` avec horloge « avance », section « intro ») ;
+2. tant que `N.terminal.actif()` : `update(dt)` appelle `N.terminal.update(dt)` et rien d'autre ; `draw()` appelle
+   `N.terminal.draw()` ; `drawTop()` ne dessine rien (ni HUD, ni score du jeu) — c'est ce que fait la page d'essai ;
+3. la piste principale se tait pendant l'époque (la musique de 1976 est jouée par le module sur
+   `N.music.context()`), et reprend à la fin de la fissure (`surFin`) ;
+4. pour qui l'a déjà finie (profil), proposer de la passer (toucher long sur l'écran-titre, ou `N.terminal.skip()`
+   qui saute à la fissure — on ne saute jamais la fissure elle-même : c'est la révélation).
+Mesuré : partie complète au pilote en 21 s (6 cellules, une mort qui garde la menace, fissure), zéro erreur ;
+deux couleurs (vide, cyan) jusqu'à la menace 2, les autres n'apparaissent que comme menaces voulues.
