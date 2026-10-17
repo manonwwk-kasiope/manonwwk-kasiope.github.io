@@ -74,7 +74,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 7. codex-01c — l'ambiance du ciel en jeu, **option A** (point d de codex-01b ci-dessus, décision du 18/10 à 00 h 26), dans `src/15-decor.js` et `tools/lisibilite/` : soleil en disque jaune et ambre plein, deux rangées d'horizon embrasées, fenêtres et façades de la cité en violet ou indigo au lieu de l'acier gris. Seuils de codex-01/01b inchangés (dont sol hors plateau ≤ 3 %), éclipse ≥ 8 %. Preuve : banc 315 relevés comme 01b, captures avant/après paysage V4, portrait boss, bureau V5. À prendre AVANT codex-05 (il est court et ferme la porte « lisibilité »). État : en cours (Codex ; préparation, réservation à publier avant édition de src).
 
 **Sessions Codex parallèles** (ouvertes par la cheffe d'orchestre, chacune dans sa copie `~/Projets/wt-snake/<nom>`, sans commit ; la cheffe d'orchestre relit, fait juger et intègre) :
-- **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`.
+- **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`. **ACCEPTÉ et intégré (b07c32c)** : GRAPPE, BRAISE, ÉPERON et répit ; les passifs restent à faire.
 - **codex-p2** — interface des temps forts (bannières en coup, palier de multiplicateur visible, dernière vie qui fait peur) : `78-hud.js`, `77-score.js`.
 - **codex-p3** — remise en état de l'instrument R-01 à R-38 (32 critères sur 38 « non mesurables » le 18/10 à 00 h 24) : `tools/mesure/`. **Intégrée (3883b2a)**, vérifiée hors bac : quatre bundles fautifs refusés.
 - **codex-p4** — télégraphes manquants dans `S.tele` (CYCLOPE, RUCHE, SENTINELLE) : `73-colosse.js`, `72-ennemis.js`.
@@ -94,7 +94,6 @@ NOTE CODEX : qualification 02 après I terminée : 80/80 fin, zéro erreur, huit
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 00 h 35 | codex-01c option A ; src en attente du push de réservation (préparation de prototype séparée) |
-| `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1) | 18/10 à 00 h 25 | cartes sans effet et passifs manquants |
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
 | `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
