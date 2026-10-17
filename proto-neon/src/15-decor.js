@@ -361,7 +361,7 @@
       var inT = 0.12 + 0.28 * clamp01(dy / 90);
       var saT = clamp01(1 - dy / 22) * Math.min(0.9, ck.sa * kk * 0.7);
       var brT = clamp01(1 - dy / 40) * Math.min(0.7, ck.br * kk * 0.7);
-      var amT = clamp01(1 - dy / 20) * Math.min(0.5, ck.am * kk * 0.9) + clamp01(1 - dy / (FH * 0.85)) * Math.min(0.22, 0.15 * ck.br * kk);
+      var amT = clamp01(1 - dy / 20) * Math.min(0.5, ck.am * kk * 0.9) + clamp01(1 - dy / (FH * 0.85)) * Math.min(0.30, 0.23 * ck.br * kk);
       if (E.eclipse) { amT = 0; brT *= 0.95; saT = clamp01(1 - dy / 40) * 0.9; }
       if (vol) { amT = clamp01(1 - dy / 6) * 0.4; brT = clamp01(1 - dy / 14) * 0.45; saT = clamp01(1 - dy / 30) * 0.5; inT = 0.1; }
       var jaT = dy === 0 ? 0.5 : 0;
