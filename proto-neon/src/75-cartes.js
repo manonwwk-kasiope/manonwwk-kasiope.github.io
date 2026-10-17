@@ -205,7 +205,9 @@ N.cartes = (function () {
       case 'cadence':
         var c0 = cadenceCanon((m.prises.canon || 0)); l1 = 'CADENCE'; l2 = f1(c0 * (1 + a.parPrise * k)) + ' → ' + f1(c0 * (1 + a.parPrise * (k + 1))) + ' TIRS/S'; break;
       case 'aimant': l1 = 'RAYON D\'AIMANT'; l2 = (k ? a.rayons[k] : P.mods.aimant) + ' → ' + a.rayons[Math.min(k + 1, a.rayons.length - 1)] + ' PX'; break;
-      case 'croissance': l1 = '+' + a.segments + ' SEGMENTS'; l2 = 'MAX ' + MODS.lenMax + ' → ' + (MODS.lenMax + ((R.longueur && R.longueur.parCroissance) || a.lenMax)); break;
+      case 'croissance':
+        var pc = (R.longueur && R.longueur.parCroissance) || a.segments;     // la valeur que 70-joueuse applique (→ demandes.md : le tableau § 2.9 dit +4)
+        l1 = '+' + pc + ' SEGMENTS'; l2 = 'MAX ' + MODS.lenMax + ' → ' + (MODS.lenMax + a.lenMax); break;
       case 'reparation': l1 = '+1 SEGMENT'; l2 = 'TOUTES LES ' + a.periodes[i] + ' S'; break;
       case 'bouclier': l1 = 'ABSORBE UN COUP'; l2 = 'RECHARGE ' + a.recharge + ' S'; break;
       case 'eperon': l1 = 'EN ACCÉLÉRATION'; l2 = 'BROIE JUSQU\'À ' + a.pvMax + ' PV'; break;

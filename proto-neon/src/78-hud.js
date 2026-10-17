@@ -6,8 +6,9 @@
    l'origine à zéro, et 79-jeu.js le fait à sa place tant que l'ancienne boucle de 90-boot.js est en place.
 
    CONSOMME : `kill` (rang 70, repli : le gain flottant), `vague` (70, repli de 79-scene : la bannière de la vague),
-   `coupe` (70, repli : le tag), `carte` (70). Le radar (48 × 24) et les chevrons arrivent au lot 8 ; ici, le repli
-   des marqueurs hors champ de la démo.
+   `coupe` (70, repli : le tag), `niveau` (70 : toast « NIVEAU n · CARTE AU NETTOYAGE »), `deblocage` (70). Le lot F y ajoute le RADAR
+   (48 × 24, § 3.7 : murs courants, vue, tête, ennemis, élites en 2 × 2, noyaux, PASTILLE et TRAQUEUR qui clignotent), les
+   CHEVRONS des portails (600 ms avant l'apparition, double pour une élite, triple pour le CYCLOPE) et les marqueurs permanents.
    Interface (§ 7.8) : update(dt), draw(), banniere(texte, opts), toast(texte), tag(texte), pop(x, y, texte, opts),
    codex(type). Ajouts : boutons() (zones tactiles), toucher(x, y) -> 'son'|'pause'|null, reset(). */
 N.hud = (function () {
@@ -90,14 +91,14 @@ N.hud = (function () {
     var lx = l + sw + 6;
     for (var i = 0; i < nh; i++) O.text('♥', lx + i * hw, y, i < vies ? (i >= VIES ? O.JAUNE : O.OS) : O.ARDOISE, true, 1);
     var ligne = 1;                                   // les lignes sous le score : défi (portrait), vague, multiplicateur
-    /* le défi : nom, progrès, et l'issue — au centre en paysage, sous le score en portrait */
-    var d = sc ? sc.defi : null;
+    /* le défi : nom, progrès, et l'issue — à droite du radar quand il y tient, sinon sous le score */
+    var d = sc ? sc.defi : null, rd = radarRect(), yb = rd.y + rd.h + 4;       // yb : la première ligne libre sous le radar (portrait)
     if (d) {
-      var right = SB.x - PB.w - 8, left = lx + (VIES + 1) * hw + 8;
+      var right = SB.x - PB.w - 8, left = rd.x + rd.w + 6;
       var col = d.etat === 'reussi' ? O.JAUNE : d.etat === 'rate' ? O.ACIER : O.OS;
       var tail = d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : (d.etat === 'reussi' ? ' ✓' : ' ✗');
-      var nw = O.textW(d.nom, 1), tw = nw + O.textW(tail, 1), cy = y, tx = Math.round(O.clamp(W / 2 - tw / 2, left, Math.max(left, right - tw)));
-      if (portrait || tx + tw > right) { cy = y + 11 * ligne++; tx = l; }
+      var nw = O.textW(d.nom, 1), tw = nw + O.textW(tail, 1), cy = y, tx = left;
+      if (portrait || tx + tw > right) { if (portrait) { cy = yb; yb += 11; } else cy = y + 11 * ligne++; tx = l; }
       plate(tx - 3, cy - 2, tw + 6, 11);
       O.text(d.nom, tx, cy, col, true, 1);
       O.text(tail, tx + nw, cy, d.etat === 'actif' ? (sc.chaine() > 0 ? O.JAUNE : O.ACIER) : (d.etat === 'reussi' ? O.JAUNE : O.ROSE), true, 1);
@@ -106,12 +107,12 @@ N.hud = (function () {
         N.gfx.rect(tx, cy + 8, Math.round(tw * f), 1, f > 0.3 ? O.JAUNE : O.ROSE);
       }
     }
-    /* l'étiquette de vague (la place du radar viendra au lot 8) */
+    /* l'étiquette de vague, sous le radar, en acier */
     var w = N.dir && N.dir.info ? N.dir.info() : null;
     if (w && N.game && (N.game.etat() === 'jeu' || N.game.etat() === 'nettoyage')) {
-      var et = 'V' + w.n + ' · ' + w.nom, ew = O.textW(et, 1), ey = y + 11 * ligne++;
-      plate(l - 3, ey - 2, ew + 6, 11);
-      O.text(et, l, ey, O.ACIER, true, 1);
+      var et = 'V' + w.n + ' · ' + w.nom, ew = O.textW(et, 1), ex = portrait ? l : Math.round(W / 2 - ew / 2), ey = portrait ? yb : rd.y + rd.h + 3;
+      plate(ex - 3, ey - 2, ew + 6, 11);
+      O.text(et, ex, ey, O.ACIER, true, 1);
     }
     /* le multiplicateur de chaîne et son objectif */
     if (sc && sc.chaine() > 0) {
@@ -182,18 +183,87 @@ N.hud = (function () {
     }
   }
 
-  /* les marqueurs hors champ (repli du radar) : un carré magenta au bord, devant l'ennemi qui approche */
-  function drawMarqueurs() {
-    var L = N.ennemis ? N.ennemis.list : [], V = O.VUE, W = O.geo.W, H = O.geo.H, sf = O.geo.safe, top = (sf.t | 0) + O.geo.hudH + 1, g = N.gfx;
-    for (var i = 0; i < L.length; i++) {
-      var e = L[i];
-      if (e._dead || e.etat === 'portail') continue;
-      var ex = e.x - V.x, ey = e.y - V.y;
-      if (ex > 1 && ex < W - 1 && ey > 1 && ey < H - 1) continue;
-      var x = O.clamp(ex, 3, W - 4), y = O.clamp(ey, top + 2, H - 4);
-      if (O.d2(x, y, ex, ey) > 45 * 45) continue;
-      g.rect(x - 2, y - 2, 5, 5, O.NP); g.rect(x - 1, y - 1, 3, 3, O.MAGENTA);
+  /* ============================ le radar, les chevrons et les marqueurs (§ 3.7) ============================ */
+  var RAD = (R && R.hud && R.hud.radar) || [48, 24];
+  var RR = { x: 0, y: 0, w: RAD[0], h: RAD[1] };
+  function radarRect() {
+    var sf = O.geo.safe; boutons();
+    /* centré en haut ; en portrait, trop étroit pour le score : calé contre les boutons (écart assumé au § 3.7) */
+    RR.x = O.geo.portrait ? PB.x - RR.w - 4 : Math.round(O.geo.W / 2 - RR.w / 2); RR.y = sf.t | 0;
+    return RR;
+  }
+  function clig(hz) { return (Math.floor(O.T.ak * hz * 2) & 1) === 0; }
+  var GROS = { ruche: 1, rival: 1, cyclope: 1 };
+  function drawRadar() {
+    var g = N.gfx, r = radarRect(), W = O.geo.W, H = O.geo.H, w = N.world, A = O.A, V = O.VUE;
+    var wx = w && typeof w.W === 'number' ? 0 : 0, wy = 0, ww = w && w.W ? w.W : W, wh = w && w.H ? w.H : H;
+    var ix = r.x + 1, iy = r.y + 1, iw = r.w - 2, ih = r.h - 2;
+    function mx(x) { return ix + O.clamp(Math.round((x - wx) / ww * (iw - 1)), 0, iw - 1); }
+    function my(y) { return iy + O.clamp(Math.round((y - wy) / wh * (ih - 1)), 0, ih - 1); }
+    g.rect(r.x - 1, r.y - 1, r.w + 2, r.h + 2, O.ACIER); g.rect(r.x, r.y, r.w, r.h, O.NP);
+    /* les murs courants (qui bougent avec le TRAVELLING) et la vue, en ardoise */
+    var ax0 = mx(A.x0), ax1 = mx(A.x1), ay0 = my(A.y0), ay1 = my(A.y1);
+    g.rect(ax0, ay0, ax1 - ax0 + 1, 1, O.ACIER); g.rect(ax0, ay1, ax1 - ax0 + 1, 1, O.ACIER); g.rect(ax0, ay0, 1, ay1 - ay0 + 1, O.ACIER); g.rect(ax1, ay0, 1, ay1 - ay0 + 1, O.ACIER);
+    var vx0 = mx(V.x), vx1 = mx(V.x + V.w), vy0 = my(V.y), vy1 = my(V.y + V.h);
+    g.rect(vx0, vy0, vx1 - vx0 + 1, 1, O.ARDOISE); g.rect(vx0, vy1, vx1 - vx0 + 1, 1, O.ARDOISE); g.rect(vx0, vy0, 1, vy1 - vy0 + 1, O.ARDOISE); g.rect(vx1, vy0, 1, vy1 - vy0 + 1, O.ARDOISE);
+    var i, L = N.ennemis ? N.ennemis.list : [], B = N.butin ? N.butin.list : [], e, b;
+    for (i = 0; i < B.length; i++) {
+      b = B[i];
+      if (b.type === 'noyau') g.px(mx(b.x), my(b.y), O.AMBRE);
+      else if (b.type === 'pastille' && clig(2)) g.rect(mx(b.x) - 1, my(b.y) - 1, 2, 2, O.JAUNE);
     }
+    for (i = 0; i < L.length; i++) {
+      e = L[i];
+      if (e._dead) continue;
+      if (e.etat === 'portail') { if (clig(2)) g.px(mx(e.x), my(e.y), O.MAGENTA); continue; }     // les portails en attente clignotent
+      if (e.type === 'traqueur') { if (clig(2)) g.px(mx(e.x), my(e.y), O.ROSE); }
+      else if (e.boss) { g.rect(mx(e.x) - 1, my(e.y) - 1, 3, 3, O.SANG); g.px(mx(e.x), my(e.y), O.MAGENTA); }
+      else if (e.elite || GROS[e.type]) { g.rect(mx(e.x), my(e.y), 2, 2, O.MAGENTA); }
+      else g.px(mx(e.x), my(e.y), O.MAGENTA);
+    }
+    var P = N.joueuse && N.joueuse.tete;
+    if (P) g.rect(mx(P.x), my(P.y), 2, 1, O.CYANP);                                                // la tête : 2 × 1, en cyan
+  }
+  /* un chevron de 7 px au bord de la zone sûre, dirigé vers (ex, ey) ; k = 1 (simple), 2 (élite), 3 (CYCLOPE) */
+  function chevron(ex, ey, k, c) {
+    var g = N.gfx, W = O.geo.W, H = O.geo.H, sf = O.geo.safe, top = (sf.t | 0) + O.geo.hudH + 1;
+    var x = O.clamp(ex, (sf.l | 0) + 4, W - (sf.r | 0) - 5), y = O.clamp(ey, top + 4, H - (sf.b | 0) - 5);
+    var dx = ex - x, dy = ey - y, m = Math.hypot(dx, dy) || 1, ux = dx / m, uy = dy / m, i, px, py;
+    for (i = 0; i < k; i++) {
+      px = x - ux * i * 4; py = y - uy * i * 4;
+      g.line(px - uy * 3 - ux * 3, py + ux * 3 - uy * 3, px, py, c); g.line(px + uy * 3 - ux * 3, py - ux * 3 - uy * 3, px, py, c);
+    }
+  }
+  /* marqueurs permanents (élites, RIVAL, mines armées, TRAQUEUR, PASTILLE, CYCLOPE) et chevrons des portails qui s'ouvrent */
+  function drawMarqueurs() {
+    var L = N.ennemis ? N.ennemis.list : [], B = N.butin ? N.butin.list : [], V = O.VUE, W = O.geo.W, H = O.geo.H, sf = O.geo.safe, top = (sf.t | 0) + O.geo.hudH + 1, g = N.gfx, P = N.joueuse && N.joueuse.tete;
+    var i, e;
+    function hors(x, y) { var ex = x - V.x, ey = y - V.y; return !(ex > 1 && ex < W - 1 && ey > 1 && ey < H - 1); }
+    function marque(x, y, taille, c) {
+      var ex = x - V.x, ey = y - V.y, px2 = O.clamp(ex, 4, W - 5), py2 = O.clamp(ey, top + 3, H - 5), h = (taille / 2) | 0;
+      g.rect(px2 - h - 1, py2 - h - 1, taille + 2, taille + 2, O.NP); g.rect(px2 - h, py2 - h, taille, taille, c);
+    }
+    function proche(x, y) { return P ? (O.d2(x, y, P.x, P.y) < 200 * 200 ? 7 : 3) : 3; }          // la taille dit la distance
+    for (i = 0; i < L.length; i++) {
+      e = L[i];
+      if (e._dead) continue;
+      if (e.etat === 'portail') {
+        if (e._portail > 0 && e._portail <= (e.boss ? 1.4 : 0.6) && hors(e.x, e.y)) chevron(O.clamp(e.x - V.x, 0, W), O.clamp(e.y - V.y, 0, H), e.boss ? 3 : e.elite ? 2 : 1, O.MAGENTA);
+        continue;
+      }
+      if (!hors(e.x, e.y)) continue;
+      var ex = e.x - V.x, ey = e.y - V.y;
+      if (e.boss) { if (clig(3)) marque(e.x, e.y, 7, O.MAGENTA); chevron(O.clamp(ex, 0, W), O.clamp(ey, 0, H), 3, O.SANG); }
+      else if (e.elite || e.type === 'rival') { if (clig(3)) { marque(e.x, e.y, proche(e.x, e.y), O.MAGENTA); } }
+      else if (e.type === 'traqueur') { if (clig(3)) marque(e.x, e.y, proche(e.x, e.y), O.ROSE); }
+      else if (e.type === 'mine' && e.etat === 'arme') { marque(e.x, e.y, 3, O.MAGENTA); }
+      else {
+        var x = O.clamp(ex, 3, W - 4), y = O.clamp(ey, top + 2, H - 4);
+        if (O.d2(x, y, ex, ey) > 45 * 45) continue;
+        g.rect(x - 2, y - 2, 5, 5, O.NP); g.rect(x - 1, y - 1, 3, 3, O.MAGENTA);
+      }
+    }
+    for (i = 0; i < B.length; i++) if (B[i].type === 'pastille' && hors(B[i].x, B[i].y) && clig(3)) marque(B[i].x, B[i].y, proche(B[i].x, B[i].y), O.JAUNE);
   }
 
   function draw() {
@@ -204,6 +274,7 @@ N.hud = (function () {
     if (!jeu) return;
     boutons();
     drawMarqueurs();
+    drawRadar();
     drawGains();
     drawGhost();
     drawBanner();
@@ -225,6 +296,9 @@ N.hud = (function () {
       banniere(['VAGUE ' + c.n, c.nom], { c: 'jaune', duree: 2.0 });
     }, '78-hud');
     N.ev.on('coupe', 70, function (c) { if (!N.scene) tag('-' + c.perdus); }, '78-hud');
+    /* la montée de niveau n'ouvre aucun écran : elle s'annonce, et la carte vient au NETTOYAGE (§ 2.7) */
+    N.ev.on('niveau', 70, function (c) { toast('NIVEAU ' + (c.niveau + 1) + ' · CARTE AU NETTOYAGE'); O.sfx('levelup'); }, '78-hud');
+    N.ev.on('deblocage', 70, function (c) { toast('DÉBLOQUÉ : ' + String(c.id).toUpperCase()); }, '78-hud');
   }
 
   return { reset: reset, update: update, draw: draw, banniere: banniere, toast: toast, tag: tag, pop: pop, codex: codex, boutons: boutons, toucher: toucher, flashSon: flashSon };

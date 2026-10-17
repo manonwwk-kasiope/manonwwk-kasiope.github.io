@@ -10,6 +10,10 @@
    CONSOMME (jamais d'appel direct des effets, § 7.4) : `kill` rang 20 (points et chaîne) et 80 (défi), `ramassage`
    20 (points de la cellule), `coupe` 20 (chaîne ÷ 2), `mort` 20 (une vie de moins), `vague` 20 (prime de fin de
    vague). ÉMET `defi` : { id, ok, prime }.
+   LE RÉSUMÉ (lot F) : terminer(victoire) range dans resume() tout ce que l'écran de fin affiche (cause, vague, quartier,
+   heure, progression, écart à la partie précédente, record, build, bilan, note, défi, conseil du § 5.6.1, énergie gagnée,
+   déblocages franchis, prochain déblocage avant / après), met l'énergie au profil (cellule 1, noyau 5, défi 20, FINIR 50),
+   ouvre les déblocages (émet `deblocage`) et garde les dix records. Note : B si le CYCLOPE tombe, C s'il est atteint, sinon D.
    Interface (§ 7.8) : reset(), score, chaine(), mult(), objectif(), vies, defis, defiVague, stats, build(), energie,
    deblocages, prochain(), profil { charger, sauver, reglages(obj?) }, records. Ajout : defi (le défi courant,
    que 78-hud lit), gain (le dernier gain de points, pour les gains flottants), update(dt). */

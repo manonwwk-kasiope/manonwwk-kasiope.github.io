@@ -36,6 +36,14 @@ const res = await page.evaluate(() => {
   if (Math.abs(C.mods.cadence - 1.2) > 1e-9) bad.push('mods.cadence ' + C.mods.cadence);
   ch('croissance'); if (C.mods.lenMax !== R.passifs.mods.lenMax + R.longueur.parCroissance) bad.push('lenMax ' + C.mods.lenMax);
   const ok = N.ids.valider('mods', C.mods); if (ok.length) bad.push('mods schéma ' + ok.join(';'));
+  // 2b. le texte de CROISSANCE égale l'effet mesuré sur la joueuse (leçon C8)
+  if (N.joueuse && N.joueuse.len) {
+    N.socle.reset(7); N.game.reset(7); C.reset();
+    const l0 = N.joueuse.len(), t = C.texte('croissance'); ch('croissance'); N.joueuse.update(0.016);
+    const gain = N.joueuse.len() - l0, dit = +/\+(\d+) SEG/.exec(t.l1)[1];
+    info.croissance = { dit, gain };
+    if (gain !== dit) bad.push('texte CROISSANCE +' + dit + ' ≠ effet mesuré +' + gain);
+  }
   // 3. première main
   C.reset();
   const h1 = C.main(3, { vague: 1 });
