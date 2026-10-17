@@ -13777,7 +13777,9 @@ N.themes = (function () {
        epoque  module (N.terminal, N.arcade), graine ; sans le module, l'étape est passée
        jeu     la main passe au jeu par aJouer ; elle revient par reprendre
        bilan   marque le personnage fini (N.choix.marquerFini) et regarde si les deux le sont
-     si : 'deux' (seulement quand les deux pilotes sont finis) | 'seul' (seulement sinon). */
+     si : 'deux' (seulement quand les deux pilotes sont finis) | 'seul' (seulement sinon).
+     sauf : (étape jeu) passée si l'époque nommée a joué — N.cosmos remplace le retour au jeu en 2975.
+     theme : 'qui' | 'autre' | 'deux' — le thème du pilote (63-themes.js) pendant le film. */
   var ETAPES = [
     { id: 'choix', type: 'choix' },
     { id: 'connexion', type: 'film', base: 'connexion', theme: 'qui', legende: '1976 — LE TERMINAL' },
@@ -13791,7 +13793,9 @@ N.themes = (function () {
     { id: 'warp', type: 'film', base: 'warp', evt: 'warp', legende: '2001 — LE WARP' },
     { id: 'jeu-2001', type: 'jeu', epoque: 2001 },
     { id: 'espace', type: 'film', base: 'espace', evt: 'espace', legende: '2975 — L\'INTERGALACTIQUE' },
-    { id: 'jeu-2975', type: 'jeu', epoque: 2975 },
+    /* 2975, le final : N.cosmos (67-cosmos.js) s'il est là — l'espace profond et le vaisseau amiral — ; sinon le jeu reprend */
+    { id: '2975', type: 'epoque', module: 'cosmos', graine: 2975 },
+    { id: 'jeu-2975', type: 'jeu', epoque: 2975, sauf: '2975' },
     { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, theme: 'qui', legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
     { id: 'bilan', type: 'bilan' },
     { id: 'rejouer', type: 'film', si: 'seul', base: { elle: 'pilote-lui', lui: 'pilote-elle' }, duree: 3.5, theme: 'autre',
@@ -13860,7 +13864,7 @@ N.themes = (function () {
       if (e.si === 'seul' && A.deux) continue;
       if (A.cible >= 0) {                                   // rattrapage : on va vers la cible sans rendre la main
         if (i === A.cible) A.cible = -1;
-        else if (e.type === 'jeu' || (e.evt && A.vus[e.id])) continue;
+        else if (e.type === 'jeu' || e.type === 'epoque' || (e.evt && A.vus[e.id])) continue;
       }
       if (e.type === 'choix') {
         if (A.opts.qui === 'elle' || A.opts.qui === 'lui') { A.qui = A.opts.qui; ajournal('choix donné ' + A.qui); continue; }
@@ -13880,9 +13884,9 @@ N.themes = (function () {
       if (e.type === 'epoque') {
         var m = moduleDe(e.module), ok = false;
         var gr = (A.opts.graines && A.opts.graines[e.id]) || e.graine;
-        if (m) { try { ok = m.start({ graine: gr, surFin: suite }) !== false; } catch (x) { signaler('aventure.' + e.module, x); ok = false; } }
+        if (m) { try { ok = m.start({ graine: gr, qui: A.qui, surFin: suite }) !== false; } catch (x) { signaler('aventure.' + e.module, x); ok = false; } }
         if (!ok) { ajournal('époque ' + e.id + ' absente'); continue; }
-        A.main = true; ajournal('époque ' + e.id); ambiance(e);
+        A.vus[e.id] = true; A.main = true; ajournal('époque ' + e.id); ambiance(e);
         preparerSuivant(i);
         return;
       }
@@ -13893,6 +13897,7 @@ N.themes = (function () {
         continue;
       }
       if (e.type === 'jeu') {
+        if (e.sauf && A.vus[e.sauf]) { ajournal('jeu ' + e.id + ' remplacé par ' + e.sauf); continue; }
         ajournal('jeu ' + e.id); ambiance(e);
         if (!A.aJouer) {                                     // sans jeu (page d'essai nue) : le voyage se raconte d'une traite
           ajournal('sans jeu');
