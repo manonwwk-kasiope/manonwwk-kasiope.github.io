@@ -46,6 +46,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/79-jeu.js` | Codex | 18/10 à 00 h 05 | codex-03, seul appel decor.build dans partie() ; libération immédiate après ajout |
 | `src/85-pilote.js`, `tools/pilotes/` | Codex | 17/10 à 23 h 57 | codex-02, pilotes automatiques |
 
 ## Prochains chantiers (à prendre)
