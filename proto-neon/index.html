@@ -10459,9 +10459,9 @@ if (typeof window !== 'undefined') window.__N = N;
   /* k de 0 à 1 ; dur en secondes de TEMPS RÉEL ; o : { joueuse:false (exemptée), visuel:true, long:true (au-delà du gel) } */
   function ralenti(k, dur, o) {
     k = +k; dur = +dur;
-    if (!(k > 0) || !(dur > 0)) return false;
+    if (!(k > 0) || !(dur > 0) || !isFinite(k) || !isFinite(dur)) return false;
     if (k > 1) k = 1;
-    if (dur > 3) dur = 3;
+    /* La durée appartient à N.R chez l'appelant (RALENTI = 3,5 s), pas à un plafond local. */
     var visuel = !!(o && o.visuel);
     if (!visuel && !(o && o.long)) {                       /* ralenti et gel ne se cumulent pas au-delà de 0,5 s */
       var gl = hitstopLeft() / 60;
@@ -10475,7 +10475,10 @@ if (typeof window !== 'undefined') window.__N = N;
   }
   function kVisuel() { return kVis; }
   function ralentiTick(dtR) {
-    var any = false, rd = kMonde > 0.05 ? dtR / kMonde : dtR;
+    var h = N.horloge, fixe = h && h.pas && h.pas() > 0;
+    /* Un gel donne dtMonde=0 mais consomme du temps réel. Un écran arrêté, lui,
+       suspend les ralentis : leur durée ne s'use pas dans le choix de cartes ou la pause. */
+    var any = false, rd = fixe ? (h.arretee() ? 0 : h.H) : (kMonde > 0.05 ? dtR / kMonde : dtR);
     for (var i = 0; i < RL_N; i++) if (rlL[i] > 0) { rlL[i] -= rd; if (rlL[i] < 0) rlL[i] = 0; any = true; }
     if (any) recalcK();
   }
@@ -11351,7 +11354,7 @@ if (typeof window !== 'undefined') window.__N = N;
 
   function journal(quoi) {
     var s = S();
-    LOG.push({ e: quoi, t: +(O.on ? O.t : I.t).toFixed(3), tb: +((s.t || 0) / 1000).toFixed(3), f: s.frame | 0 });
+    LOG.push({ e: quoi, t: +(O.on ? O.t : I.t).toFixed(3), tb: +(s.t || 0).toFixed(3), f: s.frame | 0 });
     if (LOG.length > 64) LOG.shift();
   }
   function garde() {                       // nouvelle séquence : on oublie les gestes déjà faits
@@ -15481,7 +15484,7 @@ N.joueuse = (function () {
     var c = pvConf();
     PV.etat = 'actif'; PV.reste = c.duree; PV.dur = c.duree;
     if (PV.id === 'traversee') st.trav = c.duree;
-    else if (PV.id === 'ralenti') { if (N.fx && N.fx.ralenti) O.safe('fx.ralenti', function () { N.fx.ralenti(c.monde, c.duree, { joueuse: false }); }); }
+    else if (PV.id === 'ralenti') { if (N.fx && N.fx.ralenti) O.safe('fx.ralenti', function () { N.fx.ralenti(c.monde, c.duree, { joueuse: false, long: true }); }); }
     else if (PV.id === 'repli') {
       st.lenAvant = st.len; st.len = Math.max(c.longueurMin, Math.round(st.len * (1 - c.longueur))); st.repli = c.duree;
       N.joueuse.degatsMul = c.degats || CFG.repliDegats;
@@ -21749,7 +21752,7 @@ N.game = (function () {
   var PLEIN = { demarrage: 1, ouverture: 1, briefing: 1, panneau: 1, fin: 1, initiales: 1 };
 
   var et = 'demarrage', etT = 0, etatJeu = 'jeu', avant = 'jeu', seed = 2975, partieN = 0;
-  var muted = false, muteTick = 0, pauseAuto = false;
+  var muted = false, muteTick = 0;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
   var god = false, simulant = false, departExplicite = false;
@@ -22141,7 +22144,7 @@ N.game = (function () {
       if (f && f.action === 'rejouer') lancer(true);
     } else if (et === 'pause') {
       N.ui.update(dt);
-      var p = N.ui.sortie(); if (p && p.action === 'reprendre' && !pauseAuto) basculerPause();
+      var p = N.ui.sortie(); if (p && p.action === 'reprendre') basculerPause();
     }
     /* les minuteries de la mise en scène de repli */
     for (var i = timers.length - 1; i >= 0; i--) { timers[i].left -= dt; if (timers[i].left <= 0) { var fn = timers[i].fn; timers.splice(i, 1); fn(); } }
@@ -22343,9 +22346,7 @@ N.game = (function () {
     if (intro && N.intro && N.intro.draw) { appel('intro.draw', function () { N.intro.draw(); }); if (O.busy()) return; }
     if (JOUE_OU_PAUSE() && et !== 'mort') appel('hud.draw', function () { N.hud.draw(); });
     else if (et === 'mort') appel('hud.draw', function () { N.hud.draw(); });
-    /* la pause de l'application (arrière-plan) */
-    if (s.paused && !pauseAuto && N.ui) { N.ui.ouvrir('pause'); pauseAuto = true; }
-    if (!s.paused && pauseAuto) { pauseAuto = false; if (et !== 'pause' && N.ui.ecran() === 'pause') N.ui.fermer(); }
+    /* La pause d'application est une surimpression du boot : aucune UI remplacée ni main retirée. */
     if (N.ui && N.ui.actif()) appel('ui.draw', function () { N.ui.draw(); });
   }
 
@@ -22804,7 +22805,10 @@ N.scene = (function () {
     else if (c.evt === 'convoiPasse') { jolt(0, (RS.convoi && RS.convoi.jolt) || 2); pop(head() ? head().x : 0, head() ? head().y - 14 : 0, 'BROYÉ', 'rose'); }
   }
   function onPhase(c) {
-    if (c.evt === 'entree') banniere(c.n ? 'PHASE ' + c.n : 'LE CYCLOPE', { c: 'magenta', duree: 2.0 }, 2);
+    if (c.evt === 'arrivee') {
+      var A = RS.cyclope;
+      if (A) ralenti(A.ralenti, A.duree, { long: true });
+    } else if (c.evt === 'entree') banniere(c.n ? 'PHASE ' + c.n : 'LE CYCLOPE', { c: 'magenta', duree: 2.0 }, 2);
     else if (c.evt === 'enrage') banniere("LE CYCLOPE S'EMBALLE", { c: 'magenta', duree: 2.0, clignote: true }, 2);
     else if (c.evt === 'repit') { sfx('vague'); tag('RÉPIT'); }
   }
@@ -23787,12 +23791,14 @@ function mire() {
 }
 
 /* ---- entrées : un seul point d'entrée, clavier et doigt ---- */
+var repriseGarde = false;
 var keys = {}, clavierActif = false, sourisActive = false, sourceBureau = null;
 var sourisDernier = 0, curseurCache = false, padAvant = 0;
 function onKey(e, down) {
   if (down && (e.ctrlKey || e.metaKey || e.altKey)) return;
   if (e.repeat) return;
   keys[e.code] = down;
+  if (!down && (e.code === 'Space' || e.code === 'Enter')) repriseGarde = false;
   if (down) {
     clavierActif = true; S.input.any = true;
     if (/^(Arrow(?:Left|Right|Up|Down)|Key[AWZQSD])$/.test(e.code) || sourceBureau === null) sourceBureau = 'clavier';
@@ -23833,10 +23839,11 @@ function onPointer(e) {
   } else if (e.type === 'pointermove') sourisMaj(e, true);
   else if (e.type === 'pointerup' || e.type === 'pointercancel') {
     sourisMaj(e, e.type !== 'pointercancel');
-    if (!doigts.length && e.type === 'pointerup' && e.button === 0) {
+    if (!doigts.length && !repriseGarde && e.type === 'pointerup' && e.button === 0) {
       var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
       pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
     }
+    repriseGarde = false;
   }
 }
 function onWheel(e) {
@@ -24023,6 +24030,7 @@ function onTouchEnd(e) {
   var boost = false;
   for (var k = 0; k < doigts.length; k++) if (doigts[k].role === 'action' && doigts[k].classe === 'tenu') boost = true;
   S.input.boost = boost;
+  if (repriseGarde) { entreeFin(); S.input.any = false; repriseGarde = false; }
   if (fin) gesture();                                    // pour le toucher, seul touchend vaut geste (MDN)
   if (e.cancelable) e.preventDefault();
 }
@@ -24036,6 +24044,7 @@ function drawStick() {
 /* chaque geste débloque les vidéos préparées depuis le précédent ; le premier lance aussi le son */
 var audioStarted = false;
 function gesture() {
+  if (S.paused) { repriseGarde = true; entreeFin(); S.input.any = false; }
   step('art.unlock', N.art && N.art.unlock ? function () { N.art.unlock(); } : null);
   S.paused = false;                                      // un retour d'arrière-plan reprend au premier geste
   /* un touchstart ne vaut pas geste pour l'iPhone : le contexte audio créé là peut rester suspendu,
@@ -24080,6 +24089,22 @@ function drawPerf() {
   } else {
     var yb = G.H - (sf.b | 0) - 8, q = [S.perf.p50, S.perf.p95, S.perf.p99], c = ['acier', 'ambre', 'brasier'];
     for (var i = 0; i < 3; i++) G.rect(x, yb + i * 2, Math.min(60, Math.round(q[i] * 2)), 1, N.pal.i(c[i]));
+  }
+}
+
+/* Arrière-plan : le monde et l'interface courante restent en place. Une surimpression seule
+   évite de remplacer les cartes par N.ui.ouvrir('pause'), puis de retirer leur main à la reprise. */
+function drawPauseApplication() {
+  var G = N.gfx, O = N.outils;
+  G.origin(0, 0);
+  G.ditherRect(0, 0, G.W, G.H, N.pal.i('nuitProfonde'), 0.75);
+  if (O && O.textC) {
+    O.textC('PAUSE', G.W / 2, Math.round(G.H / 2) - 12, N.pal.i('os'), true, 2);
+    var sc = (G.PX || 1) * 7 < 17 ? 2 : 1, mot = 'TOUCHE POUR REPRENDRE', y = Math.round(G.H / 2) + 10;
+    if (O.textW(mot, sc) > G.W - 12) {
+      O.textC('TOUCHE POUR', G.W / 2, y, N.pal.i('acier'), true, sc);
+      O.textC('REPRENDRE', G.W / 2, y + 9 * sc, N.pal.i('acier'), true, sc);
+    } else O.textC(mot, G.W / 2, y, N.pal.i('acier'), true, sc);
   }
 }
 
@@ -24153,6 +24178,7 @@ function frame(now) {
       step('ui.draw', N.ui && N.ui.actif && N.ui.actif() ? function () { N.ui.draw(); } : null);
       if (film && N.intro.busy()) step('intro.draw', function () { N.intro.draw(); });
     }
+    if (S.paused) step('pause.application', drawPauseApplication);
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     if (PERF_AFF) step('perf.draw', drawPerf);
     step('gfx.present', function () { N.gfx.present({ skipScale: !!(N.crt && N.crt._actif && N.crt._actif()) }); drew = true; });
