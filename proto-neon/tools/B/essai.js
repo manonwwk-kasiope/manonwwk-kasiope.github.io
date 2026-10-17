@@ -61,7 +61,7 @@
   var phaseVol = 0, volPaire = 0;
   var PAIRES = [['docks', 'artere'], ['artere', 'centrale'], ['centrale', 'ciel'], ['ciel', 'tours'], ['tours', 'coeur']];
 
-  function etatTexte() { return QS[qi] + ' / ' + N.decor.etat() + '  cam ' + N.cam.x + ',' + N.cam.y + '  horizon ' + N.decor.horizon(); }
+  function etatTexte() { return N.decor.quartier() + ' / ' + N.decor.etat() + '  cam ' + N.cam.x + ',' + N.cam.y + '  horizon ' + N.decor.horizon(); }
 
   N.game = {
     reset: function () {}, tension: function () { return 0; }, drawTop: function () {},
