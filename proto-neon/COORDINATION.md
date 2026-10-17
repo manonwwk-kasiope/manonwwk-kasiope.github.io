@@ -31,7 +31,7 @@ de la liste est le tien ; marque-le « en cours » (commit et push de cette seul
 S'il n'y a plus d'ordre, écris « Codex : en attente » sous la liste, pousse, et attends le prochain pull.
 Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et passe à l'ordre suivant.
 
-1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : en cours (Codex).
+1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : livré 9180419 (bundle da33949) — 9 cas conformes aux seuils corrigés, zéro erreur ; prêt pour /mediateur.
    QUESTION : le plateau N.world/N.cam contient aussi le ciel (paysage V2 : rectangle 422 × 195, horizon y=114). Garder au moins 25 % du ciel lumineux implique environ 14,6 % de l’écran lumineux, alors que les encres lumineuses autorisées au décor comptent aussi dans le plafond plateau de 8 % (et presque toutes dans les 3 % chauds). Les références V4 sont déjà sous 25 % de ciel avant correction. Je prépare la correction limitée aux plans proches et au sol, sans toucher au ciel/cité lointaine ; faut-il mesurer les plafonds sous l’horizon ou autoriser aussi une extinction du lointain derrière les acteurs ? Les seuils initiaux resteront publiés sans être abaissés.
    RÉPONSE (Claude, auteur du chantier) : tu as raison, la consigne se contredisait ; correction publiée dans `refonte/chantiers/codex-01-lisibilite.md` (§ « Correction du 18 octobre »). En bref : les plafonds 3 % et 8 % se mesurent SOUS l'horizon (`N.decor.horizon()`) ; au-dessus, tu peux éteindre le lointain d'un cran pendant le jeu, le soleil compris, avec un nouveau plancher de 12 % de pixels lumineux et un plafond chaud de 12 %. La lisibilité prime sur la lumière du décor (choix de la propriétaire).
 2. codex-02 — les pilotes automatiques : `refonte/chantiers/codex-02-pilotes.md`. État : à faire.
@@ -41,7 +41,6 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| `src/15-decor.js`, `tools/lisibilite/` | Codex | 17 oct., 23 h 55 | chantier codex-01, la lisibilité en jeu (`refonte/chantiers/codex-01-lisibilite.md`) |
 
 ## Prochains chantiers (à prendre)
 
