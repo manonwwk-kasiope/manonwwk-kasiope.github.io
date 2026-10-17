@@ -24,7 +24,12 @@ N.art = (function () {
   var CLIPS = { affiche: [1, 1], briefing: [1, 0], victoire: [1, 1], defaite: [1, 1],
     exterieur: [0, 0], connexion: [0, 1], eveil: [0, 1], alerte: [0, 0], boss: [0, 0],
     /* les intermèdes (refonte/INTERMEDES.md) : de courts films entre les moments de jeu */
-    chasse: [0, 1], retournement: [0, 1], rival: [0, 1], plongee: [0, 1], reveil: [0, 0], apotheose: [0, 1] };
+    chasse: [0, 1], retournement: [0, 1], rival: [0, 1], plongee: [0, 1], reveil: [0, 0], apotheose: [0, 1],
+    /* les deux pilotes (refonte/VISION-PROGRESSION.md § 6) : chaque film existe en deux versions, « -elle » et « -lui » */
+    'pilote-elle': [1, 1], 'pilote-lui': [1, 1], 'connexion-elle': [0, 1], 'connexion-lui': [0, 1],
+    'fissure-elle': [0, 1], 'fissure-lui': [0, 1], 'profondeur-elle': [0, 1], 'profondeur-lui': [0, 1],
+    'warp-elle': [0, 1], 'warp-lui': [0, 1], 'espace-elle': [0, 1], 'espace-lui': [0, 1],
+    'fin-elle': [0, 1], 'fin-lui': [0, 1], retrouvailles: [0, 1], 'teaser-3019': [0, 1] };
   var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;
@@ -156,7 +161,18 @@ N.art = (function () {
     for (var n in cur) { var v = cur[n].v; if (!v) continue; try { if (document.hidden) v.pause(); else if (!cur[n].ended) v.play().catch(function () {}); } catch (e) {} }
   });
 
+  /* le nom du film propre au personnage choisi (N.choix.personnage() : 'elle' | 'lui') : « fin » donne « fin-elle »
+     ou « fin-lui » s'il existe en illustration ou en clip, sinon le nom tel quel */
+  function pour(base) {
+    var qui = null;
+    try { qui = N.choix && N.choix.personnage ? N.choix.personnage() : null; } catch (e) { qui = null; }
+    if (!qui) return base;
+    var n = base + '-' + qui;
+    return (SRC[n] || DISPO.indexOf(n) >= 0) ? n : base;
+  }
+
   return {
+    pour: pour,
     /* noms disponibles : affiche, horizon, briefing, logo, et les sept panneaux de cinématique */
     names: function () { return Object.keys(SRC); },
     /* lance le décodage de toutes les illustrations ; rend une promesse */
