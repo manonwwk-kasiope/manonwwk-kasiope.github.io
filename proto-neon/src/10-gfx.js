@@ -25,6 +25,19 @@
      buf()                      le Uint8Array d'index, en lecture directe (tests, 20-crt.js)
      canvas() / context()       le canvas de sortie et son contexte (20-crt.js en a besoin)
      at(x,y)                    l'index posé en (x,y), -1 hors tampon (tests)
+
+   Ajouts du lot B (REFONTE.md § 7.8), sans changer les signatures existantes :
+     origin(ox,oy)              ORIGINE DE DESSIN : toutes les primitives retranchent (ox,oy), arrondi à l'entier.
+                                origin(0,0) = écran. En jeu, le monde se dessine avec origin(cam.x, cam.y) ;
+                                le HUD, l'interface et les cinématiques avec origin(0,0).
+     layer(img,{x,y,wrapX,opaque,lut,luts})   pose un plan {w,h,data} par copie de rangées. Le plan est posé en (x,y)
+                                (retranche l'origine) ; wrapX le fait boucler sans couture ; opaque : l'index 0
+                                est posé aussi (sinon transparent) ; lut : table de 16 index (cyclage, quartiers) ;
+                                luts : une table par rangée du plan (prioritaire sur lut).
+     remap(lut[,rect])          applique une table d'index au tampon (la mort : monde en nuit et ardoise)
+     owner(code) / masque(b)    propriétaire des pixels dessinés ensuite ; masque(true) alloue le masque, coût nul sinon
+     copyTo(dst) / mixBayer(src,p)   copie du tampon ; fondu tramé (balayages de 0,4 s du VOL et des quartiers)
+     present({skipScale})       skipScale : ni conversion, ni putImageData, ni agrandissement (20-crt.js relit buf())
 */
 (function () {
   'use strict';
@@ -37,6 +50,8 @@
   var buf = null;                       /* le tampon d'index : la vérité du rendu */
   var W = 0, H = 0, PX = 2;
   var smoothOK = false;                 /* le lissage a-t-il été désarmé depuis le dernier resize */
+  var OX = 0, OY = 0;                   /* origine de dessin : un point (x,y) du monde se pose en (x-OX, y-OY) */
+  var MK = null, OWN = 0, maskOn = false;   /* masque de propriété : un octet par pixel, seulement s'il est armé */
 
   var RND = Math.round;
 
@@ -68,6 +83,7 @@
     if (w === W && h === H && p === PX && buf) { smoothOK = false; return { w: W, h: H, px: PX }; }
     W = w; H = h; PX = p;
     buf = new Uint8Array(W * H);
+    MK = maskOn ? new Uint8Array(W * H) : null;
     ic = mkCanvas(W, H);
     ictx = ic ? ic.getContext('2d', { alpha: false }) : null;
     if (ictx) {
@@ -94,14 +110,17 @@
   /* ---- primitives ---- */
   function clear(ci) { if (buf) buf.fill((ci | 0) & 15); }
 
+  function origin(ox, oy) { OX = RND(+ox || 0); OY = RND(+oy || 0); }
+
   function px(x, y, ci) {
-    x = RND(x); y = RND(y);
+    x = RND(x) - OX; y = RND(y) - OY;
     if (x < 0 || y < 0 || x >= W || y >= H) return;
     buf[y * W + x] = (ci | 0) & 15;
+    if (MK) MK[y * W + x] = OWN;
   }
 
   function at(x, y) {
-    x = RND(x); y = RND(y);
+    x = RND(x) - OX; y = RND(y) - OY;
     if (x < 0 || y < 0 || x >= W || y >= H) return -1;
     return buf[y * W + x];
   }
@@ -114,10 +133,11 @@
     if (x1 < x0) return;
     var o = y * W;
     buf.fill(c, o + x0, o + x1 + 1);
+    if (MK) MK.fill(OWN, o + x0, o + x1 + 1);
   }
 
   function rect(x, y, w, h, ci) {
-    x = RND(x); y = RND(y); w = RND(w); h = RND(h);
+    x = RND(x) - OX; y = RND(y) - OY; w = RND(w); h = RND(h);
     if (w <= 0 || h <= 0) return;
     var c = (ci | 0) & 15, y1 = y + h - 1, x1 = x + w - 1;
     if (y < 0) y = 0; if (y1 > H - 1) y1 = H - 1;
@@ -128,20 +148,20 @@
     if (t === undefined) t = 1;
     if (t >= 1) return rect(x, y, w, h, ci);
     if (!(t > 0)) return;
-    x = RND(x); y = RND(y); w = RND(w); h = RND(h);
+    x = RND(x) - OX; y = RND(y) - OY; w = RND(w); h = RND(h);
     var c = (ci | 0) & 15, D = N.pal.dither;
     var x0 = x < 0 ? 0 : x, y0 = y < 0 ? 0 : y;
     var x1 = x + w - 1, y1 = y + h - 1;
     if (x1 > W - 1) x1 = W - 1; if (y1 > H - 1) y1 = H - 1;
     for (var yy = y0; yy <= y1; yy++) {
       var o = yy * W;
-      for (var xx = x0; xx <= x1; xx++) if (D(xx, yy, t)) buf[o + xx] = c;
+      for (var xx = x0; xx <= x1; xx++) if (D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
     }
   }
 
   /* Bresenham entier : aucune position intermédiaire, aucun lissage */
   function line(x0, y0, x1, y1, ci) {
-    x0 = RND(x0); y0 = RND(y0); x1 = RND(x1); y1 = RND(y1);
+    x0 = RND(x0) - OX; y0 = RND(y0) - OY; x1 = RND(x1) - OX; y1 = RND(y1) - OY;
     var c = (ci | 0) & 15;
     var dx = x1 - x0 < 0 ? x0 - x1 : x1 - x0;
     var dy = y1 - y0 < 0 ? y0 - y1 : y1 - y0;
@@ -150,7 +170,7 @@
     /* garde-fou : une ligne absurde ne doit pas geler l'image */
     var guard = dx + dy + 4;
     for (;;) {
-      if (x0 >= 0 && y0 >= 0 && x0 < W && y0 < H) buf[y0 * W + x0] = c;
+      if (x0 >= 0 && y0 >= 0 && x0 < W && y0 < H) { buf[y0 * W + x0] = c; if (MK) MK[y0 * W + x0] = OWN; }
       if (x0 === x1 && y0 === y1) break;
       if (--guard < 0) break;
       e2 = err + err;
@@ -160,7 +180,7 @@
   }
 
   function circ(x, y, r, ci) {
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x) - OX; y = RND(y) - OY; r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, rr = r * r;
     var dy0 = -r, dy1 = r;
@@ -175,7 +195,7 @@
     if (t === undefined) t = 1;
     if (t >= 1) return circ(x, y, r, ci);
     if (!(t > 0)) return;
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x) - OX; y = RND(y) - OY; r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, rr = r * r, D = N.pal.dither;
     var dy0 = -r, dy1 = r;
@@ -185,14 +205,14 @@
       var yy = y + dy, o = yy * W;
       var a = x - dx, b = x + dx;
       if (a < 0) a = 0; if (b > W - 1) b = W - 1;
-      for (var xx = a; xx <= b; xx++) if (D(xx, yy, t)) buf[o + xx] = c;
+      for (var xx = a; xx <= b; xx++) if (D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
     }
   }
 
   /* Couronne épaisse tramée, de r0 à r1 : une explosion est une forme, pas un flou. */
   function disc(x, y, r0, r1, ci, t) {
     if (t === undefined) t = 1;
-    x = RND(x); y = RND(y); r0 = RND(r0); r1 = RND(r1);
+    x = RND(x) - OX; y = RND(y) - OY; r0 = RND(r0); r1 = RND(r1);
     if (r1 < r0) { var sw = r0; r0 = r1; r1 = sw; }
     if (r1 < 0) return;
     if (r0 < 0) r0 = 0;
@@ -207,7 +227,7 @@
       for (var xx = ax; xx <= bx; xx++) {
         var ex = xx - x, q = ex * ex + d2;
         if (q < a2 || q > b2) continue;
-        if (full || D(xx, yy, t)) buf[o + xx] = c;
+        if (full || D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
       }
     }
   }
@@ -215,14 +235,14 @@
   /* Anneau d'épaisseur 1 trame, algorithme du point milieu, chaque pixel filtré par le tramage. */
   function ring(x, y, r, ci, t) {
     if (t === undefined) t = 1;
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x) - OX; y = RND(y) - OY; r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, D = N.pal.dither, full = t >= 1;
     if (!full && !(t > 0)) return;
 
     function pt(px0, py0) {
       if (px0 < 0 || py0 < 0 || px0 >= W || py0 >= H) return;
-      if (full || D(px0, py0, t)) buf[py0 * W + px0] = c;
+      if (full || D(px0, py0, t)) { buf[py0 * W + px0] = c; if (MK) MK[py0 * W + px0] = OWN; }
     }
     if (r === 0) { pt(x, y); return; }
 
@@ -241,7 +261,7 @@
     if (!sprite || !sprite.data) return;
     var sw = sprite.w | 0, sh = sprite.h | 0;
     if (sw <= 0 || sh <= 0) return;
-    x = RND(x); y = RND(y);
+    x = RND(x) - OX; y = RND(y) - OY;
     var d = sprite.data;
     var fx = !!(opts && opts.flipX), fy = !!(opts && opts.flipY);
     var ink = (opts && opts.ci !== undefined && opts.ci !== null) ? ((N.pal.i(opts.ci) | 0) & 15) : -1;
@@ -261,12 +281,105 @@
         var vv = d[so + sx];
         if (!vv) continue;
         buf[to + tx] = ink >= 0 ? ink : (vv & 15);
+        if (MK) MK[to + tx] = OWN;
       }
     }
   }
 
+  /* ---- plans : copie de rangées, bouclage horizontal, table de couleurs ----
+     img {w,h,data} d'index ; o {x,y,wrapX,opaque,lut}. Le plan est posé en (x,y) (l'origine est retranchée, comme
+     pour toute primitive). wrapX : le plan boucle sans couture sur toute la largeur du tampon. opaque : l'index 0
+     est posé aussi (sinon il est transparent, comme pour blit). lut : table de 16 index appliquée à la volée
+     (cyclage des enseignes, table de couleurs d'un quartier). Un plan sans lut ni transparence se copie par
+     segments entiers (buf.set) : c'est le chemin rapide du ciel et du sol. */
+  function layer(img, o) {
+    if (!img || !img.data || !buf) return;
+    var iw = img.w | 0, ih = img.h | 0, d = img.data;
+    if (iw <= 0 || ih <= 0) return;
+    var x0 = RND((o && o.x) || 0) - OX, y0 = RND((o && o.y) || 0) - OY;
+    var wrap = !!(o && o.wrapX), opaque = !!(o && o.opaque), lut0 = (o && o.lut) || null, luts = (o && o.luts) || null;
+    var ya = y0 < 0 ? -y0 : 0, yb = ih - 1;
+    if (y0 + yb > H - 1) yb = H - 1 - y0;
+    if (ya > yb) return;
+    var fast = opaque && !lut0 && !luts;
+    for (var r = ya; r <= yb; r++) {
+      var so = r * iw, to = (y0 + r) * W;
+      var lut = luts ? luts[r] : lut0;           /* une table par rangée du plan : rangées de fenêtres, éclipse */
+      if (wrap) {
+        var s0 = (-x0) % iw; if (s0 < 0) s0 += iw;         /* colonne du plan qui tombe sur la colonne 0 du tampon */
+        var tx = 0;
+        while (tx < W) {
+          var run = iw - s0; if (run > W - tx) run = W - tx;
+          if (fast) buf.set(d.subarray(so + s0, so + s0 + run), to + tx);
+          else for (var k = 0; k < run; k++) {
+            var v = d[so + s0 + k];
+            if (!v && !opaque) continue;
+            buf[to + tx + k] = lut ? lut[v] : v;
+          }
+          if (MK) MK.fill(OWN, to + tx, to + tx + run);
+          tx += run; s0 = 0;
+        }
+      } else {
+        var a = x0 < 0 ? -x0 : 0, b = iw - 1;
+        if (x0 + b > W - 1) b = W - 1 - x0;
+        if (a > b) continue;
+        if (fast) buf.set(d.subarray(so + a, so + b + 1), to + x0 + a);
+        else for (var k2 = a; k2 <= b; k2++) {
+          var v2 = d[so + k2];
+          if (!v2 && !opaque) continue;
+          buf[to + x0 + k2] = lut ? lut[v2] : v2;
+        }
+        if (MK) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
+      }
+    }
+  }
+
+  /* applique une table d'index au tampon, en entier ou dans rect {x,y,w,h} (coordonnées de dessin) */
+  function remap(lut, rect) {
+    if (!buf || !lut) return;
+    var x0 = 0, y0 = 0, x1 = W - 1, y1 = H - 1;
+    if (rect) {
+      x0 = RND(rect.x) - OX; y0 = RND(rect.y) - OY; x1 = x0 + RND(rect.w) - 1; y1 = y0 + RND(rect.h) - 1;
+      if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0; if (x1 > W - 1) x1 = W - 1; if (y1 > H - 1) y1 = H - 1;
+    }
+    for (var y = y0; y <= y1; y++) {
+      var o = y * W;
+      for (var x = o + x0, e = o + x1; x <= e; x++) buf[x] = lut[buf[x]];
+    }
+  }
+
+  /* masque de propriété (§ 7.12) : owner(code) fixe qui dessine ; masque(true) l'arme (un octet par pixel) */
+  function owner(code) { OWN = code & 255; }
+  function masque(on) {
+    maskOn = !!on;
+    if (maskOn) { if (!MK || MK.length !== W * H) MK = new Uint8Array(W * H); }
+    else MK = null;
+    return MK;
+  }
+
+  /* copie du tampon d'index dans dst (alloué ici s'il manque ou s'il n'a pas la taille) */
+  function copyTo(dst) {
+    if (!buf) return dst || null;
+    if (!dst || dst.length !== buf.length) dst = new Uint8Array(buf.length);
+    dst.set(buf);
+    return dst;
+  }
+
+  /* fondu tramé : là où Bayer(x,y) < p, le tampon prend src ; p de 0 (rien) à 1 (tout) */
+  function mixBayer(src, p) {
+    if (!buf || !src || src.length !== buf.length) return;
+    if (!(p > 0)) return;
+    if (p >= 1) { buf.set(src); return; }
+    var B = N.pal.BAYER, lim = p * 16;
+    for (var y = 0; y < H; y++) {
+      var o = y * W, br = (y & 3) << 2;
+      for (var x = 0; x < W; x++) if (lim > B[br | (x & 3)]) buf[o + x] = src[o + x];
+    }
+  }
+
   /* ---- présentation : une seule composition, puis un agrandissement en voisin le plus proche ---- */
-  function present() {
+  function present(o) {
+    if (o && o.skipScale) return;           /* le tube relit buf() lui-même : aucune conversion ici (§ 7.11) */
     if (!buf || !octx || !ictx || !u32) return;
     var P = N.pal.U32, b = buf, u = u32, nn = b.length, j = 0;
 
@@ -303,6 +416,9 @@
     clear: clear, px: px, rect: rect, line: line, circ: circ, ring: ring, blit: blit,
     ditherRect: ditherRect, ditherCirc: ditherCirc, disc: disc,
     at: at,
+    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque, copyTo: copyTo, mixBayer: mixBayer,
+    ox: function () { return OX; }, oy: function () { return OY; },
+    mask: function () { return MK; },
     buf: function () { return buf; },
     canvas: function () { return out; },
     context: function () { return octx; },
