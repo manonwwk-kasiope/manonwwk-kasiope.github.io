@@ -510,7 +510,7 @@ var MUSIQUE_EMBED = null;
       cadence: { parPrise: 0.20, prises: 3 },                 // mods.cadence = 1 + 0,20 × prises
       aimant: { rayons: [28, 48, 68], prises: 2 },            // mods.aimant
       croissance: { segments: 4, lenMax: 5, prises: 2 },      // +4 segments tout de suite, +5 au maximum
-      reparation: { periodes: [6, 4], prises: 2 },            // +1 segment toutes les 6 s (4 s à la 2ᵉ prise)
+      reparation: { periodes: [6, 4], prises: 2 },            // un segment PERDU (coupe, mort) repousse toutes les 6 s (4 s à la 2ᵉ prise)
       bouclier: { charges: 1, recharge: 20, prises: 1 },
       eperon: { pvMax: 30, cout: 15, prises: 1 },             // en accélération ; coût en points de réserve
       grappe: { prises: 2, generations: 2, niveaux: [{ rayon: 16, degats: 15 }, { rayon: 22, degats: 25 }] },
@@ -12034,7 +12034,10 @@ N.joueuse = (function () {
     /* LASSO (§ 2.12) */
     lassoCd: 0, annonce: null, annonceCd: 0, lassoFx: null, lassos: 0,
     /* INVERSION (§ 2.17) */
-    inv: null, inoff: 0
+    inv: null, inoff: 0,
+    /* BOUCLIER et RÉPARATION (cartes de survie, N.R.passifs) : la charge du bouclier, sa recharge, l'éclat d'un
+       coup absorbé ; les segments perdus (coupes, morts) que la RÉPARATION fait repousser un à un */
+    bcl: 0, bclArme: false, bclRech: 0, bclFx: -1, perdu: 0, repT: 0
   };
   var clk = 0;                                   // horloge de la joueuse (somme des dt joueuse), pour l'âge de la traînée
   var PV = { id: 'traversee', etat: 'pret', reste: 0, dur: 0, recharge: 0 };   // N.joueuse.pouvoir (même référence)
@@ -12086,6 +12089,7 @@ N.joueuse = (function () {
     P.ang = at && typeof cfg.ang === 'number' ? cfg.ang : a0;
     P.vit = vitesse();
     st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
+    st.bcl = 0; st.bclArme = false; st.bclRech = 0; st.bclFx = -1; st.perdu = 0; st.repT = 0;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
     clk = 0; trailReset(P.x, P.y, P.ang, 40);
     st.res = 100; st.bOn = false; st.bk = 0; st.geste = false; st.pousseT = 0; st.veutPrev = false; st.susp = false; st.panne = false; st.bas = 0;
@@ -12144,10 +12148,43 @@ N.joueuse = (function () {
   /* ============================ la mort ============================
      tuer() remplit S.death (schéma § 7.5), passe en 'mort' et émet `mort`. C'est 79-jeu.js qui séquence la
      suite (gel, ralenti, désintégration, réapparition ou fin) à partir de cet événement. */
+  /* ============================ BOUCLIER et RÉPARATION ============================
+     BOUCLIER (N.R.passifs.bouclier) : une charge qui absorbe UN coup — coupe du corps ou coup mortel à la tête —
+     puis se recharge en 20 s. Le mur et la morsure ne s'absorbent pas : le mur tue toujours, se mordre est une
+     faute de pilotage. Un coup absorbé émet `coup` avec absorbe: true, et donne 0,4 s de répit.
+     RÉPARATION (N.R.passifs.reparation) : les segments perdus — coupes et moitié perdue à la mort — repoussent
+     un à un, toutes les 6 s (4 s à la 2ᵉ prise). Sans perte, rien ne pousse : la carte rend ce qu'on t'a pris. */
+  function mods() { return (N.cartes && N.cartes.mods) || {}; }
+  function absorber(partie, k, cause, src, x, y) {
+    if (!(mods().bouclier > 0) || st.bcl <= 0) return false;
+    var I = infoSource(src);
+    st.bcl = 0; st.bclRech = ((R && R.passifs && R.passifs.bouclier && R.passifs.bouclier.recharge) || 20);
+    st.bclFx = 0; st.invul = Math.max(st.invul, 0.4);
+    if (N.ev) N.ev.emit('coup', { partie: partie, k: k, cause: cause, auteur: auteurDe(src, I.e), auteurId: src && src.id >= 0 ? src.id : null,
+      x: x, y: y, absorbe: true, visibleDepuis: I.vu, teleDuree: I.tele });
+    O.sfx('verrou');
+    texte(P.x, P.y - 10, 'BOUCLIER', O.CYANP);
+    return true;
+  }
+  function survie(dt) {
+    var m = mods();
+    if (m.bouclier > 0) {
+      if (!st.bclArme) { st.bclArme = true; st.bcl = 1; }                      // la carte prise : chargé tout de suite
+      if (st.bcl <= 0 && (st.bclRech -= dt) <= 0) { st.bcl = 1; st.bclRech = 0; O.sfx('pouvoirPret'); }
+    }
+    if (st.bclFx >= 0 && (st.bclFx += dt) > 0.35) st.bclFx = -1;
+    var n = Math.min(2, m.reparation | 0);
+    if (n > 0 && st.perdu > 0 && st.len < lenMax()) {
+      var per = (R && R.passifs && R.passifs.reparation && R.passifs.reparation.periodes) || [6, 4];
+      if ((st.repT += dt) >= per[n - 1]) { st.repT = 0; st.perdu--; grandir(1); }
+    } else st.repT = 0;
+  }
+
   function tuer(cause, src) {
     if (!S) S = N.S;
     if (st.etat === 'mort' || st.god) return false;
     if ((st.invul > 0 || st.trav > 0) && cause !== 'mur' && cause !== 'morsure') return false;     // le mur et la morsure restent mortels
+    if (cause !== 'mur' && cause !== 'morsure' && absorber('tete', 0, cause, src, P.x, P.y)) return false;
     var I = infoSource(src), vague = 0, quartier = 'docks';
     if (N.dir && N.dir.vague) { var w = N.dir.vague(); vague = (w && typeof w === 'object') ? (w.n | 0) : (w | 0); }
     var vs = R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues;
@@ -12184,6 +12221,8 @@ N.joueuse = (function () {
     if (perdus <= 0) return 0;
     segAt(k);
     var cx = SPX, cy = SPY;
+    if (cause !== 'morsure' && absorber('corps', k, cause, src, cx, cy)) return 0;
+    st.perdu += perdus;
     if (N.ev) N.ev.emit('coup', { partie: 'corps', k: k, cause: cause, auteur: auteur, auteurId: src && src.id >= 0 ? src.id : null,
       x: cx, y: cy, absorbe: false, visibleDepuis: I.vu, teleDuree: I.tele });
     st.len = nouvelle;                       // les cellules tombent par le consommateur de `coupe` de 71-butin (rang 40)
@@ -12266,6 +12305,7 @@ N.joueuse = (function () {
     if (st.inoff > 0) st.inoff -= dt;
     pouvoirMaj(dt);
     apogeeMaj(dt);
+    survie(dt);
 
     collisions(dt);
     if (st.etat !== 'mort') { lasso(dt); if (st.lassoFx) { st.lassoFx.t += dt; if (st.lassoFx.t > 0.5) st.lassoFx = null; } }
@@ -12754,7 +12794,10 @@ N.joueuse = (function () {
     var A = O.A, p = pos || pointSur();
     P.x = p.x; P.y = p.y;
     P.ang = Math.atan2((A.y0 + A.y1) / 2 - P.y, (A.x0 + A.x1) / 2 - P.x); st.target = P.ang; st.rate = 1;
+    var lenAvant = st.len;
     st.len = Math.max(ru.longueurMin, Math.ceil(st.len * ru.longueurPart));
+    st.perdu += Math.max(0, lenAvant - st.len);                 // la RÉPARATION fera repousser ce que la mort a pris
+    st.bclFx = -1;
     st.invul = ru.invul; st.etat = 'reapparition'; N.joueuse.etat = 'reapparition'; st.gone = 0; st.pulse = -1; st.grace = -1; st.ready = (ru.ready || 0.6);
     trailReset(P.x, P.y, P.ang, 40);
     /* ce qu'on dégage : tirs à moins de 40 px effacés, ennemis à moins de 48 px figés 0,4 s */
@@ -12811,6 +12854,9 @@ N.joueuse = (function () {
     }
     drawJauge(); drawPouvoir();
     put(sp('tete:' + O.dir16(P.ang), Math.floor(ak * 5)), P.x, P.y);
+    /* le BOUCLIER chargé : un anneau pâle qui respire autour de la tête ; un coup absorbé : l'anneau éclate */
+    if (st.bcl > 0) N.gfx.ring(P.x, P.y, 7 + (Math.floor(ak * 3) & 1), O.CYANP, 1);
+    if (st.bclFx >= 0) N.gfx.ring(P.x, P.y, Math.round(8 + st.bclFx * 40), (Math.floor(st.bclFx * 20) & 1) ? O.CYANP : O.OS, 1);
     /* le cap visé, quand il diffère du cap réel de plus de 20° (J-33) */
     var d = O.wrapA(st.target - P.ang), ch = (R && R.joueuse && R.joueuse.chevron && R.joueuse.chevron.ecartDeg) || 20;
     if (Math.abs(d) > ch * Math.PI / 180) put(sp('chevron:' + O.dir16(st.target), 0), P.x + Math.cos(st.target) * 11, P.y + Math.sin(st.target) * 11);
@@ -16207,7 +16253,7 @@ N.cartes = (function () {
       case 'croissance':
         var pc = (R.longueur && R.longueur.parCroissance) || a.segments;     // la valeur que 70-joueuse applique (→ demandes.md : le tableau § 2.9 dit +4)
         l1 = '+' + pc + ' SEGMENTS'; l2 = 'MAX ' + MODS.lenMax + ' → ' + (MODS.lenMax + a.lenMax); break;
-      case 'reparation': l1 = '+1 SEGMENT'; l2 = 'TOUTES LES ' + a.periodes[i] + ' S'; break;
+      case 'reparation': l1 = 'REPOUSSE 1 SEGMENT PERDU'; l2 = 'TOUTES LES ' + a.periodes[i] + ' S'; break;
       case 'bouclier': l1 = 'ABSORBE UN COUP'; l2 = 'RECHARGE ' + a.recharge + ' S'; break;
       case 'eperon': l1 = 'EN ACCÉLÉRATION'; l2 = 'BROIE JUSQU\'À ' + a.pvMax + ' PV'; break;
       case 'grappe': l1 = 'KILL = EXPLOSION'; l2 = a.niveaux[i].rayon + ' PX · ' + a.niveaux[i].degats + ' DÉG'; break;
