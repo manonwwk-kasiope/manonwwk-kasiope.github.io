@@ -37,7 +37,20 @@
      N.fx.update(dt), N.fx.draw()
      N.S.heat                 chaleur de l'écran 0..1 (halo de 20-crt.js), somme des explosions vivantes.
 
-   Extras publiés, documentés pour 70-game.js :
+   LOT G (ajouts, REFONTE.md § 5.3, § 5.4, § 7.8). Les coordonnées de dessin sont celles du MONDE : draw() retranche l'origine de
+  N.gfx (la caméra) ; drawEcran() et boom(…, {ecran:true}) travaillent en pixels du tampon.
+     N.fx.boom(x,y,force,ci[,variante])  variante 'joueuse' : cœur os → cyan pâle → cyan → indigo, éclats cyan ; {ecran:true} : écran
+     N.fx.ralenti(k,dur,{joueuse:false,visuel:true,long:true})  dur en secondes de temps RÉEL ; le plus lent gagne ; ralenti + gel
+                              ne dépassent pas 0,5 s (sauf long) ; visuel : n'étire que les effets, pas l'horloge de jeu
+     N.fx.k(), N.fx.kJoueuse() facteurs lus par N.horloge ; N.fx.kVisuel() le facteur des effets seuls
+     N.fx.apres(sec,fn)       planificateur (avance avec fx.update, donc dans tous les états)
+     N.fx.onde(x,y,r0,r1,ci,dur[,{epaisseur,ecran}])  un anneau tramé qui s'étend, maigrit et se troue
+     N.fx.pickup(x,y), N.fx.lasso(poly,n), N.fx.glitch(force,dur), N.fx.vignette(angle,force)
+     N.fx.desintegre(points,dur)  anneau cyan par point (plat [x,y,…] ou objets), étalés sur dur (0 : tous d'un coup)
+     N.fx.tele(desc) / drawTele()  télégraphes au schéma du § 7.5 ; S.tele les liste ; gaine nuit profonde, rose pâle dans les 300 dernières ms
+     N.fx.drawEcran()         explosions d'écran, vignette, glitch (à appeler après N.gfx.origin(0,0))
+
+  Extras publiés, documentés pour 70-game.js :
      N.fx.hit(obj, aire)      FLASH DE FRAPPE : l'objet touché se dessine en os pendant UNE image (et pendant
                               le gel en cours s'il y en a un). Au plus 3 flashs par seconde pour un même objet
                               (WCAG, technique G19) ; aucun si les flashs sont coupés. Rend true s'il flashera.
@@ -113,7 +126,7 @@
 
   /* ---------------- palette, résolue par nom ---------------- */
   var VIDE = 0, NUIT = 1, ARD = 2, INDIGO = 4, MAG = 5, ROSE = 6, CYAN = 7, CYANP = 8,
-    AMBRE = 9, JAUNE = 10, BRAS = 11, OS = 12, SANG = 14;
+    AMBRE = 9, JAUNE = 10, BRAS = 11, OS = 12, SANG = 14, NP = 15;
   var BAY = new Uint8Array([0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]);
   var BO = new Float32Array(16);           /* décalage de Bayer en unités de température */
   function palInit() {
@@ -121,7 +134,7 @@
     if (P && P.i) {
       VIDE = P.i('vide'); NUIT = P.i('nuit'); ARD = P.i('ardoise'); INDIGO = P.i('indigo');
       MAG = P.i('magenta'); ROSE = P.i('rosePale'); CYAN = P.i('cyan'); CYANP = P.i('cyanPale');
-      AMBRE = P.i('ambre'); JAUNE = P.i('jaune'); BRAS = P.i('brasier'); OS = P.i('os'); SANG = P.i('sang');
+      AMBRE = P.i('ambre'); JAUNE = P.i('jaune'); BRAS = P.i('brasier'); OS = P.i('os'); SANG = P.i('sang'); NP = P.i('nuitProfonde');
       if (P.BAYER && P.BAYER.length === 16) for (var k = 0; k < 16; k++) BAY[k] = P.BAYER[k];
     }
     for (var j = 0; j < 16; j++) BO[j] = (BAY[j] - 7.5) / 16 * DW;
@@ -259,6 +272,7 @@
     n = Math.round(+n || 0);
     if (!(n > 0)) return;
     if (n > HS_MAX) n = HS_MAX;
+    if (N.horloge && N.horloge.geler) { try { N.horloge.geler(n / 60); } catch (e0) {} }
     var f = frameNo();
     if (f >= hsSet && f <= hsEnd && hsEnd > hsSet) { var e = hsSet + n; if (e > hsEnd) hsEnd = e; }
     else { hsSet = f; hsEnd = f + n; }
@@ -324,6 +338,7 @@
   /* ---------------- particules : tableaux typés, aucun objet ---------------- */
   var K_SHARD = 1, K_BODY = 2, K_SPARK = 3, K_DEBRIS = 4, K_TRAIL = 5;
   var PRIO = [9, 4, 4, 3, 0, 1];                         /* qui cède en premier quand tout est plein */
+  var pvr = new Uint8Array(CAP), curVar = 0;     /* pvr : 1 = particule de la joueuse (cyan) */
   var pk = new Uint8Array(CAP), pc = new Uint8Array(CAP), pc2 = new Uint8Array(CAP), psz = new Uint8Array(CAP);
   var ppx = new Float32Array(CAP), ppy = new Float32Array(CAP), pvx = new Float32Array(CAP), pvy = new Float32Array(CAP);
   var pqx = new Float32Array(CAP), pqy = new Float32Array(CAP);
@@ -347,7 +362,7 @@
       if (best < 0 || bp > pr) { ST.dropped++; return -1; }
       i = best; live--;
     }
-    pk[i] = kind; pa[i] = 0; live++;
+    pk[i] = kind; pa[i] = 0; pvr[i] = curVar; live++;
     if (live > ST.peak) ST.peak = live;
     return i;
   }
@@ -355,6 +370,7 @@
 
   /* ---------------- explosions ---------------- */
   var eOn = new Uint8Array(NEX), eBig = new Uint8Array(NEX), eAtt = new Uint8Array(NEX), eCi = new Uint8Array(NEX);
+  var eScr = new Uint8Array(NEX), eVar = new Uint8Array(NEX);     /* écran (pas monde) ; 1 = variante « joueuse » */
   var eSoft = new Uint8Array(NEX);         /* sans blanc : atténuée, ou flashs coupés par la joueuse */
   var eX = new Int16Array(NEX), eY = new Int16Array(NEX), eIgn = new Uint16Array(NEX);
   var eF = new Float32Array(NEX), eR = new Float32Array(NEX), eAge = new Float32Array(NEX);
@@ -366,7 +382,7 @@
   var RG_MED = [0.00, 0.60, 1.70, 0.34, 3, 1, 1.00, 0.08, 0.72, 1.42, 0.40, 2, 1, 0.80];
   var RG_SMA = [0.00, 0.65, 1.80, 0.24, 2, 1, 1.00];
 
-  var ST = { live: 0, peak: 0, ex: 0, booms: 0, full: 0, atten: 0, shrunk: 0, flashes: 0, refused: 0, dropped: 0, thr: 0, last: 0 };
+  var ST = { ralentis: 0, live: 0, peak: 0, ex: 0, booms: 0, full: 0, atten: 0, shrunk: 0, flashes: 0, refused: 0, dropped: 0, thr: 0, last: 0 };
 
   function scale(g) {
     var sc = Math.sqrt((g.W | 0) * (g.H | 0)) / 287;
@@ -401,12 +417,16 @@
     var i = alloc(K_SPARK);
     if (i < 0) return;
     ppx[i] = x; ppy[i] = y; pvx[i] = Math.cos(ang) * sp; pvy[i] = Math.sin(ang) * sp;
-    psz[i] = 1; pd[i] = 7; pl[i] = life; pc[i] = hot ? OS : JAUNE;
+    psz[i] = 1; pd[i] = 7; pl[i] = life; pc[i] = curVar ? CYANP : (hot ? OS : JAUNE);
   }
 
-  function boom(x, y, force, ci) {
+  function boom(x, y, force, ci, opt) {
     var g = N.gfx;
     if (!g) return 0;
+    var vj = false, scr = false;
+    if (typeof opt === 'string') vj = opt === 'joueuse';
+    else if (opt && typeof opt === 'object') { vj = opt.variante === 'joueuse'; scr = !!opt.ecran; }
+    if (vj) ci = CYAN;
     x = Math.round(+x || 0); y = Math.round(+y || 0);
     if (x < -4000) x = -4000; if (x > 12000) x = 12000; if (y < -4000) y = -4000; if (y > 12000) y = 12000;
     var f = +force;
@@ -414,6 +434,8 @@
     if (f > 1) f = 1;
     ci = (ci === undefined || ci === null) ? BRAS : ((N.pal && N.pal.i) ? (N.pal.i(ci) & 15) : (ci | 0) & 15);
     var big = f > 0.6, sc = scale(g);
+    var ox = scr && g.ox ? g.ox() : 0, oy = scr && g.oy ? g.oy() : 0;     /* écran : les éclats sont posés dans le monde */
+    curVar = vj ? 1 : 0;
     var R = big ? sc * (62 + 60 * (f - 0.6)) : sc * (4 + 50 * f);
     var k = admit(Math.PI * R * R * 0.75, big), att = k === 0;
     if (k > 0 && k < 1) R *= k;
@@ -427,6 +449,7 @@
       if (u > worst) { worst = u; e = q; }
     }
     var soft = att || !flashOn();
+    eVar[e] = vj ? 1 : 0; eScr[e] = scr ? 1 : 0;
     eOn[e] = 1; eBig[e] = big ? 1 : 0; eAtt[e] = att ? 1 : 0; eSoft[e] = soft ? 1 : 0; eCi[e] = ci;
     eX[e] = x; eY[e] = y; eF[e] = f; eR[e] = R; eSc[e] = sc; eAge[e] = 0; eIgn[e] = 0;
     eFire[e] = big ? 0.9 : 0.22 + 0.55 * f;
@@ -438,7 +461,7 @@
     /* éclats : angle d'or pour une couverture régulière, un tiers à l'encre de ce qui meurt */
     var ns = big ? 30 : Math.round(4 + 18 * f);
     if (att) ns = Math.round(ns * 0.7);
-    var bodyP = ci === BRAS ? 0 : 0.34;
+    var bodyP = vj ? 1 : (ci === BRAS ? 0 : 0.34);
     var ga = rnd() * 6.2832;
     for (var i = 0; i < ns; i++) {
       var a = ga + i * 2.39996 + (rnd() - 0.5) * 0.45;
@@ -446,13 +469,13 @@
       var r0 = R * (0.30 + 0.32 * rnd());          /* ils partent du bord de la boule : on les voit voler */
       var zz = rnd(), size = big ? (zz < 0.25 ? 4 : (zz < 0.65 ? 3 : 2)) : (f > 0.3 ? (zz < 0.4 ? 3 : 2) : (zz < 0.5 ? 2 : 1));
       var life = big ? 0.6 + 0.3 * rnd() : 0.3 + 0.3 * f + 0.15 * rnd();
-      spawnShard(x + Math.cos(a) * r0, y + Math.sin(a) * r0, a, sp, size, big ? 3.2 : 4.2, life, rnd() < bodyP, ci, soft);
+      spawnShard(x + ox + Math.cos(a) * r0, y + oy + Math.sin(a) * r0, a, sp, size, big ? 3.2 : 4.2, life, rnd() < bodyP, ci, soft);
     }
     var nk = big ? 30 : Math.round(3 + 12 * f);
     if (att) nk = Math.round(nk * 0.6);
     for (var j = 0; j < nk; j++) {
       var b = rnd() * 6.2832;
-      spawnSpark(x, y, b, sc * (big ? 320 + 300 * rnd() : 140 + 260 * f + 90 * rnd()), 0.14 + 0.2 * rnd(), !soft);
+      spawnSpark(x + ox, y + oy, b, sc * (big ? 320 + 300 * rnd() : 140 + 260 * f + 90 * rnd()), 0.14 + 0.2 * rnd(), !soft);
     }
 
     /* la caméra : une grosse explosion pleine secoue au plafond de shMax() (12 pixels de jeu à px = 2, 8 à
@@ -461,6 +484,7 @@
     if (att && amp > SH_ATT) amp = SH_ATT;
     if (amp > 0) shake(amp);
 
+    curVar = 0;
     ST.booms++; if (att) ST.atten++; else ST.full++;
     ST.last = att ? 2 : (k < 1 ? 3 : 1);
     return ST.last;
@@ -495,8 +519,14 @@
     dt = +dt || 0;
     if (dt < 0) dt = 0;
     if (dt > 0.1) dt = 0.1;
+    var dtR = dt;                         /* temps du jeu tel qu'il arrive ; dt devient le temps des EFFETS (ralenti visuel) */
+    ralentiTick(dtR);
+    dt = dtR * kVisuel();
     clk += dt;
+    planifie(dtR);
     var s = S(), g = N.gfx, W = g ? g.W | 0 : 0, H = g ? g.H | 0 : 0;
+    var WW = (N.world && N.world.W) ? N.world.W | 0 : W, WH = (N.world && N.world.H) ? N.world.H | 0 : H;
+    if (WW < W) WW = W; if (WH < H) WH = H;
 
     /* une secousse posée ailleurs (S.shake écrit directement) est reprise dans le trauma */
     if (s && s.shake > shakeOut + 1e-3) {
@@ -505,7 +535,7 @@
     }
     /* la secousse s'éteint en temps réel, gel compris : une image gelée qui tremble à pleine amplitude
        pendant une chaîne de gels ferait clignoter les bords clairs (mesuré : 11 flashs/s sur bureau) */
-    var rdt = frozen() ? dt / HS_SLOW : dt;
+    var rdt = frozen() ? dtR / HS_SLOW : dtR;
     if (rdt > 0.05) rdt = 0.05;
     trauma -= TDECAY * rdt;
     if (trauma < 0) trauma = 0;
@@ -541,7 +571,7 @@
       var dr = Math.exp(-pd[i] * dt);
       pvx[i] *= dr; pvy[i] *= dr;
       ppx[i] += pvx[i] * dt; ppy[i] += pvy[i] * dt;
-      if (ppx[i] < -24 || ppy[i] < -24 || ppx[i] > W + 24 || ppy[i] > H + 24) { kill(i); continue; }
+      if (ppx[i] < -24 || ppy[i] < -24 || ppx[i] > WW + 24 || ppy[i] > WH + 24) { kill(i); continue; }
       if (kd === K_SPARK) { if (pa[i] >= pl[i]) kill(i); continue; }
       var v2 = pvx[i] * pvx[i] + pvy[i] * pvy[i];
       if (pa[i] >= pl[i] || v2 < 64) {
@@ -552,10 +582,11 @@
       }
     }
     ST.live = live;
+    ondesTick(dt);
   }
 
   /* ---------------- dessin ---------------- */
-  var buf = null, W = 0, H = 0;
+  var buf = null, W = 0, H = 0, OX = 0, OY = 0;     /* OX, OY : origine de dessin de N.gfx (la caméra), retranchée à tout ce qui est du monde */
 
   function put(x, y, c) {
     if (x < 0 || y < 0 || x >= W || y >= H) return;
@@ -615,9 +646,10 @@
     }
   }
 
-  function ringInk(k, u, att) {
+  function ringInk(k, u, att, vj) {
     /* la couronne refroidit comme le cœur ; atténuée, elle saute le blanc et le jaune */
     var s = att ? 1 : 0;
+    if (vj) { if (k === 0) return (u < 0.08 && !s) ? OS : (u < 0.25 ? CYANP : (u < 0.55 ? CYAN : INDIGO)); return u < 0.45 ? CYAN : INDIGO; }
     if (k === 0) {
       if (u < 0.08 && !s) return OS;
       if (u < 0.25) return JAUNE;
@@ -639,7 +671,7 @@
       if (att) { th = th * 0.5; if (th < 1) th = 1; t *= 0.75; }
       if (th < 1) th = 1;
       var perf = 0.12 + 0.8 * Math.pow(u, 1.25);
-      ring(eX[e], eY[e], r, th, ringInk(k, u, eSoft[e]), t, perf, (eAo[e] + k * 83) & 255, (eNx[e] + k * 37) & 255, (eNy[e] + k * 59) & 255);
+      ring(eX[e] - (eScr[e] ? 0 : OX), eY[e] - (eScr[e] ? 0 : OY), r, th, ringInk(k, u, eSoft[e], eVar[e]), t, perf, (eAo[e] + k * 83) & 255, (eNx[e] + k * 37) & 255, (eNy[e] + k * 59) & 255);
     }
   }
 
@@ -666,9 +698,9 @@
     var ah = 0.13 * ff, h = a > ah ? Math.pow((a - ah) / (ff - ah), 0.8) : 0;
     var ag = 0.42 * ff, gap = a > ag ? 0.62 * (a - ag) / (ff - ag) : 0;
     var ae = 0.28 * ff, ero = a > ae ? 0.55 * (a - ae) / (ff - ae) : 0;
-    var cx = eX[e], cy = eY[e], inv = 1 / Ro, Rb = Math.ceil(Ro * 1.1), Rb2 = Rb * Rb;
+    var cx = eX[e] - (eScr[e] ? 0 : OX), cy = eY[e] - (eScr[e] ? 0 : OY), inv = 1 / Ro, Rb = Math.ceil(Ro * 1.1), Rb2 = Rb * Rb;
     var nx = eNx[e], ny = eNy[e], nx2 = eNx2[e], ny2 = eNy2[e], ao = eAo[e];
-    var hin = h > 0 ? h - 0.07 : -1, ih = h < 0.999 ? 1 / (1 - h) : 1000, white = eSoft[e] ? JAUNE : OS;
+    var hin = h > 0 ? h - 0.07 : -1, ih = h < 0.999 ? 1 / (1 - h) : 1000, white = eSoft[e] ? (eVar[e] ? CYANP : JAUNE) : OS, iJ = eVar[e] ? CYANP : JAUNE, iB = eVar[e] ? CYAN : BRAS, iS = eVar[e] ? INDIGO : SANG;
     var ya = cy - Rb < 0 ? -cy : -Rb, yb = cy + Rb > H - 1 ? H - 1 - cy : Rb;
     var Rh = hin > 0 ? hin * Ro : 0, Rh2 = Rh * Rh;            /* sous ce rayon, c'est le trou à coup sûr */
     for (var dy = ya; dy <= yb; dy++) {
@@ -693,7 +725,7 @@
           }
           if (gap > 0 && AN[((dang(dx, dy) * 64) + ao + n * 26) & 255] < gap) continue;   /* brèches déchirées */
           var T = Tp * (1 - K1 * s * s) + (n - 0.5) * TN + BO[br | (xx & 3)];
-          if (T > T_SA) buf[row + xx] = T > T_BR ? (T > T_JA ? (T > T_OS ? white : JAUNE) : BRAS) : SANG;
+          if (T > T_SA) buf[row + xx] = T > T_BR ? (T > T_JA ? (T > T_OS ? white : iJ) : iB) : iS;
         }
       }
     }
@@ -702,15 +734,15 @@
   /* atténuée : pas d'aplat, juste une braise en croix de cinq pixels au centre, 0,1 s */
   function drawCore(e) {
     if (eAge[e] > 0.1) return;
-    var cx = eX[e], cy = eY[e];
-    put(cx, cy, BRAS); put(cx - 1, cy, SANG); put(cx + 1, cy, SANG); put(cx, cy - 1, SANG); put(cx, cy + 1, SANG);
+    var cx = eX[e] - (eScr[e] ? 0 : OX), cy = eY[e] - (eScr[e] ? 0 : OY), c0 = eVar[e] ? CYAN : BRAS, c1 = eVar[e] ? INDIGO : SANG;
+    put(cx, cy, c0); put(cx - 1, cy, c1); put(cx + 1, cy, c1); put(cx, cy - 1, c1); put(cx, cy + 1, c1);
   }
 
   /* au sol : les débris, sous les explosions */
   function drawGround() {
     for (var i = 0; i < CAP; i++) {
       if (pk[i] !== K_DEBRIS) continue;
-      var x = Math.round(ppx[i]), y = Math.round(ppy[i]), left = pl[i] - pa[i];
+      var x = Math.round(ppx[i]) - OX, y = Math.round(ppy[i]) - OY, left = pl[i] - pa[i];
       if (psz[i] >= 2 && left > 0.5) { sq(x, y, 2, ARD); put(x, y, INDIGO); }
       else put(x, y, ARD);
     }
@@ -723,7 +755,7 @@
     for (i = 0; i < CAP; i++) {
       if (pk[i] !== K_TRAIL) continue;
       var tt = 1 - pa[i] / pl[i];
-      streak(Math.round(pqx[i]), Math.round(pqy[i]), Math.round(ppx[i]), Math.round(ppy[i]), pc[i], tt, tt * 0.85);
+      streak(Math.round(pqx[i]) - OX, Math.round(pqy[i]) - OY, Math.round(ppx[i]) - OX, Math.round(ppy[i]) - OY, pc[i], tt, tt * 0.85);
     }
     /* éclats : un carré, et sa traînée d'un cran plus froide */
     for (i = 0; i < CAP; i++) {
@@ -735,17 +767,21 @@
         else if (u < 0.35) { head = JAUNE; tail = BRAS; }
         else if (u < 0.65) { head = BRAS; tail = SANG; }
         else { head = SANG; tail = ARD; }
+      } else if (pvr[i]) {
+        if (u < 0.3) { head = CYANP; tail = CYAN; }
+        else if (u < 0.7) { head = CYAN; tail = INDIGO; }
+        else { head = INDIGO; tail = ARD; }
       } else {
         if (u < 0.3) { head = pc[i]; tail = pc2[i]; }
         else if (u < 0.7) { head = pc2[i]; tail = SANG; }
         else { head = SANG; tail = ARD; }
       }
-      var s = psz[i], hx = Math.round(ppx[i]), hy = Math.round(ppy[i]);
+      var s = psz[i], hx = Math.round(ppx[i]) - OX, hy = Math.round(ppy[i]) - OY;
       var vx = pvx[i], vy = pvy[i], L = Math.sqrt(vx * vx + vy * vy) * 0.05;
       if (L > 18) L = 18;
       if (L >= 1.5) {
         var m = L / Math.sqrt(vx * vx + vy * vy);
-        streak(hx, hy, Math.round(ppx[i] - vx * m), Math.round(ppy[i] - vy * m), tail, 1, 0.2);
+        streak(hx, hy, Math.round(ppx[i] - vx * m) - OX, Math.round(ppy[i] - vy * m) - OY, tail, 1, 0.2);
       }
       sq(hx - (s >> 1), hy - (s >> 1), s, head);
     }
@@ -755,10 +791,10 @@
       var w = pa[i] / pl[i], c0 = pc[i], c1;
       if (c0 === OS) { c0 = w < 0.3 ? OS : (w < 0.65 ? JAUNE : AMBRE); c1 = w < 0.3 ? JAUNE : (w < 0.65 ? AMBRE : BRAS); }
       else c1 = c0;
-      var sx = Math.round(ppx[i]), sy = Math.round(ppy[i]);
+      var sx = Math.round(ppx[i]) - OX, sy = Math.round(ppy[i]) - OY;
       var svx = pvx[i], svy = pvy[i], sl = Math.sqrt(svx * svx + svy * svy), Ls = sl * 0.032;
       if (Ls > 10) Ls = 10;
-      if (Ls >= 1.5) streak(sx, sy, Math.round(ppx[i] - svx / sl * Ls), Math.round(ppy[i] - svy / sl * Ls), c1, 1, 0.3);
+      if (Ls >= 1.5) streak(sx, sy, Math.round(ppx[i] - svx / sl * Ls) - OX, Math.round(ppy[i] - svy / sl * Ls) - OY, c1, 1, 0.3);
       put(sx, sy, c0);
     }
   }
@@ -769,11 +805,385 @@
     buf = g.buf();
     W = g.W | 0; H = g.H | 0;
     if (!buf || W <= 0 || H <= 0) return;
+    OX = g.ox ? g.ox() : 0; OY = g.oy ? g.oy() : 0;
     var e;
     drawGround();
-    for (e = 0; e < NEX; e++) if (eOn[e]) drawRings(e);
-    for (e = 0; e < NEX; e++) if (eOn[e]) { if (eAtt[e]) drawCore(e); else drawFire(e); }
+    drawOndes();
+    drawDesint();
+    drawLasso();
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e]) drawRings(e);
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e]) { if (eAtt[e]) drawCore(e); else drawFire(e); }
     drawAir();
+    if (frameNo() - ecranVu > 2) drawEcranFx();           /* repli : l'ancienne boucle n'appelle pas drawEcran */
+  }
+
+
+  /* ============================================================================================
+     LOT G — le temps des effets, les ondes, le LASSO, la désintégration, le glitch, la vignette, les
+     télégraphes. Tout est préalloué (tableaux typés, objets créés une fois) : aucune allocation par image.
+     ============================================================================================ */
+  function bind() {
+    var g = N.gfx;
+    if (!g || !g.buf) return false;
+    buf = g.buf(); W = g.W | 0; H = g.H | 0;
+    return !!buf && W > 0 && H > 0;
+  }
+  function clamp01(v) { return v < 0 ? 0 : (v > 1 ? 1 : v); }
+  function inkOf(ci, def) { return (ci === undefined || ci === null) ? def : ((typeof ci === 'string' && N.pal && N.pal.i) ? (N.pal.i(ci) & 15) : (ci | 0) & 15); }
+
+  /* ---- le ralenti, arbitré : le plus lent gagne ; la joueuse peut être exemptée ; « visuel » ne touche pas à l'horloge de
+     jeu (la séquence de mort garde ses durées réelles : seuls les effets s'étirent) ---- */
+  var RL_N = 4, rlK = new Float32Array(RL_N), rlL = new Float32Array(RL_N), rlJ = new Uint8Array(RL_N), rlV = new Uint8Array(RL_N);
+  var kMonde = 1, kJou = 1, kVis = 1;
+  function recalcK() {
+    var a = 1, b = 1, c = 1;
+    for (var i = 0; i < RL_N; i++) {
+      if (!(rlL[i] > 0)) continue;
+      if (rlV[i]) { if (rlK[i] < c) c = rlK[i]; continue; }
+      if (rlK[i] < a) a = rlK[i];
+      if (rlJ[i] && rlK[i] < b) b = rlK[i];
+    }
+    kMonde = a; kJou = b; kVis = c;
+  }
+  /* k de 0 à 1 ; dur en secondes de TEMPS RÉEL ; o : { joueuse:false (exemptée), visuel:true, long:true (au-delà du gel) } */
+  function ralenti(k, dur, o) {
+    k = +k; dur = +dur;
+    if (!(k > 0) || !(dur > 0)) return false;
+    if (k > 1) k = 1;
+    if (dur > 3) dur = 3;
+    var visuel = !!(o && o.visuel);
+    if (!visuel && !(o && o.long)) {                       /* ralenti et gel ne se cumulent pas au-delà de 0,5 s */
+      var gl = hitstopLeft() / 60;
+      if (gl > 0 && gl + dur > 0.5) { dur = 0.5 - gl; if (dur < 0.05) dur = 0.05; }
+    }
+    var j = 0, i, w = 1e9;
+    for (i = 0; i < RL_N; i++) { if (!(rlL[i] > 0)) { j = i; w = -1; break; } if (rlL[i] < w) { w = rlL[i]; j = i; } }
+    rlK[j] = k; rlL[j] = dur; rlJ[j] = (o && o.joueuse === false) ? 0 : 1; rlV[j] = visuel ? 1 : 0;
+    recalcK(); ST.ralentis++;
+    return true;
+  }
+  function kVisuel() { return kVis; }
+  function ralentiTick(dtR) {
+    var any = false, rd = kMonde > 0.05 ? dtR / kMonde : dtR;
+    for (var i = 0; i < RL_N; i++) if (rlL[i] > 0) { rlL[i] -= rd; if (rlL[i] < 0) rlL[i] = 0; any = true; }
+    if (any) recalcK();
+  }
+
+  /* ---- un planificateur : « dans t secondes, fais ça » (la cascade du CYCLOPE, les anneaux de l'APOGÉE) ; avance avec
+     fx.update, donc dans tous les états ---- */
+  var PQ_N = 24, pqT = new Float32Array(PQ_N), pqF = new Array(PQ_N);
+  for (var pq0 = 0; pq0 < PQ_N; pq0++) pqF[pq0] = null;
+  function apres(sec, fn) {
+    for (var i = 0; i < PQ_N; i++) if (!pqF[i]) { pqT[i] = +sec || 0; pqF[i] = fn; return true; }
+    return false;
+  }
+  function planifie(dt) {
+    for (var i = 0; i < PQ_N; i++) {
+      if (!pqF[i]) continue;
+      pqT[i] -= dt;
+      if (pqT[i] <= 0) {
+        var f = pqF[i]; pqF[i] = null;
+        try { f(); } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('fx.apres', e); }
+      }
+    }
+  }
+
+  /* ---- les ondes : un anneau seul, tramé, qui s'étend, maigrit et se troue ---- */
+  var ON = 16, onX = new Int16Array(ON), onY = new Int16Array(ON), onR0 = new Float32Array(ON), onR1 = new Float32Array(ON);
+  var onD = new Float32Array(ON), onA = new Float32Array(ON), onC = new Uint8Array(ON), onOn = new Uint8Array(ON);
+  var onN1 = new Uint8Array(ON), onN2 = new Uint8Array(ON), onN3 = new Uint8Array(ON), onTh = new Uint8Array(ON), onSc = new Uint8Array(ON);
+  function onde(x, y, r0, r1, ci, dur, o) {
+    var j = -1, i, w = -1;
+    for (i = 0; i < ON; i++) { if (!onOn[i]) { j = i; break; } var u = onA[i] / onD[i]; if (u > w) { w = u; j = i; } }
+    var scr = !!(o && o.ecran), g = N.gfx;
+    onOn[j] = 1; onSc[j] = scr ? 1 : 0;
+    onX[j] = Math.round(+x || 0) + (scr && g && g.ox ? g.ox() : 0); onY[j] = Math.round(+y || 0) + (scr && g && g.oy ? g.oy() : 0);
+    onR0[j] = +r0 || 2; onR1[j] = +r1 || 40; onD[j] = dur > 0 ? +dur : 0.4; onA[j] = 0; onC[j] = inkOf(ci, JAUNE);
+    onTh[j] = (o && o.epaisseur) ? o.epaisseur | 0 : 3;
+    onN1[j] = (rnd() * 256) | 0; onN2[j] = (rnd() * 256) | 0; onN3[j] = (rnd() * 256) | 0;
+    return true;
+  }
+  function pickup(x, y) { onde(x, y, 2, 10, JAUNE, 0.22, { epaisseur: 2 }); spark(x, y, 0, 0, 4, JAUNE); }
+  function drawOndes() {
+    for (var i = 0; i < ON; i++) {
+      if (!onOn[i]) continue;
+      var u = onA[i] / onD[i], ez = 1 - (1 - u) * (1 - u);
+      var r = onR0[i] + (onR1[i] - onR0[i]) * ez, th = 1 + (onTh[i] - 1) * (1 - u);
+      ring(onX[i] - OX, onY[i] - OY, r, th, onC[i], 1 - u * 0.65, 0.10 + 0.75 * u, onN1[i], onN2[i], onN3[i]);
+    }
+  }
+
+  /* ---- la désintégration : un anneau cyan pâle → cyan → indigo par segment, avec des éclats cyan ---- */
+  var DS = 64, dsX = new Float32Array(DS), dsY = new Float32Array(DS), dsT = new Float32Array(DS), dsOn = new Uint8Array(DS), dsB = new Uint8Array(DS);
+  var DS_LIFE = 0.30;
+  function desintegre(pts, dur) {
+    if (!pts) return 0;
+    var flat = typeof pts[0] === 'number', n = flat ? pts.length >> 1 : pts.length, i, k = 0;
+    dur = +dur || 0;
+    for (i = 0; i < n && k < 48; i++) {
+      var px = flat ? pts[2 * i] : (pts[i].x !== undefined ? pts[i].x : pts[i][0]), py = flat ? pts[2 * i + 1] : (pts[i].y !== undefined ? pts[i].y : pts[i][1]);
+      var j = -1, q;
+      for (q = 0; q < DS; q++) if (!dsOn[q]) { j = q; break; }
+      if (j < 0) break;
+      dsOn[j] = 1; dsB[j] = 0; dsX[j] = px; dsY[j] = py; dsT[j] = (dur > 0 && n > 1) ? -dur * i / (n - 1) : 0;
+      k++;
+    }
+    return k;
+  }
+  function desintTick(dt) {
+    for (var i = 0; i < DS; i++) {
+      if (!dsOn[i]) continue;
+      dsT[i] += dt;
+      if (dsT[i] < 0) continue;
+      if (!dsB[i]) {
+        dsB[i] = 1; curVar = 1;
+        for (var k = 0; k < 3; k++) spawnShard(dsX[i], dsY[i], rnd() * 6.2832, 60 + 110 * rnd(), k === 0 ? 2 : 1, 5, 0.3 + 0.2 * rnd(), true, CYAN, true);
+        spawnSpark(dsX[i], dsY[i], rnd() * 6.2832, 120 + 120 * rnd(), 0.12 + 0.12 * rnd(), false);
+        curVar = 0;
+      }
+      if (dsT[i] >= DS_LIFE) dsOn[i] = 0;
+    }
+  }
+  function drawDesint() {
+    for (var i = 0; i < DS; i++) {
+      if (!dsOn[i] || dsT[i] < 0) continue;
+      var u = dsT[i] / DS_LIFE, r = 1.5 + 6.5 * Math.pow(u, 0.7), c = u < 0.3 ? CYANP : (u < 0.65 ? CYAN : INDIGO);
+      var cx = Math.round(dsX[i]) - OX, cy = Math.round(dsY[i]) - OY;
+      ring(cx, cy, r, 2, c, 1 - 0.5 * u, 0.1 + 0.6 * u, (i * 37) & 255, (i * 59) & 255, (i * 83) & 255);
+      if (u < 0.4) put(cx, cy, CYANP);
+    }
+  }
+
+  /* ---- le LASSO qui éclate : remplissage tramé cyan, puis os, puis il se troue et éclate en éclats ---- */
+  var LP = new Float32Array(96), lpN = 0, lpAge = -1, lpNn = 0, lpOs = true, lpBurst = false, lpCx = 0, lpCy = 0, XS = new Float32Array(64);
+  var LP_DUR = 0.5, LP_BURST = 0.14;
+  function lasso(poly, n) {
+    if (!poly) return false;
+    var flat = typeof poly[0] === 'number', m = flat ? poly.length >> 1 : poly.length, i, ax = 0, ay = 0, step = m > 48 ? m / 48 : 1;
+    lpN = 0;
+    for (i = 0; i < m && lpN < 48; i += step) {
+      var k = Math.floor(i), px = flat ? poly[2 * k] : (poly[k].x !== undefined ? poly[k].x : poly[k][0]), py = flat ? poly[2 * k + 1] : (poly[k].y !== undefined ? poly[k].y : poly[k][1]);
+      LP[2 * lpN] = +px || 0; LP[2 * lpN + 1] = +py || 0; ax += LP[2 * lpN]; ay += LP[2 * lpN + 1]; lpN++;
+    }
+    if (lpN < 3) { lpN = 0; return false; }
+    lpCx = ax / lpN; lpCy = ay / lpN; lpAge = 0; lpNn = n | 0; lpBurst = false;
+    var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    for (i = 0; i < lpN; i++) { if (LP[2 * i] < x0) x0 = LP[2 * i]; if (LP[2 * i] > x1) x1 = LP[2 * i]; if (LP[2 * i + 1] < y0) y0 = LP[2 * i + 1]; if (LP[2 * i + 1] > y1) y1 = LP[2 * i + 1]; }
+    lpOs = gate((x1 - x0) * (y1 - y0) * 0.6);          /* un aplat d'os sur une grande boucle est un flash : le limiteur décide */
+    return true;
+  }
+  function lassoTick(dt) {
+    if (lpAge < 0) return;
+    lpAge += dt;
+    if (!lpBurst && lpAge >= LP_BURST) {
+      lpBurst = true; curVar = 1;
+      var nb = Math.min(lpN, 24), i;
+      for (i = 0; i < nb; i++) {
+        var k = Math.floor(i * lpN / nb), vx = LP[2 * k] - lpCx, vy = LP[2 * k + 1] - lpCy, a = Math.atan2(vy, vx);
+        spawnShard(LP[2 * k], LP[2 * k + 1], a + (rnd() - 0.5) * 0.4, 90 + 130 * rnd(), rnd() < 0.4 ? 3 : 2, 4, 0.35 + 0.25 * rnd(), true, CYAN, true);
+        spawnSpark(LP[2 * k], LP[2 * k + 1], a, 160 + 160 * rnd(), 0.14 + 0.14 * rnd(), false);
+      }
+      curVar = 0;
+    }
+    if (lpAge >= LP_DUR) lpAge = -1;
+  }
+  function fillPoly(ci, t) {
+    var y0 = 1e9, y1 = -1e9, i, j, k, x, y;
+    for (i = 0; i < lpN; i++) { var yy0 = LP[2 * i + 1] - OY; if (yy0 < y0) y0 = yy0; if (yy0 > y1) y1 = yy0; }
+    y0 = Math.max(0, Math.floor(y0)); y1 = Math.min(H - 1, Math.ceil(y1));
+    var t16 = t * 16;
+    for (y = y0; y <= y1; y++) {
+      var nx = 0, ys = y + 0.5 + OY;
+      for (i = 0, j = lpN - 1; i < lpN; j = i++) {
+        var ya = LP[2 * i + 1], yb = LP[2 * j + 1];
+        if ((ya <= ys) !== (yb <= ys) && nx < 62) XS[nx++] = LP[2 * i] + (ys - ya) / (yb - ya) * (LP[2 * j] - LP[2 * i]);
+      }
+      for (i = 1; i < nx; i++) { var v = XS[i]; k = i - 1; while (k >= 0 && XS[k] > v) { XS[k + 1] = XS[k]; k--; } XS[k + 1] = v; }
+      for (k = 0; k + 1 < nx; k += 2) {
+        var xa = Math.max(0, Math.round(XS[k] - OX)), xb = Math.min(W - 1, Math.round(XS[k + 1] - OX)), row = y * W, br = (y & 3) << 2;
+        for (x = xa; x <= xb; x++) if (t16 > BAY[br | (x & 3)]) buf[row + x] = ci;
+      }
+    }
+  }
+  function drawLasso() {
+    if (lpAge < 0 || lpN < 3) return;
+    var a = lpAge, i, j;
+    if (a < 0.12) fillPoly(CYAN, 0.25 + 0.4 * a / 0.12);
+    else if (a < 0.30) fillPoly(lpOs ? OS : CYANP, 0.55 * (1 - (a - 0.12) / 0.18) + 0.1);
+    else fillPoly(CYAN, 0.18 * (1 - (a - 0.30) / 0.2));
+    var ink = a < 0.30 ? CYANP : CYAN, tt = a < 0.4 ? 1 : 1 - (a - 0.4) / 0.1;
+    if (tt <= 0) return;
+    for (i = 0, j = lpN - 1; i < lpN; j = i++) streak(Math.round(LP[2 * j] - OX), Math.round(LP[2 * j + 1] - OY), Math.round(LP[2 * i] - OX), Math.round(LP[2 * i + 1] - OY), ink, tt, tt);
+  }
+
+  /* ---- le glitch (rangées décalées par bandes) et la vignette de danger : en espace ÉCRAN ---- */
+  var glA = 0, glD = 0, glF = 0, vgF = 0, vgAng = NaN, vgT = 0;
+  function glitch(force, dur) { glF = clamp01(+force || 0.6); glD = dur > 0 ? +dur : 0.3; glA = 0; }
+  function vignette(angle, force) {
+    var f = clamp01(+force || 0);
+    if (f <= 0) return;
+    if (f >= vgF * (vgT / 0.35) || vgT <= 0) { vgF = f; vgAng = (angle === undefined || angle === null) ? NaN : +angle; }
+    vgT = 0.35;
+  }
+  function drawGlitch() {
+    if (glA >= glD || glF <= 0) return;
+    var nb = 3 + Math.floor(6 * glF), fr = Math.floor(glA * 30), fade = 1 - glA / glD;
+    for (var b = 0; b < nb; b++) {
+      var y0 = Math.floor(hsh(b, fr, 71) * (H - 8)), h = 2 + Math.floor(hsh(b, fr, 72) * 7), dx = Math.round((hsh(b, fr, 73) - 0.5) * 2 * (6 + 30 * glF) * fade);
+      if (!dx) continue;
+      for (var y = y0; y < y0 + h && y < H; y++) {
+        var row = y * W;
+        if (dx > 0) { buf.copyWithin(row + dx, row, row + W - dx); for (var x = 0; x < dx; x++) buf[row + x] = ARD; }
+        else { buf.copyWithin(row, row - dx, row + W); for (var x2 = W + dx; x2 < W; x2++) buf[row + x2] = ARD; }
+      }
+      if (b < 3) { var ly = Math.floor(hsh(b, fr, 74) * H); for (var lx = 0; lx < W; lx += 2) buf[ly * W + lx] = MAG; }
+    }
+  }
+  function drawVignette() {
+    if (vgT <= 0 || vgF <= 0) return;
+    var k = vgF * clamp01(vgT / 0.35), w = Math.round(5 + 13 * k), side, i, x, y;
+    for (side = 0; side < 4; side++) {
+      var nxv = side === 0 ? 0 : (side === 1 ? 0 : (side === 2 ? -1 : 1)), nyv = side === 0 ? -1 : (side === 1 ? 1 : 0);
+      var wt = vgAng !== vgAng ? 1 : 0.3 + 0.7 * Math.max(0, (Math.cos(vgAng) * nxv + Math.sin(vgAng) * nyv));
+      /* un bord s'éclaire du côté d'où vient la menace : sa normale SORTANTE est alignée sur la direction de la menace */
+      for (i = 0; i < w; i++) {
+        var t = k * wt * Math.pow(1 - i / w, 1.7), t16 = t * 16;
+        if (t16 <= 0.5) break;
+        if (side < 2) {
+          y = side === 0 ? i : H - 1 - i; var rowv = y * W, br = (y & 3) << 2;
+          for (x = 0; x < W; x++) if (t16 > BAY[br | (x & 3)]) buf[rowv + x] = SANG;
+        } else {
+          x = side === 2 ? i : W - 1 - i;
+          for (y = 0; y < H; y++) if (t16 > BAY[((y & 3) << 2) | (x & 3)]) buf[y * W + x] = SANG;
+        }
+      }
+    }
+  }
+  var ecranVu = -99;
+  function drawEcranFx() {
+    var e, ox = OX, oy = OY;
+    OX = 0; OY = 0;
+    for (e = 0; e < NEX; e++) if (eOn[e] && eScr[e]) drawRings(e);
+    for (e = 0; e < NEX; e++) if (eOn[e] && eScr[e]) { if (eAtt[e]) drawCore(e); else drawFire(e); }
+    for (var i = 0; i < ON; i++) if (onOn[i] && onSc[i]) { var u = onA[i] / onD[i], ez = 1 - (1 - u) * (1 - u); ring(onX[i], onY[i], onR0[i] + (onR1[i] - onR0[i]) * ez, 1 + (onTh[i] - 1) * (1 - u), onC[i], 1 - u * 0.65, 0.10 + 0.75 * u, onN1[i], onN2[i], onN3[i]); }
+    drawVignette();
+    drawGlitch();
+    OX = ox; OY = oy;
+  }
+  function drawEcran() {
+    if (!bind()) return;
+    ecranVu = frameNo();
+    drawEcranFx();
+  }
+  function ondesTick(dt) {
+    var i;
+    for (i = 0; i < ON; i++) if (onOn[i]) { onA[i] += dt; if (onA[i] >= onD[i]) onOn[i] = 0; }
+    desintTick(dt); lassoTick(dt);
+    if (glA < glD) glA += dt;
+    if (vgT > 0) vgT -= dt;
+  }
+
+  /* ---- les télégraphes (§ 4.4) : en deux temps, magenta en pointillés qui courent (QUI et OÙ), puis rose pâle plein pendant
+     les 300 dernières ms (QUAND). Toujours gainés de nuit profonde, dessinés à l'endroit exact des dégâts. ---- */
+  var TN_MAX = 48, TL = [], tlN = 0, TLV = [], tMode = 0, tInk = MAG, tMar = 0, tDash = true;
+  for (var tq = 0; tq < TN_MAX; tq++) TL.push({ forme: '', x0: 0, y0: 0, x1: 0, y1: 0, r: 0, a0: 0, a1: 0, reste: 0, total: 0, cible: '', par: { type: '', id: -1 } });
+  var TELE_ENN = { fleche: 1, dard: 1, larve: 1, mine: 1, tourelle: 1, lame: 1, ruche: 1, sentinelle: 1, rival: 1, planeur: 1, traqueur: 1, cyclope: 1 };
+  function tele(d) {
+    if (!d || !d.forme) return -1;
+    var pt = d.par ? d.par.type : '', pi = d.par ? d.par.id : -1, i, t = null;
+    for (i = 0; i < tlN; i++) if (TL[i].par.id === pi && TL[i].par.type === pt && TL[i].forme === d.forme && pi !== -1) { t = TL[i]; break; }
+    if (!t) { if (tlN >= TN_MAX) return -1; t = TL[tlN++]; }
+    t.forme = d.forme; t.x0 = +d.x0 || 0; t.y0 = +d.y0 || 0; t.x1 = +d.x1 || 0; t.y1 = +d.y1 || 0; t.r = +d.r || 0;
+    t.a0 = +d.a0 || 0; t.a1 = +d.a1 || 0; t.reste = d.reste === undefined ? 1 : +d.reste; t.total = d.total === undefined ? 1 : +d.total;
+    t.cible = d.cible || 'tout'; t.par.type = pt; t.par.id = pi;
+    TLV.length = tlN; for (i = 0; i < tlN; i++) TLV[i] = TL[i];
+    var s = S(); if (s) s.tele = TLV;
+    return tlN - 1;
+  }
+  function tpx(x, y) {
+    x -= OX; y -= OY;
+    if (tMode === 0) {
+      for (var dy = -1; dy <= 1; dy++) { var yy = y + dy; if (yy < 0 || yy >= H) continue; for (var dx = -1; dx <= 1; dx++) { var xx = x + dx; if (xx >= 0 && xx < W) buf[yy * W + xx] = NP; } }
+    } else if (x >= 0 && y >= 0 && x < W && y < H) buf[y * W + x] = tInk;
+  }
+  function tline(x0, y0, x1, y1) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0), n = dx > dy ? dx : dy, sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx - dy, i = 0;
+    if (n > 900) return;
+    for (;;) {
+      if (tMode === 0 || !tDash || ((i + tMar) % 6 + 6) % 6 < 3) tpx(x0, y0);
+      if (x0 === x1 && y0 === y1) break;
+      var e2 = err + err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+      i++;
+    }
+  }
+  function tarc(cx, cy, r, a0, a1) {
+    var n = Math.max(8, Math.ceil(Math.abs(a1 - a0) * r)), px = -1e9, py = -1e9;
+    for (var k = 0; k <= n; k++) {
+      var a = a0 + (a1 - a0) * k / n, x = Math.round(cx + Math.cos(a) * r), y = Math.round(cy + Math.sin(a) * r);
+      if (x === px && y === py) continue;
+      px = x; py = y;
+      if (tMode === 0 || !tDash || (k + tMar) % 4 < 2) tpx(x, y);
+    }
+  }
+  function thatch(x0, y0, x1, y1, step) {                                           /* hachures en diagonale, bornées à la vue */
+    var xa = Math.max(Math.floor(x0), OX), xb = Math.min(Math.ceil(x1), OX + W - 1), ya = Math.max(Math.floor(y0), OY), yb = Math.min(Math.ceil(y1), OY + H - 1);
+    for (var y = ya; y <= yb; y++) for (var x = xa; x <= xb; x++) if (((x + y + tMar) % step + step) % step === 0) buf[(y - OY) * W + (x - OX)] = tInk;
+  }
+  function telePass(t) {
+    var f = t.forme, cx = t.x0, cy = t.y0;
+    if (f === 'ligne') tline(t.x0, t.y0, t.x1, t.y1);
+    else if (f === 'disque') tarc(cx, cy, t.r, 0, 6.2832);
+    else if (f === 'secteur') { tline(cx, cy, cx + Math.cos(t.a0) * t.r, cy + Math.sin(t.a0) * t.r); tline(cx, cy, cx + Math.cos(t.a1) * t.r, cy + Math.sin(t.a1) * t.r); tarc(cx, cy, t.r, t.a0, t.a1); }
+    else if (f === 'losange') { tline(cx - t.r, cy, cx, cy - t.r); tline(cx, cy - t.r, cx + t.r, cy); tline(cx + t.r, cy, cx, cy + t.r); tline(cx, cy + t.r, cx - t.r, cy); }
+    else if (f === 'rect' || f === 'voie') { tline(t.x0, t.y0, t.x1, t.y0); tline(t.x1, t.y0, t.x1, t.y1); tline(t.x1, t.y1, t.x0, t.y1); tline(t.x0, t.y1, t.x0, t.y0); }
+  }
+  function teleFill(t) {
+    var f = t.forme;
+    if (f === 'rect') thatch(Math.min(t.x0, t.x1), Math.min(t.y0, t.y1), Math.max(t.x0, t.x1), Math.max(t.y0, t.y1), 8);
+    else if (f === 'voie') thatch(Math.min(t.x0, t.x1), Math.min(t.y0, t.y1), Math.max(t.x0, t.x1), Math.max(t.y0, t.y1), 5);
+    else if (f === 'disque') {
+      var r = t.r | 0, y, x, ya = Math.max(-r, OY - t.y0 | 0), yb = Math.min(r, OY + H - 1 - t.y0 | 0);
+      for (y = ya; y <= yb; y++) for (x = -r; x <= r; x++) {
+        if (x * x + y * y > r * r) continue;
+        var px = Math.round(t.x0) + x - OX, py = Math.round(t.y0) + y - OY;
+        if (px >= 0 && py >= 0 && px < W && py < H && (tInk === ROSE ? 5 : 2) > BAY[((py & 3) << 2) | (px & 3)]) buf[py * W + px] = tInk;
+      }
+    } else if (f === 'secteur') {
+      var ns = Math.max(3, Math.ceil(Math.abs(t.a1 - t.a0) * t.r / 5));
+      for (var s = 1; s < ns; s++) {
+        var a = t.a0 + (t.a1 - t.a0) * s / ns, c = Math.cos(a), sn = Math.sin(a);
+        for (var d = 4; d < t.r; d += 3) { var ux = Math.round(t.x0 + c * d) - OX, uy = Math.round(t.y0 + sn * d) - OY; if (ux >= 0 && uy >= 0 && ux < W && uy < H && ((d + s + tMar) & 7) === 0) buf[uy * W + ux] = tInk; }
+      }
+    }
+  }
+  function drawTele() {
+    if (!bind()) { tlN = 0; TLV.length = 0; return; }
+    var g = N.gfx; OX = g.ox ? g.ox() : 0; OY = g.oy ? g.oy() : 0;
+    var i, enn = 0;
+    tMar = -((clk * 24) | 0);
+    for (i = 0; i < tlN; i++) if (TELE_ENN[TL[i].par.type]) enn++;
+    for (i = 0; i < tlN; i++) { tMode = 0; tDash = false; telePass(TL[i]); }                      /* la gaine d'abord, sous tout le reste */
+    for (i = 0; i < tlN; i++) {
+      var t = TL[i], deux = t.reste <= 0.3;
+      tMode = 1; tInk = deux ? ROSE : MAG; tDash = !deux;
+      teleFill(t); telePass(t);
+    }
+    tlN = 0; TLV.length = 0;
+    /* repli : tant que 72-ennemis dessine ses propres avertissements, ils restent à l'écran (aucun télégraphe enregistré par eux) */
+    if (!enn && N.ennemis && N.ennemis.drawTele) { try { N.ennemis.drawTele(); } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('fx.drawTele→ennemis', e); } }
+  }
+
+  function resetG() {
+    var i;
+    for (i = 0; i < RL_N; i++) rlL[i] = 0;
+    kMonde = kJou = kVis = 1;
+    for (i = 0; i < PQ_N; i++) pqF[i] = null;
+    for (i = 0; i < ON; i++) onOn[i] = 0;
+    for (i = 0; i < DS; i++) dsOn[i] = 0;
+    lpAge = -1; lpN = 0; glA = 1; glD = 0; vgT = 0; vgF = 0; tlN = 0; TLV.length = 0; curVar = 0;
   }
 
   function reset() {
@@ -783,6 +1193,7 @@
     for (var e = 0; e < NEX; e++) eOn[e] = 0;
     /* le journal des flashs survit : il dit ce que l'écran a montré, pas l'état du jeu (60-intro.js
        appelle reset() à chaque interlude, une seconde après une explosion peut encore compter) */
+    resetG();
     hsSet = -1e9; hsEnd = -1e9; trauma = 0; shakeOut = 0; shakeF = -1; shakeBase = 0;
     for (var h = 0; h < 1024; h++) { HITF[h] = -1e9; HITT[h] = -1e9; }
     readPrefs();
@@ -799,6 +1210,10 @@
     setShake: function (k) { k = +k; userShake = (k >= 0 && k <= 1) ? k : 1; writeShake(); savePrefs(); },
     setFlash: function (b) { userFlash = !!b; savePrefs(); },
     options: function () { return { shake: shakeK(), flash: flashOn(), reduced: reduced }; },
-    stats: ST
+    stats: ST,
+    /* lot G (REFONTE.md § 7.8) */
+    ralenti: ralenti, k: function () { return kMonde; }, kJoueuse: function () { return kJou; }, kVisuel: function () { return kVis; },
+    apres: apres, onde: onde, pickup: pickup, lasso: lasso, glitch: glitch, vignette: vignette, desintegre: desintegre,
+    tele: tele, drawTele: drawTele, drawEcran: drawEcran
   };
 })();
