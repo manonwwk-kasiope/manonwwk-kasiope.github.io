@@ -206,6 +206,27 @@ const res = await page.evaluate(() => {
     N.butin.lacher(J.tete.x, J.tete.y, 1, { type: 'cellule' }); N.butin.lacher(J.tete.x, J.tete.y, 1, { type: 'noyau' }); pas(4);
     return { ok: J.len() === l0 + 3 && N.butin.xp.total - x0 === 6, detail: `longueur ${l0}→${J.len()}, XP +${N.butin.xp.total - x0}` };
   });
+  /* ---- LASSO bruité (§ 2.12, R.tests) : ± 10° de bruit de cap, 120 ms de retard, 6 cibles fixes, 50 graines par longueur ---- */
+  for (const L of [8, 20, 40]) {
+    T('LASSO bruité : cercle scripté (± 10°, retard 120 ms) autour de 6 cibles, ≥ 80 % de réussite sur 50 graines à L = ' + L, () => {
+      const r = L === 8 ? 11 : L === 20 ? 20 : 40, ok = [];
+      for (let seed = 1; seed <= 50; seed++) {
+        let z = seed * 2654435761 >>> 0; const rnd = () => { z = (z + 0x6D2B79F5) >>> 0; let t = Math.imul(z ^ z >>> 15, 1 | z); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+        neuf(L); J.force({ len: L });
+        const cx = J.tete.x, cy = J.tete.y + r, es = [];
+        for (let i = 0; i < 6; i++) es.push(mk('fleche', cx + (rnd() - 0.5) * 6, cy + (rnd() - 0.5) * 6, true));
+        const hist = [], dz = N.R.joueuse.dz, pl = N.R.joueuse.deflexion.pleine, rate = Math.max(0.18, Math.min(1, 11 / r)), lag = 14, n0 = cLasso.n; let n = 0;
+        for (let i = 0; i < 120 * 6 && J.etat === 'vivant' && cLasso.n === n0; i++) {
+          hist.push(J.tete.ang); const vu = hist[Math.max(0, hist.length - 1 - lag)], a = vu + 0.6 + (rnd() - 0.5) * 2 * (10 * Math.PI / 180);
+          S.input.x = Math.cos(a); S.input.y = Math.sin(a); S.input.mag = dz + rate * (pl - dz); pas(1);
+        }
+        S.input.mag = 0;
+        ok.push(cLasso.n > n0 && cLasso.last.n >= 4 ? 1 : 0);
+      }
+      const t = ok.reduce((a, b) => a + b, 0);
+      return { ok: t >= 40, detail: `${t}/50 (≥ 4 cibles sur 6)` };
+    });
+  }
   /* ---- les armes : 5 armes × 4 paliers, dégâts mesurés sur des cibles fixes pendant 3 s ---- */
   const A = N.arsenal, degatsDe = (arme, pal) => {
     neuf(30); g.dbg.god(true); N.arsenal.reset(); N.arsenal.update = window.__ARS;
