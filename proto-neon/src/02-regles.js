@@ -288,7 +288,7 @@
       cadence: { parPrise: 0.20, prises: 3 },                 // mods.cadence = 1 + 0,20 × prises
       aimant: { rayons: [28, 48, 68], prises: 2 },            // mods.aimant
       croissance: { segments: 4, lenMax: 5, prises: 2 },      // +4 segments tout de suite, +5 au maximum
-      reparation: { periodes: [6, 4], prises: 2 },            // +1 segment toutes les 6 s (4 s à la 2ᵉ prise)
+      reparation: { periodes: [6, 4], prises: 2 },            // un segment PERDU (coupe, mort) repousse toutes les 6 s (4 s à la 2ᵉ prise)
       bouclier: { charges: 1, recharge: 20, prises: 1 },
       eperon: { pvMax: 30, cout: 15, prises: 1 },             // en accélération ; coût en points de réserve
       grappe: { prises: 2, generations: 2, niveaux: [{ rayon: 16, degats: 15 }, { rayon: 22, degats: 25 }] },

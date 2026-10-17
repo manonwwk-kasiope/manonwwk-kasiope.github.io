@@ -208,7 +208,7 @@ N.cartes = (function () {
       case 'croissance':
         var pc = (R.longueur && R.longueur.parCroissance) || a.segments;     // la valeur que 70-joueuse applique (→ demandes.md : le tableau § 2.9 dit +4)
         l1 = '+' + pc + ' SEGMENTS'; l2 = 'MAX ' + MODS.lenMax + ' → ' + (MODS.lenMax + a.lenMax); break;
-      case 'reparation': l1 = '+1 SEGMENT'; l2 = 'TOUTES LES ' + a.periodes[i] + ' S'; break;
+      case 'reparation': l1 = 'REPOUSSE 1 SEGMENT PERDU'; l2 = 'TOUTES LES ' + a.periodes[i] + ' S'; break;
       case 'bouclier': l1 = 'ABSORBE UN COUP'; l2 = 'RECHARGE ' + a.recharge + ' S'; break;
       case 'eperon': l1 = 'EN ACCÉLÉRATION'; l2 = 'BROIE JUSQU\'À ' + a.pvMax + ' PV'; break;
       case 'grappe': l1 = 'KILL = EXPLOSION'; l2 = a.niveaux[i].rayon + ' PX · ' + a.niveaux[i].degats + ' DÉG'; break;
