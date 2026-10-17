@@ -202,3 +202,86 @@ Sans ces crochets les tests ne peuvent pas mesurer, et un module qui les casse f
 Aucun `import`, aucun `require`, aucune URL (seul 05-art.js charge les clips `cine/*.mp4`), aucune police web. Aucun actif binaire hors de `art/`, qui est injecté par `build.mjs` : n en ajoute pas toi-même.
 Aucun `Math.random` — utiliser le générateur à graine de `N.S`. Aucun `Date.now` ni `performance.now`
 hors de `90-boot.js`. Aucune couleur littérale hors `00-pal.js`. Aucun fichier touché hors de `proto-neon/`.
+
+## Interfaces publiées par le lot 0b (les modules de jeu répartis depuis 70-game.js)
+
+`70-game.js` n'existe plus. Ses neuf morceaux publient l'interface du § 7.8 de REFONTE.md, plus les ajouts ci-dessous
+(« ajout » = hors § 7.8, lisible par tous, à garder ou retirer par le gardien). Chaque module survit à l'absence des
+autres par des replis ; les replis sont listés dans l'en-tête de chaque fichier.
+
+```
+// ---- 70-commun.js : N.outils (module d'appui du lot 0b, ajout) — couleurs nommées, calcul, sprites et texte avec
+//      repli, géométrie (murs de repli, vue), éclats de repli, hasard par flux
+N.outils.A {x0,y0,x1,y1}      murs courants, MONDE (N.world sinon l'arène de repli = l'écran moins HUD et zone sûre)
+N.outils.VUE {x,y,w,h}        la vue en coordonnées monde (N.cam sinon 0,0,W,H)
+N.outils.geom() / geo / origine(x,y) / origineMonde() / visible(x,y,m) / bootNouveau() / dtJ(dt)
+N.outils.sp(nom,img) / put / putInk / text / textW / textC     N.spr.make, sinon repli procédural
+N.outils.rf(flux) / rr(flux,a,b) / ri(flux,a,b)               N.rng(flux)
+N.outils.T {t, ak}            temps de jeu local et horloge d'animation (tenus par 79-jeu)
+N.outils.taps [{x,y,key,bouton}]   les toucher de l'image, ramenés en une file par 79-jeu (lus par 78-hud et 80-ecrans)
+
+// ---- 70-joueuse.js
+N.joueuse = { reset(cfg), update(dt), draw(), drawTop(), tete:{x,y,ang,vit}, segs() -> [x0,y0,x1,y1,…], len(), etat,
+              hitTest(x,y,r) -> {part:'tete'|'corps'|'queue'|null, k}, tuer(cause,src) -> bool, couper(k,src,cause) -> perdus,
+              grandir(n), invul(), pouvoir, apogee, boost, traine(),
+              // ajouts
+              reapparaitre(pos?), desintegre(n) -> bool, pointSur() -> {x,y}, god(b?), distMur(x,y) -> {d,nx,ny,pan,mobile},
+              segPos(k) -> {x,y}, force({x,y,ang,len,trace}), clampRepli() }
+   émet : coup, coupe, mort                 consomme : ramassage (10, grandir), carte (10, CROISSANCE)
+
+// ---- 71-butin.js
+N.butin = { reset(), update(dt), draw(), lacher(x,y,n,{type,vie,libre,tele}), aspirer(poly), pluie(n), list,
+            // ajouts
+            libre(tele), nbLibres() }
+   émet : ramassage                         consomme : kill (40, largage), coupe (40, cellules)
+
+// ---- 72-ennemis.js   (objets au schéma `ennemi` ; champs d'IA préfixés « _ »)
+N.ennemis = { reset(), update(dt), draw(), spawn(type,x,y,{portail,elite,mods}), list, count(), hit(e,dmg,src) -> bool (mort),
+              zone(x,y,r,dmg,src) -> n, devorer(e), dans(poly), pres(x,y,r), tir(x,y,vx,vy,{r,big,src,vie}), tirs,
+              effacerTirs(x,y,r), inverser(dur), fuir(), purge(ordre) -> n,
+              // ajouts
+              lasers [{x0,y0,x1,y1,t,d,w,src}], counts(), drawTele(), drawEnemies(), purgeEnCours() }
+   émet : kill (seul émetteur), apparition
+
+// ---- 74-arsenal.js
+N.arsenal = { reset(), update(dt), draw(), monter(arme), descendre() -> {arme,de,a}, niveau(arme), armes(), tirs,
+              // ajouts
+              surcharger(b), chute() }
+   demande : N.ennemis.hit      consomme : mort (50, perte de palier), carte (50)
+
+// ---- 76-directeur.js
+N.dir = { reset(secteur,opts), update(dt), vague() -> n, phase(), tension(), progression(), entrees(),
+          // ajouts
+          demarrer(n), info() -> la vague de N.R, lancerBoss(), fini(), bossMort(), stats, nombreVagues(), tempsVague(), fin() }
+   émet : vague, portail         consomme : kill (10, mort du gros ennemi)
+
+// ---- 77-score.js
+N.score = { reset(), score, chaine(), mult(), objectif() -> {mult,reste}, vies, defis, defiVague, stats, build(), energie,
+            deblocages, prochain(), profil:{charger,sauver,reglages(obj?)}, records,
+            // ajouts
+            defi, gain(), update(dt), terminer(victoire) -> {record,nouveau}, record(), nouveauRecord(), fenetreRestante(), ajouter(pts,x,y) }
+   émet : defi      consomme : kill (20, 80), ramassage (20), coupe (20), mort (20, 80), vague (20)
+   seul écrivain de localStorage['snake2975.v1'] et de S.reglages
+
+// ---- 78-hud.js
+N.hud = { update(dt), draw(), banniere(texte|[lignes],{c,icone,duree,clignote}), toast(texte), tag(texte), pop(x,y,texte,{c}),
+          codex(type), reset(), boutons() -> {son,pause}, toucher(x,y) -> 'son'|'pause'|null, flashSon() }
+   consomme (repli de 79-scene, en retrait dès que N.scene existe) : kill, vague, coupe (70)
+
+// ---- 79-jeu.js
+N.game = { reset(graine,opts), update(dt), draw(), drawTop(), tension(), etat(), aller(etat), lancer(nouvelle),
+           dbg: function() -> instantané de la démo (lu par tools/jeu), avec dbg.god(b), dbg.vague(n), dbg.boss(), dbg.input(o),
+                dbg.etat(nom?), dbg.scene(nom), dbg.simuler(sec) -> journal, dbg.masque() }
+   consomme : mort (10, séquence de mort), vague (10, NETTOYAGE puis CARTES, VOL), vol (10), phase (10)
+   repli de 79-scene (rang 60, en retrait dès que N.scene existe) : kill, ramassage, coupe, mort
+
+// ---- 80-ecrans.js
+N.ui = { ouvrir(nom,opts), fermer(), actif(), update(dt), draw(), sortie() -> {ecran,action,index,id}|null, ecran(), cartes }
+   écrans de repli : demarrage, titre, cartes (v0 : canon, croissance, cadence), pause, fin
+```
+
+**Les deux boucles.** Tant que `90-boot.js` est celui de la démo (aiguillage sur `S.phase`, pas d'`N.horloge`), `79-jeu.js`
+dessine l'interface lui-même dans `drawTop`, remet `N.ev.nouveauPas()` à zéro à chaque image et lance la partie dès que
+`S.phase` vaut `'play'`. Dès que `N.horloge.pas() > 0` (la boucle du lot 1), il laisse `90-boot.js` appeler `N.hud.draw`,
+`N.ui.draw` et `N.intro.draw`, et attend un toucher à l'écran de démarrage. Les écouteurs `pointerdown` et `keydown` de
+`79-jeu.js` sont transitoires : ils disparaissent avec l'ancienne boucle, quand `S.input.taps` existe.
