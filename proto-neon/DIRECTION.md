@@ -18,8 +18,14 @@ synthwave — mais avec la réactivité et la lisibilité d'un jeu d'aujourd'hui
 puis ce tampon est agrandi en voisin le plus proche. Jamais de filtre « pixelisé » par-dessus du rendu
 haute résolution : un pixel du jeu doit être un carré net, identique partout à l'écran.
 
-- Taille apparente du pixel : constante quelle que soit la machine. `px = clamp(round(cssW / 340), 2, 6)`,
-  tampon = `ceil(cssW / px) × ceil(cssH / px)`. Pas de letterbox, pas de bandes noires.
+- Taille apparente du pixel : la plus grande possible tant que la zone sûre garde au moins 360 × 180
+  pixels de jeu, `px = max(2, ⌊min(largeur sûre / 360, hauteur sûre / 180)⌋)`, dans les deux orientations
+  (`recherche/visuel-technique-mobile.md`). L'ancienne règle `round(cssW / 340)` donnait px 2 à
+  l'iPhone 13 et px 3 à l'iPhone 16, soit 55 % de surface de jeu en moins pour presque le même écran.
+  Tampon = `ceil(cssW / px) × ceil(cssH / px)`. Pas de letterbox, pas de bandes noires ; ce qui compte
+  (interface, apparitions, joueuse) reste dans la zone sûre, que 90-boot.js publie dans `S.view.safe`.
+- Le canvas mesure exactement tampon × px en CSS (90-boot.js s'en charge) : jamais de réduction non
+  entière par le navigateur.
 - `imageSmoothingEnabled = false` sur le contexte de sortie. Toutes les positions de dessin arrondies
   au pixel du tampon : un sprite ne doit jamais tomber entre deux pixels.
 - Conséquence mesurable, et c'est un gain : sur iPhone 844×390 à px = 2, on dessine 422×195 au lieu de
@@ -91,11 +97,25 @@ Automatiquement, et sur les pixels rendus, pas sur l'état interne :
    sous 0,5 %. Les panneaux de cinématique où le serpent apparaît sont hors de ce compte : ce serpent,
    c est la joueuse.
 4. **Explosion** : à la mort d'un gros ennemi, la part de pixels « brasier » dépasse 8 % de l'écran
-   pendant au moins quatre images, et la caméra bouge d'au moins six pixels de jeu.
+   pendant au moins quatre images, et la caméra bouge d'au moins six pixels de jeu. Et jamais plus de
+   trois flashs par seconde sur plus de 6,6 % de l'écran (WCAG 2.3.1 ; magenta, brasier et sang sont des
+   rouges saturés) : un limiteur global dans 50-fx.js atténue les explosions suivantes. Une seule
+   énorme explosion reste permise, c'est la répétition qui est dangereuse.
 5. **Musique non répétitive** : sur trois minutes enregistrées en hors-ligne, aucune fenêtre de quatre
    secondes n'est identique à une autre à moins de 1 % près (corrélation sur l'enveloppe RMS).
 6. **Montée en tension** : le nombre d'ennemis vivants et le niveau RMS de la musique croissent tous
-   deux de façon monotone par tranches de vingt secondes.
+   deux de façon monotone par tranches de vingt secondes. C'est la règle du prototype de deux minutes ;
+   les niveaux de la campagne auront des respirations (`recherche/game-design-campagne.md`).
 7. **Performance** : banc d'essai iPhone 13 paysage, p95 du coût d'image sous 16,7 ms, et strictement
    meilleur que `snake2030/index.html` mesuré dans la même fenêtre.
 8. **Zéro erreur** : aucune exception, aucune erreur de console, sur bureau et sur iPhone.
+
+Et la lisibilité, d'après les calculs de contraste de `recherche/visuel-technique-mobile.md` : le texte
+en acier seulement sur vide, nuit ou ardoise, jamais sur indigo ni violet ; chaque menace garde un
+contour d'un pixel en nuit profonde, même au milieu d'une explosion, parce que magenta et brasier se
+confondent en niveaux de gris et pour une partie des daltoniens.
+
+**Un écart assumé à la recherche** : la recherche recommande que le son ne passe outre l'interrupteur
+silencieux de l'iPhone que sur un choix explicite. La propriétaire joue en mode silencieux et veut
+entendre la musique : le premier toucher qui lance le jeu vaut ce choix, et le jeu offre une coupure du
+son visible, mémorisée d'une partie à l'autre.

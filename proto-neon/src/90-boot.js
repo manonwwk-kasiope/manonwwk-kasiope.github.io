@@ -11,7 +11,7 @@ var S = {
   t: 0, dt: 0, frame: 0, phase: 'intro', seed: 2084, rngState: 2084,
   shake: 0, heat: 0, score: 0, lives: 3, tension: 0,
   enemies: [], player: null, challenge: null, paused: false,
-  view: { w: 0, h: 0 }, input: { x: 0, y: 0, mag: 0, fire: false, any: false },
+  view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } }, input: { x: 0, y: 0, mag: 0, fire: false, any: false },
 };
 N.S = S;
 
@@ -47,12 +47,32 @@ function resize() {
   out.style.width = cssW + 'px'; out.style.height = cssH + 'px';
   if (N.gfx && N.gfx.resize) {
     var r = N.gfx.resize(cssW, cssH);
-    out.width = Math.round((r.w * r.px) * dpr); out.height = Math.round((r.h * r.px) * dpr);
+    /* le canvas fait EXACTEMENT tampon x px en CSS, centré, quitte à déborder de moins d'un pixel de
+       jeu : sinon le navigateur le réduit d'un facteur non entier et ampute une rangée de pixels */
+    var ow = r.w * r.px, oh = r.h * r.px;
+    out.style.width = ow + 'px'; out.style.height = oh + 'px';
+    out.style.left = Math.floor((cssW - ow) / 2) + 'px'; out.style.top = Math.floor((cssH - oh) / 2) + 'px';
+    out.width = Math.round(ow * dpr); out.height = Math.round(oh * dpr);
     S.view.w = r.w; S.view.h = r.h;
+    var sa = safeArea();                        // encoche, barre d'accueil : en pixels de jeu, arrondis vers le haut
+    S.view.safe = { l: Math.ceil(sa.l / r.px), t: Math.ceil(sa.t / r.px), r: Math.ceil(sa.r / r.px), b: Math.ceil(sa.b / r.px) };
   } else {
     out.width = cssW; out.height = cssH; S.view.w = cssW; S.view.h = cssH;
   }
   if (octx) octx.imageSmoothingEnabled = false;
+}
+
+/* marges sûres de l'écran (encoche, barre d'accueil), lues sur une sonde CSS env(safe-area-inset-*) */
+var sonde = null;
+function safeArea() {
+  if (!sonde) {
+    sonde = document.createElement('div');
+    sonde.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;'
+      + 'padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+    document.body.appendChild(sonde);
+  }
+  var cs = getComputedStyle(sonde);
+  return { l: parseFloat(cs.paddingLeft) || 0, t: parseFloat(cs.paddingTop) || 0, r: parseFloat(cs.paddingRight) || 0, b: parseFloat(cs.paddingBottom) || 0 };
 }
 
 /* ---- motif de contrôle : visible tant qu'aucun module ne dessine ---- */
@@ -120,6 +140,7 @@ function onTouchMove(e) {
 function onTouchEnd(e) {
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++)
     if (e.changedTouches[i].identifier === stick.id) { stick.id = null; stickUpdate(); }
+  if (e.type === 'touchend') gesture();                 // pour le toucher, seul touchend vaut geste (MDN)
   if (e.cancelable) e.preventDefault();
 }
 /* l'indicateur : un anneau tramé à l'origine et un point sous le pouce, en couleurs d'interface */
@@ -134,7 +155,10 @@ var audioStarted = false;
 function gesture() {
   step('art.unlock', N.art && N.art.unlock ? function () { N.art.unlock(); } : null);
   S.paused = false;                                      // un retour d'arrière-plan reprend au premier geste
-  if (audioStarted) return; audioStarted = true;
+  /* un touchstart ne vaut pas geste pour l'iPhone : le contexte audio créé là peut rester suspendu,
+     le touchend suivant le relance */
+  if (audioStarted) { step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null); return; }
+  audioStarted = true;
   /* sur iPhone, un AudioContext est « ambient » par défaut : l'interrupteur silencieux le coupe, et la
      joueuse croirait la musique cassée. « playback » le fait jouer comme une vidéo ; le jeu offre sa
      propre coupure du son. */
@@ -216,6 +240,8 @@ function boot() {
     } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
   });
   app.addEventListener('pointerdown', gesture);
+  app.addEventListener('pointerup', gesture);
+  app.addEventListener('click', gesture);
   window.addEventListener('blur', function () { keys = {}; stick.id = null; stickUpdate(); S.input.fire = false; });
 
   step('intro.reset', N.intro && N.intro.reset ? function () { N.intro.reset(); } : null);

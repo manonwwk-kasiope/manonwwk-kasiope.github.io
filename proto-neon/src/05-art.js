@@ -110,6 +110,9 @@ N.art = (function () {
       v.preload = 'auto'; v.loop = !!CLIPS[name][0];
       v.addEventListener('error', function () { vids[name] = null; if (cur[name]) cur[name].failed = true; });
       v.addEventListener('ended', function () { if (cur[name]) cur[name].ended = true; });
+      /* WebKit ne lance pas seule une vidéo invisible : elle vit dans la page, derrière le canvas opaque */
+      v.style.cssText = 'position:fixed;left:0;top:0;width:16px;height:9px;z-index:-1;pointer-events:none';
+      if (document.body) document.body.appendChild(v);
       v.src = 'cine/' + name + '.mp4';
     } catch (e) { v = null; }
     return (vids[name] = v);
