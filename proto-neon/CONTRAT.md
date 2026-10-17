@@ -33,7 +33,8 @@ N.art.load()               // lancé par 90-boot.js au démarrage ; rend une pro
 N.art.ready()              // true quand tout est décodé
 N.art.get(nom)             // -> {w,h,data:Uint8Array} au MÊME format que N.spr.make (0 = transparent),
                            //    ou null tant que ce n est pas décodé : dessine alors ton repli procédural
-N.art.names()              // affiche, horizon, briefing, logo
+N.art.names()              // affiche, horizon, briefing, logo, exterieur, connexion, eveil, alerte, boss,
+                           // victoire, defaite
 
 N.gfx.init(canvasSortie)     // crée le tampon ; à appeler avant tout dessin
 N.gfx.resize(cssW,cssH)      // recalcule px et les dimensions du tampon ; -> {w,h,px}
@@ -67,7 +68,7 @@ N.S                          // état partagé : t, dt, phase, shake, heat, seed
 
 ## Les illustrations générées — à employer, pas à refaire
 
-Quatre illustrations ont été générées (GPT Image 2.5 Sunburst) puis converties hors ligne en vrai pixel
+Onze illustrations ont été générées (GPT Image 2.5 Sunburst) puis converties hors ligne en vrai pixel
 art : réduites à la résolution du jeu, forcées dans la palette des seize avec le même tramage de Bayer
 que le jeu. Elles sont dans `art/`, injectées par `build.mjs`, et servies par `N.art.get(nom)`.
 
@@ -77,6 +78,13 @@ que le jeu. Elles sont dans `art/`, injectées par `build.mjs`, et servies par `
 | `horizon` | 512 x 220 | fond de la séquence d ouverture et arrière-plan parallaxe du jeu ; plus large que l écran pour défiler |
 | `briefing` | 384 x 216 | panneau de cinématique : salle de contrôle, écrans, opérateur de dos, porte de coffre |
 | `logo` | 200 x 113 | logo NEON 2084 chromé, liseré magenta en haut et cyan en bas, fond transparent |
+| `exterieur` | 384 x 216 | panneau : la cité de monolithes la nuit, soleil en bandes, reflets sur la grille — sans cyan |
+| `connexion` | 384 x 216 | panneau : une main gantée branche un câble, une étincelle cyan jaillit — la naissance du serpent |
+| `eveil` | 384 x 216 | panneau : le serpent de données cyan se dresse, gueule ouverte, au-dessus de la grille |
+| `alerte` | 384 x 216 | panneau : salle de contrôle rouge, écrans d alarme, opérateur de dos — sans cyan |
+| `boss` | 384 x 216 | panneau : un colosse mécanique à l œil unique devant le soleil, débris en suspension — sans cyan |
+| `victoire` | 384 x 216 | panneau : le serpent fracasse la grille, éclats de verre, soleil jaune |
+| `defaite` | 384 x 216 | panneau : le serpent se dissout en pixels sur la grille, soleil rouge |
 
 Elles sont plus belles que ce qu un générateur procédural produira. **60-intro.js doit les employer** :
 `horizon` pour la grille et le soleil, `logo` pour le logo qui se construit (les pixels arrivent en
@@ -85,6 +93,32 @@ l écran-titre ou de fin. **70-game.js peut employer `horizon`** comme arrière-
 parallaxe lente et assombri, sans jamais nuire à la lisibilité des ennemis. Le procédural reste
 indispensable pour tout ce qui bouge et tout ce qui est petit : sprites, explosions, police, effets.
 Garde toujours un repli procédural quand `N.art.get` rend null.
+
+### La cinématique : où va chaque panneau
+
+Les sept panneaux forment une seule histoire, dans le même style. Ils sont fixes : c est à toi de leur
+donner vie, à la manière des cinématiques d arcade, sans jamais les redessiner ni les lisser :
+révélation par bandes de haut en bas comme un tube qui chauffe, apparition par seuil de Bayer qui monte
+de 0 à 1, dérive verticale lente par pas entiers, ligne de balayage qui descend, scintillement des
+pixels cyan entre `cyan` et `cyanPale` (un échange d index, pas une nouvelle couleur).
+
+**Ouverture** (60-intro.js), sautable à tout instant, une douzaine de secondes au total :
+`exterieur` (≈ 2 s) → `connexion` (≈ 1,5 s, l étincelle clignote) → `eveil` (≈ 2 s, petite secousse
+à la fin) → `horizon` et le `logo` qui se construit (≈ 3 s) → `briefing` sous le texte de mission
+(≈ 3 s) → transition vers le jeu.
+
+**Interludes** : `N.intro.transition(nom)`, appelée par 70-game.js. Le jeu est gelé pendant
+l interlude, qui dure au plus trois secondes et se saute d une touche ou d un toucher.
+- `transition('boss')` à l annonce du gros ennemi : `alerte` (≈ 1,2 s, cadre magenta qui clignote,
+  ALERTE en police 5×7) puis `boss` (≈ 1,8 s, révélation de bas en haut, le nom du colosse). Le
+  télégraphe du gros ennemi commence au retour en jeu.
+- `transition('victoire')` et `transition('defaite')` : en fond de l écran de fin, assombris d un cran
+  sous le score et le défi, qui restent parfaitement lisibles. Victoire si la joueuse tient les deux
+  minutes, défaite à la mort.
+
+Le serpent cyan des panneaux `eveil`, `victoire`, `defaite`, `affiche` et l étincelle de `connexion`,
+c est la joueuse elle-même : la règle du cyan y est appliquée, pas enfreinte. Le critère 3 de
+DIRECTION.md se mesure sur les captures de jeu, pas sur les panneaux.
 
 Pour un fond de la taille de l écran, recadre au centre ; pour un écran plus grand que l image,
 répète-la ou centre-la sur le vide. Jamais d agrandissement non entier : un pixel d illustration doit

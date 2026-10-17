@@ -83,7 +83,9 @@ Automatiquement, et sur les pixels rendus, pas sur l'état interne :
    intermédiaire sur un bord de sprite (preuve que rien n'est lissé).
 2. **Palette fermée** : sur dix captures de jeu, 100 % des pixels appartiennent à la table des seize,
    tolérance zéro.
-3. **Cyan réservé** : la part de pixels cyan hors du masque de la joueuse est sous 0,5 %.
+3. **Cyan réservé** : sur les captures de jeu, la part de pixels cyan hors du masque de la joueuse est
+   sous 0,5 %. Les panneaux de cinématique où le serpent apparaît sont hors de ce compte : ce serpent,
+   c est la joueuse.
 4. **Explosion** : à la mort d'un gros ennemi, la part de pixels « brasier » dépasse 8 % de l'écran
    pendant au moins quatre images, et la caméra bouge d'au moins six pixels de jeu.
 5. **Musique non répétitive** : sur trois minutes enregistrées en hors-ligne, aucune fenêtre de quatre
