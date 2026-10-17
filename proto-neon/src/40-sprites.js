@@ -958,6 +958,7 @@
       s.data[y * w + x] = c;
     }
     for (x = 8; x < 32; x++) { s.data[3 * w + x] = SANG; s.data[17 * w + x] = SANG; }            /* joints du casque */
+    for (x = 11; x < 30; x += 6) { setpx(s, x + 1, 0, ROSE); setpx(s, x, 0, MAG); setpx(s, x + 1, 1, MAG); }   /* la crête */
     for (x = 8; x < 32; x++) s.data[18 * w + x] = SANG;
     for (y = 22; y < 29; y += 3) for (x = 8; x < 32; x += 6) { s.data[y * w + x] = SANG; s.data[y * w + x + 1] = SANG; }    /* évents */
     for (y = 8; y <= 17; y++) for (x = 10; x <= 29; x++) s.data[y * w + x] = NP;                  /* la fente de l'œil */
@@ -969,14 +970,17 @@
     s.cx = 20; s.cy = 16;
     return contour(s, NP, true);
   }
-  /* une main : une pince à trois doigts, 24 × 24 ; 2 images (les doigts battent) ; ':ouverte' */
+  /* une main : poing à trois doigts griffus, 24 × 24 ; 2 images (les griffes battent) ; ':ouverte' les allonge (charge en ciseaux) */
+  function rct(s, x0, y0, w, h, c) { for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) setpx(s, x0 + x, y0 + y, c); }
   function genCyclopeMain(variant, f) {
-    var s = spr(24, 24), i;
-    disk(s, 12, 8, 7, SANG); disk(s, 12, 8, 6, MAG); disk(s, 11, 6, 3, ROSE); disk(s, 12, 9, 2, SANG);
-    var ouv = (f & 1) || variant === 'ouverte';
-    for (i = -1; i <= 1; i++) {
-      var ax = 12 + i * (ouv ? 6 : 4), ay = ouv ? 23 : 21;
-      ln(s, 12 + i * 3, 14, ax, ay, MAG); ln(s, 13 + i * 3, 14, ax + 1, ay, SANG); ln(s, 11 + i * 3, 14, ax - 1, ay, ROSE);
+    var s = spr(24, 24), i, ouv = (f & 1) || variant === 'ouverte';
+    rct(s, 8, 0, 8, 4, SANG); rct(s, 9, 0, 6, 3, MAG);                                  /* le poignet */
+    rct(s, 4, 3, 16, 10, MAG); rct(s, 4, 3, 16, 1, ROSE); rct(s, 4, 12, 16, 1, SANG); rct(s, 19, 3, 1, 10, SANG);   /* la paume, éclairée par le haut */
+    rct(s, 6, 6, 2, 2, SANG); rct(s, 16, 6, 2, 2, SANG);                               /* rivets */
+    for (i = 0; i < 3; i++) {
+      var x0 = 5 + i * 5, len = ouv ? 10 : 7;
+      rct(s, x0, 13, 4, len, MAG); rct(s, x0, 13, 1, len, ROSE); rct(s, x0 + 3, 13, 1, len, SANG);
+      setpx(s, x0 + 1, 13 + len, ROSE); setpx(s, x0 + 2, 13 + len, ROSE); setpx(s, x0 + 1, 14 + len, SANG);   /* la griffe */
     }
     s.cx = 12; s.cy = 12;
     return contour(s, NP, true);
@@ -994,30 +998,36 @@
     setpx(s, 5, 5, sol ? 4 : SANG); setpx(s, 6, 6, sol ? 4 : SANG);
     return contour(s, NP, true);
   }
-  /* la carcasse (§ 4.8) : le cyclope éteint, sang et ardoise, pour le plan des structures ; ':loin' 48 px, ':mi' 80 px (sang et nuit, comme découpés de boss.png) */
-  function silhouetteCyclope(w, h, loin) {
-    var s = spr(w, h), x, y, c = (w - 1) / 2;
+  /* les silhouettes de décor (§ 4.8) : la forme du colosse de la planche, en deux tons (lumière à gauche et en haut, ombre à droite et en bas), à la taille voulue */
+  function silhColosse(w, h, claire, sombre, oeil) {
+    var b = genColosse('', 0), s = spr(w, h), x, y;
     for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
-      var u = x / (w - 1) - 0.5, v = y / (h - 1), on = false;
-      if (v < 0.30) on = Math.abs(u) < 0.26 - (v < 0.04 ? 0.12 : 0);                              /* la tête */
-      else if (v < 0.78) on = Math.abs(u) < 0.42 - (v - 0.30) * 0.25;                             /* le tronc et les épaules */
-      else on = Math.abs(u) < 0.20 && ((x + y) & 1) === 0 || Math.abs(u) < 0.15;                     /* les jambes */
-      if (v > 0.30 && v < 0.62 && Math.abs(Math.abs(u) - 0.44) < 0.07) on = true;                  /* les bras */
-      if (on) s.data[y * w + x] = (u > 0.18 || v > 0.86) ? (loin ? 4 : 2) : SANG;
+      var sx = Math.floor(x * b.w / w), sy = Math.floor(y * b.h / h);
+      if (b.data[sy * b.w + sx]) s.data[y * w + x] = (x > w * 0.72 || y > h * 0.88) ? sombre : claire;
     }
-    var ex = Math.round(c), ey = Math.round(h * 0.17);
-    setpx(s, ex, ey, loin ? ROSE : MAG); setpx(s, ex - 1, ey, SANG); setpx(s, ex + 1, ey, SANG);
-    s.cx = Math.round(c); s.cy = h >> 1;
+    if (oeil) setpx(s, Math.round(24 * w / b.w), Math.round(13 * h / b.h), oeil);
+    s.cx = w >> 1; s.cy = h >> 1;
     return s;
   }
-  /* le CYCLOPE ASSEMBLÉ, 96 × 128 : tronc et tête, deux mains, six plaques ; pour la planche et la mise en scène (le colosse réel les pose à part) */
+  /* le CYCLOPE ASSEMBLÉ, 98 × 128 : le colosse de la planche agrandi ×2 (épaulières hérissées, œil unique) posé sur deux jambes à genoux articulés ;
+     la mise en scène l'emploie tel quel, le colosse réel pose ses pièces (tronc, mains, plaques) à part. ':oeil' allume l'œil. */
   function genCyclope(variant, f) {
-    var W = 96, H = 128, s = spr(W, H), tronc = genCyclopeTronc(variant, f), main = genCyclopeMain('', f), pl = genCyclopePlaque(''), i;
-    function blit(a, ox, oy) { for (var y = 0; y < a.h; y++) for (var x = 0; x < a.w; x++) { var v = a.data[y * a.w + x]; if (v) { var X = ox + x, Y = oy + y; if (X >= 0 && Y >= 0 && X < W && Y < H) s.data[Y * W + X] = v; } } }
-    blit(tronc, 28, 26);
-    blit(main, 2, 70); blit(main, 70, 70);
-    for (i = 0; i < 6; i++) blit(pl, 24 + (i % 3) * 18, 62 + ((i / 3) | 0) * 14);
-    s.cx = 48; s.cy = 64;
+    var W = 98, H = 128, top = upscale(genColosse(variant, f), 2), legs = spr(W, 42), s = spr(W, H), x, y, p, X, Y;
+    for (p = 0; p < 2; p++) {
+      var x0 = p ? 58 : 24;
+      for (y = 2; y < 36; y++) for (x = 0; x < 16; x++) {
+        var c = MAG;
+        if (x < 2) c = ROSE; else if (x >= 14) c = SANG;
+        if (y % 9 === 0) c = SANG;
+        if (y % 9 === 1 && x > 2 && x < 13) c = ROSE;
+        setpx(legs, x0 + x, y, c);
+      }
+      for (y = 34; y < 40; y++) for (x = -3; x < 19; x++) setpx(legs, x0 + x, y, y === 39 ? SANG : (y === 34 ? ROSE : MAG));
+    }
+    var lc = contour(legs, NP, true);
+    for (y = 0; y < lc.h; y++) for (x = 0; x < lc.w; x++) { var v = lc.data[y * lc.w + x]; Y = 86 + y - 1; X = x - 1; if (v && X >= 0 && Y < H && X < W) s.data[Y * W + X] = v; }
+    for (y = 0; y < top.h; y++) for (x = 0; x < top.w; x++) { var t = top.data[y * top.w + x]; if (t && x < W) s.data[y * W + x] = t; }
+    s.cx = 49; s.cy = 64;
     return s;
   }
 
@@ -1058,8 +1068,8 @@
     minej: { fr: 2, gen: function (v, f) { return genMineJ(f); } },
     orbe: { fr: 2, gen: function (v, f) { return genOrbe(f); } },
     cyclope: { fr: 2, gen: function (v, f) { return genCyclope(v, f); } },
-    colosseloin: { fr: 1, gen: function () { return silhouetteCyclope(48, 48, true); } },
-    colossemi: { fr: 1, gen: function () { return silhouetteCyclope(80, 80, false); } },
+    colosseloin: { fr: 1, gen: function () { return silhColosse(48, 48, SANG, 4, ROSE); } },
+    colossemi: { fr: 1, gen: function () { return silhColosse(80, 80, SANG, 1, MAG); } },
     tourelle: { fr: 2, gen: function (v, f) { return genTourelle(v, f); } },
     sentinelle: { fr: 4, gen: function (v, f) { return genSentinelle(f); } },
     mine: { fr: 2, gen: function (v, f) { return genMine(v, f); } },
@@ -1069,7 +1079,7 @@
       if (v === 'troncenrage') return genCyclopeTronc('enrage', f);
       if (v === 'main' || v === 'mainouverte') return genCyclopeMain(v === 'mainouverte' ? 'ouverte' : '', f);
       if (v === 'plaque' || v === 'plaquesol') return genCyclopePlaque(v === 'plaquesol' ? 'sol' : '');
-      if (v === 'carcasse') return silhouetteCyclope(96, 64, false);
+      if (v === 'carcasse') return silhColosse(98, 98, 2, 1, 0);
       return genColosse(v, f);
     } },
     tirennemi: { fr: 2, gen: function (v, f) { return genTirEnnemi(v, f); } },

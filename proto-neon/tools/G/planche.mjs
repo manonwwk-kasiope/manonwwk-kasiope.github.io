@@ -71,7 +71,7 @@ const res = await page.evaluate(() => {
   /* aucun cyan dans un sprite ennemi, palette 100 % */
   const cyan = {};
   for (const r of rows) {
-    const e = /fleche|dard|larve|^mine:?|tourelle:|^lame|ruche|sentinelle|rival|perle|planeur|traqueur|colosse|cyclope|tirEnnemi|^mini/i.test(r.nom) && !/tourelleJ/i.test(r.nom);
+    const e = /fleche|dard|larve|^mine(:|$)|tourelle:|^lame|ruche|sentinelle|rival|perle|planeur|traqueur|colosse|cyclope|tirEnnemi|^mini/i.test(r.nom) && !/tourelleJ/i.test(r.nom);
     if (!e) continue;
     let n = 0; for (const s of r.imgs) for (const v of s.data) if (v === N.pal.i('cyan') || v === N.pal.i('cyanPale')) n++;
     if (n) cyan[r.nom] = n;

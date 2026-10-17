@@ -121,6 +121,16 @@ const sc = await page.evaluate(async () => {
 const attendu = (sc.sons.kill || 0) + (sc.sons.bigkill || 0) === 10 && sc.sons.coupe === 3 && sc.sons.lasso === 2 && sc.sons.levelup === 1 && sc.booms === 13;
 ok('mise en scène : 16 événements, chaque effet une seule fois (10 kill, 3 coupe, 2 lasso, 1 niveau ; 13 explosions)', attendu, JSON.stringify(sc));
 
+/* 4 quater. la mort du CYCLOPE : arrêt de 24 images, 5 explosions en cascade, colosseMort une fois */
+const colosse = await page.evaluate(async () => {
+  const N = window.__N, h = N.joueuse.tete; N.game.dbg.god(true); N.scene.reset();
+  N.ev.emit('kill', { id: 999, type: 'cyclope', x: h.x + 60, y: h.y, elite: false, boss: true, base: 25000, src: { genre: 'arme', type: 'canon', id: -1 }, distTete: 60, gen: 0 });
+  const apres = N.scene.stats.booms;
+  await new Promise(r => setTimeout(r, 2200));
+  return { booms: N.scene.stats.booms, d0: apres, sons: N.scene.stats.sons, gels: N.scene.stats.gels };
+});
+ok('CYCLOPE mort : 5 explosions (1 + 4 en cascade), un colosseMort, un arrêt d\'image', colosse.booms === 5 && colosse.sons.colosseMort === 1 && colosse.gels === 1, JSON.stringify(colosse));
+
 /* 5. le limiteur de flashs : 30 explosions en 2 s, grandes et moyennes */
 const lim = await page.evaluate(() => new Promise(done => {
   const N = window.__N, F = N.fx, f0 = F.stats.flashes, r0 = F.stats.refused, g = N.gfx; let n = 0, t0 = performance.now();
