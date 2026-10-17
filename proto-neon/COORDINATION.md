@@ -105,7 +105,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| `src/80-ecrans.js`, `src/77-score.js` | Codex (session parallèle codex-p7) | 18/10 à 01 h 26 | CONTINUER ? sur l'écran de fin (R-18) ; raccord de `79-jeu.js` livré en correctif |
+| `src/79-jeu.js`, `src/90-boot.js`, `src/80-ecrans.js` (bouton JOUER) | Codex (session parallèle codex-09) | 18/10 à 02 h 18 | brancher N.aventure dans le vrai jeu (choix, 1976, 1982, WARP, films, fins) ; les 80 parties des pilotes doivent rester identiques |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
