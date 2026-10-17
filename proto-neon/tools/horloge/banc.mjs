@@ -51,6 +51,11 @@ async function one(profil, genre, repetition = 0) {
         window.__titre = N.game.etat(); return { demarrage, titre: base(), conforme: N.game.etat() === 'titre' && N.ui.ecran() === 'titre' };
       }
       N.intro.skip(); N.game.reset(2975); N.game.dbg.vague(1); N.game.dbg.god(true);
+      if (genre === 'fin') {
+        N.game.dbg.scene('fin'); tick(120);
+        const intro = N.intro.state();
+        return { intro, bilanVisible: N.ui.ecran() === 'fin' && intro.t >= 0.4 && !intro.busy, conforme: N.ui.ecran() === 'fin' && intro.t >= 0.4 && !intro.busy, ...base() };
+      }
       if (genre === 'pas') {
         tick(2); const rows = [], adv = N.horloge.avancer, upd = N.game.update, draw = N.gfx.present;
         let pas = 0, updates = 0, dessins = 0, impulsions = 0;
@@ -74,7 +79,13 @@ async function one(profil, genre, repetition = 0) {
         S.input.valider = true; tick(1); N.pilote.lancer('bon');
         const vus = {}, depuis = S.frame; let frames = 0;
         while (N.game.etat() !== 'fin' && frames < 540 * 60 * 4 && !window.__ERR.count) { window.__tick(); frames++; const e = N.game.etat(); vus[e] = (vus[e] || 0) + 1; }
-        return { titre, fin: N.game.etat() === 'fin', frames, depuis, etats: vus, journal: N.journal.dump(), conforme: titre === 'titre' && N.game.etat() === 'fin' && !window.__ERR.count, ...base() };
+        const finAtteinte = N.game.etat() === 'fin', journalPartie = N.journal.dump();
+        // Atteindre l'état ne prouve pas que le bilan se voit : attendre la révélation naturelle du fond,
+        // sans saut ni validation. Le journal de partie est figé AVANT cette attente et reste comparable.
+        let attenteFin = 0;
+        while (finAtteinte && attenteFin < 120) { window.__tick(); attenteFin++; }
+        const filmFin = N.intro.current(), fondFin = N.intro.state(), bilanVisible = finAtteinte && !fondFin.busy && fondFin.t >= 0.4 && N.ui.ecran() === 'fin';
+        return { titre, fin: finAtteinte, bilanVisible, filmFin, attenteFin, frames, depuis, etats: vus, journal: journalPartie, conforme: titre === 'titre' && bilanVisible && !window.__ERR.count, ...base() };
       }
       /* Déclencheurs publics, puis vrais pas rendus par frame(). Le wrapper observe sans modifier dt. */
       tick(2); const old = N.horloge.avancer, samples = [], reductions = []; let actif = '';
@@ -105,7 +116,7 @@ async function one(profil, genre, repetition = 0) {
   } finally { await ctx.close(); }
 }
 try {
-  for (const profil of selected) for (const genre of (mode === 'tout' ? ['titre', 'pas', 'ralentis', 'perf', 'parties'] : [mode])) {
+  for (const profil of selected) for (const genre of (mode === 'tout' ? ['titre', 'pas', 'ralentis', 'perf', 'parties', 'fin'] : [mode])) {
     await one(profil, genre); if (genre === 'parties' && profil === 'paysage') await one(profil, genre, 1);
   }
   const runs = receipt.cas.filter(c => c.genre === 'parties' && c.profil === 'paysage');
