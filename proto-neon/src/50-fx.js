@@ -801,4 +801,120 @@
     options: function () { return { shake: shakeK(), flash: flashOn(), reduced: reduced }; },
     stats: ST
   };
+
+  /* ================================ contrat 1.0 (squelette du lot 0b ; lots 6a et 6b) ================================
+     hitstop(n)          gèle aussi N.horloge : geler(n / 60) secondes de temps réel (CONTRAT.md § 3) ;
+     tele(desc)          ENREGISTRE un télégraphe pour le pas ; update() publie ceux du pas dans S.tele (double
+                         tampon) et journalise 'tele' à la première apparition de chaque id ; drawTele() les
+                         dessine (MONDE) : gaine de nuit profonde, magenta, rose pâle dans les N.R.ennemis.tele.finRosePale
+                         dernières secondes, plein pendant la phase active (reste ≤ 0) ;
+     ralenti(k, dur, {joueuse}), k(), kJoueuse()   l'arbitre des ralentis : le plus lent gagne ; dur en temps réel ;
+     onde, pickup, lasso, desintegre                des anneaux simples (repli) ; glitch, vignette : retenus ;
+     boom(x, y, force, ci, variante)                variante 'joueuse' (encre cyan) ou {ecran:true} (x, y ÉCRAN) ;
+     drawEcran()                                    effets en espace écran (repli : rien). */
+  var boom0 = boom, hitstop0 = hitstop, update0 = update, draw0 = draw, reset0 = reset;
+  var TMAX = 96, TREG = [], TN = 0, TPUB = [], TVUS = {}, TVUSn = 0;
+  for (var tq = 0; tq < TMAX; tq++) { TREG.push(teleObj()); TPUB.push(teleObj()); }
+  function teleObj() { return { id: 0, forme: 'ligne', x0: 0, y0: 0, x1: 0, y1: 0, r: 0, a0: 0, a1: 0, reste: 0, total: 0, cible: 'tete', par: { type: '', id: null } }; }
+  function copieTele(o, d) {
+    o.id = d.id | 0; o.forme = d.forme; o.x0 = +d.x0 || 0; o.y0 = +d.y0 || 0; o.x1 = +d.x1 || 0; o.y1 = +d.y1 || 0; o.r = Math.max(0, +d.r || 0);
+    o.a0 = +d.a0 || 0; o.a1 = +d.a1 || 0; o.reste = +d.reste || 0; o.total = Math.max(0, +d.total || 0); o.cible = d.cible || 'tete';
+    o.par.type = (d.par && d.par.type) || ''; o.par.id = (d.par && typeof d.par.id === 'number') ? d.par.id : null;
+  }
+  var JT = { id: 0, forme: 'ligne', total: 0, cible: 'tete', par: { type: '', id: null } };
+  function tele(d) {
+    if (!d || TN >= TMAX) return false;
+    copieTele(TREG[TN++], d);
+    if (!TVUS[d.id] && N.journal) {
+      TVUS[d.id] = 1; if (++TVUSn > 4096) { TVUS = {}; TVUSn = 0; }
+      JT.id = d.id | 0; JT.forme = d.forme; JT.total = Math.max(0, +d.total || 0); JT.cible = d.cible || 'tete'; JT.par.type = (d.par && d.par.type) || ''; JT.par.id = (d.par && typeof d.par.id === 'number') ? d.par.id : null;
+      N.journal('tele', JT);
+    }
+    return true;
+  }
+  function publier() {
+    var s = S(); if (!s) { TN = 0; return; }
+    var L = s.tele;
+    if (!Array.isArray(L)) L = s.tele = [];
+    L.length = 0;
+    for (var i = 0; i < TN; i++) { copieTele(TPUB[i], TREG[i]); L.push(TPUB[i]); }
+    TN = 0;
+  }
+  var RL = [];                                                  // ralentis en cours {k, reste, joueuse}
+  function ralenti(k, dur, o) {
+    k = Math.max(0, Math.min(1, +k || 0)); dur = +dur || 0;
+    if (!(dur > 0)) return false;
+    if (RL.length >= 8) RL.shift();
+    RL.push({ k: k, reste: dur, joueuse: !!(o && o.joueuse) });
+    return true;
+  }
+  function facteur(pourJoueuse) {
+    var m = 1;
+    for (var i = 0; i < RL.length; i++) { if (pourJoueuse && RL[i].joueuse) continue; if (RL[i].k < m) m = RL[i].k; }
+    return m;
+  }
+  var ONDES = [];                                               // {x, y, r0, r1, ci, t, d}
+  function onde(x, y, r0, r1, ci, dur) { if (ONDES.length >= 24) ONDES.shift(); ONDES.push({ x: x, y: y, r0: +r0 || 0, r1: +r1 || 8, ci: ci | 0, t: 0, d: +dur || 0.4 }); }
+  var EFF = { glitch: 0, glitchT: 0, vigA: 0, vigF: 0, des: null, desT: 0, desD: 0 };
+
+  N.fx.boom = function (x, y, force, ci, v) {
+    if (v === 'joueuse') ci = N.pal.i('cyan');
+    else if (v && typeof v === 'object' && v.ecran && N.cam) { x += N.cam.x; y += N.cam.y; }
+    return boom0(x, y, force, ci);
+  };
+  N.fx.hitstop = function (n) {
+    hitstop0(n);
+    n = Math.round(+n || 0);
+    if (n > 0 && N.horloge && N.horloge.geler) N.horloge.geler(n / 60);
+  };
+  N.fx.update = function (dt) {
+    update0(dt);
+    var h = (N.horloge && N.horloge.H) || 1 / 120, i;
+    for (i = RL.length - 1; i >= 0; i--) { RL[i].reste -= h; if (RL[i].reste <= 0) RL.splice(i, 1); }
+    for (i = ONDES.length - 1; i >= 0; i--) { ONDES[i].t += dt > 0 ? dt : 0; if (ONDES[i].t >= ONDES[i].d) ONDES.splice(i, 1); }
+    if (EFF.glitchT > 0) EFF.glitchT -= h;
+    if (EFF.desT < EFF.desD) EFF.desT += h;
+    publier();
+  };
+  N.fx.draw = function () {
+    draw0();
+    var g = N.gfx; if (!g) return;
+    for (var i = 0; i < ONDES.length; i++) { var o = ONDES[i], k = o.t / o.d; g.ring(o.x, o.y, o.r0 + (o.r1 - o.r0) * k, o.ci, 1 - k); }
+  };
+  N.fx.reset = function () { reset0(); TN = 0; RL.length = 0; ONDES.length = 0; EFF.glitchT = 0; EFF.des = null; var s = S(); if (s && Array.isArray(s.tele)) s.tele.length = 0; };
+  N.fx.tele = tele;
+  N.fx.drawTele = function () {
+    var s = S(), L = s && s.tele, g = N.gfx; if (!L || !g || !N.pal) return;
+    var NP = N.pal.i('nuitProfonde'), MG = N.pal.i('magenta'), RP = N.pal.i('rosePale');
+    var fin = (N.R && N.R.ennemis && N.R.ennemis.tele && N.R.ennemis.tele.finRosePale) || 0.3, ph = ((s.frame | 0) >> 1) % 6;
+    if (g.owner) g.owner(7);
+    for (var i = 0; i < L.length; i++) {
+      var t = L[i], c = t.reste <= fin ? RP : MG, actif = t.reste <= 0;
+      if (t.forme === 'ligne' || t.forme === 'voie') {
+        var dx = t.x1 - t.x0, dy = t.y1 - t.y0, len = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+        for (var q = 0; q < len; q++) {
+          var x = t.x0 + ux * q, y = t.y0 + uy * q;
+          if (N.cam && !N.cam.visible(x, y, 2)) continue;
+          g.px(x + nx, y + ny, NP); g.px(x - nx, y - ny, NP);
+          if (actif || ((q + 600 - ph) % 6) < 3) g.px(x, y, c);
+        }
+      } else if (t.forme === 'disque' || t.forme === 'losange' || t.forme === 'secteur') {
+        g.ditherCirc(t.x0, t.y0, t.r, MG, actif ? 0.5 : 0.12);
+        g.ring(t.x0, t.y0, t.r + 1, NP); g.ring(t.x0, t.y0, t.r, c);
+      } else if (t.forme === 'rect') {
+        g.rect(t.x0, t.y0, t.x1 - t.x0, 1, c); g.rect(t.x0, t.y1, t.x1 - t.x0, 1, c); g.rect(t.x0, t.y0, 1, t.y1 - t.y0, c); g.rect(t.x1, t.y0, 1, t.y1 - t.y0, c);
+      }
+    }
+    if (g.owner) g.owner(0);
+  };
+  N.fx.drawEcran = function () { /* repli : aucun effet en espace écran (feu d'artifice, glitch, vignette : lots 6a, 6b) */ };
+  N.fx.onde = onde;
+  N.fx.pickup = function (x, y) { onde(x, y, 2, 9, N.pal.i('jaune'), 0.2); };
+  N.fx.lasso = function (poly, n) { if (poly && poly.length >= 2) onde(poly[0], poly[1], 4, 12 + (n | 0) * 3, N.pal.i('cyanPale'), 0.3); };
+  N.fx.glitch = function (force, dur) { EFF.glitch = +force || 0; EFF.glitchT = +dur || 0; };
+  N.fx.vignette = function (a, f) { EFF.vigA = +a || 0; EFF.vigF = +f || 0; };
+  N.fx.ralenti = ralenti;
+  N.fx.k = function () { return facteur(false); };
+  N.fx.kJoueuse = function () { return facteur(true); };
+  N.fx.desintegre = function (points, dur) { EFF.des = points || null; EFF.desT = 0; EFF.desD = +dur || 0.7; };
 })();

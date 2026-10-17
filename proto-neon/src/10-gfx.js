@@ -37,6 +37,9 @@
   var buf = null;                       /* le tampon d'index : la vérité du rendu */
   var W = 0, H = 0, PX = 2;
   var smoothOK = false;                 /* le lissage a-t-il été désarmé depuis le dernier resize */
+  /* contrat 1.0 (lot 0b, squelette ; le lot 1 l'optimise) : l'origine de dessin et le masque de propriété */
+  var OX = 0, OY = 0;                   /* origine courante : les primitives retranchent (OX, OY) */
+  var MK = null, OWN = 0;               /* masque de propriété : null hors mesure, coût nul */
 
   var RND = Math.round;
 
@@ -68,6 +71,7 @@
     if (w === W && h === H && p === PX && buf) { smoothOK = false; return { w: W, h: H, px: PX }; }
     W = w; H = h; PX = p;
     buf = new Uint8Array(W * H);
+    if (MK) MK = new Uint8Array(W * H);
     ic = mkCanvas(W, H);
     ictx = ic ? ic.getContext('2d', { alpha: false }) : null;
     if (ictx) {
@@ -95,9 +99,10 @@
   function clear(ci) { if (buf) buf.fill((ci | 0) & 15); }
 
   function px(x, y, ci) {
-    x = RND(x); y = RND(y);
+    x = RND(x - OX); y = RND(y - OY);
     if (x < 0 || y < 0 || x >= W || y >= H) return;
     buf[y * W + x] = (ci | 0) & 15;
+    if (MK) MK[y * W + x] = OWN;
   }
 
   function at(x, y) {
@@ -114,10 +119,11 @@
     if (x1 < x0) return;
     var o = y * W;
     buf.fill(c, o + x0, o + x1 + 1);
+    if (MK) MK.fill(OWN, o + x0, o + x1 + 1);
   }
 
   function rect(x, y, w, h, ci) {
-    x = RND(x); y = RND(y); w = RND(w); h = RND(h);
+    x = RND(x - OX); y = RND(y - OY); w = RND(w); h = RND(h);
     if (w <= 0 || h <= 0) return;
     var c = (ci | 0) & 15, y1 = y + h - 1, x1 = x + w - 1;
     if (y < 0) y = 0; if (y1 > H - 1) y1 = H - 1;
@@ -128,20 +134,20 @@
     if (t === undefined) t = 1;
     if (t >= 1) return rect(x, y, w, h, ci);
     if (!(t > 0)) return;
-    x = RND(x); y = RND(y); w = RND(w); h = RND(h);
+    x = RND(x - OX); y = RND(y - OY); w = RND(w); h = RND(h);
     var c = (ci | 0) & 15, D = N.pal.dither;
     var x0 = x < 0 ? 0 : x, y0 = y < 0 ? 0 : y;
     var x1 = x + w - 1, y1 = y + h - 1;
     if (x1 > W - 1) x1 = W - 1; if (y1 > H - 1) y1 = H - 1;
     for (var yy = y0; yy <= y1; yy++) {
       var o = yy * W;
-      for (var xx = x0; xx <= x1; xx++) if (D(xx, yy, t)) buf[o + xx] = c;
+      for (var xx = x0; xx <= x1; xx++) if (D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
     }
   }
 
   /* Bresenham entier : aucune position intermédiaire, aucun lissage */
   function line(x0, y0, x1, y1, ci) {
-    x0 = RND(x0); y0 = RND(y0); x1 = RND(x1); y1 = RND(y1);
+    x0 = RND(x0 - OX); y0 = RND(y0 - OY); x1 = RND(x1 - OX); y1 = RND(y1 - OY);
     var c = (ci | 0) & 15;
     var dx = x1 - x0 < 0 ? x0 - x1 : x1 - x0;
     var dy = y1 - y0 < 0 ? y0 - y1 : y1 - y0;
@@ -150,7 +156,7 @@
     /* garde-fou : une ligne absurde ne doit pas geler l'image */
     var guard = dx + dy + 4;
     for (;;) {
-      if (x0 >= 0 && y0 >= 0 && x0 < W && y0 < H) buf[y0 * W + x0] = c;
+      if (x0 >= 0 && y0 >= 0 && x0 < W && y0 < H) { buf[y0 * W + x0] = c; if (MK) MK[y0 * W + x0] = OWN; }
       if (x0 === x1 && y0 === y1) break;
       if (--guard < 0) break;
       e2 = err + err;
@@ -160,7 +166,7 @@
   }
 
   function circ(x, y, r, ci) {
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x - OX); y = RND(y - OY); r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, rr = r * r;
     var dy0 = -r, dy1 = r;
@@ -175,7 +181,7 @@
     if (t === undefined) t = 1;
     if (t >= 1) return circ(x, y, r, ci);
     if (!(t > 0)) return;
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x - OX); y = RND(y - OY); r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, rr = r * r, D = N.pal.dither;
     var dy0 = -r, dy1 = r;
@@ -185,14 +191,14 @@
       var yy = y + dy, o = yy * W;
       var a = x - dx, b = x + dx;
       if (a < 0) a = 0; if (b > W - 1) b = W - 1;
-      for (var xx = a; xx <= b; xx++) if (D(xx, yy, t)) buf[o + xx] = c;
+      for (var xx = a; xx <= b; xx++) if (D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
     }
   }
 
   /* Couronne épaisse tramée, de r0 à r1 : une explosion est une forme, pas un flou. */
   function disc(x, y, r0, r1, ci, t) {
     if (t === undefined) t = 1;
-    x = RND(x); y = RND(y); r0 = RND(r0); r1 = RND(r1);
+    x = RND(x - OX); y = RND(y - OY); r0 = RND(r0); r1 = RND(r1);
     if (r1 < r0) { var sw = r0; r0 = r1; r1 = sw; }
     if (r1 < 0) return;
     if (r0 < 0) r0 = 0;
@@ -207,7 +213,7 @@
       for (var xx = ax; xx <= bx; xx++) {
         var ex = xx - x, q = ex * ex + d2;
         if (q < a2 || q > b2) continue;
-        if (full || D(xx, yy, t)) buf[o + xx] = c;
+        if (full || D(xx, yy, t)) { buf[o + xx] = c; if (MK) MK[o + xx] = OWN; }
       }
     }
   }
@@ -215,14 +221,14 @@
   /* Anneau d'épaisseur 1 trame, algorithme du point milieu, chaque pixel filtré par le tramage. */
   function ring(x, y, r, ci, t) {
     if (t === undefined) t = 1;
-    x = RND(x); y = RND(y); r = RND(r);
+    x = RND(x - OX); y = RND(y - OY); r = RND(r);
     if (r < 0) return;
     var c = (ci | 0) & 15, D = N.pal.dither, full = t >= 1;
     if (!full && !(t > 0)) return;
 
     function pt(px0, py0) {
       if (px0 < 0 || py0 < 0 || px0 >= W || py0 >= H) return;
-      if (full || D(px0, py0, t)) buf[py0 * W + px0] = c;
+      if (full || D(px0, py0, t)) { buf[py0 * W + px0] = c; if (MK) MK[py0 * W + px0] = OWN; }
     }
     if (r === 0) { pt(x, y); return; }
 
@@ -241,7 +247,7 @@
     if (!sprite || !sprite.data) return;
     var sw = sprite.w | 0, sh = sprite.h | 0;
     if (sw <= 0 || sh <= 0) return;
-    x = RND(x); y = RND(y);
+    x = RND(x - OX); y = RND(y - OY);
     var d = sprite.data;
     var fx = !!(opts && opts.flipX), fy = !!(opts && opts.flipY);
     var ink = (opts && opts.ci !== undefined && opts.ci !== null) ? ((N.pal.i(opts.ci) | 0) & 15) : -1;
@@ -261,13 +267,16 @@
         var vv = d[so + sx];
         if (!vv) continue;
         buf[to + tx] = ink >= 0 ? ink : (vv & 15);
+        if (MK) MK[to + tx] = OWN;
       }
     }
   }
 
   /* ---- présentation : une seule composition, puis un agrandissement en voisin le plus proche ---- */
-  function present() {
+  function present(opts) {
     if (!buf || !octx || !ictx || !u32) return;
+    /* skipScale : 20-crt.js relit buf() et compose seul ; ni conversion, ni putImageData, ni agrandissement */
+    if (opts && opts.skipScale) return;
     var P = N.pal.U32, b = buf, u = u32, nn = b.length, j = 0;
 
     /* déroulé par quatre : c'est la boucle la plus chaude du prototype */
@@ -297,8 +306,47 @@
     octx.drawImage(ic, 0, 0, W, H, 0, 0, ow, oh);
   }
 
+  /* ---- contrat 1.0 : origine, plans, remappage, masque (squelette du lot 0b, le lot 1 les optimise) ---- */
+  function origin(ox, oy) { OX = RND(+ox || 0); OY = RND(+oy || 0); }
+  /* un plan {w, h, data} posé par copie de rangées en (x, y) ; wrapX : bouclé en largeur ; opaque : l'index 0
+     est posé aussi ; lut : table de 16 index appliquée en copiant (cyclage) */
+  function layer(im, o) {
+    if (!im || !im.data || !buf) return;
+    o = o || {};
+    var x = RND((+o.x || 0) - OX), y = RND((+o.y || 0) - OY), iw = im.w | 0, ih = im.h | 0, d = im.data, lut = o.lut || null, op = !!o.opaque;
+    if (iw <= 0 || ih <= 0) return;
+    var y0 = y < 0 ? 0 : y, y1 = Math.min(H - 1, y + ih - 1);
+    for (var ty = y0; ty <= y1; ty++) {
+      var so = (ty - y) * iw, to = ty * W;
+      for (var tx = 0; tx < W; tx++) {
+        var sx = tx - x;
+        if (o.wrapX) { sx %= iw; if (sx < 0) sx += iw; } else if (sx < 0 || sx >= iw) continue;
+        var v = d[so + sx];
+        if (!v && !op) continue;
+        buf[to + tx] = lut ? (lut[v & 15] & 15) : (v & 15);
+        if (MK) MK[to + tx] = OWN;
+      }
+    }
+  }
+  /* applique une table d'index au tampon, en entier ou sur rect {x, y, w, h} (ÉCRAN) */
+  function remap(lut, r) {
+    if (!buf || !lut) return;
+    var x0 = 0, y0 = 0, x1 = W - 1, y1 = H - 1;
+    if (r) { x0 = Math.max(0, RND(r.x)); y0 = Math.max(0, RND(r.y)); x1 = Math.min(W - 1, RND(r.x + r.w) - 1); y1 = Math.min(H - 1, RND(r.y + r.h) - 1); }
+    for (var yy = y0; yy <= y1; yy++) { var o = yy * W; for (var xx = x0; xx <= x1; xx++) buf[o + xx] = lut[buf[o + xx]] & 15; }
+  }
+  function owner(code) { OWN = (code | 0) & 255; }
+  /* masque(true) l'arme (remis à zéro), masque(false) le désarme ; rend le masque courant (ou null) */
+  function masque(b) {
+    if (b === true) { MK = new Uint8Array(W * H); OWN = 0; }
+    else if (b === false) { var m = MK; MK = null; return m; }
+    return MK;
+  }
+
   N.gfx = {
     W: 0, H: 0, PX: 2,
+    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque,
+    originX: function () { return OX; }, originY: function () { return OY; },
     init: init, resize: resize, present: present,
     clear: clear, px: px, rect: rect, line: line, circ: circ, ring: ring, blit: blit,
     ditherRect: ditherRect, ditherCirc: ditherCirc, disc: disc,

@@ -102,13 +102,10 @@ if (typeof window !== 'undefined') window.__N = N;
   function mk(seed) {
     var st = seed >>> 0;
     return function () {
-      var S = N.S, v;
-      if (S && N.rnd) {
-        var keep = S.rngState; S.rngState = st; v = N.rnd(); st = S.rngState; S.rngState = keep;
-      } else {                                     /* module isole : meme suite, en local */
-        st = (st * 1664525 + 1013904223) % 4294967296; v = st / 4294967296;
-      }
-      return v;
+      /* contrat 1.0 : N.rnd est devenu l'alias du flux 'jeu' ; la musique garde la MEME suite, en local,
+         et ne consomme donc plus rien du hasard du jeu (lot 0b) */
+      st = (st * 1664525 + 1013904223) % 4294967296;
+      return st / 4294967296;
     };
   }
   function musicSeed() {
@@ -979,5 +976,52 @@ if (typeof window !== 'undefined') window.__N = N;
       });
     }
   };
+  /* ================================ contrat 1.0 (squelette du lot 0b ; lots 7a et 7b) ================================
+     load({base})       retient MUSIQUE_BASE ; le repli ne charge rien : la piste en blocs vient au lot 7a ;
+     section(nom)       appelée par 79-jeu seulement ; journalisée ; le repli génératif continue ;
+     cue, couche, danger, voix : retenus, sans effet audible dans le repli ;
+     beat()             la phase AUDIO ; sans piste, la grille de jeu (N.horloge.temps()) ;
+     mute(canal, b)     'musique' | 'effets' ; mute(b) sans canal coupe les deux, comme avant ;
+     piste()            {pret, bloc, mesure, section, repli} ; noeuds() : nœuds audio créés (repli : 0). */
+  var CANAL = { musique: false, effets: false }, PISTE = { pret: false, bloc: null, mesure: 0, section: null, repli: true };
+  var BEAT = { bar: 0, beat: 0, phase: 0 }, BASE = null, COUCHES = {}, DANGER = 0;
+  var muteTout = N.music.mute, demarrer = N.music.start, arreter = N.music.stop, sonner = N.music.sfx;
+  function canaux() {
+    if (CANAL.musique && CANAL.effets) { muteTout(true); return; }
+    muteTout(false);
+    if (CANAL.musique) arreter(); else if (N.music.info && N.music.info()) demarrer();
+  }
+  N.music.mute = function (canal, b) {
+    if (typeof canal === 'string') {
+      if (canal !== 'musique' && canal !== 'effets') return false;
+      b = !!b;
+      if (CANAL[canal] !== b) { CANAL[canal] = b; canaux(); }
+      return CANAL[canal];
+    }
+    CANAL.musique = CANAL.effets = !!canal;
+    return muteTout(!!canal);
+  };
+  N.music.start = function () { if (CANAL.musique) return; demarrer(); };
+  N.music.stop = function () { arreter(); };
+  N.music.sfx = function (nom, o) { if (CANAL.effets) return; sonner(nom, o); };
+  N.music.load = function (o) { BASE = (o && typeof o.base === 'string') ? o.base : (typeof MUSIQUE_BASE !== 'undefined' ? MUSIQUE_BASE : null); PISTE.repli = true; return BASE; };
+  N.music.section = function (nom) {
+    if (N.ids && N.ids.sections.indexOf(nom) < 0) return false;
+    if (PISTE.section !== nom) { PISTE.section = nom; if (N.journal) N.journal('section', { nom: nom }); }
+    return true;
+  };
+  N.music.cue = function (nom) { return !!(N.ids && N.ids.cues.indexOf(nom) >= 0); };
+  N.music.couche = function (nom, b) { COUCHES[nom] = !!b; return COUCHES[nom]; };
+  N.music.danger = function (v) { DANGER = Math.max(0, Math.min(1, +v || 0)); return DANGER; };
+  N.music.beat = function () {
+    var t = N.horloge && N.horloge.temps ? N.horloge.temps() : null;
+    BEAT.bar = t ? t.mesure : 0; BEAT.beat = t ? t.temps : 0; BEAT.phase = t ? t.phase : 0;
+    return BEAT;
+  };
+  N.music.voix = function (mot) { return !!(N.ids && N.ids.voix.indexOf(mot) >= 0); };
+  N.music.piste = function () { var t = N.horloge && N.horloge.temps ? N.horloge.temps() : null; PISTE.mesure = t ? t.mesure : 0; return PISTE; };
+  N.music.noeuds = function () { return 0; };
+  N.music.canaux = function () { return CANAL; };
+
 
 })();

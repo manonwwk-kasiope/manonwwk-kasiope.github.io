@@ -1063,8 +1063,66 @@
     return { w: Math.max(1, tw * k + m0 + m1), h: th * k + m0 + m1 };
   }
 
+  /* ================================ contrat 1.0 (squelette du lot 0b ; lots 6a et 6b) ================================
+     N.spr.get(nom, dir, img) : le sprite du catalogue figé (N.ids.sprites), dir 0..15, img = image d'animation,
+     l'état dans le nom ('fleche:armee'). Les noms que la démo dessine déjà passent par make() ; un nom du
+     catalogue qu'aucun lot n'a encore livré rend un REPLI PROCÉDURAL à sa taille (carré ou losange dans la
+     palette, contour de nuit profonde pour les menaces, jamais de cyan hors de la joueuse) ; un nom hors du
+     catalogue rend aussi le repli, de 7 × 7, compté dans N.spr.unknown.
+     N.spr.catalogue() : le catalogue figé, chaque entrée complétée de reel (dessiné pour de vrai ici).
+     N.spr.measure(texte, échelle) accepte une échelle numérique. */
+  var DEMO = { tete: 1, corps: 1, 'corps:7': 1, 'corps:5': 1, 'corps:3': 1, tir: 1, chevron: 1, fleche: 1, tourelle: 1, 'tourelle:charge': 1,
+    sentinelle: 1, mine: 1, 'mine:alerte': 1, colosse: 1, 'colosse:oeil': 1, tirEnnemi: 1, 'tirEnnemi:petit': 1, 'tirEnnemi:gros': 1,
+    butin: 1, son: 1, muet: 1, pause: 1, lecture: 1, vie: 1, vieVide: 1, ok: 1, ko: 1 };
+  var DIRS = { tete: 1, tir: 1, chevron: 1, fleche: 1 };
+  /* repli des variantes pas encore dessinées : la forme de base de la démo */
+  var VERS_DEMO = { 'fleche:armee': 'fleche', 'fleche:elite': 'fleche' };
+  var REPLI = typeof Map !== 'undefined' ? new Map() : null;
+  function categorie(nom) {
+    var b = nom.split(':')[0];
+    if (/^(tete|corps|vie|vieMini|lance|rayon|tourelleJ|drone|missile|mineJ|orbe)$/.test(b)) return 'joueuse';
+    if (/^(butin|noyau|pastille)$/.test(b)) return 'butin';
+    if (/^(portail|son|muet|pause|lecture|ok|ko|carte)$/.test(b)) return 'interface';
+    return 'menace';
+  }
+  function repli(nom) {
+    var o = REPLI && REPLI.get(nom);
+    if (o) return o;
+    var C = (N.ids && N.ids.sprites && N.ids.sprites[nom]) || null, w = C ? C.w : 7, h = C ? C.h : 7, cat = categorie(nom);
+    var NPi = N.pal.i('nuitProfonde'), enc = cat === 'joueuse' ? N.pal.i('cyan') : cat === 'butin' ? N.pal.i('ambre') : cat === 'interface' ? N.pal.i('acier') : N.pal.i('magenta');
+    var coeur = cat === 'joueuse' ? N.pal.i('cyanPale') : cat === 'butin' ? N.pal.i('jaune') : cat === 'interface' ? N.pal.i('os') : N.pal.i('rosePale');
+    o = { w: w, h: h, data: new Uint8Array(w * h), cx: (w - 1) >> 1, cy: (h - 1) >> 1 };
+    var cx = (w - 1) / 2, cy = (h - 1) / 2, r = Math.max(1, Math.min(w, h) / 2 - 1);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var d = Math.abs(x - cx) + Math.abs(y - cy);               // un losange : la forme du repli
+      if (d <= r - 1) o.data[y * w + x] = d <= r / 3 ? coeur : enc;
+      else if (d <= r && cat !== 'joueuse') o.data[y * w + x] = NPi;
+    }
+    if (REPLI) REPLI.set(nom, o);
+    return o;
+  }
+  function get(nom, d, img) {
+    nom = String(nom);
+    var base = VERS_DEMO[nom] || nom;
+    if (DEMO[base]) return make(DIRS[base] ? base + ':' + (((d | 0) % 16) + 16) % 16 : base, img | 0);
+    if (nom === 'cellule') return make('butin', img | 0);
+    if (!(N.ids && N.ids.sprites && N.ids.sprites[nom])) unknown[nom] = (unknown[nom] || 0) + 1;
+    return repli(nom);
+  }
+  var CATA = null;
+  function catalogue() {
+    if (!CATA) {
+      CATA = [];
+      var L = (N.ids && N.ids.listeSprites) || [];
+      for (var i = 0; i < L.length; i++) { var c = N.ids.sprites[L[i]]; CATA.push({ nom: c.nom, w: c.w, h: c.h, dirs: c.dirs, images: c.images, lot: c.lot, reel: !!DEMO[c.nom] }); }
+    }
+    return CATA;
+  }
+  function measure1(str, o) { return measure(str, typeof o === 'number' ? { echelle: o } : o); }
+
   N.spr = {
-    make: make, text: text, measure: measure, draw: draw, dir: dir, frames: frames, warm: warm,
+    get: get, catalogue: catalogue,
+    make: make, text: text, measure: measure1, draw: draw, dir: dir, frames: frames, warm: warm,
     names: function () { return LISTE.slice(); },
     glyphs: function () { return Object.keys(G).concat(Object.keys(COMPOSE)); },
     unknown: unknown,

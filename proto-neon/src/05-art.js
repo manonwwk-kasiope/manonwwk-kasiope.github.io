@@ -117,7 +117,8 @@ N.art = (function () {
       /* WebKit ne lance pas seule une vidéo invisible : elle vit dans la page, derrière le canvas opaque */
       v.style.cssText = 'position:fixed;left:0;top:0;width:16px;height:9px;z-index:-1;pointer-events:none';
       if (document.body) document.body.appendChild(v);
-      v.src = 'cine/' + name + '.mp4';
+      /* build.mjs --embed met les clips dans CINE_EMBED ; sinon ils sont servis depuis CINE_BASE (relatif à la page) */
+      v.src = (typeof CINE_EMBED !== 'undefined' && CINE_EMBED[name]) || ((typeof CINE_BASE !== 'undefined' ? CINE_BASE : 'cine/') + name + '.mp4');
     } catch (e) { v = null; }
     return (vids[name] = v);
   }

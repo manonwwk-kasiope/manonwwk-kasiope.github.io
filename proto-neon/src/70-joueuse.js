@@ -239,7 +239,7 @@
     N.ev.on('kill', 35, function () { if (P.etat !== 'mort') P.apogee = Math.min(100, P.apogee + 2); }, QUI);
     N.ev.on('lasso', 35, function (c) { P.apogee = Math.min(100, P.apogee + 3 * (c.n | 0)); }, QUI);
     N.ev.on('carte', 10, function (c) {
-      if (c.id === 'croissance') grandir((R() && R().longueur && R().longueur.parCroissance) || 5);
+      if (c.id === 'croissance') grandir((R() && R().passifs && R().passifs.croissance.segments) || 4);
       if (N.ids && N.ids.pouvoirs.indexOf(c.id) >= 0) joueuse.pouvoir = c.id;
     }, QUI);
   }

@@ -466,6 +466,7 @@
   }
 
   var ST ={ ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche' };
+  var EXT = { on: false, t: 0, dur: 0 }, AUTO = { on: false };
 
   function apply(dt) {
     if (CRT.off) { ST.ops = 0; ST.mode = 'coupe'; return; }
@@ -504,6 +505,10 @@
     off: false, pure: false,
     scan: 1, grille: 1, ab: 1, bloom: 1, vig: 1,
     apply: apply, stats: ST,
+    /* contrat 1.0 (squelette du lot 0b ; le lot 1 les réalise) : l'extinction du tube à la dernière mort, et
+       le préréglage adaptatif piloté par S.perf. Les replis ne changent rien à l'image. */
+    extinction: function (dur) { EXT.dur = +dur || 0.4; EXT.t = 0; EXT.on = true; return EXT.on; },
+    auto: function (b) { if (arguments.length) AUTO.on = !!b; return AUTO.on; },
     preset: function (nom) {
       if (nom === 'pur') { CRT.off = false; CRT.pure = true; CRT.scan = 1; CRT.grille = 1; CRT.vig = 1; }
       else if (nom === 'coupe') { CRT.off = true; }
