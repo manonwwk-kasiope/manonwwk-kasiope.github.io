@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, 'src');
-const OUT = path.join(HERE, 'index.html');
+const OUT = process.argv[2] ? path.resolve(process.argv[2]) : path.join(HERE, 'index.html');   // sortie ailleurs pour un essai
 
 const files = fs.readdirSync(SRC).filter(f => f.endsWith('.js')).sort();
 if (!files.length) { console.error('build : aucun module dans src/'); process.exit(2); }

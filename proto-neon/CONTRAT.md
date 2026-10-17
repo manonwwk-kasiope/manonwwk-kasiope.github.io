@@ -161,6 +161,32 @@ cœur lumineux). Le gros ennemi reprend le colosse à l œil unique du panneau `
 sang et rose pâle, jamais en cyan. À la taille du jeu, simplifie : une silhouette lisible d abord, un
 détail lumineux ensuite.
 
+## Entrées, orientation, son, pause : ce que 90-boot.js fait déjà, et ce que le jeu doit en faire
+
+**Au doigt, un manche virtuel flottant** (le standard actuel, voir `recherche/jouabilite-mobile.md`) : il
+naît là où le pouce se pose, n importe où sur l écran ; la direction est le vecteur depuis ce point ;
+l origine suit le pouce au-delà du rayon, donc un demi-tour est immédiat ; un second doigt ne vole
+jamais la direction. 90-boot.js remplit `S.input.x`, `S.input.y` (direction unitaire, gardée quand le
+pouce s arrête), `S.input.mag` (0 à 1 ; 0 au repos et dans la zone morte) et dessine lui-même
+l indicateur : ne dessine pas d autre manche. `S.input.stick` donne l origine et le pouce en pixels CSS.
+Le tir est automatique au doigt. Au clavier : flèches ou ZQSD, Espace pour tirer.
+
+**Portrait ET paysage.** Safari ne peut pas verrouiller l orientation : le jeu doit se jouer dans les
+deux, l interface comprise, et survivre à une rotation en pleine partie.
+
+**Le son joue même interrupteur silencieux enclenché** (`navigator.audioSession.type = 'playback'`,
+posé par 90-boot.js au premier geste) : le jeu doit donc offrir une coupure du son visible, au doigt.
+En arrière-plan, 90-boot.js appelle `N.music.suspend()` puis, au retour, `N.music.resume()` : 30-music.js
+les publie (le contexte audio de l iPhone revient « interrupted » et doit être relancé).
+
+**Pause.** Quand l application passe en arrière-plan, `S.paused` devient vrai et la boucle ne met plus
+rien à jour ; la reprise se fait au premier geste. Tant que `S.paused` est vrai, 70-game.js affiche
+PAUSE en police 5×7.
+
+**La recherche fait autorité.** `recherche/jouabilite-mobile.md` (J-xx), `recherche/game-design-campagne.md`
+(G-xx) et `recherche/visuel-technique-mobile.md` (V-xx) listent des exigences vérifiables : le jury
+indépendant jugera le jeu sur elles autant que sur DIRECTION.md. Lis celles de ton domaine.
+
 ## Crochets de test, obligatoires
 
 Le bundle expose sur `window` : `__N` (l'objet N), `__S` (l'état), `__PAL` (la table),

@@ -81,19 +81,64 @@ function onKey(e, down) {
   if (down && (e.code === 'Space' || e.code === 'Enter')) gesture();
   if (down) e.preventDefault();
 }
-function onTouch(e) {
+/* Au doigt : manche virtuel flottant, le standard des jeux d'action sur téléphone (recherche/
+   jouabilite-mobile.md). Il naît là où le pouce se pose, n'importe où sur l'écran, et reste invisible
+   au repos. La direction est le vecteur depuis ce point d'origine ; l'origine suit le pouce quand il
+   dépasse le rayon, pour qu'un demi-tour soit immédiat. Le doigt est suivi par son identifiant : un
+   second doigt qui se pose ou se lève ne vole jamais la direction. */
+var STICK_R = 44, STICK_MORT = 0.08;             // rayon en pixels CSS et zone morte : non sourcés, à régler au jury
+var stick = { id: null, ox: 0, oy: 0, x: 0, y: 0 };
+S.input.stick = { active: false, ox: 0, oy: 0, x: 0, y: 0, r: STICK_R };   // pixels CSS, pour l'indicateur
+function stickUpdate() {
+  var st = S.input.stick;
+  st.active = stick.id !== null; st.ox = stick.ox; st.oy = stick.oy; st.x = stick.x; st.y = stick.y;
+  if (!st.active) { S.input.mag = 0; return; }
+  var dx = stick.x - stick.ox, dy = stick.y - stick.oy, m = Math.hypot(dx, dy), a = Math.min(1, m / STICK_R);
+  if (a < STICK_MORT) { S.input.mag = 0; return; }        // la dernière direction est gardée
+  S.input.x = dx / m; S.input.y = dy / m; S.input.mag = a;
+}
+function onTouchStart(e) {
   S.input.any = true; gesture();
-  var t = e.touches && e.touches[0]; if (!t) { S.input.mag = 0; return; }
-  var cx = window.innerWidth * 0.5, cy = window.innerHeight * 0.5;
-  var dx = t.clientX - cx, dy = t.clientY - cy, m = Math.hypot(dx, dy) || 1;
-  S.input.x = dx / m; S.input.y = dy / m; S.input.mag = Math.min(1, m / (window.innerHeight * 0.3));
+  if (stick.id === null && e.changedTouches && e.changedTouches.length) {
+    var t = e.changedTouches[0];
+    stick.id = t.identifier; stick.ox = stick.x = t.clientX; stick.oy = stick.y = t.clientY;
+    stickUpdate();
+  }
   if (e.cancelable) e.preventDefault();
+}
+function onTouchMove(e) {
+  for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
+    var t = e.changedTouches[i];
+    if (t.identifier !== stick.id) continue;
+    stick.x = t.clientX; stick.y = t.clientY;
+    var dx = stick.x - stick.ox, dy = stick.y - stick.oy, m = Math.hypot(dx, dy);
+    if (m > STICK_R) { stick.ox = stick.x - dx / m * STICK_R; stick.oy = stick.y - dy / m * STICK_R; }
+    stickUpdate();
+  }
+  if (e.cancelable) e.preventDefault();
+}
+function onTouchEnd(e) {
+  for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++)
+    if (e.changedTouches[i].identifier === stick.id) { stick.id = null; stickUpdate(); }
+  if (e.cancelable) e.preventDefault();
+}
+/* l'indicateur : un anneau tramé à l'origine et un point sous le pouce, en couleurs d'interface */
+function drawStick() {
+  var st = S.input.stick, p = N.gfx.PX || 1, r = out.getBoundingClientRect();
+  var ox = Math.round((st.ox - r.left) / p), oy = Math.round((st.oy - r.top) / p);
+  N.gfx.ring(ox, oy, Math.max(4, Math.round(STICK_R / p)), N.pal.i('acier'), 0.5);
+  N.gfx.circ(Math.round((st.x - r.left) / p), Math.round((st.y - r.top) / p), 2, N.pal.i('os'));
 }
 /* chaque geste débloque les vidéos préparées depuis le précédent ; le premier lance aussi le son */
 var audioStarted = false;
 function gesture() {
   step('art.unlock', N.art && N.art.unlock ? function () { N.art.unlock(); } : null);
+  S.paused = false;                                      // un retour d'arrière-plan reprend au premier geste
   if (audioStarted) return; audioStarted = true;
+  /* sur iPhone, un AudioContext est « ambient » par défaut : l'interrupteur silencieux le coupe, et la
+     joueuse croirait la musique cassée. « playback » le fait jouer comme une vidéo ; le jeu offre sa
+     propre coupure du son. */
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
   step('music.init', N.music && N.music.init ? function () { N.music.init(); N.music.start(); } : null);
 }
 
@@ -131,6 +176,7 @@ function frame(now) {
     if (S.phase === 'intro') step('intro.draw', N.intro && N.intro.draw ? function () { N.intro.draw(); drew = true; } : null);
     else step('game.draw', N.game && N.game.draw ? function () { N.game.draw(); drew = true; } : null);
     step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
+    if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     step('gfx.present', function () { N.gfx.present(); drew = drew || true; });
     step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(S.dt); } : null);
   }
@@ -157,11 +203,20 @@ function boot() {
   window.addEventListener('keydown', function (e) { onKey(e, true); }, { passive: false });
   window.addEventListener('keyup', function (e) { onKey(e, false); });
   var app = document.getElementById('app') || window;
-  app.addEventListener('touchstart', onTouch, { passive: false });
-  app.addEventListener('touchmove', onTouch, { passive: false });
-  app.addEventListener('touchend', function (e) { S.input.mag = 0; if (e.cancelable) e.preventDefault(); }, { passive: false });
+  app.addEventListener('touchstart', onTouchStart, { passive: false });
+  app.addEventListener('touchmove', onTouchMove, { passive: false });
+  app.addEventListener('touchend', onTouchEnd, { passive: false });
+  app.addEventListener('touchcancel', onTouchEnd, { passive: false });
+  /* en arrière-plan : le jeu se met en pause, le son s'endort ; au retour, le son reprend et le jeu
+     attend le premier geste (70-game.js affiche PAUSE tant que S.paused est vrai) */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      S.paused = true; keys = {}; stick.id = null; stickUpdate();
+      step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
+    } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
+  });
   app.addEventListener('pointerdown', gesture);
-  window.addEventListener('blur', function () { keys = {}; S.input.mag = 0; S.input.fire = false; });
+  window.addEventListener('blur', function () { keys = {}; stick.id = null; stickUpdate(); S.input.fire = false; });
 
   step('intro.reset', N.intro && N.intro.reset ? function () { N.intro.reset(); } : null);
   step('game.reset', N.game && N.game.reset ? function () { N.game.reset(S.seed); } : null);
