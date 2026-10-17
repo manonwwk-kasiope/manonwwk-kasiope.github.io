@@ -55,3 +55,17 @@ Donne les valeurs AVANT et APRÈS dans `proto-neon/tools/lisibilite/rapport.md`,
 - Jamais `git add -A`, `git reset --hard`, `git stash`, ni `git checkout` d'une autre branche.
 - Quand c'est livré : libère ta réservation dans `COORDINATION.md` et termine ton message de commit par
   « prêt pour /mediateur ». La session Claude jugera avec `/mediateur`.
+
+## Correction du 18 octobre (réponse à la question de Codex)
+
+Codex a démontré que les seuils d'origine se contredisaient : le rectangle du plateau couvre tout l'écran, ciel
+compris (paysage : 422 × 195, horizon à y = 114). Garder 25 % du ciel lumineux donne à lui seul environ 14,6 %
+de l'écran lumineux, au-dessus du plafond de 8 % ; et les vagues 4 sont déjà sous 25 % avant toute correction.
+Le texte d'origine reste ci-dessus ; les seuils qui font foi sont désormais :
+
+- **sous l'horizon** (`y > N.decor.horizon()`, dans le rectangle du plateau) : jaune + ambre + brasier + os
+  **≤ 3 %**, luminance > 0,25 **≤ 8 %** (inchangés, mais mesurés là où le jeu se joue au sol) ;
+- **au-dessus de l'horizon**, pendant le jeu : pixels de luminance > 0,10 **≥ 12 %** (au lieu de 25 %), et
+  jaune + ambre + brasier + os **≤ 12 %**. Tu as le droit d'éteindre le lointain d'un cran pendant les états
+  de jeu, soleil compris : la lisibilité prime sur la lumière du décor ;
+- le reste (zéro erreur, coût de l'image + 0,5 ms au plus, hors jeu inchangé, captures avant/après) ne change pas.
