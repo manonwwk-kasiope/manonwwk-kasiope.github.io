@@ -67,7 +67,7 @@ N.dir = (function () {
     st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
     st.queue.length = 0;
     var fs = w.formations || [];
-    for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false });
+    for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false, annonce: 0 });
     st.queue.sort(function (a, b) { return a.t - b.t; });
     if (n === 1 && st.premiere) {                      // le premier ennemi de la première partie : 3 s après un virage de plus de 45°, 6 s au plus tard
       st.gate = st.tuto ? CFG.premierGate : CFG.premierGateSuivantes; st.turn = 0; st.angPrec = null;
@@ -322,7 +322,14 @@ N.dir = (function () {
         if (i > 0 && st.tw < CFG.entree) break;                            // entrée calme de 6 s : seule la première formation
         if (i === 0 && st.gate > st.tw) break;
         if (c.regular + (TAILLE[q.f] || 3) > plafond && q.t + 20 > st.tw) break;   // au plafond : on attend (au plus 20 s)
-        var made = formation(q.f);
+        if (!q.annonce) {                                                   // annoncée 1 s avant (§ 4.3) : son nom d'abord, ses ennemis ensuite
+          q.annonce = st.tw;
+          var nm = NOMS[q.f] || q.f.toUpperCase();
+          if (!st.vus[q.f]) { st.vus[q.f] = true; banniere(nm, { c: 'magenta', duree: 1.4 }); } else etiquette(nm);
+          break;
+        }
+        if (st.tw - q.annonce < ((R && R.formations && R.formations.annonce) || 1)) break;
+        var made = formation(q.f, { sansEtiquette: true });
         if (made > 0) { q.fait = true; break; }
         q.essais++;
         if (q.essais > 60) { q.fait = true; }

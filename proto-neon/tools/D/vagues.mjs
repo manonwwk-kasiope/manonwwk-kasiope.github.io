@@ -21,8 +21,11 @@ await page.goto(URL_JEU);
 await page.waitForFunction(() => window.__N && window.__N.game && window.__S);
 await page.evaluate(() => window.__N.intro.skip());
 await page.waitForFunction(() => window.__N.game.etat() !== 'demarrage', null, { timeout: 20000 });
+const MIX = arg('--mix', '0') === '1';
+await page.evaluate(() => { window.__N.ev.verifier(true); window.__N.journal.actif(true); });
 const out = [];
 for (const n of VAGUES) {
+  await page.evaluate((m) => { window.__MIX = m; window.__K = 0; }, MIX);
   await page.evaluate(({ n, dieu }) => { const g = window.__N.game; g.dbg.god(dieu); g.dbg.vague(n); }, { n, dieu: DIEU });
   const res = { n, t: 0, maxAlive: 0, morts: 0, kills: 0, spawns0: 0, types: {}, arene: [], etat: '' };
   const cap = CAPS.find(c => c.n === n);
@@ -35,6 +38,7 @@ for (const n of VAGUES) {
       for (const q of N.ennemis.list) { if (q.etat === 'portail') continue; const d = Math.hypot(q.x - P.x, q.y - P.y); if (d < dm) { dm = d; cib = q; } }
       for (const q of N.butin.list) { const d = Math.hypot(q.x - P.x, q.y - P.y) + 30; if (d < dm) { dm = d; cib = q; } }
       const a = cib ? Math.atan2(cib.y - P.y, cib.x - P.x) : P.ang + 0.4;
+      if (window.__MIX) g.dbg.god(!(window.__K++ % 3 === 2));
       g.dbg.input(m.d < 36 ? { x: m.nx, y: m.ny, mag: 1 } : { x: Math.cos(a), y: Math.sin(a), mag: 1 });
       return g.etat();
     });
@@ -42,21 +46,28 @@ for (const n of VAGUES) {
     const info = await page.evaluate(() => {
       const N = window.__N, d = N.game.dbg(), c = N.ennemis.counts();
       const w = N.world.voyage ? N.world.voyage() : {};
-      return { etat: N.game.etat(), t: N.dir.tempsVague(), alive: c.regular, c, st: d.stats, morts: d.stats.morts.length, kills: d.kills, vague: N.dir.vague(), trav: w.actif, arene: N.arene && N.arene.actif ? N.arene.actif() : false, voies: N.arene && N.arene.voies ? N.arene.voies().length : 0, wx: [Math.round(N.world.x0), Math.round(N.world.x1)] };
+      const kinds = {}; for (const z of d.stats.spawns) if (z.vague === N.dir.vague()) kinds[z.k] = (kinds[z.k] || 0) + 1;
+      return { kinds, etat: N.game.etat(), t: N.dir.tempsVague(), alive: c.regular, c, st: d.stats, morts: d.stats.morts.length, kills: d.kills, vague: N.dir.vague(), trav: w.actif, arene: N.arene && N.arene.actif ? N.arene.actif() : false, voies: N.arene && N.arene.voies ? N.arene.voies().length : 0, wx: [Math.round(N.world.x0), Math.round(N.world.x1)] };
     });
     res.t = info.t; res.maxAlive = Math.max(res.maxAlive, info.alive); res.morts = info.morts; res.kills = info.kills; res.etat = info.etat;
-    res.sp = info.st.spawns.length; res.inView = info.st.inView; res.minDist = info.st.minDistSpawn; res.types = info.c;
+    res.sp = info.st.spawns.length; res.kinds = info.kinds; res.inView = info.st.inView; res.minDist = info.st.minDistSpawn; res.types = info.c;
     if (info.trav) res.arene.push('T' + s + ':' + info.wx.join('-'));
     if (info.voies) res.arene.push('V' + s);
     if (cap && !capDone && info.t >= cap.t) { await page.waitForTimeout(400); await page.screenshot({ path: cap.f }); capDone = true; }
-    if (info.etat !== 'jeu' && info.etat !== 'plongee') break;
+    if (!MIX && info.etat !== 'jeu' && info.etat !== 'plongee') break;
+    if (MIX && (info.etat === 'cartes' || info.etat === 'fin' || info.etat === 'vol' || info.etat === 'nettoyage')) break;
     if (info.vague !== n) break;
   }
   res.arene = res.arene.slice(0, 6).concat(res.arene.length > 6 ? ['…' + res.arene.length] : []);
   out.push(res);
 }
-const err = await page.evaluate(() => ({ count: window.__ERR.count, sigs: Object.keys(window.__ERR.sigs).slice(0, 6) }));
-for (const r of out) console.log(JSON.stringify(r));
+const err = await page.evaluate(() => {
+  const N = window.__N, J = N.journal.dump(), mauvais = [];
+  for (const rec of J) { if (!N.ids.journal.includes(rec.type)) continue; const er = N.ids.valider('journal:' + rec.type, rec); if (er.length && mauvais.length < 6) mauvais.push(rec.type + ' : ' + er.join(' ; ')); }
+  return { count: window.__ERR.count, sigs: Object.keys(window.__ERR.sigs).slice(0, 6), mauvais, ev: N.ev.stats() };
+});
+if (err.mauvais.length) err.count += err.mauvais.length;
+for (const r of out) console.log(JSON.stringify({ n: r.n, t: +r.t.toFixed(1), maxAlive: r.maxAlive, morts: r.morts, sp: r.sp, inView: r.inView, minDist: r.minDist, kinds: r.kinds, arene: r.arene }));
 console.log('ERR', JSON.stringify(err), 'console', logs.length);
 for (const l of logs.slice(0, 8)) console.log('  ' + l);
 await browser.close();
