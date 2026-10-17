@@ -17540,6 +17540,7 @@ N.game = (function () {
   function partie(graine) {
     seed = graine | 0;
     if (N.socle && N.socle.reset) N.socle.reset(seed);
+    if (N.decor && N.decor.build) appel('decor.build', function () { N.decor.build(); });
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
     O.fxReset();
