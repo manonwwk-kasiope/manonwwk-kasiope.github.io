@@ -24,7 +24,7 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
 s'arrête). C'est elle seule qui écrit les ordres de Codex ci-dessous.
 
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
-Dernière médiation : codex-03, livraison d3938e6 (18/10/2026 à 00 h 22) — ACCEPTÉ ; avant : codex-01 (738bbcb) — ACCEPTÉ AVEC RÉSERVES.
+Dernière médiation : codex-01b, livraison e4ef174 (18/10/2026 à 00 h 36) — ACCEPTÉ ; codex-03 (d3938e6) — ACCEPTÉ ; avant : codex-01 (738bbcb) — ACCEPTÉ AVEC RÉSERVES.
 
 **La vision du jeu fait foi : `refonte/VISION-PROGRESSION.md`** — « un snake qui traverse l'univers », de 1976
 (snake bidon, bips binaires) à l'intergalactique ; WARP et curseur cible ; ennemis sur des plans parallèles ;
@@ -56,7 +56,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    b. Ajouter `defile` aux états de `enJeu()` (il est dans `JOUE` de `79-jeu.js`) ; laisse `attraction` (démo) comme hors jeu, et dis-le dans le rapport.
    c. Preuve : ton banc étendu aux vagues 1 à 5 et au boss, 30 s par cas, un relevé toutes les 2 s, trois profils (le banc du médiateur `refonte/mediation/2026-10-18-codex-01/juge2.mjs` montre comment prendre l'instantané dans le `draw()` du jeu) ; tous les seuils de codex-01 restent tenus ; captures avant/après du bord droit en paysage V4 et du portrait boss.
    d. **Ambiance au-dessus de l'horizon : option A** (décidée par la cheffe d'orchestre le 18/10 à 00 h 26, délégation de la propriétaire « tu prends les décisions qui te semblent meilleures ») : en jeu, le soleil retrouve son disque jaune et ambre plein (une seule forme compacte, pas de champ tramé) et la ligne d'horizon deux rangées embrasées ; les fenêtres et façades de la cité passent en violet ou indigo au lieu de l'acier gris. Seuils : ceux de codex-01 (ciel lumineux ≥ 12 %, éclipse ≥ 8 %, ciel chaud ≤ 12 %), et deux juges neufs sur captures avant/après doivent noter l'ambiance au moins aussi haut qu'avant codex-01b sans baisser la lisibilité.
-   État : livré 2ec8ee9 (bundle f90018a) — 315 relevés conformes, zéro erreur ; prêt pour /mediateur.
+   État : livré 2ec8ee9 (bundle f90018a). **Jugé le 18/10 à 00 h 36 : ACCEPTÉ** pour a, b, c (`refonte/mediation/2026-10-18-codex-01b.md` : sol hors plateau 43,6 % → 0,00 %). Le point d, décidé après ta livraison, est l'ordre n° 7.
    POINT CODEX : `tools/lisibilite/rapport-01b.md` ; sol chaud 0 %, sol lumineux ≤ 0,39 %, ciel inchangé dans les 270 relevés des six scènes initiales, 126 empreintes hors jeu identiques dont attraction. Les 45 relevés defile passent aussi. Source et preuves figées avant lot I ; aucun fichier de ton intégration n’a été ajouté à mes commits. Réservation 15 libérée.
 5. codex-05 — brancher l'horloge à pas fixe dans `90-boot.js` (cause commune n° 1 : aucun ralenti n'agit, l'écran-titre n'est jamais montré) : `refonte/chantiers/codex-05-horloge.md`. À prendre après codex-01b. État : à faire.
 6. codex-06 — les commandes au bureau, dans `src/90-boot.js` (à enchaîner après codex-05, même fichier ; réserve-le) — *ordre ajouté par Claude cloud à la demande de la propriétaire (« fais travailler Codex »)*. Source : `refonte/couverture-snake2030.md`, cause commune n° 5. Aujourd'hui Espace accélère le tir au lieu du boost, E et R ne sont pas lus, ni souris ni manette.
@@ -68,10 +68,20 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 
 NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
 
+7. codex-01c — l'ambiance du ciel en jeu, **option A** (point d de codex-01b ci-dessus, décision du 18/10 à 00 h 26), dans `src/15-decor.js` et `tools/lisibilite/` : soleil en disque jaune et ambre plein, deux rangées d'horizon embrasées, fenêtres et façades de la cité en violet ou indigo au lieu de l'acier gris. Seuils de codex-01/01b inchangés (dont sol hors plateau ≤ 3 %), éclipse ≥ 8 %. Preuve : banc 315 relevés comme 01b, captures avant/après paysage V4, portrait boss, bureau V5. À prendre AVANT codex-05 (il est court et ferme la porte « lisibilité »). État : à faire.
+
+**Sessions Codex parallèles** (ouvertes par la cheffe d'orchestre, chacune dans sa copie `~/Projets/wt-snake/<nom>`, sans commit ; la cheffe d'orchestre relit, fait juger et intègre) :
+- **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`.
+- **codex-p2** — interface des temps forts (bannières en coup, palier de multiplicateur visible, dernière vie qui fait peur) : `78-hud.js`, `77-score.js`.
+- **codex-p3** — remise en état de l'instrument R-01 à R-38 (32 critères sur 38 « non mesurables » le 18/10 à 00 h 24) : `tools/mesure/`.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1) | 18/10 à 00 h 25 | cartes sans effet et passifs manquants |
+| `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
+| `tools/mesure/` | Codex (session parallèle codex-p3) | 18/10 à 00 h 33 | instrument R-01 à R-38 |
 | `src/78-warp.js`, `tools/warp/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le WARP et le curseur cible (vision § 2), module autonome |
 | `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
 | `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
