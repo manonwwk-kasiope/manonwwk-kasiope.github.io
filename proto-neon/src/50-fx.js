@@ -994,7 +994,8 @@
     var y0 = 1e9, y1 = -1e9, i, j, k, x, y;
     for (i = 0; i < lpN; i++) { var yy0 = LP[2 * i + 1] - OY; if (yy0 < y0) y0 = yy0; if (yy0 > y1) y1 = yy0; }
     y0 = Math.max(0, Math.floor(y0)); y1 = Math.min(H - 1, Math.ceil(y1));
-    var t16 = t * 16;
+    var t16 = t * 16, gx = N.gfx, own = (ci === CYAN || ci === CYANP) && gx && gx.owner && gx.mask && gx.mask();   /* le remplissage cyan est la joueuse : propriétaire « corps » du masque (DIRECTION.md, critère 3) */
+    if (own) gx.owner(2);
     for (y = y0; y <= y1; y++) {
       var nx = 0, ys = y + 0.5 + OY;
       for (i = 0, j = lpN - 1; i < lpN; j = i++) {
@@ -1004,9 +1005,10 @@
       for (i = 1; i < nx; i++) { var v = XS[i]; k = i - 1; while (k >= 0 && XS[k] > v) { XS[k + 1] = XS[k]; k--; } XS[k + 1] = v; }
       for (k = 0; k + 1 < nx; k += 2) {
         var xa = Math.max(0, Math.round(XS[k] - OX)), xb = Math.min(W - 1, Math.round(XS[k + 1] - OX)), row = y * W, br = (y & 3) << 2;
-        for (x = xa; x <= xb; x++) if (t16 > BAY[br | (x & 3)]) buf[row + x] = ci;
+        for (x = xa; x <= xb; x++) if (t16 > BAY[br | (x & 3)]) { if (own) gx.px(x + OX, y + OY, ci); else buf[row + x] = ci; }
       }
     }
+    if (own) gx.owner(7);
   }
   function drawLasso() {
     if (lpAge < 0 || lpN < 3) return;
