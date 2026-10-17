@@ -381,6 +381,7 @@ N.dir = (function () {
   /* le gros ennemi : N.colosse (73-colosse.js) mène le combat ; 79-jeu a déjà passé WARNING et le panneau */
   function lancerBoss() {
     st.phase = 'boss';
+    if (N.arene && N.arene.nettoyee) O.safe('arene.nettoyee', function () { N.arene.nettoyee(); });      // plus de TRAVELLING ni de CONVOIS pendant le combat
     if (N.colosse && N.colosse.start) { O.safe('colosse.start', function () { N.colosse.start(); }); return null; }
     return null;
   }

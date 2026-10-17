@@ -582,7 +582,7 @@ N.ennemis = (function () {
       if (s) { e.x += (P.x - e.x) / d * v * s * dt; e.y += (P.y - e.y) / d * v * s * dt; }
       e._cd -= dt;
       if (e._cd <= 0) {
-        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && canAct(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
+        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && canAct(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
         else e._cd = 0.5;
       }
     } else if (e._st === 'couve') {
@@ -935,6 +935,7 @@ N.ennemis = (function () {
   }
   /* le plateau en mouvement (N.arene) et le corps du CYCLOPE (N.colosse) se dessinent d'ici : 79-jeu n'appelle que N.ennemis.draw() */
   function draw() {
+    O.origineMonde();                                  // tout ce qui suit est en coordonnées MONDE
     if (N.arene && N.arene.draw) O.safe('arene.draw', function () { N.arene.draw(); });
     drawEnemies();
     if (N.colosse && N.colosse.draw && N.colosse.actif && N.colosse.actif()) O.safe('colosse.draw', function () { N.colosse.draw(); });
