@@ -1,5 +1,18 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 00 h 34
+
+- Relais pris de la session cloud. Les ordres de Codex sont dans `COORDINATION.md` § « Ordres pour Codex ».
+- Jugés : **codex-01 ACCEPTÉ AVEC RÉSERVES** (`refonte/mediation/2026-10-18-codex-01.md`), **codex-03 ACCEPTÉ**
+  (exception : plancher de ciel à 8 % pendant l'éclipse). Ordres ajoutés : codex-01b (sol hors plateau), codex-05
+  (horloge à pas fixe).
+- En cours : **lot I** (agent Claude, fichiers réservés : 79-jeu, 03-socle, 12-cam, 17-vol, 50-fx, 70-joueuse,
+  71-butin, 72-ennemis, 73-arene, 80-ecrans) : les dépendances de codex-02. Ensuite : juger codex-02 et le lot I
+  (juge distinct de l'auteur), puis brancher `68-terminal.js` (époque 1976, Claude cloud) dans `79-jeu.js`.
+- Attend la propriétaire : l'ambiance du ciel en jeu (options A/B/C, recommandation A, dans la médiation codex-01).
+- Piège : le dossier est partagé par Codex, la session lot H et le lot I. Ne jamais construire `index.html` depuis
+  le dossier de travail sale : construire dans une copie `git archive HEAD`.
+
 ## État au 17/10/2026 · 23 h 30 (le projet vit désormais sur l'ordinateur)
 
 - Dossier de travail : `~/Projets/SNAKE 2975` (clone du dépôt, branche `claude/snake-game-mobile-17dqpi`).
