@@ -722,7 +722,9 @@ N.game = (function () {
   };
   /* le mode simulé : la mise à jour seule, aussi vite que possible, sans dessin ; rend le journal */
   dbg.simuler = function (sec) {
-    var n = Math.round((sec || 1) / (R && R.temps ? R.temps.h : 1 / 120)), h = R && R.temps ? R.temps.h : 1 / 120, nouveau = O.bootNouveau();
+    /* La simulation est elle-même une entrée du pas fixe : elle ne dépend pas d'une
+       première image déjà dessinée. avancer() amorce le socle avant update(). */
+    var n = Math.round((sec || 1) / (R && R.temps ? R.temps.h : 1 / 120)), h = R && R.temps ? R.temps.h : 1 / 120, nouveau = !!(N.horloge && N.horloge.avancer);
     simulant = true;
     for (var i = 0; i < n; i++) {
       var dt = nouveau ? N.horloge.avancer() : h;
