@@ -1,10 +1,11 @@
-/* ===== 74-arsenal.js — N.arsenal : les six armes de la joueuse, quatre paliers chacune (§ 2.8) =====
+/* ===== 74-arsenal.js — N.arsenal : huit armes de la joueuse, quatre paliers chacune (§ 2.8) =====
 
    Tiré de 70-game.js (lot 0b) pour le CANON ; lot E : TOURELLES, ARC, MISSILES, DRONES et MINES DE QUEUE, leurs montures sur le
    corps et le palier ultime du CANON (le RAYON continu). Les chiffres viennent de N.R.armes ; ce qui manque est dans CFG (→ N.R).
 
    Le CANON garde la règle de la démo tant que N.cartes ne donne pas les paliers : niveau('canon') = palier de longueur
    (< 10, < 20, < 32, plus) + montées − pertes. Les cinq autres armes n'existent qu'une fois montées (monter(arme) ; carte).
+   codex-p1b : ONDE et SILLAGE, PERFORATION, SURTENSION, ÉPINES. Leur tirage attend le registre de 03-socle.
    N'applique JAMAIS les effets d'un kill : il DEMANDE à N.ennemis (hit, zone) et s'arrête là (§ 7.4).
    CONSOMME `mort` (rang 50) : descendre() retire un palier à la meilleure arme ; `carte` (rang 50) : monter(arme).
    Lisibilité (§ 2.8) : tirs fins, rien à moins de 3 px du contour de la tête, tirs nés à 7 px devant, 160 tirs au plus, 12 mines au plus.
@@ -18,9 +19,12 @@ N.arsenal = (function () {
     flancDecalage: 3, salveMax: 8, arcVie: 0.14, vitesseDrone: 200, orbiteVitesse: 2.2, missileVie: 3.5
   };
   var S = null;
+  var sillage = [], dernierSillage = null, freins = new Map();
+  var ondeT = R.armes.onde.depart, ondeVis = null, cellulesOnde = 0, epinesT = 0;
   var tirs = [];
   var st = { cd: 0.5, volley: 0, monte: 0, perte: 0, surcharge: false, cad: 1, chute: null, niv: { tourelles: 0, arc: 0, missiles: 0, drones: 0, minesQ: 0 },
     tcd: [], arcT: 0.5, misT: 1.0, minT: 1.5, dcd: [], dpen: [], rayonT: 0, rayonOn: false, salveSon: 0, ang: 0, nT: 0 };
+  st.niv.onde = 0; st.niv.sillage = 0;
   var SRC = { genre: 'arme', type: 'canon', id: -1 };
   var arcs = [], missiles = [], mines = [];
   // Ces collections appartiennent à l'arsenal ; aucun champ privé des autres modules n'est lu.
@@ -36,6 +40,9 @@ N.arsenal = (function () {
     DR.length = 0;
     grappes.length = 0; sourcesGrappe = new WeakMap(); grappeSaturee = 0;
     braises.length = 0; braiseQueue = null;
+    st.niv.onde = 0; st.niv.sillage = 0;
+    sillage.length = 0; dernierSillage = null; freins.clear();
+    ondeT = R.armes.onde.depart; ondeVis = null; cellulesOnde = 0; epinesT = 0;
   }
   function conf(a) { return (R && R.armes && R.armes[a]) || {}; }
   function pal(a) { var p = conf(a).paliers || []; return p[Math.min(4, Math.max(1, st.niv[a] || 1)) - 1] || {}; }
@@ -92,6 +99,8 @@ N.arsenal = (function () {
   function tirer(x, y, a, v, life, dmg, kind, perce) {
     if (tirs.length >= CFG.plafondTirs) return null;
     var b = { x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, a: a, dmg: dmg, life: life, kind: kind || 'c', _perce: perce | 0, _gros: dmg >= 20 && kind === 'c', _eclats: 0 };
+    b._perce += (N.cartes && N.cartes.mods.perforation) || 0;
+    b._touches = []; // identités déjà traversées : aucune double frappe de la même cible
     tirs.push(b);
     return b;
   }
@@ -179,12 +188,14 @@ N.arsenal = (function () {
   /* ============================ l'ARC : une ligne brisée qui saute d'ennemi en ennemi ============================ */
   function arcDe(ox, oy, pris, p) {
     var E = N.ennemis, pts = [ox, oy], x = ox, y = oy, j, por = p.portee || 60, dmg = (p.degats || 14) * mul();
-    for (j = 0; j < (p.sauts || 3); j++) {
+    var k = (N.cartes && N.cartes.mods.surtension) || 0, cf = R.passifs.surtension;
+    por *= 1 + cf.porteeParPrise * k;
+    for (j = 0; j < (p.sauts || 3) + cf.sautsParPrise * k; j++) {
       var e = cible(x, y, por, pris);
       if (!e) break;
       pris.push(e);
       pts.push(e.x, e.y);
-      E.hit(e, dmg, SRC);
+      E.hit(e, dmg, { genre: 'arme', type: 'arc', id: null });
       if (p.paralyse) e._stun = Math.max(e._stun || 0, p.paralyse);
       x = e.x; y = e.y;
     }
@@ -410,6 +421,100 @@ N.arsenal = (function () {
     }
   }
 
+  /* ============================ contrôle, sans champs privés d'ennemis ============================ */
+  function source(a) { return { genre: 'arme', type: a, id: null }; }
+  function ralentir(e, facteur, duree) {
+    if (!facteur || e.boss || !actif(e)) return;
+    var f = freins.get(e);
+    if (!f) freins.set(e, { x: e.x, y: e.y, facteur: facteur, reste: duree });
+    else { f.facteur = Math.min(f.facteur, facteur); f.reste = Math.max(f.reste, duree); f.x = e.x; f.y = e.y; }
+  }
+  function updFreins(dt) {
+    freins.forEach(function (f, e) {
+      f.reste -= dt;
+      if (f.reste <= 0 || !actif(e)) { freins.delete(e); return; }
+      var dx = e.x - f.x, dy = e.y - f.y, cf = R.armes.controle;
+      // Ne jamais annuler une téléportation ni une sortie de portail.
+      if (dx * dx + dy * dy < cf.sautMax * cf.sautMax) {
+        e.x = f.x + dx * f.facteur; e.y = f.y + dy * f.facteur;
+      }
+      f.x = e.x; f.y = e.y;
+    });
+  }
+  function anneauOnde(P, p) {
+    var cf = R.armes.onde.dessin;
+    ondeVis = { x: P.x, y: P.y, r: p.rayon, t: cf.duree,
+      visible: !!(N.fx && N.fx.flashGate && N.fx.flashGate(Math.ceil(O.TAU * p.rayon * cf.epaisseur))) };
+  }
+  function updOnde(dt, P) {
+    var cf = R.armes.onde, p = pal('onde'), E = N.ennemis;
+    ondeT -= dt;
+    if (p.auraDps && E) {
+      var aura = E.pres(P.x, P.y, p.auraRayon);
+      for (var ai = 0; ai < aura.length; ai++) if (actif(aura[ai])) E.hit(aura[ai], p.auraDps * dt * mul(), source('onde'));
+    }
+    if (ondeT > 0 || !E) return;
+    ondeT += cf.mesures * R.temps.dureeMesure / cad();
+    anneauOnde(P, p);
+    var L = E.pres(P.x, P.y, p.rayon), A = O.A, marge = R.armes.controle.margeMur;
+    for (var i = 0; i < L.length; i++) {
+      var e = L[i]; if (!actif(e)) continue;
+      var dx = e.x - P.x, dy = e.y - P.y, d = Math.sqrt(dx * dx + dy * dy), u = Math.max(0, 1 - d / p.rayon);
+      E.hit(e, p.degats * (cf.degatsBord + (1 - cf.degatsBord) * u) * mul(), source('onde'));
+      if (!e.boss && actif(e)) {
+        // Les coordonnées monde sont publiques ; ni vitesse ni état interne réécrits.
+        var pousse = p.poussee * (cf.pousseeBord + (1 - cf.pousseeBord) * u);
+        if (d > 0) { e.x = O.clamp(e.x + dx / d * pousse, A.x0 + e.r + marge, A.x1 - e.r - marge);
+          e.y = O.clamp(e.y + dy / d * pousse, A.y0 + e.r + marge, A.y1 - e.r - marge); }
+        ralentir(e, p.ralenti, p.dureeRalenti);
+      }
+    }
+    if (p.efface) {
+      // Seul le producteur sait combien de tirs étaient vivants. Sans reçu, aucune cellule inventée.
+      var n = E.effacerTirs(P.x, P.y, p.rayon);
+      if (typeof n === 'number' && n > 0 && N.butin) {
+        cellulesOnde += n * cf.conversion;
+        var cellules = Math.floor(cellulesOnde);
+        if (cellules > 0) { N.butin.lacher(P.x, P.y, cellules, { type: 'cellule', libre: true }); cellulesOnde -= cellules; }
+      }
+    }
+    O.sfx('impact');
+  }
+  function updSillage(dt) {
+    var cf = R.armes.sillage, p = pal('sillage'), J = N.joueuse, E = N.ennemis, i;
+    for (i = sillage.length - 1; i >= 0; i--) { sillage[i].vie -= dt; if (sillage[i].vie <= 0) sillage.splice(i, 1); }
+    var q = J.segPos(J.len());
+    if (dernierSillage && O.d2(q.x, q.y, dernierSillage.x, dernierSillage.y) > cf.sautMax * cf.sautMax) sillage.length = 0;
+    if (!dernierSillage || O.d2(q.x, q.y, dernierSillage.x, dernierSillage.y) >= cf.pas * cf.pas || !sillage.length) {
+      if (sillage.length >= cf.pointsMax) sillage.shift();
+      sillage.push({ x: q.x, y: q.y, vie: p.duree }); dernierSillage = { x: q.x, y: q.y };
+    }
+    if (!E) return;
+    for (i = 0; i < E.list.length; i++) {
+      var e = E.list[i]; if (!actif(e)) continue;
+      var r = e.r + p.rayon;
+      for (var j = 0; j < sillage.length; j++) {
+        var b = sillage[j];
+        if (O.d2(e.x, e.y, b.x, b.y) < r * r) {
+          E.hit(e, p.dps * dt * mul(), source('sillage')); ralentir(e, p.ralenti, p.dureeRalenti); break;
+        }
+      }
+    }
+    if (p.efface && E.tirs.length) for (i = 0; i < sillage.length; i++) E.effacerTirs(sillage[i].x, sillage[i].y, p.rayon);
+  }
+  function updEpines(dt) {
+    var k = N.cartes && N.cartes.mods.epines, J = N.joueuse, E = N.ennemis;
+    if (!k || !E || (J.pouvoir.id === 'traversee' && J.pouvoir.etat === 'actif')) return;
+    for (var i = 0; i < E.list.length; i++) {
+      var e = E.list[i]; if (!actif(e)) continue;
+      var h = J.hitTest(e.x, e.y, e.r);
+      if (h.part === 'corps' || h.part === 'queue') {
+        E.hit(e, R.passifs.epines.dps[k - 1] * dt, source('epines'));
+        epinesT = R.armes.controle.dureeVisuelleEpines;
+      }
+    }
+  }
+
   /* ============================ la mise à jour ============================ */
   function update(dt) {
     if (!S) S = N.S;
@@ -418,15 +523,21 @@ N.arsenal = (function () {
     if (st.salveSon > 0) st.salveSon -= dt;
     for (i = arcs.length - 1; i >= 0; i--) { arcs[i].t -= dt; if (arcs[i].t <= 0) arcs.splice(i, 1); }
     updGrappe();
+    updFreins(dt);
+    if (ondeVis) { ondeVis.t -= dt; if (ondeVis.t <= 0) ondeVis = null; }
+    epinesT = Math.max(0, epinesT - dt);
     if (vivant && P) {
       updBraise(dt);
+      if (st.niv.onde > 0) updOnde(dt, P);
+      if (st.niv.sillage > 0) updSillage(dt); else { sillage.length = 0; dernierSillage = null; }
+      updEpines(dt);
       updCanon(dt, P);
       if (st.niv.tourelles > 0) updTourelles(dt);
       if (st.niv.arc > 0) updArc(dt, P);
       if (st.niv.missiles > 0) updMissiles(dt, P);
       if (st.niv.drones > 0) updDrones(dt, P); else DR.length = 0;
       if (st.niv.minesQ > 0) updMines(dt);
-    } else { st.rayonOn = false; DR.length = 0; braises.length = 0; braiseQueue = null; }
+    } else { st.rayonOn = false; DR.length = 0; braises.length = 0; braiseQueue = null; sillage.length = 0; dernierSillage = null; freins.clear(); ondeVis = null; }
     /* les tirs avancent et touchent */
     for (i = tirs.length - 1; i >= 0; i--) {
       b = tirs[i];
@@ -434,11 +545,13 @@ N.arsenal = (function () {
       if (b.life <= 0 || b.x < V.x - 4 || b.x > V.x + V.w + 4 || b.y < V.y - 4 || b.y > V.y + V.h + 4) { tirs.splice(i, 1); continue; }
       for (j = 0; j < L.length; j++) {
         var en = L[j];
+        if (b._touches.indexOf(en) >= 0) continue;
         if (en._dead || en.etat === 'portail' || en._st === 'naissance' || en._proie) continue;
         var rr2 = en.r + 1.5;
         if (O.d2(b.x, b.y, en.x, en.y) < rr2 * rr2) {
           if (N.fx && N.fx.spark) O.safe('fx.spark', function () { N.fx.spark(b.x, b.y, -b.vx, -b.vy, 2, en.boss ? O.OS : O.ROSE); });
           N.ennemis.hit(en, b.dmg, SRC);
+          b._touches.push(en);
           if (b._eclats) N.ennemis.zone(b.x, b.y, 8, 4 * b._eclats * mul(), SRC);
           if (b._perce > 0) b._perce--; else { tirs.splice(i, 1); }
           break;
@@ -483,6 +596,26 @@ N.arsenal = (function () {
     var f = Math.floor(O.T.ak * 12), g = N.gfx, i;
     if (!S) S = N.S;
     var J = N.joueuse;
+    var cs = R.armes.sillage;
+    for (i = 0; i < sillage.length; i++) {
+      var si = sillage[i], sx = Math.round(si.x), sy = Math.round(si.y);
+      if (N.pal.dither(sx, sy, cs.intensite * si.vie / pal('sillage').duree)) g.px(sx, sy, O.AMBRE);
+    }
+    if (J && st.niv.onde > 0 && ondeT <= R.armes.onde.telegraphe) {
+      var po = pal('onde'), cf = R.armes.onde;
+      g.ring(J.tete.x, J.tete.y, cf.dessin.depart + (po.rayon - cf.dessin.depart) * Math.max(0, ondeT / cf.telegraphe), O.AMBRE, cf.dessin.intensite);
+    }
+    if (ondeVis && ondeVis.visible) {
+      var od = R.armes.onde.dessin;
+      g.ring(ondeVis.x, ondeVis.y, od.depart + (ondeVis.r - od.depart) * (1 - ondeVis.t / od.duree), O.OS, od.intensite * ondeVis.t / od.duree);
+    }
+    if (J && N.cartes && N.cartes.mods.epines) {
+      var ce = R.passifs.epines;
+      for (i = ce.dessinPas; i < J.len(); i += ce.dessinPas) {
+        flanc(i, (Math.floor(i / ce.dessinPas) & 1) ? -1 : 1, FL);
+        g.line(FL.x, FL.y, FL.x + FL.nx * ce.dessinLongueur, FL.y + FL.ny * ce.dessinLongueur, epinesT > 0 ? O.AMBRE : O.ACIER);
+      }
+    }
     // Braises stables, sans clignotement : seulement une ligne de pixels ambre tramés.
     var cb = R.passifs.effets.braise;
     for (i = 0; i < braises.length; i++) {
@@ -536,6 +669,7 @@ N.arsenal = (function () {
     N.ev.on('kill', 50, onKillGrappe, '74-arsenal');
     N.ev.on('mort', 50, function () {
       st.chute = descendre(); grappes.length = 0; braises.length = 0; braiseQueue = null;
+      sillage.length = 0; dernierSillage = null; freins.clear(); ondeVis = null;
     }, '74-arsenal');
     N.ev.on('carte', 50, function (c) {
       if (!c) return;
@@ -549,6 +683,7 @@ N.arsenal = (function () {
     chute: function () { return st.chute; }, reset: reset, update: update, draw: draw, monter: monter, descendre: descendre, niveau: niveau, armes: armes,
     tirs: tirs, surcharger: surcharger, percuter: percuter,
     etat: function () { return { arcs: arcs.length, missiles: missiles.length, mines: mines.length, drones: DR.length / 2, tourelles: st.nT, rayon: st.rayonOn,
-      grappes: grappes.length, grappeSaturee: grappeSaturee, braises: braises.length }; }
+      grappes: grappes.length, grappeSaturee: grappeSaturee, braises: braises.length,
+      sillage: sillage.length, ondeDans: ondeT, freins: freins.size, onde: ondeVis && { x: ondeVis.x, y: ondeVis.y, r: ondeVis.r, t: ondeVis.t } }; }
   };
 })();

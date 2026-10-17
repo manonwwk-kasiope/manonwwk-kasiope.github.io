@@ -687,6 +687,14 @@
       convoi: { codex: 'BALAIE SA VOIE' }
     },
 
+    /* codex-p4 : géométrie publiée, reprise des constantes EXISTANTES de 72/73.
+       Aucun temps d'annonce, collision, dégât ou dessin nouveau. */
+    publicationTele: {
+      tirVie: 9,                  // CFG.vieTir de 72 : portée maximale des salves du CYCLOPE
+      rucheDecalage: 3, ruchePortail: 0.4, // emplacement et délai de contact de la couvée existante
+      cyclopeTirDepart: 12, cyclopeRayonDepart: 9, cyclopeSpiraleDecalage: 0.5
+    },
+
     /* ---------------------------------------------------------------- § 4.5 les élites et les modificateurs */
     elites: {
       pv: 3, sprite: [19, 21], gelImages: 5, force: 0.8, cellules: 6, noyaux: 1, apogee: 12,
@@ -1005,6 +1013,44 @@
     niveau: function (xp) { var s = R.xp.seuils, n = 0; while (n < s.length && xp >= s[n]) n++; return n; },
     tailleMain: function (choix) { return Math.min(R.cartes.tailleMain.max, R.cartes.tailleMain.base + Math.max(0, choix - 1)); }
   };
+
+  /* codex-p1b : contrôle spatial et constructions. Ajouts seulement, avant le gel. */
+  R.armes.onde = {
+    nom: 'ONDE DE CHOC', place: 'autour', depart: 1.2, telegraphe: 0.4,
+    mesures: 2, degatsBord: 0.45, pousseeBord: 0.4, conversion: 0.35,
+    dessin: { depart: 3, duree: 0.28, epaisseur: 1, intensite: 0.5 },
+    paliers: [
+      { nom: 'I', rayon: 28, degats: 7, poussee: 28 },
+      { nom: 'II', rayon: 36, degats: 9, poussee: 32, efface: true },
+      { nom: 'III', rayon: 44, degats: 11, poussee: 36, efface: true, ralenti: 0.6, dureeRalenti: 0.6 },
+      { nom: 'DÉFERLANTE', rayon: 56, degats: 20, poussee: 42, efface: true, ralenti: 0.6, dureeRalenti: 0.8,
+        auraRayon: 16, auraDps: 25 }
+    ]
+  };
+  R.armes.sillage = {
+    nom: 'SILLAGE', place: 'derriere', pointsMax: 192, pas: 2, sautMax: 32, intensite: 0.5,
+    paliers: [
+      { nom: 'I', duree: 0.9, rayon: 1, dps: 18.75 },
+      { nom: 'II', duree: 1.5, rayon: 2, dps: 28.57 },
+      { nom: 'III', duree: 1.9, rayon: 2, dps: 41.67, ralenti: 0.78, dureeRalenti: 0.2 },
+      { nom: 'MUR', duree: 2.4, rayon: 3, dps: 63.64, ralenti: 0.72, dureeRalenti: 0.2, efface: true }
+    ]
+  };
+  R.passifs.perforation = { prises: 3, parPrise: 1 };
+  R.passifs.surtension = { prises: 3, sautsParPrise: 1, porteeParPrise: 0.15 };
+  R.passifs.epines = { prises: 3, dps: [18, 30, 42], dessinPas: 3, dessinLongueur: 2 };
+  R.passifs.mods.perforation = 0;
+  R.passifs.mods.surtension = 0;
+  R.passifs.mods.epines = 0;
+  R.armes.controle = { sautMax: 32, margeMur: 1, dureeVisuelleEpines: 0.2 };
+  R.cartes.liste.onde = { famille: 'survie', rarete: 'rare', prises: 4 };
+  R.cartes.liste.sillage = { famille: 'puissance', rarete: 'commune', prises: 4 };
+  R.cartes.liste.perforation = { famille: 'canon', rarete: 'rare', prises: 3,
+    prerequis: [{ id: 'canon', min: 2 }, { id: 'tourelles', min: 2 }] }; // OU
+  R.cartes.liste.surtension = { famille: 'arc', rarete: 'commune', prises: 3, prerequis: [{ id: 'arc', min: 1 }] };
+  R.cartes.liste.epines = { famille: 'survie', rarete: 'rare', prises: 3 };
+  R.cartes.appels = { canon: 'perforation', tourelles: 'perforation', arc: 'surtension', sillage: 'braise', onde: 'epines' };
+  R.cartes.poids.appel = 1.5;
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

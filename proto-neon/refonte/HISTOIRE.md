@@ -24,9 +24,11 @@ jusqu'à traverser l'univers.
 
 | moment | film | ELLE | LUI |
 |---|---|---|---|
+| titre | `affiche-duo` | les deux pilotes dos à dos, de part et d'autre de la fissure, leurs serpents se dressent (film en aller-retour) | (la même affiche) |
 | choix | `pilote-elle` / `pilote-lui` | de trois quarts, le serpent sur les épaules, la ville derrière | de trois quarts, le serpent sur les épaules, le désert derrière |
 | connexion | `connexion-*` | elle ferme les yeux dans la salle des écrans ; le câble s'allume ; le serpent sort des moniteurs | il s'agenouille devant le terminal enfoui ; le câble s'allume ; le serpent jaillit vers le ciel |
 | 1976 → 1982 | `fissure-*` | l'écran du terminal se fend, la lumière magenta coule par les fissures ; son reflet dans le verre | l'écran du terminal enfoui se fend, la lumière dorée coule dans le crépuscule ; son reflet dans le verre |
+| 1982 → 1987 | `neon-*` | dans une salle d'arcade, l'écran de la borne éclate ; le serpent en jaillit, ses blocs deviennent néon ; le mur s'ouvre sur la mégapole | dans le désert, une borne à moitié enfouie éclate ; le serpent jaillit vers le ciel, ses blocs deviennent néon ; les dunes deviennent grille |
 | 1987 → 1993 | `profondeur-*` | elle plonge à travers la grille et découvre les étages de la ville, dessus et dessous | il tombe à travers la grille et découvre les cavernes dorées et les îles qui flottent |
 | 1993 → 2001 | `warp-*` | le temps se fige ; sa main levée verrouille une escadrille ; les missiles partent | le temps se fige ; il pointe du doigt, le réticule saute de cible en cible ; les missiles partent |
 | 2001 → 2975 | `espace-*` | sur la tête de son serpent, elle crève le ciel magenta vers une galaxie spirale et une armada | sur la tête de son serpent, il crève la poussière dorée vers une géante annelée et une armada |

@@ -17,6 +17,8 @@ const onlyScenarios = arg('--scenarios', '').split(',').filter(Boolean);
 const ambianceA = process.argv.includes('--ambiance-a');
 const onlyProfiles = arg('--profils', '').split(',').filter(Boolean);
 const reprendre = process.argv.includes('--reprendre');
+const garder = process.argv.includes('--garder-mesures');
+if (garder && !reprendre) throw Error('--garder-mesures exige --reprendre et le même SHA de bundle');
 if (!['avant', 'apres'].includes(phase)) throw Error('--phase avant|apres');
 const bundle = fs.readFileSync(arg('--bundle', path.join(ROOT, 'index.html')));
 const hash = crypto.createHash('sha256').update(bundle).digest('hex');
@@ -38,13 +40,14 @@ if (reprendre) {
   const previous = JSON.parse(fs.readFileSync(path.join(OUT, `${phase}.json`), 'utf8'));
   if (previous.bundleSha256 !== hash) throw Error('Reprise interdite : le bundle a changé');
   result.cas = previous.cas; result.dateParis = previous.dateParis; result.misAJourParis = new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
-  result.reprises = [...(previous.reprises || []), { profils: onlyProfiles, raison: 'mesure paysage en série, après fin confirmée de la collecte avant' }];
+  result.reprises = [...(previous.reprises || []), { profils: onlyProfiles, raison: garder ? 'complément du corpus, cas complets déjà mesurés conservés (même bundle)' : 'mesure paysage en série, après fin confirmée de la collecte avant' }];
 }
 const save = () => fs.writeFileSync(path.join(OUT, `${phase}.json`), JSON.stringify(result, null, 2) + '\n');
 try {
   for (const [profil, opts] of Object.entries(profiles)) for (const scenario of scenarios) {
     if (onlyProfiles.length && !onlyProfiles.includes(profil)) continue;
     if (onlyScenarios.length && !onlyScenarios.includes(scenario)) continue;
+    if (garder && result.cas.some(c => c.profil === profil && c.scenario === scenario && c.samples.length === 15 && c.elapsed >= 30)) continue;
     const ctx = await browser.newContext(opts), page = await ctx.newPage(), errors = [];
     page.on('pageerror', e => errors.push(e.message)); page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     await page.addInitScript(() => {
@@ -75,7 +78,7 @@ try {
       };
       const warm = ['jaune', 'ambre', 'brasier', 'os'].map(N.pal.i), cyan = [N.pal.i('cyan'), N.pal.i('cyanPale')];
       const samples = [], t0 = N.game.dbg().t; let frames = 0, next = 2;
-      while (samples.length < 15 && frames++ < 2600) {
+      while (samples.length < 15 && frames++ < 12000) {
         if (N.game.dbg().t - t0 + 1e-9 >= next) want = true;
         window.__tick();
         if (!snap) continue;
@@ -111,6 +114,7 @@ try {
       }
     }
     if (profil === 'portrait' && scenario === 'boss') { const name = `${phase}-portrait-boss.png`; await page.screenshot({ path: path.join(OUT, name), scale: 'css' }); captures.push(name); }
+    if (profil === 'bureau' && scenario === 'v5') { const name = `${phase}-bureau-v5.png`; await page.screenshot({ path: path.join(OUT, name), scale: 'css' }); captures.push(name); }
     const horsJeu = await page.evaluate(() => {
       const N = window.__N, g = N.gfx, etat = N.game.etat, hashes = {};
       for (const e of ['ouverture', 'titre', 'vol', 'victoire', 'cartes', 'attraction']) {

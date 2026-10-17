@@ -161,7 +161,7 @@ async function aventureElle(page, P, M) {
   verifie(b && b.issue === 'fin' && b.qui === 'elle' && b.deux === false, `${P.nom} : surFin(${JSON.stringify(b)})`);
   const s = await etat(page);
   M.elle = s.joues;
-  verifie(JSON.stringify(s.joues) === JSON.stringify(['connexion-elle', 'fissure-elle', 'profondeur-elle', 'warp-elle', 'espace-elle', 'fin-elle', 'pilote-lui']),
+  verifie(JSON.stringify(s.joues) === JSON.stringify(['connexion-elle', 'fissure-elle', 'neon-elle', 'profondeur-elle', 'warp-elle', 'espace-elle', 'fin-elle', 'pilote-lui']),
     `${P.nom} : films d'ELLE ${s.joues.join(', ')}`);
 }
 
@@ -204,7 +204,7 @@ async function aventureLui(page, P, M) {
   verifie(b && b.issue === 'fin' && b.qui === 'lui' && b.deux === true, `${P.nom} : surFin(${JSON.stringify(b)})`);
   const s = await etat(page);
   M.lui = s.joues;
-  verifie(JSON.stringify(s.joues) === JSON.stringify(['connexion-lui', 'fissure-lui', 'profondeur-lui', 'warp-lui', 'espace-lui', 'fin-lui', 'retrouvailles', 'teaser-3019', 'asuivre']),
+  verifie(JSON.stringify(s.joues) === JSON.stringify(['connexion-lui', 'fissure-lui', 'neon-lui', 'profondeur-lui', 'warp-lui', 'espace-lui', 'fin-lui', 'retrouvailles', 'teaser-3019', 'asuivre']),
     `${P.nom} : films de LUI ${s.joues.join(', ')}`);
 }
 

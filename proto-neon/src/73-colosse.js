@@ -9,7 +9,8 @@
 
    INTERFACE : start(), reset(), update(dt), draw() (corps, sous la joueuse), drawTop() (télégraphes, jauge,
    éclat de brasier), actif(), phase() 0..3, pv() 0..1, mort(), oeil() -> {x,y}|null (la caméra la lit),
-   estOeil(id), touche(e, dmg, src), surKill(c) (appelé par 76-directeur, rang 10 de `kill`, pour TOUT kill).
+   estOeil(id), touche(e, dmg, src), surKill(c) (appelé par 76-directeur, rang 10 de `kill`, pour TOUT kill),
+   publierTele(ajouter) : transmet ses zones à l'agrégateur public de N.ennemis (aucune écriture dans son pool).
 
    ÉMET : `phase` {n, evt: arrivee | entree | repit | enrage | mort} ; `arme` {id, type:'cyclope', forme, total,
    cible, shown, rallonge} au début de chaque télégraphe. N'ÉCOUTE AUCUN événement (aucun N.ev.on : la mort de
@@ -33,6 +34,7 @@
 N.colosse = (function () {
   'use strict';
   var O = N.outils, R = N.R, TAU = O.TAU, PI = Math.PI;
+  var TP = R.publicationTele;
   var NP = O.NP, MAG = O.MAGENTA, SANG = O.SANG, ROSE = O.ROSE, OS = O.OS, BRA = O.BRASIER, ARD = O.ARDOISE;
 
   /* ------------------------------------------------------------------------------------------------
@@ -214,6 +216,7 @@ N.colosse = (function () {
   }
   function reset() {
     st = neuf();
+    rafraichirTele();
   }
   function al() { return st.enrage ? K.enrAllure : 1; }
   function ivl() { return st.enrage ? K.enrInt : 1; }
@@ -369,7 +372,7 @@ N.colosse = (function () {
   /* ============================ les tirs et le rayon ============================ */
   function tirer(a, v, big) {
     if (!N.ennemis || typeof N.ennemis.tir !== 'function') return;
-    N.ennemis.tir(st.bx + Math.cos(a) * 12, st.oeil.y + Math.sin(a) * 12, Math.cos(a) * v, Math.sin(a) * v, { r: 2, big: true, src: srcOeil() });
+    N.ennemis.tir(st.bx + Math.cos(a) * TP.cyclopeTirDepart, st.oeil.y + Math.sin(a) * TP.cyclopeTirDepart, Math.cos(a) * v, Math.sin(a) * v, { r: 2, big: true, src: srcOeil() });
   }
   function laser(x0, y0, x1, y1, dur, w) {
     var src = srcOeil(), z = null;
@@ -472,11 +475,11 @@ N.colosse = (function () {
       if (a.phase === 0 && a.t >= a.tele) {
         a.phase = 1; a.t = 0;
         var c0 = Math.cos(a.a0), s0 = Math.sin(a.a0);
-        a.las = laser(st.bx + c0 * 9, e.y + s0 * 9, st.bx + c0 * CFG.rayonLong, e.y + s0 * CFG.rayonLong, a.dur + 0.3, K.rayonW);
+        a.las = laser(st.bx + c0 * TP.cyclopeRayonDepart, e.y + s0 * TP.cyclopeRayonDepart, st.bx + c0 * CFG.rayonLong, e.y + s0 * CFG.rayonLong, a.dur + 0.3, K.rayonW);
         O.sfx('explosion'); O.shake(3);
       } else if (a.phase === 1) {
         var an = a.a0 + a.dir * a.sweep * O.clamp(a.t / a.dur, 0, 1), c = Math.cos(an), s = Math.sin(an), z = a.las;
-        if (z) { z.x0 = st.bx + c * 9; z.y0 = e.y + s * 9; z.x1 = st.bx + c * CFG.rayonLong; z.y1 = e.y + s * CFG.rayonLong; z.t = Math.min(z.t, z.d - 0.05); }
+        if (z) { z.x0 = st.bx + c * TP.cyclopeRayonDepart; z.y0 = e.y + s * TP.cyclopeRayonDepart; z.x1 = st.bx + c * CFG.rayonLong; z.y1 = e.y + s * CFG.rayonLong; z.t = Math.min(z.t, z.d - 0.05); }
         if (a.t >= a.dur) { if (z) z._dead = true; finAtk(); }
       }
     } else if (a.k === 'salve') {
@@ -487,7 +490,7 @@ N.colosse = (function () {
       while (a.fired < a.n) {
         var s2 = (a.fired / per) | 0, i2 = a.fired % per, tt = a.tele + s2 * K.ecart + i2 * CFG.spiraleDt;
         if (a.t < tt) break;
-        tirer(a.base + (s2 ? -1 : 1) * i2 * CFG.spiralePas + s2 * 0.5, K.salveVit);
+        tirer(a.base + (s2 ? -1 : 1) * i2 * CFG.spiralePas + s2 * TP.cyclopeSpiraleDecalage, K.salveVit);
         a.fired++;
       }
       if (a.fired >= a.n && a.t >= a.tele + (K.salveDouble - 1) * K.ecart + per * CFG.spiraleDt + 0.2) finAtk();
@@ -718,6 +721,60 @@ N.colosse = (function () {
     else if (st.mode === 'repit') majRepit(dt, P);
     else if (st.mode === 'mort') majMort(dt);
     if (st.on) place(dt, P);
+    // 79 met 72 à jour AVANT 73 : republier après déplacements/créations/suppressions du boss.
+    // Le pilote du pas suivant voit ainsi les zones du même état que les vrais dangers.
+    rafraichirTele();
+  }
+
+  function rafraichirTele() {
+    if (N.ennemis && N.ennemis.publierTele) N.ennemis.publierTele();
+  }
+  /* Vue géométrique uniquement : ne déclenche ni RNG, ni son, ni événement, ni dégât.
+     Les tirs déjà partis et les lasers actifs appartiennent à 72 ; ici restent les attaques à venir.
+     Un secteur est orienté positivement de a0 à a1, quel que soit le sens de balayage.
+     Les deux capsules de bord portent la demi-largeur du laser (un secteur seul perdrait ses bords).
+     Plusieurs zones peuvent avoir le même id d'attaque ; par.id reste l'id de l'auteur des dégâts. */
+  function publierTele(ajouter) {
+    var a = st.atk, e = st.oeil, i, j, L, m;
+    if (!st.on || st.mode !== 'combat' || !a || !e || e._dead) return;
+    var rest = a.phase === 0 ? Math.max(0, a.tele - a.t) : 0;
+    function zone(forme, x0, y0, x1, y1, r, cible, id, rste, total, a0, a1) {
+      ajouter(id === undefined ? e.id : id, forme, x0, y0, x1, y1, r,
+        rste === undefined ? rest : rste, total === undefined ? a.tele : total, cible, 'cyclope', a0, a1);
+    }
+    function prevoirTir(ang, delai) {
+      var c = Math.cos(ang), s = Math.sin(ang), portee = TP.cyclopeTirDepart + K.salveVit * TP.tirVie;
+      zone('ligne', st.bx + c * TP.cyclopeTirDepart, e.y + s * TP.cyclopeTirDepart,
+        st.bx + c * portee, e.y + s * portee, R.ennemis.tir.rayon, 'tout', e.id,
+        Math.max(0, a.tele + delai - a.t), a.tele + delai);
+    }
+    if (a.k === 'rayon') {
+      var fin = a.a0 + a.dir * a.sweep, lo = Math.min(a.a0, fin), hi = Math.max(a.a0, fin), hw = K.rayonW / 2;
+      zone('secteur', st.bx, e.y, st.bx, e.y, CFG.rayonLong + hw, 'tete', e.id, undefined, undefined, lo, hi);
+      for (i = 0; i < 2; i++) {
+        var ang = i ? fin : a.a0, c = Math.cos(ang), s = Math.sin(ang);
+        zone('ligne', st.bx + c * TP.cyclopeRayonDepart, e.y + s * TP.cyclopeRayonDepart, st.bx + c * CFG.rayonLong, e.y + s * CFG.rayonLong, hw, 'tete');
+      }
+    } else if (a.k === 'salve') {
+      for (i = a.fired; i < K.salves; i++) for (j = 0; j < K.balles; j++)
+        prevoirTir(a.base + i * PI / K.balles + j * TAU / K.balles, i * K.ecart);
+    } else if (a.k === 'salve2') {
+      for (i = a.fired; i < a.n; i++) {
+        var salve = (i / K.balles3) | 0, balle = i % K.balles3;
+        prevoirTir(a.base + (salve ? -1 : 1) * balle * CFG.spiralePas + salve * TP.cyclopeSpiraleDecalage,
+          salve * K.ecart + balle * CFG.spiraleDt);
+      }
+    } else if (a.k === 'ciseaux' && a.phase <= 1) {
+      for (i = 0; i < a.lignes.length; i++) {
+        L = a.lignes[i]; m = st.mains[i];
+        if (L && m && !m._dead && (a.phase === 0 || m._m === 'charge')) {
+          zone('ligne', L.x0, L.y0, L.x1, L.y1, CFG.ligneDemi, 'tout', m.id);
+          m.tele = m.id;
+        }
+      }
+    } else if (a.k === 'bond' && a.phase === 0) {
+      zone('disque', a.lx, a.ly, a.lx, a.ly, K.ombre, 'tout');
+    }
   }
   /* pose les objets du schéma sur le corps : positions, états, lisibilité (-1 ou durée de visibilité) */
   function place(dt, P) {
@@ -923,6 +980,6 @@ N.colosse = (function () {
       POS.x = st.oeil.x; POS.y = st.oeil.y;
       return POS;
     },
-    estOeil: estOeil, touche: touche, surKill: surKill
+    estOeil: estOeil, touche: touche, surKill: surKill, publierTele: publierTele
   };
 })();

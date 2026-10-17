@@ -37,7 +37,7 @@ N.game = (function () {
   var PLEIN = { demarrage: 1, ouverture: 1, briefing: 1, panneau: 1, fin: 1, initiales: 1 };
 
   var et = 'demarrage', etT = 0, etatJeu = 'jeu', avant = 'jeu', seed = 2975, partieN = 0;
-  var muted = false, muteTick = 0, pauseAuto = false;
+  var muted = false, muteTick = 0;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
   var god = false, simulant = false, departExplicite = false;
@@ -429,7 +429,7 @@ N.game = (function () {
       if (f && f.action === 'rejouer') lancer(true);
     } else if (et === 'pause') {
       N.ui.update(dt);
-      var p = N.ui.sortie(); if (p && p.action === 'reprendre' && !pauseAuto) basculerPause();
+      var p = N.ui.sortie(); if (p && p.action === 'reprendre') basculerPause();
     }
     /* les minuteries de la mise en scène de repli */
     for (var i = timers.length - 1; i >= 0; i--) { timers[i].left -= dt; if (timers[i].left <= 0) { var fn = timers[i].fn; timers.splice(i, 1); fn(); } }
@@ -631,9 +631,7 @@ N.game = (function () {
     if (intro && N.intro && N.intro.draw) { appel('intro.draw', function () { N.intro.draw(); }); if (O.busy()) return; }
     if (JOUE_OU_PAUSE() && et !== 'mort') appel('hud.draw', function () { N.hud.draw(); });
     else if (et === 'mort') appel('hud.draw', function () { N.hud.draw(); });
-    /* la pause de l'application (arrière-plan) */
-    if (s.paused && !pauseAuto && N.ui) { N.ui.ouvrir('pause'); pauseAuto = true; }
-    if (!s.paused && pauseAuto) { pauseAuto = false; if (et !== 'pause' && N.ui.ecran() === 'pause') N.ui.fermer(); }
+    /* La pause d'application est une surimpression du boot : aucune UI remplacée ni main retirée. */
     if (N.ui && N.ui.actif()) appel('ui.draw', function () { N.ui.draw(); });
   }
 

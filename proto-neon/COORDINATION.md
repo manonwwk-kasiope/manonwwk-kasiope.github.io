@@ -79,7 +79,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
    QUESTION : deux méthodes ciblées V4/paysage échouent au minimum de ciel lumineux : 5,69 % (option A directe), puis 8,58 % (éclaircie froide dans la brume), contre 12 %. Fenêtres violet/indigo sont sous L=0,10 et les tours masquent le soleil. Diagnostic de non-convergence dans `tools/lisibilite/01c/diagnostic.md` et SORTIE.md. Quelle méthode de lumière faut-il retenir : enseignes/contours lumineux, lumière déplacée dans le ciel dégagé, ou minimum rendu indicatif comme R-11 ? Je ne change aucun seuil seul et ne lance pas les deux juges sur ces candidats non conformes. Je passe à 05 selon la règle des questions ; 15-decor reste la version 01b acceptée.
    RÉPONSE (cheffe d'orchestre, 18/10 à 01 h 05) : méthode « contours et enseignes ». (1) Le budget chaud du ciel (≤ 12 %) va au soleil plein (disque jaune et ambre, non masqué par les tours : le disque passe devant la cité lointaine ou la cité s'abaisse sous lui) et aux deux rangées d'horizon embrasées. (2) Façades en violet ou indigo ; l'acier seulement en contours fins d'un pixel, enseignes et fenêtres éparses, jamais en surfaces. (3) Le plancher de 12 % reste ; **une seule tentative** : si elle n'atteint pas 12 %, publie la valeur et les captures, et lance quand même les deux juges neufs (ambiance et lisibilité, avant/après) ; je trancherai sur leurs notes. Pas de troisième méthode.
 
-8. codex-05b — les réserves de la médiation de codex-05 (`refonte/mediation/2026-10-18-codex-05-06.md`), fichiers `src/50-fx.js`, `src/79-scene.js`, `src/79-jeu.js`, `src/60-intro.js` (réserve-les) : RALENTI dure ce que dit N.R (3,5 s), le CYCLOPE ralentit à son arrivée (0,3 pendant 2,2 s), la pause automatique de l'application est raccordée sans perdre l'écran courant ni la main de cartes, `60-intro.js` lit `S.t` en secondes. Preuve : tes contrôles de ralentis et de pause sur trois profils, et les 80 parties des pilotes inchangées hors de ces ralentis. À prendre AVANT codex-01c. État : à faire.
+8. codex-05b — les réserves de la médiation de codex-05 (`refonte/mediation/2026-10-18-codex-05-06.md`), fichiers `src/50-fx.js`, `src/79-scene.js`, `src/79-jeu.js`, `src/60-intro.js` (réserve-les) : RALENTI dure ce que dit N.R (3,5 s), le CYCLOPE ralentit à son arrivée (0,3 pendant 2,2 s), la pause automatique de l'application est raccordée sans perdre l'écran courant ni la main de cartes, `60-intro.js` lit `S.t` en secondes. Preuve : tes contrôles de ralentis et de pause sur trois profils, et les 80 parties des pilotes inchangées hors de ces ralentis. À prendre AVANT codex-01c. État : en cours (Codex, 18/10 à 01 h 18).
 
 **Sessions Codex parallèles** (ouvertes par la cheffe d'orchestre, chacune dans sa copie `~/Projets/wt-snake/<nom>`, sans commit ; la cheffe d'orchestre relit, fait juger et intègre) :
 - **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`. **ACCEPTÉ et intégré (b07c32c)** : GRAPPE, BRAISE, ÉPERON et répit ; les passifs restent à faire.
@@ -87,6 +87,12 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 - **codex-p3** — remise en état de l'instrument R-01 à R-38 (32 critères sur 38 « non mesurables » le 18/10 à 00 h 24) : `tools/mesure/`. **Intégrée (3883b2a)**, vérifiée hors bac : quatre bundles fautifs refusés.
 - **codex-p4** — télégraphes manquants dans `S.tele` (CYCLOPE, RUCHE, SENTINELLE) : `73-colosse.js`, `72-ennemis.js`.
 - **codex-p5** — réglage de la difficulté (lot 9, § 4.10) : chiffres de `02-regles.js` seulement, au plus 5 passes, arrêt de non-convergence.
+- **codex-p2, p4, p6 : ACCEPTÉS et intégrés** (`refonte/mediation/2026-10-18-codex-p2-p4-p6.md`).
+- **codex-p4b** — les mines du CYCLOPE s'annoncent : `73-colosse.js`, `72-ennemis.js`.
+- **codex-p1b : ACCEPTÉ et intégré** (ONDE, SILLAGE, PERFORATION, SURTENSION, ÉPINES ; `144d075`, `15a196a`).
+- **codex-p7** — CONTINUER ? (R-18) : `80-ecrans.js`, `77-score.js`.
+
+**NOTE pour le lot H (Claude Mac, musique), de la cheffe d'orchestre, 01 h 26** : R-26 (mixage) échoue encore sur l'instrument corrigé (4 échecs, `tools/mesure/DIAGNOSTIC-ECHECS.md`, lignes R-26 : écart calme → chaos ≥ 6 dB, corrélation tension ↔ niveau ≥ 0,5, kill + 3 à + 6 dB au-dessus de la musique, ≥ 25 % d'énergie au-dessus de 400 Hz). Merci de rejouer `node tools/mesure/criteres/R-26-mixage.mjs` sur ton lot avant de l'intégrer, et de régler dans `30-music.js` (gains dans N.R).
 - **codex-p6** — l'API de test du contrat dans `79-jeu.js` / `10-gfx.js` : départ `reset(graine,{depart:'plongee'})`, scènes `charge`, `v5`, `lasso6`, `inversion`, `convoi`, `travelling`, vrai masque de propriété par `dbg.masque()`.
 - Note : le bac à sable de `codex exec` interdit serveur local et Chromium ; ces sessions simulent en VM Node et la cheffe d'orchestre exécute leurs scripts Playwright.
 
@@ -97,12 +103,12 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/50-fx.js`, `src/79-scene.js`, `src/79-jeu.js`, `src/60-intro.js`, `src/90-boot.js`, `src/70-joueuse.js`, `tools/horloge/` | Codex | 18/10 à 01 h 18 | codex-05b ; 90 nécessaire au raccord pause ; 70 doit déclarer RALENTI long:true pour ne pas tronquer 3,5 s si un gel est actif ; aucun remplacement de main |
+| `src/80-ecrans.js`, `src/77-score.js` | Codex (session parallèle codex-p7) | 18/10 à 01 h 26 | CONTINUER ? sur l'écran de fin (R-18) ; raccord de `79-jeu.js` livré en correctif |
+| `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 01 h 10 | codex-01c : tentative unique contours/enseignes, soleil plein, jury |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
-| `src/79-jeu.js`, `src/10-gfx.js` | Codex (session parallèle codex-p6) | 18/10 à 00 h 41 | API de test du contrat : `reset(graine,{depart})`, six scènes, vrai masque (`demandes.md` § codex-08) |
-| `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
-| `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 

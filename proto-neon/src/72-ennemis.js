@@ -18,7 +18,7 @@
    Interface (§ 7.8) : reset(), update(dt), draw(), spawn(type, x, y, opts), list, count(), hit(e, dmg, src), zone(x, y, r, dmg, src),
    devorer(e), dans(poly), pres(x, y, r), tir(x, y, vx, vy, opts), tirs, effacerTirs(x, y, r), inverser(dur), fuir(), purge(ordre).
    Ajouts : lasers, counts(), drawTele(), drawEnemies(), purgeEnCours(), rayon(x0, y0, x1, y1, dur, w, src), teleLigne, marque,
-   inversion() -> secondes restantes, charges().
+   inversion() -> secondes restantes, charges(), publierTele() (rafraîchissement après 73-colosse).
    Chiffres : N.R.ennemis, N.R.elites, N.R.modificateurs, N.R.inversion ; les valeurs de la démo qui manquent : CFG (→ N.R). */
 N.ennemis = (function () {
   'use strict';
@@ -30,6 +30,7 @@ N.ennemis = (function () {
     tourelleTourne: 1.2, tourelleVie: 1.7
   };
   var TAU = O.TAU;
+  var TP = R.publicationTele;
   var S = null;
   var list = [], tirs = [], lasers = [], fuses = [];
   var charges = 0, inv = { t: 0, total: 0 }, purgeFile = null, purgeI = 0, purgeNext = 0, purgeT = 0;
@@ -149,7 +150,7 @@ N.ennemis = (function () {
   function tir(x, y, vx, vy, opts) {
     opts = opts || {};
     if (tirs.length >= CFG.plafondTirs) return null;
-    var b = { id: N.ids.suivant(), x: x, y: y, vx: vx, vy: vy, r: opts.r || (opts.big ? CFG.tirTaille + 1 : CFG.tirTaille), vie: opts.vie || CFG.vieTir,
+    var b = { id: N.ids.suivant(), x: x, y: y, vx: vx, vy: vy, r: opts.r || (opts.big ? CFG.tirTaille + 1 : CFG.tirTaille), vie: opts.vie || TP.tirVie,
       src: opts.src || { genre: 'ennemi', type: 'tourelle', id: -1 }, _big: !!opts.big, _dead: false };
     tirs.push(b);
     return b;
@@ -591,7 +592,7 @@ N.ennemis = (function () {
       e._petales = O.clamp(1 - (e._stT - (c.couvee || 0.6)) / (c.petales || 0.7), 0, 1);
       if (e._stT <= 0) {
         for (var k = 0; k < (c.larves || 3); k++) {
-          var a = (k / (c.larves || 3)) * TAU + e._age, l = spawn('larve', e.x + Math.cos(a) * (e.r + 3), e.y + Math.sin(a) * (e.r + 3), { portail: 0.4 });
+          var a = (k / (c.larves || 3)) * TAU + e._age, l = spawn('larve', e.x + Math.cos(a) * (e.r + TP.rucheDecalage), e.y + Math.sin(a) * (e.r + TP.rucheDecalage), { portail: TP.ruchePortail });
           l._mere = e.id;
         }
         O.ringFx(e.x, e.y, 22, O.MAGENTA, 0.3);
@@ -817,15 +818,17 @@ N.ennemis = (function () {
      dégâts (REFONTE.md § 4.4) : la zone que lira le pilote (pilotes.md § 3.1), pas son dessin. `r` est le rayon qui tue de la zone
      SANS la tête (la marge de 4 px du pilote la rajoute) ; `reste` va de `total` à 0 ; `cible` dit ce qui est frappé. Objets et
      tableau préalloués. Le dessin reste celui de drawTele() ci-dessous (le repli de N.fx.tele, que personne n'appelle encore :
-     quand 72 passera par N.fx.tele, c'est lui qui publiera S.tele). Hors périmètre : le CYCLOPE (73-colosse.js a ses propres
-     télégraphes) et la RUCHE (sa couvée ne blesse pas). Un laser déjà tiré (la SENTINELLE, 0,35 s) n'est plus un télégraphe. ---- */
+     quand 72 passera par N.fx.tele, c'est lui qui publiera S.tele). codex-p4 : les dangers actifs restent avec reste=0 ;
+     73 ajoute ses prévisions par l'interface publique publierTele(ajouter), puis demande un rafraîchissement après son pas.
+     La RUCHE prévoit les contacts de sa nichée, pas un souffle fictif autour de la mère. ---- */
   var TVN = 0, TV = [], TVP = [];
   for (var qt = 0; qt < 48; qt++) TVP.push({ id: 0, forme: 'ligne', x0: 0, y0: 0, x1: 0, y1: 0, r: 0, a0: 0, a1: 0, reste: 0, total: 0, cible: 'tete', par: { type: '', id: -1 } });
-  function teleAjouter(id, forme, x0, y0, x1, y1, r, reste, total, cible, type) {
-    if (TVN >= TVP.length) return -1;
+  function teleAjouter(id, forme, x0, y0, x1, y1, r, reste, total, cible, type, a0, a1, parId) {
+    // Pas de troncature : nichées et salves peuvent dépasser le pool initial du lot I.
+    if (TVN >= TVP.length) TVP.push({ par: {} });
     var t = TVP[TVN]; TV[TVN] = t; TVN++;
-    t.id = id; t.forme = forme; t.x0 = x0; t.y0 = y0; t.x1 = x1; t.y1 = y1; t.r = r; t.a0 = 0; t.a1 = 0;
-    t.reste = reste > 0 ? reste : 0; t.total = total > 0 ? total : 0; t.cible = cible; t.par.type = type; t.par.id = id;
+    t.id = id; t.forme = forme; t.x0 = x0; t.y0 = y0; t.x1 = x1; t.y1 = y1; t.r = r; t.a0 = a0 || 0; t.a1 = a1 || 0;
+    t.reste = reste > 0 ? reste : 0; t.total = total > 0 ? total : 0; t.cible = cible; t.par.type = type; t.par.id = parId === undefined ? id : parId;
     return id;
   }
   function publierTele() {
@@ -834,6 +837,12 @@ N.ennemis = (function () {
     TVN = 0;
     for (i = 0; i < list.length; i++) {
       e = list[i];
+      if (!e._dead && e.type === 'larve' && e._mere !== undefined && e.etat === 'portail') {
+        // Les enfants restent immobiles dans leur portail, puis le contact tête devient possible.
+        e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
+          e.r * R.mort.ennemi.facteurRayon, e._portail, TP.ruchePortail, 'tete', 'ruche', 0, 0, e._mere);
+        continue;
+      }
       if (e._dead || e.etat === 'portail' || e._ext || e._st === 'proie') { e.tele = -1; continue; }
       id = -1; r = 0.8 * e.r;
       var st = e._st, tot = e._teleTotal || 0.6, rest = e._stT, c;
@@ -853,6 +862,14 @@ N.ennemis = (function () {
       } else if (e.type === 'sentinelle' && st === 'vise') {
         c = conf('sentinelle').longueur || 300;
         id = teleAjouter(e.id, 'ligne', e.x, e.y, e.x + Math.cos(e._aim) * c, e.y + Math.sin(e._aim) * c, 1.5, rest, tot, 'tete', e.type);
+      } else if (e.type === 'ruche' && st === 'couve') {
+        c = conf('ruche').larves;
+        for (var k = 0; k < c; k++) {
+          var ag = k / c * TAU + e._age + rest;
+          var lx = e.x + Math.cos(ag) * (e.r + TP.rucheDecalage), ly = e.y + Math.sin(ag) * (e.r + TP.rucheDecalage);
+          id = teleAjouter(e.id, 'disque', lx, ly, lx, ly, conf('larve').r * R.mort.ennemi.facteurRayon,
+            rest + TP.ruchePortail, tot + TP.ruchePortail, 'tete', e.type);
+        }
       } else if (e.type === 'lame' && st === 'recule') {
         c = (conf('lame').traverse && conf('lame').traverse.longueur) || 190;
         id = teleAjouter(e.id, 'ligne', e._tx, e._ty, e._tx + Math.cos(e._aim) * c, e._ty + Math.sin(e._aim) * c, r, rest + 0.2, tot, 'tout', e.type);
@@ -865,6 +882,16 @@ N.ennemis = (function () {
       u = fuses[i];
       teleAjouter(-1 - i, 'disque', u.x, u.y, u.x, u.y, u.r, u.t, u.d, 'tout', 'instable');
     }
+    for (i = 0; i < lasers.length; i++) {
+      u = lasers[i];
+      if (!u._dead) teleAjouter(u.src.id, 'ligne', u.x0, u.y0, u.x1, u.y1, u.w / 2, 0, u.d, 'tete', u.src.type);
+    }
+    for (i = 0; i < tirs.length; i++) {
+      u = tirs[i];
+      if (!u._dead && u.src.type === 'cyclope') teleAjouter(u.id, 'ligne', u.x, u.y,
+        u.x + u.vx * u.vie, u.y + u.vy * u.vie, u.r, 0, TP.tirVie, 'tout', 'cyclope', 0, 0, u.src.id);
+    }
+    if (N.colosse && N.colosse.publierTele) N.colosse.publierTele(teleAjouter);
     TV.length = TVN;
     if (s.tele !== TV) s.tele = TV;
   }
@@ -1097,6 +1124,6 @@ N.ennemis = (function () {
     reset: reset, update: update, draw: draw, drawEnemies: drawEnemies, drawTele: drawTele,
     spawn: spawn, list: list, count: count, counts: counts, hit: hit, zone: zone, devorer: devorer, dans: dans, pres: pres,
     tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours,
-    rayon: rayon, teleLigne: teleLine, marque: spawnMark, inversion: function () { return Math.max(0, inv.t); }, charges: function () { return charges; }
+    rayon: rayon, teleLigne: teleLine, marque: spawnMark, inversion: function () { return Math.max(0, inv.t); }, charges: function () { return charges; }, publierTele: publierTele
   };
 })();

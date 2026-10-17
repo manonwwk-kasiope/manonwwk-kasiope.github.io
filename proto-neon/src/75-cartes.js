@@ -23,9 +23,9 @@
 N.cartes = (function () {
   'use strict';
   var O = N.outils, R = N.R;
-  var ARMES = ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ'];
+  var ARMES = ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ', 'onde', 'sillage'];
   var POUVOIRS = ['traversee', 'ralenti', 'repli'];
-  var ULTIMES = ['RAYON', 'BORDÉE', 'ORAGE', 'NUÉE', 'ANNEAU', 'SINGULARITÉ'];
+  var ULTIMES = ['RAYON', 'BORDÉE', 'ORAGE', 'NUÉE', 'ANNEAU', 'SINGULARITÉ', 'DÉFERLANTE', 'MUR'];
   var S = null;
   var m = {                                       // l'état de la partie
     xp: 0, niveau: 0, attente: 0, prises: {}, equipees: ['canon'], pouvoir: null, nb: 0, ecrans: 0, sansRare: 0, sansEpique: 0,
@@ -51,6 +51,9 @@ N.cartes = (function () {
     MODS.grappe = Math.min(2, p.grappe || 0);
     MODS.sangFroid = !!p.sangFroid;
     MODS.braise = Math.min(2, p.braise || 0);
+    MODS.perforation = Math.min(P.perforation.prises, p.perforation || 0) * P.perforation.parPrise;
+    MODS.surtension = Math.min(P.surtension.prises, p.surtension || 0);
+    MODS.epines = Math.min(P.epines.prises, p.epines || 0);
   }
   function reset() {
     S = N.S;
@@ -95,8 +98,12 @@ N.cartes = (function () {
     return d.indexOf(id) >= 0;
   }
   function eligible(id) {
+    // Le registre est gelé et appartient au socle : aucune carte inconnue sur le bus.
+    if (!liste(id) || (N.ids && N.ids.cartes.indexOf(id) < 0)) return false;
     var k = m.prises[id] || 0;
     if (k >= prisesMax(id)) return false;
+    var req = liste(id).prerequis;
+    if (req && !req.some(function (r) { return palierDe(r.id) >= r.min; })) return false;
     if (estArme(id) && k === 0 && id !== 'canon' && m.equipees.length >= cfg().main.armesMax) return false;
     if (estPouvoir(id)) {
       if (m.pouvoir === id) return false;
@@ -115,6 +122,11 @@ N.cartes = (function () {
     var c = cfg(), w = c.poids.rarete[rarete(id)], f = liste(id).famille, nf = m.famille[f] || 0;
     if (nf >= c.poids.ecoleCartes) w *= c.poids.ecole;
     else if (nf === 0 && m.nb > c.poids.viergeApres) w *= c.poids.vierge;
+    // Une passive appelle la montée suivante de son arme et réciproquement.
+    for (var arme in c.appels) {
+      var passive = c.appels[arme];
+      if ((id === arme && m.prises[passive]) || (id === passive && palierDe(arme) > 0)) { w *= c.poids.appel; break; }
+    }
     return w;
   }
   function tirer(pool) {
@@ -167,7 +179,7 @@ N.cartes = (function () {
 
   /* ============================ le choix ============================ */
   function choisir(id) {
-    if (!id || !liste(id)) return null;
+    if (!id || !eligible(id)) return null;
     var k = (m.prises[id] || 0) + 1;
     if (k > prisesMax(id)) return null;
     m.prises[id] = k; m.nb++;
@@ -199,6 +211,10 @@ N.cartes = (function () {
       l1 = p.missiles + ' MISSILES' + (p.sousMunitions ? ' + ' + p.sousMunitions : ''); l2 = p.degats + ' DÉG / ' + f1(p.periode) + ' S';
     } else if (id === 'drones') {
       l1 = p.drones + (p.drones > 1 ? ' DRONES' : ' DRONE') + (p.interception ? ' · BOUCLIER' : ''); l2 = 'TIR ' + f1(a.cadence) + '/S · ' + a.degats + ' DÉG';
+    } else if (id === 'onde') {
+      l1 = p.degats + ' DÉG · ' + p.rayon + ' PX'; l2 = p.efface ? 'EFFACE LES TIRS' : 'REPOUSSE AUTOUR';
+    } else if (id === 'sillage') {
+      l1 = f1(p.dps) + ' DÉG/S · QUEUE'; l2 = p.efface ? 'MUR ANTI-TIRS' : f1(p.duree) + ' S DE TRACE';
     } else {
       l1 = '1 MINE / ' + f1(p.periode) + ' S'; l2 = 'SOUFFLE ' + p.souffle + ' PX · ' + p.degats;
     }
@@ -219,6 +235,9 @@ N.cartes = (function () {
       case 'eperon': l1 = 'EN ACCÉLÉRATION'; l2 = 'BROIE JUSQU\'À ' + a.pvMax + ' PV'; break;
       case 'grappe': l1 = 'KILL = EXPLOSION'; l2 = a.niveaux[i].rayon + ' PX · ' + a.niveaux[i].degats + ' DÉG'; break;
       case 'sangFroid': l1 = 'LA COUPE NE DIVISE'; l2 = 'PLUS LA CHAÎNE'; break;
+      case 'perforation': l1 = 'TRAVERSE +' + a.parPrise + ' CIBLE'; l2 = 'TIRS NON EXPLOSIFS'; break;
+      case 'surtension': l1 = '+' + a.sautsParPrise + ' SAUT PAR ARC'; l2 = 'PORTÉE +' + f1(a.porteeParPrise * 100) + ' %'; break;
+      case 'epines': l1 = 'CONTACT DU CORPS'; l2 = a.dps[i] + ' DÉG / S'; break;
       default: l1 = 'TRAÎNÉE QUI BRÛLE'; l2 = i ? '+' + f1(a.traine2) + ' S DE TRAÎNÉE' : a.dps + ' DÉG / S'; break;
     }
     return [l1, l2];
@@ -239,7 +258,8 @@ N.cartes = (function () {
     } else if (pouv) { ls = textePouvoir(id); tag = m.pouvoir ? 'REMPLACE' : 'NOUVEAU'; pal = 1; }
     else { ls = textePassif(id); tag = k === 0 ? 'NOUVEAU' : 'NIV ' + (k + 1); pal = k + 1; }
     return { nom: N.ids.nom(id), l1: ls[0], l2: ls[1], tag: tag, rarete: rarete(id), palier: pal, prises: k, max: prisesMax(id),
-      ultime: arme && indexSuivant(id) >= 3 ? ULTIMES[ARMES.indexOf(id)] : null, famille: L.famille };
+      ultime: arme && indexSuivant(id) >= 3 ? ULTIMES[ARMES.indexOf(id)] : null, famille: L.famille,
+      prerequis: L.prerequis || [], appelle: cfg().appels[id] || null };
   }
 
   /* ============================ les consommateurs ============================ */

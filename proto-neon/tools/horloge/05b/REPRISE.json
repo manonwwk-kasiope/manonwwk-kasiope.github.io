@@ -1,0 +1,10 @@
+{
+  "dateParis": "18/10/2026 · 01 h 23",
+  "objectif": "05b prioritaire : fermer les quatre réserves de l'horloge avant 01c",
+  "source": "six modules réservés : 50-fx,60-intro,70-joueuse,79-jeu,79-scene,90-boot ; 15-decor production inchangé",
+  "preuves": "précontrôles trois profils : RALENTI 3,5 s ; CYCLOPE 2,2 s ; niveau 0,35 s ; ralenti pendant gel, journal en secondes, pause non destructive dans jeu/pause/panneau/cartes ; zéro erreur",
+  "enCours": "banc 02 complet avant puis après, processus issu de regressions.mjs --pilotes-seuls ; sorties /tmp/snake-05b-pilotes ; ne pas doublonner",
+  "restant": ["finir les 80 parties avant/après et les répétitions", "capturer l'overlay à taille de texte corrigée (pause trois profils)", "confirmer les commandes après raccord de reprise", "livrer source/bundle séparés et reçus, libérer les réservations", "reprendre 01c figé puis jury et corpus restant"],
+  "budget": "aucune dépense, plafonds des bancs inchangés (540 s de jeu), Chromium en série",
+  "prochaineAction": "attendre fin du processus avant les autres bancs navigateur ; continuer les préparations sans écrire dans les fichiers d'autrui"
+}
