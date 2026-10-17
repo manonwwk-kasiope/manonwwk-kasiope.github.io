@@ -1,0 +1,11 @@
+{
+  "note": "Morceaux Suno longs, lus en continu au-dessus de la piste en blocs. lufs mesuré (ebur128) sur le MP3 brut ; gainDb ramène chaque morceau à -16 LUFS avant le réglage fin du mixage.",
+  "morceaux": [
+    { "id": "electro-calme",   "fichier": "electro-calme.mp3",   "source": "brut/jeu-calme-electro-a.mp3",   "bpm": 115, "lufs": -14.4, "gainDb": -1.6, "usage": "vague 3 (CENTRALE)" },
+    { "id": "voix-machine",    "fichier": "voix-machine.mp3",    "source": "brut/voix-machine-a.mp3",        "bpm": 124, "lufs": -14.2, "gainDb": -1.8, "usage": "vague 4 (TOURS), voix cybernétiques" },
+    { "id": "electro-tension", "fichier": "electro-tension.mp3", "source": "brut/jeu-tension-electro-a.mp3", "bpm": 115, "lufs": -14.2, "gainDb": -1.8, "usage": "vague 4, après voix-machine si la vague dure" },
+    { "id": "voix-plus-vite",  "fichier": "voix-plus-vite.mp3",  "source": "brut/voix-plus-vite-b.mp3",      "bpm": 120, "lufs": -14.7, "gainDb": -1.3, "usage": "vague 5 (CŒUR), refrain chanté par une femme" },
+    { "id": "voix-duo",        "fichier": "voix-duo.mp3",        "source": "brut/voix-duo-b.mp3",            "bpm": 126, "lufs": -14.1, "gainDb": -1.9, "usage": "alerte puis CYCLOPE, duo femme / machine (« Warning, Titan approaching »)" },
+    { "id": "electro-titan",   "fichier": "electro-titan.mp3",   "source": "brut/boss-electro-a.mp3",        "bpm": 124, "lufs": -15.0, "gainDb": -1.0, "usage": "CYCLOPE, après voix-duo si le combat dure" }
+  ]
+}
