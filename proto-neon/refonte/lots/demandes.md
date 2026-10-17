@@ -282,3 +282,19 @@ Preuves VM : `tools/codex-p7/calibration.json` (10 parties exactes du commit e1b
 Le nombre et le placement des mines restent ceux de phase 3. La difficulté est évaluée sur les parties demandées ; aucune compensation chiffrée n'est inventée avant leur résultat. Aucun seuil d'acceptation abaissé. Les mesures VM ne sont pas une qualification Safari ni une preuve des pixels du navigateur.
 
 codex-p4b — mis à jour le 18/10/2026 à 01 h 29 (Paris) : VM validée sur dix références ; six scènes mines après sur trois formats satisfaites, douze parties avant/après fin sans erreur. Bon : morts auteur cyclope 2→2 ; toutes morts pendant le boss 3→5 (murs 1→3), aucune mort par mine pendant le boss. Nombre et placement conservés. Construction sortie 0 ; rapport et reçus dans `tools/codex-p4/`. Chantier bloqué uniquement sur la vérification visuelle hors bac, sans lancement navigateur ici.
+
+## codex-09 — aventure branchée dans le vrai jeu
+
+18/10/2026 · 01 h 44 (Paris), mis à jour à 01 h 53. Mesures finales : `tools/codex-09/rapport.md`.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-09 | `03-socle.js` (`N.ids.etats`, `tableEtats`) | ajouter `aventure`, `{horloge:'avance', section:null, plein:true}` | registre gelé, hors réservation ; `79-jeu` accepte cet état localement sans modifier N.ids. Les époques avancent avec leur propre temps, le monde néon n'est pas mis à jour. Le boot masque explicitement les interfaces et effets du néon. |
+| codex-09 | `79-jeu.js` | JOUER → aventure ; victoire après apothéose → reprendre('fin') ; sortie gagnée → bilan ; REJOUER gagné → titre et choix suivant ; défaite/CONTINUER conservent le néon | parcours ELLE puis LUI, marquage des deux fins, retrouvailles/teaser ; départs explicites inchangés. Arrêt public de l'aventure au retour au titre et au reset. |
+| codex-09 | `90-boot.js` | en aventure, taire N.ui/N.hud/N.intro, les effets et le manche du néon | le tampon du choix, de 1976 et de 1982 doit être celui du module d'aventure seul, en particulier en portrait. |
+| codex-09 | intégration / vérification hors bac | `cd proto-neon && node tools/codex-09/verifier.mjs` | script complet, un Chromium muet, trois profils en série, deux pilotes, sorties naturelles des époques, toucher réel pour chaque film, captures, histogrammes, comparaison du tampon aventure/boot et journal ; non exécuté ici conformément au cadre. |
+| codex-09 | référence `tools/pilotes/sortie.json` / état reçu `8f55a91` | arbitrer les écarts préexistants avant de revendiquer la conservation des 80 références historiques | valeurs brutes conservées dans `tools/codex-09/pilotes-final.json` et comparaison avant/après ; aucun seuil ni comportement de combat corrigé pour rapprocher le résultat. |
+
+Correction dans 79-jeu : retirer le second lancement de boss après réveil (N.intro enchaîne déjà les deux). Échec initial conservé dans `tools/codex-09/complements-avant.json` ; après correction, saut au toucher vers le combat sur les trois profils. Le pilote dieu/graine 1 garde exactement son temps, sa vague et son score avant/après (`victoire-pilote.json`).
+
+Aucun chiffre de jeu nouveau : garde réutilisée depuis `N.R.ecrans.ouverture.garde` (300 ms) ; les films restent dans N.aventure/N.intro, sans duplication de leurs règles. Les états de transition aventure sont écrits au journal public. Les films de profondeur/WARP/espace restent le rattrapage de fin livré par N.aventure : ce lot n'introduit pas leurs mécaniques dans les vagues néon ni dans les parties des pilotes.

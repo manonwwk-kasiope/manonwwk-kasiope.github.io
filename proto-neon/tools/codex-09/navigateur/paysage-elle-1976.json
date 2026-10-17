@@ -1,0 +1,265 @@
+{
+  "etat": {
+    "jeu": "aventure",
+    "etape": "1976",
+    "film": {
+      "actif": false,
+      "nom": "connexion-elle",
+      "t": 0.37,
+      "duree": 4.5,
+      "legende": "1976 — LE TERMINAL",
+      "typed": 0,
+      "clip": true,
+      "video": false,
+      "videoVue": false,
+      "panneau": true,
+      "repli": false,
+      "saute": true,
+      "carte": null,
+      "n": 1,
+      "journal": [
+        {
+          "e": "film connexion-elle clip",
+          "t": 0
+        },
+        {
+          "e": "saut connexion-elle",
+          "t": 0.37
+        }
+      ]
+    },
+    "intro": {
+      "mode": null,
+      "etape": null,
+      "t": 0,
+      "u": 0,
+      "guard": true,
+      "armed": false,
+      "typed": 0,
+      "busy": false,
+      "phase": "play"
+    },
+    "aventure": {
+      "enCours": true,
+      "actif": true,
+      "etape": "1976",
+      "type": "epoque",
+      "i": 2,
+      "qui": "elle",
+      "deux": false,
+      "cible": null,
+      "t": 2.01,
+      "vus": [
+        "connexion"
+      ],
+      "joues": [
+        "connexion-elle"
+      ],
+      "film": {
+        "actif": false,
+        "nom": "connexion-elle",
+        "t": 0.37,
+        "duree": 4.5,
+        "legende": "1976 — LE TERMINAL",
+        "typed": 0,
+        "clip": true,
+        "video": false,
+        "videoVue": false,
+        "panneau": true,
+        "repli": false,
+        "saute": true,
+        "carte": null,
+        "n": 1,
+        "journal": [
+          {
+            "e": "film connexion-elle clip",
+            "t": 0
+          },
+          {
+            "e": "saut connexion-elle",
+            "t": 0.37
+          }
+        ]
+      },
+      "journal": [
+        {
+          "e": "début",
+          "t": 0
+        },
+        {
+          "e": "choix",
+          "t": 0
+        },
+        {
+          "e": "choisi elle",
+          "t": 1.12
+        },
+        {
+          "e": "film connexion connexion-elle",
+          "t": 1.12
+        },
+        {
+          "e": "époque 1976",
+          "t": 1.48
+        }
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  },
+  "W": 422,
+  "H": 195,
+  "px": 2,
+  "pixels": 82290,
+  "histogramme": {
+    "0": 80108,
+    "1": 91,
+    "7": 2091
+  },
+  "empreinte": 3482496251,
+  "difference": 0,
+  "musique": {
+    "bar": 2,
+    "step": 4,
+    "bpm": 143.759,
+    "tension": 0.06,
+    "key": 0,
+    "over": true,
+    "layers": 2,
+    "perc": false,
+    "spark": false,
+    "inv": false,
+    "heart": false,
+    "grid": 1,
+    "fill": "none",
+    "brk": "none",
+    "muffle": 0,
+    "gate": 1,
+    "section": "titre",
+    "mode": "off",
+    "state": "running",
+    "muted": false,
+    "sleeping": false,
+    "running": false
+  },
+  "terminal": {
+    "phase": "boot",
+    "t": 0.53,
+    "menace": 0,
+    "manges": 0,
+    "morts": 0,
+    "score": 0,
+    "len": 4,
+    "dir": 0,
+    "tete": [
+      10,
+      6
+    ],
+    "food": [
+      1,
+      6
+    ],
+    "cols": 32,
+    "rows": 13,
+    "cell": 13,
+    "tempo": 92,
+    "audio": true,
+    "journal": [
+      {
+        "e": "message > RUN SNAKE.BAS",
+        "t": 0
+      },
+      {
+        "e": "debut",
+        "t": 0
+      }
+    ]
+  },
+  "arcade": {
+    "phase": "fini",
+    "t": 0,
+    "pt": 0,
+    "vt": 0,
+    "section": 0,
+    "tempo": 132,
+    "score": 0,
+    "morts": 0,
+    "nseg": 6,
+    "tete": [
+      0,
+      0
+    ],
+    "cap": 0,
+    "vitesse": 46,
+    "invul": false,
+    "arene": {
+      "x0": 0,
+      "y0": 0,
+      "x1": 0,
+      "y1": 0
+    },
+    "K": 2,
+    "food": null,
+    "dore": null,
+    "frenesie": false,
+    "soucoupe": null,
+    "sens": 1,
+    "formation": null,
+    "fleches": [],
+    "bombes": [],
+    "compte": {
+      "tues": 0,
+      "mange": 0,
+      "coupes": 0,
+      "grosses": 0,
+      "tirs": 0,
+      "formations": 0
+    },
+    "nouveautes": [],
+    "premiereExplosion": -1,
+    "audio": false,
+    "musique": {
+      "section": 0,
+      "pas": 0,
+      "notes": {
+        "pulse": 0,
+        "tri": 0,
+        "bruit": 0
+      }
+    },
+    "journal": []
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0,
+      "image": 31,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 123,
+      "t": 0,
+      "image": 63,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    }
+  ]
+}

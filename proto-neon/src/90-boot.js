@@ -467,14 +467,14 @@ function frame(now) {
     if (vol) step('vol.draw', function () { N.vol.draw(); drew = true; });
     else {
       step('game.draw', N.game && N.game.draw ? function () { N.game.draw(); drew = true; } : null);
-      step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
+      if (etat !== 'aventure') step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
       step('game.drawTop', N.game && N.game.drawTop ? function () { N.game.drawTop(); } : null);
     }
     step('gfx.origin', function () { N.gfx.origin(0, 0); });
-    step('fx.drawEcran', N.fx && N.fx.drawEcran ? function () { N.fx.drawEcran(); } : null);
+    if (etat !== 'aventure') step('fx.drawEcran', N.fx && N.fx.drawEcran ? function () { N.fx.drawEcran(); } : null);
     /* Le repli d'ecranVieux dessine déjà l'interface quand reset() vient de remettre
        pas() à zéro en fin d'image. Éviter une seconde couche pendant cette seule image. */
-    if (h && h.pas() > 0) {
+    if (etat !== 'aventure' && h && h.pas() > 0) {
       var plein = N.ids && N.ids.tableEtats[etat] && N.ids.tableEtats[etat].plein;
       var film = N.intro && N.intro.current && N.intro.current();
       /* 60-intro : victoire/défaite sont le FOND du bilan ; les films bloquants
@@ -486,7 +486,7 @@ function frame(now) {
       if (film && N.intro.busy()) step('intro.draw', function () { N.intro.draw(); });
     }
     if (S.paused) step('pause.application', drawPauseApplication);
-    if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
+    if (etat !== 'aventure' && S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     if (PERF_AFF) step('perf.draw', drawPerf);
     step('gfx.present', function () { N.gfx.present({ skipScale: !!(N.crt && N.crt._actif && N.crt._actif()) }); drew = true; });
     step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(dtImage); } : null);

@@ -4,8 +4,8 @@
    GARDIEN du contrat, puis le lot 9. Il applique REFONTE.md § 7.6 (les états), § 7.7 (la boucle d'images et l'ordre
    de dessin), § 5.4 (la mort mise en scène, version simple) et § 7.12 (les crochets de test).
 
-   LES ÉTATS (N.game.etat(), tous dans N.ids.etats) : demarrage, ouverture, titre, attraction, briefing, plongee,
-   jeu, nettoyage, cartes, vol, defile, alerte, panneau, boss, mort, reapparition, victoire, fin, initiales, pause.
+   LES ÉTATS (N.game.etat(), registre N.ids.etats ; ajout local aventure en attente du socle) : demarrage, ouverture, titre, attraction, briefing, plongee,
+   aventure, jeu, nettoyage, cartes, vol, defile, alerte, panneau, boss, mort, reapparition, victoire, fin, initiales, pause.
    Seul ce module change d'état et appelle N.music.section ; les autres demandent par un événement (`vague`,
    `vol`, `phase`, `mort`). Les modules qui MANQUENT sont remplacés par des REPLIS (arène fixe de la taille de l'écran
    quand N.world / N.cam n'existent pas, décor de grille quand N.decor manque, VOL de 2,5 s, CARTES v0 à texte fixe,
@@ -34,7 +34,7 @@ N.game = (function () {
     mort: { dissolution: 0.73, fin: 1.13, sautDes: 0.33 }       // en secondes de temps de jeu (le gel de 10 images précède)
   };
   var JOUE = { jeu: 1, nettoyage: 1, defile: 1, alerte: 1, boss: 1, reapparition: 1, attraction: 1 };
-  var PLEIN = { demarrage: 1, ouverture: 1, briefing: 1, panneau: 1, fin: 1, initiales: 1 };
+  var PLEIN = { demarrage: 1, ouverture: 1, briefing: 1, aventure: 1, panneau: 1, fin: 1, initiales: 1 };
 
   var et = 'demarrage', etT = 0, etatJeu = 'jeu', avant = 'jeu', seed = 2975, partieN = 0;
   var muted = false, muteTick = 0;
@@ -50,6 +50,7 @@ N.game = (function () {
      `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
      (par un événement), lancé à la fin du pas. */
   var filmsVus = {}, suiteFilm = null, filmDemande = null, filmMuet = false, secCourante = null;
+  var avantAventure = 'jeu', pisteAventureCoupee = false, voyageFini = false;
 
   function S_() { return S || (S = N.S); }
   function appel(nom, fn) { try { fn(); } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('game→' + nom, e); } }
@@ -120,9 +121,13 @@ N.game = (function () {
   /* ============================ les transitions ============================ */
   function sectionDe(nom) { var d = N.ids.tableEtats[nom]; return d ? d.section : null; }
   function aller(nom) {
-    if (N.ids.etats.indexOf(nom) < 0) return false;
+    /* Le registre gelé de 03-socle ne connaît pas encore aventure (demande codex-09).
+       Accepter cet état localement, sans modifier le registre d'un autre module. */
+    if (nom !== 'aventure' && N.ids.etats.indexOf(nom) < 0) return false;
+    if (nom === 'titre' || nom === 'demarrage') arreterAventure();
     var ancienne = secCourante, prev = et;
     et = nom; etT = 0;
+    if ((nom === 'aventure' || prev === 'aventure') && N.journal) N.journal('etat', { de: prev, a: nom });
     if (JOUE[nom] && nom !== 'attraction') etatJeu = nom === 'reapparition' ? etatJeu : nom;
     var sec = filmMuet ? null : sectionDe(nom);
     if (sec) secCourante = sec;
@@ -135,6 +140,46 @@ N.game = (function () {
       else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
     return true;
+  }
+
+  /* L'aventure possède choix/films/époques ; elle rend la main au même jeu néon.
+     Aucun branchement WARP ou cosmique n'est ajouté aux départs directs des pilotes. */
+  function musiqueAventure(couper) {
+    if (couper === pisteAventureCoupee) return;
+    pisteAventureCoupee = couper;
+    if (couper && modOk(N.music, 'stop')) appel('music.stopAventure', function () { N.music.stop(); });
+    else if (!couper && modOk(N.music, 'start')) appel('music.startAventure', function () { N.music.start(); applyMute(); });
+  }
+  function synchroniserAventure() {
+    var e = N.aventure.etape();
+    musiqueAventure(e === 'choix' || e === '1976' || e === '1982');
+  }
+  function arreterAventure() {
+    if (modOk(N.aventure, 'stop') && N.aventure.enCours()) N.aventure.stop();
+    musiqueAventure(false);
+  }
+  function entrerDansLeNeon(info) {
+    musiqueAventure(false);
+    if (info.premiere) lancer(false);
+    else aller(avantAventure);
+  }
+  function commencerAventure() {
+    if (!modOk(N.aventure, 'demarrer')) { lancer(false); return; }
+    if (modOk(N.intro, 'skip')) N.intro.skip();
+    if (modOk(N.intro, 'stop')) N.intro.stop();
+    if (modOk(N.fx, 'reset')) N.fx.reset();
+    voyageFini = false;
+    aller('aventure');
+    N.aventure.demarrer({ aJouer: entrerDansLeNeon, surFin: function (bilan) {
+      musiqueAventure(false);
+      if (bilan.issue === 'fin') { voyageFini = true; terminer(true); } else aller('titre');
+    } });
+    synchroniserAventure();
+  }
+  function finirVoyage() {
+    avantAventure = et;
+    if (modOk(N.aventure, 'reprendre') && N.aventure.enCours() && N.aventure.reprendre('fin')) aller('aventure');
+    else terminer(true);
   }
 
   /* ============================ la partie : tout remis à zéro ============================ */
@@ -167,6 +212,8 @@ N.game = (function () {
     /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
     var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
     if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
+    arreterAventure();
+    voyageFini = false;
     S = N.S;
     opts = opts || {};
     departExplicite = opts.depart !== undefined;
@@ -395,6 +442,12 @@ N.game = (function () {
     redimensionne();
     appelerPilote();                                  // AVANT ramasserTaps, à CHAQUE pas et dans TOUS les états (cartes, VOL, mort, panneaux…)
     ramasserTaps();
+    if (et === 'aventure') {
+      synchroniserAventure();
+      appel('aventure.update', function () { N.aventure.update(dt); });
+      if (et === 'aventure') synchroniserAventure();
+      return;
+    }
     var nouveau = O.bootNouveau();
     /* l'ancienne boucle ne remet pas le compteur d'événements par pas à zéro : on le fait à sa place */
     if (!nouveau && N.ev && N.ev.nouveauPas) N.ev.nouveauPas();
@@ -416,7 +469,7 @@ N.game = (function () {
     if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
     if (et === 'titre') {
       N.ui.update(dt); etT += dt;
-      var b = N.ui.sortie(); if (b && b.action === 'jouer') lancer(false);
+      var b = N.ui.sortie(); if (b && b.action === 'jouer') commencerAventure();
       return;
     }
     if (hsCd > 0) hsCd -= dt;
@@ -429,10 +482,9 @@ N.game = (function () {
       pas(dt);
       if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
       else if (et === 'alerte' && etT >= CFG.alerte) {
-        film('reveil', function () {
-          var tr = N.intro && N.intro.transition ? !!O.safe('intro.transition', function () { return N.intro.transition('boss'); }) : false;
-          if (tr) { suiteFilm = lancerBoss; aller('panneau'); } else lancerBoss();
-        }, { nom: 'LE CYCLOPE' });
+        /* N.intro enchaîne déjà réveil → boss (même quand réveil est sauté).
+           Relancer boss ici montrait deux fois l'annonce dans la même partie. */
+        film('reveil', lancerBoss, { nom: 'LE CYCLOPE' });
       } else if (et === 'reapparition' && N.joueuse.etat === 'vivant') aller(etatJeu === 'reapparition' ? 'jeu' : etatJeu);
       if (N.dir.bossMort && N.dir.bossMort() && (et === 'boss' || et === 'jeu')) debutVictoire();
     } else if (et === 'plongee') {
@@ -459,13 +511,13 @@ N.game = (function () {
     } else if (et === 'victoire') {
       O.T.ak += dt; O.T.t += dt;
       N.ennemis.update(dt); N.butin.update(dt); O.fxUpdate(dt); majHud(dt);
-      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) film('apotheose', function () { terminer(true); });
+      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) film('apotheose', finirVoyage);
     } else if (et === 'fin') {
       O.T.ak += dt;
       N.ui.update(dt);
       var f = N.ui.sortie();
       if (f && f.action === 'continuer') continuer();
-      else if (f && f.action === 'rejouer') lancer(true);
+      else if (f && f.action === 'rejouer') { if (voyageFini) aller('titre'); else lancer(true); }
     } else if (et === 'pause') {
       N.ui.update(dt);
       var p = N.ui.sortie(); if (p && p.action === 'reprendre') basculerPause();
@@ -591,6 +643,7 @@ N.game = (function () {
   function draw() {
     var s = S_();
     if (!s) return;
+    if (et === 'aventure') { O.origine(0, 0); appel('aventure.draw', function () { N.aventure.draw(); }); return; }
     O.geom();
     if (fondEcran() || et === 'titre') return;
     if (et === 'vol' && N.vol && N.vol.actif && N.vol.actif()) return;                 // le VOL dessine à la place (§ 7.7)

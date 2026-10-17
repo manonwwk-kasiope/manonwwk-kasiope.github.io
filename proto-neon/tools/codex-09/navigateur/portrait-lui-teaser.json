@@ -1,0 +1,605 @@
+{
+  "etat": {
+    "jeu": "aventure",
+    "etape": "teaser",
+    "film": {
+      "actif": true,
+      "nom": "teaser-3019",
+      "t": 0.36,
+      "duree": 5.5,
+      "legende": "",
+      "typed": 0,
+      "clip": false,
+      "video": false,
+      "videoVue": false,
+      "panneau": true,
+      "repli": false,
+      "saute": false,
+      "carte": "SNAKE 3019",
+      "n": 17,
+      "journal": [
+        {
+          "e": "film teaser-3019 panneau",
+          "t": 0
+        }
+      ]
+    },
+    "intro": {
+      "mode": null,
+      "etape": null,
+      "t": 0.366666666666667,
+      "u": 0.366666666666667,
+      "guard": false,
+      "armed": true,
+      "typed": 0,
+      "busy": false,
+      "phase": "play"
+    },
+    "aventure": {
+      "enCours": true,
+      "actif": true,
+      "etape": "teaser",
+      "type": "film",
+      "i": 17,
+      "qui": "lui",
+      "deux": true,
+      "cible": null,
+      "t": 23.83,
+      "vus": [
+        "connexion",
+        "fissure",
+        "eclat",
+        "profondeur",
+        "warp",
+        "espace",
+        "fin",
+        "retrouvailles",
+        "teaser"
+      ],
+      "joues": [
+        "connexion-lui",
+        "fissure-lui",
+        "neon-lui",
+        "profondeur-lui",
+        "warp-lui",
+        "espace-lui",
+        "fin-lui",
+        "retrouvailles",
+        "teaser-3019"
+      ],
+      "film": {
+        "actif": true,
+        "nom": "teaser-3019",
+        "t": 0.36,
+        "duree": 5.5,
+        "legende": "",
+        "typed": 0,
+        "clip": false,
+        "video": false,
+        "videoVue": false,
+        "panneau": true,
+        "repli": false,
+        "saute": false,
+        "carte": "SNAKE 3019",
+        "n": 17,
+        "journal": [
+          {
+            "e": "film teaser-3019 panneau",
+            "t": 0
+          }
+        ]
+      },
+      "journal": [
+        {
+          "e": "début",
+          "t": 0
+        },
+        {
+          "e": "choix",
+          "t": 0
+        },
+        {
+          "e": "choisi lui",
+          "t": 1.12
+        },
+        {
+          "e": "film connexion connexion-lui",
+          "t": 1.12
+        },
+        {
+          "e": "époque 1976",
+          "t": 1.48
+        },
+        {
+          "e": "film fissure fissure-lui",
+          "t": 10.67
+        },
+        {
+          "e": "époque 1982",
+          "t": 11.02
+        },
+        {
+          "e": "film eclat neon-lui",
+          "t": 21.31
+        },
+        {
+          "e": "jeu neon",
+          "t": 21.65
+        },
+        {
+          "e": "reprendre fin",
+          "t": 21.65
+        },
+        {
+          "e": "film profondeur profondeur-lui",
+          "t": 21.65
+        },
+        {
+          "e": "film warp warp-lui",
+          "t": 22.01
+        },
+        {
+          "e": "film espace espace-lui",
+          "t": 22.37
+        },
+        {
+          "e": "film fin fin-lui",
+          "t": 22.74
+        },
+        {
+          "e": "fini lui — les deux",
+          "t": 23.11
+        },
+        {
+          "e": "film retrouvailles retrouvailles",
+          "t": 23.11
+        },
+        {
+          "e": "film teaser teaser-3019",
+          "t": 23.47
+        }
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  },
+  "W": 195,
+  "H": 422,
+  "px": 2,
+  "pixels": 82290,
+  "histogramme": {
+    "0": 41730,
+    "1": 5128,
+    "2": 3763,
+    "3": 1464,
+    "4": 2398,
+    "5": 1288,
+    "6": 462,
+    "7": 67,
+    "8": 18,
+    "9": 10,
+    "11": 4,
+    "12": 9,
+    "13": 177,
+    "14": 1759,
+    "15": 24013
+  },
+  "empreinte": 1107564176,
+  "difference": null,
+  "musique": {
+    "bar": 12,
+    "step": 2,
+    "bpm": 143.759,
+    "tension": 0.060652103559870545,
+    "key": 0,
+    "over": true,
+    "layers": 2,
+    "perc": false,
+    "spark": false,
+    "inv": false,
+    "heart": false,
+    "grid": 1,
+    "fill": "none",
+    "brk": "none",
+    "muffle": 0,
+    "gate": 1,
+    "section": "victoire",
+    "mode": "on",
+    "state": "running",
+    "muted": false,
+    "sleeping": false,
+    "running": true
+  },
+  "terminal": {
+    "phase": "fini",
+    "t": 9.18,
+    "menace": 5,
+    "manges": 0,
+    "morts": 2,
+    "score": 0,
+    "len": 0,
+    "dir": 0,
+    "tete": null,
+    "food": [
+      10,
+      23
+    ],
+    "cols": 14,
+    "rows": 30,
+    "cell": 13,
+    "tempo": 128,
+    "audio": true,
+    "journal": [
+      {
+        "e": "message > RUN SNAKE.BAS",
+        "t": 0
+      },
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "jeu",
+        "t": 1.61
+      },
+      {
+        "e": "mort 1",
+        "t": 3.08
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 3.08
+      },
+      {
+        "e": "mort 2",
+        "t": 5.47
+      },
+      {
+        "e": "message NON. PAS ENCORE.",
+        "t": 5.47
+      },
+      {
+        "e": "message LA GRILLE NE TIENT PLUS",
+        "t": 6.38
+      },
+      {
+        "e": "fissure morts",
+        "t": 6.38
+      },
+      {
+        "e": "fin",
+        "t": 9.18
+      }
+    ]
+  },
+  "arcade": {
+    "phase": "fini",
+    "t": 10.29,
+    "pt": 3.61,
+    "vt": 1.86,
+    "section": 0,
+    "tempo": 132,
+    "score": 360,
+    "morts": 2,
+    "nseg": 6,
+    "tete": [
+      92.25000000000044,
+      164.1
+    ],
+    "cap": 0,
+    "vitesse": 46,
+    "invul": true,
+    "arene": {
+      "x0": 3,
+      "y0": 12,
+      "x1": 94,
+      "y1": 207
+    },
+    "K": 2,
+    "food": null,
+    "dore": null,
+    "frenesie": false,
+    "soucoupe": null,
+    "sens": 1,
+    "formation": {
+      "n": 0,
+      "boite": null
+    },
+    "fleches": [],
+    "bombes": [],
+    "compte": {
+      "tues": 0,
+      "mange": 0,
+      "coupes": 0,
+      "grosses": 0,
+      "tirs": 4,
+      "formations": 1
+    },
+    "nouveautes": [],
+    "premiereExplosion": -1,
+    "audio": true,
+    "musique": {
+      "section": 0,
+      "pas": 6,
+      "notes": {
+        "pulse": 34,
+        "tri": 7,
+        "bruit": 27
+      }
+    },
+    "journal": [
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "message 1982",
+        "t": 0.4
+      },
+      {
+        "e": "formation 1 (6x3)",
+        "t": 0.91
+      },
+      {
+        "e": "message JOUEUR 1  PRÊT",
+        "t": 1.51
+      },
+      {
+        "e": "jeu",
+        "t": 2.01
+      },
+      {
+        "e": "mort 1 mur",
+        "t": 2.49
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 2.49
+      },
+      {
+        "e": "message CONTINUE",
+        "t": 3.9
+      },
+      {
+        "e": "mort 2 mur",
+        "t": 5.28
+      },
+      {
+        "e": "message PAS ENCORE.",
+        "t": 5.28
+      },
+      {
+        "e": "passage morts",
+        "t": 6.68
+      },
+      {
+        "e": "fin",
+        "t": 10.29
+      }
+    ]
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0,
+      "image": 31,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 123,
+      "t": 0,
+      "image": 63,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1371,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1371,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "plongee"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1371,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1419,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1419,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.8083333333333329,
+        "x": 30,
+        "y": 56,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 123,
+      "t": 1.0249999999999988,
+      "image": 1433,
+      "type": "section",
+      "d": {
+        "nom": "victoire"
+      }
+    },
+    {
+      "pas": 433,
+      "t": 3.2333333333333245,
+      "image": 1589,
+      "type": "etat",
+      "d": {
+        "de": "panneau",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 652,
+      "t": 5.058333333333374,
+      "image": 1704,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "fin"
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.058333333333374,
+      "image": 1737,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 778,
+      "t": 5.058333333333374,
+      "image": 1769,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 3077,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 3077,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "plongee"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 3077,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 3125,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 3125,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.8083333333333329,
+        "x": 30,
+        "y": 56,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 123,
+      "t": 1.0249999999999988,
+      "image": 3139,
+      "type": "section",
+      "d": {
+        "nom": "victoire"
+      }
+    },
+    {
+      "pas": 433,
+      "t": 3.2333333333333245,
+      "image": 3295,
+      "type": "etat",
+      "d": {
+        "de": "panneau",
+        "a": "aventure"
+      }
+    }
+  ]
+}

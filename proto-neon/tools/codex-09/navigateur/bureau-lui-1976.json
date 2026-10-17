@@ -1,0 +1,427 @@
+{
+  "etat": {
+    "jeu": "aventure",
+    "etape": "1976",
+    "film": {
+      "actif": false,
+      "nom": "connexion-lui",
+      "t": 0.37,
+      "duree": 4.5,
+      "legende": "1976 — LE TERMINAL",
+      "typed": 0,
+      "clip": true,
+      "video": false,
+      "videoVue": false,
+      "panneau": true,
+      "repli": false,
+      "saute": true,
+      "carte": null,
+      "n": 9,
+      "journal": [
+        {
+          "e": "film connexion-lui clip",
+          "t": 0
+        },
+        {
+          "e": "saut connexion-lui",
+          "t": 0.37
+        }
+      ]
+    },
+    "intro": {
+      "mode": null,
+      "etape": null,
+      "t": 0.5333333333333339,
+      "u": 0.5333333333333339,
+      "guard": false,
+      "armed": true,
+      "typed": 0,
+      "busy": false,
+      "phase": "play"
+    },
+    "aventure": {
+      "enCours": true,
+      "actif": true,
+      "etape": "1976",
+      "type": "epoque",
+      "i": 2,
+      "qui": "lui",
+      "deux": false,
+      "cible": null,
+      "t": 2.01,
+      "vus": [
+        "connexion"
+      ],
+      "joues": [
+        "connexion-lui"
+      ],
+      "film": {
+        "actif": false,
+        "nom": "connexion-lui",
+        "t": 0.37,
+        "duree": 4.5,
+        "legende": "1976 — LE TERMINAL",
+        "typed": 0,
+        "clip": true,
+        "video": false,
+        "videoVue": false,
+        "panneau": true,
+        "repli": false,
+        "saute": true,
+        "carte": null,
+        "n": 9,
+        "journal": [
+          {
+            "e": "film connexion-lui clip",
+            "t": 0
+          },
+          {
+            "e": "saut connexion-lui",
+            "t": 0.37
+          }
+        ]
+      },
+      "journal": [
+        {
+          "e": "début",
+          "t": 0
+        },
+        {
+          "e": "choix",
+          "t": 0
+        },
+        {
+          "e": "choisi lui",
+          "t": 1.12
+        },
+        {
+          "e": "film connexion connexion-lui",
+          "t": 1.12
+        },
+        {
+          "e": "époque 1976",
+          "t": 1.48
+        }
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  },
+  "W": 360,
+  "H": 225,
+  "px": 4,
+  "pixels": 81000,
+  "histogramme": {
+    "0": 77611,
+    "1": 55,
+    "7": 3334
+  },
+  "empreinte": 1913222596,
+  "difference": 0,
+  "musique": {
+    "bar": 7,
+    "step": 3,
+    "bpm": 143.759,
+    "tension": 0.060652103559870545,
+    "key": 0,
+    "over": true,
+    "layers": 2,
+    "perc": false,
+    "spark": false,
+    "inv": false,
+    "heart": false,
+    "grid": 5,
+    "fill": "snare",
+    "brk": "none",
+    "muffle": 0,
+    "gate": 1,
+    "section": "titre",
+    "mode": "off",
+    "state": "running",
+    "muted": false,
+    "sleeping": false,
+    "running": false
+  },
+  "terminal": {
+    "phase": "boot",
+    "t": 0.53,
+    "menace": 0,
+    "manges": 0,
+    "morts": 0,
+    "score": 0,
+    "len": 4,
+    "dir": 0,
+    "tete": [
+      7,
+      6
+    ],
+    "food": [
+      1,
+      6
+    ],
+    "cols": 22,
+    "rows": 12,
+    "cell": 16,
+    "tempo": 92,
+    "audio": true,
+    "journal": [
+      {
+        "e": "message > RUN SNAKE.BAS",
+        "t": 0
+      },
+      {
+        "e": "debut",
+        "t": 0
+      }
+    ]
+  },
+  "arcade": {
+    "phase": "fini",
+    "t": 12.68,
+    "pt": 3.61,
+    "vt": 4.25,
+    "section": 0,
+    "tempo": 132,
+    "score": 320,
+    "morts": 2,
+    "nseg": 6,
+    "tete": [
+      2.8713667752379255,
+      33.1941822173698
+    ],
+    "cap": -2.5266576896221102,
+    "vitesse": 46,
+    "invul": false,
+    "arene": {
+      "x0": 2,
+      "y0": 13,
+      "x1": 178,
+      "y1": 109
+    },
+    "K": 2,
+    "food": null,
+    "dore": null,
+    "frenesie": false,
+    "soucoupe": null,
+    "sens": -1,
+    "formation": {
+      "n": 0,
+      "boite": null
+    },
+    "fleches": [],
+    "bombes": [],
+    "compte": {
+      "tues": 2,
+      "mange": 0,
+      "coupes": 0,
+      "grosses": 0,
+      "tirs": 9,
+      "formations": 1
+    },
+    "nouveautes": [],
+    "premiereExplosion": -1,
+    "audio": true,
+    "musique": {
+      "section": 0,
+      "pas": 4,
+      "notes": {
+        "pulse": 39,
+        "tri": 6,
+        "bruit": 25
+      }
+    },
+    "journal": [
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "message 1982",
+        "t": 0.4
+      },
+      {
+        "e": "formation 1 (8x2)",
+        "t": 0.91
+      },
+      {
+        "e": "message JOUEUR 1  PRÊT",
+        "t": 1.51
+      },
+      {
+        "e": "jeu",
+        "t": 2.01
+      },
+      {
+        "e": "mort 1 mur",
+        "t": 4.35
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 4.35
+      },
+      {
+        "e": "message CONTINUE",
+        "t": 5.76
+      },
+      {
+        "e": "mort 2 mur",
+        "t": 7.67
+      },
+      {
+        "e": "message PAS ENCORE.",
+        "t": 7.67
+      },
+      {
+        "e": "passage morts",
+        "t": 9.08
+      },
+      {
+        "e": "fin",
+        "t": 12.68
+      }
+    ]
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0,
+      "image": 31,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 123,
+      "t": 0,
+      "image": 63,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1632,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1632,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "plongee"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1632,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1680,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1680,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.8083333333333329,
+        "x": 92,
+        "y": 132,
+        "w": 176,
+        "h": 87,
+        "echelle": 4,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 123,
+      "t": 1.0249999999999988,
+      "image": 1694,
+      "type": "section",
+      "d": {
+        "nom": "victoire"
+      }
+    },
+    {
+      "pas": 433,
+      "t": 3.2333333333333245,
+      "image": 1850,
+      "type": "etat",
+      "d": {
+        "de": "panneau",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 652,
+      "t": 5.058333333333374,
+      "image": 1965,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "fin"
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.058333333333374,
+      "image": 1998,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 778,
+      "t": 5.058333333333374,
+      "image": 2030,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    }
+  ]
+}

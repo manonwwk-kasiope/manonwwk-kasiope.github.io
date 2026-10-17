@@ -1,0 +1,438 @@
+{
+  "etat": {
+    "jeu": "jeu",
+    "etape": "neon",
+    "film": {
+      "actif": false,
+      "nom": "neon-elle",
+      "t": 0.35,
+      "duree": 4.5,
+      "legende": "1987 — LE NÉON",
+      "typed": 0,
+      "clip": false,
+      "video": false,
+      "videoVue": false,
+      "panneau": true,
+      "repli": false,
+      "saute": true,
+      "carte": null,
+      "n": 3,
+      "journal": [
+        {
+          "e": "film neon-elle panneau",
+          "t": 0
+        },
+        {
+          "e": "saut neon-elle",
+          "t": 0.35
+        }
+      ]
+    },
+    "intro": {
+      "mode": null,
+      "etape": null,
+      "t": 0,
+      "u": 0,
+      "guard": true,
+      "armed": false,
+      "typed": 0,
+      "busy": false,
+      "phase": "play"
+    },
+    "aventure": {
+      "enCours": true,
+      "actif": false,
+      "etape": "neon",
+      "type": "jeu",
+      "i": 6,
+      "qui": "elle",
+      "deux": false,
+      "cible": null,
+      "t": 29.68,
+      "vus": [
+        "connexion",
+        "fissure",
+        "eclat"
+      ],
+      "joues": [
+        "connexion-elle",
+        "fissure-elle",
+        "neon-elle"
+      ],
+      "film": {
+        "actif": false,
+        "nom": "neon-elle",
+        "t": 0.35,
+        "duree": 4.5,
+        "legende": "1987 — LE NÉON",
+        "typed": 0,
+        "clip": false,
+        "video": false,
+        "videoVue": false,
+        "panneau": true,
+        "repli": false,
+        "saute": true,
+        "carte": null,
+        "n": 3,
+        "journal": [
+          {
+            "e": "film neon-elle panneau",
+            "t": 0
+          },
+          {
+            "e": "saut neon-elle",
+            "t": 0.35
+          }
+        ]
+      },
+      "journal": [
+        {
+          "e": "début",
+          "t": 0
+        },
+        {
+          "e": "choix",
+          "t": 0
+        },
+        {
+          "e": "choisi elle",
+          "t": 1.12
+        },
+        {
+          "e": "film connexion connexion-elle",
+          "t": 1.12
+        },
+        {
+          "e": "époque 1976",
+          "t": 1.48
+        },
+        {
+          "e": "film fissure fissure-elle",
+          "t": 14.9
+        },
+        {
+          "e": "époque 1982",
+          "t": 15.25
+        },
+        {
+          "e": "film eclat neon-elle",
+          "t": 29.33
+        },
+        {
+          "e": "jeu neon",
+          "t": 29.68
+        }
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  },
+  "W": 422,
+  "H": 195,
+  "px": 2,
+  "pixels": 82290,
+  "histogramme": {
+    "1": 35782,
+    "2": 6986,
+    "3": 3733,
+    "4": 2491,
+    "7": 261,
+    "8": 100,
+    "9": 93,
+    "10": 1879,
+    "11": 435,
+    "12": 441,
+    "13": 8900,
+    "14": 6536,
+    "15": 14653
+  },
+  "empreinte": 3583470328,
+  "difference": null,
+  "musique": {
+    "bar": 4,
+    "step": 7,
+    "bpm": 143.759,
+    "tension": 0.12,
+    "key": 0,
+    "over": false,
+    "layers": 3,
+    "perc": false,
+    "spark": false,
+    "inv": false,
+    "heart": false,
+    "grid": 4,
+    "fill": "none",
+    "brk": "none",
+    "muffle": 0,
+    "gate": 1,
+    "section": "jeu",
+    "mode": "on",
+    "state": "running",
+    "muted": false,
+    "sleeping": false,
+    "running": true
+  },
+  "terminal": {
+    "phase": "fini",
+    "t": 13.42,
+    "menace": 5,
+    "manges": 0,
+    "morts": 2,
+    "score": 0,
+    "len": 0,
+    "dir": 0,
+    "tete": null,
+    "food": [
+      1,
+      6
+    ],
+    "cols": 32,
+    "rows": 13,
+    "cell": 13,
+    "tempo": 128,
+    "audio": true,
+    "journal": [
+      {
+        "e": "message > RUN SNAKE.BAS",
+        "t": 0
+      },
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "jeu",
+        "t": 1.61
+      },
+      {
+        "e": "mort 1",
+        "t": 5.2
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 5.2
+      },
+      {
+        "e": "mort 2",
+        "t": 9.7
+      },
+      {
+        "e": "message NON. PAS ENCORE.",
+        "t": 9.7
+      },
+      {
+        "e": "message LA GRILLE NE TIENT PLUS",
+        "t": 10.61
+      },
+      {
+        "e": "fissure morts",
+        "t": 10.61
+      },
+      {
+        "e": "fin",
+        "t": 13.42
+      }
+    ]
+  },
+  "arcade": {
+    "phase": "fini",
+    "t": 14.08,
+    "pt": 3.61,
+    "vt": 5.65,
+    "section": 0,
+    "tempo": 132,
+    "score": 320,
+    "morts": 2,
+    "nseg": 6,
+    "tete": [
+      208.11666666666616,
+      76.3
+    ],
+    "cap": 0,
+    "vitesse": 46,
+    "invul": false,
+    "arene": {
+      "x0": 1,
+      "y0": 10,
+      "x1": 210,
+      "y1": 95
+    },
+    "K": 2,
+    "food": null,
+    "dore": null,
+    "frenesie": false,
+    "soucoupe": null,
+    "sens": 1,
+    "formation": {
+      "n": 0,
+      "boite": null
+    },
+    "fleches": [],
+    "bombes": [],
+    "compte": {
+      "tues": 0,
+      "mange": 0,
+      "coupes": 0,
+      "grosses": 0,
+      "tirs": 12,
+      "formations": 1
+    },
+    "nouveautes": [],
+    "premiereExplosion": -1,
+    "audio": true,
+    "musique": {
+      "section": 0,
+      "pas": 10,
+      "notes": {
+        "pulse": 46,
+        "tri": 10,
+        "bruit": 27
+      }
+    },
+    "journal": [
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "message 1982",
+        "t": 0.4
+      },
+      {
+        "e": "formation 1 (8x2)",
+        "t": 0.91
+      },
+      {
+        "e": "message JOUEUR 1  PRÊT",
+        "t": 1.51
+      },
+      {
+        "e": "jeu",
+        "t": 2.01
+      },
+      {
+        "e": "mort 1 mur",
+        "t": 4.29
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 4.29
+      },
+      {
+        "e": "message CONTINUE",
+        "t": 5.7
+      },
+      {
+        "e": "mort 2 mur",
+        "t": 9.07
+      },
+      {
+        "e": "message PAS ENCORE.",
+        "t": 9.07
+      },
+      {
+        "e": "passage morts",
+        "t": 10.48
+      },
+      {
+        "e": "fin",
+        "t": 14.08
+      }
+    ]
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0,
+      "image": 31,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 123,
+      "t": 0,
+      "image": 63,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1853,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1853,
+      "type": "etat",
+      "d": {
+        "de": "aventure",
+        "a": "plongee"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 1853,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1901,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 97,
+      "t": 0.8083333333333329,
+      "image": 1901,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.8083333333333329,
+        "x": 144,
+        "y": 120,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    }
+  ]
+}
