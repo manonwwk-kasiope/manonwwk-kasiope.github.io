@@ -88,7 +88,6 @@ NOTE CODEX : qualification 02 après I terminée : 80/80 fin, zéro erreur, huit
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1) | 18/10 à 00 h 25 | cartes sans effet et passifs manquants |
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `tools/mesure/` | Codex (session parallèle codex-p3) | 18/10 à 00 h 33 | instrument R-01 à R-38 |
-| `src/78-warp.js`, `tools/warp/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le WARP et le curseur cible (vision § 2), module autonome |
 | `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
 | `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
 | `src/64-aventure.js`, `tools/aventure/` (nouveaux) | Claude cloud | 18/10 à 01 h 05 | N.aventure (le déroulé : choix, connexion, 1976, fissure, 1982, néon, films d'époque, fins, retrouvailles, teaser) et N.film (lecteur de film plein écran) |
@@ -126,6 +125,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 ## Livré par la session cloud (à brancher)
 
+- `src/78-warp.js` — le WARP et le curseur cible : voir `refonte/lots/demandes.md`, « brancher le WARP ».
 - `src/68-terminal.js` — l'époque 1976 (le snake « bidon » troublant, sa musique, la fissure) : voir
   `refonte/lots/demandes.md`, « brancher l'époque 1976 ». Réservation libérée.
 

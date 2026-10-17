@@ -90,3 +90,16 @@ Livré : `N.terminal`, l'époque 1976 (refonte/VISION-PROGRESSION.md § 1), auto
    qui saute à la fissure — on ne saute jamais la fissure elle-même : c'est la révélation).
 Mesuré : partie complète au pilote en 21 s (6 cellules, une mort qui garde la menace, fissure), zéro erreur ;
 deux couleurs (vide, cyan) jusqu'à la menace 2, les autres n'apparaissent que comme menaces voulues.
+
+## Demande du cloud (18 octobre, 01 h 20) — brancher le WARP (`src/78-warp.js`)
+Livré : `N.warp` (vision § 2), autonome, essayé par `tools/warp/` (banc : facteur effectif 0,152 au creux du warp,
+14 verrous en 4 warps, bombe 17 tués, laser 7, missile 1, mine 1 ; trois profils, zéro erreur). Branchement :
+1. à chaque image, avant le monde : `N.warp.update(dtRéel)`, puis `dt × N.warp.facteur()` pour `N.game.update`,
+   `N.fx.update` et la caméra ; l'interface et la musique gardent le dt réel (pris avant le gel de frappe) ;
+2. `N.warp.draw('monde')` après `N.game.draw` (avant `N.fx.draw`), `N.warp.draw('dessus')` après `N.game.drawTop` ;
+3. `N.warp.declencher('jauge' | 'pickup' | 'escadrille')` au moment choisi (l'annonce d'escadrille 1 s avant
+   revient au directeur) ;
+4. tant que `N.warp.capte()`, 70-joueuse ignore boost, pouvoir et APOGÉE (sinon le second doigt les déclenche aussi) ;
+5. `N.warp.reset()` à chaque partie et à chaque vague forcée ; 6. musique en demi-temps pendant `N.warp.actif()` ;
+7. dans 90-boot : publier `S.input.action = { actif, x, y }` (le second doigt), pour guider la lunette au doigt.
+Dépend de l'horloge à pas fixe (codex-05) pour un vrai ralenti du monde.
