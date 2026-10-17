@@ -49,7 +49,7 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
 Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
 diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un pilote.
 
-## Où en est chaque porte (mis à jour le 18/10/2026 à 02 h 20)
+## Où en est chaque porte (mis à jour le 18/10/2026 à 01 h 38)
 
 | porte | état | preuve |
 |---|---|---|
@@ -58,7 +58,7 @@ diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un p
 | 3. Lisibilité | **fermée sur 01b** : codex-01, 01b, 03 acceptés ; codex-01c (ambiance) non retenu, plancher 12 % manqué sur 2 scènes sur 3 ; le soleil plein reste une piste si le jury note l'image sous 8 | `mediation/2026-10-18-codex-01c.md` |
 | 4. Performance | R-20 : 2 échecs à diagnostiquer (codex-p3c) | batterie |
 | 5. Jury | kit prêt (`tools/jury/partie.mjs`) ; après réglage et ambiance | — |
-| 6. Publication | version du 17/10 en ligne ; l'aventure (choix, 1976, 1982, films, fins) se branche dans le vrai jeu : codex-09, lancé à 02 h 18 | — |
+| 6. Publication | version du 17/10 en ligne ; l'aventure (choix, 1976, 1982, films, fins) se branche dans le vrai jeu : codex-09, lancé à 01 h 37 | — |
 | 7. JALON | à demander sur la version candidate | — |
 
 Intégré depuis le début de la nuit : pilotes (codex-02, lot I), API de test (p6), instrument réparé (p3, p3b),
