@@ -15,7 +15,7 @@ se faire). Le jour où le lot qui possède l'interface la livre, la mesure se fa
 
 ```
 node tools/mesure/lancer.mjs                         # les 38 critères, aux valeurs du plan (long : 1 h et plus)
-node tools/mesure/lancer.mjs --rapide --parallele 3  # graines et durées réduites, environ 15 min
+node tools/mesure/lancer.mjs --rapide --parallele 3  # graines et durées réduites, environ 6 min
 node tools/mesure/criteres/R-02-palette.mjs          # un seul critère
 node tools/mesure/lancer.mjs --seulement R-01,R-02,R-03,R-21 --rapide   # la part des critères du banc de non-régression
 node tools/mesure/criteres/R-09-tete-visible.mjs --url http://127.0.0.1:8112/proto-neon/tools/L1/index.html

@@ -6,6 +6,16 @@ fait la différence : l'écran-titre, les cinématiques, le jeu, le boss et les 
 enchaîne les morceaux en fondu sur le temps fort et module leur filtre avec la tension. Sans morceau
 Suno, le moteur génératif joue seul et rien ne casse.
 
+## Mise à jour du 17 octobre au soir — à lire en premier
+
+Le jeu est maintenant construit autour de **ton morceau « Neon Velocity »** (`snake2030/neonvelocity-2.mp3`),
+mesuré à **115 BPM, en ré mineur**, et découpé en blocs de 8 mesures qui s'enchaînent selon l'action
+(`proto-neon/musique/`). Pour que les nouveaux morceaux Suno puissent s'enchaîner avec lui dans le même
+séquenceur, **ajoute à chaque style : `115 bpm, D minor`** (au lieu des tempos indiqués plus bas, sauf
+pour `victoire` et `defaite`, libres). Dépose les MP3 dans `proto-neon/musique/brut/` sur la branche
+`claude/snake-game-mobile-17dqpi` (fais `git pull --rebase` avant de pousser : la session cloud pousse
+souvent). La session cloud les récupère, les découpe et les branche.
+
 ## Ce qu'il faut faire, depuis le téléphone
 
 1. Dans Suno, mode **Custom**, interrupteur **Instrumental** activé, un morceau par ligne du tableau.

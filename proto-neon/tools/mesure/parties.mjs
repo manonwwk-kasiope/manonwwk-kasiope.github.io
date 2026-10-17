@@ -43,7 +43,7 @@ export async function partie(banc, o, sessionPartagee = null) {
   const s = sessionPartagee || await banc.ouvrir(o.profil || 'paysage', { dt: 1 / 60, graine: o.graine, nodraw: true, query: { nodraw: '1' }, garderStockage: o.garderStockage, reducedMotion: o.reducedMotion });
   try {
     const abs = await absentsPartie(s, o);
-    if (abs.length) return { ok: false, raison: 'interface ' + abs.join(', ') + ' absente', absents: abs };
+    if (abs.length) return { ok: false, raison: (abs.length > 1 ? 'interfaces ' : 'interface ') + abs.join(', ') + (abs.length > 1 ? ' absentes' : ' absente'), absents: abs };
     const r = await jouerDans(s, o);
     r.erreurs = await s.bilanErreurs();
     r.params = { ...o, empreinte: banc.empreinte };
@@ -73,7 +73,7 @@ export async function enchainees(banc, pilote, n, o = {}) {
   const out = [];
   try {
     const abs = await absentsPartie(s, o);
-    if (abs.length) return [{ ok: false, raison: 'interface ' + abs.join(', ') + ' absente', absents: abs }];
+    if (abs.length) return [{ ok: false, raison: (abs.length > 1 ? 'interfaces ' : 'interface ') + abs.join(', ') + (abs.length > 1 ? ' absentes' : ' absente'), absents: abs }];
     await s.eval(() => { try { localStorage.clear(); } catch (e) { } });
     for (let i = 1; i <= n; i++) {
       const r = await jouerDans(s, { ...o, pilote, graine: i });

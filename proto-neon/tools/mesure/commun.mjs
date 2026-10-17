@@ -226,7 +226,7 @@ export class Session {
   /* démarre une partie (§ 4.10 : reset(graine) puis départ direct en plongee) */
   async demarrer(o = {}) {
     const abs = await this.absents(['N.game.reset', 'N.game.etat'].concat(o.pilote ? ['N.pilote.niveau', 'N.pilote.activer'] : []).concat(o.god ? ['N.game.dbg.god'] : []));
-    if (abs.length) return { ok: false, raison: 'interface ' + abs.join(', ') + ' absente' };
+    if (abs.length) return { ok: false, raison: (abs.length > 1 ? 'interfaces ' : 'interface ') + abs.join(', ') + (abs.length > 1 ? ' absentes' : ' absente') };
     const r = await this.page.evaluate(x => { try { return window.__MESURE.demarrer(x); } catch (e) { return { ok: false, raison: String(e && e.message || e) }; } }, o);
     if (!r.ok && !r.raison) {
       /* en mode dessiné : quelques touchers simulés pour passer les écrans */

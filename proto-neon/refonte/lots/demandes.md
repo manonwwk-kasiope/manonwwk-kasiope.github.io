@@ -37,3 +37,9 @@ On ne modifie jamais le fichier d'un autre lot.
 | D | `70-joueuse.js` | ne pas tuer au contact un ennemi dont `etat === 'proie'` (INVERSION) ni un `planeur` ; seul 72-ennemis les dévore avant le contact (rayon 3 + r + 4 contre 3 + 0,8 r) | sans cela la dévoration ne tient que parce que 72-ennemis passe après la joueuse dans le pas de jeu |
 | D | `79-jeu.js` | tenir `N.dir.lancerBoss()` pour seul démarreur du combat (il appelle `N.arene.nettoyee()` puis `N.colosse.start()`) ; ne plus appeler le cyclope de repli | le repli du cyclope est retiré de 72-ennemis |
 | D | `79-jeu.js` | poser `O.origineMonde()` avant `N.ennemis.draw()` dans `draw()` (72-ennemis le fait lui-même en attendant) | l'origine de dessin n'est posée nulle part avant les ennemis dans la passe actuelle |
+
+## Demande du pilote (17 octobre, soir) — tempo réel de la piste
+Mesuré par la préparation musicale (tools/musique/LISEZMOI.md) : la piste de la propriétaire est à
+**114,995 BPM** (mesure de 2,08705 s), pas 144,6. 02-regles.js (BPM et table musique), l'horloge du
+CONTRAT et les numéros de mesures des sections (alerte à la mesure 56, boucle du boss 107-122) sont à
+corriger à l'intégration A, avant tout réglage.
