@@ -23,6 +23,9 @@ N.arsenal = (function () {
     tcd: [], arcT: 0.5, misT: 1.0, minT: 1.5, dcd: [], dpen: [], rayonT: 0, rayonOn: false, salveSon: 0, ang: 0, nT: 0 };
   var SRC = { genre: 'arme', type: 'canon', id: -1 };
   var arcs = [], missiles = [], mines = [];
+  // Ces collections appartiennent à l'arsenal ; aucun champ privé des autres modules n'est lu.
+  var grappes = [], sourcesGrappe = new WeakMap(), braises = [], braiseQueue = null;
+  var grappeSaturee = 0;
   var BX0 = 0, BY0 = 0, BX1 = 0, BY1 = 0;       // le rayon (extrémités), pour le dessin
 
   function reset() {
@@ -31,6 +34,8 @@ N.arsenal = (function () {
     st.niv.tourelles = 0; st.niv.arc = 0; st.niv.missiles = 0; st.niv.drones = 0; st.niv.minesQ = 0;
     st.tcd.length = 0; st.dcd.length = 0; st.dpen.length = 0; st.arcT = 0.5; st.misT = 1.0; st.minT = 1.5; st.rayonT = 0; st.rayonOn = false; st.salveSon = 0; st.nT = 0;
     DR.length = 0;
+    grappes.length = 0; sourcesGrappe = new WeakMap(); grappeSaturee = 0;
+    braises.length = 0; braiseQueue = null;
   }
   function conf(a) { return (R && R.armes && R.armes[a]) || {}; }
   function pal(a) { var p = conf(a).paliers || []; return p[Math.min(4, Math.max(1, st.niv[a] || 1)) - 1] || {}; }
@@ -332,6 +337,79 @@ N.arsenal = (function () {
     O.boom(m.x, m.y, 0.3, O.CYAN);
   }
 
+  /* ============================ les passifs de contact ============================ */
+  function actif(e) { return e && e.etat !== 'mort' && e.etat !== 'portail' && e.etat !== 'proie'; }
+  function onKillGrappe(c) {
+    var k = N.cartes && N.cartes.mods.grappe;
+    if (!k || c.boss || !c.src || c.src.genre === 'decor') return;
+    var gen = sourcesGrappe.get(c.src) || 0;
+    if (gen >= R.passifs.grappe.generations) return;
+    if (grappes.length >= R.passifs.effets.grappe.fileMax) { grappeSaturee++; return; }
+    var p = R.passifs.grappe.niveaux[k - 1];
+    var src = { genre: 'arme', type: 'grappe', id: c.id };
+    sourcesGrappe.set(src, gen + 1);
+    grappes.push({ x: c.x, y: c.y, r: p.rayon, dmg: p.degats, src: src, cibles: null, i: 0 });
+  }
+  function updGrappe() {
+    var E = N.ennemis, cf = R.passifs.effets.grappe, nb = 0, touches = 0;
+    if (!E) return;
+    // Pas de récursion ni de kill émis ici : seul E.hit décide et journalise la mort.
+    while (grappes.length && nb < cf.explosionsParPas && touches < cf.touchesParPas) {
+      var g = grappes[0];
+      if (!g.cibles) {
+        g.cibles = E.pres(g.x, g.y, g.r);
+        if (N.fx && N.fx.onde && N.fx.flashGate && N.fx.flashGate(Math.ceil(O.TAU * g.r * cf.ondeEpaisseur))) {
+          N.fx.onde(g.x, g.y, cf.ondeDepart, g.r, O.ROSE, cf.ondeDuree, { epaisseur: cf.ondeEpaisseur });
+        }
+      }
+      while (g.i < g.cibles.length && touches < cf.touchesParPas) {
+        var e = g.cibles[g.i++];
+        if (!actif(e) || O.d2(e.x, e.y, g.x, g.y) >= (g.r + e.r) * (g.r + e.r)) continue;
+        touches++; E.hit(e, g.dmg, g.src);
+      }
+      if (g.i < g.cibles.length) break;
+      grappes.shift(); nb++;
+    }
+  }
+
+  // À appeler depuis la collision de tête, AVANT tuer('ennemi') (demande codex-06).
+  // Le débit de réserve reste à la joueuse : ce module ne possède pas son réservoir.
+  function percuter(e) {
+    var J = N.joueuse, c = R.passifs.eperon;
+    if (!J || !J.boost || !N.cartes || !N.cartes.mods.eperon || !actif(e) || e.boss || e.pv > c.pvMax) return false;
+    if (J.reserve() < c.cout) return false;
+    var p = J.tete, r = R.joueuse.rayonTete + e.r * R.mort.ennemi.facteurRayon;
+    if (O.d2(p.x, p.y, e.x, e.y) >= r * r) return false;
+    return N.ennemis.hit(e, e.pv, { genre: 'arme', type: 'eperon', id: null });
+  }
+
+  function updBraise(dt) {
+    var k = N.cartes && N.cartes.mods.braise, J = N.joueuse, cf = R.passifs.effets.braise, i;
+    if (!k || !N.ennemis) { braises.length = 0; braiseQueue = null; return; }
+    for (i = braises.length - 1; i >= 0; i--) { braises[i].vie -= dt; if (braises[i].vie <= 0) braises.splice(i, 1); }
+    var q = J.segPos(J.len());
+    if (braiseQueue && O.d2(q.x, q.y, braiseQueue.x, braiseQueue.y) > cf.sautMax * cf.sautMax) braises.length = 0;
+    var vie = R.f.traine(J.len(), k);
+    if (!braiseQueue || O.d2(q.x, q.y, braiseQueue.x, braiseQueue.y) >= cf.pas * cf.pas || !braises.length) {
+      if (braises.length >= cf.pointsMax) braises.shift();
+      braises.push({ x: q.x, y: q.y, vie: vie }); braiseQueue = { x: q.x, y: q.y };
+    }
+    var L = N.ennemis.list;
+    for (i = 0; i < L.length; i++) {
+      var e = L[i]; if (!actif(e)) continue;
+      var r = e.r + cf.largeur;
+      for (var j = 0; j < braises.length; j++) {
+        var b = braises[j];
+        if (O.d2(e.x, e.y, b.x, b.y) < r * r) {
+          // Une fois par ennemi et par pas, même si plusieurs points se superposent.
+          // Source de contact de la joueuse existante ; type dédié « braise » demandé au gardien.
+          N.ennemis.hit(e, R.passifs.braise.dps * dt, { genre: 'joueuse', type: 'tete', id: null });
+          break;
+        }
+      }
+    }
+  }
+
   /* ============================ la mise à jour ============================ */
   function update(dt) {
     if (!S) S = N.S;
@@ -339,14 +417,16 @@ N.arsenal = (function () {
     var i, j, b, V = O.VUE, L = N.ennemis ? N.ennemis.list : [];
     if (st.salveSon > 0) st.salveSon -= dt;
     for (i = arcs.length - 1; i >= 0; i--) { arcs[i].t -= dt; if (arcs[i].t <= 0) arcs.splice(i, 1); }
+    updGrappe();
     if (vivant && P) {
+      updBraise(dt);
       updCanon(dt, P);
       if (st.niv.tourelles > 0) updTourelles(dt);
       if (st.niv.arc > 0) updArc(dt, P);
       if (st.niv.missiles > 0) updMissiles(dt, P);
       if (st.niv.drones > 0) updDrones(dt, P); else DR.length = 0;
       if (st.niv.minesQ > 0) updMines(dt);
-    } else { st.rayonOn = false; DR.length = 0; }
+    } else { st.rayonOn = false; DR.length = 0; braises.length = 0; braiseQueue = null; }
     /* les tirs avancent et touchent */
     for (i = tirs.length - 1; i >= 0; i--) {
       b = tirs[i];
@@ -403,6 +483,12 @@ N.arsenal = (function () {
     var f = Math.floor(O.T.ak * 12), g = N.gfx, i;
     if (!S) S = N.S;
     var J = N.joueuse;
+    // Braises stables, sans clignotement : seulement une ligne de pixels ambre tramés.
+    var cb = R.passifs.effets.braise;
+    for (i = 0; i < braises.length; i++) {
+      var br = braises[i], bx = Math.round(br.x), by = Math.round(br.y);
+      if (N.pal.dither(bx, by, cb.intensite)) g.px(bx, by, O.AMBRE);
+    }
     if (J && (J.etat === 'vivant' || J.etat === 'reapparition')) drawMontures();
     for (i = 0; i < mines.length; i++) {
       var m = mines[i], arme = m.t >= 0.4, bat = (Math.floor(O.T.ak * 4) & 1) === 1, x = Math.round(m.x), y = Math.round(m.y), cm = arme ? O.CYAN : O.INDIGO;
@@ -447,7 +533,10 @@ N.arsenal = (function () {
 
   /* ---- les consommateurs (rang 50) ---- */
   if (N.ev) {
-    N.ev.on('mort', 50, function () { st.chute = descendre(); }, '74-arsenal');
+    N.ev.on('kill', 50, onKillGrappe, '74-arsenal');
+    N.ev.on('mort', 50, function () {
+      st.chute = descendre(); grappes.length = 0; braises.length = 0; braiseQueue = null;
+    }, '74-arsenal');
     N.ev.on('carte', 50, function (c) {
       if (!c) return;
       if (c.id === 'canon') monter('canon');
@@ -458,7 +547,8 @@ N.arsenal = (function () {
 
   return {
     chute: function () { return st.chute; }, reset: reset, update: update, draw: draw, monter: monter, descendre: descendre, niveau: niveau, armes: armes,
-    tirs: tirs, surcharger: surcharger,
-    etat: function () { return { arcs: arcs.length, missiles: missiles.length, mines: mines.length, drones: DR.length / 2, tourelles: st.nT, rayon: st.rayonOn }; }
+    tirs: tirs, surcharger: surcharger, percuter: percuter,
+    etat: function () { return { arcs: arcs.length, missiles: missiles.length, mines: mines.length, drones: DR.length / 2, tourelles: st.nT, rayon: st.rayonOn,
+      grappes: grappes.length, grappeSaturee: grappeSaturee, braises: braises.length }; }
   };
 })();

@@ -1,0 +1,1077 @@
+{
+  "stage": "avant",
+  "revisionBase": "3da78d632aeb0a353565143b03ad3130db8758ab",
+  "mode": "Node VM sans navigateur ni DOM, modules réels, tampon réel",
+  "dateParis": "18/10/2026 00:32:58",
+  "profils": [
+    {
+      "nom": "iphone-paysage",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "grappe": {
+        "pv": [
+          0,
+          20,
+          20,
+          20,
+          20
+        ],
+        "morts": 1,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 422,
+          "h": 195,
+          "hist": [
+            0,
+            29195,
+            9392,
+            4079,
+            2660,
+            95,
+            55,
+            930,
+            140,
+            211,
+            376,
+            282,
+            469,
+            8521,
+            6080,
+            19805
+          ],
+          "invalides": 0,
+          "hash": 1436527877
+        }
+      },
+      "eperon": {
+        "pv": 20,
+        "ennemi": "approche",
+        "joueuse": "mort",
+        "reserve": 93.29166666666656,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "ennemi",
+              "auteur": "fleche",
+              "auteurId": 1,
+              "x": 419.44046213999724,
+              "y": 240,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": null,
+          "pv": 20,
+          "journal": []
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29977,
+              9397,
+              4137,
+              2660,
+              146,
+              46,
+              938,
+              221,
+              70,
+              133,
+              286,
+              483,
+              8635,
+              6210,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 3587980519
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29977,
+              9397,
+              4137,
+              2660,
+              146,
+              46,
+              938,
+              221,
+              70,
+              133,
+              286,
+              483,
+              8635,
+              6210,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 3587980519
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29977,
+              9397,
+              4137,
+              2660,
+              146,
+              46,
+              938,
+              221,
+              70,
+              133,
+              286,
+              483,
+              8635,
+              6210,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 3587980519
+          },
+          "pixelsAmbreArsenal": 0
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 8,
+        "len": 8,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 8,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 360,
+              "y": 240
+            }
+          }
+        ]
+      },
+      "stress": {
+        "morts": 1,
+        "maxKillsPas": 0,
+        "maxFile": 0,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1130,
+          "len": 8,
+          "kills": 21,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1700,
+          "len": 9,
+          "kills": 24,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 18.9583333333329,
+          "score": 170,
+          "len": 8,
+          "kills": 3,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [
+        {
+          "carte": "grappe",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "grappe": 1
+          },
+          "maxEnnemis": 18,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.2015410000003612,
+          "kills": 18
+        },
+        {
+          "carte": "eperon",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "eperon": 1
+          },
+          "maxEnnemis": 18,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.231999999999971,
+          "kills": 18
+        },
+        {
+          "carte": "braise",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "braise": 1
+          },
+          "maxEnnemis": 18,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 0.9257500000021537,
+          "kills": 18
+        },
+        {
+          "carte": "bouclier",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "bouclier": 1
+          },
+          "maxEnnemis": 18,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.095499999999447,
+          "kills": 18
+        }
+      ],
+      "erreursConsole": []
+    },
+    {
+      "nom": "iphone-portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "grappe": {
+        "pv": [
+          0,
+          20,
+          20,
+          20,
+          20
+        ],
+        "morts": 1,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 195,
+          "h": 422,
+          "hist": [
+            516,
+            36212,
+            5566,
+            4384,
+            2941,
+            111,
+            72,
+            0,
+            2,
+            354,
+            373,
+            427,
+            448,
+            6054,
+            2421,
+            22409
+          ],
+          "invalides": 0,
+          "hash": 2300720208
+        }
+      },
+      "eperon": {
+        "pv": 20,
+        "ennemi": "approche",
+        "joueuse": "mort",
+        "reserve": 93.29166666666656,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "ennemi",
+              "auteur": "fleche",
+              "auteurId": 1,
+              "x": 419.44046213999724,
+              "y": 240,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": null,
+          "pv": 20,
+          "journal": []
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 0
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 8,
+        "len": 8,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 8,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 360,
+              "y": 240
+            }
+          }
+        ]
+      },
+      "stress": {
+        "morts": 1,
+        "maxKillsPas": 0,
+        "maxFile": 0,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "fin",
+          "tJeu": 12.016666666666625,
+          "score": 110,
+          "len": 9,
+          "kills": 2,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "fin",
+          "tJeu": 19.674999999999525,
+          "score": 50,
+          "len": 8,
+          "kills": 1,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 21.608333333332748,
+          "score": 940,
+          "len": 11,
+          "kills": 7,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [
+        {
+          "carte": "grappe",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "grappe": 1
+          },
+          "maxEnnemis": 16,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 0.9423329999990528,
+          "kills": 16
+        },
+        {
+          "carte": "eperon",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "eperon": 1
+          },
+          "maxEnnemis": 16,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 0.8426660000041011,
+          "kills": 16
+        },
+        {
+          "carte": "braise",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "braise": 1
+          },
+          "maxEnnemis": 16,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 0.7934170000007725,
+          "kills": 16
+        },
+        {
+          "carte": "bouclier",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "bouclier": 1
+          },
+          "maxEnnemis": 16,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.1120000000009895,
+          "kills": 16
+        }
+      ],
+      "erreursConsole": []
+    },
+    {
+      "nom": "bureau",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "grappe": {
+        "pv": [
+          0,
+          20,
+          20,
+          20,
+          20
+        ],
+        "morts": 1,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 360,
+          "h": 225,
+          "hist": [
+            0,
+            29049,
+            8402,
+            4018,
+            2304,
+            62,
+            35,
+            930,
+            140,
+            215,
+            376,
+            217,
+            448,
+            9710,
+            5471,
+            19623
+          ],
+          "invalides": 0,
+          "hash": 1561840413
+        }
+      },
+      "eperon": {
+        "pv": 20,
+        "ennemi": "approche",
+        "joueuse": "mort",
+        "reserve": 93.29166666666656,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "ennemi",
+              "auteur": "fleche",
+              "auteurId": 1,
+              "x": 419.44046213999724,
+              "y": 240,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": null,
+          "pv": 20,
+          "journal": []
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29817,
+              8399,
+              4075,
+              2312,
+              146,
+              46,
+              903,
+              181,
+              74,
+              133,
+              235,
+              462,
+              9917,
+              5454,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 3572980516
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29817,
+              8399,
+              4075,
+              2312,
+              146,
+              46,
+              903,
+              181,
+              74,
+              133,
+              235,
+              462,
+              9917,
+              5454,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 3572980516
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29817,
+              8399,
+              4075,
+              2312,
+              146,
+              46,
+              903,
+              181,
+              74,
+              133,
+              235,
+              462,
+              9917,
+              5454,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 3572980516
+          },
+          "pixelsAmbreArsenal": 0
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 8,
+        "len": 8,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 8,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 360,
+              "y": 240
+            }
+          }
+        ]
+      },
+      "stress": {
+        "morts": 1,
+        "maxKillsPas": 0,
+        "maxFile": 0,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1060,
+          "len": 9,
+          "kills": 18,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1150,
+          "len": 16,
+          "kills": 20,
+          "coupes": 0,
+          "morts": 1,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 16.524999999999704,
+          "score": 320,
+          "len": 8,
+          "kills": 5,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [
+        {
+          "carte": "grappe",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "grappe": 1
+          },
+          "maxEnnemis": 19,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.463833000001614,
+          "kills": 19
+        },
+        {
+          "carte": "eperon",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "eperon": 1
+          },
+          "maxEnnemis": 19,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.7835419999973965,
+          "kills": 19
+        },
+        {
+          "carte": "braise",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "braise": 1
+          },
+          "maxEnnemis": 19,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.5880830000023707,
+          "kills": 19
+        },
+        {
+          "carte": "bouclier",
+          "secondesDemandees": 60,
+          "secondesCombat": 59.999999999997236,
+          "etat": "jeu",
+          "interruptions": 1,
+          "god": true,
+          "prises": {
+            "bouclier": 1
+          },
+          "maxEnnemis": 19,
+          "erreurs": 0,
+          "pixelsHorsPalette": 0,
+          "coutPasP95": 1.327625000005355,
+          "kills": 19
+        }
+      ],
+      "erreursConsole": []
+    }
+  ],
+  "enduranceReutiliseeDepuis": "18/10/2026 00:31:01"
+}

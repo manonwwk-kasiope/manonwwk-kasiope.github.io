@@ -1,0 +1,26 @@
+{
+  "dateParis": "18/10/2026 00:35:19",
+  "checks": {
+    "grappeDeuxGenerations": true,
+    "braiseReelleEtProlongation": true,
+    "stressBorneEtBusSansPerte": true,
+    "invariants": true,
+    "zeroErreurVM": true,
+    "enduranceSupervisee12Cas": true,
+    "piloteAvantApresIdentique": true,
+    "eperonDansJeuLivre": false,
+    "repitDansJeuLivre": false,
+    "raccordProposeSeulementEnMemoire": true,
+    "piloteAutonomeSansBlocageCartes": false,
+    "playwrightExecute": false
+  },
+  "sha256": {
+    "src/02-regles.js": "4c12031740d53cd22e8ffcf8798c4cc09dd2398f2d269b28ea15ceed5809f6cb",
+    "src/74-arsenal.js": "e5878349fd60d657df99eba74181ffded04c05d87b0826a83958d12bb45518c4",
+    "src/75-cartes.js": "863e1979375f197152cef80894fe0b259cd006c78f0ba76a70aa2e3334347c9f",
+    "index.html": "8afa90701098d04cee060102da5bf22836ab3e2084d4732eeceecc46b8351bfa",
+    "tools/codex-06/raccord-joueuse.patch": "8e7510cc9658eb1a9d13f6b93a9b4813a4298ff12d7e5b15492a790aff24b62e"
+  },
+  "statut": "lot arrêté : raccord propriétaire et validation navigateur indispensables",
+  "limite": "Node VM sans DOM ; endurance avec god(true) et reprise manuelle des écrans. Aucune validation Safari ni FPS iPhone."
+}

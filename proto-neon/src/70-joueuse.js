@@ -230,6 +230,7 @@ N.joueuse = (function () {
     if (k < 1 || k >= st.len) return 0;
     var I = infoSource(src), perdus, nouvelle = Math.max(cm.longueurMin, k), i, auteur = auteurDe(src, I.e);
     cause = cause || causeDe(src);
+    if (N.cartes && N.cartes.repitActif && N.cartes.repitActif(cause)) return 0;
     perdus = st.len - nouvelle;
     if (perdus <= 0) return 0;
     segAt(k);
@@ -239,6 +240,7 @@ N.joueuse = (function () {
     if (N.ev) N.ev.emit('coup', { partie: 'corps', k: k, cause: cause, auteur: auteur, auteurId: src && src.id >= 0 ? src.id : null,
       x: cx, y: cy, absorbe: false, visibleDepuis: I.vu, teleDuree: I.tele });
     st.len = nouvelle;                       // les cellules tombent par le consommateur de `coupe` de 71-butin (rang 40)
+    if (N.cartes && N.cartes.apresCoupe) N.cartes.apresCoupe();
     if (N.ev) N.ev.emit('coupe', { k: k, perdus: perdus, cause: causeCoupe(cause), auteur: auteur, x: cx, y: cy });
     publier();
     return perdus;
@@ -365,7 +367,13 @@ N.joueuse = (function () {
       if (e.etat === 'mort' || e.etat === 'portail' || e._st === 'naissance') continue;
       if (e._proie || e._inoff > 0) continue;                    // une proie ne blesse plus (§ 2.17) ; elle est dévorée par apres()
       var rr2 = rt + e.r * fr;
-      if (!protege && O.d2(P.x, P.y, e.x, e.y) < rr2 * rr2) { tuer('ennemi', { genre: 'ennemi', type: e.type, id: e.id }); return; }
+      if (!protege && O.d2(P.x, P.y, e.x, e.y) < rr2 * rr2) {
+        if (N.arsenal && N.arsenal.percuter && N.arsenal.percuter(e)) {
+          st.res = Math.max(0, st.res - R.passifs.eperon.cout);
+          continue;
+        }
+        tuer('ennemi', { genre: 'ennemi', type: e.type, id: e.id }); return;
+      }
     }
     /* 4. les tirs : la tête tue, le corps se coupe (et le tir disparaît) */
     var ts = L.tirs, rc = (mort.coupe && mort.coupe.rayonSegment) || 3.5;

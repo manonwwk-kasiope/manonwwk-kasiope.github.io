@@ -29,7 +29,7 @@ N.cartes = (function () {
   var S = null;
   var m = {                                       // l'état de la partie
     xp: 0, niveau: 0, attente: 0, prises: {}, equipees: ['canon'], pouvoir: null, nb: 0, ecrans: 0, sansRare: 0, sansEpique: 0,
-    famille: {}, courante: [], choixEcran: 1, derniereVague: 0
+    famille: {}, courante: [], choixEcran: 1, derniereVague: 0, repitJusqua: 0
   };
   var MODS = {};                                  // le même objet pour toute la partie, lu par les autres modules
   function cfg() { return R.cartes; }
@@ -56,6 +56,7 @@ N.cartes = (function () {
     S = N.S;
     m.xp = 0; m.niveau = 0; m.attente = 0; m.prises = {}; m.equipees = ['canon']; m.pouvoir = null; m.nb = 0; m.ecrans = 0;
     m.sansRare = 0; m.sansEpique = 0; m.famille = {}; m.courante = []; m.choixEcran = 1; m.derniereVague = 0;
+    m.repitJusqua = 0;
     recalcMods();
   }
 
@@ -71,6 +72,11 @@ N.cartes = (function () {
     return m.niveau - avant;
   }
   function niveauxEnAttente() { return m.attente; }
+
+  // Raccord public préparé pour 70-joueuse : vérifier AVANT une coupe, armer APRÈS une coupe effective.
+  // Répit commun de survie, pas une nouvelle carte absente du registre figé de 03-socle.
+  function apresCoupe() { m.repitJusqua = O.T.t + R.passifs.effets.repit.duree; }
+  function repitActif(cause) { return cause !== 'mur' && O.T.t < m.repitJusqua; }
 
   /* ============================ la rareté et les paliers ============================ */
   function prisesMax(id) { return liste(id).prises; }
@@ -213,7 +219,7 @@ N.cartes = (function () {
       case 'eperon': l1 = 'EN ACCÉLÉRATION'; l2 = 'BROIE JUSQU\'À ' + a.pvMax + ' PV'; break;
       case 'grappe': l1 = 'KILL = EXPLOSION'; l2 = a.niveaux[i].rayon + ' PX · ' + a.niveaux[i].degats + ' DÉG'; break;
       case 'sangFroid': l1 = 'LA COUPE NE DIVISE'; l2 = 'PLUS LA CHAÎNE'; break;
-      default: l1 = 'TRAÎNÉE QUI BRÛLE'; l2 = i ? '+' + f1(a.traine2) + ' S · LASSO ×' + f1(a.lasso2) : a.dps + ' DÉG / S'; break;
+      default: l1 = 'TRAÎNÉE QUI BRÛLE'; l2 = i ? '+' + f1(a.traine2) + ' S DE TRAÎNÉE' : a.dps + ' DÉG / S'; break;
     }
     return [l1, l2];
   }
@@ -248,7 +254,7 @@ N.cartes = (function () {
   recalcMods();
   return {
     reset: reset, xp: xp, niveauxEnAttente: niveauxEnAttente, main: main, choisir: choisir, prises: function () { return m.prises; }, texte: texte,
-    mods: MODS,
+    mods: MODS, apresCoupe: apresCoupe, repitActif: repitActif,
     niveau: function () { return m.niveau; }, choix: function () { return m.choixEcran; }, pouvoir: function () { return m.pouvoir; },
     armes: function () { return m.equipees.map(function (id) { return { id: id, palier: palierDe(id) }; }); },
     palierDe: palierDe, rarete: rarete, ecrans: function () { return m.ecrans; }, vivier: vivier, pris: function () { return m.nb; },

@@ -294,6 +294,12 @@
       grappe: { prises: 2, generations: 2, niveaux: [{ rayon: 16, degats: 15 }, { rayon: 22, degats: 25 }] },
       sangFroid: { prises: 1 },
       braise: { prises: 2, dps: 20, traine2: 0.4, lasso2: 1.5 },
+      /* codex-06 : budgets de traitement et de rendu ; les dégâts/paliers ci-dessus restent inchangés. */
+      effets: {
+        grappe: { fileMax: 64, explosionsParPas: 2, touchesParPas: 24, ondeDepart: 2, ondeDuree: 0.28, ondeEpaisseur: 1 },
+        braise: { pointsMax: 192, pas: 2, largeur: 1, sautMax: 32, intensite: 0.5 },
+        repit: { duree: 0.9 } // répit commun après une coupe ; nécessite le raccord demandé à 70-joueuse
+      },
       /* valeurs initiales de N.cartes.mods (§ 7.5) */
       mods: { degats: 1, cadence: 1, aimant: 28, lenMax: 40, reparation: 0, bouclier: 0, eperon: false, grappe: 0, sangFroid: false, braise: 0 }
     },
