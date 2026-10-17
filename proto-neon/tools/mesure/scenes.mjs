@@ -9,7 +9,7 @@ export const ECRANS_PLEINS = ['ouverture', 'briefing', 'panneau', 'fin', 'initia
 
 export async function allerTitre(session, maxSec = 20) {
   const abs = await session.absents(['N.game.etat', 'N.game.dbg.input']);
-  if (abs.length) return { ok: false, raison: 'interface ' + abs.join(', ') + ' absente' };
+  if (abs.length) return { ok: false, raison: (abs.length > 1 ? 'interfaces ' : 'interface ') + abs.join(', ') + (abs.length > 1 ? ' absentes' : ' absente') };
   if (!['demarrage', 'ouverture', 'titre', 'attraction', 'briefing'].includes(await session.etat())) await session.recharger();
   /* d'abord le crochet dbg.etat(nom) du squelette (79-jeu), s'il accepte un état à atteindre */
   const direct = await session.eval(() => { try { const d = window.__MESURE.dbg(); if (d.etat.length >= 1) d.etat('titre'); } catch (e) { } return window.__MESURE.etat(); });
