@@ -182,6 +182,10 @@ les films par personnage, les fins, les retrouvailles et le teaser.**
    — aujourd'hui seul `'fin'` sert : à la victoire, après « apotheose », à la place de `terminer(true)` ;
 5. `finAventure(bilan)` mène à l'écran de fin ou au titre ; une défaite ne concerne pas l'aventure ; quitter vers le
    titre appelle `N.aventure.stop()`.
+6. (ajout du 18 octobre) **90-boot.js dessine lui-même `N.ui`, `N.hud` et `N.intro` par-dessus le jeu** : dans l'état
+   `aventure`, il faut les taire, sinon le titre « SNAKE 2975 » de l'écran de démarrage couvre 1976 et 1982 (vu en
+   portrait). Modèle qui marche : `demo/panneau.html` (la démo du voyage entier, `demo/index.html`, testée de bout en
+   bout : choix → 1976 → 1982 → néon → profondeur à la vague 3 → fin, zéro erreur).
 
 ## codex-p6 — API de test (18/10/2026 · 00 h 51, Paris ; mis à jour à 00 h 52)
 
