@@ -10,7 +10,7 @@ T=$(mktemp -d)
 mkdir -p cine
 while read -r nom fichier; do
   curl -sSf -o "$T/$nom.mp4" "$B/$fichier"
-  ffmpeg -y -v error -i "$T/$nom.mp4" -vf "scale=384:216:flags=lanczos,fps=12" -c:v libx264 -profile:v main \
+  ffmpeg -nostdin -y -v error -i "$T/$nom.mp4" -vf "scale=384:216:flags=lanczos,fps=12" -c:v libx264 -profile:v main \
     -level 3.0 -pix_fmt yuv420p -crf 25 -preset veryslow -tune animation -an -movflags +faststart "cine/$nom.mp4"
   echo "$nom : $(wc -c < "cine/$nom.mp4") octets"
 done <<'LISTE'
