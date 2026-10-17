@@ -32,7 +32,11 @@ const artSrc = "/* ===== préambule (build.mjs) : l objet partagé existe AVANT 
 /* les clips de cinématique réellement présents dans cine/ : 05-art.js ne demande jamais un fichier absent */
 const CINE = path.join(HERE, "cine");
 const cineFiles = fs.existsSync(CINE) ? fs.readdirSync(CINE).filter(f => f.endsWith(".mp4")).sort() : [];
-const cineSrc = "var CINE_DISPO = " + JSON.stringify(cineFiles.map(f => f.replace(/\.mp4$/, ""))) + ";\n";
+let cineRel = path.relative(path.dirname(OUT), CINE).split(path.sep).join('/');
+if (!cineRel) cineRel = '.';
+/* CINE_BASE : le chemin relatif DU FICHIER PRODUIT jusqu'à proto-neon/cine/ (« cine/ » pour index.html, « ../cine/ »
+   pour proto-neon/demo/index.html), comme MUSIQUE_BASE pour la musique */
+const cineSrc = "var CINE_DISPO = " + JSON.stringify(cineFiles.map(f => f.replace(/\.mp4$/, ""))) + ";\nvar CINE_BASE = " + JSON.stringify(cineRel + '/') + ";\n";
 /* la musique : musique/nv-NN.mp3 et piste.json (tools/musique/decoupe.mjs), chargés à la demande par 30-music.js.
    MUSIQUE_BASE = le chemin relatif DU FICHIER PRODUIT jusqu'à proto-neon/musique/ ('musique/' pour index.html,
    '../../musique/' pour tools/<lot>/index.html). MUSIQUE_EMBED : null, ou, avec --embed, la piste et tous les
