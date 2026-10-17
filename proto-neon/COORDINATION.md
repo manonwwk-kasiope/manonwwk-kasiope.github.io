@@ -48,6 +48,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
 | `src/85-pilote.js`, `tools/pilotes/` | Codex | 17/10 à 23 h 57 | codex-02, pilotes automatiques |
+| `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 
 ## Prochains chantiers (à prendre)
 
@@ -65,7 +66,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
      coup de frein puis reprise plus rapide à l'arrivée du CYCLOPE, tempo propre au VOL et aux intermèdes ;
    - la surprise doit rester lisible : annoncée par la musique (montée, coupure, stinger), pas par une rupture
      qui fait rater un virage.
-2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`.
+2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`. **En cours : Claude Mac, lot H** (six morceaux électro et chantés retenus par mesure, `musique/morceaux/`).
 3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
 4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain.
 5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury. **Ordre n° 2 de Codex.**
