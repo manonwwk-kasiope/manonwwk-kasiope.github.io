@@ -1,7 +1,7 @@
 /* ===== 72-ennemis.js — N.ennemis : le bestiaire (flèche, mine, tourelle, sentinelle, CYCLOPE de repli) =====
 
    Tiré de 70-game.js (lot 0b) : newEnemy, spawnPoint, updFleche, updMine, updTourelle, updSentinelle, updBoss,
-   ebullet, beam, kill, drawEnemy, drawTelegraphs. Chaque ennemi est un objet au schéma `ennemi` (§ 7.5) ; ce
+   ebullet, beam, kill (interne : seuls hit, zone, devorer et purge l'appellent), drawEnemy, drawTelegraphs. Chaque ennemi est un objet au schéma `ennemi` (§ 7.5) ; ce
    qui est propre à l'IA est préfixé « _ » (état fin `_st`, minuteurs `_stT`, `_cd`, cible `_aim`…). Le champ
    public `etat` ('portail' | 'approche' | 'arme' | 'attaque' | 'recup' | 'fuite' | 'proie' | 'mort') se déduit
    de l'état fin. Le gros ennemi de la démo vit ici sous le type `cyclope` (boss: true, partie: 'oeil') ; le lot 5b
@@ -504,7 +504,6 @@ N.ennemis = (function () {
   return {
     reset: reset, update: update, draw: draw, drawEnemies: drawEnemies, drawTele: drawTele,
     spawn: spawn, list: list, count: count, counts: counts, hit: hit, zone: zone, devorer: devorer, dans: dans, pres: pres,
-    tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours,
-    kill: kill
+    tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours
   };
 })();
