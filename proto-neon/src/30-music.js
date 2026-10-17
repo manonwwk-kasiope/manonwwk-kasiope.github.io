@@ -12,6 +12,19 @@
         complet à quatre couches, avec son refrain, dans la même tonalité et au même tempo. On ne coupe le repli
         qu'à la preuve que la piste sonne.
 
+   3. LES MORCEAUX LONGS (lot H) : six morceaux Suno de plusieurs minutes (musique/morceaux/, morceaux.json), joués
+        en flux par des éléments audio (blob) branchés dans la MÊME chaîne que la piste (filtre de tension, gain,
+        sourdine, esquive). PROGRAMME, à la lettre : vagues 1 et 2 la piste en blocs ; vague 3 electro-calme ;
+        vague 4 voix-machine puis electro-tension s'il finit avant la vague ; vague 5 voix-plus-vite ; section
+        alerte puis boss : voix-duo (« Warning, Titan approaching ») puis electro-titan en boucle. Repit, titre,
+        briefing, victoire, défaite, initiales : la piste en blocs, comme avant ; cartes et pause : le morceau est
+        étouffé comme la piste, puis reprend où il en était. Fondu enchaîné de 1,5 s posé sur une barre de ce qui
+        joue (carte des barres mesurée, morceaux.json). Pendant un morceau : PERCU et ÉTINCELLES coupées,
+        INVERSION et BATTEMENT gardés, accent de mort inchangé. Chaque morceau garde SON tempo (115 à 128 BPM) :
+        la grille (barres, accents, couches gardées) suit le morceau en cours. Niveau : gainDb + gainJeuDb, réglé
+        par tools/H/niveau.mjs pour égaler la sonie de la piste à tension égale. Tout échec (404, décodage, lecture
+        refusée, fichier autonome --embed) laisse la piste en blocs, sans erreur.
+
    INTERFACE PUBLIQUE (§ 7.8). Rien n'est appelé au chargement ; tout survit à l'absence des autres modules.
      N.music.init()                    crée le contexte audio ; sur un geste de la joueuse (90-boot.js)
      N.music.start(), stop()           la partition. start() après stop() reprend sur une NOUVELLE mesure
@@ -30,7 +43,10 @@
      N.music.mute(bool)                coupe tout (bouton de 70-game.js) ; mute('musique'|'effets', bool) par canal
      N.music.muted([canal])            -> bool
      N.music.suspend(), resume()       arrière-plan (90-boot.js) ; reprise sur une mesure neuve
-     N.music.piste() -> {pret, bloc, mesure, section, repli}
+     N.music.piste() -> {pret, bloc, mesure, section, repli, morceau}
+     N.music.morceau() -> {id, t, duree} | null     le morceau long qui sonne (t en s dans le fichier), sinon null
+     N.music.tempo() -> BPM                         le tempo de ce qui joue : celui du morceau long, sinon de la piste
+     N.music.morceaux()                            diagnostic : catalogue, emplacements, programme, échecs
      N.music.noeuds()                  nœuds audio créés dans la dernière seconde
      N.music.rms(), rmsSfx(), rmsOut(), info(), journal(), context(), renderOffline(...)   tests et preuves
 
@@ -2059,7 +2075,7 @@ if (typeof window !== 'undefined') window.__N = N;
   var Z = {
     etat: 'repos',            /* repos | catalogue | pret | absent | embarque | sansLecteur */
     cat: {}, slots: [], cur: null, plan: null, erreur: null,
-    sec: null, vague: 0, cle: null, rang: 0,
+    sec: null, vague: 0, boss: false, cle: null, rang: 0, hist: [],
     ko: {}, blobs: {}, charge: null, lat: 0.12, enPause: false, pauses: [], dernierEval: 0, dernierPre: 0, stats: { entrees: 0, annulees: 0, boucles: 0, fins: 0, retours: 0 }
   };
   function zSafe(f) { try { return f(); } catch (e) { Z.erreur = String(e && e.message || e); J.ignores++; return undefined; } }
@@ -2107,6 +2123,7 @@ if (typeof window !== 'undefined') window.__N = N;
   }
   function zSlots() {
     if (Z.slots.length) return true;
+    if (embedded()) return false;                                  /* fichier autonome : aucun morceau long, donc aucun élément audio à débloquer */
     if (!E || typeof Audio === 'undefined' || typeof E.ctx.createMediaElementSource !== 'function') return false;
     var silence = null;
     try { silence = zSilence(); } catch (e0) { silence = null; }
@@ -2138,6 +2155,13 @@ if (typeof window !== 'undefined') window.__N = N;
     s.joue = false; s.vu = false; s.occupe = null; s.ring.length = 0;
     try { s.sl.fondu.gain.cancelScheduledValues(0); s.sl.fondu.gain.setValueAtTime(0, E.ctx.currentTime); } catch (e2) { /* ignoré */ }
   }
+  function zUtiles() {                                                  /* à ne pas écraser : ce qui sonne, ce qui est voulu, ce qui vient ensuite */
+    var k = zCle(), u = {};
+    if (Z.cur) u[Z.cur.id] = 1;
+    if (k) { var r = k === Z.cle ? Z.rang : 0; if (r < PROG[k].length) u[PROG[k][r].replace('!', '')] = 1; }
+    zProchains().forEach(function (id) { u[id] = 1; });
+    return u;
+  }
   function zVider(s) {                                                  /* l'emplacement rend ses octets (le blob est révoqué quand plus personne ne le lit) */
     zLibere(s);
     if (s.id) { var ob = Z.blobs[s.id]; if (ob && --ob.n <= 0) { try { URL.revokeObjectURL(ob.url); } catch (e) { /* ignoré */ } delete Z.blobs[s.id]; } }
@@ -2147,9 +2171,9 @@ if (typeof window !== 'undefined') window.__N = N;
   function zAffecter(id) {                                              /* range les octets déjà reçus dans un emplacement libre */
     var b = Z.blobs[id], m = Z.cat[id];
     if (!b || !m || zSlotAvec(id, true)) return null;
-    var s = null, i;
+    var s = null, i, u = zUtiles();
     for (i = 0; i < Z.slots.length && !s; i++) if (!Z.slots[i].occupe && !Z.slots[i].id) s = Z.slots[i];
-    for (i = 0; i < Z.slots.length && !s; i++) if (!Z.slots[i].occupe) s = Z.slots[i];     /* sinon un emplacement libre qui garde un autre morceau */
+    for (i = 0; i < Z.slots.length && !s; i++) if (!Z.slots[i].occupe && !u[Z.slots[i].id]) s = Z.slots[i];   /* sinon un emplacement libre dont le morceau ne sert plus */
     if (!s) return null;
     if (s.id) zVider(s);
     s.id = id; s.url = b.url; b.n++; s.erreur = null; s.fini = false; s.joue = false; s.vu = false; s.ring.length = 0; s.maxRms = 0;
@@ -2175,10 +2199,12 @@ if (typeof window !== 'undefined') window.__N = N;
 
   /* ---- le programme ---- */
   function zCle() {
+    /* la section « jeu » revient pendant le CYCLOPE à chaque réapparition (ETATS.reapparition) : le combat reste le combat jusqu'à une autre section ou une nouvelle vague */
+    if (Z.boss || Z.sec === 'alerte' || Z.sec === 'boss') return 'boss';
     if (Z.sec === 'jeu') { var k = 'jeu' + Z.vague; return PROG[k] ? k : null; }
-    if (Z.sec === 'alerte' || Z.sec === 'boss') return 'boss';
     return null;
   }
+  function zNoter(type, id, raison) { Z.hist.push({ t: +(E ? E.ctx.currentTime : 0).toFixed(2), type: type, id: id, raison: raison || null }); if (Z.hist.length > 40) Z.hist.shift(); }
   function zSouhait() {                                                 /* le morceau voulu maintenant, ou null : la piste en blocs */
     var k = zCle();
     if (k !== Z.cle) { Z.cle = k; Z.rang = 0; }
@@ -2223,7 +2249,7 @@ if (typeof window !== 'undefined') window.__N = N;
     s.occupe = 'entrant'; if (c) c.slot.occupe = 'sortant';
     Z.plan = { type: type, id: id, slot: s, tb: tb, dur: dur, sg: sg, sortant: c ? c.slot : null, joue: false, valide: false, mi: false, depart: depart, t0: now };
     E.mzEntrer(tb, dur, s.sl, sg, c ? c.slot.sl : null);
-    Z.stats.entrees++;
+    Z.stats.entrees++; zNoter(type, id, 'tb ' + tb.toFixed(2));
   }
   function zArmerRetour(dur, brusque) {
     var c = Z.cur; if (!c) return;
@@ -2232,7 +2258,7 @@ if (typeof window !== 'undefined') window.__N = N;
     if (!E.mzRetour(tb, dur, c.slot.sl)) return;
     c.slot.occupe = 'sortant';
     Z.plan = { type: 'retour', id: null, slot: null, tb: tb, dur: dur, sortant: c.slot, valide: true, mi: false, t0: now };
-    Z.stats.retours++;
+    Z.stats.retours++; zNoter('retour', c.id, 'tb ' + tb.toFixed(2));
   }
   function zAbort(p, raison) {                                          /* la lecture n'est pas là : on garde la piste */
     var ko = p.slot;
@@ -2240,8 +2266,9 @@ if (typeof window !== 'undefined') window.__N = N;
     zLibere(p.slot);
     if (p.sortant) p.sortant.occupe = 'cur';
     Z.plan = null; Z.stats.annulees++;
-    Z.ko[p.id] = (Z.ko[p.id] || 0) + (raison === 'attente' ? 0.5 : 1);
-    Z.erreur = 'entrée de ' + p.id + ' annulée : ' + raison;
+    var poids = raison === 'interrompue' ? 0 : (raison === 'attente' || raison === 'en retard') ? 0.5 : 1;     /* interrompue par la mort ou l'arrière-plan : ce n'est pas une panne */
+    if (poids) Z.ko[p.id] = (Z.ko[p.id] || 0) + poids;
+    Z.erreur = 'entrée de ' + p.id + ' annulée : ' + raison; zNoter('annule', p.id, raison);
     if (ko.erreur) zVider(ko);
   }
   function zPlan(now) {
@@ -2267,7 +2294,7 @@ if (typeof window !== 'undefined') window.__N = N;
     }
     if (p.valide) {
       if (!p.mi && now >= p.tb + p.dur * 0.5) {
-        p.mi = true; Z.cur = { id: p.id, slot: s, duree: Z.cat[p.id].duree, arme: false };
+        p.mi = true; Z.cur = { id: p.id, slot: s, duree: Z.cat[p.id].duree, arme: false }; zNoter('sonne', p.id, 'off ' + s.off.toFixed(3));
         if (p.sortant) zLibere(p.sortant);                              /* l'ancien est à −3 dB et descend : il a fini de compter */
       }
       if (now >= p.tb + p.dur + 0.05) { s.occupe = 'cur'; if (p.sortant) zLibere(p.sortant); Z.plan = null; }
@@ -2313,7 +2340,7 @@ if (typeof window !== 'undefined') window.__N = N;
           if (E.mzPret() && E.mzRetour(tb3, dd, s.sl)) {
             s.occupe = 'sortant';
             Z.plan = { type: 'retour', id: null, slot: null, tb: tb3, dur: dd, sortant: s, valide: true, mi: false, t0: now };
-            Z.stats.retours++;
+            Z.stats.retours++; zNoter('retour', c.id, 'fin du morceau, tb ' + tb3.toFixed(2));
           }
         }
       }
@@ -2429,7 +2456,11 @@ if (typeof window !== 'undefined') window.__N = N;
     try { ctx = new AC({ latencyHint: 'interactive', sampleRate: 44100 }); }       /* 44,1 kHz : les blocs se décodent sans rééchantillonnage */
     catch (e) { try { ctx = new AC({ latencyHint: 'interactive' }); } catch (e2) { return false; } }
     E = build(ctx, false, null);
-    E.hooks.section = function (nom) { Z.sec = nom; if (nom !== 'jeu' && nom !== 'alerte' && nom !== 'boss' && nom !== 'repit') Z.vague = 0; zSafe(zEval); };
+    E.hooks.section = function (nom) {
+      if (nom === 'alerte' || nom === 'boss') Z.boss = true; else if (nom !== 'jeu') Z.boss = false;
+      Z.sec = nom; if (nom !== 'jeu' && nom !== 'alerte' && nom !== 'boss' && nom !== 'repit') Z.vague = 0;
+      zSafe(zEval);
+    };
     zSafe(zSlots);                                           /* dans le geste : les trois emplacements de lecture sont débloqués ici */
     if (wantMute || sleeping) E.gate(0, 0);
     if (chanMute.musique) E.channel('musique', true);
@@ -2447,7 +2478,7 @@ if (typeof window !== 'undefined') window.__N = N;
      contrat n'est pas encore active ; le contrat (EVT.vague.conso de 03-socle.js) devrait lister [60, '30-music']. */
   function zVague(c) {
     if (!c || c.evt !== 'entree') return;
-    Z.vague = c.n | 0;
+    Z.vague = c.n | 0; Z.boss = false;                       /* une vague commence : le combat contre le CYCLOPE est fini */
     if (E) zSafe(zEval);
   }
   if (typeof N.ev === 'object' && N.ev && typeof N.ev.on === 'function') { try { N.ev.on('vague', 60, zVague, '30-music'); } catch (e) { /* le bus est absent : sans lui, la piste en blocs seule */ } }
@@ -2566,6 +2597,7 @@ if (typeof window !== 'undefined') window.__N = N;
       return {
         etat: Z.etat, erreur: Z.erreur, ids: Object.keys(Z.cat), vague: Z.vague, section: Z.sec, cle: Z.cle, rang: Z.rang, ko: Z.ko, stats: Z.stats,
         latence: +Z.lat.toFixed(3), enPause: Z.enPause || false, charge: Z.charge,
+        historique: Z.hist, boss: Z.boss,
         plan: Z.plan ? { type: Z.plan.type, id: Z.plan.id, tb: Z.plan.tb, joue: Z.plan.joue, valide: Z.plan.valide } : null,
         emplacements: Z.slots.map(function (s) { return { i: s.i, id: s.id, occupe: s.occupe, pret: zPret(s), joue: s.joue, vu: s.vu, t: +s.el.currentTime.toFixed(2), off: +s.off.toFixed(3), maxRms: +s.maxRms.toFixed(5), erreur: s.erreur }; }),
         grille: E ? E.mzGrille() : []
