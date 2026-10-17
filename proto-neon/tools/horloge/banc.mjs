@@ -70,7 +70,7 @@ async function one(profil, genre, repetition = 0) {
       }
       if (genre === 'parties') {
         /* Départ réel par les deux écrans, pas de dbg ni de simulation sans dessin pour cette partie. */
-        N.game.reset(2975); tick(30); S.input.valider = true; tick(31); const titre = N.game.etat();
+        N.game.reset(2975); N.game.dbg.god(false); tick(30); S.input.valider = true; tick(31); const titre = N.game.etat();
         S.input.valider = true; tick(1); N.pilote.lancer('bon');
         const vus = {}, depuis = S.frame; let frames = 0;
         while (N.game.etat() !== 'fin' && frames < 540 * 60 * 4 && !window.__ERR.count) { window.__tick(); frames++; const e = N.game.etat(); vus[e] = (vus[e] || 0) + 1; }

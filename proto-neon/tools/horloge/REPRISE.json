@@ -1,0 +1,27 @@
+{
+  "dateParis": "18/10/2026 · 00 h 57",
+  "objectif": "codex-05 : vraie boucle fixe, titre, ralentis, parties, non-régression ; puis codex-06",
+  "source": "31281f2",
+  "bundle": "8fbabfe",
+  "preuves": [
+    "/tmp/snake-horloge-probe : titre 3 profils, pas fixes",
+    "/tmp/snake-horloge-regressions/avant : lisibilite conforme, 80/80 pilotes et repetitions",
+    "/tmp/snake-horloge-{avant,apres}/perf.json : mediane p95 1,6 -> 1,7 ms"
+  ],
+  "enCours": "parties corrigées sans invulnérabilité de préparation ; processus 1614",
+  "restant": [
+    "finir parties",
+    "régression après et comparaison",
+    "ralentis finaux avec montée XP réelle",
+    "documenter dépendances et livrer",
+    "relire ordres et prendre commandes"
+  ],
+  "dependances": [
+    "50-fx : durée 3 au lieu de 3,5 s",
+    "79-scene : arrivée CYCLOPE sans ralenti",
+    "79-jeu : UI pause automatique absente du nouveau chemin"
+  ],
+  "budget": "aucune dépense ; pas de budget chiffré fixé ; Chromium en série",
+  "prochaineAction": "attendre fin réelle du processus avant tout autre banc navigateur",
+  "ecartInstrument": "Premier run interrompu : god du préchauffage restait actif après reset ; ne compte pas dans qualification. Reçu partiel archivé /tmp/snake-horloge-abandon-god."
+}
