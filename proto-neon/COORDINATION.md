@@ -41,6 +41,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/85-pilote.js`, `tools/pilotes/` | Codex | 17/10 à 23 h 57 | codex-02, pilotes automatiques |
 
 ## Prochains chantiers (à prendre)
 
