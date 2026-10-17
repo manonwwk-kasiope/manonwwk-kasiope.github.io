@@ -17,8 +17,17 @@ const files = fs.readdirSync(SRC).filter(f => f.endsWith('.js')).sort();
 if (!files.length) { console.error('build : aucun module dans src/'); process.exit(2); }
 const ART = path.join(HERE, "art");
 const artFiles = fs.existsSync(ART) ? fs.readdirSync(ART).filter(f => f.endsWith(".png")).sort() : [];
+/* les illustrations propres aux deux pilotes (« -elle », « -lui », retrouvailles, teaser) ne sont pas inlinées : elles
+   restent des fichiers à côté du jeu, que 05-art.js charge après le démarrage (le premier affichage sur iPhone
+   n'attend pas leurs 600 ko) ; --embed les inline toutes, pour le fichier unique qui joue sans réseau */
+const aPart = n => /-(elle|lui)$/.test(n) || n === 'retrouvailles' || n === 'teaser-3019';
+let artRel = path.relative(path.dirname(OUT), ART).split(path.sep).join('/');
+if (!artRel) artRel = '.';
+const artValeur = f => (!EMBED && aPart(f.replace(/\.png$/, '')))
+  ? JSON.stringify(artRel + '/' + f)
+  : '"data:image/png;base64,' + fs.readFileSync(path.join(ART, f)).toString('base64') + '"';
 const artSrc = "/* ===== préambule (build.mjs) : l objet partagé existe AVANT le premier module, quel que soit l ordre ===== */\nvar N = (typeof window !== \x27undefined\x27) ? (window.__N || (window.__N = {})) : {};\n\n/* ===== illustrations (générées, injectées par build.mjs) ===== */\nvar ART_SRC = {\n"
-  + artFiles.map(f => "  " + JSON.stringify(f.replace(/\.png$/, "")) + ": \"data:image/png;base64," + fs.readFileSync(path.join(ART, f)).toString("base64") + "\"").join(",\n")
+  + artFiles.map(f => "  " + JSON.stringify(f.replace(/\.png$/, "")) + ": " + artValeur(f)).join(",\n")
   + "\n};\n";
 /* les clips de cinématique réellement présents dans cine/ : 05-art.js ne demande jamais un fichier absent */
 const CINE = path.join(HERE, "cine");
