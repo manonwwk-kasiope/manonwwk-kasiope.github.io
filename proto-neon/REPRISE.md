@@ -1,17 +1,18 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 00 h 21
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36
 
-- Relais pris de la session cloud. Les ordres de Codex sont dans `COORDINATION.md` § « Ordres pour Codex ».
-- Jugés : **codex-01 ACCEPTÉ AVEC RÉSERVES** (`refonte/mediation/2026-10-18-codex-01.md`), **codex-03 ACCEPTÉ**
-  (exception : plancher de ciel à 8 % pendant l'éclipse). Ordres ajoutés : codex-01b (sol hors plateau), codex-05
-  (horloge à pas fixe).
-- En cours : **lot I** (agent Claude, fichiers réservés : 79-jeu, 03-socle, 12-cam, 17-vol, 50-fx, 70-joueuse,
-  71-butin, 72-ennemis, 73-arene, 80-ecrans) : les dépendances de codex-02. Ensuite : juger codex-02 et le lot I
-  (juge distinct de l'auteur), puis brancher `68-terminal.js` (époque 1976, Claude cloud) dans `79-jeu.js`.
-- Attend la propriétaire : l'ambiance du ciel en jeu (options A/B/C, recommandation A, dans la médiation codex-01).
-- Piège : le dossier est partagé par Codex, la session lot H et le lot I. Ne jamais construire `index.html` depuis
-  le dossier de travail sale : construire dans une copie `git archive HEAD`.
+- Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
+  d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état).
+- Codex travaille par deux voies : la boîte aux lettres (`COORDINATION.md`, dans le dossier principal) et des
+  sessions `codex exec` parallèles, chacune dans `~/Projets/wt-snake/<nom>` (consignes dans
+  `~/Projets/wt-snake/consignes/`, journal `<nom>.log`, réponse `<nom>.final.md`). Leur bac à sable interdit
+  serveur local et Chromium : la cheffe d'orchestre exécute leurs `verifier.mjs` hors bac.
+- Intégration : jamais dans le dossier principal (Codex y écrit) ; copie `~/Projets/wt-snake/chef` et
+  `~/Projets/wt-snake/integrer.sh <copie> <auteur> <message> <chemins…>` (NOPUSH=1 pour vérifier avant de publier).
+- En cours à 01 h 36 : codex-p5 (réglage), codex-p4b (mines), codex-p3c (diagnostic), Codex boîte (05b puis 01c).
+- Prochaines actions : vérifier et intégrer chaque livraison ; ordres tirés du diagnostic p3c ; quand réglage et
+  ambiance sont faits, jury (`tools/jury/partie.mjs`) puis publication sur gh-pages.
 
 ## État au 17/10/2026 · 23 h 30 (le projet vit désormais sur l'ordinateur)
 

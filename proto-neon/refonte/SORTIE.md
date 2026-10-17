@@ -49,23 +49,19 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
 Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
 diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un pilote.
 
-## Où en est chaque porte
+## Où en est chaque porte (mis à jour le 18/10/2026 à 01 h 36)
 
 | porte | état | preuve |
 |---|---|---|
-| 1. Batterie R-01 à R-38 | instrument réparé (3883b2a) : 1 ok, 7 échecs, 6 partiels, 23 non mesurables (00 h 41, rapide) ; départ, scènes et masque en cours (codex-p6) | `tools/mesure/sortie/` (codex-08) |
-| 2. Pilotes | codex-02 et lot I acceptés : 80/80 parties ; jeu trop dur (bon : V5 dans 2/10) ; réglage en cours (codex-p5) | `mediation/2026-10-18-codex-02-lot-I.md` |
-| 3. Lisibilité | codex-01, 01b, 03 acceptés ; ambiance A en cours (codex-01c) | `mediation/` |
-| 4. Performance | à mesurer | — |
-| 5. Jury | pas encore | — |
-| 6. Publication | version du 17/10 en ligne, antérieure | — |
-| 7. JALON | à demander quand la version candidate sera prête | — |
+| 1. Batterie R-01 à R-38 | sur `15a196a` (rapide) : **5 ok** (R-01, 08, 09, 10, 29), 14 échecs, 8 partiels, 10 non mesurables (horloge en simulation : codex-05b e) ; depuis, R-18 passe (CONTINUER ?, `7629f68`). Diagnostic des échecs restants : codex-p3c | `~/Projets/wt-snake/recus/batterie-15a196a/` |
+| 2. Pilotes | 80/80 parties, déterministes ; jeu trop dur ; réglage en cours (codex-p5, 5 passes au plus) | `mediation/2026-10-18-codex-02-lot-I.md` |
+| 3. Lisibilité | codex-01, 01b, 03 acceptés ; ambiance A (codex-01c) : une tentative, puis juges | `mediation/` |
+| 4. Performance | R-20 : 2 échecs à diagnostiquer (codex-p3c) | batterie |
+| 5. Jury | kit prêt (`tools/jury/partie.mjs`) ; après réglage et ambiance | — |
+| 6. Publication | version du 17/10 en ligne | — |
+| 7. JALON | à demander sur la version candidate | — |
 
-## Diagnostic de non-convergence — codex-01c
-
-Mis à jour à 18/10/2026 · 00 h 45 (Paris), Codex. Deux méthodes de prototype option A échouent au précontrôle V4/paysage (15 relevés chacune) : ciel lumineux min 5,69 %, puis 8,58 %, contre 12 %. Le sol et les erreurs restent conformes. Arrêt de cette méthode ; aucune modification de source 01c appliquée. Diagnostic et reçus : `tools/lisibilite/01c/diagnostic.md`. Fenêtres violet/indigo sont sous L=0,10 ; le soleil est en partie masqué par les tours. Avant toute nouvelle passe complète, une méthode de lumière différente doit être décidée et prouvée sur un seul cas. Question déposée dans COORDINATION.md ; les seuils ne sont pas modifiés par Codex. Les lots 01b et 02 acceptés restent conservés.
-
-
-## Diagnostic ciblé — contrôle hors jeu de codex-05
-
-18/10/2026 · 01 h 01 (Paris), Codex. Après branchement de l'horloge, deux passages du banc de retouche de palette 01 donnent neuf différences d'empreintes hors jeu, malgré les neuf seuils couleur conformes. Les caméras et le contexte ont évolué sous deux intégrateurs différents ; la méthode ne compare pas un contexte figé identique. Arrêt de cette méthode après ce deuxième échec, sans changer le verdict brut ni les seuils. Arbitrage demandé à Claude pour une méthode appariée avant nouvelle passe sur ce point. Source et preuves : tools/horloge/rapport.md. Le palier 05 reste non validé : durée RALENTI coupée par 50-fx, arrivée CYCLOPE non traitée par 79-scene, indicateur pause automatique resté dans l'ancien chemin, et performance au repos à établir. Les titres, bilans et parties ont leurs reçus ; 80/80 pilotes avant/après conformes. Aucune autre session interrompue.
+Intégré depuis le début de la nuit : pilotes (codex-02, lot I), API de test (p6), instrument réparé (p3, p3b),
+horloge à pas fixe (codex-05, 05b), commandes au bureau (codex-06), cartes GRAPPE, BRAISE, ÉPERON, répit, ONDE,
+SILLAGE, PERFORATION, SURTENSION, ÉPINES (p1, p1b), bannières et dernière vie (p2), télégraphes du CYCLOPE (p4),
+CONTINUER ? (p7).
