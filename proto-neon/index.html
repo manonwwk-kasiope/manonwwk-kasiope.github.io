@@ -14377,9 +14377,11 @@ if (typeof window !== 'undefined') window.__N = N;
     /* le message, sous le jeu : le serpent et les menaces passent devant */
     if (T.msg && T.msgT < T.msgDuree) {
       var gros = T.msg === '1982', kk = gros ? 2 : 1, mw = largeur(T.msg, kk), mx = Math.round((T.X0 + T.X1 + 1 - mw) / 2);
-      var my = Math.round(T.Y0 + (T.Y1 - T.Y0) * (gros ? 0.36 : 0.56));
-      if (!(T.phase === 'jeu' && ((T.msgT * 5) | 0) % 4 === 3)) {
-        lrect(mx - 2, my + 1, mw + 4, 7 * kk + 3, P.vide);
+      /* en jeu, le message se pose dans la moitié où le serpent n'est pas, sans bandeau noir qui masquerait le terrain */
+      var enJeu = T.phase === 'jeu', haut = T.hy > (T.Y0 + T.Y1) / 2;
+      var my = Math.round(T.Y0 + (T.Y1 - T.Y0) * (gros ? 0.36 : enJeu ? (haut ? 0.22 : 0.72) : 0.56));
+      if (!(enJeu && ((T.msgT * 5) | 0) % 4 === 3)) {
+        if (!enJeu) lrect(mx - 2, my + 1, mw + 4, 7 * kk + 3, P.vide);
         ltexte(T.msg, mx, my, P.jaune, kk);
       }
     }
