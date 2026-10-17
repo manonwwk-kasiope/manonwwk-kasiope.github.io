@@ -40,8 +40,8 @@ const partie = await p.evaluate(async ([dur, ten, ev]) => {
 }, [dur, ten, ev]);
 
 /* chaque son isole, musique coupee ; fenetre de mesure = duree du son */
-const SONS = [['tir', { pitch: 2 }, 0.12], ['kill', { pitch: 0 }, 0.35], ['kill', { pitch: 9 }, 0.35], ['butin', { pitch: 7 }, 0.30],
-  ['degat', {}, 0.5], ['bigkill', {}, 1.5], ['defi', {}, 0.8], ['intro', {}, 3.4], ['inconnu', {}, 0.3]];
+const SONS = [['tir', { pitch: 2 }, 0.5], ['kill', { pitch: 0 }, 0.5], ['kill', { pitch: 9 }, 0.5], ['butin', { pitch: 7 }, 0.5],
+  ['degat', {}, 0.6], ['bigkill', {}, 1.5], ['defi', {}, 0.8], ['intro', {}, 3.4], ['inconnu', {}, 0.5]];
 const isoles = await p.evaluate(async (SONS) => {
   const r = [];
   for (const [n, o, d] of SONS) {
@@ -73,8 +73,8 @@ const flux = await p.evaluate(async (cad) => {
 const R = { label, flux: { profil: F.profil, graine: F.graine, duree: dur, evenements: ev.length }, partie, isoles, tirs: { cadence: +cad.toFixed(2), ...flux }, erreurs: errs };
 fs.writeFileSync(HERE + 'mesure-' + label + '.json', JSON.stringify(R, null, 1));
 
-const row = (x) => 'RMS ' + x.rmsDB.toFixed(1).padStart(6) + ' dBFS  sonie ' + String(x.lufs).padStart(6) + ' LUFS  crete ' + x.creteDB.toFixed(1).padStart(5) +
-  '  >4k ' + x.hf4k.toFixed(2).padStart(5) + ' %  2-5k ' + x.b2a5k.toFixed(2).padStart(5) + ' %  centroide ' + String(x.centroide).padStart(5) + ' Hz';
+const row = (x) => 'RMS ' + x.rmsDB.toFixed(1).padStart(6) + '  LUFS ' + String(x.lufs).padStart(6) + '  tel ' + String(x.lufsTel).padStart(6) + '  crete ' + x.creteDB.toFixed(1).padStart(5) +
+  '  >4k ' + x.hf4k.toFixed(2).padStart(5) + '% (tel ' + x.hf4kTel.toFixed(1).padStart(4) + '%)  2-5k ' + x.b2a5k.toFixed(2).padStart(5) + '% (tel ' + x.b2a5kTel.toFixed(1).padStart(4) + '%)  centr ' + String(x.centroide).padStart(5);
 console.log('== ' + label + ' — partie reelle rejouee (' + F.profil + ', graine ' + F.graine + ', ' + dur + ' s, ' + ev.length + ' sons)');
 for (const k of ['musique', 'melange']) {
   console.log(' ' + k);
@@ -82,10 +82,11 @@ for (const k of ['musique', 'melange']) {
   console.log('   global                   ' + row(partie[k].global));
 }
 console.log(' sons isoles');
-for (const s of isoles) console.log('   ' + s.son.padEnd(10) + row(s));
+for (const s of isoles) console.log('   ' + s.son.padEnd(10) + row(s) + '  | momentane max ' + s.momMax.toFixed(1) + ' LUFS, tel ' + s.momMaxTel.toFixed(1));
+console.log('   musique, momentane max : calme ' + flux.musique_calme.momMax.toFixed(1) + ' (tel ' + flux.musique_calme.momMaxTel.toFixed(1) + '), chaos ' + flux.musique_chaos.momMax.toFixed(1) + ' (tel ' + flux.musique_chaos.momMaxTel.toFixed(1) + ')');
 console.log(' flux de tirs a ' + cad.toFixed(2) + ' /s, seul : ' + row(flux.tirs));
 console.log('   musique au calme      : ' + row(flux.musique_calme));
 console.log('   musique au chaos      : ' + row(flux.musique_chaos));
-console.log('   ecart tirs - musique au calme : ' + (flux.tirs.rmsDB - flux.musique_calme.rmsDB).toFixed(1) + ' dB, au chaos : ' + (flux.tirs.rmsDB - flux.musique_chaos.rmsDB).toFixed(1) + ' dB');
+console.log('   ecart tirs - musique au calme : ' + (flux.tirs.rmsDB - flux.musique_calme.rmsDB).toFixed(1) + ' dB RMS, ' + (flux.tirs.lufsTel - flux.musique_calme.lufsTel).toFixed(1) + ' LU au telephone ; au chaos : ' + (flux.tirs.rmsDB - flux.musique_chaos.rmsDB).toFixed(1) + ' dB RMS, ' + (flux.tirs.lufsTel - flux.musique_chaos.lufsTel).toFixed(1) + ' LU au telephone');
 console.log(' erreurs de console : ' + (errs.length ? JSON.stringify(errs.slice(0, 4)) : '0'));
 await b.close();

@@ -13,6 +13,7 @@
    (AB/avant : 10-gfx.js et 20-crt.js d'origine ; AB/apres : les miens), pour ne mesurer que ma
    modification pendant que d'autres modules s'écrivent. */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -24,6 +25,8 @@ const OUT = path.join(HERE, 'out');
 fs.mkdirSync(OUT, { recursive: true });
 const COPIE = 'http://127.0.0.1:8112/proto-neon/tools/rendu2/index.html';
 const AB = process.env.AB || 'http://127.0.0.1:8113';
+/* le dernier commit qui porte 10-gfx.js et 20-crt.js d'AVANT ma modification (HEAD les contient désormais) */
+const ORIGINE = 'f84a072';
 const QUOI = process.argv.slice(2).length ? process.argv.slice(2) : ['ecrans', 'fantome', 'trace', 'cout'];
 
 const IPH = devices['iPhone 13'];
@@ -97,8 +100,9 @@ const POSE = () => {
   };
 };
 
-async function ouvrir(browser, url, prof, ralenti = 1) {
+async function ouvrir(browser, url, prof, ralenti = 1, html = null) {
   const ctx = await browser.newContext(prof);
+  if (html) await ctx.route(url, r => r.fulfill({ status: 200, contentType: 'text/html; charset=utf-8', body: html }));
   const page = await ctx.newPage();
   const errs = [];
   errs.absents = [];
@@ -129,6 +133,9 @@ const q = (a, p) => { const s = a.slice().sort((x, y) => x - y); return s[Math.m
 
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const RES = {};
+
+/* scène commune : gros coup au même endroit, avec la direction d'un tir vers la droite */
+const GROS = (dir) => { const N = window.__N, g = N.gfx; N.fx.boom(Math.round(g.W * 0.7), Math.round(g.H * 0.45), 1, 'magenta'); N.fx.shake(12); if (dir) { N.S.shakeX = dir[0]; N.S.shakeY = dir[1]; } };
 
 /* ================================ écrans ================================ */
 execFileSync('/opt/node22/bin/node', [path.join(ROOT, 'build.mjs'), path.join(HERE, 'index.html')], { cwd: ROOT, stdio: 'pipe' });
@@ -161,8 +168,15 @@ if (QUOI.includes('ecrans')) {
     }
     const [w, h] = [prof.viewport.width, prof.viewport.height];
     const pOld = Math.min(6, Math.max(2, Math.round(w / 340)));
-    await page.waitForTimeout(400);
-    RES.ecrans.push({ nom, vue: [w, h], ancienneRegle: { px: pOld, tampon: [Math.ceil(w / pOld), Math.ceil(h / pOld)] }, sansZoneSure: sans, zoneSure: ins, avecZoneSure: avec, cdp: cdpOK, erreurs: await erreurs(page, errs) });
+    /* en jeu : grosse secousse avec direction, puis ROTATION en pleine secousse ; la partie doit survivre */
+    await enJeu(page);
+    await page.evaluate(g => { window.__R.ev[30] = () => (0, eval)('(' + g + ')')([0, 1]); }, GROS.toString());
+    await page.waitForFunction(() => window.__R.k > 33, null, { timeout: 20000, polling: 20 });
+    await page.setViewportSize({ width: h, height: w });
+    await page.waitForFunction(() => window.__R.k > 90, null, { timeout: 20000, polling: 50 });
+    const tourne = await lire(page);
+    const secoue = await page.evaluate(() => Math.max(...window.__R.tr.slice(28, 40).map(t => Math.hypot(t[0], t[1]))));
+    RES.ecrans.push({ nom, vue: [w, h], ancienneRegle: { px: pOld, tampon: [Math.ceil(w / pOld), Math.ceil(h / pOld)] }, sansZoneSure: sans, zoneSure: ins, avecZoneSure: avec, cdp: cdpOK, secousseMax: secoue, apresRotation: tourne, erreurs: await erreurs(page, errs) });
     await ctx.close();
   }
   console.log('\n=== ECRANS (ma copie, src/ du moment) ===');
@@ -171,12 +185,11 @@ if (QUOI.includes('ecrans')) {
     console.log(`${e.nom.padEnd(18)} ${e.vue.join('x')}  ancienne règle : px=${e.ancienneRegle.px} tampon=${e.ancienneRegle.tampon.join('x')}`);
     console.log(`   zone sûre nulle  : ${f(e.sansZoneSure)}`);
     if (e.zoneSure) console.log(`   zone sûre ${JSON.stringify(e.zoneSure)} : ${e.cdp === true ? f(e.avecZoneSure) : 'CDP refusé : ' + e.cdp}`);
+    console.log(`   en jeu : secousse max ${e.secousseMax.toFixed(1)} px de jeu ; après rotation en ${e.apresRotation.vue.join('x')} : ${f(e.apresRotation)}`);
     console.log(`   erreurs : __ERR=${e.erreurs.__ERR} exceptions+console=${e.erreurs.journal.length} ${e.erreurs.journal.slice(0, 3).join(' | ')}  ressources absentes : ${e.erreurs.absents.join(', ') || 'aucune'}`);
   }
 }
 
-/* scène commune : gros coup au même endroit, avec la direction d'un tir vers la droite */
-const GROS = (dir) => { const N = window.__N, g = N.gfx; N.fx.boom(Math.round(g.W * 0.7), Math.round(g.H * 0.45), 1, 'magenta'); N.fx.shake(12); if (dir) { N.S.shakeX = dir[0]; N.S.shakeY = dir[1]; } };
 
 /* ================================ fantôme ================================ */
 if (QUOI.includes('fantome')) {
@@ -218,7 +231,24 @@ if (QUOI.includes('trace')) {
     RES.trace[v] = { tr, erreurs: await erreurs(page, errs) };
     await ctx.close();
   }
+  {
+    /* mouvement réduit : 50-fx.js écrit N.S.shake = 0, la caméra ne doit pas bouger d'un pixel */
+    const { ctx, page, errs } = await ouvrir(browser, `${AB}/apres/index.html`, { ...PAYSAGE, reducedMotion: 'reduce' });
+    await enJeu(page);
+    await page.evaluate(g => {
+      const R = window.__R, S = window.__S; R.ev[30] = () => (0, eval)('(' + g + ')')([1, 0]);
+      /* une direction écrite sans coup : elle doit s'effacer seule (0,12 s) */
+      R.ev[100] = () => { S.shakeX = 0.6; S.shakeY = 0.8; };
+      R.ev[102] = () => { R.dir2 = [S.shakeX, S.shakeY]; };
+      R.ev[118] = () => { R.dir18 = [S.shakeX, S.shakeY]; };
+    }, GROS.toString());
+    await page.waitForFunction(() => window.__R.k > 120, null, { timeout: 30000, polling: 50 });
+    const r = await page.evaluate(() => ({ max: Math.max(...window.__R.tr.slice(25, 120).map(t => Math.hypot(t[0], t[1]))), a: Math.max(...window.__R.tr.slice(25, 120).map(t => t[2])), dir2: window.__R.dir2, dir18: window.__R.dir18 }));
+    RES.reduit = { ...r, erreurs: await erreurs(page, errs) };
+    await ctx.close();
+  }
   console.log('\n=== TRACE de la caméra (ox,oy en pixels de jeu ; A = N.S.shake lu) ===');
+  console.log(`mouvement réduit (après) : N.S.shake max ${RES.reduit.a}, décalage max ${RES.reduit.max} ; direction écrite sans coup : 2 images après ${JSON.stringify(RES.reduit.dir2)}, 18 images après ${JSON.stringify(RES.reduit.dir18)}  __ERR=${RES.reduit.erreurs.__ERR}`);
   const stats = (tr, a, b) => {
     const s = tr.slice(a, b); let saut = 0, n = 0, inv = 0, px = 0, py = 0, mx = 0, actives = 0, dernier = 0;
     for (let i = 1; i < s.length; i++) {
@@ -246,20 +276,31 @@ if (QUOI.includes('trace')) {
 }
 
 /* ================================ coût ================================
-   APPARIÉ : l'ancien 20-crt.js (celui de HEAD, ou VIEUX=<chemin>) est chargé dans la même page que le
-   nouveau, et les deux traitent CHAQUE image, dans un ordre alterné, chacun chronométré jusqu'au vidage
-   du canvas. Même tampon, même charge de la machine au même instant : la différence ne vient que du code.
-   Coût d'image avant = rappel complet - nouveau ; après = rappel complet - ancien (tout le reste est commun). */
+   APPARIÉ : un bundle de mesure, construit par build.mjs dans un dossier temporaire et servi par
+   interception (aucun fichier écrit dans le dépôt), contient src/ tel quel PLUS l'ancien 20-crt.js (celui
+   du commit ORIGINE, ou VIEUX=<chemin>) publié sous N.crtVieux. Les deux, compilés de la même façon dans la même
+   fermeture, traitent CHAQUE image dans un ordre alterné, chacun chronométré entre deux vidages du canvas.
+   Même tampon, même charge de la machine au même instant : la différence ne vient que du code.
+   Coût d'image avant = rappel complet - nouveau ; après = rappel complet - ancien (tout le reste est commun).
+   (Injecter l'ancien par eval à côté du nouveau compilé dans le bundle faussait la comparaison de 0,3 ms.) */
 if (QUOI.includes('cout')) {
   RES.cout = [];
   const VIEUX = process.env.VIEUX ? fs.readFileSync(process.env.VIEUX, 'utf8')
-    : execFileSync('git', ['-C', ROOT, 'show', 'HEAD:proto-neon/src/20-crt.js'], { encoding: 'utf8' });
-  const PAIRE = (vieux) => {
+    : execFileSync('git', ['-C', ROOT, 'show', ORIGINE + ':proto-neon/src/20-crt.js'], { encoding: 'utf8' });
+  if ((VIEUX.match(/N\.crt = CRT;/g) || []).length !== 1) throw new Error('ancien 20-crt.js : publication introuvable');
+  const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'rendu2-paire-'));
+  fs.mkdirSync(path.join(TMP, 'src'));
+  for (const f of fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js'))) fs.copyFileSync(path.join(ROOT, 'src', f), path.join(TMP, 'src', f));
+  fs.writeFileSync(path.join(TMP, 'src', '21-crt-vieux.js'), VIEUX.replace('N.crt = CRT;', 'N.crtVieux = CRT;'));
+  fs.copyFileSync(path.join(ROOT, 'build.mjs'), path.join(TMP, 'build.mjs'));
+  fs.symlinkSync(path.join(ROOT, 'art'), path.join(TMP, 'art'));
+  execFileSync('/opt/node22/bin/node', [path.join(TMP, 'build.mjs'), path.join(TMP, 'paire.html')], { cwd: TMP, stdio: 'pipe' });
+  const HTML = fs.readFileSync(path.join(TMP, 'paire.html'), 'utf8');
+  fs.rmSync(TMP, { recursive: true, force: true });
+  const URLP = COPIE.replace('index.html', 'paire.html');
+  const PAIRE = () => {
     const N = window.__N, R = window.__R, o = document.getElementById('out'), cx = o.getContext('2d');
-    const neuf = N.crt, fN = R.orig;
-    (0, eval)(vieux);
-    const ancien = N.crt, fA = ancien.apply;
-    N.crt = neuf;
+    const neuf = N.crt, fN = R.orig, ancien = N.crtVieux, fA = ancien.apply;
     R.cA = []; R.cN = []; R.trA = [];
     neuf.apply = function (dt) {
       const un = (R.k & 1) ? fN : fA, deux = un === fN ? fA : fN;
@@ -272,7 +313,7 @@ if (QUOI.includes('cout')) {
       }
       if (R.on) { R.tr.push([neuf.stats.ox, neuf.stats.oy]); R.trA.push([ancien.stats.ox, ancien.stats.oy]); }
     };
-    return [ancien !== neuf, typeof fA, typeof fN];
+    return [!!ancien && ancien !== neuf, typeof fA, typeof fN];
   };
   const SCENE = () => {
     const R = window.__R, N = window.__N, g = N.gfx;
@@ -287,8 +328,8 @@ if (QUOI.includes('cout')) {
     for (const k of [100, 250, 400, 550]) R.ev[k + 3] = () => coup(1);
   };
   for (const ra of [1, 4]) {
-    const { ctx, page, errs } = await ouvrir(browser, COPIE, PAYSAGE, ra);
-    const ok = await page.evaluate(PAIRE, VIEUX);
+    const { ctx, page, errs } = await ouvrir(browser, URLP, PAYSAGE, ra, HTML);
+    const ok = await page.evaluate(PAIRE);
     await enJeu(page);
     await page.evaluate(SCENE);
     await page.waitForFunction(() => window.__R.k >= 660, null, { timeout: 240000, polling: 200 });

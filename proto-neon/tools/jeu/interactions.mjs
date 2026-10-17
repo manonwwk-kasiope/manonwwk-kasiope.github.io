@@ -49,10 +49,12 @@ R.derivDegresApres30Images = +((h1 - h0) * 180 / Math.PI).toFixed(2);
 /* 5. bouton son : coupé, mémorisé, rendu visible */
 await tap(372, 20); await waitF(4);
 R.sonCoupe = (await g()).muted;
+R.musiqueMuted = await page.evaluate(() => window.__N.music && window.__N.music.muted ? window.__N.music.muted() : null);
 R.stockage = await page.evaluate(() => localStorage.getItem('snake2975.son'));
 await page.screenshot({ path: OUT + 'i-son-coupe.png' });
 await tap(372, 20); await waitF(4);
 R.sonRemis = !(await g()).muted;
+R.musiqueRemise = await page.evaluate(() => window.__N.music && window.__N.music.muted ? !window.__N.music.muted() : null);
 /* 6. pause en arrière-plan, puis reprise au toucher */
 await page.evaluate(() => { Object.defineProperty(document, 'hidden', { value: true, configurable: true }); document.dispatchEvent(new Event('visibilitychange')); });
 await waitF(3);

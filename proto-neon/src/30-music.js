@@ -1,5 +1,45 @@
-/* 30-music.js — moteur musical generatif de NEON 2084.  Proprietaire unique de N.music.
+/* 30-music.js — moteur musical generatif de SNAKE 2975.  Proprietaire unique de N.music.
    Aucun fichier audio : basse, batterie, nappe, lead et sons d'information sont synthetises.
+
+   INTERFACE PUBLIQUE
+     N.music.init()            cree le contexte audio ; sur un geste de la joueuse (90-boot.js)
+     N.music.start(), stop()   la partition. start() apres stop() reprend sur une NOUVELLE mesure : la
+                               composition continue la ou elle en etait, jamais de retour au debut (G-34)
+     N.music.tension(v)        0 a 1, lue a chaque image : couches, tempo, niveau
+     N.music.sfx(nom, opts)    un son d'information, voir la liste ; un nom inconnu joue le son neutre
+     N.music.mute(v)           LA COUPURE DU SON (bouton de 70-game.js). Vrai : fondu de sortie court,
+                               -30 dB en 60 ms ; faux : retour a 95 % en 120 ms. Pendant la coupure les
+                               sons sont ignores (aucun ne s'empile pour ressortir au retour) et la
+                               partition ne s'ordonnance plus ; elle reprend sur une mesure neuve. Valable
+                               AVANT init() : la demande est retenue et appliquee a la creation du
+                               contexte. Idempotent, rend l'etat. Il n'y avait pas d'equivalent avant :
+                               70-game.js coupait par stop(), qui laisse passer les sons de 60-intro.js.
+                               mute() suffit seul : inutile d'appeler aussi stop() et start().
+     N.music.muted()           -> vrai si la coupure est active
+     N.music.suspend()         arriere-plan (90-boot.js, visibilitychange) : fondu de 5 ms et contexte
+                               suspendu ; plus aucune relance automatique tant que resume() n'est pas appele
+     N.music.resume()          retour au premier plan, et chaque geste : relance un contexte 'suspended'
+                               ou 'interrupted' (iPhone apres un appel, Siri, un verrouillage), fondu
+                               d'entree, reprise sur une mesure neuve. Sans effet si tout joue deja.
+     N.music.rms(), rmsSfx(), rmsOut(), info(), journal(), renderOffline(...)   mesures et preuve
+
+   LES SONS D'INFORMATION — ce que chaque nom joue. Tous tombent dans la tonalite courante (G-33) :
+     tir      souffle feutre qui retombe (triangle filtre a 1,7 kHz), une note de la pentatonique choisie par
+              pitch 0-4 ; c'est le plus frequent (le tir automatique, plus de 7 par seconde), donc le plus
+              discret, bien sous la musique
+     kill     eclat tonal montant : la pentatonique monte d'un degre par palier d'enchainement (pitch
+              0-9), avec un craquement medium et un coup sourd
+     bigkill  l'explosion : chute de sub, coup dans les mediums pour les haut-parleurs de telephone,
+              souffle filtre descendant, queue de reverberation ; la musique s'efface 0,8 s
+     degat    grondement descendant de deux dents de scie desaccordees : le choc subi
+     butin    tintement court, une note de la pentatonique qui monte avec pitch (la longueur), quinte douce
+     intro    montee de souffle et de bourdon pendant 1,9 s, puis l'impact de bigkill
+     defi     arpege MAJEUR sur la tonique : la reussite
+     (autre)  son neutre : une note breve et douce de la gamme, plutot que rien
+   Contre l'agacement, chaque appel passe par trois gardes : FUSION (deux appels du meme nom a moins
+   de 22 a 400 ms ne font qu'un son), PLAFOND de voix simultanees par nom, USURE (le gain d'un nom baisse
+   avec sa densite recente : g = 1/sqrt(1 + k (d - 1)), d compte les appels de la derniere seconde).
+   Chaque appel tire en plus son propre desaccord et sa propre duree : deux sons ne sont jamais identiques.
 
    LA REGLE D'OR — rien ne se repete a l'identique plus de deux fois. Elle n'est pas obtenue par du
    bruit : chaque decision musicale est tiree d'une POCHE de motifs par pick(), qui refuse
@@ -7,29 +47,27 @@
    mesure entiere (son empreinte complete) sorte trois fois de suite. La repetition est donc
    impossible par construction, pas improbable par chance.
 
-   HORLOGE. Tout est cale sur ctx.currentTime, l'horloge audio. Aucun Date.now, aucun
-   performance.now, aucun setTimeout pour la justesse rythmique : setInterval ne sert qu'a reveiller
+   HORLOGE. Tout est cale sur ctx.currentTime, l'horloge audio. Aucune horloge murale, aucune horloge
+   de performance, aucun setTimeout pour la justesse rythmique : setInterval ne sert qu'a reveiller
    l'ordonnanceur, qui place les evenements a l'avance sur l'horloge audio.
 
    ALEA. Toutes les decisions passent par le generateur de N (N.rnd, meme suite congruentielle), mais
    sur un ETAT PROPRE a la musique : mk() depose son etat dans N.S.rngState, appelle N.rnd, puis
-   restaure l'etat du jeu. Deux raisons :
-     1. la musique est ordonnancee sur l'horloge audio, donc le nombre de tirages entre deux images
-        varie d'une execution a l'autre ; si elle puisait dans le flux partage elle detruirait la
-        reproductibilite a graine fixe du JEU (apparition des ennemis, criteres 6 et 2).
-     2. la graine musicale derive de N.S.seed par une fonction fixe, donc a graine imposee la
-        musique est rejouable a l'identique, independamment de ce que le jeu a tire avant.
-   Deux sous-flux separes : les choix musicaux et le remplissage du tampon de bruit. Separes parce
-   que le tampon depend de la frequence d'echantillonnage : sans cela, un telephone a 48 kHz et un
-   bureau a 44,1 kHz ne joueraient pas la meme musique a graine egale.
+   restaure l'etat du jeu. La musique ne puise donc jamais dans le flux du jeu (sa reproductibilite a
+   graine fixe est intacte), et sa propre graine derive de N.S.seed. Trois sous-flux : les choix
+   musicaux, le tampon de bruit (il depend de la frequence d'echantillonnage) et les sons d'information
+   (leur instant depend du jeu : ils ne doivent pas deplacer la composition).
 
-   N.music.rms() rend le niveau de LA MUSIQUE (bus musical apres niveau et esquive), sons
-   d'information exclus : c'est ce que demande le critere 6. rmsSfx() et rmsOut() completent.
+   MELANGE (mesures de tools/musique2/mesure.mjs sur une partie reelle rejouee hors ligne).
+   musique -> esquive -> etouffoir -> master ; sons -> master ; master -> genou doux -> porte -> sortie.
+   Le genou est lineaire (gain 1) jusqu'a -5 dBFS et plafonne les cretes a -1 dBFS : il ne colore rien
+   en jeu normal. La porte porte la coupure et la mise en veille. L'etouffoir est un passe-bas sur la
+   seule musique : la PAUSE (N.S.paused) et un gel d'image long (« boss stop ») la passent dessous (G-32).
 
-   VEILLE. Aucun ecouteur DOM ici : 90-boot.js est seul autorise a toucher au DOM. La reprise se
-   fait dans pump(), appele a chaque image par tension() et par le reveil : si le contexte est
-   'suspended' ou 'interrupted' (iOS), on le relance ; si l'horloge a saute, on se recale sur une
-   mesure au lieu de deverser les evenements manques.
+   VEILLE. Aucun ecouteur DOM ici : 90-boot.js est seul autorise a toucher au DOM. pump(), appele a
+   chaque image par tension() et par le reveil, relance un contexte 'suspended' ou 'interrupted' (sauf
+   pendant suspend()), et se recale sur une mesure neuve si l'horloge a saute ou s'est figee. Aucune
+   promesse de resume() ou suspend() n'est laissee sans traitement : un refus n'est pas une erreur.
 */
 
 var N = (typeof window !== 'undefined' && window.__N) || {};
@@ -38,23 +76,27 @@ if (typeof window !== 'undefined') window.__N = N;
 (function () {
 
   /* ================================ reglage du melange ================================
-     Valeurs mesurees, pas devinees : voir tools/compositeur/preuve.mjs. */
+     Valeurs mesurees, pas devinees : voir tools/musique2/mesure.mjs. */
   var MIX = {
-    master: 0.90,
-    music: 0.62,        // niveau du bus musical a tension 0
-    musicTension: 0.40, // ce que la tension ajoute : le RMS croit meme a nombre de couches egal
-    sfx: 1.00,
-    pad: 0.30, bass: 0.72, drum: 0.80, lead: 0.34,
-    revSend: { drum: 0.26, lead: 0.30, sfx: 0.20, bass: 0.0, pad: 0.10 },
-    duckKill: 0.30, duckBig: 0.52, duckInfo: 0.16
+    master: 1.20,
+    music: 0.58,        // niveau du bus musical a tension 0
+    musicTension: 0.50, // ce que la tension ajoute : le RMS croit meme a nombre de couches egal
+    sfx: 1.90,
+    pad: 0.30, bass: 0.72, drum: 0.80, lead: 0.24,
+    revSend: { drum: 0.26, lead: 0.28, sfx: 0.20, bass: 0.0, pad: 0.10 },
+    duckKill: 0.10, duckBig: 0.45, duckHurt: 0.32, duckInfo: 0.22
   };
   var BPM_LOW = 112, BPM_HIGH = 128;
   var LOOKAHEAD = 0.26, PUMP_MS = 40;
-  var ROOT_BASS = 33, ROOT_PAD = 48, ROOT_LEAD = 72;   /* la mineur : A1, A3, A5 */
+  var ROOT_BASS = 33, ROOT_PAD = 57, ROOT_LEAD = 69;   /* la mineur : A1, A3, A4 */
+  var FADE_OUT = 0.018, FADE_IN = 0.04;                /* constantes de temps de la porte, en s */
 
   /* ================================ outils ================================ */
   function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function noop() {}
+  function settle(pr) { if (pr && typeof pr.then === 'function') pr.then(noop, noop); }
+  function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
 
   /* sous-flux : la suite de N.rnd, sur un etat qui n'est pas celui du jeu */
   function mk(seed) {
@@ -137,9 +179,12 @@ if (typeof window !== 'undefined') window.__N = N;
     '1...1.1.1...1.1.',
     '11.1..1.11.1..1.'
   ];
-  var LEAD_OCT = [0, 0, 0, 12, -12];
-  var VOICING = [[0, 3, 7, 12], [0, 7, 12, 15], [-12, 0, 15, 19], [0, 3, 10, 19], [0, 7, 10, 12]];
+  var LEAD_OCT = [0, 0, 0, -12, -12];           /* jamais d'octave au-dessus : le lead reste sous 2 kHz */
+  /* voicings de la nappe en ROLES : 'T' la tierce de l'accord (3 ou 4 selon sa qualite), 'U' la tierce
+     a l'octave ; 7 la quinte, 12 l'octave, 14 la neuvieme, 19 la quinte a l'octave */
+  var VOICING = [[0, 'T', 7, 12], [0, 7, 12, 'U'], [-12, 0, 'U', 19], [0, 7, 14, 'U'], [0, 'T', 7, 14]];
   var BASS_GHOST = ['none', 'none', 'off8', 'slide'];
+  var PENTA = [0, 3, 5, 7, 10];                 /* pentatonique mineure : la gamme des sons */
 
   /* ================================ le moteur ================================
      build() construit un moteur complet sur un contexte quelconque. Le jeu en instancie un sur un
@@ -151,26 +196,55 @@ if (typeof window !== 'undefined') window.__N = N;
     var muteMus = mute === 'music', muteSfx = mute === 'sfx';
     var mrnd = mk(musicSeed());                      /* choix musicaux */
     var nrnd = mk((musicSeed() ^ 0x5bf03635) >>> 0);  /* bruit : flux separe, voir l'entete */
+    var srnd = mk((musicSeed() ^ 0x2c1b3c6d) >>> 0);  /* sons d'information : flux separe */
 
-    /* ---- limiteur doux : borne les cretes sans comprimer la dynamique utile ----
-       Un compresseur ecraserait l'ecart de 9 dB entre son d'information et musique. Une tangente
-       hyperbolique est transparente sous -10 dBFS et ne fait que replier les cretes. */
-    function softClipCurve(n) {
-      var c = new Float32Array(n), k = 1.45, d = Math.tanh(k);
-      for (var i = 0; i < n; i++) { var x = (i / (n - 1)) * 2 - 1; c[i] = Math.tanh(k * x) / d; }
+    /* ---- automation sans claquement ----
+       hold() fige un parametre a l'instant t en gardant sa valeur : cancelScheduledValues seul annulerait
+       aussi une rampe en cours, et la valeur sauterait. rampTo() enchaine les rampes de mesure en mesure
+       SANS rien annuler : la rampe precedente finit exactement ou la suivante commence. */
+    function hold(p, t) {
+      if (typeof p.cancelAndHoldAtTime === 'function') {
+        try { p.cancelAndHoldAtTime(t); p.__v = undefined; return; } catch (e) { /* repli ci-dessous */ }
+      }
+      var v = p.value; p.cancelScheduledValues(t); p.setValueAtTime(v, t); p.__v = v;
+    }
+    function rampTo(p, v, t, dur) {
+      var from = p.__v === undefined ? p.value : p.__v;
+      p.setValueAtTime(from, t);
+      p.linearRampToValueAtTime(v, t + dur);
+      p.__v = v;
+    }
+    function glide(p, v, tc) {                 /* vers v, en exponentielle de constante tc, depuis maintenant */
+      var now = ctx.currentTime;
+      hold(p, now);
+      if (tc > 0) p.setTargetAtTime(v, now, tc); else p.setValueAtTime(v, now);
+    }
+
+    /* ---- genou doux : lineaire jusqu'a T, plafond a C. Un gain de 0,5 en amont etend la courbe a
+       +-2 : une crete jusqu'a +6 dB au-dessus de la pleine echelle est encore arrondie, pas ecretee. */
+    function kneeCurve(n) {
+      var c = new Float32Array(n), T = 0.56, C = 0.89;
+      for (var i = 0; i < n; i++) {
+        var x = ((i / (n - 1)) * 2 - 1) * 2, a = x < 0 ? -x : x;
+        var y = a <= T ? a : T + (C - T) * Math.tanh((a - T) / (C - T));
+        c[i] = x < 0 ? -y : y;
+      }
       return c;
     }
 
     /* ---- bus ---- */
-    var master = ctx.createGain(); master.gain.value = MIX.master;
+    var master = ctx.createGain(); master.gain.value = MIX.master * 0.5;
     var shaper = ctx.createWaveShaper();
-    shaper.curve = softClipCurve(2048); shaper.oversample = '2x';
-    master.connect(shaper); shaper.connect(ctx.destination);
+    shaper.curve = kneeCurve(4097); shaper.oversample = '2x';
+    var gate = ctx.createGain(); gate.gain.value = 1;          /* coupure et veille */
+    master.connect(shaper); shaper.connect(gate); gate.connect(ctx.destination);
 
     var musicBus = ctx.createGain();        /* somme des quatre couches, sec */
     var musicLevel = ctx.createGain(); musicLevel.gain.value = muteMus ? 0 : MIX.music;
     var musicDuck = ctx.createGain(); musicDuck.gain.value = 1;
-    musicBus.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(master);
+    var OPEN = Math.min(20000, sr * 0.45);
+    var muffle = ctx.createBiquadFilter(); muffle.type = 'lowpass'; muffle.frequency.value = OPEN; muffle.Q.value = 0.6;
+    musicBus.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(muffle); muffle.connect(master);
 
     var sfxBus = ctx.createGain(); sfxBus.gain.value = muteSfx ? 0 : MIX.sfx;
     sfxBus.connect(master);
@@ -183,8 +257,8 @@ if (typeof window !== 'undefined') window.__N = N;
     });
 
     /* ---- reverberation : reseau de retards retroactifs. Pas de fichier d'impulsion, pas de
-       convolution : quatre peignes passe-bas et deux passe-tout, c'est la grosse plaque de 1984
-       pour un cout negligeable sur telephone. ---- */
+       convolution : quatre peignes passe-bas, c'est la grosse plaque de 1984 pour un cout negligeable
+       sur telephone. Sa sortie passe par l'etouffoir : en pause, la queue s'assourdit avec la musique. ---- */
     var revIn = ctx.createGain(), revOut = ctx.createGain(); revOut.gain.value = 1.0;
     var revMusIn = ctx.createGain(); revMusIn.gain.value = muteMus ? 0 : 1;
     var revSfxIn = ctx.createGain(); revSfxIn.gain.value = muteSfx ? 0 : 1;
@@ -204,47 +278,40 @@ if (typeof window !== 'undefined') window.__N = N;
       }
       var tilt = ctx.createBiquadFilter(); tilt.type = 'highpass'; tilt.frequency.value = 180;
       merge.connect(tilt); tilt.connect(revOut);
-      revOut.connect(master);
+      revOut.connect(muffle);
     })();
     function send(from, amt, dom) {
       if (amt <= 0) return null;
       var g = ctx.createGain(); g.gain.value = amt; from.connect(g);
       g.connect(dom === 's' ? revSfxIn : revMusIn); return g;
     }
-
     /* ---- tampon de bruit : deux secondes, deterministe, flux dedie ---- */
     var noiseBuf = (function () {
       var n = Math.floor(sr * 2), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0);
       for (var i = 0; i < n; i++) d[i] = nrnd() * 2 - 1;
       return b;
     })();
-    function noise(t, dur) {
+    function noise(t, dur, rng) {
       var s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
-      var off = mrnd() * 1.8;
+      var off = (rng || mrnd)() * 1.8;
       s.start(t, off, dur + 0.02); s.stop(t + dur + 0.02); return s;
     }
 
     /* ---- enveloppes ---- */
-    function adsr(p, t, a, d, peak, sus, rel) {
-      p.setValueAtTime(0.0001, t);
-      p.linearRampToValueAtTime(peak, t + a);
-      if (sus > 0) { p.linearRampToValueAtTime(peak * sus, t + a + d); p.setValueAtTime(peak * sus, t + a + d + rel); }
-      p.exponentialRampToValueAtTime(0.0001, t + a + d + rel + 0.01);
-    }
     function pluck(p, t, a, d, peak) {
       p.setValueAtTime(0.0001, t);
-      p.linearRampToValueAtTime(peak, t + a);
+      p.linearRampToValueAtTime(Math.max(0.0002, peak), t + a);
       p.exponentialRampToValueAtTime(0.0001, t + a + d);
     }
 
     /* ================================ nappe ================================
        Voix permanentes : deux dents de scie desaccordees par voix, retunees a chaque accord par
        setTargetAtTime — d'ou le glissando lent, signature du genre. Zero creation de noeud en jeu. */
-    var padVoices = [], padFilter, padBase = 760;
+    var padVoices = [], padFilter, padBase = 900;
     (function () {
       var mix = ctx.createGain(); mix.gain.value = 0.25;
       padFilter = ctx.createBiquadFilter(); padFilter.type = 'lowpass';
-      padFilter.frequency.value = padBase; padFilter.Q.value = 3.2;
+      padFilter.frequency.value = padBase; padFilter.Q.value = 2.6;
       mix.connect(padFilter);
       for (var i = 0; i < 4; i++) {
         var vg = ctx.createGain(); vg.gain.value = 0.25; vg.connect(mix);
@@ -274,9 +341,13 @@ if (typeof window !== 'undefined') window.__N = N;
         l.connect(g); g.connect(padFilter.frequency); l.start(0);
       });
     })();
-    function padSet(rootMidi, voicing, t) {
+    /* l'accord : fondamentale ramenee dans E3..D#4, tierce selon la qualite de l'accord */
+    function padSet(root, third, voicing, t) {
+      while (root > 63) root -= 12;
+      while (root < 52) root += 12;
       for (var i = 0; i < 4; i++) {
-        var f = hz(rootMidi + voicing[i]);
+        var v = voicing[i], iv = v === 'T' ? third : v === 'U' ? third + 12 : v;
+        var f = hz(root + iv);
         padVoices[i].a.frequency.setTargetAtTime(f, t, 0.055);
         padVoices[i].b.frequency.setTargetAtTime(f, t, 0.075);
       }
@@ -290,8 +361,10 @@ if (typeof window !== 'undefined') window.__N = N;
       lp.frequency.setValueAtTime(f1, t);
       lp.frequency.exponentialRampToValueAtTime(f0, t + Math.min(0.26, dur * 0.9));
       var saw = ctx.createOscillator(); saw.type = 'sawtooth'; saw.frequency.value = hz(midi);
-      var sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.value = hz(midi - 12);
-      var sg = ctx.createGain(); sg.gain.value = 0.55;
+      /* le renfort sinusoidal a la MEME octave : un sub a l'octave du dessous (27 a 50 Hz) n'est
+         rendu par aucun haut-parleur de telephone et ne faisait que manger la marge du master */
+      var sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.value = hz(midi);
+      var sg = ctx.createGain(); sg.gain.value = 0.45;
       saw.connect(lp); sub.connect(sg); sg.connect(lp); lp.connect(g); g.connect(LAY.bass);
       pluck(g.gain, t, 0.006, dur, MIX.bass * vel);
       saw.start(t); sub.start(t); saw.stop(t + dur + 0.05); sub.stop(t + dur + 0.05);
@@ -349,26 +422,28 @@ if (typeof window !== 'undefined') window.__N = N;
       send(g, MIX.revSend.drum * 0.8);
     }
 
-    /* ================================ lead ================================ */
+    /* ================================ lead ================================
+       Dent de scie et triangle (plus de carre : ses harmoniques impaires piquaient entre 2 et 5 kHz),
+       filtre qui se referme de 3 kHz a 1,1 kHz : le lead chante au chaos sans devenir criard. */
     var leadDelay, leadFb;
     (function () {
       leadDelay = ctx.createDelay(1.2); leadDelay.delayTime.value = 0.28;
-      leadFb = ctx.createGain(); leadFb.gain.value = 0.36;
-      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3000;
+      leadFb = ctx.createGain(); leadFb.gain.value = 0.34;
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2600;
       leadDelay.connect(lp); lp.connect(leadFb); leadFb.connect(leadDelay);
       var p = ctx.createStereoPanner(); p.pan.value = 0.35;
       leadDelay.connect(p); p.connect(LAY.lead);
     })();
     function leadNote(t, midi, dur, vel) {
       var g = ctx.createGain();
-      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 4;
-      lp.frequency.setValueAtTime(5200, t);
-      lp.frequency.exponentialRampToValueAtTime(1500, t + dur + 0.08);
+      var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 2.5;
+      lp.frequency.setValueAtTime(3000, t);
+      lp.frequency.exponentialRampToValueAtTime(1100, t + dur + 0.08);
       var a = ctx.createOscillator(), b = ctx.createOscillator();
-      a.type = 'sawtooth'; b.type = 'square';
+      a.type = 'sawtooth'; b.type = 'triangle';
       a.frequency.value = hz(midi); b.frequency.value = hz(midi);
       a.detune.value = -7; b.detune.value = 8;
-      var bg = ctx.createGain(); bg.gain.value = 0.4;
+      var bg = ctx.createGain(); bg.gain.value = 0.6;
       a.connect(lp); b.connect(bg); bg.connect(lp); lp.connect(g);
       g.connect(LAY.lead); g.connect(leadDelay);
       pluck(g.gain, t, 0.008, dur + 0.05, MIX.lead * vel);
@@ -377,132 +452,157 @@ if (typeof window !== 'undefined') window.__N = N;
     }
 
     /* ================================ esquive ================================
-       Les sons d'information passent AU-DESSUS : le bus musical sec plonge brievement. Un noeud
-       dedie, pour ne jamais interferer avec la rampe de niveau pilotee par la tension. */
+       Les sons d'information passent AU-DESSUS : le bus musical sec plonge brievement. Que des
+       setTargetAtTime, jamais d'annulation : deux esquives qui se chevauchent restent continues. */
     function duck(t, amt, rel) {
+      if (!(amt > 0)) return;
       var p = musicDuck.gain;
-      p.cancelScheduledValues(t);
-      p.setValueAtTime(Math.max(0.0001, 1 - amt), t + 0.008);
-      p.linearRampToValueAtTime(1, t + 0.008 + rel);
+      p.setTargetAtTime(Math.max(0.05, 1 - amt), t, 0.01);
+      p.setTargetAtTime(1, t + 0.05, Math.max(0.02, rel / 3));
     }
 
     /* ================================ sons d'information ================================ */
-    function sfxGain(peak, a, d, t) {
-      var g = ctx.createGain(); g.connect(sfxBus);
-      pluck(g.gain, t, a, d, peak); return g;
+    /* une note de la pentatonique mineure de la tonalite courante, ramenee a +-6 demi-tons de la */
+    function keyNote(base, idx) {
+      var k = ((keyOff % 12) + 12) % 12; if (k > 6) k -= 12;
+      idx = idx < 0 ? 0 : idx | 0;
+      return base + k + 12 * Math.floor(idx / 5) + PENTA[idx % 5];
     }
+    function voice(t, type, f0, f1, gl, a, d, peak, lpf, out) {
+      var o = ctx.createOscillator(); o.type = type;
+      o.frequency.setValueAtTime(f0, t);
+      if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + gl);
+      var g = ctx.createGain(); pluck(g.gain, t, a, d, peak);
+      if (lpf) { var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = lpf; lp.Q.value = 0.7; o.connect(lp); lp.connect(g); }
+      else o.connect(g);
+      g.connect(out || sfxBus);
+      o.start(t); o.stop(t + a + d + 0.03);
+      return g;
+    }
+    function burst(t, ftype, f, q, a, d, peak) {
+      var n = noise(t, a + d, srnd), fl = ctx.createBiquadFilter(); fl.type = ftype; fl.frequency.value = f; fl.Q.value = q;
+      var g = ctx.createGain(); pluck(g.gain, t, a, d, peak);
+      n.connect(fl); fl.connect(g); g.connect(sfxBus);
+      return g;
+    }
+    function vary(x) { return 1 + (srnd() - 0.5) * x; }
+
+    /* chaque son rend sa duree ; g est le gain d'usure (1 pour un son isole) */
     var SFX = {
-      tir: function (t, o) {
-        var g = sfxGain(0.30, 0.002, 0.075, t);
-        var osc = ctx.createOscillator(); osc.type = 'square';
-        var f = 1250 * Math.pow(2, ((o.pitch || 0) % 5) / 24);
-        osc.frequency.setValueAtTime(f, t);
-        osc.frequency.exponentialRampToValueAtTime(f * 0.3, t + 0.075);
-        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5000;
-        osc.connect(lp); lp.connect(g); osc.start(t); osc.stop(t + 0.1);
-        var n = noise(t, 0.02), hp = ctx.createBiquadFilter();
-        hp.type = 'highpass'; hp.frequency.value = 3000;
-        var ng = sfxGain(0.1, 0.001, 0.02, t); n.connect(hp); hp.connect(ng);
+      tir: function (t, o, g) {
+        var k = (o.pitch | 0) % 5; if (k < 0) k += 5;
+        var f = hz(keyNote(69, [0, 2, 1, 3, 4][k])) * vary(0.012), d = 0.048 + srnd() * 0.016;
+        voice(t, 'triangle', f, f * 0.42, d, 0.002, d, 0.08 * g, 1700);
+        burst(t, 'bandpass', 1000 + srnd() * 300, 0.9, 0.001, 0.016, 0.027 * g);
+        return d + 0.03;
       },
-      kill: function (t, o) {
-        var st = clamp((o.pitch || 0), 0, 14);          /* un demi-ton par palier d'enchainement */
-        var m = 79 + st, g = sfxGain(0.58, 0.002, 0.26, t);
-        [0, 7].forEach(function (iv, i) {
-          var osc = ctx.createOscillator(); osc.type = i ? 'triangle' : 'square';
-          osc.frequency.setValueAtTime(hz(m + iv) * 0.6, t);
-          osc.frequency.exponentialRampToValueAtTime(hz(m + iv), t + 0.045);
-          var og = ctx.createGain(); og.gain.value = i ? 0.45 : 1;
-          osc.connect(og); og.connect(g); osc.start(t); osc.stop(t + 0.3);
+      kill: function (t, o, g) {
+        var c = clamp(o.pitch | 0, 0, 9), f = hz(keyNote(57, 4 + c)) * vary(0.01);
+        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.2, 0.17 * g, 0);
+        voice(t, 'sawtooth', f, f, 0, 0.002, 0.11, 0.045 * g, 2000);
+        burst(t, 'bandpass', 800 + srnd() * 200, 0.8, 0.001, 0.05, 0.12 * g);
+        voice(t, 'sine', 160, 55, 0.08, 0.002, 0.1, 0.09 * g, 0);
+        send(body, MIX.revSend.sfx, 's');
+        duck(t, MIX.duckKill * g, 0.18);
+        return 0.25;
+      },
+      bigkill: function (t, o, g) {
+        var v = vary(0.12);
+        voice(t, 'sine', 118 * v, 30, 0.9, 0.004, 1.05, 0.20 * g, 0);           /* chute de sub */
+        voice(t, 'triangle', 260 * v, 90, 0.3, 0.003, 0.34, 0.30 * g, 0);       /* le coup, dans les mediums */
+        var n = noise(t, 1.4, srnd), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.9;
+        lp.frequency.setValueAtTime(2000 * v, t); lp.frequency.exponentialRampToValueAtTime(110, t + 1.15);
+        var ng = ctx.createGain(); pluck(ng.gain, t, 0.004, 1.25, 0.46 * g);
+        n.connect(lp); lp.connect(ng); ng.connect(sfxBus);
+        /* l'identite de l'explosion portee dans les mediums : un haut-parleur de telephone ne rend pas le sub */
+        burst(t, 'bandpass', 650 * v, 0.7, 0.002, 0.22, 0.30 * g);
+        var cr = voice(t, 'sawtooth', 240 * v, 42, 0.45, 0.002, 0.5, 0.14 * g, 1300);   /* le grincement */
+        send(ng, MIX.revSend.sfx * 2.6, 's'); send(cr, MIX.revSend.sfx * 1.6, 's');
+        duck(t, MIX.duckBig, 0.8);
+        return 1.4;
+      },
+      degat: function (t, o, g) {
+        var v = vary(0.1), gg = ctx.createGain(); pluck(gg.gain, t, 0.003, 0.36, 0.21 * g); gg.connect(sfxBus);
+        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 2; lp.connect(gg);
+        [-14, 14].forEach(function (dt) {
+          var oo = ctx.createOscillator(); oo.type = 'sawtooth'; oo.detune.value = dt;
+          oo.frequency.setValueAtTime(290 * v, t); oo.frequency.exponentialRampToValueAtTime(80 * v, t + 0.34);
+          oo.connect(lp); oo.start(t); oo.stop(t + 0.42);
         });
-        var n = noise(t, 0.05), hp = ctx.createBiquadFilter();
-        hp.type = 'highpass'; hp.frequency.value = 2600;
-        var ng = sfxGain(0.22, 0.001, 0.05, t); n.connect(hp); hp.connect(ng);
-        send(g, MIX.revSend.sfx, 's'); duck(t, MIX.duckKill, 0.22);
+        burst(t, 'bandpass', 620, 1, 0.001, 0.08, 0.11 * g);
+        send(gg, MIX.revSend.sfx * 1.2, 's'); duck(t, MIX.duckHurt, 0.45);
+        return 0.42;
       },
-      bigkill: function (t) {
-        /* l'explosion : chute sub, souffle large a filtre descendant, queue de reverberation */
-        var sub = ctx.createOscillator(); sub.type = 'sine';
-        sub.frequency.setValueAtTime(138, t);
-        sub.frequency.exponentialRampToValueAtTime(27, t + 1.0);
-        var sg = sfxGain(0.95, 0.004, 1.15, t); sub.connect(sg);
-        sub.start(t); sub.stop(t + 1.3);
-        var n = noise(t, 1.5);
-        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 2.5;
-        lp.frequency.setValueAtTime(7200, t);
-        lp.frequency.exponentialRampToValueAtTime(140, t + 1.2);
-        var ng = sfxGain(0.62, 0.003, 1.3, t); n.connect(lp); lp.connect(ng);
-        var cr = ctx.createOscillator(); cr.type = 'sawtooth';
-        cr.frequency.setValueAtTime(420, t);
-        cr.frequency.exponentialRampToValueAtTime(48, t + 0.5);
-        var cg = sfxGain(0.3, 0.002, 0.55, t); cr.connect(cg);
-        cr.start(t); cr.stop(t + 0.7);
-        send(ng, MIX.revSend.sfx * 3.2, 's'); send(cg, MIX.revSend.sfx * 2, 's');
-        duck(t, MIX.duckBig, 0.85);
+      butin: function (t, o, g) {
+        var k = (o.pitch | 0) % 8; if (k < 0) k += 8;
+        var f = hz(keyNote(69, k)) * vary(0.008);
+        var a = voice(t, 'triangle', f, f, 0, 0.003, 0.13, 0.11 * g, 0);
+        voice(t, 'sine', f * 1.5, f * 1.5, 0, 0.003, 0.09, 0.025 * g, 0);
+        send(a, MIX.revSend.sfx, 's');
+        return 0.16;
       },
-      degat: function (t) {
-        var g = sfxGain(0.55, 0.003, 0.4, t);
-        var o = ctx.createOscillator(); o.type = 'sawtooth';
-        o.frequency.setValueAtTime(330, t);
-        o.frequency.exponentialRampToValueAtTime(72, t + 0.38);
-        var s = ctx.createOscillator(); s.type = 'square';
-        s.frequency.setValueAtTime(165, t);
-        s.frequency.exponentialRampToValueAtTime(36, t + 0.38);
-        var sg2 = ctx.createGain(); sg2.gain.value = 0.5;
-        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800;
-        o.connect(lp); s.connect(sg2); sg2.connect(lp); lp.connect(g);
-        o.start(t); s.start(t); o.stop(t + 0.45); s.stop(t + 0.45);
-        var n = noise(t, 0.09), ng = sfxGain(0.3, 0.001, 0.09, t);
-        var bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 700;
-        n.connect(bp); bp.connect(ng);
-        send(g, MIX.revSend.sfx * 1.4, 's'); duck(t, MIX.duckBig * 0.8, 0.5);
-      },
-      butin: function (t, o) {
-        var m = 84 + ((o.pitch || 0) % 4) * 2;
-        [[0, 0], [4, 0.07]].forEach(function (c) {
-          var g = sfxGain(0.34, 0.002, 0.16, t + c[1]);
-          var osc = ctx.createOscillator(); osc.type = 'triangle';
-          osc.frequency.value = hz(m + c[0]);
-          var h = ctx.createOscillator(); h.type = 'sine';
-          h.frequency.value = hz(m + c[0] + 12);
-          var hg = ctx.createGain(); hg.gain.value = 0.3;
-          osc.connect(g); h.connect(hg); hg.connect(g);
-          osc.start(t + c[1]); h.start(t + c[1]);
-          osc.stop(t + c[1] + 0.2); h.stop(t + c[1] + 0.2);
-          send(g, MIX.revSend.sfx, 's');
-        });
-        duck(t, MIX.duckInfo, 0.18);
-      },
-      intro: function (t) {
-        var n = noise(t, 2.2);
-        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 4;
-        lp.frequency.setValueAtTime(180, t);
-        lp.frequency.exponentialRampToValueAtTime(6500, t + 1.9);
-        var g = ctx.createGain(); g.connect(sfxBus);
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.linearRampToValueAtTime(0.4, t + 1.9);
-        g.gain.exponentialRampToValueAtTime(0.0001, t + 2.25);
-        n.connect(lp); lp.connect(g);
+      intro: function (t, o, g) {
+        var n = noise(t, 2.0, srnd), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 1.6;
+        lp.frequency.setValueAtTime(160, t); lp.frequency.exponentialRampToValueAtTime(2600, t + 1.9);
+        var gg = ctx.createGain();
+        gg.gain.setValueAtTime(0.0001, t); gg.gain.linearRampToValueAtTime(0.16 * g, t + 1.88);
+        gg.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
+        n.connect(lp); lp.connect(gg); gg.connect(sfxBus);
+        var root = ROOT_BASS + keyNote(0, 0);
         var dr = ctx.createOscillator(); dr.type = 'sawtooth';
-        dr.frequency.setValueAtTime(hz(ROOT_BASS - 12), t);
-        dr.frequency.exponentialRampToValueAtTime(hz(ROOT_BASS), t + 1.9);
-        var dg = sfxGain(0.42, 1.85, 0.5, t);
-        var dlp = ctx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 400;
-        dr.connect(dlp); dlp.connect(dg); dr.start(t); dr.stop(t + 2.4);
-        SFX.bigkill(t + 1.95);
-        send(g, MIX.revSend.sfx * 2, 's');
+        dr.frequency.setValueAtTime(hz(root - 12), t); dr.frequency.exponentialRampToValueAtTime(hz(root), t + 1.9);
+        var dl = ctx.createBiquadFilter(); dl.type = 'lowpass'; dl.frequency.value = 420;
+        var dg = ctx.createGain();
+        dg.gain.setValueAtTime(0.0001, t); dg.gain.linearRampToValueAtTime(0.2 * g, t + 1.85);
+        dg.gain.exponentialRampToValueAtTime(0.0001, t + 2.3);
+        dr.connect(dl); dl.connect(dg); dg.connect(sfxBus); dr.start(t); dr.stop(t + 2.4);
+        send(gg, MIX.revSend.sfx * 1.6, 's');
+        SFX.bigkill(t + 1.95, {}, g);
+        return 3.4;
       },
-      defi: function (t) {
-        [[0, 0], [7, 0.13], [12, 0.26]].forEach(function (c) {
-          var tt = t + c[1], g = sfxGain(0.46, 0.004, c[1] > 0.2 ? 0.4 : 0.1, tt);
-          var o = ctx.createOscillator(); o.type = 'square';
-          o.frequency.value = hz(76 + keyOff + c[0]);
-          var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3600;
-          o.connect(lp); lp.connect(g); o.start(tt); o.stop(tt + 0.5);
-          send(g, MIX.revSend.sfx * 1.5, 's');
+      defi: function (t, o, g) {
+        var base = keyNote(69, 0);           /* la tonique, en MAJEUR : la reussite */
+        [[0, 0, 0.1], [4, 0.09, 0.1], [7, 0.18, 0.1], [12, 0.27, 0.42]].forEach(function (c) {
+          var f = hz(base + c[0]);
+          var a = voice(t + c[1], 'triangle', f, f, 0, 0.004, c[2], 0.185 * g, 0);
+          voice(t + c[1], 'square', f, f, 0, 0.004, c[2], 0.038 * g, 2200);
+          send(a, MIX.revSend.sfx * 1.4, 's');
         });
-        duck(t, MIX.duckInfo * 1.4, 0.45);
+        duck(t, MIX.duckInfo, 0.6);
+        return 0.75;
+      },
+      neutre: function (t, o, g) {
+        var f = hz(keyNote(69, 3 + srnd() * 3));
+        voice(t, 'triangle', f, f * 0.94, 0.08, 0.003, 0.09, 0.10 * g, 1600);
+        return 0.12;
       }
     };
+    /* fusion (s), plafond de voix, usure */
+    var SCFG = {
+      tir: { win: 0.035, cap: 3, usure: 0.30 },
+      kill: { win: 0.022, cap: 4, usure: 0.35 },
+      bigkill: { win: 0.12, cap: 2, usure: 0.50 },
+      degat: { win: 0.08, cap: 2, usure: 0.40 },
+      butin: { win: 0.045, cap: 3, usure: 0.25 },
+      intro: { win: 0.40, cap: 2, usure: 0 },
+      defi: { win: 0.30, cap: 1, usure: 0 },
+      neutre: { win: 0.05, cap: 2, usure: 0.30 }
+    };
+    var sst = {}, jr = { joues: {}, fusionnes: 0, plafonnes: 0 };
+    function play(name, t, o) {
+      var key = has(SFX, name) ? name : 'neutre';
+      var c = SCFG[key], s = sst[key] || (sst[key] = { last: -1e9, dens: 0, ends: [] });
+      if (t - s.last < c.win) { jr.fusionnes++; return; }
+      s.dens = s.dens * Math.exp(-(t - s.last)) + 1; s.last = t;
+      var live = [];
+      for (var i = 0; i < s.ends.length; i++) if (s.ends[i] > t) live.push(s.ends[i]);
+      s.ends = live;
+      if (live.length >= c.cap) { jr.plafonnes++; return; }
+      var g = 1 / Math.sqrt(1 + c.usure * (s.dens - 1));
+      var len = SFX[key](t, o || {}, g);
+      s.ends.push(t + (len || 0.2));
+      jr.joues[key] = (jr.joues[key] || 0) + 1;
+    }
 
     /* ================================ anti-repetition ================================ */
     var mem = {};
@@ -546,7 +646,7 @@ if (typeof window !== 'undefined') window.__N = N;
     }
     function newBar() {
       var inPhrase = bar % 4;
-      if (inPhrase === 0) newPhrase();
+      if (inPhrase === 0 || !ph) newPhrase();
       if (bar % 16 === 0) keyOff = pick('key', KEYS);
       var tries = 0, sig;
       do {
@@ -561,33 +661,31 @@ if (typeof window !== 'undefined') window.__N = N;
           (GRIDS.indexOf(ph.grid)) + inPhrase + keyOff + (bp.openHat ? 'o' : '') + (bp.clapOn ? 'c' : '');
       } while (barGuard(sig) && ++tries < 6);
       barSigs.push(sig);
+      if (!offline && barSigs.length > 256) barSigs.shift();
       /* accord de la mesure */
       var ci = ph.rate === 2 ? ((bar >> 1) % 4) : (bar % 4);
       bp.chord = ph.grid[ci];
       bp.third = bp.chord[1] ? 4 : 3;
       bp.fill = (inPhrase === 3) ? ph.fill : 'none';
       bp.brk = (inPhrase === 3) ? ph.brk : 'none';
-      /* tempo et couches : une seule fois par mesure, jamais en cours de mesure */
+      /* tempo et couches : une seule fois par mesure, jamais en cours de mesure (G-31) */
       tSmooth = tTarget;
       bpm = BPM_LOW + (BPM_HIGH - BPM_LOW) * tSmooth;
       stepDur = 60 / bpm / 4;
       var barDur = stepDur * 16;
       onDrum = tSmooth >= (onDrum ? 0.14 : 0.20);
       onLead = tSmooth >= (onLead ? 0.62 : 0.68);
-      ramp(LAY.drum.gain, onDrum ? MIX.drum : 0, barDur);
-      ramp(LAY.lead.gain, onLead ? MIX.lead : 0, barDur);
-      ramp(LAY.pad.gain, MIX.pad * (1 - 0.25 * tSmooth), barDur);
-      ramp(LAY.bass.gain, MIX.bass * (0.85 + 0.15 * tSmooth), barDur);
-      if (!muteMus) ramp(musicLevel.gain, MIX.music + MIX.musicTension * tSmooth, barDur);
+      /* la batterie entre a 70 % et monte avec la tension : le niveau croit aussi entre deux entrees */
+      rampTo(LAY.drum.gain, onDrum ? MIX.drum * (0.7 + 0.3 * tSmooth) : 0, cur, barDur);
+      rampTo(LAY.lead.gain, onLead ? MIX.lead : 0, cur, barDur);
+      rampTo(LAY.pad.gain, MIX.pad * (1 - 0.1 * tSmooth), cur, barDur);
+      rampTo(LAY.bass.gain, MIX.bass * (0.85 + 0.15 * tSmooth), cur, barDur);
+      if (!muteMus) rampTo(musicLevel.gain, MIX.music + MIX.musicTension * tSmooth, cur, barDur);
       leadDelay.delayTime.setTargetAtTime(stepDur * 3, cur, 0.1);
       padFilter.frequency.setTargetAtTime(padBase + 900 * tSmooth, cur, barDur * 0.4);
-      padSet(ROOT_PAD + keyOff + bp.chord[0], ph.voice, cur);
+      padSet(ROOT_PAD + keyOff + bp.chord[0], bp.third, ph.voice, cur);
     }
-    function ramp(p, v, dur) {                /* fondu sur une mesure, jamais de claquement */
-      p.cancelScheduledValues(cur);
-      p.setValueAtTime(p.value, cur);
-      p.linearRampToValueAtTime(v, cur + dur);
-    }
+    function wrapRoot(r, lo) { while (r >= lo + 12) r -= 12; while (r < lo) r += 12; return r; }
 
     /* ---- un pas de double croche ---- */
     function doStep() {
@@ -598,7 +696,7 @@ if (typeof window !== 'undefined') window.__N = N;
       if (bp.brk === 'stab' && s >= 13) hushed = true;
       if (bp.brk === 'stab' && s === 12) { kick(t, 1); snare(t, 0.9); }
 
-      var root = ROOT_BASS + keyOff + bp.chord[0];
+      var root = wrapRoot(ROOT_BASS + keyOff + bp.chord[0], 33);   /* A1..G#2 */
       /* basse */
       if (!hushed) {
         var c = ph.bass.charCodeAt(s) - 48;
@@ -629,11 +727,11 @@ if (typeof window !== 'undefined') window.__N = N;
           /* 'hush' : on ne joue rien, c'est le silence avant la reprise */
         }
       }
-      /* lead */
+      /* lead : fondamentale ramenee dans C4..B4, arpege jusqu'a la quinte de l'octave au plus */
       if (onLead && !hushed && ph.rhy.charCodeAt(s) === 49) {
         var tones = [0, bp.third, 7, 12, 12 + bp.third, 19];
         var idx = ph.shape[(leadStep++) % ph.shape.length];
-        var m = ROOT_LEAD + keyOff + bp.chord[0] + tones[idx] + bp.leadOct;
+        var m = wrapRoot(ROOT_LEAD + keyOff + bp.chord[0], 60) + tones[idx] + bp.leadOct;
         leadNote(t, m, stepDur * 1.6, 0.75 + 0.25 * tSmooth);
       }
       cur += stepDur;
@@ -643,15 +741,23 @@ if (typeof window !== 'undefined') window.__N = N;
     var leadStep = 0;
 
     /* ---- ordonnanceur : place les evenements a l'avance sur l'horloge audio ---- */
-    var running = false;
+    var running = false, begun = false;
     function schedUntil(horizon) {
       var guard = 0;
       while (cur < horizon && guard++ < 20000) doStep();
     }
-    function startAt(t) {
-      cur = t; step = 0; bar = 0; leadStep = 0;
-      mem = {}; barMem = { sig: '', n: 0 };
+    /* une mesure neuve a l'instant t, la composition continue : apres une veille, une coupure, un
+       arret ou une horloge figee. Les couches sont figees a leur valeur, puis repartent a la mesure. */
+    function resync(t) {
+      var now = ctx.currentTime;
+      ['pad', 'bass', 'drum', 'lead'].forEach(function (k) { hold(LAY[k].gain, now); });
+      if (!muteMus) hold(musicLevel.gain, now);
+      cur = Math.max(t, now + 0.02); step = 0; bar++;
       newBar();
+    }
+    function startAt(t) {
+      if (!begun) { begun = true; cur = t; step = 0; bar = 0; leadStep = 0; newBar(); }
+      else resync(t);
       running = true;
     }
 
@@ -669,32 +775,44 @@ if (typeof window !== 'undefined') window.__N = N;
     }
     var rmsMusic = offline ? function () { return 0; } : tap(musicDuck);
     var rmsSfxF = offline ? function () { return 0; } : tap(sfxBus);
-    var rmsOutF = offline ? function () { return 0; } : tap(shaper);
+    var rmsOutF = offline ? function () { return 0; } : tap(gate);
 
+    var muffleAt = 0;
     return {
       ctx: ctx,
       startAt: startAt,
+      resync: resync,
       schedUntil: schedUntil,
       isRunning: function () { return running; },
       stop: function (t) {
         running = false;
         ['pad', 'bass', 'drum', 'lead'].forEach(function (k) {
           var p = LAY[k].gain;
-          p.cancelScheduledValues(t); p.setValueAtTime(p.value, t);
-          p.linearRampToValueAtTime(0, t + 0.25);
+          hold(p, t); p.linearRampToValueAtTime(0, t + 0.25); p.__v = 0;
         });
       },
-      setTension: function (v) { tTarget = clamp(v, 0, 1); },
-      sfx: function (name, o) { var f = SFX[name]; if (f) f(ctx.currentTime + 0.012, o || {}); },
-      sfxAt: function (name, t, o) { var f = SFX[name]; if (f) f(t, o || {}); },
+      setTension: function (v) { tTarget = clamp(+v || 0, 0, 1); },
+      sfx: function (name, o) { play(name, ctx.currentTime + 0.012, o); },
+      sfxAt: function (name, t, o) { play(name, t, o); },
+      /* la porte : v 0 ou 1, constante de temps tc (0 = immediat) */
+      gate: function (v, tc) { glide(gate.gain, v, tc); },
+      /* l'etouffoir : 0 ouvert, sinon frequence de coupure ; ne touche le parametre qu'au changement */
+      muffle: function (f) {
+        if (f === muffleAt) return;
+        var down = f > 0 && (muffleAt === 0 || f < muffleAt);
+        muffleAt = f;
+        glide(muffle.frequency, f > 0 ? f : OPEN, down ? 0.06 : 0.25);
+      },
       rms: rmsMusic, rmsSfx: rmsSfxF, rmsOut: rmsOutF,
       cursor: function () { return cur; },
       barSigs: function () { return barSigs; },
+      journal: function () { return jr; },
       info: function () {
         return {
           bar: bar, step: step, bpm: bpm, tension: tSmooth, key: keyOff,
           layers: 2 + (onDrum ? 1 : 0) + (onLead ? 1 : 0),
-          grid: GRIDS.indexOf(ph ? ph.grid : null), fill: bp ? bp.fill : '', brk: bp ? bp.brk : ''
+          grid: GRIDS.indexOf(ph ? ph.grid : null), fill: bp ? bp.fill : '', brk: bp ? bp.brk : '',
+          muffle: muffleAt, gate: gate.gain.value
         };
       }
     };
@@ -702,53 +820,120 @@ if (typeof window !== 'undefined') window.__N = N;
 
   /* ================================ face publique ================================ */
   var E = null, timer = null, resumeTries = 0, stale = 0, lastClock = -1;
+  var wantMute = false, sleeping = false, needResync = false;
+  var J = { appels: {}, ignores: 0 };
 
-  function pump() {
-    if (!E) return;
-    var ctx = E.ctx, st = ctx.state;
-    if (st === 'suspended' || st === 'interrupted') {       /* retour de veille, iOS compris */
-      if (resumeTries++ < 40 && ctx.resume) { try { ctx.resume(); } catch (e) {} }
-      return;
+  /* l'etouffoir de la musique : la pause, puis le gel d'image long (« boss stop »), lus sur l'etat */
+  function muffleTarget() {
+    var S = N.S;
+    if (S && S.paused) return 420;
+    if (N.fx && typeof N.fx.hitstopLeft === 'function') {
+      var h = 0; try { h = N.fx.hitstopLeft(); } catch (e) { h = 0; }
+      if (h >= 10) return 900;
     }
-    resumeTries = 0;
-    var now = ctx.currentTime;
-    if (now === lastClock) { if (++stale > 240) { stale = 0; E.startAt(now + 0.06); } return; }
+    return 0;
+  }
+  /* relance un contexte 'suspended' ou 'interrupted' ; vrai s'il joue. Quarante essais au plus d'affilee
+     (une interruption d'iOS peut durer tout un appel) ; resume() les rearme. */
+  function wake() {
+    var ctx = E.ctx, st = ctx.state;
+    if (st === 'running') { resumeTries = 0; return true; }
+    if (st === 'closed') return false;
+    if (resumeTries++ < 40 && ctx.resume) { try { settle(ctx.resume()); } catch (e) { /* refuse : on reessaiera */ } }
+    needResync = true;
+    return false;
+  }
+  function pump() {
+    if (!E || sleeping) return;
+    if (!wake()) return;
+    var now = E.ctx.currentTime;
+    if (now === lastClock) { if (++stale > 240) { stale = 0; needResync = true; } return; }
     lastClock = now; stale = 0;
+    E.muffle(muffleTarget());
     if (!E.isRunning()) return;
-    if (E.cursor() < now - 0.25) E.startAt(now + 0.06);     /* on s'est fait doubler : on recale */
+    if (wantMute) { needResync = true; return; }          /* coupe : rien ne s'ordonnance */
+    if (E.cursor() < now - 0.25) needResync = true;       /* on s'est fait doubler */
+    if (needResync) { needResync = false; if (E.cursor() < now + 0.06) E.resync(now + 0.06); }
     E.schedUntil(now + LOOKAHEAD);
+  }
+  function init() {
+    if (E) return true;
+    var AC = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
+    if (!AC) return false;
+    E = build(new AC({ latencyHint: 'interactive' }), false, null);
+    if (wantMute || sleeping) E.gate(0, 0);
+    return true;
   }
 
   N.music = {
-    init: function () {
-      if (E) return true;
-      var AC = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
-      if (!AC) return false;
-      E = build(new AC({ latencyHint: 'interactive' }), false);
-      return true;
-    },
+    init: init,
     start: function () {
-      if (!E && !N.music.init()) return;
+      if (!E && !init()) return;
       if (E.isRunning()) return;
-      if (E.ctx.state !== 'running' && E.ctx.resume) { try { E.ctx.resume(); } catch (e) {} }
+      if (!sleeping) wake();
       E.startAt(E.ctx.currentTime + 0.08);
       pump();
       if (!timer && typeof setInterval === 'function') timer = setInterval(pump, PUMP_MS);
     },
     stop: function () {
-      if (!E) return;
+      if (!E || !E.isRunning()) return;
       E.stop(E.ctx.currentTime);
       if (timer) { clearInterval(timer); timer = null; }
     },
     tension: function (v) { if (!E) return; E.setTension(v); pump(); },
-    sfx: function (name, o) { if (!E) return; pump(); E.sfx(name, o); },
+    sfx: function (name, o) {
+      var k = String(name);
+      J.appels[k] = (J.appels[k] || 0) + 1;
+      if (!E || wantMute || sleeping) { J.ignores++; return; }
+      /* horloge arretee ou figee : un son pose maintenant ressortirait plus tard, en paquet */
+      if (E.ctx.state !== 'running' || stale > 30) { J.ignores++; return; }
+      E.sfx(k, o);
+    },
+    mute: function (v) {
+      v = !!v;
+      if (v === wantMute) return wantMute;
+      wantMute = v;
+      if (E) {
+        E.gate(v || sleeping ? 0 : 1, v ? FADE_OUT : FADE_IN);
+        if (!v) { needResync = true; pump(); }
+      }
+      return wantMute;
+    },
+    muted: function () { return wantMute; },
+    suspend: function () {
+      if (sleeping) return;
+      sleeping = true;
+      if (!E) return;
+      E.gate(0, 0.005);
+      try { settle(E.ctx.suspend()); } catch (e) { /* deja suspendu ou ferme */ }
+    },
+    resume: function () {
+      var was = sleeping;
+      sleeping = false;
+      if (!E) return;
+      if (!was && E.ctx.state === 'running') return;     /* chaque geste l'appelle : rien a faire */
+      resumeTries = 0;
+      wake();
+      E.gate(wantMute ? 0 : 1, FADE_IN);
+      needResync = true;
+      pump();
+    },
     rms: function () { return E ? E.rms() : 0; },
     rmsSfx: function () { return E ? E.rmsSfx() : 0; },
     rmsOut: function () { return E ? E.rmsOut() : 0; },
-    info: function () { return E ? E.info() : null; },
+    info: function () {
+      if (!E) return null;
+      var r = E.info(); r.state = E.ctx.state; r.muted = wantMute; r.sleeping = sleeping; r.running = E.isRunning();
+      return r;
+    },
+    /* pour la preuve : appels par nom (connus ou non), sons joues, fusionnes, plafonnes, ignores */
+    journal: function () {
+      var j = E ? E.journal() : { joues: {}, fusionnes: 0, plafonnes: 0 };
+      return { appels: J.appels, ignores: J.ignores, joues: j.joues, fusionnes: j.fusionnes, plafonnes: j.plafonnes };
+    },
 
-    /* PREUVE. Rend la musique hors ligne avec le MEME moteur que le jeu, donc ce qui est mesure est
-       ce qui est joue. events : [{t, name, opts}] pour les sons d'information. */
+    /* PREUVE. Rend la musique hors ligne avec le MEME moteur que le jeu, donc ce qui est mesure est ce
+       qui est joue. events : [{t, name, opts}] pour les sons d'information ; mute : 'music' ou 'sfx'. */
     renderOffline: function (seconds, tensionFn, events, rate, mute) {
       var OC = (typeof window !== 'undefined') && (window.OfflineAudioContext || window.webkitOfflineAudioContext);
       if (!OC) return null;
@@ -775,9 +960,9 @@ if (typeof window !== 'undefined') window.__N = N;
         for (var t2 = 0; t2 < dur; t2 += slice) feed(t2);
         while (ei < evs.length) { e.sfxAt(evs[ei].name, evs[ei].t, evs[ei].opts); ei++; }
       }
-      var done = ctx.startRendering();
-      return done.then(function (buf) {
+      return ctx.startRendering().then(function (buf) {
         N.music.lastBars = e.barSigs();    /* aide aux tests : empreinte de chaque mesure rendue */
+        N.music.lastJournal = e.journal();
         return buf;
       });
     }

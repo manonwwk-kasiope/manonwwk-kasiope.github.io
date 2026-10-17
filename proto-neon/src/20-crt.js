@@ -85,7 +85,8 @@
 
   /* ================= la caméra de la secousse ================= */
   var CAM_F = 5.2;               /* fréquence propre du ressort, Hz : un rebond lisible, pas un frisson */
-  var CAM_Z = 0.32;              /* amortissement (1 = critique) : un retour franc, un rebond à 35 %, puis rien */
+  var CAM_Z = 0.32;              /* amortissement (1 = critique) : un retour franc, un rebond (35 % pour le ressort
+                                    seul, 25 à 45 % mesurés avec la cible lisse), puis plus rien */
   var CAM_N = 0.3;               /* la cible lisse, en fraction de l'amplitude : un grondement sous les coups, pas plus */
   var CAM_NF = 3.6;              /* nœuds du bruit lisse par seconde ; une octave à x2,3 */
   var CAM_HIT = 0.3;             /* une montée de N.S.shake de plus que ça d'une image à l'autre est un coup */
@@ -160,7 +161,10 @@
     }
     if (cam.x !== cam.x || cam.y !== cam.y || cam.vx !== cam.vx || cam.vy !== cam.vy) { cam.x = 0; cam.y = 0; cam.vx = 0; cam.vy = 0; }
     cam.a = A;
-    cam.ox = Math.round(cam.x); cam.oy = Math.round(cam.y);
+    /* « | 0 » : un entier 32 bits, jamais -0. Math.round(-0.3) vaut -0, et un seul -0 rangé ici fait passer
+       le champ en flottant pour de bon : pass() et halo() indexent alors le tampon en flottants à chaque
+       image (mesuré : +0,3 ms par image sur le profil iPhone, secousse ou pas) */
+    cam.ox = Math.round(cam.x) | 0; cam.oy = Math.round(cam.y) | 0;
   }
 
   function mk(w, h) {
@@ -404,6 +408,37 @@
           agrandissement à OW x OH le comprimait d'une fraction de pixel quand W ou H est impair. ---- */
   function halo(buf, ox, oy, heat, k) {
     if (!g32 || !HCA) return 0;
+    if (ox === 0 && oy === 0) haloDroit(buf); else haloDecale(buf, ox, oy);
+    gctx.putImageData(gimg, 0, 0);
+    octx.globalCompositeOperation = 'lighter';
+    octx.globalAlpha = (0.17 + 0.15 * heat) * k;
+    octx.imageSmoothingEnabled = true;
+    octx.drawImage(glow, 0, 0, gw, gh, 0, 0, gw * 2 * PX, gh * 2 * PX);
+    octx.imageSmoothingEnabled = false;
+    octx.globalAlpha = 1;
+    octx.globalCompositeOperation = 'source-over';
+    return 1;
+  }
+  /* caméra au repos, la plupart des images : aucune borne à tester (la voie à bornes coûtait 0,1 ms de plus) */
+  function haloDroit(buf) {
+    var W = GW, H = GH, G = GL, GWt = GWT;
+    for (var y = 0; y < gh; y++) {
+      var by = y * 2, by1 = by + 1 < H ? by + 1 : by;
+      var r0 = by * W, r1 = by1 * W, o = y * gw;
+      for (var x = 0; x < gw; x++) {
+        var bx = x * 2, bx1 = bx + 1 < W ? bx + 1 : bx;
+        /* le plus rayonnant des quatre : une ligne d'un seul pixel de jeu ne doit pas clignoter */
+        var i1 = buf[r0 + bx], i2 = buf[r0 + bx1], i3 = buf[r1 + bx], i4 = buf[r1 + bx1];
+        var best = i1, bw = GWt[i1];
+        if (GWt[i2] > bw) { best = i2; bw = GWt[i2]; }
+        if (GWt[i3] > bw) { best = i3; bw = GWt[i3]; }
+        if (GWt[i4] > bw) { best = i4; bw = GWt[i4]; }
+        g32[o + x] = bw ? G[best] : AOP;
+      }
+    }
+  }
+  /* caméra décalée : le même calcul, lu en (+ox, +oy), la bordure hors du tampon ne rayonnant pas */
+  function haloDecale(buf, ox, oy) {
     var W = GW, H = GH, G = GL, GWt = GWT, V = VIDEI, CA = HCA, CB = HCB, x;
     for (x = 0; x < gw; x++) {
       var xa = x * 2, xb = xa + 1 < W ? xa + 1 : xa;
@@ -428,18 +463,9 @@
         g32[o + x] = bw ? G[best] : AOP;
       }
     }
-    gctx.putImageData(gimg, 0, 0);
-    octx.globalCompositeOperation = 'lighter';
-    octx.globalAlpha = (0.17 + 0.15 * heat) * k;
-    octx.imageSmoothingEnabled = true;
-    octx.drawImage(glow, 0, 0, gw, gh, 0, 0, gw * 2 * PX, gh * 2 * PX);
-    octx.imageSmoothingEnabled = false;
-    octx.globalAlpha = 1;
-    octx.globalCompositeOperation = 'source-over';
-    return 1;
   }
 
-  var ST = { ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche' };
+  var ST ={ ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche' };
 
   function apply(dt) {
     if (CRT.off) { ST.ops = 0; ST.mode = 'coupe'; return; }
@@ -453,7 +479,7 @@
             de l'ÉCHANTILLONNAGE du tampon, ce qui vaut ox*px pixels d'écran et garde les blocs exactement
             sur la grille ; l'image et son halo le reçoivent tous deux. ---- */
     camera(dt, S);
-    var ox = cam.ox, oy = cam.oy;
+    var ox = cam.ox | 0, oy = cam.oy | 0;
     ST.ox = ox; ST.oy = oy; ST.a = cam.a;
 
     var heat = c01(+S.heat || 0);

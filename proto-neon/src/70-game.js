@@ -35,10 +35,14 @@
 
    CE QUE CE FICHIER EMPLOIE SANS EN ÊTRE PROPRIÉTAIRE, avec un repli s'il manque : N.spr (sprites et
    police 5x7), N.fx (explosions, gel, secousse, flash de frappe), N.intro (interludes), N.art (repli de
-   l'écran de fin), N.music (sons ; la coupure passe par stop()/start(), et ce module filtre ses sons).
+   l'écran de fin), N.music (sons ; la coupure passe par N.music.mute(v), repli stop()/start(), et ce
+   module filtre de plus ses propres sons).
    N.S et N.rnd sont créés par 90-boot.js, concaténé APRÈS ce module : ils sont lus paresseusement.
 
    Interface : N.game.reset(graine), update(dt), draw(), drawTop(), tension(), et dbg() pour les tests.
+   Crochet de test, inerte en jeu : si window.__PILOT est une fonction, update() l'appelle avant de lire les
+   entrées (pilote automatique déterministe des bancs de tools/jeu/). Publie aussi S.score, S.lives,
+   S.enemies, S.player, S.challenge et S.muted.
 */
 N.game = (function () {
   'use strict';
@@ -443,6 +447,7 @@ N.game = (function () {
     for (k = 1; k <= 6; k++) addCell(P.x + Math.cos(P.ang) * (16 + k * 13), P.y + Math.sin(P.ang) * (16 + k * 13), 0, 0, true, 0);
     for (k = 0; k < 4; k++) freeCell(0);
     if (N.fx && N.fx.reset) safe('fx.reset', function () { N.fx.reset(); });
+    applyMute();                                  // la coupure mémorisée vaut dès le démarrage
     publish();
     if (!N.intro && S.phase === 'intro') S.phase = 'play';                 // sans 60-intro.js, le jeu démarre
   }
@@ -1095,7 +1100,7 @@ N.game = (function () {
 
   function endGame(v) {
     st = 'fin'; finV = v; finT = 0; stT = 0;
-    if (score > record) { record = score; newRecord = true; store(K_REC, '' + record); }
+    if (score > record) { newRecord = record > 0; record = score; store(K_REC, '' + record); }   // annoncé seulement s'il y avait un record à battre
     stats.endT = t; stats.victoire = v;
     QT.length = 0;
     firstGame = false;
@@ -1141,12 +1146,23 @@ N.game = (function () {
   function toggleMute() {
     muted = !muted;
     store(K_SON, muted ? '0' : '1');
-    if (N.music) {
+    if (N.music && N.music.mute) applyMute();
+    else if (N.music) {                              // repli sans N.music.mute : la partition s'arrête, nos sons sont filtrés
       if (muted) { if (N.music.stop) safe('music.stop', function () { N.music.stop(); }); }
       else if (N.music.start && N.music.info && N.music.info()) safe('music.start', function () { N.music.start(); });
     }
     muteFlash = 0.35;
     if (S) S.muted = muted;
+  }
+  /* N.music.mute(v) (30-music.js) coupe tout, sons de 60-intro.js compris, et vaut avant même la création
+     du contexte audio ; sans lui, on retombe sur stop() tenu à chaque instant. */
+  function applyMute() {
+    if (!N.music) return;
+    if (N.music.mute) {
+      if (!N.music.muted || N.music.muted() !== muted) safe('music.mute', function () { N.music.mute(muted); });
+      return;
+    }
+    if (muted && N.music.stop) safe('music.stop', function () { N.music.stop(); });
   }
   muted = load(K_SON) === '0';
 
@@ -1154,9 +1170,9 @@ N.game = (function () {
      Croissante par tranches de vingt secondes : 0,06 puis +0,175 par tranche, et un léger glissement
      dans la tranche. Batterie dès 20 s (seuil 0,20 de 30-music.js), lead dès 80 s (seuil 0,68) : deux
      couches au calme, quatre au chaos. Appelée à chaque image par 90-boot.js, ouverture, interludes et
-     pause compris : c'est donc aussi là que la coupure du son est tenue (30-music.js n'a pas de muet). */
+     pause compris : c'est donc aussi là que la coupure du son est tenue (N.music.mute, ou son repli). */
   function tension() {
-    if (muted && N.music && N.music.stop && (++muteTick % 6) === 1) safe('music.stop', function () { N.music.stop(); });
+    if ((++muteTick % 6) === 1) applyMute();
     if (!P) return 0.06;
     if (st === 'fin') return 0.12;
     var tt = Math.min(t, DUREE - 0.001), k = Math.floor(tt / 20), f = (tt - k * 20) / 20;
