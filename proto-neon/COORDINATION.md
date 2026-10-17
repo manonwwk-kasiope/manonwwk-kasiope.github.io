@@ -87,6 +87,8 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 - **codex-p3** — remise en état de l'instrument R-01 à R-38 (32 critères sur 38 « non mesurables » le 18/10 à 00 h 24) : `tools/mesure/`. **Intégrée (3883b2a)**, vérifiée hors bac : quatre bundles fautifs refusés.
 - **codex-p4** — télégraphes manquants dans `S.tele` (CYCLOPE, RUCHE, SENTINELLE) : `73-colosse.js`, `72-ennemis.js`.
 - **codex-p5** — réglage de la difficulté (lot 9, § 4.10) : chiffres de `02-regles.js` seulement, au plus 5 passes, arrêt de non-convergence.
+- **codex-p2, p4, p6 : ACCEPTÉS et intégrés** (`refonte/mediation/2026-10-18-codex-p2-p4-p6.md`).
+- **codex-p4b** — les mines du CYCLOPE s'annoncent : `73-colosse.js`, `72-ennemis.js`.
 - **codex-p6** — l'API de test du contrat dans `79-jeu.js` / `10-gfx.js` : départ `reset(graine,{depart:'plongee'})`, scènes `charge`, `v5`, `lasso6`, `inversion`, `convoi`, `travelling`, vrai masque de propriété par `dbg.masque()`.
 - Note : le bac à sable de `codex exec` interdit serveur local et Chromium ; ces sessions simulent en VM Node et la cheffe d'orchestre exécute leurs scripts Playwright.
 
@@ -97,12 +99,10 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 01 h 10 | codex-01c : tentative unique contours/enseignes, soleil plein, jury |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
-| `src/79-jeu.js`, `src/10-gfx.js` | Codex (session parallèle codex-p6) | 18/10 à 00 h 41 | API de test du contrat : `reset(graine,{depart})`, six scènes, vrai masque (`demandes.md` § codex-08) |
-| `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
-| `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
