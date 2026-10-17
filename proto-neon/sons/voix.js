@@ -14,7 +14,7 @@
      (144,6 BPM).
    Chaque mot est une RECETTE : une suite de phonèmes écrits à la main (durée en ms, accent, hauteur).
    La fonction pure `pistes()` en tire les courbes de paramètres ; `construire()` les pose sur un graphe
-   Web Audio (25 nœuds environ, pour la durée du mot) ; `rendre()` précalcule le mot dans un
+   Web Audio (30 nœuds environ, pour la durée du mot et de son écho) ; `rendre()` précalcule le mot dans un
    OfflineAudioContext et le normalise à sa crête visée (chemin conseillé : un seul nœud à la lecture).
 
    Utilisation, dans n'importe quel contexte audio :
@@ -107,7 +107,7 @@ var VOIX_2975 = (function () {
         ['er', 270, { p0: 97, p1: 90 }]]
     },
     EXCELLENT: {
-      contrat: 1, role: 'palier × 8, LASSO de 4 et plus', niveau: -3,
+      contrat: 1, role: 'palier × 8, LASSO de 4 et plus', niveau: -2,
       ph: [['eh', 165, { a: 1, p0: 107, p1: 110 }], ['k', 75], ['s', 125], ['ax', 70, { p: 102 }], ['l', 80, { p: 100 }],
         ['ax', 70, { p: 97 }], ['n', 85, { p: 94 }], ['t', 70]]
     },
@@ -118,8 +118,8 @@ var VOIX_2975 = (function () {
     },
     /* les six mots que la quintessence (principe 11) ajoute au vocabulaire ; hors contrat pour l'instant */
     CHAIN: {
-      role: 'chaîne lancée, palier × 3', niveau: -3,
-      ph: [['ch', 120], ['ey', 240, { a: 1, p0: 108, p1: 104 }], ['n', 170, { p0: 98, p1: 90 }]]
+      role: 'chaîne lancée, palier × 3', niveau: -2,
+      ph: [['ch', 95], ['ey', 240, { a: 1, p0: 108, p1: 104 }], ['n', 170, { p0: 98, p1: 90 }]]
     },
     PERFECT: {
       role: 'tableau bonus tout abattu, vague sans coup', niveau: -3,
@@ -149,11 +149,11 @@ var VOIX_2975 = (function () {
      LE TIMBRE (réglages par défaut ; chaque appel peut en surcharger une partie). */
   var DEFAUT = {
     hauteur: 1,        // facteur sur f0 (la recette reste dans 90-110 Hz à 1)
-    taille: 0.97,      // facteur sur les formants : < 1 = conduit plus long, voix plus grande (0,93 : les voyelles glissent vers leurs voisines)
+    taille: 0.95,      // facteur sur les formants : < 1 = conduit plus long, voix plus grande (0,93 : les voyelles glissent vers leurs voisines)
     vitesse: 1,        // facteur sur les durées : > 1 = plus lent
     largeur: 0.8,      // facteur sur les largeurs de bande : < 1 = résonances plus étroites, plus métalliques
-    octave: 0.32,      // gain de la dent de scie à l'octave inférieure (le poids)
-    chorus: 0.28,      // gain de la dent de scie désaccordée de `chorusCents`
+    octave: 0.55,      // gain de la dent de scie à l'octave inférieure (le poids)
+    chorus: 0.38,      // gain de la dent de scie désaccordée de `chorusCents`
     chorusCents: 9,
     souffle: 0.035,    // bruit mêlé au voisement (râpe de la puce)
     f4: 3300, b4: 250, // formants fixes F4 et F5 (Hz) et leurs largeurs de bande
@@ -161,16 +161,21 @@ var VOIX_2975 = (function () {
     souffleSourd: 1,   // facteur sur le souffle de friction pendant l'aspiration des sourdes (0 = sans)
     prevoise: true,    // murmure voisé dans l'occlusion des b, d, g en attaque
     nasal: 18,         // profondeur (dB) de l'anti-formant des nasales
+    consonnes: 4,      // dB ajoutés à tous les bruits (aspiration, friction, explosions)
+    compression: 0,    // dB de compression avant la saturation (0 = sans)
     eclat: 0,          // gain de la branche parallèle d'éclat (0 = sans ; mesuré : plus de mordant, moins intelligible)
     eclatHz: 3500,
     presence: 7,       // dB d'étagère aiguë à 1,6 kHz (le haut-parleur du téléphone)
-    metal: 0.34,       // réinjection du peigne (0 = sans)
-    metalMs: 3.4,      // délai du peigne en ms (≥ 2,9 ms : une boucle Web Audio retarde d'au moins 128 images)
+    metal: 0.5,        // réinjection du peigne (0 = sans)
+    metalMs: 1000 / 293.66, // délai du peigne : une période de ré 4, la tonique du morceau ; la caisse sonne dans le ton
+                       // (≥ 2,9 ms : une boucle Web Audio retarde d'au moins 128 images)
+    limiteur: 0,       // dB de crête rabotés par le limiteur du chemin précalculé (`rendre`) ; mesuré : +1,5 à +3 dB de RMS, mais CHAIN moins sûr
+    coupeBas: 160,     // passe-haut du conduit (Hz) : le grave reste perçu par l'écart des harmoniques, le téléphone gagne 1 dB
     grain: 1.8,        // pente de la saturation douce (tanh)
     pre: 1,            // attaque de la saturation : 1 = crêtes vers 0,5 à son entrée (saturation douce)
-    echo: 0.2,         // niveau de l'écho (0 = sans)
-    echoS: 60 / 144.6 / 2, // une croche du morceau
-    echoFb: 0.28,
+    echo: 0.2,         // niveau de l'écho (0 = sans) ; il ne reprend que la dernière syllabe
+    echoS: 3 * 60 / 144.6 / 2, // trois croches du morceau : la répétition tombe après le mot, jamais dessus
+    echoFb: 0.3,
     echoHz: 2400,      // passe-bas de l'écho
     pan: 0,
     niveau: null       // crête visée en dBFS ; null = celle du mot
@@ -180,7 +185,7 @@ var VOIX_2975 = (function () {
      ils amènent la crête du mot, avec les réglages par défaut, à son `niveau`. `rendre()` n'en a pas
      besoin : il normalise à la mesure. Ne pas retoucher à la main sans remesurer. */
   /*CAL*/
-  var CAL = {};
+  var CAL = {"READY": 1.0103, "GO": 1.1043, "WARNING": 0.8889, "DANGER": 1.0102, "EXCELLENT": 0.9188, "GAMEOVER": 1.1147, "CHAIN": 1.1753, "PERFECT": 0.8598, "NEWRECORD": 0.879, "BOSS": 0.8977, "LEVEL": 1.0039, "CLEAR": 1.121};
   /*FIN CAL*/
 
   /* --------------------------------------------------------------------------------------------- */
@@ -287,7 +292,6 @@ var VOIX_2975 = (function () {
         T.AF.aller(s0, 0, precT === 'A' || precT === 'F' ? 0.018 : 0.01);
         if (P.t === 'V' || P.t === 'D') voyelles.push({ ph: g.ph, t0: s0, t1: s0 + d0, accent: !!g.op.a });
       } else if (P.t === 'S' || P.t === 'A') {
-        var j = prochainSonore(i), finale = j < 0 || segs[j].t > s0 + d0 + 0.001 && !SONORE[segs[i + 1] ? segs[i + 1].P.t : '_'] && j < 0;
         var loc = formants(g.ph, f2voisin(i), o);
         var bu = P.burst.slice(); if (bu[0] === 'vel') bu[0] = (loc[1] + loc[2]) / 2; else bu[0] *= o.taille;
         var bd = P.bd || 0.012;
@@ -365,11 +369,19 @@ var VOIX_2975 = (function () {
     var pf = new Piste(F0[0][1] * o.hauteur); pf.pts = F0.map(function (x) { return [x[0], x[1] * o.hauteur]; });
     T.F0 = pf;
 
+    /* la traîne : l'écho répète la dernière syllabe tant que la répétition dépasse −40 dB ; la dernière
+       répétition finit à fin + rep × echoS */
+    var derniere = voyelles.length ? voyelles[voyelles.length - 1].t0 : 0, queue = 0.02;
+    if (o.echo > 0) {
+      var rep = 1, a = o.echo; while (a * o.echoFb > 0.01 && rep < 8) { a *= o.echoFb; rep++; }
+      queue = Math.max(0.02, rep * o.echoS - 0.03);
+    }
     return {
       mot: k, o: o, pistes: T, segments: segs.map(function (g) { return { ph: g.ph, t0: g.t, t1: g.t + g.d }; }),
       voyelles: voyelles, appui: appui === null ? 0.03 : appui, fin: fin + 0.08,
-      derniere: voyelles.length ? voyelles[voyelles.length - 1].t0 : 0,
-      queue: o.echo > 0 ? Math.min(1.2, o.echoS * Math.log(0.001) / Math.log(Math.max(0.05, o.echoFb))) : 0.02
+      derniere: derniere,
+      echoDebut: o.echo > 0 ? derniere + o.echoS : null,
+      queue: queue
     };
   }
 
@@ -404,7 +416,6 @@ var VOIX_2975 = (function () {
       if (pts[i][0] === pts[i - 1][0]) param.setValueAtTime(v, t); else param.linearRampToValueAtTime(v, t);
     }
   }
-  function qdb(F, B) { return function (i) { return 0; }; }
 
   /* construire(ctx, dest, mot, t0, opts) : pose le mot sur le graphe, à l'instant t0 (temps du contexte).
      Renvoie { debut, appui, fin, noeuds, arreter() }. */
@@ -428,7 +439,8 @@ var VOIX_2975 = (function () {
     var av = G(0); somme.connect(av); poser(av.gain, T.AV.pts, T0);
     /* le bruit */
     var nz = ctx.createBufferSource(); nz.buffer = bruit(ctx); nz.loop = true; noeuds++; sources.push(nz);
-    var ah = G(0); nz.connect(ah); poser(ah.gain, T.AH.pts, T0);
+    var kc = db(o.consonnes || 0);                          // renfort des consonnes (voix d'annonceur, articulée)
+    var ah = G(0); nz.connect(ah); poser(ah.gain, T.AH.pts, T0, function (v) { return v * kc; });
     /* le conduit : trois résonateurs en cascade (passe-bas résonants : gain unité sous F, pic de F/B) */
     var r1 = F('lowpass', 500), r2 = F('lowpass', 1500), r3 = F('lowpass', 2500);
     [[r1, T.F1, T.B1], [r2, T.F2, T.B2], [r3, T.F3, T.B3]].forEach(function (z) {
@@ -441,7 +453,7 @@ var VOIX_2975 = (function () {
     var r4 = F('lowpass', o.f4 * o.taille, 20 * Math.log10(o.f4 / (o.b4 * o.largeur)));
     var r5 = F('lowpass', o.f5 * o.taille, 20 * Math.log10(o.f5 / (o.b5 * o.largeur)));
     var pres = F('highshelf', 1600, undefined); pres.gain.value = o.presence;
-    var hp = F('highpass', 70, 0.7);
+    var hp = F('highpass', o.coupeBas, 0.7);
     /* l'anti-formant des nasales : un creux qui s'ouvre pendant m, n, ng */
     var zn = F('peaking', 1500, 1.4); poser(zn.frequency, T.ZF.pts, T0); poser(zn.gain, T.ZG.pts, T0);
     av.connect(r1); ah.connect(r1);
@@ -455,7 +467,7 @@ var VOIX_2975 = (function () {
     }
     /* la friction, en parallèle */
     var bp = F('bandpass', 4000, 1); poser(bp.frequency, T.FF.pts, T0); poser(bp.Q, T.QF.pts, T0);
-    var af = G(0); nz.connect(bp); bp.connect(af); poser(af.gain, T.AF.pts, T0);
+    var af = G(0); nz.connect(bp); bp.connect(af); poser(af.gain, T.AF.pts, T0, function (v) { return v * kc; });
     /* le métal : peigne à réinjection, puis saturation douce */
     var cuve = G(o.pre * 0.1); hp.connect(cuve); af.connect(cuve);
     if (o.metal > 0) {
@@ -463,12 +475,17 @@ var VOIX_2975 = (function () {
       var cf = G(o.metal); cuve.connect(cd); cd.connect(cf); cf.connect(cuve);
     }
     var sat = ctx.createWaveShaper(); sat.curve = courbe(o.grain); sat.oversample = '2x'; noeuds++;
-    cuve.connect(sat);
+    if (o.compression > 0) {                               // compresseur rapide : relève les consonnes et les fins de mot
+      var cp = ctx.createDynamicsCompressor(); noeuds++;
+      cp.threshold.value = -6 - o.compression; cp.knee.value = 6; cp.ratio.value = 4; cp.attack.value = 0.003; cp.release.value = 0.08;
+      var cg = G(db(o.compression * 0.6));
+      cuve.connect(cp); cp.connect(cg); cg.connect(sat);
+    } else cuve.connect(sat);
     if (o.sonde === 'cuve') { cuve.connect(dest); }      // banc : le signal avant saturation, brut
-    /* la sortie, l'écho à la croche */
+    /* la sortie (calibrée : crête au niveau du mot), l'écho à trois croches */
     var cal = CAL[R.mot] || 1;
     var niv = o.niveau === null || o.niveau === undefined ? (MOTS[R.mot].niveau || -3) : o.niveau;
-    var sortie = G(cal * db(niv + 3) * db(-3));
+    var sortie = G(cal * db(niv - (MOTS[R.mot].niveau || -3)));
     sat.connect(sortie);
     if (o.echo > 0) {
       /* l'écho ne prend que la dernière syllabe : le mot reste sec et net, sa fin résonne dans la salle */
@@ -497,7 +514,31 @@ var VOIX_2975 = (function () {
     return { debut: T0, appui: T0 + R.appui, fin: fin, noeuds: noeuds, arreter: arreter, partition: R };
   }
 
-  /* rendre(mot, opts, sr) : le mot précalculé, mono, normalisé à sa crête visée. Promesse d'AudioBuffer. */
+  /* le limiteur du chemin précalculé : rabote les crêtes de `dbs` dB sans saturer. Anticipation de 2,5 ms
+     (le gain est déjà bas quand la crête arrive), montée lissée sur la même durée, relâche de 60 ms.
+     Il resserre l'écart crête / RMS : plus de niveau sur un petit haut-parleur, même crête. */
+  function limiter(x, sr, dbs) {
+    var n = x.length, L = Math.max(1, Math.round(sr * 0.0025)), i, m = 0;
+    for (i = 0; i < n; i++) m = Math.max(m, Math.abs(x[i]));
+    if (!m) return;
+    var seuil = m * db(-dbs), gt = new Float32Array(n), g1 = new Float32Array(n), q = [], h = 0;
+    for (i = 0; i < n; i++) { var a = Math.abs(x[i]); gt[i] = a > seuil ? seuil / a : 1; }
+    for (i = n - 1; i >= 0; i--) {                           // minimum glissant sur [i, i + L] (file monotone)
+      while (q.length > h && gt[q[q.length - 1]] >= gt[i]) q.pop();
+      q.push(i); if (q.length === h + 1) { /* rien */ }
+      while (q[h] > i + L) h++;
+      g1[i] = gt[q[h]];
+      if (h > 4096) { q = q.slice(h); h = 0; }
+    }
+    var rel = 1 - Math.exp(-1 / (sr * 0.06)), g = 1, acc = 0, fen = new Float32Array(L), k = 0;
+    for (i = 0; i < n; i++) {
+      g = Math.min(g1[i], g + (1 - g) * rel);
+      acc += g - fen[k]; fen[k] = g; k = (k + 1) % L;        // moyenne glissante : la montée est lissée
+      x[i] *= i >= L ? acc / L : g;
+    }
+  }
+
+  /* rendre(mot, opts, sr) : le mot précalculé, mono, limité, normalisé à sa crête visée. Promesse d'AudioBuffer. */
   var cache = {};
   function rendre(mot, opts, sr) {
     var k = cle(mot), R = pistes(k, opts), o = R.o;
@@ -514,10 +555,12 @@ var VOIX_2975 = (function () {
       var r = oc.startRendering(); if (r && r.then) r.then(ok, ko); else oc.oncomplete = function (e) { ok(e.renderedBuffer); };
     }).then(function (buf) {
       var x = buf.getChannelData(0), m = 0, i;
+      if (o.limiteur > 0) limiter(x, sr, o.limiteur);
       for (i = 0; i < x.length; i++) { var a = Math.abs(x[i]); if (a > m) m = a; }
       var niv = o.niveau === null || o.niveau === undefined ? (MOTS[k].niveau || -3) : o.niveau;
-      var g = m > 0 ? db(niv) / m : 1;
+      var g = m > 0 ? db(niv) / m : 1, nf = Math.min(x.length, Math.round(sr * 0.05));
       for (i = 0; i < x.length; i++) x[i] *= g;
+      for (i = 0; i < nf; i++) x[x.length - 1 - i] *= i / nf;   // 50 ms de fondu : la traîne ne claque jamais
       buf.voix = { mot: k, appui: R.appui, fin: R.fin, gain: g };
       return buf;
     });

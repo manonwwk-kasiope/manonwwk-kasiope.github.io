@@ -13,6 +13,8 @@ Un reconnaisseur entraîné sur des voix humaines est un juge sévère pour une 
 mot, une oreille humaine, qui lit en plus le mot à l'écran, le reconnaîtra.
 
 Usage : python3 reconnait.py <dossier des WAV> [sortie.json]
+On l'applique à la voix SÈCHE (mesure.mjs --sec) : l'écho, réglé à trois croches, ne commence qu'après la fin
+du mot (le banc le vérifie) ; un reconnaisseur prendrait la répétition pour un second mot.
 Dépendances : pip install pocketsphinx numpy scipy (hors du jeu : outil de mesure seulement)."""
 import json
 import os
@@ -107,8 +109,9 @@ def ecouter(d, x):
 
 
 def main():
-    dossier = sys.argv[1]
-    sortie = sys.argv[2] if len(sys.argv) > 2 else None
+    pos = [a for a in sys.argv[1:] if not a.startswith('--')]
+    dossier = pos[0]
+    sortie = pos[1] if len(pos) > 1 else None
     df, dl = decodeur_ferme(), decodeur_libre()
     res, score = {}, {'ferme': {}, 'libre': {}}
     versions = {'brut': lambda x: x, 'telephone': telephone, 'musique': musique}
@@ -122,10 +125,11 @@ def main():
             y = fn(x)
             f = ecouter(df, y)
             l = ecouter(dl, y)
-            r[nom] = {'ferme': f, 'ferme_ok': f == attendu, 'libre': l, 'libre_ok': attendu in l}
+            fok = f == attendu
+            r[nom] = {'ferme': f, 'ferme_ok': fok, 'libre': l, 'libre_ok': attendu in l}
             score['ferme'].setdefault(nom, 0)
             score['libre'].setdefault(nom, 0)
-            score['ferme'][nom] += f == attendu
+            score['ferme'][nom] += fok
             score['libre'][nom] += attendu in l
         res[mot] = r
         print(f"{mot:10s} " + '  '.join(

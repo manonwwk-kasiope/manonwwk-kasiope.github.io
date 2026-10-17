@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Voix de la machine</title>
+<style>
+:root{--nuit:#0d0221;--nuit2:#1a0b3b;--cyan:#2de2e6;--magenta:#ff3864;--jaune:#f9c80e;--os:#fffce8;--gris:#8a7fb0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nuit);color:var(--os);font:14px/1.45 ui-monospace,Menlo,Consolas,monospace}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:20px;letter-spacing:.12em;color:var(--jaune);margin:8px 0 2px}
+p.sous{color:var(--gris);margin:0 0 16px}
+.mots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px}
+.mots button{background:var(--nuit2);color:var(--os);border:1px solid var(--cyan);padding:12px 8px;font:inherit;font-size:15px;letter-spacing:.08em;cursor:pointer;text-align:left}
+.mots button.hors{border-color:var(--gris)}
+.mots button:hover,.mots button:focus-visible{background:#23104d;outline:2px solid var(--jaune)}
+.mots small{display:block;color:var(--gris);font-size:11px;letter-spacing:0;margin-top:2px}
+.reglages{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px 18px;background:var(--nuit2);padding:12px;margin-bottom:16px}
+.reglages label{display:grid;grid-template-columns:96px 1fr 52px;align-items:center;gap:8px;font-size:12px}
+.reglages input[type=range]{width:100%;accent-color:var(--cyan)}
+.reglages output{color:var(--jaune);text-align:right;overflow:hidden}
+.reglages label>*{min-width:0}
+.bascules{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 12px;font-size:13px}
+.bascules button{background:none;border:1px solid var(--magenta);color:var(--os);font:inherit;padding:6px 10px;cursor:pointer}
+canvas{display:block;width:100%;background:#000;image-rendering:pixelated}
+table{border-collapse:collapse;width:100%;font-size:12px;margin-top:12px}
+th,td{border-bottom:1px solid #2b1a5a;padding:4px 6px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--gris);font-weight:normal}
+.ok{color:var(--cyan)}.ko{color:var(--magenta)}
+.tableau{overflow-x:auto}
+#planche{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--nuit);padding:6px;width:1380px}
+#planche figure{margin:0}#planche figcaption{font-size:13px;color:var(--jaune);letter-spacing:.1em;padding:2px 0}
+#planche:empty{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>LA VOIX DE LA MACHINE</h1>
+<p class="sous">SNAKE 2975 · synthèse par formants · <code>sons/voix.js</code> · cadre cyan : mot du contrat (N.R.voix), gris : mot ajouté.</p>
+<div class="mots" id="mots"></div>
+<div class="bascules">
+  <label><input type="checkbox" id="tel"> haut-parleur de téléphone (passe-haut 350 Hz, passe-bas 7 kHz)</label>
+  <label><input type="checkbox" id="temps"> sur le temps (144,6 BPM, l'appui sur le temps fort)</label>
+  <button id="tout">tout mesurer</button>
+  <button id="raz">réglages par défaut</button>
+</div>
+<div class="reglages" id="reglages"></div>
+<canvas id="spectro" width="1068" height="300"></canvas>
+<div class="tableau"><table id="mes"></table></div>
+<div id="planche"></div>
+</main>
+<script src="../../sons/voix.js"></script>
+<script src="analyse.js"></script>
+<script>
+'use strict';
+const V = VOIX_2975, SR = 48000;
+const CURSEURS = [
+  ['hauteur', 0.7, 1.3, 0.01], ['taille', 0.8, 1.1, 0.01], ['vitesse', 0.7, 1.5, 0.01], ['largeur', 0.4, 1.6, 0.02],
+  ['octave', 0, 1, 0.01], ['chorus', 0, 1, 0.01], ['souffle', 0, 0.2, 0.005], ['presence', 0, 14, 0.5],
+  ['metal', 0, 0.7, 0.01], ['metalMs', 2.9, 12, 0.1], ['grain', 0.5, 6, 0.1], ['pre', 0.1, 2, 0.05],
+  ['echo', 0, 0.6, 0.01], ['echoFb', 0, 0.6, 0.01], ['consonnes', 0, 12, 0.5], ['coupeBas', 40, 300, 5]
+];
+const fmt = (v, s) => (+v).toFixed(Math.max(0, -Math.floor(Math.log10(s))));
+let reg = {};
+const zr = document.getElementById('reglages');
+function dessinerReglages() {
+  zr.innerHTML = '';
+  for (const [k, a, b, s] of CURSEURS) {
+    const l = document.createElement('label'), v = reg[k] !== undefined ? reg[k] : V.DEFAUT[k];
+    l.innerHTML = `<span>${k}</span><input type="range" min="${a}" max="${b}" step="${s}" value="${v}"><output>${fmt(v, s)}</output>`;
+    const i = l.querySelector('input'), o = l.querySelector('output');
+    i.oninput = () => { reg[k] = +i.value; o.textContent = fmt(i.value, s); };
+    zr.appendChild(l);
+  }
+}
+dessinerReglages();
+document.getElementById('raz').onclick = () => { reg = {}; dessinerReglages(); };
+
+let ctx = null, bus = null;
+function audio() {
+  if (ctx) return ctx;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  bus = ctx.createGain(); bus.connect(ctx.destination);
+  return ctx;
+}
+function sortie() {
+  if (!document.getElementById('tel').checked) return bus;
+  const h1 = ctx.createBiquadFilter(); h1.type = 'highpass'; h1.frequency.value = 350;
+  const h2 = ctx.createBiquadFilter(); h2.type = 'highpass'; h2.frequency.value = 350;
+  const l = ctx.createBiquadFilter(); l.type = 'lowpass'; l.frequency.value = 7000;
+  h1.connect(h2); h2.connect(l); l.connect(bus); return h1;
+}
+const MESURE = 60 / 144.6;
+function clic(t, fort) {
+  const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = fort ? 1760 : 1320;
+  g.gain.setValueAtTime(fort ? 0.25 : 0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+  o.connect(g); g.connect(bus); o.start(t); o.stop(t + 0.05);
+}
+async function jouer(mot) {
+  audio(); if (ctx.state !== 'running') await ctx.resume();
+  const buf = await V.rendre(mot, Object.assign({}, reg), ctx.sampleRate);
+  const s = ctx.createBufferSource(); s.buffer = buf; s.connect(sortie());
+  let t = ctx.currentTime + 0.05;
+  if (document.getElementById('temps').checked) {
+    const t0 = ctx.currentTime + 0.1; for (let i = 0; i < 8; i++) clic(t0 + i * MESURE, i % 4 === 0);
+    t = t0 + 4 * MESURE - buf.voix.appui;              // l'appui sur le premier temps de la mesure 2
+  }
+  s.start(t);
+  afficher(mot);
+}
+/* rendu hors ligne + mesures + spectrogramme */
+async function rendu(mot, r) {
+  const R = V.pistes(mot, r), n = Math.ceil((R.fin + R.queue + 0.1) * SR), oc = new OfflineAudioContext(1, n, SR);
+  V.construire(oc, oc.destination, mot, 0, r);
+  const x = (await oc.startRendering()).getChannelData(0);
+  return { R, x, m: VOIX_AN.tout(x, SR, R) };
+}
+function peindre(cv, x, R, titre) {
+  const g = cv.getContext('2d'), W = cv.width, H = cv.height, FMAX = 6000;
+  const S = VOIX_AN.spectrogramme(x, SR, FMAX), nc = S.cols.length, nk = S.cols[0].length;
+  let mx = -1e9; for (const c of S.cols) for (const v of c) mx = Math.max(mx, v);
+  const img = g.createImageData(W, H);
+  for (let px = 0; px < W; px++) {
+    const c = S.cols[Math.min(nc - 1, Math.floor(px / W * nc))];
+    for (let py = 0; py < H; py++) {
+      const k = Math.floor((1 - py / H) * nk), v = Math.max(0, Math.min(1, (c[k] - mx + 55) / 55));
+      const o = (py * W + px) * 4;
+      img.data[o] = 255 * Math.min(1, v * 1.6) * 0.95; img.data[o + 1] = 255 * Math.max(0, v * 1.5 - 0.6); img.data[o + 2] = 120 * v + 40 * (1 - v) * 0.3; img.data[o + 3] = 255;
+    }
+  }
+  g.putImageData(img, 0, 0);
+  const tx = t => (t - S.t0) / S.dt / nc * W, fy = f => H * (1 - f / FMAX);
+  g.setLineDash([4, 3]); g.lineWidth = 1.5;
+  [['F1', '#2de2e6'], ['F2', '#2de2e6'], ['F3', '#2de2e6']].forEach(([k, c]) => {
+    g.strokeStyle = c; g.beginPath();
+    for (let px = 0; px < W; px += 2) { const t = S.t0 + px / W * nc * S.dt, av = R.pistes.AV.val(t) + R.pistes.AH.val(t); const y = fy(R.pistes[k].val(t)); if (av > 0.05) g.lineTo(px, y); else g.moveTo(px, y); }
+    g.stroke();
+  });
+  g.setLineDash([]); g.fillStyle = '#fffce8'; g.font = '12px ui-monospace,monospace';
+  R.segments.forEach(s => { const a = tx(s.t0); g.fillRect(a, H - 14, 1, 14); g.fillText(s.ph, a + 2, H - 3); });
+  for (let f = 1000; f < FMAX; f += 1000) { g.fillStyle = 'rgba(255,252,232,.5)'; g.fillText(f / 1000 + 'k', 2, fy(f) + 4); }
+  if (titre) { g.fillStyle = '#f9c80e'; g.font = '16px ui-monospace,monospace'; g.fillText(titre, 8, 18); }
+}
+const lignes = [];
+function ligne(mot, m, R) {
+  const N = m.niveaux, S = m.spectre;
+  const vo = m.voyelles.map(v => `${v.ph} ${v.F[0].mesure || '?'}/${v.F[1].mesure || '?'}`).join(' · ');
+  return `<tr><td>${V.texte(mot)}</td><td>${N.creteDb}</td><td>${N.rmsDb}</td><td>${N.rmsTelDb}</td><td>${N.duree}</td><td>${R.appui.toFixed(2)}</td>`
+    + `<td>${(S.au4k * 100).toFixed(1)} %</td><td class="${S.au400 >= 0.25 ? 'ok' : 'ko'}">${(S.au400 * 100).toFixed(0)} %</td><td>${S.centroide}</td>`
+    + `<td>${m.f0 ? m.f0.min + '–' + m.f0.max : '–'}</td><td class="${m.indice >= 0.7 ? 'ok' : 'ko'}">${m.indice}</td><td style="text-align:left">${vo}</td></tr>`;
+}
+const ENTETE = '<tr><th>mot</th><th>crête dBFS</th><th>RMS</th><th>RMS tél.</th><th>durée s</th><th>appui s</th><th>&gt; 4 kHz</th><th>&gt; 400 Hz</th><th>centroïde</th><th>f0 Hz</th><th>indice</th><th>voyelles F1/F2 mesurés</th></tr>';
+async function afficher(mot) {
+  const { R, x, m } = await rendu(mot, Object.assign({}, reg));
+  peindre(document.getElementById('spectro'), x, R, V.texte(mot));
+  document.getElementById('mes').innerHTML = ENTETE + ligne(mot, m, R);
+}
+document.getElementById('tout').onclick = async () => {
+  let h = ENTETE;
+  for (const mot of V.mots) { const { R, m } = await rendu(mot, Object.assign({}, reg)); h += ligne(mot, m, R); }
+  document.getElementById('mes').innerHTML = h;
+};
+/* la planche : tous les spectrogrammes, pour le banc (--planche) */
+window.__peindre = (c, x, R, t) => peindre(c, x, R, t);
+window.planche = async (mots) => {
+  const z = document.getElementById('planche'); z.innerHTML = '';
+  for (const mot of mots || V.mots) {
+    const f = document.createElement('figure'), c = document.createElement('canvas'); c.width = 452; c.height = 200;
+    const { R, x } = await rendu(mot, {});
+    peindre(c, x, R, null);
+    f.innerHTML = `<figcaption>${V.texte(mot)}</figcaption>`; f.appendChild(c); z.appendChild(f);
+  }
+};
+const zm = document.getElementById('mots');
+for (const mot of V.mots) {
+  const b = document.createElement('button'), W = V.MOTS[mot];
+  b.className = W.contrat ? '' : 'hors';
+  b.innerHTML = `${V.texte(mot)}<small>${W.role}</small>`;
+  b.onclick = () => jouer(mot);
+  zm.appendChild(b);
+}
+if (!location.search.includes('banc')) afficher('WARNING');
+</script>
+</body>
+</html>
