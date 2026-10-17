@@ -53,7 +53,18 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 
 Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
-1. Trancher le tempo de Neon Velocity (144,6 / 143,8 / 115 BPM) et l'aligner partout (N.R, piste.json, sons).
+1. **Le tempo — décision de la propriétaire (18 octobre) : il doit CHANGER pendant la partie, pour surprendre la
+   joueuse.** On n'aligne donc plus tout le jeu sur une valeur unique. Ce que ça implique :
+   - chaque morceau (Neon Velocity et les sept morceaux Suno de `musique/brut/`) a SON tempo, mesuré morceau par
+     morceau (attention au piège déjà vu : 143,8 contre 115 BPM, rapport 1,25, deux pulsations différentes du même
+     morceau ; vérifier à l'oreille ou par deux méthodes) ;
+   - la grille rythmique du jeu (`N.R` : BPM, mesures des sections, calage des vagues, du décor et du VOL) suit le
+     tempo du morceau EN COURS au lieu d'une constante ;
+   - les changements de tempo sont des moments de mise en scène, jamais au hasard, toujours sur une barre de
+     mesure : par exemple accélération à la montée d'une vague, passage en demi-temps à l'INVERSION ou au RALENTI,
+     coup de frein puis reprise plus rapide à l'arrivée du CYCLOPE, tempo propre au VOL et aux intermèdes ;
+   - la surprise doit rester lisible : annoncée par la musique (montée, coupure, stinger), pas par une rupture
+     qui fait rater un virage.
 2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`.
 3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
 4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain.
