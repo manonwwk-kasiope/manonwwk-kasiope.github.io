@@ -7,7 +7,7 @@ for (const fps of [60, 30]) {
   const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 } });
   const page = await ctx.newPage();
   await page.addInitScript(f => { window.__SEED = 3; window.__DT = 1 / f; }, fps);
-  await page.goto('http://127.0.0.1:8112/proto-neon/tools/jeu/index.html');
+  await page.goto('' + (process.env.URL_JEU || 'http://127.0.0.1:8121/proto-neon/index.html') + '');
   await page.waitForFunction(() => window.__N && window.__N.intro);
   await page.evaluate(() => window.__N.intro.skip());
   const r = await page.evaluate(() => new Promise(res => {

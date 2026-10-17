@@ -15,16 +15,26 @@ const logs = [];
 page.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') logs.push(m.type() + ': ' + m.text()); });
 page.on('pageerror', e => logs.push('pageerror: ' + e.message));
 await page.addInitScript(() => { window.__SEED = 7; window.__DT = 1 / 60; });
-await page.goto('http://127.0.0.1:8112/proto-neon/tools/jeu/index.html');
+await page.goto('' + (process.env.URL_JEU || 'http://127.0.0.1:8121/proto-neon/index.html') + '');
 await page.waitForFunction(() => window.__N && window.__N.game && window.__S);
 await page.evaluate(() => { const N = window.__N; if (N.intro && N.intro.skip) N.intro.skip(); else window.__S.phase = 'play'; });
+/* la joueuse invulnérable (N.game.dbg.god) : sans pilote, un vrai serpent meurt en quelques secondes et l'essai ne finirait pas */
+await page.waitForFunction(() => window.__N.game.etat() !== 'demarrage', null, { timeout: 20000 });
+await page.evaluate(() => window.__N.game.dbg.god(true));
 const t0 = Date.now();
-await page.waitForFunction((s) => window.__N.game.dbg().t >= s, +secs, { timeout: 600000, polling: 100 });
+/* les CARTES attendent un toucher entre deux vagues : un bot presse 1 dès qu'elles apparaissent */
+const dl = Date.now() + 120000;
+for (;;) {
+  const [t, e] = await page.evaluate(() => [window.__N.game.dbg().t, window.__N.game.etat()]);
+  if (t >= +secs || Date.now() > dl) break;
+  if (e === 'cartes') { await page.waitForTimeout(400); await page.keyboard.press('Digit1'); }
+  else await page.waitForTimeout(80);
+}
 const ms = Date.now() - t0;
 const info = await page.evaluate(() => {
   const d = window.__N.game.dbg();
   return { t: d.t.toFixed(2), st: d.st, W: d.W, H: d.H, arena: [d.AL, d.AR, d.AT, d.AB], len: d.P.len, lives: d.P.lives, score: d.score, kills: d.kills,
-    alive: d.E.length, cells: d.CELLS.length, phase: window.__S.phase, err: window.__ERR, enemyStart: d.enemyStart, frame: window.__FRAME,
+    alive: d.E.length, cells: d.CELLS.length, phase: window.__S.phase, etat: d.etat, vague: d.vague, err: window.__ERR, enemyStart: d.enemyStart, frame: window.__FRAME,
     spawns: d.stats.spawns.length, inView: d.stats.inView, px: window.__N.gfx.PX };
 });
 await page.screenshot({ path: out });
