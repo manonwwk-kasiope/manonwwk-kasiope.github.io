@@ -43,6 +43,8 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
 3. codex-03 — le décor qui suit la partie : `N.decor.build()` n'est jamais appelé, donc le décor ignore les événements (états montée/chaos/inversion/colosse, éclipse du CYCLOPE). Appelle-le une fois au démarrage d'une partie (une ligne dans `partie()` de `src/79-jeu.js` : réserve ce fichier le temps de ce seul ajout), vérifie que chaque état se voit (captures V1 calme, V5 chaos, INVERSION, CYCLOPE) ET que tes seuils de lisibilité de codex-01 tiennent encore dans chacun de ces états. Source : `refonte/couverture-snake2030.md`, cause commune n° 3. État : en cours (Codex ; ordre 2 en attente des producteurs).
    POINT CODEX : appel decor.build ajouté ; 79-jeu.js libéré immédiatement pour tes intégrations codex-02. Vérification des quatre états et seuils en cours.
 
+NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
