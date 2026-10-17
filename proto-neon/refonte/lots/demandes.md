@@ -163,3 +163,20 @@ La boucle à pas fixe est branchée dans 90-boot : titre sur trois profils, cons
 Preuve de précontrôle : `tools/horloge/banc.mjs`, mode ralentis (avant/après distincts, reçus à livrer) ; aucun seuil retouché. Montée de niveau : un premier essai à k=0,15 a duré 0,35 s ; le banc final provoque désormais la montée par N.cartes.xp (pas d'événement niveau injecté). Pas d'ajout d'un ralenti de secours dans le boot.
 
 - Régression ancien banc 01, premier passage APRÈS : les **neuf cas** passent les quatre plafonds/minimums couleur, sans erreur. Les neuf empreintes `horsJeu` diffèrent : ce contrôle compare des scènes qui ont évolué sous deux boucles temporelles différentes, pas le même contexte à un état forcé différent. Je garde le verdict brut en échec ; faut-il remplacer ce contrôle de non-régression d'une retouche de palette par un rendu apparié du même contexte pour le chantier horloge ? Aucun seuil du banc n'a été changé. Les trois deltas p95 sont aussi hors borne (+0,90 / +0,60 / +0,60 ms) pendant des bancs d'autres sessions (`mesure/lancer`, lot H). La comparaison dédiée V4 donne +0,10 ms ; ce n'est pas une preuve au repos. Un second passage apparié au repos est nécessaire avant verdict performance.
+
+## Demande du cloud (18 octobre, 02 h 30) — LE branchement qui relie tout : `N.aventure` (`src/64-aventure.js`)
+Livré : `N.aventure` (le déroulé de l'aventure, liste déclarative d'étapes) et `N.film` (lecteur de film plein écran,
+repli sur panneau fixe, légende tapée, saut après 300 ms). Banc `tools/aventure/` : trois profils, zéro erreur ;
+ELLE : 7 films (connexion → … → fin-elle → « LE PILOTE T'ATTEND ») ; puis LUI : 9 films jusqu'aux retrouvailles,
+au teaser « SNAKE 3019 — BIENTÔT. À DEUX. » et « À SUIVRE ». Il appelle lui-même N.choix, N.terminal, N.arcade
+(et N.cosmos quand il sera livré) : **brancher N.aventure dans 79-jeu.js branche d'un coup le choix, 1976, 1982,
+les films par personnage, les fins, les retrouvailles et le teaser.**
+1. un état `aventure` ; au JOUER du titre : `aller('aventure'); N.aventure.demarrer({ aJouer: entrerDansLeNeon,
+   surFin: finAventure })` ;
+2. dans cet état : `update` → `N.aventure.update(dt)`, `draw` → `N.aventure.draw()`, `drawTop` rien ; couper la piste
+   principale pendant les étapes `1976` et `1982` (elles jouent leur propre musique) ;
+3. `entrerDansLeNeon(info)` : si `info.premiere`, `lancer(false)` ; sinon reprendre l'état gelé ;
+4. rendre la main dans `update` : `if (N.aventure.reprendre('profondeur' | 'warp' | 'espace' | 'fin')) aller('aventure')`
+   — aujourd'hui seul `'fin'` sert : à la victoire, après « apotheose », à la place de `terminer(true)` ;
+5. `finAventure(bilan)` mène à l'écran de fin ou au titre ; une défaite ne concerne pas l'aventure ; quitter vers le
+   titre appelle `N.aventure.stop()`.

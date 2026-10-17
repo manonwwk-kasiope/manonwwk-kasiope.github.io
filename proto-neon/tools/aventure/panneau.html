@@ -1,0 +1,86 @@
+<script>
+/* page d'essai de l'aventure (64-aventure.js) : le jeu principal reste à l'arrêt ; N.aventure prend la main sur la
+   boucle, et un JEU SIMULÉ tient la place de 79-jeu.js quand la main lui passe (aJouer).
+   ?qui=elle | lui      saute l'écran de choix ;   ?oublie=1   vide le profil des pilotes finis
+   ?auto=1              le jeu simulé rend la main seul après 2,5 s : profondeur, warp, espace, fin
+   ?pilote=1            un pilote simple joue l'époque 1976
+   window.__aventure : lancer(o), rendre(evt) (rendu au pas suivant, dans update), pilote(b), etat()
+   window.__AV_FIN reçoit le bilan de surFin ; window.__AV_JEU la dernière info d'aJouer.
+   Les clips : 05-art.js les lit en relatif (« cine/<nom>.mp4 ») ; tools/aventure/cine est un lien vers ../../cine. */
+(function () {
+  var N = window.__N, JEU = null, RENDRE = null, PILOTE = /[?&]pilote=1\b/.test(location.search);
+  var AUTO = /[?&]auto=1\b/.test(location.search), SUITE = ['profondeur', 'warp', 'espace', 'fin'];
+  var I = function (n) { return N.pal.i(n); };
+  function lancer(o) {
+    o = o || {};
+    window.__AV_FIN = null; window.__AV_JEU = null; JEU = null; RENDRE = null;
+    N.S.phase = 'aventure';
+    var m = /[?&]qui=(elle|lui)\b/.exec(location.search);
+    return N.aventure.demarrer({
+      qui: o.qui || (m ? m[1] : undefined),
+      aJouer: function (info) { window.__AV_JEU = info; JEU = { info: info, t: 0 }; },
+      surFin: function (bilan) { window.__AV_FIN = bilan; JEU = null; }
+    });
+  }
+  /* un pilote de 1976 : vers la cellule, jamais de demi-tour, jamais dans le mur */
+  var DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];
+  function piloter() {
+    var s = N.terminal.state(), h = s.tete, f = s.food, inp = N.S.input;
+    if (!h || !f || s.phase !== 'jeu') return;
+    var veut = [];
+    if (f[0] > h[0]) veut.push(0); if (f[0] < h[0]) veut.push(2); if (f[1] > h[1]) veut.push(1); if (f[1] < h[1]) veut.push(3);
+    veut.push(s.dir, (s.dir + 1) % 4, (s.dir + 3) % 4);
+    for (var k = 0; k < veut.length; k++) {
+      var d = veut[k]; if ((d + 2) % 4 === s.dir) continue;
+      var nx = h[0] + DX[d], ny = h[1] + DY[d];
+      if (nx < 0 || ny < 0 || nx >= s.cols || ny >= s.rows) continue;
+      inp.x = DX[d]; inp.y = DY[d]; inp.mag = 1; return;
+    }
+  }
+  /* le jeu simulé : une grille de néon qui défile, un serpent cyan qui ondule, l'époque écrite */
+  function dessinerJeu() {
+    var g = N.gfx, W = g.W, H = g.H, t = JEU.t;
+    if (g.origin) g.origin(0, 0);
+    g.rect(0, 0, W, H, I('nuitProfonde'));
+    var hz = Math.round(H * 0.45);
+    g.ditherRect(0, hz - 30, W, 30, I('indigo'), 0.5);
+    g.rect(0, hz, W, 1, I('magenta'));
+    for (var i = 0; i < 10; i++) { var z = 0.6 + ((i * 0.5 - t * 0.8) % 5 + 5) % 5, y = hz + Math.round(60 / z); if (y < H) g.rect(0, y, W, 1, I('violet')); }
+    for (var k = -8; k <= 8; k++) g.line(W / 2, hz, W / 2 + k * W / 6, H, I('violet'));
+    for (var j = 0; j < 14; j++) { var x = W * 0.3 + j * 6, yy = H * 0.7 + Math.round(Math.sin(t * 4 - j * 0.6) * 6); g.rect(x, yy, 5, 5, j === 0 ? I('cyanPale') : I('cyan')); }
+    var s = N.spr.text('JEU SIMULÉ — ' + JEU.info.epoque + ' (' + JEU.info.etape + ')', { ci: 'os', ombre: true });
+    g.blit(s, Math.round((W - s.w) / 2), 8);
+  }
+  function brancher() {
+    var q = location.search;
+    if (/[?&]oublie=1\b/.test(q)) { try { localStorage.removeItem('snake2975.pilotes'); } catch (e) {} }
+    var g = N.game;
+    g.update = function (dt) {
+      if (PILOTE && N.aventure.etape() === '1976' && N.terminal) piloter();
+      if (N.aventure.actif()) { N.aventure.update(dt); return; }
+      if (JEU) {
+        JEU.t += dt;
+        if (AUTO && JEU.t > 2.5 && !RENDRE) RENDRE = SUITE[Math.min(SUITE.length - 1, ['neon', 'jeu-1993', 'jeu-2001', 'jeu-2975'].indexOf(JEU.info.etape))];
+        if (RENDRE) { var e = RENDRE; RENDRE = null; if (N.aventure.reprendre(e)) JEU = null; }
+      }
+    };
+    g.draw = function () {
+      if (N.aventure.actif()) { N.aventure.draw(); return; }
+      if (JEU) { dessinerJeu(); return; }
+      var gg = N.gfx; gg.rect(0, 0, gg.W, gg.H, I('nuitProfonde'));
+      var s = N.spr.text(window.__AV_FIN ? 'AVENTURE TERMINÉE' : 'EN ATTENTE', { ci: 'acier', ombre: true });
+      gg.blit(s, Math.round((gg.W - s.w) / 2), Math.round(gg.H / 2));
+    };
+    g.drawTop = function () {};
+    window.__aventure = {
+      lancer: lancer,
+      rendre: function (evt) { RENDRE = evt; },
+      pilote: function (b) { PILOTE = !!b; },
+      jeu: function () { return JEU ? { etape: JEU.info.etape, t: JEU.t } : null; },
+      etat: function () { return N.aventure.state(); }
+    };
+    lancer();
+  }
+  if (document.readyState === 'complete') setTimeout(brancher, 50); else window.addEventListener('load', function () { setTimeout(brancher, 50); });
+})();
+</script>

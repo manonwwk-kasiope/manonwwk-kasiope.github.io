@@ -98,7 +98,6 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
-| `src/64-aventure.js`, `tools/aventure/` (nouveaux) | Claude cloud | 18/10 à 01 h 05 | N.aventure (le déroulé : choix, connexion, 1976, fissure, 1982, néon, films d'époque, fins, retrouvailles, teaser) et N.film (lecteur de film plein écran) |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 
@@ -133,6 +132,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 ## Livré par la session cloud (à brancher)
 
+- **`src/64-aventure.js` — PRIORITÉ : brancher N.aventure dans 79-jeu.js relie d'un coup tout le reste** (choix, 1976, 1982, films par personnage, fins, retrouvailles, teaser) : voir `refonte/lots/demandes.md`, « LE branchement qui relie tout ».
 - `refonte/prototypes/plans.html` — prototype jouable des trois plans parallèles, du changement de hauteur et du warp (vision § 3) : pour intégrer, horloge à pas fixe, rendu en couches dans 10-gfx, fusion avec 78-warp.
 - `src/69-arcade.js` — l'époque 1982 : voir `refonte/lots/demandes.md`, « brancher l'époque 1982 ».
 - `src/62-choix.js` — l'écran LA PILOTE / LE PILOTE : voir `refonte/lots/demandes.md`, « brancher l'écran de choix ».
