@@ -68,7 +68,9 @@ d'essai de `snake2030/tools/test/banc.mjs`.
 
 ## Ce qui est interdit
 
-- Toute dépendance externe : pas de CDN, pas de police web, pas d'image, pas d'audio. Un seul fichier.
+- Toute dépendance externe : pas de CDN, pas de police web, pas d'audio externe. Un seul fichier. Les
+  seules images admises sont les illustrations de `art/`, générées puis converties en pixel art dans la
+  palette fermée, et injectées dans le bundle par `build.mjs`.
 - Toute couleur hors palette, tout `Math.random` (le prototype doit être rejouable à graine fixe),
   tout `Date.now` (horloge de jeu uniquement).
 - Toucher à `snake2030/`. Le prototype vit dans `proto-neon/` et nulle part ailleurs.

@@ -148,6 +148,7 @@ function boot() {
     if (window.__SEED) N.reseed(window.__SEED);
   }
   step('gfx.init', N.gfx && N.gfx.init ? function () { N.gfx.init(out); } : null);
+  step('art.load', N.art && N.art.load ? function () { N.art.load(); } : null);
   resize();
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', resize);
