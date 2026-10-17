@@ -1,6 +1,6 @@
 // Règle du cyan sur le tampon d'index : part de pixels cyan / cyan pâle à chaque étape de l'ouverture et des
 // interludes. Attendu : 0 hors des images où la joueuse est montrée (étincelle, serpent) et du liseré du logo.
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await (await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 }, deviceScaleFactor: 1 })).newPage();
 await page.addInitScript(() => { window.__DT = 1 / 60; });

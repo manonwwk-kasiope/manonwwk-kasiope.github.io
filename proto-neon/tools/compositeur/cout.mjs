@@ -1,7 +1,7 @@
 /* Ce que la musique coute au fil d'images, sur le profil iPhone 13 paysage.
    On ne mesure pas l'etat interne : on mesure les ecarts reels entre images (requestAnimationFrame)
    et le temps passe dans l'ordonnanceur, musique eteinte puis allumee, dans la meme page. */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 
 const b = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const p = await b.newPage({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true });

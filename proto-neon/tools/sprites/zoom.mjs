@@ -1,7 +1,7 @@
 /* tools/sprites/zoom.mjs — agrandit une portion d'image au voisin le plus proche, pour la regarder.
    Usage : node tools/sprites/zoom.mjs entree.png x y w h echelle sortie.png */
 import fs from 'node:fs';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const [inp, x, y, w, h, k, outp] = process.argv.slice(2);
 const b64 = fs.readFileSync(inp).toString('base64');

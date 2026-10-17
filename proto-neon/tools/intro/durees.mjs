@@ -1,6 +1,6 @@
 // Temps réel (aucun __DT) : début de chaque étape au chronomètre du navigateur, coût de N.intro.draw()
 // par image, intervalles entre images autour du saut vers le jeu. usage : node durees.mjs [ralenti=1] [saut=13]
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const lent = +(process.argv[2] || 1), sautA = +(process.argv[3] || 13), mode = process.argv[4] || 'doigt';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 }, deviceScaleFactor: 1 });

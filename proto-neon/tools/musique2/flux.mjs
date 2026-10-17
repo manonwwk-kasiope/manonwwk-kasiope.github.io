@@ -5,7 +5,7 @@
    eu en jeu, c'est la ligne de temps que mesure.mjs rejoue hors ligne dans le meme moteur.
    Usage : node tools/musique2/flux.mjs [profil=paysage] [graine=7]  ->  tools/musique2/flux.json */
 import fs from 'node:fs';
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 
 const [profil = 'paysage', graine = '7'] = process.argv.slice(2);
 const PROF = {

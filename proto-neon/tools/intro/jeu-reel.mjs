@@ -1,7 +1,7 @@
 // Avec le VRAI 70-game.js : ouverture sautée au doigt, partie accélérée, pilote qui fuit le danger et
 // va vers l'énergie (pour atteindre l'annonce du colosse) ; on relève S.phase, le journal de 60-intro.js,
 // et on capture l'interlude tel que le joueur le verra. usage : node jeu-reel.mjs [paysage|portrait] [mourir]
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const prof = process.argv[2] || 'paysage', mourir = process.argv[3] === 'mourir';
 const P = { paysage: { ...devices['iPhone 13'], viewport: { width: 844, height: 390 }, deviceScaleFactor: 1 },
   portrait: { ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, deviceScaleFactor: 1 } }[prof];

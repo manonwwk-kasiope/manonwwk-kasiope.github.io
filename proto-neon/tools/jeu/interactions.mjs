@@ -1,7 +1,7 @@
 /* tools/jeu/interactions.mjs — les gestes réels, au toucher émulé (CDP), en portrait iPhone 13 :
    saut de l'ouverture, pouce fantôme, latence et durée d'un virage, cap gardé au relâcher, bouton son
    mémorisé, pause, rotation en pleine partie, mort, garde de l'écran de fin, relance. Captures dans tools/jeu/. */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const OUT = new URL('.', import.meta.url).pathname;
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 } });

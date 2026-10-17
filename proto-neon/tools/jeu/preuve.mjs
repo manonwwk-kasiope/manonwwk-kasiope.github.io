@@ -4,7 +4,7 @@
    Rend un JSON : ennemis vivants et tension par tranches de 20 s, kills, apparitions dans le champ,
    explosion du colosse (part de brasier, secousse), score, issue ; et des captures aux instants clés. */
 import fs from 'node:fs';
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const [profil = 'paysage', mode = 'expert', graine = '7', pre = ''] = process.argv.slice(2);
 const PROF = {
   bureau: { viewport: { width: 1440, height: 900 } },

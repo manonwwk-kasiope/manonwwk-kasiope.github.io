@@ -3,7 +3,7 @@
    Usage : node tools/sprites/jeu.mjs   (après node build.mjs tools/sprites/index.html) */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 for (const [nom, prof] of [['paysage', { ...devices['iPhone 13'], viewport: { width: 844, height: 390 } }], ['portrait', { ...devices['iPhone 13'], viewport: { width: 390, height: 844 } }]]) {

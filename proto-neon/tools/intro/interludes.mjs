@@ -1,7 +1,7 @@
 // Interludes : 'boss', 'victoire', 'defaite' derrière un N.game de substitution qui suit l'usage
 // documenté en tête de 60-intro.js. Durées mesurées image par image, saut au doigt, captures.
 // usage : node interludes.mjs <paysage|portrait|bureau>
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const prof = process.argv[2] || 'paysage';
 const PAGE = 'http://127.0.0.1:8112/proto-neon/tools/intro/index.html';
 const P = {

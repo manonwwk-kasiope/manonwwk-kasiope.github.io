@@ -5,7 +5,7 @@
    2. chaque son isole : crete, RMS, part aigue ; et le flux de tirs a la cadence reelle contre la musique.
    Usage : node tools/musique2/mesure.mjs [etiquette]  ->  tools/musique2/mesure-<etiquette>.json */
 import fs from 'node:fs';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const label = process.argv[2] || 'actuel';
 const HERE = new URL('.', import.meta.url).pathname;

@@ -1,7 +1,7 @@
 // Planche-contact : le tampon d'index (vrais pixels du jeu, avant post-traitement) toutes les `pas` s.
 // Vérifie aussi la palette fermée (index 0..15) et compte le cyan par image.
 // usage : node planche.mjs <profil> <t0> <t1> <pas> <colonnes> <fichier>
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 import { encode } from './png.mjs';
 const [prof = 'paysage', a = '0', b = '12.5', st = '0.25', cols = '6', out = 'planche.png'] = process.argv.slice(2);
 const P = { paysage: { ...devices['iPhone 13'], viewport: { width: 844, height: 390 }, deviceScaleFactor: 1 },

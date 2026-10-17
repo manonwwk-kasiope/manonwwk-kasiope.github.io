@@ -7,7 +7,7 @@
    Le son est lance au chargement (N.music.init + start, permis par --autoplay-policy) pour que
    l'ouverture joue ses propres sons ; le toucher qui suit ne fait plus que sauter l'invite.
    Usage : node tools/musique2/partie.mjs [paysage|portrait|bureau] [reel|rapide] [graine=7] */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 
 const [profil = 'paysage', mode = 'reel', graine = '7'] = process.argv.slice(2);
 const PROF = {

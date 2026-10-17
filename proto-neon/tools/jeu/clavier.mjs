@@ -1,6 +1,6 @@
 /* tools/jeu/clavier.mjs — bureau 1440 x 900 sans écran tactile : l'ouverture cède à Espace, l'indice clavier
    remplace le pouce fantôme, les flèches dirigent, M coupe le son, Espace relance depuis l'écran de fin. */
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 const OUT = new URL('.', import.meta.url).pathname;
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });

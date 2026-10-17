@@ -2,7 +2,7 @@
 // fabrique un clip d'essai JETABLE (le panneau « eveil » et un carré blanc qui défile, VP9 dans un .mp4,
 // le Chromium de Playwright ne lisant pas le H.264), vérifie que l'étape « eveil » pose l'image COURANTE du
 // clip avec ses effets et une palette fermée, puis efface le clip. Prérequis : ffmpeg.
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 const here = new URL('.', import.meta.url).pathname, dir = here + 'cine';

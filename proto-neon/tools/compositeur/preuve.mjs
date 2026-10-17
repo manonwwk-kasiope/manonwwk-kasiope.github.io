@@ -5,7 +5,7 @@
      (c) ecart en dB entre un son d'information et la musique
      (d) reproductibilite a graine fixe : deux rendus identiques au bit
 */
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const HOP = 0.05;              // enveloppe RMS a 20 Hz
 const WIN = 4.0;               // fenetre de comparaison

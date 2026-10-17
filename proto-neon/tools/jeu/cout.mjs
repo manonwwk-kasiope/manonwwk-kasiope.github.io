@@ -1,7 +1,7 @@
 /* tools/jeu/cout.mjs — coût d'image au plus fort du chaos (iPhone 13 paysage, pilote expert, graine 7).
    Mesure, dans le banc et jamais dans le jeu, la durée de chaque appel de N.game.update/draw/drawTop et de
    l'image entière (rappel de requestAnimationFrame), de 95 à 118 s de jeu. Usage : node cout.mjs [ralenti] */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const rate = +(process.argv[2] || 1);
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 } });

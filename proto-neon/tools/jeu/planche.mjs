@@ -1,6 +1,6 @@
 /* tools/jeu/planche.mjs — planche des sprites de N.spr telle que le jeu les emploie, agrandie x6.
    Usage : node tools/jeu/planche.mjs sortie.png */
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 const out = process.argv[2] || 'tools/jeu/planche.png';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });

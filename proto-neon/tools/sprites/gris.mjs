@@ -2,7 +2,7 @@
    demandent que chaque objet reste reconnaissable à sa silhouette, sans la couleur.
    Usage : node tools/sprites/gris.mjs entree.png sortie.png */
 import fs from 'node:fs';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 const [inp, outp] = process.argv.slice(2);
 const b64 = fs.readFileSync(inp).toString('base64');
 const browser = await chromium.launch();

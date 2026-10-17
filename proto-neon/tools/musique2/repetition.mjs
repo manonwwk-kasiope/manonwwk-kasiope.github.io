@@ -6,7 +6,7 @@
    (r) reproductibilite : deux rendus a graine egale identiques a l'echantillon pres.
    Usage : node tools/musique2/repetition.mjs */
 import fs from 'node:fs';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const HERE = new URL('.', import.meta.url).pathname;
 const F = JSON.parse(fs.readFileSync(HERE + 'flux.json', 'utf8'));

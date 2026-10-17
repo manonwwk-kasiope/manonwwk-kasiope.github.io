@@ -1,5 +1,5 @@
 // « Réduire les animations », pause pendant l'ouverture, zone sûre simulée (encoche, barre d'accueil).
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const PAGE = 'http://127.0.0.1:8112/proto-neon/tools/intro/index.html';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 async function ouvrir(opts) {

@@ -1,6 +1,6 @@
 /* tools/jeu/replis.mjs — le jeu sans ses voisins : N.spr, N.fx et N.intro retirés à chaud, une partie de 90 s
    au pilote, puis la fin. Vérifie que les replis de 70-game.js tiennent (zéro erreur) et capture. */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const OUT = new URL('.', import.meta.url).pathname;
 const browser = await chromium.launch();
 const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 } });

@@ -7,7 +7,7 @@
        un appel) doit etre relancee seule.
    Mesure : rmsOut() (sortie apres la porte) echantillonne toutes les 5 ms sur l'horloge audio.
    Usage : node tools/musique2/vivant.mjs [bureau|paysage|portrait|tous] */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 
 const which = process.argv[2] || 'tous';
 const PROFS = {

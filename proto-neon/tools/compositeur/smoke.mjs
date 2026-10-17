@@ -1,5 +1,5 @@
 /* Fumee : le moteur demarre-t-il, joue-t-il, sans une seule erreur de console. */
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium } from 'playwright';
 
 const b = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const p = await b.newPage({ viewport: { width: 1440, height: 900 } });

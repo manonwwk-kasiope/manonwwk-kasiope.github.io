@@ -1,6 +1,6 @@
 /* tools/jeu/son.mjs — la coupure du son mémorisée : coupée, rechargement, toujours coupée avant tout geste
    (N.music.mute vaut avant la création du contexte), puis remise, rechargement, active. */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 844, height: 390 } });
 const page = await ctx.newPage();

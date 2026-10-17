@@ -1,7 +1,7 @@
 /* tools/jeu/fumee.mjs — essai de fumée : ouvre la page, saute l'ouverture, joue N secondes de jeu
    (pas imposé __DT, graine __SEED), capture, et rend l'état du jeu et les erreurs.
    Usage : node tools/jeu/fumee.mjs profil secondes sortie.png   (profil : bureau | paysage | portrait) */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const [profil = 'bureau', secs = '10', out = 'tools/jeu/fumee.png'] = process.argv.slice(2);
 const P = {
   bureau: { viewport: { width: 1440, height: 900 } },

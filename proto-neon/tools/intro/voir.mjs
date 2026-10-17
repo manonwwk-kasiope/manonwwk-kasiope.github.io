@@ -1,6 +1,6 @@
 // Captures de l'ouverture à des instants donnés (horloge de 60-intro.js), dans un profil d'écran.
 // usage : node voir.mjs <paysage|portrait|bureau> t1 t2 ...   -> cap/<profil>-<t>.png
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const prof = process.argv[2] || 'paysage';
 const times = process.argv.slice(3).map(Number);
 const PAGE = 'http://127.0.0.1:8112/proto-neon/tools/intro/index.html';

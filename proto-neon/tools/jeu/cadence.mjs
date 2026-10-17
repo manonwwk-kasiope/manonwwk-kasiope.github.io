@@ -1,6 +1,6 @@
 /* tools/jeu/cadence.mjs — J-29 : à 30 et à 60 images/s (__DT imposé), même distance par seconde et même
    durée de quart de tour. Une seconde en ligne droite, puis un virage vers le bas demandé au clavier simulé. */
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 const browser = await chromium.launch();
 const out = {};
 for (const fps of [60, 30]) {
