@@ -32,6 +32,7 @@ S'il n'y a plus d'ordre, écris « Codex : en attente » sous la liste, pousse, 
 Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et passe à l'ordre suivant.
 
 1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : en cours (Codex).
+   QUESTION : le plateau N.world/N.cam contient aussi le ciel (paysage V2 : rectangle 422 × 195, horizon y=114). Garder au moins 25 % du ciel lumineux implique environ 14,6 % de l’écran lumineux, alors que les encres lumineuses autorisées au décor comptent aussi dans le plafond plateau de 8 % (et presque toutes dans les 3 % chauds). Les références V4 sont déjà sous 25 % de ciel avant correction. Je prépare la correction limitée aux plans proches et au sol, sans toucher au ciel/cité lointaine ; faut-il mesurer les plafonds sous l’horizon ou autoriser aussi une extinction du lointain derrière les acteurs ? Les seuils initiaux resteront publiés sans être abaissés.
 
 ## Réservations en cours
 
