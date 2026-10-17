@@ -25,7 +25,7 @@ const SETUP = () => {
   window.__E = {
     N, S, g, J, O, H,
     fixes: [],
-    tient: () => { for (const f of window.__E.fixes) { f.e.x = f.x; f.e.y = f.y; f.e._kx = 0; f.e._ky = 0; } },
+    tient: () => { for (const f of window.__E.fixes) { f.e.x = f.x; f.e.y = f.y; f.e._kx = 0; f.e._ky = 0; } const t = window.__E.tete; if (t) J.force({ x: t.x, y: t.y, ang: 0, trace: true }); },
     pas: n => { for (let i = 0; i < n; i++) { g.dbg.simuler(H); window.__E.tient(); } },
     neuf: (len) => {
       g.lancer(false); g.dbg.etat('jeu');
@@ -48,7 +48,7 @@ const SETUP = () => {
     fige: e => { e._stun = 99; return e; },
     mk: (type, x, y, fixe) => { const e = N.ennemis.spawn(type, x, y, {}); e._portail = 0; e.etat = 'approche'; e._st = 'derive'; e._stun = 99; if (fixe) window.__E.fixes.push({ e, x, y }); return e; }
   };
-  N.arsenal.update = function () {};          // le canon tirerait sur les cibles : on mesure le LASSO, l'INVERSION et l'APOGÉE seuls
+  window.__ARS = N.arsenal.update; N.arsenal.update = function () {};          // le canon tirerait sur les cibles : on mesure le LASSO, l'INVERSION et l'APOGÉE seuls
 };
 await page.evaluate(SETUP);
 
@@ -205,6 +205,39 @@ const res = await page.evaluate(() => {
     neuf(8); const l0 = J.len(), x0 = N.butin.xp.total;
     N.butin.lacher(J.tete.x, J.tete.y, 1, { type: 'cellule' }); N.butin.lacher(J.tete.x, J.tete.y, 1, { type: 'noyau' }); pas(4);
     return { ok: J.len() === l0 + 3 && N.butin.xp.total - x0 === 6, detail: `longueur ${l0}→${J.len()}, XP +${N.butin.xp.total - x0}` };
+  });
+  /* ---- les armes : 5 armes × 4 paliers, dégâts mesurés sur des cibles fixes pendant 3 s ---- */
+  const A = N.arsenal, degatsDe = (arme, pal) => {
+    neuf(30); g.dbg.god(true); N.arsenal.reset(); N.arsenal.update = window.__ARS;
+    if (arme !== 'canon') for (let i = 0; i < pal; i++) A.monter(arme);
+    if (arme === 'canon') { /* le palier du CANON vient de la longueur */ J.force({ len: [8, 12, 24, 36][pal - 1] }); }
+    const h = { x: J.tete.x, y: J.tete.y }, es = [];
+    if (arme === 'minesQ') for (let i = 0; i < 4; i++) { const q = J.segPos(J.len()); es.push(mk('fleche', q.x - 3 + i * 2, q.y + 2 - i, true)); }
+    else if (arme === 'canon') for (let i = 0; i < 3; i++) es.push(mk('fleche', h.x + 60 + i * 20, h.y, true));
+    else for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + 0.3; es.push(mk('fleche', h.x + Math.cos(a) * 44, h.y + Math.sin(a) * 44, true)); }
+    es.forEach(e => { e.pv = 1e5; });
+    window.__E.tete = { x: h.x, y: h.y };
+    pas(360);
+    const d = es.reduce((t, e) => t + (1e5 - e.pv), 0), res = { d, niv: A.niveau(arme), etat: A.etat(), n: A.armes().length };
+    window.__E.tete = null; g.dbg.god(false); N.arsenal.update = function () {};
+    return res;
+  };
+  const tab = {};
+  for (const arme of ['tourelles', 'arc', 'missiles', 'drones', 'minesQ']) {
+    T('arme ' + arme + ' : quatre paliers, chacun au moins aussi efficace que le précédent', () => {
+      const r = [1, 2, 3, 4].map(p => degatsDe(arme, p)); tab[arme] = r.map(x => Math.round(x.d));
+      const niv = r.map(x => x.niv), ok = niv.join() === '1,2,3,4' && r.every(x => x.d > 0) && r.every((x, i) => i === 0 || x.d >= r[i - 1].d * 0.8);
+      return { ok, detail: `paliers ${niv} ; dégâts en 3 s : ${tab[arme]}` };
+    });
+  }
+  T('arme canon : quatre paliers, le RAYON efface les tirs et tue', () => {
+    const r = [1, 2, 3, 4].map(p => degatsDe('canon', p)); tab.canon = r.map(x => Math.round(x.d));
+    return { ok: r.map(x => x.niv).join() === '1,2,3,4' && r.every(x => x.d > 0), detail: `dégâts en 3 s : ${tab.canon}` };
+  });
+  T('arsenal : la mort retire un palier à la meilleure arme (étiquette), 160 tirs au plus', () => {
+    neuf(8); N.arsenal.reset(); A.monter('arc'); A.monter('arc'); A.monter('drones');
+    const c = A.descendre();
+    return { ok: c.arme === 'arc' && c.de === 2 && c.a === 1 && A.tirs.length <= 160, detail: JSON.stringify(c) };
   });
   return out;
 });
