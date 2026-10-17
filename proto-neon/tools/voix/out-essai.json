@@ -1,8 +1,8 @@
 {
- "quand": "2026-10-17T19:53:22.029Z",
+ "quand": "2026-10-17T19:56:30.183Z",
  "reglages": {
   "echo": 0,
-  "souffleSourd": 2
+  "presence": 11
  },
  "sr": 48000,
  "erreurs": [],
@@ -16,24 +16,24 @@
    "appui": 0.135,
    "dureeSeche": 0.65,
    "dureeAvecEcho": 0.65,
-   "creteBrute": 0.5575860142707825,
+   "creteBrute": 0.5990278124809265,
    "niveaux": {
-    "creteDb": -5.07,
-    "rmsDb": -18.25,
-    "rmsTelDb": -23.8,
-    "creteTelDb": -7.76,
+    "creteDb": -4.45,
+    "rmsDb": -18.01,
+    "rmsTelDb": -22.91,
+    "creteTelDb": -6.57,
     "debut": 0.03,
     "fin": 0.68,
     "duree": 0.65
    },
    "spectre": {
-    "au4k": 0.0001,
-    "au400": 0.302,
-    "bande2a5k": 0.028,
-    "centroide": 434
+    "au4k": 0.0002,
+    "au400": 0.346,
+    "bande2a5k": 0.055,
+    "centroide": 541
    },
    "f0": {
-    "min": 96.2,
+    "min": 96,
     "max": 108.6
    },
    "voyelles": [
@@ -43,30 +43,30 @@
      "accent": true,
      "f0": {
       "hz": 108.6,
-      "clarte": 0.9
+      "clarte": 0.88
      },
      "F": [
       {
        "cible": 563,
-       "mesure": 576,
-       "ecart": 0.024
+       "mesure": 567,
+       "ecart": 0.008
       },
       {
        "cible": 1746,
-       "mesure": 1747,
+       "mesure": 1748,
        "ecart": 0.001
       },
       {
        "cible": 2522,
-       "mesure": 2543,
-       "ecart": 0.008
+       "mesure": 2550,
+       "ecart": 0.011
       }
      ],
      "brut": [
-      576,
-      1747,
-      2543,
-      4812
+      567,
+      1748,
+      2550,
+      4815
      ]
     },
     {
@@ -74,8 +74,8 @@
      "t": 0.467,
      "accent": false,
      "f0": {
-      "hz": 96.2,
-      "clarte": 0.93
+      "hz": 96,
+      "clarte": 0.91
      },
      "F": [
       {
@@ -85,20 +85,20 @@
       },
       {
        "cible": 2231,
-       "mesure": 2241,
-       "ecart": 0.004
+       "mesure": 2246,
+       "ecart": 0.007
       },
       {
        "cible": 2910,
-       "mesure": 2876,
-       "ecart": -0.012
+       "mesure": 2899,
+       "ecart": -0.004
       }
      ],
      "brut": [
       288,
-      2241,
-      2876,
-      3090
+      2246,
+      2899,
+      3111
      ]
     }
    ],
@@ -113,21 +113,21 @@
    "appui": 0.1,
    "dureeSeche": 0.53,
    "dureeAvecEcho": 0.53,
-   "creteBrute": 0.6046000123023987,
+   "creteBrute": 0.6137499809265137,
    "niveaux": {
-    "creteDb": -4.37,
-    "rmsDb": -15.33,
-    "rmsTelDb": -19.2,
-    "creteTelDb": -9.82,
+    "creteDb": -4.24,
+    "rmsDb": -15.26,
+    "rmsTelDb": -19.03,
+    "creteTelDb": -9.51,
     "debut": 0.05,
     "fin": 0.58,
     "duree": 0.53
    },
    "spectre": {
     "au4k": 0,
-    "au400": 0.461,
-    "bande2a5k": 0.001,
-    "centroide": 408
+    "au400": 0.471,
+    "bande2a5k": 0.002,
+    "centroide": 418
    },
    "f0": {
     "min": 105.3,
@@ -150,20 +150,20 @@
       },
       {
        "cible": 1096,
-       "mesure": 1051,
-       "ecart": -0.041
+       "mesure": 1052,
+       "ecart": -0.04
       },
       {
        "cible": 2328,
-       "mesure": 2311,
-       "ecart": -0.007
+       "mesure": 2316,
+       "ecart": -0.005
       }
      ],
      "brut": [
       506,
-      1051,
-      2311,
-      3245
+      1052,
+      2316,
+      3224
      ]
     }
    ],
@@ -178,21 +178,21 @@
    "appui": 0.125,
    "dureeSeche": 0.82,
    "dureeAvecEcho": 0.82,
-   "creteBrute": 0.7444438934326172,
+   "creteBrute": 0.7484369874000549,
    "niveaux": {
-    "creteDb": -2.56,
-    "rmsDb": -16.26,
-    "rmsTelDb": -18.47,
-    "creteTelDb": -2.77,
+    "creteDb": -2.52,
+    "rmsDb": -16.13,
+    "rmsTelDb": -18.25,
+    "creteTelDb": -2.48,
     "debut": 0.03,
     "fin": 0.85,
     "duree": 0.82
    },
    "spectre": {
     "au4k": 0,
-    "au400": 0.666,
-    "bande2a5k": 0.004,
-    "centroide": 546
+    "au400": 0.679,
+    "bande2a5k": 0.008,
+    "centroide": 568
    },
    "f0": {
     "min": 99,
@@ -210,25 +210,26 @@
      "F": [
       {
        "cible": 631,
-       "mesure": 639,
-       "ecart": 0.013
+       "mesure": 640,
+       "ecart": 0.015
       },
       {
        "cible": 970,
-       "mesure": 961,
-       "ecart": -0.009
+       "mesure": 963,
+       "ecart": -0.007
       },
       {
        "cible": 2474,
-       "mesure": 1954,
-       "ecart": -0.21
+       "mesure": 2533,
+       "ecart": 0.024
       }
      ],
      "brut": [
-      639,
-      961,
-      1954,
-      3290
+      640,
+      963,
+      1938,
+      2533,
+      3244
      ]
     },
     {
@@ -237,7 +238,7 @@
      "accent": false,
      "f0": {
       "hz": 99,
-      "clarte": 0.95
+      "clarte": 0.94
      },
      "F": [
       {
@@ -247,20 +248,21 @@
       },
       {
        "cible": 1940,
-       "mesure": 1959,
-       "ecart": 0.01
+       "mesure": 1962,
+       "ecart": 0.011
       },
       {
        "cible": 2571,
-       "mesure": 2556,
-       "ecart": -0.006
+       "mesure": 2559,
+       "ecart": -0.004
       }
      ],
      "brut": [
       394,
-      1959,
-      2556,
-      3185
+      1962,
+      2559,
+      3181,
+      4944
      ]
     }
    ],
@@ -275,25 +277,25 @@
    "appui": 0.095,
    "dureeSeche": 0.81,
    "dureeAvecEcho": 0.81,
-   "creteBrute": 0.5439891219139099,
+   "creteBrute": 0.5871214866638184,
    "niveaux": {
-    "creteDb": -5.29,
-    "rmsDb": -18.56,
-    "rmsTelDb": -22.83,
-    "creteTelDb": -9.96,
+    "creteDb": -4.63,
+    "rmsDb": -18.32,
+    "rmsTelDb": -22.14,
+    "creteTelDb": -9.19,
     "debut": 0.05,
     "fin": 0.86,
     "duree": 0.81
    },
    "spectre": {
-    "au4k": 0.0001,
-    "au400": 0.511,
-    "bande2a5k": 0.022,
-    "centroide": 474
+    "au4k": 0.0002,
+    "au400": 0.544,
+    "bande2a5k": 0.043,
+    "centroide": 563
    },
    "f0": {
-    "min": 93.8,
-    "max": 108.8
+    "min": 93.9,
+    "max": 108.6
    },
    "voyelles": [
     {
@@ -301,7 +303,7 @@
      "t": 0.164,
      "accent": true,
      "f0": {
-      "hz": 108.8,
+      "hz": 108.6,
       "clarte": 0.93
      },
      "F": [
@@ -312,21 +314,21 @@
       },
       {
        "cible": 1892,
-       "mesure": 1931,
-       "ecart": 0.021
+       "mesure": 1934,
+       "ecart": 0.022
       },
       {
        "cible": 2522,
-       "mesure": 2507,
-       "ecart": -0.006
+       "mesure": 2512,
+       "ecart": -0.004
       }
      ],
      "brut": [
       424,
-      1931,
-      2507,
-      3266,
-      4861
+      1934,
+      2512,
+      3276,
+      4916
      ]
     },
     {
@@ -334,8 +336,8 @@
      "t": 0.645,
      "accent": false,
      "f0": {
-      "hz": 93.8,
-      "clarte": 0.93
+      "hz": 93.9,
+      "clarte": 0.92
      },
      "F": [
       {
@@ -345,8 +347,8 @@
       },
       {
        "cible": 1290,
-       "mesure": 1298,
-       "ecart": 0.006
+       "mesure": 1295,
+       "ecart": 0.004
       },
       {
        "cible": 1601,
@@ -356,9 +358,9 @@
      ],
      "brut": [
       451,
-      1298,
+      1295,
       1579,
-      3114
+      3163
      ]
     }
    ],
@@ -373,21 +375,21 @@
    "appui": 0.03,
    "dureeSeche": 0.76,
    "dureeAvecEcho": 0.76,
-   "creteBrute": 0.6145199537277222,
+   "creteBrute": 0.6461591720581055,
    "niveaux": {
-    "creteDb": -4.23,
-    "rmsDb": -20.45,
-    "rmsTelDb": -23.85,
-    "creteTelDb": -8.62,
+    "creteDb": -3.79,
+    "rmsDb": -20.16,
+    "rmsTelDb": -23.15,
+    "creteTelDb": -6.72,
     "debut": 0.03,
     "fin": 0.79,
     "duree": 0.76
    },
    "spectre": {
-    "au4k": 0.0024,
-    "au400": 0.561,
-    "bande2a5k": 0.02,
-    "centroide": 553
+    "au4k": 0.002,
+    "au400": 0.599,
+    "bande2a5k": 0.038,
+    "centroide": 658
    },
    "f0": {
     "min": 98.6,
@@ -400,30 +402,31 @@
      "accent": true,
      "f0": {
       "hz": 108.8,
-      "clarte": 0.93
+      "clarte": 0.92
      },
      "F": [
       {
        "cible": 563,
-       "mesure": 537,
-       "ecart": -0.046
+       "mesure": 529,
+       "ecart": -0.06
       },
       {
        "cible": 1746,
-       "mesure": 1740,
+       "mesure": 1741,
        "ecart": -0.003
       },
       {
        "cible": 2522,
-       "mesure": 2483,
-       "ecart": -0.015
+       "mesure": 2500,
+       "ecart": -0.009
       }
      ],
      "brut": [
-      537,
-      1740,
-      2483,
-      3282
+      529,
+      1741,
+      2500,
+      3292,
+      4863
      ]
     },
     {
@@ -431,31 +434,31 @@
      "t": 0.43,
      "accent": false,
      "f0": {
-      "hz": 102.1,
-      "clarte": 0.9
+      "hz": 102.6,
+      "clarte": 0.89
      },
      "F": [
       {
        "cible": 485,
-       "mesure": 481,
-       "ecart": -0.008
+       "mesure": 478,
+       "ecart": -0.014
       },
       {
        "cible": 1358,
-       "mesure": 1345,
-       "ecart": -0.01
+       "mesure": 1346,
+       "ecart": -0.009
       },
       {
        "cible": 2377,
-       "mesure": 2355,
-       "ecart": -0.009
+       "mesure": 2360,
+       "ecart": -0.007
       }
      ],
      "brut": [
-      481,
-      1345,
-      2355,
-      3229
+      478,
+      1346,
+      2360,
+      3220
      ]
     },
     {
@@ -464,30 +467,30 @@
      "accent": false,
      "f0": {
       "hz": 98.6,
-      "clarte": 0.71
+      "clarte": 0.7
      },
      "F": [
       {
        "cible": 485,
-       "mesure": 456,
-       "ecart": -0.06
+       "mesure": 453,
+       "ecart": -0.066
       },
       {
        "cible": 1358,
-       "mesure": 1334,
-       "ecart": -0.018
+       "mesure": 1335,
+       "ecart": -0.017
       },
       {
        "cible": 2377,
-       "mesure": 2372,
-       "ecart": -0.002
+       "mesure": 2373,
+       "ecart": -0.001
       }
      ],
      "brut": [
-      456,
-      1334,
-      2372,
-      3224
+      453,
+      1335,
+      2373,
+      3217
      ]
     }
    ],
@@ -502,25 +505,25 @@
    "appui": 0.105,
    "dureeSeche": 1.23,
    "dureeAvecEcho": 1.23,
-   "creteBrute": 0.6243178248405457,
+   "creteBrute": 0.6606761813163757,
    "niveaux": {
-    "creteDb": -4.09,
-    "rmsDb": -16.85,
-    "rmsTelDb": -20.82,
-    "creteTelDb": -8.88,
+    "creteDb": -3.6,
+    "rmsDb": -16.65,
+    "rmsTelDb": -20.31,
+    "creteTelDb": -8.48,
     "debut": 0.05,
     "fin": 1.28,
     "duree": 1.23
    },
    "spectre": {
-    "au4k": 0,
-    "au400": 0.473,
-    "bande2a5k": 0.014,
-    "centroide": 464
+    "au4k": 0.0001,
+    "au400": 0.501,
+    "bande2a5k": 0.028,
+    "centroide": 525
    },
    "f0": {
     "min": 92.7,
-    "max": 102.8
+    "max": 103
    },
    "voyelles": [
     {
@@ -528,31 +531,32 @@
      "t": 0.177,
      "accent": true,
      "f0": {
-      "hz": 102.8,
-      "clarte": 0.88
+      "hz": 103,
+      "clarte": 0.86
      },
      "F": [
       {
        "cible": 466,
-       "mesure": 425,
-       "ecart": -0.087
+       "mesure": 422,
+       "ecart": -0.094
       },
       {
        "cible": 1892,
-       "mesure": 1899,
+       "mesure": 1900,
        "ecart": 0.004
       },
       {
        "cible": 2522,
-       "mesure": 2479,
-       "ecart": -0.017
+       "mesure": 2481,
+       "ecart": -0.016
       }
      ],
      "brut": [
-      425,
-      1899,
-      2479,
-      3238
+      422,
+      1900,
+      2481,
+      3238,
+      4918
      ]
     },
     {
@@ -566,25 +570,25 @@
      "F": [
       {
        "cible": 514,
-       "mesure": 491,
-       "ecart": -0.045
+       "mesure": 492,
+       "ecart": -0.043
       },
       {
        "cible": 1096,
-       "mesure": 1073,
-       "ecart": -0.021
+       "mesure": 1075,
+       "ecart": -0.019
       },
       {
        "cible": 2328,
-       "mesure": 2303,
-       "ecart": -0.011
+       "mesure": 2316,
+       "ecart": -0.005
       }
      ],
      "brut": [
-      491,
-      1073,
-      2303,
-      3233
+      492,
+      1075,
+      2316,
+      3211
      ]
     },
     {
@@ -603,20 +607,20 @@
       },
       {
        "cible": 1290,
-       "mesure": 1284,
-       "ecart": -0.005
+       "mesure": 1283,
+       "ecart": -0.006
       },
       {
        "cible": 1601,
-       "mesure": 1569,
-       "ecart": -0.02
+       "mesure": 1570,
+       "ecart": -0.019
       }
      ],
      "brut": [
       438,
-      1284,
-      1569,
-      3118
+      1283,
+      1570,
+      3151
      ]
     }
    ],
@@ -631,25 +635,25 @@
    "appui": 0.15,
    "dureeSeche": 0.57,
    "dureeAvecEcho": 0.57,
-   "creteBrute": 0.512994110584259,
+   "creteBrute": 0.5664639472961426,
    "niveaux": {
-    "creteDb": -5.8,
-    "rmsDb": -20.07,
-    "rmsTelDb": -25.87,
-    "creteTelDb": -10.85,
+    "creteDb": -4.94,
+    "rmsDb": -19.81,
+    "rmsTelDb": -24.83,
+    "creteTelDb": -9.13,
     "debut": 0.07,
     "fin": 0.64,
     "duree": 0.57
    },
    "spectre": {
-    "au4k": 0.0006,
-    "au400": 0.338,
-    "bande2a5k": 0.052,
-    "centroide": 434
+    "au4k": 0.0008,
+    "au400": 0.386,
+    "bande2a5k": 0.097,
+    "centroide": 566
    },
    "f0": {
-    "min": 107.1,
-    "max": 107.1
+    "min": 106.9,
+    "max": 106.9
    },
    "voyelles": [
     {
@@ -657,31 +661,32 @@
      "t": 0.222,
      "accent": true,
      "f0": {
-      "hz": 107.1,
+      "hz": 106.9,
       "clarte": 0.87
      },
      "F": [
       {
        "cible": 466,
-       "mesure": 440,
-       "ecart": -0.055
+       "mesure": 438,
+       "ecart": -0.059
       },
       {
        "cible": 1892,
-       "mesure": 1897,
+       "mesure": 1898,
        "ecart": 0.003
       },
       {
        "cible": 2522,
-       "mesure": 2541,
-       "ecart": 0.008
+       "mesure": 2544,
+       "ecart": 0.009
       }
      ],
      "brut": [
-      440,
-      1897,
-      2541,
-      3275
+      438,
+      1898,
+      2544,
+      3282,
+      4901
      ]
     }
    ],
@@ -696,25 +701,25 @@
    "appui": 0.115,
    "dureeSeche": 0.63,
    "dureeAvecEcho": 0.63,
-   "creteBrute": 0.5926578640937805,
+   "creteBrute": 0.6091257929801941,
    "niveaux": {
-    "creteDb": -4.54,
-    "rmsDb": -19.05,
-    "rmsTelDb": -22.89,
-    "creteTelDb": -7.78,
+    "creteDb": -4.31,
+    "rmsDb": -18.7,
+    "rmsTelDb": -22.13,
+    "creteTelDb": -7,
     "debut": 0.05,
     "fin": 0.68,
     "duree": 0.63
    },
    "spectre": {
-    "au4k": 0.0011,
-    "au400": 0.48,
-    "bande2a5k": 0.008,
-    "centroide": 518
+    "au4k": 0.0005,
+    "au400": 0.517,
+    "bande2a5k": 0.014,
+    "centroide": 586
    },
    "f0": {
-    "min": 97,
-    "max": 106.4
+    "min": 96.6,
+    "max": 106.2
    },
    "voyelles": [
     {
@@ -722,8 +727,8 @@
      "t": 0.21,
      "accent": true,
      "f0": {
-      "hz": 106.4,
-      "clarte": 0.91
+      "hz": 106.2,
+      "clarte": 0.92
      },
      "F": [
       {
@@ -733,20 +738,20 @@
       },
       {
        "cible": 1290,
-       "mesure": 1267,
-       "ecart": -0.018
+       "mesure": 1268,
+       "ecart": -0.017
       },
       {
        "cible": 1601,
-       "mesure": 1612,
-       "ecart": 0.007
+       "mesure": 1613,
+       "ecart": 0.008
       }
      ],
      "brut": [
       419,
-      1267,
-      1612,
-      3150
+      1268,
+      1613,
+      3174
      ]
     },
     {
@@ -754,14 +759,14 @@
      "t": 0.463,
      "accent": false,
      "f0": {
-      "hz": 97,
+      "hz": 96.6,
       "clarte": 0.92
      },
      "F": [
       {
        "cible": 417,
-       "mesure": 392,
-       "ecart": -0.06
+       "mesure": 393,
+       "ecart": -0.058
       },
       {
        "cible": 1940,
@@ -770,15 +775,16 @@
       },
       {
        "cible": 2571,
-       "mesure": 2567,
+       "mesure": 2569,
        "ecart": -0.001
       }
      ],
      "brut": [
-      392,
+      393,
       1934,
-      2567,
-      3188
+      2569,
+      3183,
+      4941
      ]
     }
    ],
@@ -793,25 +799,25 @@
    "appui": 0.36,
    "dureeSeche": 0.9,
    "dureeAvecEcho": 0.9,
-   "creteBrute": 0.6034248471260071,
+   "creteBrute": 0.6355416178703308,
    "niveaux": {
-    "creteDb": -4.39,
-    "rmsDb": -18.85,
-    "rmsTelDb": -22.62,
-    "creteTelDb": -7.81,
+    "creteDb": -3.94,
+    "rmsDb": -18.63,
+    "rmsTelDb": -22.08,
+    "creteTelDb": -5.82,
     "debut": 0.03,
     "fin": 0.93,
     "duree": 0.9
    },
    "spectre": {
     "au4k": 0.0002,
-    "au400": 0.528,
-    "bande2a5k": 0.009,
-    "centroide": 483
+    "au400": 0.556,
+    "bande2a5k": 0.018,
+    "centroide": 550
    },
    "f0": {
     "min": 96.4,
-    "max": 109.3
+    "max": 109.6
    },
    "voyelles": [
     {
@@ -825,13 +831,13 @@
      "F": [
       {
        "cible": 349,
-       "mesure": 317,
-       "ecart": -0.092
+       "mesure": 316,
+       "ecart": -0.095
       },
       {
        "cible": 1067,
-       "mesure": 1051,
-       "ecart": -0.015
+       "mesure": 1053,
+       "ecart": -0.013
       },
       {
        "cible": 2231,
@@ -840,10 +846,10 @@
       }
      ],
      "brut": [
-      317,
-      1051,
+      316,
+      1053,
       2215,
-      3199
+      3202
      ]
     },
     {
@@ -851,14 +857,14 @@
      "t": 0.44,
      "accent": true,
      "f0": {
-      "hz": 109.3,
-      "clarte": 0.94
+      "hz": 109.6,
+      "clarte": 0.92
      },
      "F": [
       {
        "cible": 563,
-       "mesure": 548,
-       "ecart": -0.026
+       "mesure": 546,
+       "ecart": -0.03
       },
       {
        "cible": 1746,
@@ -867,15 +873,15 @@
       },
       {
        "cible": 2522,
-       "mesure": 2495,
-       "ecart": -0.011
+       "mesure": 2501,
+       "ecart": -0.008
       }
      ],
      "brut": [
-      548,
+      546,
       1753,
-      2495,
-      3279,
+      2501,
+      3291,
       4875
      ]
     },
@@ -885,7 +891,7 @@
      "accent": false,
      "f0": {
       "hz": 96.4,
-      "clarte": 0.92
+      "clarte": 0.91
      },
      "F": [
       {
@@ -895,20 +901,20 @@
       },
       {
        "cible": 1290,
-       "mesure": 1277,
-       "ecart": -0.01
+       "mesure": 1275,
+       "ecart": -0.012
       },
       {
        "cible": 1601,
-       "mesure": 1559,
-       "ecart": -0.026
+       "mesure": 1561,
+       "ecart": -0.025
       }
      ],
      "brut": [
       458,
-      1277,
-      1559,
-      3116
+      1275,
+      1561,
+      3148
      ]
     }
    ],
@@ -923,21 +929,21 @@
    "appui": 0.095,
    "dureeSeche": 0.59,
    "dureeAvecEcho": 0.59,
-   "creteBrute": 0.6842500567436218,
+   "creteBrute": 0.687792181968689,
    "niveaux": {
-    "creteDb": -3.3,
-    "rmsDb": -15,
-    "rmsTelDb": -16.47,
-    "creteTelDb": -2.92,
+    "creteDb": -3.25,
+    "rmsDb": -14.83,
+    "rmsTelDb": -16.24,
+    "creteTelDb": -2.52,
     "debut": 0.05,
     "fin": 0.64,
     "duree": 0.59
    },
    "spectre": {
     "au4k": 0.0012,
-    "au400": 0.841,
-    "bande2a5k": 0.002,
-    "centroide": 616
+    "au400": 0.849,
+    "bande2a5k": 0.004,
+    "centroide": 629
    },
    "f0": {
     "min": 100.4,
@@ -955,25 +961,25 @@
      "F": [
       {
        "cible": 631,
-       "mesure": 608,
-       "ecart": -0.036
+       "mesure": 609,
+       "ecart": -0.034
       },
       {
        "cible": 970,
-       "mesure": 944,
-       "ecart": -0.027
+       "mesure": 948,
+       "ecart": -0.023
       },
       {
        "cible": 2474,
-       "mesure": 2385,
-       "ecart": -0.036
+       "mesure": 2424,
+       "ecart": -0.02
       }
      ],
      "brut": [
-      608,
-      944,
-      2385,
-      4035
+      609,
+      948,
+      2424,
+      4023
      ]
     }
    ],
@@ -988,25 +994,25 @@
    "appui": 0.125,
    "dureeSeche": 0.67,
    "dureeAvecEcho": 0.67,
-   "creteBrute": 0.5546868443489075,
+   "creteBrute": 0.5963311791419983,
    "niveaux": {
-    "creteDb": -5.12,
-    "rmsDb": -19.67,
-    "rmsTelDb": -23.67,
-    "creteTelDb": -8.15,
+    "creteDb": -4.49,
+    "rmsDb": -19.45,
+    "rmsTelDb": -23.08,
+    "creteTelDb": -6.96,
     "debut": 0.03,
     "fin": 0.7,
     "duree": 0.67
    },
    "spectre": {
-    "au4k": 0.0001,
-    "au400": 0.477,
-    "bande2a5k": 0.015,
-    "centroide": 472
+    "au4k": 0.0003,
+    "au400": 0.509,
+    "bande2a5k": 0.03,
+    "centroide": 554
    },
    "f0": {
-    "min": 99,
-    "max": 108.4
+    "min": 98.8,
+    "max": 108.6
    },
    "voyelles": [
     {
@@ -1014,31 +1020,31 @@
      "t": 0.21,
      "accent": true,
      "f0": {
-      "hz": 108.4,
-      "clarte": 0.92
+      "hz": 108.6,
+      "clarte": 0.9
      },
      "F": [
       {
        "cible": 563,
-       "mesure": 576,
-       "ecart": 0.024
+       "mesure": 565,
+       "ecart": 0.004
       },
       {
        "cible": 1746,
-       "mesure": 1750,
-       "ecart": 0.002
+       "mesure": 1752,
+       "ecart": 0.003
       },
       {
        "cible": 2522,
-       "mesure": 2507,
-       "ecart": -0.006
+       "mesure": 2518,
+       "ecart": -0.002
       }
      ],
      "brut": [
-      576,
-      1750,
-      2507,
-      3129,
+      565,
+      1752,
+      2518,
+      3157,
       4818
      ]
     },
@@ -1047,31 +1053,31 @@
      "t": 0.398,
      "accent": false,
      "f0": {
-      "hz": 99,
+      "hz": 98.8,
       "clarte": 0.69
      },
      "F": [
       {
        "cible": 485,
-       "mesure": 452,
-       "ecart": -0.068
+       "mesure": 451,
+       "ecart": -0.07
       },
       {
        "cible": 1358,
-       "mesure": 1359,
-       "ecart": 0.001
+       "mesure": 1361,
+       "ecart": 0.002
       },
       {
        "cible": 2377,
-       "mesure": 2346,
-       "ecart": -0.013
+       "mesure": 2347,
+       "ecart": -0.012
       }
      ],
      "brut": [
-      452,
-      1359,
-      2346,
-      3194
+      451,
+      1361,
+      2347,
+      3189
      ]
     }
    ],
@@ -1083,95 +1089,130 @@
    "contrat": false,
    "niveauVise": -3,
    "noeuds": 25,
-   "appui": 0.185,
-   "dureeSeche": 0.65,
-   "dureeAvecEcho": 0.65,
-   "creteBrute": 0.5555413365364075,
+   "appui": 0.21,
+   "dureeSeche": 0.67,
+   "dureeAvecEcho": 0.67,
+   "creteBrute": 0.5497289896011353,
    "niveaux": {
-    "creteDb": -5.11,
-    "rmsDb": -17.87,
-    "rmsTelDb": -22.1,
-    "creteTelDb": -10.08,
+    "creteDb": -5.2,
+    "rmsDb": -18.55,
+    "rmsTelDb": -22.53,
+    "creteTelDb": -9.07,
     "debut": 0.05,
-    "fin": 0.7,
-    "duree": 0.65
+    "fin": 0.72,
+    "duree": 0.67
    },
    "spectre": {
-    "au4k": 0.0003,
-    "au400": 0.461,
-    "bande2a5k": 0.014,
-    "centroide": 465
+    "au4k": 0.0002,
+    "au400": 0.478,
+    "bande2a5k": 0.032,
+    "centroide": 569
    },
    "f0": {
-    "min": 95.4,
-    "max": 108.6
+    "min": 95.6,
+    "max": 109.1
    },
    "voyelles": [
     {
      "ph": "ih",
-     "t": 0.28,
+     "t": 0.27,
      "accent": true,
      "f0": {
-      "hz": 108.6,
-      "clarte": 0.92
+      "hz": 109.1,
+      "clarte": 0.89
      },
      "F": [
       {
        "cible": 417,
-       "mesure": 428,
-       "ecart": 0.026
-      },
-      {
-       "cible": 1940,
-       "mesure": 1963,
+       "mesure": 422,
        "ecart": 0.012
       },
       {
+       "cible": 1940,
+       "mesure": 1965,
+       "ecart": 0.013
+      },
+      {
        "cible": 2571,
-       "mesure": 2608,
-       "ecart": 0.015
+       "mesure": 2568,
+       "ecart": -0.001
       }
      ],
      "brut": [
-      428,
-      1963,
-      2608
+      422,
+      1965,
+      2568,
+      3167,
+      4897
      ]
     },
     {
-     "ph": "er",
-     "t": 0.495,
+     "ph": "iy",
+     "t": 0.36,
      "accent": false,
      "f0": {
-      "hz": 95.4,
-      "clarte": 0.9
+      "hz": 102.6,
+      "clarte": 0.74
+     },
+     "F": [
+      {
+       "cible": 291,
+       "mesure": 296,
+       "ecart": 0.017
+      },
+      {
+       "cible": 2231,
+       "mesure": 2168,
+       "ecart": -0.028
+      },
+      {
+       "cible": 2910,
+       "mesure": 2806,
+       "ecart": -0.036
+      }
+     ],
+     "brut": [
+      296,
+      2168,
+      2806,
+      3192
+     ]
+    },
+    {
+     "ph": "ir",
+     "t": 0.515,
+     "accent": false,
+     "f0": {
+      "hz": 95.6,
+      "clarte": 0.87
      },
      "F": [
       {
        "cible": 456,
-       "mesure": 430,
-       "ecart": -0.057
-      },
-      {
-       "cible": 1290,
-       "mesure": 1301,
-       "ecart": 0.008
-      },
-      {
-       "cible": 1601,
-       "mesure": 1535,
+       "mesure": 437,
        "ecart": -0.041
+      },
+      {
+       "cible": 1407,
+       "mesure": 1395,
+       "ecart": -0.008
+      },
+      {
+       "cible": 1698,
+       "mesure": 1704,
+       "ecart": 0.004
       }
      ],
      "brut": [
-      430,
-      1301,
-      1535,
-      3180
+      437,
+      1395,
+      1704,
+      3139,
+      3571
      ]
     }
    ],
-   "indice": 1
+   "indice": 0.98
   }
  ]
 }

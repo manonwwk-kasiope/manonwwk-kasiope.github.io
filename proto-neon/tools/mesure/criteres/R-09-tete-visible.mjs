@@ -28,13 +28,15 @@ export async function mesurer(banc, res) {
     await s.eval(c => window.__MESURE.parImage('r09', c), ECHANTILLON);
     /* la tête au-dessus des effets : toutes les secondes, le masque sous la tête et sous les segments 1 et 2 */
     const dessus = [];
+    const absMasque = await s.absents(['N.game.dbg.masque', 'N.joueuse.segs']);
     const t0 = Date.now();
     while (Date.now() - t0 < duree * 1000) {
       await s.page.waitForTimeout(1000);
+      if (absMasque.length) continue;
       const m = await s.eval(() => {
         const N = window.__N, M = window.__MESURE; if (!N.game.dbg.masque || !N.joueuse || !N.joueuse.segs) return null;
         const segs = N.joueuse.segs(); const pts = [];
-        if (Array.isArray(segs) && typeof segs[0] === 'number') for (let i = 0; i < 6; i += 2) pts.push({ x: segs[i], y: segs[i + 1] }); else for (let i = 0; i < 3 && i < segs.length; i++) pts.push(segs[i]);
+        if (ArrayBuffer.isView(segs) || (Array.isArray(segs) && typeof segs[0] === 'number')) for (let i = 0; i < 6; i += 2) pts.push({ x: segs[i], y: segs[i + 1] }); else for (let i = 0; i < 3 && i < segs.length; i++) pts.push(segs[i]);
         const mk = M.masque(); if (!mk) return null; const W = N.gfx.W, o = {};
         return pts.map((p, k) => { N.cam.toScreen(p.x, p.y, o); const x = Math.round(o.x), y = Math.round(o.y); return x >= 0 && y >= 0 && x < W && y < N.gfx.H ? { k, code: mk[y * W + x] } : null; }).filter(Boolean);
       });
@@ -55,7 +57,8 @@ export async function mesurer(banc, res) {
     if (lus.length) {
       const bons = lus.filter(x => (x.k === 0 ? x.code === 1 : x.code === 1 || x.code === 2)).length;
       res.verifie(`${profil} : tête et 2 segments au-dessus des effets (masque)`, bons / lus.length, 1, bons === lus.length, { lectures: lus.length });
-    } else res.absent(`${profil} : tête au-dessus des effets`, ['N.game.dbg.masque', 'N.joueuse.segs']);
+    } else if (absMasque.length) res.absent(`${profil} : tête au-dessus des effets`, absMasque);
+    else res.nonMesurable(`${profil} : tête au-dessus des effets`, 'aucune lecture du masque sous la tête (joueuse hors de la vue ou masque vide)');
     await s.fermer();
   }
 }

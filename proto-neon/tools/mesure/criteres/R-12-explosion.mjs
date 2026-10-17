@@ -6,11 +6,11 @@ import { executer, principal, seuils, exiger } from '../commun.mjs';
 
 export const meta = { id: 'R-12', titre: 'Explosion', seuil: 'brasier > 8 % pendant ≥ 4 images ; caméra ≥ 6 px', bloquant: true };
 const ELITES = { flecheBlindee: 'fleche', rival: 'rival', rucheInstable: 'ruche' };
-const IMAGE = 'var b = N.gfx.buf(), n = 0; for (var i = 0; i < b.length; i++) if (b[i] === 11) n++; return { br: n / b.length, cx: N.cam.x, cy: N.cam.y, sh: +S.shake || 0, e: M.etat() };';
+const IMAGE = 'var b = N.gfx.buf(), n = 0; for (var i = 0; i < b.length; i++) if (b[i] === 11) n++; var p = S.player || {x:0,y:0}; return { br: n / b.length, cx: N.cam.x, cy: N.cam.y, px: p.x, py: p.y, sh: +S.shake || 0, e: M.etat() };';
 
 async function exploser(s, cible) {
   await s.eval(c => window.__MESURE.parImage('r12', c), IMAGE);
-  await s.images(5);
+  await s.images(30);
   const tue = await s.eval(c => {
     const N = window.__N, src = { genre: 'arme', type: 'canon', id: 0 };
     let n = 0, tues = 0;
@@ -20,11 +20,15 @@ async function exploser(s, cible) {
   }, cible);
   await s.images(60);
   const L = await s.eval(() => window.__MESURE.arreter('r12'));
-  const base = L.slice(0, 5), apres = L.slice(5);
+  const nb = 30, base = L.slice(0, nb), apres = L.slice(nb);
   let run = 0, best = 0; for (const x of apres) { if (x.br > 0.08) { run++; best = Math.max(best, run); } else run = 0; }
-  const c0 = base[base.length - 1] || apres[0];
-  const cam = Math.max(...apres.map(x => Math.max(Math.hypot(x.cx - c0.cx, x.cy - c0.cy), x.sh)));
-  return { tue, imagesBrasier: best, brasierMax: Math.max(...apres.map(x => x.br)), camera: cam };
+  /* la caméra suit la tête : on mesure l'écart caméra − tête par rapport à celui d'avant le coup (poussée
+     N.cam.jolt), et la secousse en espace écran S.shake ; sur les 30 images qui suivent */
+  const ecart = (l, c0) => Math.max(0, ...l.map(x => Math.max(Math.hypot(x.cx - x.px - (c0.cx - c0.px), x.cy - x.py - (c0.cy - c0.py)), x.sh)));
+  /* témoin : le même écart sur les 30 images d'avant le coup (suivi qui se pose encore, secousse résiduelle) */
+  const temoin = base.length > 1 ? ecart(base.slice(1), base[0]) : 0;
+  const brut = ecart(apres.slice(0, 30), base[base.length - 1] || apres[0]);
+  return { tue, imagesBrasier: best, brasierMax: Math.max(...apres.map(x => x.br)), camera: Math.max(0, brut - temoin), brut, temoin };
 }
 
 export async function mesurer(banc, res) {
@@ -34,7 +38,7 @@ export async function mesurer(banc, res) {
   const juger = (nom, r) => {
     if (!r.tue.tues) return res.nonMesurable(nom, 'la cible n’a pas été détruite par N.ennemis.hit (' + JSON.stringify(r.tue) + ')');
     res.verifie(`${nom} : images à plus de ${S.brasier * 100} % de brasier (suite la plus longue)`, r.imagesBrasier, '≥ ' + S.images, r.imagesBrasier >= S.images, { brasierMax: r.brasierMax });
-    res.verifie(`${nom} : mouvement de caméra (px)`, r.camera, '≥ ' + S.camera, r.camera >= S.camera);
+    res.verifie(`${nom} : mouvement de caméra imputable au coup (px)`, r.camera, '≥ ' + S.camera, r.camera >= S.camera, { brut: r.brut, temoin: r.temoin });
   };
   const b = await s.scene('boss3');
   if (!b.ok) res.nonMesurable('CYCLOPE', b.raison);

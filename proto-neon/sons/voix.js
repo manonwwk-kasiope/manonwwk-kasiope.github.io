@@ -53,6 +53,7 @@ var VOIX_2975 = (function () {
     ah: { t: 'V', f: [620, 1200, 2550], b: [75, 90, 150] },
     ax: { t: 'V', f: [500, 1400, 2450], b: [70, 100, 170], av: -2 },
     er: { t: 'V', f: [470, 1330, 1650], b: [70, 90, 120] },
+    ir: { t: 'V', f: [470, 1450, 1750], b: [70, 90, 120] },    // le r final après une voyelle antérieure (clear)
     w: { t: 'G', f: [300, 650, 2200], b: [60, 90, 150], av: -5 },
     y: { t: 'G', f: [270, 2150, 3000], b: [50, 150, 250], av: -4 },
     r: { t: 'G', f: [340, 1100, 1450], b: [70, 100, 120], av: -3 },
@@ -140,7 +141,7 @@ var VOIX_2975 = (function () {
     },
     CLEAR: {
       role: 'vague nettoyée', niveau: -3,
-      ph: [['k', 85], ['l', 70, { p: 106 }], ['ih', 190, { a: 1, p: 109 }], ['er', 240, { p0: 100, p1: 90 }]]
+      ph: [['k', 105], ['l', 75, { p: 106 }], ['ih', 120, { a: 1, p: 109 }], ['iy', 60, { p: 105 }], ['ir', 250, { p0: 100, p1: 90 }]]
     }
   };
 
@@ -365,6 +366,7 @@ var VOIX_2975 = (function () {
     return {
       mot: k, o: o, pistes: T, segments: segs.map(function (g) { return { ph: g.ph, t0: g.t, t1: g.t + g.d }; }),
       voyelles: voyelles, appui: appui === null ? 0.03 : appui, fin: fin + 0.08,
+      derniere: voyelles.length ? voyelles[voyelles.length - 1].t0 : 0,
       queue: o.echo > 0 ? Math.min(1.2, o.echoS * Math.log(0.001) / Math.log(Math.max(0.05, o.echoFb))) : 0.02
     };
   }
@@ -461,9 +463,13 @@ var VOIX_2975 = (function () {
     var sortie = G(cal * db(niv + 3) * db(-3));
     sat.connect(sortie);
     if (o.echo > 0) {
+      /* l'écho ne prend que la dernière syllabe : le mot reste sec et net, sa fin résonne dans la salle */
+      var envoi = G(0);
+      envoi.gain.setValueAtTime(0, T0); envoi.gain.setValueAtTime(0, T0 + R.derniere);
+      envoi.gain.linearRampToValueAtTime(1, T0 + R.derniere + 0.04);
       var ed = ctx.createDelay(1.5); ed.delayTime.value = o.echoS; noeuds++;
       var el = F('lowpass', o.echoHz, 0.5), efb = G(o.echoFb), ew = G(o.echo);
-      sat.connect(ed); ed.connect(el); el.connect(efb); efb.connect(ed); el.connect(ew); ew.connect(sortie);
+      sat.connect(envoi); envoi.connect(ed); ed.connect(el); el.connect(efb); efb.connect(ed); el.connect(ew); ew.connect(sortie);
     }
     var fin = T0 + R.fin + R.queue;
     var dernier = sortie;
