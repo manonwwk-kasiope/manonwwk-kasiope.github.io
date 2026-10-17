@@ -12,6 +12,8 @@ var S = {
   shake: 0, heat: 0, score: 0, lives: 3, tension: 0,
   enemies: [], player: null, challenge: null, paused: false,
   view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } },
+  /* le coût de l'image sur les 120 dernières (ms) et le préréglage courant du tube (repris du lot L1) */
+  perf: { p50: 0, p90: 0, p95: 0, p99: 0, niveau: 'riche' },
   /* REFONTE § 7.8 : boost, pouvoir, apogee (vrais pendant un pas, vidés après la mise à jour), gestes et taps (vidés après la mise à jour) */
   input: {
     x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [],
@@ -298,10 +300,45 @@ function gesture() {
   step('music.init', N.music && N.music.init ? function () { N.music.init(); N.music.start(); } : null);
 }
 
+/* ---- la mesure (repris du lot L1) : le coût de l'image, p50 à p99 sur les 120 dernières ; il nourrit le
+   préréglage adaptatif du tube (N.crt._note). ?perf=1 l'affiche en bas à gauche ; ?tube=riche|sobre|pur|coupe
+   fixe le tube ; ?auto=0 coupe l'adaptation. ---- */
+var PERF = new Float32Array(120), PERF2 = new Float32Array(120), perfN = 0;
+var PERF_AFF = false, perfSpr = null, perfMaj = -1, TXP = { ci: 0, contour: 0, echelle: 1 };
+var maintenant = (typeof performance !== 'undefined' && performance.now) ? function () { return performance.now(); } : function () { return 0; };
+function perfNote(ms, dtReel) {
+  PERF[perfN % 120] = ms; perfN++;
+  if (N.crt && N.crt._note) { try { N.crt._note(ms, dtReel); } catch (e) { errLog('crt.note', e); } }
+  S.perf.niveau = (N.crt && N.crt.niveau) ? N.crt.niveau() : 'riche';
+  if (perfN % 30 !== 0) return;
+  var n = Math.min(perfN, 120);
+  PERF2.set(PERF); var v = PERF2.subarray(0, n); v.sort();
+  S.perf.p50 = v[(n * 0.5) | 0]; S.perf.p90 = v[Math.min(n - 1, (n * 0.9) | 0)]; S.perf.p95 = v[Math.min(n - 1, (n * 0.95) | 0)]; S.perf.p99 = v[Math.min(n - 1, (n * 0.99) | 0)];
+}
+function f1(v) { return (Math.round((+v || 0) * 10) / 10).toFixed(1).replace('.', ','); }
+function drawPerf() {
+  var G = N.gfx, sf = S.view.safe, x = (sf.l | 0) + 2;
+  if (perfMaj !== perfN && N.spr && N.spr.text) {
+    perfMaj = perfN;
+    var tube = (N.crt && N.crt.niveau ? N.crt.niveau() : S.perf.niveau) + (N.crt && N.crt.auto && N.crt.auto() ? ' AUTO' : '');
+    TXP.ci = N.pal.i('os'); TXP.contour = N.pal.i('nuitProfonde');
+    perfSpr = N.spr.text('P50 ' + f1(S.perf.p50) + '  P95 ' + f1(S.perf.p95) + '  P99 ' + f1(S.perf.p99) + ' MS\nTUBE ' + String(tube).toUpperCase(), TXP);
+  }
+  if (perfSpr && perfSpr.data) {
+    var y = G.H - (sf.b | 0) - perfSpr.h - 2;
+    G.rect(x - 1, y - 1, perfSpr.w + 2, perfSpr.h + 2, N.pal.i('nuitProfonde'));
+    G.blit(perfSpr, x, y);
+  } else {
+    var yb = G.H - (sf.b | 0) - 8, q = [S.perf.p50, S.perf.p95, S.perf.p99], c = ['acier', 'ambre', 'brasier'];
+    for (var i = 0; i < 3; i++) G.rect(x, yb + i * 2, Math.min(60, Math.round(q[i] * 2)), 1, N.pal.i(c[i]));
+  }
+}
+
 /* ---- boucle ---- */
 var last = 0, DTMAX = 1 / 20;
 function frame(now) {
   requestAnimationFrame(frame);
+  var t0 = maintenant(), dtReel = last ? (now - last) / 1000 : 1 / 60;
   var dt = last ? (now - last) / 1000 : 1 / 60;
   last = now;
   if (typeof window !== 'undefined' && window.__DT) dt = window.__DT;
@@ -337,10 +374,12 @@ function frame(now) {
     /* couche du dessus : ce qui doit rester lisible par-dessus les explosions (menaces, joueuse, interface) */
     if (S.phase !== 'intro') step('game.drawTop', N.game && N.game.drawTop ? function () { N.game.drawTop(); } : null);
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
+    if (PERF_AFF) step('perf.draw', drawPerf);
     step('gfx.present', function () { N.gfx.present(); drew = drew || true; });
     step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(S.dt); } : null);
   }
   if (!drew) step('mire', mire);
+  perfNote(maintenant() - t0, dtReel);
 
   /* décroissance des secousses après lecture par le post-traitement */
   if (S.shake > 0) { S.shake *= Math.pow(0.001, S.dt); if (S.shake < 0.05) S.shake = 0; }
@@ -355,7 +394,12 @@ function boot() {
     window.__S = S; window.__PAL = palTable();
     if (window.__SEED) N.reseed(window.__SEED);
   }
+  var q = (typeof location !== 'undefined' && location.search) || '';
+  PERF_AFF = /[?&]perf=1\b/.test(q);
   step('gfx.init', N.gfx && N.gfx.init ? function () { N.gfx.init(out); } : null);
+  var tb = /[?&]tube=(riche|sobre|pur|coupe)\b/.exec(q);
+  if (tb && N.crt && N.crt.preset) step('crt.preset', function () { N.crt.preset(tb[1]); if (N.crt.auto) N.crt.auto(false); });
+  if (/[?&]auto=0\b/.test(q) && N.crt && N.crt.auto) step('crt.auto', function () { N.crt.auto(false); });
   step('art.load', N.art && N.art.load ? function () { N.art.load(); } : null);
   resize();
   window.addEventListener('resize', resize);

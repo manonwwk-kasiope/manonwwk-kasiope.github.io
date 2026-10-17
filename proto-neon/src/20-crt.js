@@ -74,6 +74,7 @@
   var DRt = null, DBt = null;    /* décalage en colonnes de jeu, par (décalage, sous-colonne) */
   var KM = null, KL = null, KR = null;   /* une rangée échantillonnée, amortie sur les sous-rangs */
   var glow = null, gctx = null, gimg = null, g32 = null, gw = 0, gh = 0;
+  var ext = null, ectx = null;   /* copie de l'image pour l'extinction, allouée au resize */
   var HCA = null, HCB = null;    /* colonnes du tampon lues par chaque texel de halo, décalage compris (-1 : dehors) */
   var GL = null, GWT = null;     /* couleur et poids de halo par index de palette */
   var VIDEI = 15;                /* « nuitProfonde » : ce que la secousse découvre */
@@ -91,7 +92,6 @@
   var CAM_NF = 3.6;              /* nœuds du bruit lisse par seconde ; une octave à x2,3 */
   var CAM_HIT = 0.3;             /* une montée de N.S.shake de plus que ça d'une image à l'autre est un coup */
   var DIR_TTL = 0.12;            /* une direction qu'aucun coup n'a employée s'efface après ce délai, s */
-  var HS_SLOW = 0.08;            /* 90-boot.js multiplie dt par 0,08 pendant un gel : on retrouve le temps réel */
   var cam = { x: 0, y: 0, vx: 0, vy: 0, a: 0, t: 0, ka: 0, dx: 0, dy: 0, dAge: 0, ox: 0, oy: 0 };
 
   /* bruit de valeur 1D, raccord quintique (dérivées première et seconde continues), dans [-1, 1] */
@@ -111,9 +111,9 @@
   function camera(dt, S) {
     var rdt = +dt || 0;
     if (rdt < 0) rdt = 0;
-    if (rdt > 0 && N.fx && N.fx.frozen) { try { if (N.fx.frozen()) rdt /= HS_SLOW; } catch (e) { /* 50-fx absent */ } }
+    /* dt arrive en temps réel (90-boot.js, contrat 1.0) : le gel de l'horloge de jeu ne le ralentit plus */
     if (rdt > 0.05) rdt = 0.05;
-    var A = +S.shake || 0;
+    var A = (+S.shake || 0) * secousse(S);
     if (!(A > 0)) A = 0;
     if (A > 64) A = 64;
 
@@ -175,6 +175,11 @@
     return null;
   }
   function c01(v) { return v > 1 ? 1 : (v > 0 ? v : 0); }
+  /* le réglage SECOUSSE (1 | 0,5 | 0) et le mouvement réduit multiplient la secousse à trauma */
+  function secousse(S) {
+    if (S.view && S.view.mouvementReduit) return 0;
+    var r = S.reglages; return r && typeof r.secousse === 'number' ? r.secousse : 1;
+  }
 
   /* ---- profils ----
      Le dernier sous-rang du gros pixel est la ligne morte entre deux balayages ; à px = 2 on obtient
@@ -295,9 +300,12 @@
     if (c !== out) { out = c; octx = g.context ? g.context() : c.getContext('2d', { alpha: false }); }
     if (!octx) return false;
     var k = CRT.scan + '/' + CRT.grille + '/' + CRT.vig + '/' + (CRT.pure ? 1 : 0);
-    if (c.width === OW && c.height === OH && (g.PX | 0) === PX && g.W === GW && g.H === GH && k === key) return true;
+    /* PX est ici le facteur de la TOILE de sortie (N.gfx.K) : au bureau, la toile est plafonnée à 1 280 de large
+       et le CSS agrandit d'un facteur entier ; le balayage vit entre les sous-rangs de la toile */
+    var kp = (g.K | 0) || (g.PX | 0) || 2;
+    if (c.width === OW && c.height === OH && kp === PX && g.W === GW && g.H === GH && k === key) return true;
 
-    OW = c.width | 0; OH = c.height | 0; PX = (g.PX | 0) || 2; GW = g.W | 0; GH = g.H | 0;
+    OW = c.width | 0; OH = c.height | 0; PX = kp; GW = g.W | 0; GH = g.H | 0;
     key = k;
     if (OW < 2 || OH < 2 || GW < 1 || GH < 1) return false;
 
@@ -311,6 +319,7 @@
     glow = mk(gw, gh); gctx = glow ? glow.getContext('2d') : null;
     if (gctx) { gimg = gctx.createImageData(gw, gh); g32 = new Uint32Array(gimg.data.buffer); }
     HCA = new Int32Array(gw); HCB = new Int32Array(gw);
+    ext = mk(OW, OH); ectx = ext ? ext.getContext('2d', { alpha: false }) : null;
 
     buildTables();
     return !!(u32 && TA && VGg);
@@ -320,7 +329,42 @@
      Hors du tampon (la secousse découvre un bord), on échantillonne « nuitProfonde », la bordure
      d'arène : elle traverse les mêmes tables, donc elle reçoit le balayage et la vignette comme le
      reste, et en régime pur elle reste une vraie couleur de la table. */
+  /* LA VOIE CHAUDE (iPhone et bureau plafonné : K = 2, caméra de secousse au repos) : les deux sous-rangs d'un gros
+     pixel sont écrits dans la même boucle, sans tableau de rangée intermédiaire ; l'aberration (décalage 1) prend
+     le bleu à gauche sur la sous-colonne 0, le rouge à droite sur la sous-colonne 1. Mesuré : 1,8 → voir le rapport
+     du lot 1 (tools/L1/profil-crt.mjs). */
+  function pass2(buf, ab) {
+    var W = GW, H = GH, ow = OW, U = u32;
+    var T_A = TA, T_R = TR, T_G = TG, T_B = TB, VG = VGg, AB = ABD;
+    var b00 = SB[0], b01 = SB[1], b10 = SB[2], b11 = SB[3];
+    for (var gy = 0; gy < H; gy++) {
+      var row = gy * W, o0 = gy * 2 * ow, o1 = o0 + ow, gx, k;
+      if (!ab) {
+        for (gx = 0; gx < W; gx++) {
+          k = VG[row + gx] + buf[row + gx];
+          U[o0] = T_A[b00 + k]; U[o0 + 1] = T_A[b01 + k]; U[o1] = T_A[b10 + k]; U[o1 + 1] = T_A[b11 + k];
+          o0 += 2; o1 += 2;
+        }
+      } else {
+        for (gx = 0; gx < W; gx++) {
+          var v = VG[row + gx], c = buf[row + gx];
+          k = v + c;
+          if (!AB[gx]) { U[o0] = T_A[b00 + k]; U[o0 + 1] = T_A[b01 + k]; U[o1] = T_A[b10 + k]; U[o1 + 1] = T_A[b11 + k]; }
+          else {
+            var kl = v + (gx > 0 ? buf[row + gx - 1] : c), kr = v + (gx < W - 1 ? buf[row + gx + 1] : c);
+            U[o0] = (AOP | T_B[b00 + kl] | T_G[b00 + k] | T_R[b00 + k]) >>> 0;
+            U[o0 + 1] = (AOP | T_B[b01 + k] | T_G[b01 + k] | T_R[b01 + kr]) >>> 0;
+            U[o1] = (AOP | T_B[b10 + kl] | T_G[b10 + k] | T_R[b10 + k]) >>> 0;
+            U[o1 + 1] = (AOP | T_B[b11 + k] | T_G[b11 + k] | T_R[b11 + kr]) >>> 0;
+          }
+          o0 += 2; o1 += 2;
+        }
+      }
+    }
+  }
+
   function pass(buf, ox, oy, d) {
+    if (PX === 2 && ox === 0 && oy === 0 && d <= 1) { pass2(buf, d === 1); return; }
     var W = GW, H = GH, px = PX, ow = OW, U = u32;
     var T_A = TA, T_R = TR, T_G = TG, T_B = TB, S_B = SB, VG = VGg;
     var Km = KM, Kl = KL, Kr = KR, AB = ABD, vide = VIDEI;
@@ -374,6 +418,20 @@
               for (var s = 0; s < px; s++) U[oi + s] = T_A[S_B[sbRow + s] + k3];
               oi += px;
             }
+          }
+        } else if (two && d === 1) {
+          /* la voie chaude de l'iPhone (px = 2, décalage 1) : sous-colonne 0, bleu pris à gauche ; sous-colonne 1,
+             rouge pris à droite. Écrite à plat : la voie générique, avec ses tables de décalage et ses branches
+             par sous-pixel, coûtait 2,4 ms de plus par image (mesure du lot 1, tools/L1/profil-crt.mjs). */
+          var c0 = S_B[sbRow], c1 = S_B[sbRow + 1];
+          for (gx = 0; gx < W; gx++) {
+            var kk = Km[gx];
+            if (!AB[gx]) { U[oi] = T_A[c0 + kk]; U[oi + 1] = T_A[c1 + kk]; }
+            else {
+              U[oi] = (AOP | T_B[c0 + Kl[gx]] | T_G[c0 + kk] | T_R[c0 + kk]) >>> 0;
+              U[oi + 1] = (AOP | T_B[c1 + kk] | T_G[c1 + kk] | T_R[c1 + Kr[gx]]) >>> 0;
+            }
+            oi += 2;
           }
         } else {
           for (gx = 0; gx < W; gx++) {
@@ -465,10 +523,115 @@
     }
   }
 
-  var ST ={ ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche' };
+  var ST = { ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche', auto: true, ext: 'non' };
+
+  /* ================= l'extinction (REFONTE.md § 5.4) =================
+     À la dernière mort, le tube s'éteint comme un vrai : l'image s'écrase verticalement en une ligne qui
+     s'illumine (55 % de la durée), la ligne se resserre en un point (30 %), le point s'éteint (15 %). L'écran
+     reste noir jusqu'à ce que le jeu change d'état (l'écran de fin), puis se rallume d'un coup bref : la ligne
+     se rouvre en 0,12 s. Elle marche tube actif comme tube coupé : elle reprend ce que la toile montre. Le temps
+     est réel (dt de 90-boot.js), un gel de jeu ne la retient pas. */
+  var EXT = { on: false, t: 0, dur: 0.4, etat: null, rallume: 0 };
+  var RALLUME = 0.12;                                        // → N.R (perf ou mortScene : rallumage du tube, s)
+  function etatJeu() { try { return N.game && N.game.etat ? N.game.etat() : null; } catch (e) { return null; } }
+  function css(nom) { return N.pal && N.pal.css ? N.pal.css(N.pal.i(nom)) : (N.pal && N.pal.C ? N.pal.C[N.pal.i(nom)] : null); }
+  function extinction(dt) {
+    if (!octx || !ectx) return;
+    var k, W = OW, H = OH, q = PX || 2;
+    if (EXT.on) {
+      EXT.t += dt;
+      if (EXT.t >= EXT.dur && etatJeu() !== EXT.etat) { EXT.on = false; EXT.rallume = RALLUME; }
+    }
+    var noir = css('nuitProfonde') || css('vide'), os = css('os') || noir;
+    ectx.drawImage(octx.canvas, 0, 0);
+    octx.globalCompositeOperation = 'source-over'; octx.globalAlpha = 1;
+    octx.fillStyle = noir; octx.fillRect(0, 0, W, H);
+    if (EXT.on) {
+      k = EXT.t / EXT.dur;
+      ST.ext = k < 1 ? 'extinction' : 'eteint';
+      if (k >= 1) return;
+      var lh, lw, a;
+      /* → N.R : parts de l'extinction 0,55 / 0,30 / 0,15 */
+      if (k < 0.55) { var u = k / 0.55; lh = Math.max(q, Math.round(H * (1 - u * u) / q) * q); lw = W; a = 0.25 + 0.6 * u; }
+      else if (k < 0.85) { var v = (k - 0.55) / 0.30; lh = q; lw = Math.max(q, Math.round(W * (1 - v) * (1 - v) / q) * q); a = 0.85; }
+      else { lh = q; lw = q * 2; a = 0.85 * (1 - (k - 0.85) / 0.15); }
+      var x = Math.round((W - lw) / 2), y = Math.round((H - lh) / 2);
+      octx.imageSmoothingEnabled = true;
+      octx.drawImage(ext, 0, 0, W, H, x, y, lw, lh);
+      octx.imageSmoothingEnabled = false;
+      /* la ligne s'illumine : addition d'os (le phosphore surexcité), et un halo de trois fois sa hauteur */
+      octx.globalCompositeOperation = 'lighter';
+      octx.globalAlpha = c01(a * 0.7); octx.fillStyle = os; octx.fillRect(x, y, lw, lh);
+      if (lh <= q * 2) { octx.globalAlpha = c01(a * 0.18); octx.fillRect(x - q, y - q * 2, lw + 2 * q, lh + q * 4); }
+      octx.globalAlpha = 1; octx.globalCompositeOperation = 'source-over';
+    } else {
+      /* le rallumage : la ligne se rouvre sur l'image courante */
+      EXT.rallume -= dt; k = 1 - c01(EXT.rallume / RALLUME);
+      ST.ext = 'rallumage';
+      var rh = Math.max(q, Math.round(H * k * k / q) * q), ry = Math.round((H - rh) / 2);
+      octx.drawImage(ext, 0, Math.round((H - rh) / 2), W, rh, 0, ry, W, rh);
+      if (EXT.rallume <= 0) { EXT.rallume = 0; ST.ext = 'non'; }
+    }
+  }
+  function extActive() { return EXT.on || EXT.rallume > 0; }
+
+  /* ================= le préréglage adaptatif (REFONTE.md § 7.11, audit M5) =================
+     90-boot.js donne le coût de chaque image (N.crt._note). Au-delà de N.R.perf.adaptatif.sobre (12 ms) au p90
+     des 15 dernières images, le tube descend d'un cran (halo et aberration d'abord : « sobre ») ; au-delà de
+     coupe (15 ms), il se coupe. Il ne remonte qu'après hysteresis (45 s) de calme, ET si le coût mesuré plus le
+     gain constaté à la descente reste sous retour (9 ms) : sans ce gain, il redescendrait à la remontée suivante.
+     Le plafond est le réglage ÉCRAN de la joueuse (S.reglages.ecran) : l'automate ne monte jamais au-dessus.
+     Coupé par N.crt.auto(false) — les bancs du profil ×1 le coupent. Au profil ×4, il descend en moins de 1 s. */
+  var AUTO = { on: true, niv: 0, depuis: 0, n: 0, gain: 0, avant: 0, mesure: 0, somme: 0, vie: 0 };
+  var ECHAUFFE = 1.0;            /* s de temps réel après le chargement, sans décision */   // → N.R.perf.adaptatif
+  var FEN = new Float32Array(15), FT = new Float32Array(15), fenN = 0;   // → N.R.perf.adaptatif (fenêtre de 15 images)
+  var ECHELLES = { riche: ['riche', 'sobre', 'coupe'], sobre: ['sobre', 'coupe'], pur: ['pur', 'coupe'], coupe: ['coupe'] };
+  var REG = null;
+  function plafond() { var S = N.S, r = S && S.reglages; var e = r && r.ecran; return ECHELLES[e] ? e : 'riche'; }
+  function seuils() {
+    var a = N.R && N.R.perf && N.R.perf.adaptatif;
+    return a || { sobre: 12, coupe: 15, retour: 9, hysteresis: 45 };
+  }
+  function p90() {
+    var n = Math.min(fenN, FEN.length); if (n < 10) return -1;
+    /* tri par insertion des n valeurs, sans rien allouer */
+    for (var i = 0; i < n; i++) { var x = FEN[i], j = i - 1; while (j >= 0 && FT[j] > x) { FT[j + 1] = FT[j]; j--; } FT[j + 1] = x; }
+    return FT[Math.min(n - 1, Math.floor(n * 0.9))];
+  }
+  function niveau(i) {
+    var L = ECHELLES[plafond()]; i = i < 0 ? 0 : i >= L.length ? L.length - 1 : i;
+    AUTO.niv = i; AUTO.depuis = 0; fenN = 0;
+    CRT.preset(L[i]);
+  }
+  function note(ms, dtReel) {
+    ms = +ms; if (!(ms >= 0)) return;
+    /* le réglage ÉCRAN : appliqué quand il change */
+    var pl = plafond();
+    if (pl !== REG) { REG = pl; AUTO.gain = 0; niveau(0); }
+    FEN[fenN % FEN.length] = ms; fenN++;
+    AUTO.depuis += +dtReel || 0;
+    if (AUTO.mesure > 0) { AUTO.somme += ms; if (--AUTO.mesure === 0) AUTO.gain = Math.max(0, AUTO.avant - AUTO.somme / 20); }
+    AUTO.vie += +dtReel || 0;
+    if (!AUTO.on) return;
+    /* l'échauffement : les premières images (décodage des illustrations, compilation) ne disent rien du téléphone */
+    if (AUTO.vie < ECHAUFFE) return;
+    var A = seuils(), L = ECHELLES[pl], q = p90();
+    if (q < 0) return;
+    if (AUTO.niv < L.length - 1 && q > A.sobre) {
+      AUTO.avant = q;
+      niveau(q > A.coupe ? L.length - 1 : AUTO.niv + 1);
+      AUTO.mesure = 20; AUTO.somme = 0;
+    } else if (AUTO.niv > 0 && AUTO.depuis >= A.hysteresis && q + AUTO.gain < A.retour) {
+      niveau(AUTO.niv - 1);
+    }
+  }
 
   function apply(dt) {
-    if (CRT.off) { ST.ops = 0; ST.mode = 'coupe'; return; }
+    if (CRT.off) {
+      ST.ops = 0; ST.mode = 'coupe';
+      if (extActive() && sizeCheck()) extinction(+dt || 0);
+      return;
+    }
     if (!sizeCheck()) return;
     var g = N.gfx, S = N.S || {};
     var buf = g.buf();
@@ -496,22 +659,46 @@
 
     var bl = pure ? 0 : c01(CRT.bloom);
     if (bl > 0) ops += halo(buf, ox, oy, heat, bl);
+    if (extActive()) { extinction(+dt || 0); ops++; }
 
-    ST.ops = ops; ST.mode = pure ? 'pur' : 'riche';
+    ST.ops = ops; ST.mode = pure ? 'pur' : (CRT.ab > 0 ? 'riche' : 'sobre');
   }
 
   var CRT = {
     off: false, pure: false,
     scan: 1, grille: 1, ab: 1, bloom: 1, vig: 1,
     apply: apply, stats: ST,
+    /* contrat 1.0, livré par le lot 1 */
+    extinction: function (dur) {
+      dur = +dur;
+      if (!(dur > 0)) { EXT.on = false; EXT.rallume = 0; ST.ext = 'non'; return false; }
+      EXT.dur = dur; EXT.t = 0; EXT.on = true; EXT.rallume = 0; EXT.etat = etatJeu(); ST.ext = 'extinction';
+      return true;
+    },
+    auto: function (b) { if (arguments.length) { AUTO.on = !!b; ST.auto = AUTO.on; if (!AUTO.on) fenN = 0; } return AUTO.on; },
     preset: function (nom) {
       if (nom === 'pur') { CRT.off = false; CRT.pure = true; CRT.scan = 1; CRT.grille = 1; CRT.vig = 1; }
       else if (nom === 'coupe') { CRT.off = true; }
       else if (nom === 'sobre') { CRT.off = false; CRT.pure = false; CRT.ab = 0; CRT.bloom = 0.6; CRT.grille = 0; CRT.scan = 0.75; CRT.vig = 0.8; }
-      else { CRT.off = false; CRT.pure = false; CRT.scan = 1; CRT.grille = 1; CRT.ab = 1; CRT.bloom = 1; CRT.vig = 1; }
+      else { nom = 'riche'; CRT.off = false; CRT.pure = false; CRT.scan = 1; CRT.grille = 1; CRT.ab = 1; CRT.bloom = 1; CRT.vig = 1; }
       key = '';
-      return nom || 'riche';
-    }
+      ST.mode = nom;
+      return nom;
+    },
+    /* le nom du préréglage en cours : 'riche' | 'sobre' | 'pur' | 'coupe' */
+    niveau: function () { return CRT.off ? 'coupe' : CRT.pure ? 'pur' : CRT.ab > 0 ? 'riche' : 'sobre'; },
+    /* appelé par 90-boot.js au redimensionnement : tables, images et toiles préallouées ICI, puis une passe à
+       blanc, pour que la première image après une rotation ne paie ni allocation ni compilation (le pic de
+       563 ms de l'audit, m5) */
+    resize: function () {
+      if (!sizeCheck()) return false;
+      var g = N.gfx, b = g.buf();
+      if (b && !CRT.off) { pass(b, 0, 0, CRT.pure || !(CRT.ab > 0) ? 0 : Math.min(PX, PX <= 2 ? 1 : 2)); if (g32) haloDroit(b); }
+      return true;
+    },
+    /* entre 90-boot.js et ce module : le coût de l'image (ms) et le temps réel écoulé (s) */
+    _note: note,
+    _actif: function () { return !CRT.off || extActive(); }
   };
   N.crt = CRT;
 })();
