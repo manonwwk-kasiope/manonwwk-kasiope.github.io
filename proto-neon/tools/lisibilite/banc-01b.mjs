@@ -9,9 +9,12 @@ import http from 'node:http';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { chromium, devices } from 'playwright';
-const HERE = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.resolve(HERE, '../..'), OUT = path.join(HERE, '01b');
+const HERE = path.dirname(fileURLToPath(import.meta.url)), ROOT = path.resolve(HERE, '../..'), DEFAULT_OUT = path.join(HERE, '01b');
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i < 0 ? d : process.argv[i + 1]; };
+const OUT = path.resolve(arg('--outdir', DEFAULT_OUT));
 const phase = arg('--phase', 'apres');
+const onlyScenarios = arg('--scenarios', '').split(',').filter(Boolean);
+const ambianceA = process.argv.includes('--ambiance-a');
 const onlyProfiles = arg('--profils', '').split(',').filter(Boolean);
 const reprendre = process.argv.includes('--reprendre');
 if (!['avant', 'apres'].includes(phase)) throw Error('--phase avant|apres');
@@ -41,6 +44,7 @@ const save = () => fs.writeFileSync(path.join(OUT, `${phase}.json`), JSON.string
 try {
   for (const [profil, opts] of Object.entries(profiles)) for (const scenario of scenarios) {
     if (onlyProfiles.length && !onlyProfiles.includes(profil)) continue;
+    if (onlyScenarios.length && !onlyScenarios.includes(scenario)) continue;
     const ctx = await browser.newContext(opts), page = await ctx.newPage(), errors = [];
     page.on('pageerror', e => errors.push(e.message)); page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
     await page.addInitScript(() => {
@@ -136,6 +140,6 @@ try {
     }
   }
   result.collecteComplete = result.cas.length === 21 && result.cas.every(c => c.samples.length === 15 && c.elapsed >= 30);
-  result.conforme = result.collecteComplete && result.cas.every(c => c.samples.every(s => Object.values(s.seuils).every(Boolean)) && c.err === 0 && !c.erreursConsole.length && c.horsJeuIdentique !== false && c.cielIdentique !== false && c.performanceConforme !== false);
+  result.conforme = result.collecteComplete && result.cas.every(c => c.samples.every(s => Object.values(s.seuils).every(Boolean)) && c.err === 0 && !c.erreursConsole.length && c.horsJeuIdentique !== false && (ambianceA || c.cielIdentique !== false) && c.performanceConforme !== false);
   save(); if (!result.conforme) process.exitCode = 1;
 } finally { save(); await browser.close(); await new Promise(r => server.close(r)); }
