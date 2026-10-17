@@ -26,6 +26,10 @@ s'arrête). C'est elle seule qui écrit les ordres de Codex ci-dessous.
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
 Dernière médiation : aucune.
 
+**La vision du jeu fait foi : `refonte/VISION-PROGRESSION.md`** — « un snake qui traverse l'univers », de 1976
+(snake bidon, bips binaires) à l'intergalactique ; WARP et curseur cible ; ennemis sur des plans parallèles ;
+changement de hauteur ; tout arrive progressivement. Les chantiers ci-dessous s'y rangent.
+
 ## Ordres pour Codex (la boîte aux lettres)
 
 Codex : après chaque livraison, et au plus tard toutes les 30 minutes de travail, fais
