@@ -354,7 +354,8 @@
   }
   /* ---- le sol : fond (réflexion de l'horizon) ; les lignes se tracent par image ---- */
   function buildFloor(q, e) {
-    var Q = QU[q], E = ET[e], B = N.pal.BAYER, W = vueW, FH = vueH, img = newImg(W, FH), d = img.data;
+    var vol = (e === 'vol');                  // le sol du VOL : sombre, pour que sa grille se lise (Space Harrier)
+    var Q = QU[q], E = ET[vol ? 'calme' : e], B = N.pal.BAYER, W = vueW, FH = vueH, img = newImg(W, FH), d = img.data;
     var kk = E.ciel, ck = Q.ciel;
     for (var dy = 0; dy < FH; dy++) {
       var inT = 0.12 + 0.28 * clamp01(dy / 90);
@@ -362,6 +363,7 @@
       var brT = clamp01(1 - dy / 40) * Math.min(0.7, ck.br * kk * 0.7);
       var amT = clamp01(1 - dy / 20) * Math.min(0.5, ck.am * kk * 0.9) + clamp01(1 - dy / (FH * 0.85)) * Math.min(0.22, 0.15 * ck.br * kk);
       if (E.eclipse) { amT = 0; brT *= 0.95; saT = clamp01(1 - dy / 40) * 0.9; }
+      if (vol) { amT = clamp01(1 - dy / 6) * 0.4; brT = clamp01(1 - dy / 14) * 0.45; saT = clamp01(1 - dy / 30) * 0.5; inT = 0.1; }
       var jaT = dy === 0 ? 0.5 : 0;
       var o = dy * W, br = (dy & 3) << 2, br2 = ((dy + 2) & 3) << 2, br3 = ((dy + 1) & 3) << 2;
       for (var x = 0; x < W; x++) {
@@ -537,6 +539,7 @@
       else if (dy < 64) { ink = ind; lim = 16; }
       else { ink = vio; lim = 16; if (lignes > 0) { ink = bra; lim = (0.16 * lignes) * 16; } }
       if (pulse && dy > 20) { ink = bra; lim = 0.5 * 16; }
+      if (o === 'vol') { ink = dy < 34 ? amb : (dy < 70 ? bra : vio); lim = (dy < 34 ? 0.7 : (dy < 70 ? 0.8 : 1)) * 16; }
       /* la grille transversale : (z + avance) mod 24 < épaisseur */
       if (dy >= 6) {
         var z = P.Kz / dy, ep = P.Kz / (dy * dy) * 1.15;
@@ -974,7 +977,7 @@
     /* la cité d'arrivée monte de l'horizon par rangées entières ; le sol la recouvre plus bas */
     var ville = res('ville', q), vy = yh - CH + 1 + Math.round((1 - mont) * (CH - 1));
     g.layer(ville, { x: 0, y: vy, wrapX: true, luts: lutRows });
-    var fl = res('floor', q0, e);
+    var fl = res('floor', q0, 'vol');
     g.layer(fl, { x: 0, y: yh, opaque: true });
     var sol0 = o.sol0 > yh ? o.sol0 : yh + Math.round((H - yh) * 0.4);
     var kz = (sol0 - yh) * ((N.R && N.R.vol && N.R.vol.Z0) || 64), keep = P.sc, km = P.scMax, kk = P.Kz, kg = P.g0, kd = P.dyB;
