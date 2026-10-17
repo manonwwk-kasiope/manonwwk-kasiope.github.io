@@ -44,8 +44,8 @@ TEMPS MORT = AMORTISSEURS, ÉLAN = INERTIE, SPECTRE = MARCHE DU VIDE.
   dedans (ENCERCLÉ) ; le corps absorbe les tirs au-delà du 8e anneau et nourrit le boost ; percuter en
   boost déchire ; toute mort peut exploser en chaîne ; le corps entier peut devenir une lame (ÉPINES).
 - **Mais le vivier ment** : 13 textes de carte sur 53 ne disent pas ce que fait la carte (3 la
-  sous-vendent), DÉPHASAGE double DÉSYNCHRO, trois cartes électriques nourrissent le même compteur, un
-  bogue efface AGILITÉ, DILATATION annule le ralenti de l'ultime.
+  sous-vendent), DÉPHASAGE double DÉSYNCHRO, trois cartes électriques nourrissent le même compteur et,
+  d'après le code, un bogue efface AGILITÉ et DILATATION annule le ralenti de l'ultime.
 - **Le tirage étouffe les constructions** (×0,12 pour une troisième carte du même axe dans une main) ;
   les épiques font 1,6 à 3 % des cartes offertes, les ultras presque 0 % ; six paliers, c'est trop long
   (l'audit mesurait une arme au palier ultime dans 9 % des parties).
