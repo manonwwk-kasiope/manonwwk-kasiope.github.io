@@ -1,6 +1,6 @@
 {
   "phase": "avant",
-  "dateParis": "17/10/2026 23:53:50",
+  "dateParis": "17/10/2026 23:56:05",
   "graine": 2975,
   "navigateur": "140.0.7339.16",
   "bundleSha256": "ea807707d6a894eb06fec017bc90ea0f1995618b477161c97a25241d598acc20",
@@ -22,7 +22,7 @@
         "p50": 0.699999988079071,
         "p90": 0.800000011920929,
         "p95": 0.800000011920929,
-        "p99": 0.800000011920929,
+        "p99": 0.8999999761581421,
         "niveau": "riche"
       },
       "err": 0,
@@ -45,6 +45,7 @@
       "chaudsPct": 28.619516344634828,
       "lumineuxPlateauPct": 28.765342082877627,
       "lumineuxCielPct": 22.202128544109087,
+      "chaudsCielPct": 21.95268978132535,
       "histogramme": [
         0,
         29459,
@@ -64,14 +65,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 34182,
-        "chaudsPct": 38.00245743373706,
-        "lumineuxPct": 38.00245743373706
+        "pixels": 33760,
+        "chaudsPct": 37.44075829383886,
+        "lumineuxPct": 37.44075829383886
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "8432b2fa",
@@ -101,9 +108,9 @@
       "frames": 301,
       "etat": "jeu",
       "perf": {
-        "p50": 0.7999999523162842,
-        "p90": 0.8999999761581421,
-        "p95": 0.9000000357627869,
+        "p50": 0.7000000476837158,
+        "p90": 0.800000011920929,
+        "p95": 0.800000011920929,
         "p99": 1,
         "niveau": "riche"
       },
@@ -127,6 +134,7 @@
       "chaudsPct": 28.41806841806842,
       "lumineuxPlateauPct": 28.42940842940843,
       "lumineuxCielPct": 17.24037582106926,
+      "chaudsCielPct": 16.866217676893655,
       "histogramme": [
         0,
         18806,
@@ -146,14 +154,20 @@
         97
       ],
       "sousHorizon": {
-        "pixels": 32967,
-        "chaudsPct": 44.43231109897776,
-        "lumineuxPct": 44.43231109897776
+        "pixels": 32560,
+        "chaudsPct": 43.9004914004914,
+        "lumineuxPct": 43.9004914004914
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "299d94bf",
@@ -209,6 +223,7 @@
       "chaudsPct": 30.41265041265041,
       "lumineuxPlateauPct": 30.42147042147042,
       "lumineuxCielPct": 21.601396857071588,
+      "chaudsCielPct": 21.231396025609047,
       "histogramme": [
         0,
         22421,
@@ -228,14 +243,20 @@
         97
       ],
       "sousHorizon": {
-        "pixels": 32967,
-        "chaudsPct": 43.72857706191039,
-        "lumineuxPct": 43.72857706191039
+        "pixels": 32560,
+        "chaudsPct": 43.30159705159705,
+        "lumineuxPct": 43.30159705159705
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "6a332be8",
@@ -291,6 +312,7 @@
       "chaudsPct": 19.289722281412033,
       "lumineuxPlateauPct": 19.333759499964486,
       "lumineuxCielPct": 14.160526574319677,
+      "chaudsCielPct": 13.248845662638766,
       "histogramme": [
         0,
         31832,
@@ -310,14 +332,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 31395,
-        "chaudsPct": 24.892498805542285,
-        "lumineuxPct": 24.892498805542285
+        "pixels": 31200,
+        "chaudsPct": 24.506410256410255,
+        "lumineuxPct": 24.506410256410255
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "7f991e52",
@@ -348,7 +376,7 @@
       "etat": "jeu",
       "perf": {
         "p50": 0.699999988079071,
-        "p90": 0.800000011920929,
+        "p90": 0.8999999761581421,
         "p95": 0.9000000357627869,
         "p99": 1.5,
         "niveau": "riche"
@@ -373,6 +401,7 @@
       "chaudsPct": 22.284253142978905,
       "lumineuxPlateauPct": 22.29561758647631,
       "lumineuxCielPct": 17.01935357107771,
+      "chaudsCielPct": 16.152863739070636,
       "histogramme": [
         0,
         26069,
@@ -392,14 +421,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 31395,
-        "chaudsPct": 28.638318203535594,
-        "lumineuxPct": 28.638318203535594
+        "pixels": 31200,
+        "chaudsPct": 28.237179487179485,
+        "lumineuxPct": 28.237179487179485
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "88b28195",
@@ -429,10 +464,10 @@
       "frames": 301,
       "etat": "jeu",
       "perf": {
-        "p50": 0.699999988079071,
+        "p50": 0.6000000238418579,
         "p90": 0.7000000476837158,
-        "p95": 0.800000011920929,
-        "p99": 1.4000000953674316,
+        "p95": 0.7000000476837158,
+        "p99": 1.399999976158142,
         "niveau": "riche"
       },
       "err": 0,
@@ -455,6 +490,7 @@
       "chaudsPct": 25.58278286810143,
       "lumineuxPlateauPct": 25.591306200724482,
       "lumineuxCielPct": 20.821298752333234,
+      "chaudsCielPct": 19.958738579428235,
       "histogramme": [
         0,
         28416,
@@ -474,14 +510,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 31395,
-        "chaudsPct": 29.19254658385093,
-        "lumineuxPct": 29.19254658385093
+        "pixels": 31200,
+        "chaudsPct": 28.846153846153847,
+        "lumineuxPct": 28.846153846153847
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "9502a59b",
@@ -511,10 +553,10 @@
       "frames": 301,
       "etat": "jeu",
       "perf": {
-        "p50": 3.0999999046325684,
-        "p90": 3.200000047683716,
-        "p95": 3.200000047683716,
-        "p99": 3.299999952316284,
+        "p50": 3.200000047683716,
+        "p90": 3.4000000953674316,
+        "p95": 3.5,
+        "p99": 3.700000047683716,
         "niveau": "riche"
       },
       "err": 0,
@@ -537,6 +579,7 @@
       "chaudsPct": 29.298765432098765,
       "lumineuxPlateauPct": 29.42222222222222,
       "lumineuxCielPct": 25.012626262626263,
+      "chaudsCielPct": 24.802188552188554,
       "histogramme": [
         0,
         30994,
@@ -556,14 +599,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 33480,
-        "chaudsPct": 35.681003584229394,
-        "lumineuxPct": 35.681003584229394
+        "pixels": 33120,
+        "chaudsPct": 35.10567632850242,
+        "lumineuxPct": 35.10567632850242
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": true
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": true
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "ac3e9eb",
@@ -595,8 +644,8 @@
       "perf": {
         "p50": 3.200000047683716,
         "p90": 3.299999952316284,
-        "p95": 3.299999952316284,
-        "p99": 3.4000000953674316,
+        "p95": 3.4000000953674316,
+        "p99": 3.5,
         "niveau": "riche"
       },
       "err": 0,
@@ -619,6 +668,7 @@
       "chaudsPct": 27.034567901234567,
       "lumineuxPlateauPct": 27.049382716049383,
       "lumineuxCielPct": 16.405723905723907,
+      "chaudsCielPct": 16.38047138047138,
       "histogramme": [
         0,
         22508,
@@ -638,14 +688,20 @@
         0
       ],
       "sousHorizon": {
-        "pixels": 33480,
-        "chaudsPct": 42.15651135005974,
-        "lumineuxPct": 42.15651135005974
+        "pixels": 33120,
+        "chaudsPct": 41.60024154589372,
+        "lumineuxPct": 41.60024154589372
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "38cfdb34",
@@ -677,7 +733,7 @@
       "perf": {
         "p50": 3.0999999046325684,
         "p90": 3.200000047683716,
-        "p95": 3.299999952316284,
+        "p95": 3.200000047683716,
         "p99": 3.299999952316284,
         "niveau": "riche"
       },
@@ -701,6 +757,7 @@
       "chaudsPct": 29.830864197530865,
       "lumineuxPlateauPct": 29.839506172839506,
       "lumineuxCielPct": 21.891835016835017,
+      "chaudsCielPct": 21.738215488215488,
       "histogramme": [
         0,
         24241,
@@ -720,14 +777,20 @@
         113
       ],
       "sousHorizon": {
-        "pixels": 33480,
-        "chaudsPct": 41.31720430107527,
-        "lumineuxPct": 41.31720430107527
+        "pixels": 33120,
+        "chaudsPct": 40.80314009661836,
+        "lumineuxPct": 40.80314009661836
+      },
+      "seuilsOrigine": {
+        "chauds": false,
+        "plateau": false,
+        "ciel": false
       },
       "seuils": {
         "chauds": false,
         "plateau": false,
-        "ciel": false
+        "ciel": true,
+        "cielChaud": false
       },
       "empreintesEtats": {
         "ouverture": "48b786af",

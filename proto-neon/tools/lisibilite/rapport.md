@@ -1,64 +1,59 @@
-# codex-01 — lisibilité : livraison pour arbitrage
+# codex-01 — lisibilité en jeu
 
-17/10/2026 · 23 h 54 (Paris)
+17/10/2026 · 23 h 54 (Paris) ; mis à jour à 17/10/2026 · 23 h 56 (Paris).
 
-**Lot arrêté pour arbitrage Claude : correction et preuves livrées, palier non validé.** Les plafonds de 3 % d’encres chaudes et de 8 % de pixels de luminance > 0,25 échouent sur le rectangle complet du plateau. Le minimum de 25 % de ciel lumineux échoue aussi. Aucun seuil n’a été abaissé. La question est publiée sous l’ordre 1 de `COORDINATION.md`.
+**Livraison techniquement conforme aux critères corrigés par Claude ; revue `/mediateur` attendue.** Les neuf cas passent, sans erreur console ni erreur du jeu. Source : [apres.json](apres.json), `collecteComplete: true`, `conforme: true`.
 
-## Périmètre de la correction
+## Décision et périmètre
 
-Seul `src/15-decor.js` est modifié parmi les sources. Dans les six états `jeu`, `nettoyage`, `alerte`, `boss`, `reapparition`, `mort` :
+La consigne initiale associait le plafond de 8 % de pixels lumineux sur tout le plateau et le minimum de 25 % de ciel lumineux, alors que le plateau inclut le ciel : en paysage V2, 422 × 195, horizon à y=114, le second impliquait déjà 14,62 % du plateau lumineux. La question a été poussée dans `COORDINATION.md` ; Claude a répondu par une correction explicite du chantier (commit `206135d`, § « Correction du 18 octobre »).
 
-- P5 (structures et effets associés : flammes, trains de lumière, projecteurs) et P6 (poutrelles et braises) passent par une table nuit/ardoise ; jaune, ambre, os et acier deviennent ardoise ; brasier devient nuit. Les fonds violet/indigo/sang deviennent nuit. Palette inchangée, sans alpha.
-- Après composition du lointain et des transitions de quartier, une passe borne le remappage du sol à l’intersection du plateau courant avec la zone écran sous l’horizon. Elle précède les murs, la grille et les acteurs ; ces éléments gardent leurs couleurs.
-- Le ciel, le soleil et la cité au-dessus de l’horizon gardent leurs tables d’origine. P5 et P6, y compris lorsqu’ils croisent le ciel, deviennent sombres en jeu.
-- Hors jeu, les chemins existants sont conservés. Les empreintes du décor seul pour ouverture, titre, VOL, victoire et cartes restent identiques avant/après dans chacun des neuf cas (45 comparaisons d’empreintes FNV-1a ; contrôle du décor, pas une navigation complète de ces écrans).
+Les critères qui font désormais foi sont : sous l’horizon **strict** (`y > N.decor.horizon()`) et dans le plateau, chauds ≤ 3 %, luminance > 0,25 ≤ 8 % ; au-dessus de l’horizon, lumineux ≥ 12 % et chauds ≤ 12 %. Zéro erreur, p95 paysage ≤ avant + 0,5 ms, hors jeu inchangé. Le banc conserve aussi les résultats des seuils initiaux dans `seuilsOrigine` ; il ne les rebaptise pas réussis.
 
-## Mesures avant / après
+Seul `src/15-decor.js` est modifié parmi les sources :
 
-Sources : [avant.json](avant.json), [apres.json](apres.json), obtenus avec [banc.mjs](banc.mjs). Pourcentages comptés dans le tampon indexé `N.gfx.buf()`, décor seul, après cinq secondes de jeu. La graine, la caméra, le temps, les histogrammes de palette et les rectangles sont conservés dans les reçus. Les deux bundles sont figés au début de chaque exécution et identifiés par SHA-256. Le bundle AVANT vient de l’état `1e29895`, avant la modification de `15-decor.js`.
+- Dans `jeu`, `nettoyage`, `alerte`, `boss`, `reapparition`, `mort`, P5 et ses effets (flammes, trains, projecteurs) et P6 (poutrelles, braises) passent par une table nuit/ardoise, au moins deux crans sous les accents chauds. Aucune nouvelle couleur ni alpha.
+- Le sol est remappé seulement sur son intersection avec le plateau courant, après le balayage de quartier et avant la grille, les murs et les acteurs.
+- Le lointain en jeu garde les formes, les détails et les étoiles, mais remplace les grandes surfaces chaudes par l’acier de la palette. Une trame fixe d’un pixel sur seize garde des accents du soleil (jaune → ambre, ambre → brasier). Les détails restent lumineux avec moins de luminance et de saturation ; les acteurs gardent leurs couleurs.
+- Hors jeu, les chemins d’origine restent utilisés.
 
-| Profil | Vague | Chauds % (≤ 3) | Plateau L > 0,25 % (≤ 8) | Ciel L > 0,10 % (≥ 25) | Image p95 ms |
-|---|---:|---:|---:|---:|---:|
-| paysage | 2 | 28,62 → 12,82 | 28,77 → 12,83 | 22,20 → 21,94 | 0,80 → 0,80 |
-| paysage | 4 | 28,42 → 9,58 | 28,43 → 9,59 | 17,24 → 16,61 | 0,90 → 0,90 |
-| paysage | 5 | 30,41 → 12,22 | 30,42 → 12,23 | 21,60 → 21,55 | 0,80 → 0,80 |
-| portrait | 2 | 19,29 → 8,17 | 19,33 → 8,18 | 14,16 → 14,09 | 0,80 → 0,80 |
-| portrait | 4 | 22,28 → 8,64 | 22,30 → 8,64 | 17,02 → 15,39 | 0,90 → 0,90 |
-| portrait | 5 | 25,58 → 12,52 | 25,59 → 12,53 | 20,82 → 20,76 | 0,80 → 1,00 |
-| bureau | 2 | 29,30 → 14,53 | 29,42 → 14,54 | 25,01 → 24,79 | 3,20 → 3,30 |
-| bureau | 4 | 27,03 → 9,21 | 27,05 → 9,22 | 16,41 → 15,72 | 3,30 → 3,30 |
-| bureau | 5 | 29,83 → 12,73 | 29,84 → 12,74 | 21,89 → 21,85 | 3,30 → 3,30 |
+## Résultats avant / après
 
-**Sous l’horizon, dans le plateau : 0 % de pixels chauds et 0 % de pixels L > 0,25 dans les neuf cas APRÈS** (`sousHorizon` des reçus). C’est un diagnostic complémentaire : il ne remplace pas les seuils sur le plateau entier.
+Sources : [avant.json](avant.json), [apres.json](apres.json), [banc.mjs](banc.mjs). Valeurs en pourcentage du décor seul ; coûts de l’image en millisecondes. Le plateau sous l’horizon est borné par N.world/N.cam ; le ciel est la région écran `y < horizon`.
 
-Les neuf cas ont `window.__ERR.count === 0` et aucune erreur console/page remontée. Sur le profil paysage, le delta p95 est inférieur ou égal à +0,5 ms dans chaque vague (`deltaP95` et `seuils.performance`). Mesure sur ce Mac dans Chromium avec émulation iPhone : ce n’est pas une mesure matérielle sur un iPhone ni sous Safari.
+| Profil | Vague | Sol chauds % ≤ 3 | Sol L > 0,25 % ≤ 8 | Ciel L > 0,10 % ≥ 12 | Ciel chauds % ≤ 12 | Image p95 ms |
+|---|---:|---:|---:|---:|---:|---:|
+| paysage | 2 | 37,44 → 0,00 | 37,44 → 0,00 | 22,20 → 21,94 | 21,95 → 1,27 | 0,80 → 0,80 |
+| paysage | 4 | 43,90 → 0,00 | 43,90 → 0,00 | 17,24 → 16,61 | 16,87 → 0,07 | 0,80 → 0,90 |
+| paysage | 5 | 43,30 → 0,00 | 43,30 → 0,00 | 21,60 → 21,55 | 21,23 → 0,77 | 0,80 → 0,80 |
+| portrait | 2 | 24,51 → 0,00 | 24,51 → 0,00 | 14,16 → 14,09 | 13,25 → 0,10 | 0,80 → 0,90 |
+| portrait | 4 | 28,24 → 0,00 | 28,24 → 0,00 | 17,02 → 15,39 | 16,15 → 0,01 | 0,90 → 0,90 |
+| portrait | 5 | 28,85 → 0,00 | 28,85 → 0,00 | 20,82 → 20,76 | 19,96 → 0,68 | 0,70 → 0,80 |
+| bureau | 2 | 35,11 → 0,00 | 35,11 → 0,00 | 25,01 → 24,79 | 24,80 → 0,36 | 3,50 → 3,60 |
+| bureau | 4 | 41,60 → 0,00 | 41,60 → 0,00 | 16,41 → 15,72 | 16,38 → 1,14 | 3,40 → 3,60 |
+| bureau | 5 | 40,80 → 0,00 | 40,80 → 0,00 | 21,89 → 21,85 | 21,74 → 0,51 | 3,20 → 3,30 |
 
-## Pourquoi le palier ne peut pas être déclaré validé
+Les neuf cas ont 0 % de chauds et 0 % de pixels L > 0,25 sous l’horizon après correction. Le delta p95 paysage maximal est de +0,10 ms (limite +0,5 ms). Les neuf reçus ont `window.__ERR.count === 0` et aucune erreur console/page. Les empreintes du décor hors jeu (ouverture, titre, VOL, victoire, cartes) restent identiques dans les neuf cas : 45 comparaisons FNV-1a. Les six états jouables produisent la même correction sur les mêmes données figées.
 
-Le rectangle N.world/N.cam contient aussi la partie supérieure du décor. Exemple paysage V2 : tampon et plateau de 422 × 195, horizon à y=114. Exiger 25 % de pixels lumineux dans ces 114 lignes impose au moins 14,62 % du plateau lumineux. Or les encres lumineuses autorisées au décor lointain (ambre, jaune, brasier, os, acier) sont toutes de luminance > 0,25 ; le plafond de 8 % devient incompatible avec ce minimum. Utiliser du magenta/cyan pour contourner cette contradiction violerait les encres réservées aux acteurs.
+## Méthode et limites
 
-Par ailleurs, la luminosité minimale du ciel échoue déjà AVANT dans huit des neuf cas : ce défaut de référence n’est pas créé par cette correction. Assombrir P5/P6 retire encore une petite part lumineuse au ciel, comme l’exige leur hiérarchie visuelle.
+Playwright/Chromium local, navigateur muet ; profils explicitement forcés à 844 × 390, 390 × 844 et 1440 × 900. La graine, les caméras, les rectangles et histogrammes sont enregistrés. Le bundle AVANT est celui de `1e29895`, conservé avant modification ; chaque bundle est figé à l’ouverture du banc et identifié par SHA-256.
 
-**Décision attendue de Claude :** préciser la région des plafonds (par exemple sous l’horizon, si c’est bien la région visée), ou changer explicitement l’intention du lointain derrière les acteurs. Sans cet arbitrage, étendre l’extinction à la cité/le soleil résoudrait les plafonds mais contredirait l’ordre de conserver leur lumière. Ne pas valider ni retoucher les seuils implicitement.
+Graine 2975, `__DT = 1/60`, vrai `frame()` avec rAF piloté, 301 images et 5,0167 s de jeu. `?perf=1` et `window.__S.perf.p95` conservent la mesure murale normale du jeu. Même état avant/après, pas de bridage CPU. Le rAF contrôlé permet de figer le jeu, mais il ne reproduit pas l’ordonnancement d’un téléphone réel. **Les coûts proviennent de l’émulation Chromium sur ce Mac, pas d’un iPhone physique ni de Safari.**
 
-## Reproduction et vérifications
+Les empreintes hors jeu contrôlent le rendu du décor avec le même temps et la même caméra, en substituant seulement le nom de l’état lors de ce contrôle ; elles ne constituent pas une navigation complète de chaque écran. La collecte principale ne remplace aucun module du jeu.
 
-`node build.mjs` depuis `proto-neon/` : sortie 0, syntaxe du bundle validée. `node --check tools/lisibilite/banc.mjs` et `git diff --check` passent.
-
-Le banc requiert le Playwright déjà disponible dans ce dépôt. Profils explicitement forcés à 844 × 390, 390 × 844 et 1440 × 900 (les tailles du descripteur Playwright seul ne sont pas utilisées). Graine 2975, dt=1/60, 301 images réelles de `frame()`, soit 5,0167 s de jeu ; coût calculé par `window.__S.perf` avec `?perf=1`, sur sa fenêtre des dernières images. Pas de bridage CPU. Le rAF est piloté pour figer exactement le même état avant/après ; aucun module du jeu n’est remplacé pour la collecte. L’état est substitué uniquement lors du contrôle ciblé des chemins de rendu hors jeu et des six états jouables. Le navigateur est muet.
+`node build.mjs` : sortie 0, bundle syntaxiquement valide. `node --check tools/lisibilite/banc.mjs` et `git diff --check` passent. Le banc retourne 1 si un seuil courant échoue, tout en sauvegardant le reçu. L’exécution AVANT échoue aux critères ; l’exécution APRÈS retourne 0.
 
 ```sh
-# Avant modification : conserver le bundle hors du dépôt.
+# Depuis proto-neon/, Playwright déjà disponible dans le dépôt.
 node tools/lisibilite/banc.mjs --phase avant --bundle /tmp/snake-codex01-avant.html
-# Après reconstruction :
 node tools/lisibilite/banc.mjs --phase apres
 ```
 
-**Le banc sort volontairement 1 si les seuils échouent**, tout en enregistrant les reçus et captures. `collecteComplete: true`, `conforme: false` sont les statuts attendus de ce lot ; une sortie 1 n’est pas présentée comme une réussite.
-
 ## Revue des captures
 
-Les captures normales des neuf cas avant/après ont été regardées en planches comparatives ; les fichiers individuels sont joints. Le sol perd les aplats et reflets chauds, la grille reste perceptible, les cellules se détachent davantage. En revanche, la tête du serpent et les tirs passent encore devant la cité lumineuse, particulièrement en V4 paysage/bureau ; cette réserve visuelle rejoint l’échec des seuils globaux. Aucun verdict de qualité indépendante n’est revendiqué : revue attendue par `/mediateur`.
+Les neuf paires de captures normales ont été regardées en planches, puis la vague 4 paysage en détail. Le sol perd ses aplats chauds, la cité perd ses fenêtres jaunes dominantes ; la tête cyan, les tirs et les cellules se détachent davantage. Les captures individuelles de chaque profil/vague sont jointes. Cette revue technique ne remplace pas le verdict indépendant de Claude.
 
 ![Avant, paysage V4](avant-paysage-v4.png)
 
@@ -66,4 +61,4 @@ Les captures normales des neuf cas avant/après ont été regardées en planches
 
 ## Point de reprise
 
-Objectif : codex-01, lisibilité du décor sans extinction du lointain. Correction ciblée, banc, reçus et captures prêts. Pas de dépense externe ; exécution locale Playwright seulement. Reste : arbitrage du rectangle de mesure et de la lumière au-dessus du plateau, puis éventuelle correction complémentaire et revue Claude. Reprendre par `git pull --rebase origin claude/snake-game-mobile-17dqpi` et relire entièrement la section « Ordres pour Codex » ; ne pas refaire les mesures inchangées sans nouvel élément.
+Code, banc, reçus et captures terminés ; seuils corrigés vérifiés, aucune dépense externe. Réservation à libérer lors de la livraison. Reste : revue Claude `/mediateur`. Prochaine action : pull et relecture de « Ordres pour Codex », puis codex-02. Ne pas rejouer les mesures inchangées sans nouvel élément.

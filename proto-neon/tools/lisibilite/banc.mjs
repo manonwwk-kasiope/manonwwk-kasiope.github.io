@@ -64,16 +64,18 @@ try {
       const W = g.W, H = g.H, b = g.buf(), yh = N.decor.horizon();
       const rect = { x0: Math.max(0, world.x0 - cam.x), y0: Math.max(0, world.y0 - cam.y), x1: Math.min(W - 1, world.x1 - cam.x), y1: Math.min(H - 1, world.y1 - cam.y) };
       const histogram = Array(16).fill(0), warm = ['jaune', 'ambre', 'brasier', 'os'].map(N.pal.i);
-      let count = 0, bright = 0, hot = 0, sky = 0, skyCount = 0, solCount = 0, solHot = 0, solBright = 0;
+      let count = 0, bright = 0, hot = 0, sky = 0, skyCount = 0, skyHot = 0, solCount = 0, solHot = 0, solBright = 0;
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
         const v = b[y * W + x];
-        if (y < yh) { skyCount++; if (N.pal.L[v] > 0.1) sky++; }
+        if (y < yh) { skyCount++; if (N.pal.L[v] > 0.1) sky++; if (warm.includes(v)) skyHot++; }
         if (x < rect.x0 || x > rect.x1 || y < rect.y0 || y > rect.y1) continue;
-        if (y >= yh) { solCount++; if (warm.includes(v)) solHot++; if (N.pal.L[v] > 0.25) solBright++; }
+        if (y > yh) { solCount++; if (warm.includes(v)) solHot++; if (N.pal.L[v] > 0.25) solBright++; }
         histogram[v]++; count++; if (warm.includes(v)) hot++; if (N.pal.L[v] > 0.25) bright++;
       }
-      const r = { tampon: [W, H], camera: { x: cam.x, y: cam.y }, plateau: rect, horizon: yh, pixels: count, chaudsPct: 100 * hot / count, lumineuxPlateauPct: 100 * bright / count, lumineuxCielPct: 100 * sky / skyCount, histogramme: histogram, sousHorizon: { pixels: solCount, chaudsPct: 100 * solHot / solCount, lumineuxPct: 100 * solBright / solCount } };
-      r.seuils = { chauds: r.chaudsPct <= 3, plateau: r.lumineuxPlateauPct <= 8, ciel: r.lumineuxCielPct >= 25 };
+      const r = { tampon: [W, H], camera: { x: cam.x, y: cam.y }, plateau: rect, horizon: yh, pixels: count, chaudsPct: 100 * hot / count, lumineuxPlateauPct: 100 * bright / count, lumineuxCielPct: 100 * sky / skyCount, chaudsCielPct: 100 * skyHot / skyCount, histogramme: histogram, sousHorizon: { pixels: solCount, chaudsPct: 100 * solHot / solCount, lumineuxPct: 100 * solBright / solCount } };
+      r.seuilsOrigine = { chauds: r.chaudsPct <= 3, plateau: r.lumineuxPlateauPct <= 8, ciel: r.lumineuxCielPct >= 25 };
+      // Correction explicite de Claude du 18 octobre, pas un ajustement décidé par le banc.
+      r.seuils = { chauds: r.sousHorizon.chaudsPct <= 3, plateau: r.sousHorizon.lumineuxPct <= 8, ciel: r.lumineuxCielPct >= 12, cielChaud: r.chaudsCielPct <= 12 };
       // Hors jeu : mêmes données et horloge, seul le nom d'état change. Empreintes avant/après.
       const state = N.game.etat, states = {};
       for (const s of ['ouverture', 'titre', 'vol', 'victoire', 'cartes', 'jeu', 'nettoyage', 'alerte', 'boss', 'reapparition', 'mort']) { N.game.etat = () => s; draw(); states[s] = hash(); }
