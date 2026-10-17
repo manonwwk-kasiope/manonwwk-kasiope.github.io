@@ -99,7 +99,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `src/64-aventure.js`, `tools/aventure/` (nouveaux) | Claude cloud | 18/10 à 01 h 05 | N.aventure (le déroulé : choix, connexion, 1976, fissure, 1982, néon, films d'époque, fins, retrouvailles, teaser) et N.film (lecteur de film plein écran) |
-| `refonte/prototypes/plans.html` (nouveau), `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | prototype des plans parallèles ; films et portraits des deux pilotes (Higgsfield) |
+| `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 
 ## Prochains chantiers (à prendre)
@@ -133,6 +133,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 ## Livré par la session cloud (à brancher)
 
+- `refonte/prototypes/plans.html` — prototype jouable des trois plans parallèles, du changement de hauteur et du warp (vision § 3) : pour intégrer, horloge à pas fixe, rendu en couches dans 10-gfx, fusion avec 78-warp.
 - `src/69-arcade.js` — l'époque 1982 : voir `refonte/lots/demandes.md`, « brancher l'époque 1982 ».
 - `src/62-choix.js` — l'écran LA PILOTE / LE PILOTE : voir `refonte/lots/demandes.md`, « brancher l'écran de choix ».
 - `src/78-warp.js` — le WARP et le curseur cible : voir `refonte/lots/demandes.md`, « brancher le WARP ».

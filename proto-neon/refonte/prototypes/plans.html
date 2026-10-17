@@ -1,0 +1,1129 @@
+<title>SNAKE 2975 Les Plans</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap">
+<style>
+/* Plein écran façon borne : le canvas en pixels entiers, l'interface en surimpression ; un seul thème, celui du jeu.
+   Le cyan est réservé au serpent : l'interface n'en porte pas. */
+:root {
+  color-scheme: dark;
+  --fond: #0d0221; --texte: #fffce8; --magenta: #ff2a6d; --rose: #ff8fab; --ambre: #ff9e00; --jaune: #ffd319;
+  --brasier: #ff5714; --doux: #8a8fa3; --acier: #8a8fa3; --nuit: #01012b; --indigo: #2d1b69; --violet: #541388;
+  --voile: rgba(13, 2, 33, .66); --bouton: rgba(13, 2, 33, .72);
+  --f: "Silkscreen", "Courier New", monospace;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--fond); color: var(--texte); overflow: hidden; touch-action: none; user-select: none;
+  -webkit-user-select: none; -webkit-touch-callout: none; font-family: var(--f); }
+#app { position: fixed; inset: 0; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.hud { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; gap: 12px; pointer-events: none;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px));
+  font-size: clamp(12px, 1.7vmin, 18px); line-height: 1.35; text-shadow: 0 2px 0 var(--nuit); }
+.hud b { color: var(--jaune); font-weight: 400; }
+.perdu { color: var(--ambre); font-size: .8em; }
+.pile { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; font-size: clamp(10px, 1.3vmin, 14px); color: var(--doux); }
+.pile i { font-style: normal; padding: 1px 7px 1px 0; border-right: 4px solid var(--indigo); transition: color .2s, border-color .2s; }
+.pile i.on { color: var(--texte); border-right-color: var(--jaune); }
+.pile i.on::before { content: "▸ "; color: var(--jaune); }
+.bas { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px;
+  padding: 0 max(14px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+.aide { font-size: clamp(10px, 1.3vmin, 14px); line-height: 1.5; color: var(--doux); text-shadow: 0 2px 0 var(--nuit); max-width: 52ch; }
+.cmd { display: flex; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+button { pointer-events: auto; font: clamp(12px, 1.5vmin, 16px) var(--f); color: var(--texte); background: var(--bouton); border: 2px solid var(--violet); padding: 7px 10px; cursor: pointer; touch-action: none; }
+button:focus-visible { outline: 2px solid var(--jaune); outline-offset: 2px; }
+button.warp { border-color: var(--rose); color: var(--rose); position: relative; padding-bottom: 10px; min-width: 64px; }
+button.warp.pret { color: var(--jaune); border-color: var(--jaune); }
+.jauge { position: absolute; left: 4px; right: 4px; bottom: 3px; height: 3px; background: var(--indigo); }
+.jauge i { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: currentColor; }
+.annonce { position: absolute; left: 0; right: 0; top: 14%; text-align: center; pointer-events: none; font-size: clamp(18px, 4.6vmin, 34px);
+  color: var(--jaune); text-shadow: 0 3px 0 var(--violet), 0 0 0 var(--nuit); opacity: 0; transition: opacity .25s; letter-spacing: .06em; }
+.annonce.on { opacity: 1; }
+.annonce small { display: block; font-size: 11px; color: var(--rose); margin-top: 4px; letter-spacing: 0; }
+.ecran { position: absolute; inset: 0; background: var(--voile); display: grid; place-content: center; text-align: center; gap: 11px; pointer-events: none;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+[hidden] { display: none !important; }
+.ecran h1 { margin: 0; font: 400 clamp(26px, 7vmin, 54px)/1 var(--f); color: var(--texte); text-shadow: 0 4px 0 var(--magenta), 0 8px 0 var(--violet); }
+.ecran p { margin: 0 auto; font-size: 12px; line-height: 1.55; max-width: 50ch; text-shadow: 0 2px 0 var(--nuit); }
+.ecran .cmds { font-size: 10px; color: var(--doux); }
+.ecran .cmds b { color: var(--texte); font-weight: 400; }
+.ecran .clig { color: var(--jaune); animation: clig 1s steps(2) infinite; }
+@keyframes clig { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .ecran .clig { animation: none; } .annonce { transition: none; } }
+.legende { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; font-size: 10px; max-width: 60ch; margin: 0 auto; }
+@media (max-height: 430px) { .ecran { gap: 7px; } .ecran p { font-size: 11px; line-height: 1.45; } .hud { font-size: 12px; } }
+</style>
+
+<div id="app">
+  <canvas id="c"></canvas>
+  <div class="hud">
+    <div>SCORE <b id="score">0</b><br>LONGUEUR <b id="long">7</b><br><span id="perdu" class="perdu"></span></div>
+    <div class="pile" id="pile"><i>LE HAUT</i><i class="on">LE PRINCIPAL</i><i>LE PROFOND</i></div>
+  </div>
+  <div class="annonce" id="annonce"></div>
+  <div class="bas">
+    <span class="aide" id="aide"></span>
+    <div class="cmd">
+      <button id="bh" type="button" aria-label="Monter d'un plan">▲</button>
+      <button id="bb" type="button" aria-label="Descendre d'un plan">▼</button>
+      <button id="bw" type="button" class="warp pret">WARP<span class="jauge"><i id="jw"></i></span></button>
+    </div>
+  </div>
+  <div class="ecran" id="ecran">
+    <h1>LES PLANS</h1>
+    <p id="e1">Trois plans empilés : le profond sous la grille, le principal, le haut. Ce qui vit sur un autre plan te menace sans pouvoir te toucher.</p>
+    <div class="legende" id="e2"><span style="color:#ff2a6d">◆ rôdeur, sur ton plan</span><span style="color:#ff5714">■ foreuse, d'en bas : tire quand elle est alignée</span><span style="color:#fffce8">▲ croiseur, d'en haut : son ombre te suit, il largue des mines</span><span style="color:#ffd319">■ cellule</span><span style="color:#ff8fab">○ ascenseur</span></div>
+    <p class="cmds" id="e3"><b>TÉLÉPHONE</b> glisse pour diriger · balaie à deux doigts ↑ ↓ pour changer de plan · tiens un second doigt pour le WARP<br><b>BUREAU</b> flèches · PAGE↑ PAGE↓ ou W S · ESPACE tenu pour le WARP</p>
+    <p class="clig" id="go">TOUCHE POUR JOUER</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* ---------- la palette fermée de SNAKE 2975 (seize couleurs, jamais une de plus) ---------- */
+  var HEX = ['#0d0221', '#190b28', '#241734', '#541388', '#2d1b69', '#ff2a6d', '#ff8fab', '#05d9e8',
+    '#d1f7ff', '#ff9e00', '#ffd319', '#ff5714', '#fffce8', '#8a8fa3', '#8b0f3a', '#01012b'];
+  var VIDE = 0, NUIT = 1, ARDOISE = 2, VIOLET = 3, INDIGO = 4, MAGENTA = 5, ROSE = 6, CYAN = 7, CYANP = 8,
+    AMBRE = 9, JAUNE = 10, BRASIER = 11, OS = 12, ACIER = 13, SANG = 14, NP = 15;
+  var PAL32 = new Uint32Array(16);
+  HEX.forEach(function (h, i) { var r = parseInt(h.substr(1, 2), 16), g = parseInt(h.substr(3, 2), 16), b = parseInt(h.substr(5, 2), 16); PAL32[i] = (255 << 24) | (b << 16) | (g << 8) | r; });
+  var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+  /* ---------- le hasard à graine : aucune partie ne dépend de Math.random ---------- */
+  function graine(s) { s = s >>> 0; return function () { s = (s + 0x6D2B79F5) >>> 0; var t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  var RNG = graine(2975), RDEC = graine(1993), RPIL = graine(1976);
+  function alea() { return RNG(); }
+
+  /* ---------- les tables de couleur : on assombrit en changeant d'index, jamais en inventant une teinte ---------- */
+  function table(p) { var t = new Uint8Array(16), i; for (i = 0; i < 16; i++) t[i] = i; for (i = 0; i < p.length; i += 2) t[p[i]] = p[i + 1]; return t; }
+  function compose(a, b) { var t = new Uint8Array(16); for (var i = 0; i < 16; i++) t[i] = b[a[i]]; return t; }
+  var CM_ID = table([]);
+  var CM_SOMBRE = table([OS, ACIER, ACIER, ARDOISE, JAUNE, AMBRE, AMBRE, BRASIER, BRASIER, SANG, ROSE, MAGENTA, MAGENTA, SANG, VIOLET, INDIGO, INDIGO, NUIT, ARDOISE, NUIT]);
+  var CM_LOIN = compose(CM_SOMBRE, CM_SOMBRE);
+  var CM_OBJ = table([OS, ACIER, JAUNE, AMBRE, ROSE, MAGENTA]);
+  var CM_BLEU = table([SANG, INDIGO, BRASIER, VIOLET, AMBRE, VIOLET, JAUNE, ROSE, MAGENTA, VIOLET]);
+  var CM = CM_ID, OPA = 16;            // table de couleur et opacité tramée (sur 16) en cours
+
+  var cv = document.getElementById('c'), ctx = cv.getContext('2d', { alpha: false });
+  var W = 0, H = 0, B = null, img = null, d32 = null, PX = 1;
+  /* la résolution « 16 bits » de 1993 : pixels deux fois plus fins que la grille de 1976 */
+  function taille() {
+    var w = window.innerWidth, h = window.innerHeight, lo = Math.max(w, h), co = Math.min(w, h);
+    PX = Math.max(1, Math.floor(Math.min(lo / 600, co / 340)));
+    W = Math.ceil(w / PX); H = Math.ceil(h / PX);
+    cv.width = W; cv.height = H;
+    B = new Uint8Array(W * H); img = ctx.createImageData(W, H); d32 = new Uint32Array(img.data.buffer);
+  }
+  window.addEventListener('resize', taille); taille();
+
+  /* ---------- primitives : tout passe par le tampon d'index, en pixels entiers ---------- */
+  function opaq(x, y) { return OPA >= 16 || BAYER[(((y + 1) & 3) << 2) | ((x + 2) & 3)] < OPA; }
+  function px(x, y, c) { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H && opaq(x, y)) B[y * W + x] = CM[c]; }
+  function bloc(x, y, s, c) { x = Math.round(x - s / 2); y = Math.round(y - s / 2); for (var j = 0; j < s; j++) for (var i = 0; i < s; i++) px(x + i, y + j, c); }
+  /* polygone convexe rempli, tramé entre c1 et c2 au seuil t (0..1), à l'opacité OPA */
+  function poly(P, c1, c2, t) {
+    var n = P.length, y0 = 1e9, y1 = -1e9, i;
+    for (i = 0; i < n; i++) { if (P[i][1] < y0) y0 = P[i][1]; if (P[i][1] > y1) y1 = P[i][1]; }
+    y0 = Math.max(0, Math.ceil(y0 - 0.5)); y1 = Math.min(H - 1, Math.floor(y1 - 0.5));
+    var th = (t || 0) * 16, a1 = CM[c1], a2 = CM[c2 === undefined ? c1 : c2], op = OPA;
+    for (var y = y0; y <= y1; y++) {
+      var yc = y + 0.5, xa = 1e9, xb = -1e9;
+      for (i = 0; i < n; i++) {
+        var a = P[i], b = P[(i + 1) % n];
+        if ((a[1] <= yc && b[1] > yc) || (b[1] <= yc && a[1] > yc)) { var xx = a[0] + (yc - a[1]) / (b[1] - a[1]) * (b[0] - a[0]); if (xx < xa) xa = xx; if (xx > xb) xb = xx; }
+      }
+      if (xb < xa) continue;
+      var x0 = Math.max(0, Math.ceil(xa - 0.5)), x1 = Math.min(W - 1, Math.floor(xb - 0.5)), o = y * W, br = (y & 3) << 2, bo = ((y + 1) & 3) << 2;
+      for (var x = x0; x <= x1; x++) {
+        if (op < 16 && BAYER[bo | ((x + 2) & 3)] >= op) continue;
+        B[o + x] = (th > 0 && BAYER[br | (x & 3)] < th) ? a2 : a1;
+      }
+    }
+  }
+  /* trait épais, plein ou en pointillés (motif : longueur d'un tiret en pixels) */
+  function ligne(x0, y0, x1, y1, c, w, motif, phase) {
+    var dx = x1 - x0, dy = y1 - y0, n = Math.max(Math.abs(dx), Math.abs(dy)) | 0; if (n > 3000) return;
+    w = w || 1; var off = Math.floor((w - 1) / 2);
+    for (var i = 0; i <= n; i++) {
+      if (motif && (((i + (phase || 0)) / motif) | 0) % 2) continue;
+      var x = Math.round(x0 + dx * i / (n || 1)) - off, y = Math.round(y0 + dy * i / (n || 1)) - off;
+      if (w === 1) px(x, y, c); else for (var b = 0; b < w; b++) for (var a = 0; a < w; a++) px(x + a, y + b, c);
+    }
+  }
+  /* une boule éclairée d'en haut à gauche (les anneaux du serpent) */
+  function boule(cx, cy, r, hi, mid, lo) {
+    var R = Math.max(1.2, r), r2 = R * R, x0 = Math.floor(cx - R), x1 = Math.ceil(cx + R), y0 = Math.floor(cy - R), y1 = Math.ceil(cy + R);
+    var A = CM[hi], M = CM[mid], L = CM[lo];
+    for (var y = Math.max(0, y0); y <= Math.min(H - 1, y1); y++) {
+      var dy = y + 0.5 - cy, o = y * W, br = (y & 3) << 2;
+      for (var x = Math.max(0, x0); x <= Math.min(W - 1, x1); x++) {
+        var dx = x + 0.5 - cx, d2 = dx * dx + dy * dy; if (d2 > r2) continue;
+        if (!opaq(x, y)) continue;
+        var sh = (dx * 0.55 + dy * 0.85) / R, hx = dx + R * 0.34, hy = dy + R * 0.4, c;
+        if (hx * hx + hy * hy < r2 * 0.09) c = A;
+        else if (sh > 0.55) c = L;
+        else if (sh > 0.3) c = BAYER[br | (x & 3)] < 8 ? L : M;
+        else c = M;
+        B[o + x] = c;
+      }
+    }
+  }
+
+  /* ---------- la caméra : isométrique inclinée, trois plans dont l'échelle dépend de la hauteur ---------- */
+  var N = 12;                              // chaque plan fait N x N unités
+  var DZ = 6, ZP = [-DZ, 0, DZ], DC = 24;  // écart entre plans, hauteur des plans, recul de la caméra
+  var NOMS = ['LE PROFOND', 'LE PRINCIPAL', 'LE HAUT'];
+  var CAM = { th: 0.66, ph: 0.92, S: 10, cx: 0, cy: 0, zf: 0, c: 1, s: 0, sp: 1, cp: 0, dip: 0, sec: 0, lat: 0.3, ez: 1, L: [0, 0, 1] };
+  function camera(t) {
+    CAM.th = 0.66 + Math.sin(t * 0.13) * 0.11;
+    CAM.ph = 0.86 + Math.sin(t * 0.11) * 0.03 + CAM.dip;
+    CAM.c = Math.cos(CAM.th); CAM.s = Math.sin(CAM.th); CAM.sp = Math.sin(CAM.ph); CAM.cp = Math.cos(CAM.ph);
+    var span = N * (Math.abs(CAM.c) + Math.abs(CAM.s)), haut = span * CAM.sp, kb = DC / (DC + DZ), portrait = H > W * 1.1;
+    CAM.ez = portrait ? Math.min(2.2, Math.max(1, (H / W) * 0.95)) : 1;     // en portrait, les plans s'écartent pour remplir la hauteur
+    var bas = (DZ * CAM.cp * CAM.ez + haut / 2) * kb, tot = haut / 2 + bas;
+    CAM.lat = portrait ? 0.12 : 0.34;
+    CAM.S = Math.min(W * (portrait ? 0.92 : 0.8) / span, H * (portrait ? 0.62 : 0.82) / tot);
+    CAM.cx = W / 2 + (portrait ? 0 : DZ * CAM.lat * CAM.S * 0.35); CAM.cy = H * 0.53 - (bas - haut / 2) / 2 * CAM.S;
+    if (CAM.sec > 0) { CAM.cx += (RDEC() - 0.5) * CAM.sec * 8; CAM.cy += (RDEC() - 0.5) * CAM.sec * 8; }
+    /* la lumière : d'en haut, un peu de gauche, vers la caméra */
+    var vx = CAM.s * CAM.cp, vy = CAM.c * CAM.cp, vz = CAM.sp, lx = vx * 0.5 - CAM.c * 0.55, ly = vy * 0.5 + CAM.s * 0.55, lz = vz * 0.5 + 0.8, l = Math.hypot(lx, ly, lz);
+    CAM.L = [lx / l, ly / l, lz / l];
+  }
+  /* monde (x, y dans 0..N, z en hauteur) -> écran ; renvoie [x, y, profondeur, échelle] */
+  function P3(x, y, z) {
+    var gx = x - N / 2, gy = y - N / 2, rx = gx * CAM.c - gy * CAM.s, ry = gx * CAM.s + gy * CAM.c, dz = z - CAM.zf;
+    var den = DC - dz; if (den < 4) den = 4;
+    var k = DC / den;
+    return [CAM.cx + (rx + dz * CAM.lat) * CAM.S * k, CAM.cy + (ry * CAM.sp - dz * CAM.cp * CAM.ez) * CAM.S * k, ry, k];
+  }
+  /* une direction tracée à l'écran -> un angle dans le monde (sur le plan où l'on est) */
+  function angleMonde(sx, sy) { var rx = sx, ry = sy / Math.max(0.2, CAM.sp); return Math.atan2(-rx * CAM.s + ry * CAM.c, rx * CAM.c + ry * CAM.s); }
+  function planFocal() { return Math.max(0, Math.min(2, Math.round((CAM.zf + DZ) / DZ))); }
+  function relPlan(p) { return ZP[p] - CAM.zf; }
+
+  /* ---------- les formes en volume : polyèdres convexes, faces cachées retirées, éclairage en trois tons ---------- */
+  function orienter(V, F) {
+    return F.map(function (f) {
+      var a = V[f[0]], b = V[f[1]], c = V[f[2]], ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], wx = c[0] - a[0], wy = c[1] - a[1], wz = c[2] - a[2];
+      var nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx, cx = 0, cy = 0, cz = 0;
+      f.forEach(function (i) { cx += V[i][0]; cy += V[i][1]; cz += V[i][2]; });
+      return nx * cx + ny * cy + nz * cz < 0 ? f.slice().reverse() : f;
+    });
+  }
+  var OCTA_V = [[0, 0, 1], [1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0], [0, 0, -1]];
+  var OCTA_F = orienter(OCTA_V, [[0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [5, 2, 1], [5, 3, 2], [5, 4, 3], [5, 1, 4]]);
+  var CUBE_V = [[-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1], [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]];
+  var CUBE_F = orienter(CUBE_V, [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]]);
+  var CROI_V = [[0.25, 0, 0.5], [0, 0, -0.32]], CROI_ANNEAU = [];
+  (function () { var R = [1.35, 0.7, 0.75, 0.55, 0.75, 0.7], k; for (k = 0; k < 6; k++) { var a = k * Math.PI / 3; CROI_ANNEAU.push([Math.cos(a) * R[k], Math.sin(a) * R[k] * 1.4, [0.05, -0.12, -0.28, 0.12, -0.28, -0.12][k]]); CROI_V.push(CROI_ANNEAU[k]); } })();
+  var CROI_F = []; (function () { for (var k = 0; k < 6; k++) { CROI_F.push([0, 2 + k, 2 + (k + 1) % 6]); CROI_F.push([1, 2 + (k + 1) % 6, 2 + k]); } })();
+  CROI_F = orienter(CROI_V, CROI_F);
+  function forme(V, F, x, y, z, rot, sx, sy, sz, m) {
+    var c = Math.cos(rot), s = Math.sin(rot), Wv = [], Q = [], i;
+    for (i = 0; i < V.length; i++) {
+      var lx = V[i][0] * sx, ly = V[i][1] * sy, wx = x + lx * c - ly * s, wy = y + lx * s + ly * c, wz = z + V[i][2] * sz;
+      Wv.push([wx, wy, wz]); Q.push(P3(wx, wy, wz));
+    }
+    var vx = CAM.s * CAM.cp, vy = CAM.c * CAM.cp, vz = CAM.sp, L = CAM.L, ramp = [m[2], m[1], m[0], m[0]];
+    for (var f = 0; f < F.length; f++) {
+      var fa = F[f], a = Wv[fa[0]], b = Wv[fa[1]], d = Wv[fa[2]];
+      var ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2], ex = d[0] - a[0], ey = d[1] - a[1], ez = d[2] - a[2];
+      var nx = uy * ez - uz * ey, ny = uz * ex - ux * ez, nz = ux * ey - uy * ex, nl = Math.hypot(nx, ny, nz) || 1;
+      nx /= nl; ny /= nl; nz /= nl;
+      if (nx * vx + ny * vy + nz * vz <= 0) continue;
+      var lam = nx * L[0] + ny * L[1] + nz * L[2], l = Math.max(0, Math.min(1.999, (lam + 0.05) / 0.45)), i0 = l | 0, fr = l - i0;
+      var pts = []; for (i = 0; i < fa.length; i++) pts.push(Q[fa[i]]);
+      poly(pts, ramp[i0], ramp[i0 + 1], fr > 0.55 ? 0.5 : 0);
+    }
+    return Q;
+  }
+  /* un cercle posé sur un plan (ombre, portail, onde) */
+  function disque(x, y, z, r, c, c2, t) { var P = []; for (var k = 0; k < 14; k++) { var a = k / 14 * 6.2832; P.push(P3(x + Math.cos(a) * r, y + Math.sin(a) * r, z)); } poly(P, c, c2, t); }
+  function cercle(x, y, z, r, c, w, motif, phase) {
+    var n = Math.max(18, Math.min(64, r * CAM.S * 0.9 | 0)), p0 = null;
+    for (var k = 0; k <= n; k++) {
+      var a = k / n * 6.2832, p = P3(x + Math.cos(a) * r, y + Math.sin(a) * r, z);
+      if (p0 && (!motif || ((k + (phase | 0)) % motif) < motif / 2)) ligne(p0[0], p0[1], p[0], p[1], c, w);
+      p0 = p;
+    }
+  }
+
+  /* ---------- le décor : le ciel d'en haut, l'abîme, le cœur sous le monde, la poussière entre les plans ---------- */
+  var ETOILES = [], POUS = [], e;
+  for (e = 0; e < 110; e++) ETOILES.push([RDEC(), RDEC(), RDEC()]);
+  for (e = 0; e < 90; e++) POUS.push({ x: -6 + RDEC() * (N + 12), y: -6 + RDEC() * (N + 12), z: -13 + RDEC() * 22, q: null });
+  function fond(t, bleu) {
+    CM = bleu ? CM_BLEU : CM_ID; OPA = 16;
+    var bandes = [INDIGO, NUIT, NP, VIDE], hb = H * 0.72, y, x;
+    for (y = 0; y < H; y++) {
+      var u = Math.min(0.999, y / hb) * (bandes.length - 1), k = u | 0, r = u - k, o = y * W, br = (y & 3) << 2;
+      var a = CM[bandes[k]], b = CM[bandes[Math.min(3, k + 1)]], th = r * 16;
+      for (x = 0; x < W; x++) B[o + x] = BAYER[br | (x & 3)] < th ? b : a;
+    }
+    var etire = bleu ? 7 : 0;
+    for (var i = 0; i < ETOILES.length; i++) {
+      var s = ETOILES[i], sx = s[0] * W, sy = s[1] * H * 0.85;
+      if (((t * 2 + s[2] * 9) | 0) % 6 === 0) continue;
+      var c = s[2] > 0.8 ? OS : s[2] > 0.4 ? ACIER : ARDOISE;
+      if (etire) ligne(sx - etire * s[2], sy, sx + etire * s[2], sy, c); else px(sx, sy, c);
+    }
+    /* le cœur : un soleil à bandes, loin sous le profond ; il monte quand on plonge */
+    var R = Math.min(W, H) * 0.44 * (1 - CAM.zf * 0.035), cx = W / 2, cy = H * 1.02 + R * 0.28 - CAM.zf * CAM.S * 0.55;
+    OPA = 4; for (y = Math.max(0, cy - R * 1.22 | 0); y < Math.min(H, cy + R * 1.22); y++) { var w1 = Math.sqrt(Math.max(0, R * R * 1.49 - (y - cy) * (y - cy))); for (x = Math.max(0, cx - w1 | 0); x < Math.min(W, cx + w1); x++) px(x, y, SANG); }
+    OPA = 16;
+    for (var yy = -R; yy <= R; yy++) {
+      y = (cy + yy) | 0; if (y < 0 || y >= H) continue;
+      var w = Math.sqrt(Math.max(0, R * R - yy * yy)), v = (yy + R) / (2 * R);
+      if (v < 0.55 && ((((yy - t * 7) | 0) % 9) + 9) % 9 < 1 + (0.55 - v) * 9) continue;
+      var col = v < 0.2 ? SANG : v < 0.42 ? BRASIER : v < 0.68 ? AMBRE : JAUNE, oo = y * W;
+      for (x = Math.max(0, cx - w | 0); x <= Math.min(W - 1, cx + w); x++) B[oo + x] = CM[col];
+    }
+    CM = CM_ID;
+  }
+  function poussiere(trans) {
+    for (var i = 0; i < POUS.length; i++) {
+      var p = POUS[i], dz = p.z - CAM.zf;
+      if (dz > 11 || dz < -16) { p.q = null; continue; }
+      var q = P3(p.x, p.y, p.z), c = q[3] > 1.2 ? OS : q[3] > 0.95 ? ACIER : ARDOISE;
+      if (trans && p.q) ligne(p.q[0], p.q[1], q[0], q[1], c); else px(q[0], q[1], c);
+      if (q[3] > 1.25) px(q[0] + 1, q[1], c);
+      p.q = q;
+    }
+  }
+
+  /* ---------- le jeu ---------- */
+  var ESP = 0.34, PAS_CH = 0.06, VIRAGE = 5.0, HSTEP = 1 / 120;
+  var DECO = [   // l'identité de chaque plan : braise au fond, violet au milieu, acier en haut
+    { a: NP, b: VIDE, onde: SANG, trait: SANG, bord: BRASIER, fa: SANG, fb: NUIT },
+    { a: NUIT, b: INDIGO, onde: VIOLET, trait: VIOLET, bord: MAGENTA, fa: VIOLET, fb: INDIGO },
+    { a: NUIT, b: NP, onde: ARDOISE, trait: ROSE, bord: OS, fa: ARDOISE, fb: NUIT }
+  ];
+  var G, partie = 0, AUTO = false, AUTO_WARP = true, DIEU = false;
+  function nouveau(attract) {
+    partie++; RNG = graine(2975 + partie * 7919);
+    G = { etat: attract ? 'titre' : 'jeu', attract: !!attract, t: 0, plan: 1, trans: null, invul: 1.0,
+      tete: { x: 3.4, y: 6.4, a: 0 }, cible: 0, vit: 3.2, chemin: [], long: 7, segs: [], segZ: [],
+      score: 0, mange: 0, perdus: 0, items: [], ennemis: [], raies: [], mines: [], tirs: [], lasers: [], parts: [], ondes: [], renforts: [],
+      portails: [{ p: 1, x: 2.5, y: 9.5, dir: 1, pret: true }, { p: 2, x: 2.5, y: 9.5, dir: -1, pret: true },
+        { p: 1, x: 9.5, y: 2.5, dir: -1, pret: true }, { p: 0, x: 9.5, y: 2.5, dir: 1, pret: true }],
+      warp: { jauge: 1, actif: false, t: 0, cx: 0, cy: 0, manuel: 0, verrous: [], source: '', fin: 0 },
+      echelle: 1, texte: '', texteT: 0, flash: 0, mortT: 0, annonce: '', annonceT: 0, sous: '' };
+    for (var k = 1; k <= 60; k++) G.chemin.push({ x: G.tete.x - k * PAS_CH, y: G.tete.y });
+    poser(1); poser(1); poser(0); poser(2);
+    ennemi('rodeur', 1); ennemi('foreuse', 0); ennemi('foreuse', 0); ennemi('croiseur', 2); ennemi('croiseur', 2);
+    placerSegments(); CAM.zf = 0;
+  }
+  function loinDeTout(x, y, p) {
+    if (p === G.plan && Math.hypot(x - G.tete.x, y - G.tete.y) < 3.2) return false;
+    for (var i = 0; i < G.portails.length; i++) { var q = G.portails[i]; if (q.p === p && Math.hypot(x - q.x, y - q.y) < 1.4) return false; }
+    for (i = 0; i < G.items.length; i++) { var it = G.items[i]; if (it.p === p && Math.hypot(x - it.x, y - it.y) < 1.2) return false; }
+    return true;
+  }
+  function pointLibre(p) {
+    for (var k = 0; k < 60; k++) { var x = 1.2 + alea() * (N - 2.4), y = 1.2 + alea() * (N - 2.4); if (loinDeTout(x, y, p)) return [x, y]; }
+    return [N / 2, N / 2];
+  }
+  function poser(p) { var c = pointLibre(p); G.items.push({ p: p, x: c[0], y: c[1], t: alea() * 6 }); }
+  function ennemi(type, p) {
+    var e = { type: type, p: p, x: 0, y: 0, vx: 0, vy: 0, r: 0.42, cd: 1.6 + alea() * 2.2, rot: alea() * 6, mort: false, charge: 0, coupe: 0, hist: [], ht: 0, axeT: 0, largue: 0, vit: 1.2 };
+    if (type === 'croiseur') {
+      e.r = 0.95; e.vit = 0.95;
+      var cote = (alea() * 4) | 0, l = 1.5 + alea() * (N - 3);
+      if (cote === 0) { e.x = -2; e.y = l; } else if (cote === 1) { e.x = N + 2; e.y = l; } else if (cote === 2) { e.x = l; e.y = -2; } else { e.x = l; e.y = N + 2; }
+      var a = Math.atan2(N / 2 - e.y + (alea() - 0.5) * 4, N / 2 - e.x + (alea() - 0.5) * 4); e.vx = Math.cos(a) * e.vit; e.vy = Math.sin(a) * e.vit;
+    } else {
+      var c = pointLibre(p); e.x = c[0]; e.y = c[1];
+      if (type === 'foreuse') { e.r = 0.45; e.vit = 1.45; } else { e.r = 0.42; e.vit = 1.15; }
+      var b = alea() * 6.283; e.vx = Math.cos(b) * e.vit; e.vy = Math.sin(b) * e.vit;
+      if (type === 'foreuse') { if (Math.abs(e.vx) > Math.abs(e.vy)) e.vy = 0; else e.vx = 0; var n = Math.hypot(e.vx, e.vy) || 1; e.vx *= e.vit / n; e.vy *= e.vit / n; }
+    }
+    G.ennemis.push(e); return e;
+  }
+  function texte(s) { G.texte = s; G.texteT = 1.6; }
+  function annonce(s, sous) { G.annonce = s; G.sous = sous || ''; G.annonceT = 1.3; }
+  function eclats(x, y, z, c, n, v0, sol) {
+    for (var i = 0; i < n; i++) { var a = alea() * 6.283, v = (v0 || 2) * (0.4 + alea());
+      G.parts.push({ x: x, y: y, z: z, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vz: 1 + alea() * 3.5, c: c, l: 0.45 + alea() * 0.6, sol: sol === undefined ? z - 0.4 : sol }); }
+  }
+  function onde(p, x, y, c, rmax) { G.ondes.push({ p: p, x: x, y: y, c: c, t: 0, dur: 0.45, r: rmax || 1.4 }); }
+
+  /* le corps suit le chemin de la tête, un anneau tous les ESP */
+  function placerSegments() {
+    var S = G.segs, ch = G.chemin, px0 = G.tete.x, py0 = G.tete.y, reste = ESP, i;
+    S.length = 0; S.push({ x: px0, y: py0 });
+    for (i = 0; i < ch.length && S.length < G.long; i++) {
+      var q = ch[i], d = Math.hypot(q.x - px0, q.y - py0);
+      while (d >= reste && S.length < G.long) { var f = reste / d; px0 += (q.x - px0) * f; py0 += (q.y - py0) * f; S.push({ x: px0, y: py0 }); d = Math.hypot(q.x - px0, q.y - py0); reste = ESP; }
+      reste -= d; px0 = q.x; py0 = q.y;
+    }
+    var garde = Math.ceil(G.long * ESP / PAS_CH) + 30; if (ch.length > garde) ch.length = garde;
+  }
+  /* la hauteur de chaque anneau : pendant l'ascenseur, le corps suit la tête avec un retard */
+  function zAnneau(i) {
+    var T = G.trans; if (!T) return ZP[G.plan];
+    var L = G.segs.length, u = Math.max(0, Math.min(1, T.u * (1 + L * 0.022) - i * 0.022)), e = u * u * (3 - 2 * u);
+    return ZP[T.de] + (ZP[T.vers] - ZP[T.de]) * e;
+  }
+  function couper(k, cause) {
+    if (k < 2) k = 2;
+    if (G.long <= k) return;
+    for (var i = k; i < G.segs.length; i++) eclats(G.segs[i].x, G.segs[i].y, ZP[G.plan] + 0.3, i % 2 ? CYAN : CYANP, 2, 2, ZP[G.plan]);
+    var n = G.long - k; G.long = k; G.perdus += n; G.flash = 0.12; son('coupe');
+    texte((cause || 'COUPÉ') + ' −' + n);
+  }
+  function mourir(cause) {
+    if (G.etat === 'mort' || G.invul > 0 || DIEU) return false;
+    G.etat = 'mort'; G.mortT = 0; G.cause = cause; son('mort'); CAM.sec = 0.6;
+    var z = ZP[G.plan];
+    eclats(G.tete.x, G.tete.y, z + 0.4, OS, 26, 3, z);
+    for (var i = 0; i < G.segs.length; i++) eclats(G.segs[i].x, G.segs[i].y, z + 0.3, i % 2 ? CYAN : CYANP, 3, 2, z);
+    onde(G.plan, G.tete.x, G.tete.y, OS, 2.2); G.flash = 0.3;
+    if (G.warp.actif) { G.warp.actif = false; G.warp.verrous = []; }
+    return true;
+  }
+  /* un coup reçu à l'anneau k : la tête meurt, le corps est coupé */
+  function frapper(k, cause) { if (G.invul > 0 || DIEU) return; if (k === 0) mourir(cause); else couper(k, cause); }
+
+  function changerPlan(dir) {
+    if (!(G.etat === 'jeu' || G.attract) || G.trans || G.warp.actif) return false;
+    var vers = G.plan + dir;
+    if (vers < 0 || vers > 2) { texte(dir > 0 ? 'RIEN AU-DESSUS' : 'RIEN AU-DESSOUS'); CAM.sec = 0.15; return false; }
+    G.trans = { de: G.plan, vers: vers, u: 0, dur: 0.6 };
+    son(dir > 0 ? 'monte' : 'plonge');
+    onde(G.plan, G.tete.x, G.tete.y, dir > 0 ? JAUNE : ROSE, 1.6);
+    return true;
+  }
+  function majTrans(dtR) {
+    var T = G.trans; T.u = Math.min(1, T.u + dtR / T.dur);
+    var u = T.u, e = u * u * (3 - 2 * u);
+    CAM.zf = ZP[T.de] + (ZP[T.vers] - ZP[T.de]) * e;
+    CAM.dip = (T.vers < T.de ? 0.16 : -0.12) * Math.sin(Math.PI * u);
+    if (u >= 1) {
+      G.plan = T.vers; G.trans = null; CAM.zf = ZP[G.plan]; CAM.dip = 0; G.invul = 0.9;
+      MUS.voulu = G.plan;
+      onde(G.plan, G.tete.x, G.tete.y, T.vers > T.de ? JAUNE : ROSE, 2);
+      eclats(G.tete.x, G.tete.y, ZP[G.plan] + 0.3, T.vers > T.de ? JAUNE : ROSE, 14, 3, ZP[G.plan]);
+      for (var i = 0; i < G.portails.length; i++) { var q = G.portails[i]; if (q.p === G.plan && Math.hypot(q.x - G.tete.x, q.y - G.tete.y) < 1.2) q.pret = false; }
+      annonce(NOMS[G.plan], G.plan === 0 ? 'sous la grille' : G.plan === 2 ? 'au-dessus de tout' : 'la grille');
+    }
+  }
+
+  /* ---------- le WARP : le temps tombe à 0,15, un curseur balaie, chaque verrou est un tir ---------- */
+  function cibles() {
+    var L = [];
+    G.ennemis.forEach(function (e) { if (!e.mort && e.x > -0.5 && e.y > -0.5 && e.x < N + 0.5 && e.y < N + 0.5) L.push(e); });
+    G.mines.forEach(function (m) { if (!m.mort) L.push(m); });
+    return L;
+  }
+  function posCible(o) { return o.type ? [o.x, o.y, ZP[o.p] + (o.type === 'croiseur' ? 0.9 : 0.55)] : [o.x, o.y, o.z + 0.2]; }
+  function warpDebut(src) {
+    var w = G.warp;
+    if (w.actif || G.trans || !(G.etat === 'jeu' || G.attract)) return false;
+    if (w.jauge < 0.3) { texte('WARP EN CHARGE'); return false; }
+    w.actif = true; w.t = 0; w.verrous = []; w.source = src; w.manuel = 0;
+    var q = P3(G.tete.x, G.tete.y, ZP[G.plan]); w.cx = q[0]; w.cy = q[1];
+    son('warp'); annonce('WARP', 'le curseur verrouille ce qu\'il survole');
+    return true;
+  }
+  function warpMaj(dtR) {
+    var w = G.warp;
+    if (!w.actif) { w.jauge = Math.min(1, w.jauge + dtR * 0.04); return; }
+    w.t += dtR; w.jauge -= dtR / 3.8;
+    if (w.jauge <= 0) { w.jauge = 0; warpFin(); return; }
+    if (w.manuel > 0) w.manuel -= dtR;
+    else {
+      var ax = Math.min(W * 0.4, CAM.S * N * 0.62), ay = Math.min(H * 0.38, CAM.S * N * 0.5), tx = CAM.cx + ax * Math.sin(w.t * 2.3 + 0.4), ty = CAM.cy + ay * 0.15 + ay * Math.sin(w.t * 3.7 + 1.1);
+      w.cx += (tx - w.cx) * Math.min(1, dtR * 7); w.cy += (ty - w.cy) * Math.min(1, dtR * 7);
+    }
+    var LR = Math.max(12, Math.min(W, H) * 0.09), L = cibles();
+    w.verrous = w.verrous.filter(function (o) { return !o.mort; });
+    for (var i = 0; i < L.length && w.verrous.length < 8; i++) {
+      var o = L[i]; if (w.verrous.indexOf(o) >= 0) continue;
+      var p = posCible(o), q = P3(p[0], p[1], p[2]);
+      if (Math.hypot(q[0] - w.cx, q[1] - w.cy) < LR + (o.type === 'croiseur' ? CAM.S * q[3] * 0.5 : 0)) { w.verrous.push(o); son('verrou'); }
+    }
+  }
+  function warpFin() {
+    var w = G.warp; if (!w.actif) return;
+    w.actif = false; w.fin = 0.3;
+    if (!w.verrous.length) { texte('AUCUN VERROU'); return; }
+    var hz = ZP[G.plan] + 0.5;
+    w.verrous.forEach(function (o, i) {
+      if (o.type && o.p === G.plan) {         // sur notre plan : le laser, instantané
+        var p = posCible(o); G.lasers.push({ a: [G.tete.x, G.tete.y, hz], b: p, t: 0.3 }); detruire(o, true);
+      } else G.tirs.push({ o: o, a: [G.tete.x, G.tete.y, hz], t: 0, dur: 0.42 + i * 0.07, cote: i % 2 ? 1 : -1, trace: [] });
+    });
+    son('tir'); texte(w.verrous.length + (w.verrous.length > 1 ? ' TIRS' : ' TIR'));
+    w.verrous = [];
+  }
+  function detruire(o, laser) {
+    if (o.mort) return; o.mort = true;
+    if (o.type) {
+      var p = posCible(o), autre = o.p !== G.plan, pts = autre ? 250 : 100;
+      var mat = o.type === 'rodeur' ? [ROSE, MAGENTA] : o.type === 'foreuse' ? [AMBRE, BRASIER] : [OS, ACIER];
+      eclats(p[0], p[1], p[2], mat[0], 16, 3, ZP[o.p]); eclats(p[0], p[1], p[2], mat[1], 12, 2, ZP[o.p]); onde(o.p, o.x, o.y, mat[0], o.r * 2.4);
+      G.score += pts; texte('+' + pts + (autre ? ' · ' + NOMS[o.p] : ''));
+      G.ennemis.splice(G.ennemis.indexOf(o), 1); G.renforts.push({ type: o.type, p: o.p, t: 6 });
+      G.raies = G.raies.filter(function (r) { return r.e !== o; });
+    } else {
+      eclats(o.x, o.y, o.z, JAUNE, 10, 2, ZP[o.vers]); G.score += 30;
+      G.mines.splice(G.mines.indexOf(o), 1);
+    }
+    son('boum'); CAM.sec = Math.max(CAM.sec, 0.2);
+  }
+  function majTirs(dtR) {
+    for (var i = G.tirs.length - 1; i >= 0; i--) {
+      var m = G.tirs[i]; m.t += dtR;
+      var u = Math.min(1, m.t / m.dur), b = m.o.mort ? m.fin : posCible(m.o); if (!m.o.mort) m.fin = b;
+      var a = m.a, px0 = -(b[1] - a[1]), py0 = b[0] - a[0], l = Math.hypot(px0, py0) || 1;
+      var cxp = (a[0] + b[0]) / 2 + px0 / l * 2.2 * m.cote, cyp = (a[1] + b[1]) / 2 + py0 / l * 2.2 * m.cote, czp = Math.max(a[2], b[2]) + 2.6;
+      var v = 1 - u, x = v * v * a[0] + 2 * v * u * cxp + u * u * b[0], y = v * v * a[1] + 2 * v * u * cyp + u * u * b[1], z = v * v * a[2] + 2 * v * u * czp + u * u * b[2];
+      m.trace.unshift([x, y, z]); if (m.trace.length > 12) m.trace.pop();
+      m.x = x; m.y = y; m.z = z;
+      if (u >= 1) { detruire(m.o); G.tirs.splice(i, 1); }
+    }
+    for (i = G.lasers.length - 1; i >= 0; i--) { G.lasers[i].t -= dtR; if (G.lasers[i].t <= 0) G.lasers.splice(i, 1); }
+  }
+
+  /* ---------- le pilote (écran-titre, et crochet d'essai) ---------- */
+  function pilote() {
+    var hd = G.tete, cible = null, bd = 1e9, i, d;
+    for (i = 0; i < G.items.length; i++) { var it = G.items[i]; if (it.p !== G.plan) continue; d = Math.hypot(it.x - hd.x, it.y - hd.y); if (d < bd) { bd = d; cible = it; } }
+    var voulu = null;
+    if (!cible && G.items.length) {
+      var dir = G.items[0].p > G.plan ? 1 : -1;
+      for (i = 0; i < G.portails.length; i++) { var po = G.portails[i]; if (po.p === G.plan && po.dir === dir) { cible = po; voulu = po; } }
+    }
+    var vx, vy;
+    if (cible) { d = Math.hypot(cible.x - hd.x, cible.y - hd.y) || 1; vx = (cible.x - hd.x) / d; vy = (cible.y - hd.y) / d; }
+    else { vx = N / 2 - hd.x; vy = N / 2 - hd.y; d = Math.hypot(vx, vy) || 1; vx /= d; vy /= d; }
+    var m = 2.0, ax = hd.x + Math.cos(hd.a) * 1.3, ay = hd.y + Math.sin(hd.a) * 1.3;
+    if (ax < m) vx += (m - ax) * 2.2; if (ax > N - m) vx -= (ax - N + m) * 2.2;
+    if (ay < m) vy += (m - ay) * 2.2; if (ay > N - m) vy -= (ay - N + m) * 2.2;
+    if (hd.x < 1.2) vx += 3; if (hd.x > N - 1.2) vx -= 3; if (hd.y < 1.2) vy += 3; if (hd.y > N - 1.2) vy -= 3;
+    function fuir(x, y, R, f) { var dd = Math.hypot(hd.x - x, hd.y - y) || 0.01; if (dd < R) { vx += (hd.x - x) / dd * (R - dd) * f; vy += (hd.y - y) / dd * (R - dd) * f; } }
+    G.ennemis.forEach(function (e) { if (e.p === G.plan) fuir(e.x, e.y, 3 + e.r, 2.4); });
+    G.mines.forEach(function (mi) { if (mi.vers === G.plan) fuir(mi.x, mi.y, 1.8, 1.6); });
+    G.portails.forEach(function (po) { if (po.p === G.plan && po !== voulu) fuir(po.x, po.y, 1.5, 1.2); });
+    G.raies.forEach(function (r) { if (r.vers !== G.plan || r.feu) return; var dd = r.axe === 'x' ? hd.x - r.v : hd.y - r.v; if (Math.abs(dd) < 1.0) { var sg = dd >= 0 ? 1 : -1; if (r.axe === 'x') vx += sg * 3; else vy += sg * 3; } });
+    for (i = 12; i < G.segs.length; i += 2) fuir(G.segs[i].x, G.segs[i].y, 0.9, 0.9);
+    G.cible = Math.atan2(vy, vx);
+    if ((G.attract || AUTO_WARP) && !G.warp.actif && G.warp.jauge > 0.98 && cibles().length >= 3 && RPIL() < 0.006) warpDebut('pilote');
+    if (G.warp.actif && G.warp.source === 'pilote' && G.warp.t > 1.9) warpFin();
+  }
+
+  /* ---------- un pas de jeu (temps de jeu fixe : le warp le ralentit vraiment) ---------- */
+  function pas(h) {
+    G.t += h;
+    var i, k, d, hd = G.tete, z0 = ZP[G.plan];
+    majParts(h);
+    if (G.etat === 'mort') return;
+    if (G.invul > 0 && !G.trans) G.invul -= h;
+    if (G.attract || AUTO) pilote();
+    var da = G.cible - hd.a; while (da > Math.PI) da -= 6.2832; while (da < -Math.PI) da += 6.2832;
+    hd.a += Math.max(-VIRAGE * h, Math.min(VIRAGE * h, da));
+    var v = G.vit + Math.min(1.1, G.long * 0.018);
+    hd.x += Math.cos(hd.a) * v * h; hd.y += Math.sin(hd.a) * v * h;
+    if (G.trans) {            // dans l'ascenseur, on ne sort pas du plan
+      if (hd.x < 0.4 || hd.x > N - 0.4) { hd.a = Math.PI - hd.a; G.cible = hd.a; hd.x = Math.max(0.4, Math.min(N - 0.4, hd.x)); }
+      if (hd.y < 0.4 || hd.y > N - 0.4) { hd.a = -hd.a; G.cible = hd.a; hd.y = Math.max(0.4, Math.min(N - 0.4, hd.y)); }
+    }
+    var c0 = G.chemin[0]; if (!c0 || Math.hypot(hd.x - c0.x, hd.y - c0.y) >= PAS_CH) G.chemin.unshift({ x: hd.x, y: hd.y });
+    placerSegments();
+    if (!G.trans) {
+      /* le mur tue */
+      if (hd.x < 0.25 || hd.y < 0.25 || hd.x > N - 0.25 || hd.y > N - 0.25) { G.invul = 0; mourir('LE MUR'); if (G.etat === 'mort') return; }
+      /* se mordre coupe */
+      for (k = 9; k < G.segs.length; k++) if (Math.hypot(G.segs[k].x - hd.x, G.segs[k].y - hd.y) < 0.27) { couper(k, 'MORSURE'); break; }
+      /* manger */
+      for (i = G.items.length - 1; i >= 0; i--) {
+        var it = G.items[i]; if (it.p !== G.plan || Math.hypot(it.x - hd.x, it.y - hd.y) > 0.62) continue;
+        G.items.splice(i, 1); G.long += 2; G.mange++; G.score += 10 * (1 + (G.long / 10 | 0));
+        G.warp.jauge = Math.min(1, G.warp.jauge + 0.2); eclats(it.x, it.y, z0 + 0.45, JAUNE, 9, 2, z0); son('cellule');
+        poser(alea() < 0.45 ? G.plan : (G.plan + 1 + (alea() * 2 | 0)) % 3);
+        if (G.mange % 5 === 0) { var pp = (alea() * 3) | 0, nb = G.ennemis.filter(function (q) { return q.p === pp; }).length; if (nb < 3) { ennemi(['foreuse', 'rodeur', 'croiseur'][pp], pp); texte('RENFORT · ' + NOMS[pp]); } }
+      }
+      /* les portails d'ascenseur */
+      for (i = 0; i < G.portails.length; i++) {
+        var po = G.portails[i]; if (po.p !== G.plan) continue;
+        d = Math.hypot(po.x - hd.x, po.y - hd.y);
+        if (d > 1.1) po.pret = true;
+        else if (d < 0.6 && po.pret) { po.pret = false; if (changerPlan(po.dir)) { G.score += 20; break; } }
+      }
+    }
+    for (i = G.ennemis.length - 1; i >= 0; i--) majEnnemi(G.ennemis[i], h);
+    majRaies(h); majMines(h);
+    for (i = G.renforts.length - 1; i >= 0; i--) { var rf = G.renforts[i]; rf.t -= h; if (rf.t <= 0) { G.renforts.splice(i, 1); ennemi(rf.type, rf.p); } }
+    for (i = G.ondes.length - 1; i >= 0; i--) { G.ondes[i].t += h; if (G.ondes[i].t > G.ondes[i].dur) G.ondes.splice(i, 1); }
+    for (i = G.items.length - 1; i >= 0; i--) G.items[i].t += h;
+  }
+  function majParts(h) {
+    for (var k = G.parts.length - 1; k >= 0; k--) {
+      var p = G.parts[k]; p.l -= h; if (p.l <= 0) { G.parts.splice(k, 1); continue; }
+      p.x += p.vx * h; p.y += p.vy * h; p.vz -= 9 * h; p.z += p.vz * h; if (p.z < p.sol) { p.z = p.sol; p.vz *= -0.45; p.vx *= 0.7; p.vy *= 0.7; }
+    }
+  }
+  function majEnnemi(e, h) {
+    var hd = G.tete, rel = e.p - G.plan, actif = !G.trans && (G.etat === 'jeu' || G.attract), i, d;
+    e.rot += h * (e.type === 'rodeur' ? 2.4 : e.type === 'foreuse' ? 1.1 : 0);
+    if (e.coupe > 0) e.coupe -= h;
+    if (e.charge > 0) e.charge -= h;
+    if (e.largue > 0) e.largue -= h;
+    if (e.type === 'rodeur') {
+      if (rel === 0 && actif) {        // il te traque, lentement
+        var a = Math.atan2(e.vy, e.vx), b = Math.atan2(hd.y - e.y, hd.x - e.x), da = b - a;
+        while (da > Math.PI) da -= 6.2832; while (da < -Math.PI) da += 6.2832;
+        a += Math.max(-1.1 * h, Math.min(1.1 * h, da)); e.vx = Math.cos(a) * e.vit; e.vy = Math.sin(a) * e.vit;
+      }
+    } else if (e.type === 'foreuse') {  // elle roule sur les lignes et cherche à s'aligner sur toi
+      e.axeT -= h;
+      if (e.axeT <= 0) {
+        e.axeT = 1.1 + alea() * 1.2;
+        if (rel < 0 && actif) { var dx = hd.x - e.x, dy = hd.y - e.y; if (Math.abs(dx) < Math.abs(dy)) { e.vx = Math.sign(dx) * e.vit; e.vy = 0; } else { e.vy = Math.sign(dy) * e.vit; e.vx = 0; } }
+        else if (alea() < 0.5) { var s = alea() < 0.5 ? 1 : -1; if (e.vx) { e.vy = s * e.vit; e.vx = 0; } else { e.vx = s * e.vit; e.vy = 0; } }
+      }
+    } else {                            // le croiseur : sa route se courbe vers toi quand il est au-dessus
+      if (rel > 0 && actif && e.x > 0 && e.y > 0 && e.x < N && e.y < N) {
+        var a2 = Math.atan2(e.vy, e.vx), b2 = Math.atan2(hd.y - e.y, hd.x - e.x), d2 = b2 - a2;
+        while (d2 > Math.PI) d2 -= 6.2832; while (d2 < -Math.PI) d2 += 6.2832;
+        a2 += Math.max(-0.45 * h, Math.min(0.45 * h, d2)); e.vx = Math.cos(a2) * e.vit; e.vy = Math.sin(a2) * e.vit;
+      }
+      e.rot = Math.atan2(e.vy, e.vx);
+    }
+    e.x += e.vx * h; e.y += e.vy * h;
+    if (e.type === 'croiseur') {
+      if (e.x < -3.5 || e.y < -3.5 || e.x > N + 3.5 || e.y > N + 3.5) {    // il repart, puis revient par un autre bord
+        var cote = (alea() * 4) | 0, l = 1.5 + alea() * (N - 3);
+        if (cote === 0) { e.x = -2.5; e.y = l; } else if (cote === 1) { e.x = N + 2.5; e.y = l; } else if (cote === 2) { e.x = l; e.y = -2.5; } else { e.x = l; e.y = N + 2.5; }
+        var a3 = Math.atan2(N / 2 - e.y + (alea() - 0.5) * 5, N / 2 - e.x + (alea() - 0.5) * 5); e.vx = Math.cos(a3) * e.vit; e.vy = Math.sin(a3) * e.vit;
+      }
+    } else {
+      if (e.x < e.r || e.x > N - e.r) { e.vx = -e.vx; e.x = Math.max(e.r, Math.min(N - e.r, e.x)); }
+      if (e.y < e.r || e.y > N - e.r) { e.vy = -e.vy; e.y = Math.max(e.r, Math.min(N - e.r, e.y)); }
+    }
+    e.ht += h; if (e.ht > 0.05) { e.ht = 0; e.hist.unshift([e.x, e.y]); if (e.hist.length > 7) e.hist.pop(); }
+    if (!actif || G.etat !== 'jeu' && !G.attract) return;
+    e.cd -= h;
+    var dedans = e.x > 0 && e.y > 0 && e.x < N && e.y < N;
+    if (rel < 0 && e.cd <= 0 && dedans) {          // d'en bas : la raie, quand elle est alignée
+      var ax = Math.abs(hd.x - e.x) < 0.5, ay = Math.abs(hd.y - e.y) < 0.5;
+      if ((ax || ay) && !G.raies.some(function (r) { return r.e === e; })) {
+        G.raies.push({ e: e, axe: ax ? 'x' : 'y', v: ax ? e.x : e.y, de: e.p, vers: G.plan, t: 0, tele: 1.05, feu: false });
+        e.cd = 3.4 + alea() * 1.5; e.charge = 1.05; son('alerte');
+      }
+    } else if (rel > 0 && e.cd <= 0 && dedans) {   // d'en haut : la mine
+      if (Math.hypot(hd.x - e.x, hd.y - e.y) < 2.6) {
+        var z = ZP[e.p] + 0.5, zv = ZP[G.plan];
+        G.mines.push({ x: e.x, y: e.y, z: z, z0: z, de: e.p, vers: G.plan, t: 0, T: 0.75 + 0.25 * (e.p - G.plan) * 1.5, etat: 'chute', vie: 0, mort: false });
+        e.cd = 2.6 + alea() * 1.4; e.largue = 0.4; son('mine');
+      }
+    } else if (rel === 0) {                       // sur notre plan : le contact
+      if (Math.hypot(hd.x - e.x, hd.y - e.y) < e.r + 0.3) { if (G.invul <= 0) { mourir(e.type === 'rodeur' ? 'UN RÔDEUR' : e.type === 'foreuse' ? 'UNE FOREUSE' : 'UN CROISEUR'); return; } }
+      if (e.coupe <= 0) for (i = 2; i < G.segs.length; i++) {
+        d = Math.hypot(G.segs[i].x - e.x, G.segs[i].y - e.y);
+        if (d < e.r + 0.2) { frapper(i, 'TOUCHÉ'); e.coupe = 0.8; e.vx = -e.vx; e.vy = -e.vy; break; }
+      }
+    }
+  }
+  function majRaies(h) {
+    for (var i = G.raies.length - 1; i >= 0; i--) {
+      var r = G.raies[i]; r.t += h;
+      if (!r.feu && r.t >= r.tele) {
+        r.feu = true; son('raie'); CAM.sec = Math.max(CAM.sec, 0.25);
+        if (G.plan === r.vers && !G.trans && G.etat === 'jeu' || G.attract && G.plan === r.vers && !G.trans) {
+          for (var k = 0; k < G.segs.length; k++) { var s = G.segs[k], dd = r.axe === 'x' ? Math.abs(s.x - r.v) : Math.abs(s.y - r.v); if (dd < 0.42) { frapper(k, 'LA RAIE'); break; } }
+        }
+      }
+      if (r.t > r.tele + 0.38) G.raies.splice(i, 1);
+    }
+  }
+  function majMines(h) {
+    for (var i = G.mines.length - 1; i >= 0; i--) {
+      var m = G.mines[i], ici = G.plan === m.vers && !G.trans, k, s;
+      if (m.etat === 'chute') {
+        m.t += h; var u = Math.min(1, m.t / m.T);
+        m.z = m.z0 + (ZP[m.vers] + 0.22 - m.z0) * u * u;
+        if (u >= 1) {
+          m.etat = 'armee'; m.vie = 4.5; m.z = ZP[m.vers] + 0.22;
+          onde(m.vers, m.x, m.y, JAUNE, 0.9); son('pose');
+          if (ici) for (k = 0; k < G.segs.length; k++) { s = G.segs[k]; if (Math.hypot(s.x - m.x, s.y - m.y) < 0.62) { exploser(m, i); frapper(k, 'LA MINE'); break; } }
+        }
+      } else {
+        m.vie -= h;
+        if (m.vie <= 0) { exploser(m, i); if (ici) for (k = 0; k < G.segs.length; k++) { s = G.segs[k]; if (Math.hypot(s.x - m.x, s.y - m.y) < 1.0) { frapper(k, 'LA MINE'); break; } } continue; }
+        if (ici) for (k = 0; k < G.segs.length; k++) { s = G.segs[k]; if (Math.hypot(s.x - m.x, s.y - m.y) < (k ? 0.42 : 0.5)) { exploser(m, i); frapper(k, 'LA MINE'); break; } }
+      }
+    }
+  }
+  function exploser(m, i) {
+    if (m.mort) return; m.mort = true; var j = G.mines.indexOf(m); if (j >= 0) G.mines.splice(j, 1);
+    eclats(m.x, m.y, m.z, JAUNE, 14, 3, ZP[m.vers]); eclats(m.x, m.y, m.z, BRASIER, 10, 2, ZP[m.vers]); onde(m.vers, m.x, m.y, BRASIER, 1.1); son('boum');
+  }
+
+  /* ---------- dessin ---------- */
+  function cmPour(p) { var r = relPlan(p); return r < -DZ * 1.5 ? CM_SOMBRE : r < -DZ * 0.5 ? CM_OBJ : CM_ID; }
+  function sol(i, t) {
+    var rel = relPlan(i), z = ZP[i], D = DECO[i], q, a, b, k, j;
+    CM = rel < -DZ * 1.5 ? CM_LOIN : rel < -DZ * 0.5 ? CM_SOMBRE : CM_ID;
+    var focal = Math.abs(rel) < 0.01;
+    /* la grille de points du plan */
+    var Lp = [];
+    for (j = 0; j <= N; j++) for (k = 0; k <= N; k++) Lp.push(P3(k, j, z));
+    function L(x, y) { return Lp[y * (N + 1) + x]; }
+    /* les flancs du socle */
+    var bords = [[0, 0], [N, 0], [N, N], [0, N]], NORM = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+    OPA = rel > DZ * 0.5 ? 7 : 16;
+    for (k = 0; k < 4; k++) {
+      var n = NORM[k], nry = n[0] * CAM.s + n[1] * CAM.c; if (nry <= 0) continue;
+      a = bords[k]; b = bords[(k + 1) % 4];
+      poly([P3(a[0], a[1], z - 0.45), P3(b[0], b[1], z - 0.45), P3(b[0], b[1], z), P3(a[0], a[1], z)], (n[0] * CAM.c - n[1] * CAM.s) > 0 ? D.fa : D.fb, NP, 0.3);
+    }
+    /* les dalles : opaques en dessous, de verre tramé sur notre plan, absentes au-dessus */
+    var opT = rel <= 0 ? (rel < -DZ * 0.5 ? 1 : 0.56) : Math.max(0, 0.56 * (1 - rel / (0.55 * DZ)));
+    if (opT > 0.03) {
+      OPA = Math.max(1, Math.round(opT * 16));
+      for (j = 0; j < N; j++) for (k = 0; k < N; k++) {
+        var ond = Math.sin(t * 2.0 - (k + j) * 0.45 + i * 1.7), alt = (k + j) & 1;
+        poly([L(k, j), L(k + 1, j), L(k + 1, j + 1), L(k, j + 1)], D.a, alt ? D.b : D.onde, ond > 0.8 ? 0.6 : alt ? 0.25 : 0);
+      }
+    }
+    /* les traits de la grille */
+    OPA = rel > 0.5 ? Math.max(3, Math.round(16 * (1 - rel / DZ) * 0.9)) : 16;
+    if (rel <= DZ * 0.6) for (k = 0; k <= N; k++) { a = L(k, 0); b = L(k, N); ligne(a[0], a[1], b[0], b[1], D.trait); a = L(0, k); b = L(N, k); ligne(a[0], a[1], b[0], b[1], D.trait); }
+    /* au-dessus : des croix aux nœuds, un treillis qu'on voit à travers */
+    if (rel > 0.5 && rel < DZ * 1.5) {
+      OPA = 11; var cr = Math.max(1, Math.round(CAM.S * Lp[0][3] * 0.05));
+      for (j = 0; j <= N; j += 2) for (k = 0; k <= N; k += 2) { q = L(k, j); ligne(q[0] - cr, q[1], q[0] + cr, q[1], D.trait); ligne(q[0], q[1] - cr, q[0], q[1] + cr, D.trait); }
+    }
+    /* le bord : le mur ; sur notre plan, il s'allume quand la tête s'en approche */
+    OPA = 16;
+    var wb = rel > 0.5 ? 1 : Math.max(1, Math.round(CAM.S * Lp[0][3] * 0.07)), hd = G.tete, cl = ((t * 10) | 0) % 2;
+    if (rel > 0.5) OPA = rel > DZ * 1.5 ? 5 : 9;
+    if (rel < -DZ * 0.5 && rel > -DZ * 1.5) CM = CM_OBJ;
+    var pres = [hd.y, N - hd.x, N - hd.y, hd.x];
+    for (k = 0; k < 4; k++) {
+      a = P3(bords[k][0], bords[k][1], z); b = P3(bords[(k + 1) % 4][0], bords[(k + 1) % 4][1], z);
+      var col = rel > 0.5 ? D.trait : D.bord; if (focal && G.etat === 'jeu' && pres[k] < 1.4 && cl) col = OS;
+      ligne(a[0], a[1], b[0], b[1], col, wb);
+    }
+    OPA = 16;
+  }
+  /* ce qui est peint sur le sol : ombres, portails, télégraphes, ondes */
+  function decals(i, t) {
+    var z = ZP[i] + 0.01, pf = planFocal(), k, j;
+    CM = cmPour(i);
+    /* les portails d'ascenseur */
+    G.portails.forEach(function (po) {
+      if (po.p !== i) return;
+      var c = po.dir > 0 ? JAUNE : ROSE, r = 0.62 + Math.sin(t * 4 + po.x) * 0.04;
+      OPA = 6; disque(po.x, po.y, z, r, c); OPA = 16;
+      cercle(po.x, po.y, z, r, c, Math.max(1, Math.round(CAM.S * 0.05)), 6, t * 12 * po.dir);
+      cercle(po.x, po.y, z, r * 0.55, OS, 1, 4, -t * 8);
+      /* la flèche du sens */
+      var q = P3(po.x, po.y, z), s = Math.max(2, CAM.S * q[3] * 0.2), ph = (t * 3) % 1, dy = po.dir > 0 ? -1 : 1;
+      for (j = 0; j < 2; j++) { var oy = q[1] + dy * (j * s * 0.7 - s * 0.5 + ph * s * 0.6); ligne(q[0] - s, oy - dy * s * 0.6, q[0], oy, c, 1); ligne(q[0], oy, q[0] + s, oy - dy * s * 0.6, c, 1); }
+    });
+    /* les ombres de ce qui est posé ici */
+    OPA = 9;
+    G.ennemis.forEach(function (e) { if (e.p === i && e.type !== 'croiseur') disque(e.x, e.y, z, e.r * 0.9, VIDE); });
+    G.items.forEach(function (it) { if (it.p === i) disque(it.x, it.y, z, 0.2, VIDE); });
+    if (i === G.plan && !G.trans && G.etat !== 'mort') for (k = 0; k < G.segs.length; k++) disque(G.segs[k].x, G.segs[k].y, z, k ? 0.24 : 0.3, VIDE);
+    /* sur notre plan : les ombres portées de ce qui vole au-dessus */
+    if (i === pf) {
+      G.ennemis.forEach(function (e) {
+        if (e.p <= i) return;
+        if (e.x < -1 || e.y < -1 || e.x > N + 1 || e.y > N + 1) return;
+        if (e.type === 'croiseur') {
+          var c = Math.cos(e.rot), s = Math.sin(e.rot), P = [];
+          CROI_ANNEAU.forEach(function (v) { var lx = v[0] * 1.0, ly = v[1] * 0.62; P.push(P3(e.x + lx * c - ly * s, e.y + lx * s + ly * c, z)); });
+          OPA = e.p - i > 1 ? 8 : 14; poly(P, VIDE); OPA = 16;
+          if (e.largue > 0) { OPA = 8; poly(P, SANG); OPA = 16; }
+          OPA = 10; for (var q = 0; q < P.length; q++) { var A = P[q], Bq = P[(q + 1) % P.length]; ligne(A[0], A[1], Bq[0], Bq[1], VIOLET, 1, 3, 0); } OPA = 16;
+        } else { OPA = 13; disque(e.x, e.y, z, e.r * 0.8, VIDE); OPA = 16; }
+      });
+      /* les mines qui tombent : leur ombre grossit, un anneau se resserre */
+      G.mines.forEach(function (m) {
+        if (m.vers !== i || m.etat !== 'chute') return;
+        var u = Math.min(1, m.t / m.T);
+        OPA = 6 + Math.round(u * 8); disque(m.x, m.y, z, 0.2 + 0.35 * u, VIDE); OPA = 16;
+        cercle(m.x, m.y, z, 1.4 - 0.8 * u, ((t * 12) | 0) % 2 ? JAUNE : OS, Math.max(1, Math.round(CAM.S * 0.06)), 4, t * 20);
+      });
+    }
+    /* les raies télégraphiées qui visent ce plan */
+    G.raies.forEach(function (r) {
+      if (r.vers !== i) return;
+      var w = 0.42, A, Bq, C, Dq;
+      if (r.axe === 'x') { A = P3(r.v - w, 0, z); Bq = P3(r.v + w, 0, z); C = P3(r.v + w, N, z); Dq = P3(r.v - w, N, z); }
+      else { A = P3(0, r.v - w, z); Bq = P3(N, r.v - w, z); C = P3(N, r.v + w, z); Dq = P3(0, r.v + w, z); }
+      if (!r.feu) {
+        var u = r.t / r.tele, cl = ((t * (6 + u * 18)) | 0) % 2;
+        OPA = 3 + Math.round(u * 7); poly([A, Bq, C, Dq], SANG, BRASIER, cl ? 0.25 : 0); OPA = 16;
+        var c2 = cl ? JAUNE : BRASIER, lw = Math.max(1, Math.round(CAM.S * 0.06));
+        ligne(A[0], A[1], (r.axe === 'x' ? Dq : Bq)[0], (r.axe === 'x' ? Dq : Bq)[1], c2, lw, 6, t * 30);
+        ligne((r.axe === 'x' ? Bq : Dq)[0], (r.axe === 'x' ? Bq : Dq)[1], C[0], C[1], c2, lw, 6, t * 30);
+      } else { OPA = 12; poly([A, Bq, C, Dq], OS, JAUNE, 0.5); OPA = 16; }
+    });
+    /* les ondes de choc */
+    G.ondes.forEach(function (o) { if (o.p !== i) return; var u = o.t / o.dur; OPA = Math.max(2, Math.round(16 * (1 - u))); cercle(o.x, o.y, z, 0.2 + o.r * u, o.c, Math.max(1, Math.round(CAM.S * 0.06))); OPA = 16; });
+    OPA = 16; CM = CM_ID;
+  }
+  /* ce qui relie un plan au suivant : piliers d'angle et puits d'ascenseur */
+  function colonnes(i, t) {
+    var z0 = ZP[i] - 0.45, z1 = ZP[i + 1] - 0.45, k;
+    CM = cmPour(i);
+    var co = [[-0.35, -0.35], [N + 0.35, -0.35], [N + 0.35, N + 0.35], [-0.35, N + 0.35]];
+    for (k = 0; k < 4; k++) {
+      var a = P3(co[k][0], co[k][1], z0 - (i === 0 ? 0 : 0)), b = P3(co[k][0], co[k][1], z1 + 0.45), w = Math.max(1, Math.round(CAM.S * a[3] * 0.08));
+      OPA = 10; ligne(a[0], a[1], b[0], b[1], ARDOISE, w); OPA = 16;
+    }
+    G.portails.forEach(function (po) {
+      if (po.p !== i || po.dir < 0) return;
+      var za = ZP[i] + 0.02, zb = ZP[i + 1], r = 0.62, c = Math.cos(CAM.th), s = -Math.sin(CAM.th);
+      var a1 = P3(po.x - c * r, po.y - s * r, za), b1 = P3(po.x - c * r, po.y - s * r, zb), a2 = P3(po.x + c * r, po.y + s * r, za), b2 = P3(po.x + c * r, po.y + s * r, zb);
+      OPA = 5; poly([a1, b1, b2, a2], INDIGO); OPA = 16;
+      ligne(a1[0], a1[1], b1[0], b1[1], ROSE, 1, 3, -t * 20); ligne(a2[0], a2[1], b2[0], b2[1], JAUNE, 1, 3, t * 20);
+      var m0 = P3(po.x, po.y, za), m1 = P3(po.x, po.y, zb); ligne(m0[0], m0[1], m1[0], m1[1], OS, 1, 2, t * 40);
+    });
+    CM = CM_ID;
+  }
+  function piliersDessous() {
+    CM = cmPour(0);
+    var co = [[-0.35, -0.35], [N + 0.35, -0.35], [N + 0.35, N + 0.35], [-0.35, N + 0.35]];
+    for (var k = 0; k < 4; k++) { var a = P3(co[k][0], co[k][1], ZP[0] - 4), b = P3(co[k][0], co[k][1], ZP[0] - 0.45); OPA = 8; ligne(a[0], a[1], b[0], b[1], ARDOISE, Math.max(1, Math.round(CAM.S * b[3] * 0.08))); }
+    OPA = 16; CM = CM_ID;
+  }
+  /* tous les objets, classés par couche (entre un plan et le suivant) puis du fond vers l'avant */
+  function couche(z) { return z < ZP[1] - 0.02 ? 0 : z < ZP[2] - 0.02 ? 1 : 2; }
+  function collecter(C, t) {
+    function pousser(z, d, f, cm) { C[couche(z)].push({ d: d, f: f, cm: cm || CM_ID }); }
+    G.items.forEach(function (it) {
+      var z = ZP[it.p] + 0.4 + Math.sin(it.t * 3) * 0.1, q = P3(it.x, it.y, z);
+      pousser(z, q[2], function () { forme(CUBE_V, CUBE_F, it.x, it.y, z, it.t * 1.8, 0.17, 0.17, 0.17, [JAUNE, AMBRE, BRASIER]); }, cmPour(it.p));
+    });
+    G.ennemis.forEach(function (e) {
+      var cm = cmPour(e.p);
+      if (e.type === 'rodeur') {
+        var z = ZP[e.p] + 0.62 + Math.sin(G.t * 3 + e.rot) * 0.06, q = P3(e.x, e.y, z);
+        pousser(z, q[2], function () { forme(OCTA_V, OCTA_F, e.x, e.y, z, e.rot, 0.4, 0.4, 0.55, [ROSE, MAGENTA, SANG]);
+          var o = P3(e.x, e.y, z + 0.1); OPA = 16; px(o[0], o[1], OS); px(o[0] + 1, o[1], OS); }, cm);
+      } else if (e.type === 'foreuse') {
+        var zf = ZP[e.p] + 0.38, qf = P3(e.x, e.y, zf), ch = e.charge > 0 && ((G.t * 14) | 0) % 2;
+        pousser(zf, qf[2], function () {
+          forme(CUBE_V, CUBE_F, e.x, e.y, zf, e.rot, 0.34, 0.34, 0.3, ch ? [OS, JAUNE, AMBRE] : [AMBRE, BRASIER, SANG]);
+          forme(OCTA_V, OCTA_F, e.x, e.y, zf + 0.42, -e.rot * 2, 0.16, 0.16, 0.34, ch ? [OS, OS, JAUNE] : [JAUNE, AMBRE, BRASIER]);
+        }, cm);
+      } else {
+        var zc = ZP[e.p] + 0.9, qc = P3(e.x, e.y, zc);
+        pousser(zc, qc[2], function () {
+          var Q = forme(CROI_V, CROI_F, e.x, e.y, zc, e.rot, 1.0, 0.62, 0.75, [OS, ACIER, ARDOISE]);
+          for (var q = 0; q < 6; q++) { var A = Q[2 + q], Bq = Q[2 + (q + 1) % 6]; ligne(A[0], A[1], Bq[0], Bq[1], NUIT); }
+          forme(OCTA_V, OCTA_F, e.x - Math.cos(e.rot) * 0.15, e.y - Math.sin(e.rot) * 0.15, zc + 0.3, e.rot, 0.34, 0.2, 0.22, [ROSE, MAGENTA, SANG]);
+          var cl = ((G.t * 5 + e.x) | 0) % 2, l1 = Q[2 + 2], l2 = Q[2 + 4], nz = Q[2], ar = Q[2 + 3];
+          OPA = 16; bloc(l1[0], l1[1], 2, cl ? ROSE : MAGENTA); bloc(l2[0], l2[1], 2, cl ? MAGENTA : ROSE);
+          bloc(ar[0], ar[1], 3, e.largue > 0 ? JAUNE : MAGENTA); px(nz[0], nz[1], OS);
+        }, cm);
+      }
+    });
+    G.mines.forEach(function (m) {
+      var q = P3(m.x, m.y, m.z), cl = ((G.t * (m.etat === 'armee' ? (m.vie < 1.5 ? 16 : 6) : 10)) | 0) % 2;
+      pousser(m.z, q[2], function () { forme(OCTA_V, OCTA_F, m.x, m.y, m.z, G.t * 4, 0.2, 0.2, 0.22, cl ? [OS, JAUNE, BRASIER] : [JAUNE, BRASIER, SANG]);
+        if (m.etat === 'armee') { OPA = 16; cercle(m.x, m.y, ZP[m.vers] + 0.02, 0.42, cl ? BRASIER : SANG, 1, 4, G.t * 10); } }, cmPour(m.vers));
+    });
+    /* le serpent : seul élément cyan */
+    if (G.etat !== 'mort') {
+      var L = G.segs.length, cligne = G.invul > 0 && ((t * 16) | 0) % 2;
+      for (var k = L - 1; k >= 0; k--) (function (k) {
+        var s = G.segs[k], z = zAnneau(k) + (k ? 0.3 : 0.36), q = P3(s.x, s.y, z);
+        pousser(z, q[2] + (L - k) * 0.0005, function () {
+          OPA = cligne ? 9 : 16;
+          var r = (k ? 0.32 * (1 - 0.36 * k / L) * (k % 2 ? 0.88 : 1) : 0.41) * CAM.S * q[3];
+          if (k === 0) {
+            boule(q[0], q[1], r, CYANP, CYAN, INDIGO);
+            var a = G.tete.a, ex = s.x + Math.cos(a) * 0.2, ey = s.y + Math.sin(a) * 0.2, o1 = P3(ex - Math.sin(a) * 0.15, ey + Math.cos(a) * 0.15, z + 0.12), o2 = P3(ex + Math.sin(a) * 0.15, ey - Math.cos(a) * 0.15, z + 0.12);
+            var es = Math.max(1, Math.round(r * 0.22)); bloc(o1[0], o1[1], es, VIDE); bloc(o2[0], o2[1], es, VIDE);
+          } else boule(q[0], q[1], r, k % 2 ? CYAN : CYANP, CYAN, INDIGO);
+          OPA = 16;
+        });
+      })(k);
+    }
+    /* les éclats */
+    G.parts.forEach(function (p) {
+      var q = P3(p.x, p.y, p.z);
+      pousser(p.z, q[2] + 0.5, function () { bloc(q[0], q[1], Math.max(1, Math.round(CAM.S * q[3] * 0.07)), p.c); }, cmPour(couche(p.z)));
+    });
+    /* les missiles du warp */
+    G.tirs.forEach(function (m) {
+      if (m.x === undefined) return;
+      var q = P3(m.x, m.y, m.z);
+      pousser(m.z, q[2] + 1, function () {
+        for (var j = m.trace.length - 1; j > 0; j--) { var a = P3(m.trace[j][0], m.trace[j][1], m.trace[j][2]), b = P3(m.trace[j - 1][0], m.trace[j - 1][1], m.trace[j - 1][2]); ligne(a[0], a[1], b[0], b[1], j > 6 ? MAGENTA : ROSE, j > 6 ? 1 : 2); }
+        bloc(q[0], q[1], Math.max(2, Math.round(CAM.S * q[3] * 0.1)), OS);
+      });
+    });
+  }
+  /* ce qui traverse les plans et se dessine par-dessus tout : nappes de raie, fils à plomb, lasers, warp */
+  function effets(t) {
+    var w = G.warp, i, pf = planFocal();
+    /* les fils à plomb : du croiseur à son ombre */
+    G.ennemis.forEach(function (e) {
+      if (e.type !== 'croiseur' || e.p <= pf || e.x < 0 || e.y < 0 || e.x > N || e.y > N) return;
+      var a = P3(e.x, e.y, ZP[e.p] + 0.5), b = P3(e.x, e.y, ZP[pf] + 0.02); OPA = 9; ligne(a[0], a[1], b[0], b[1], ACIER, 1, 2, 0); OPA = 16;
+    });
+    /* la foreuse qui charge : un trait vers la ligne visée */
+    G.raies.forEach(function (r) {
+      var e = r.e, a = P3(e.x, e.y, ZP[r.de] + 0.8), zt = ZP[r.vers] + 0.02;
+      var bx = r.axe === 'x' ? r.v : e.x, by = r.axe === 'x' ? e.y : r.v, b = P3(bx, by, zt);
+      if (!r.feu) { ligne(a[0], a[1], b[0], b[1], ((t * 16) | 0) % 2 ? BRASIER : JAUNE, 2, 4, -t * 40); }
+      else {        // la nappe : un éventail d'énergie de la foreuse jusqu'à la ligne entière
+        var u = (r.t - r.tele) / 0.38, A = r.axe === 'x' ? P3(r.v, 0, zt) : P3(0, r.v, zt), C = r.axe === 'x' ? P3(r.v, N, zt) : P3(N, r.v, zt);
+        OPA = Math.max(2, Math.round(10 * (1 - u))); poly([a, A, C], JAUNE, OS, 0.3); OPA = 16;
+        ligne(A[0], A[1], C[0], C[1], OS, Math.max(1, Math.round(CAM.S * 0.12 * (1 - u))));
+        ligne(a[0], a[1], b[0], b[1], OS, 2);
+      }
+    });
+    /* les lasers (même plan) */
+    G.lasers.forEach(function (l) { var a = P3(l.a[0], l.a[1], l.a[2]), b = P3(l.b[0], l.b[1], l.b[2]), ww = Math.max(1, Math.round(l.t * 12)); ligne(a[0], a[1], b[0], b[1], JAUNE, ww + 2); ligne(a[0], a[1], b[0], b[1], OS, ww); });
+    /* le warp : voile bleuté aux bords, échos des ennemis, curseur, verrous */
+    var wa = 1 - G.echelle;
+    if (wa > 0.05) {
+      var bw = Math.round(Math.min(W, H) * 0.09);
+      OPA = Math.round(wa * 9);
+      poly([[0, 0], [W, 0], [W, bw], [0, bw]], INDIGO); poly([[0, H - bw], [W, H - bw], [W, H], [0, H]], INDIGO);
+      poly([[0, bw], [bw, bw], [bw, H - bw], [0, H - bw]], INDIGO); poly([[W - bw, bw], [W, bw], [W, H - bw], [W - bw, H - bw]], INDIGO);
+      OPA = 16;
+      G.ennemis.forEach(function (e) {
+        CM = cmPour(e.p);
+        for (var j = 1; j < e.hist.length; j++) { var q = P3(e.hist[j][0], e.hist[j][1], ZP[e.p] + (e.type === 'croiseur' ? 0.9 : 0.5)); OPA = Math.max(2, 10 - j); bloc(q[0], q[1], Math.max(1, Math.round(CAM.S * q[3] * 0.12)), e.type === 'rodeur' ? MAGENTA : e.type === 'foreuse' ? BRASIER : ACIER); }
+        CM = CM_ID; OPA = 16;
+      });
+    }
+    if (w.actif) {
+      var hq = P3(G.tete.x, G.tete.y, ZP[G.plan] + 0.5), R = Math.max(12, Math.min(W, H) * 0.09), rot = w.t * 3;
+      w.verrous.forEach(function (o, j) {
+        var p = posCible(o), q = P3(p[0], p[1], p[2]), s = Math.max(5, CAM.S * q[3] * (o.type === 'croiseur' ? 0.75 : 0.42));
+        ligne(hq[0], hq[1], q[0], q[1], ROSE, 1, 3, -t * 30);
+        var c = ((t * 8 + j) | 0) % 2 ? ROSE : MAGENTA, e2 = s * 0.45;
+        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (d) { var x = q[0] + d[0] * s, y = q[1] + d[1] * s; ligne(x, y, x - d[0] * e2, y, c, 2); ligne(x, y, x, y - d[1] * e2, c, 2); });
+        if (o.type && o.p !== G.plan) { var fl = o.p > G.plan ? -1 : 1; ligne(q[0] - 3, q[1] - s - 4 - fl * 2, q[0], q[1] - s - 4 + fl * 2, OS); ligne(q[0], q[1] - s - 4 + fl * 2, q[0] + 3, q[1] - s - 4 - fl * 2, OS); }
+      });
+      /* le curseur : une lunette qui tourne */
+      for (i = 0; i < 4; i++) {
+        var a = rot + i * Math.PI / 2, x0 = w.cx + Math.cos(a) * R, y0 = w.cy + Math.sin(a) * R, x1 = w.cx + Math.cos(a) * R * 0.55, y1 = w.cy + Math.sin(a) * R * 0.55;
+        ligne(x0, y0, x1, y1, JAUNE, 2);
+        var a2 = a + 0.5; ligne(x0, y0, w.cx + Math.cos(a2) * R, w.cy + Math.sin(a2) * R, JAUNE, 1);
+      }
+      cerclEcran(w.cx, w.cy, R * 1.12, OS, 5, t * 20);
+      px(w.cx, w.cy, OS); px(w.cx + 1, w.cy, OS); px(w.cx, w.cy + 1, OS); px(w.cx + 1, w.cy + 1, OS);
+      /* les chevrons du ralenti, aux bords */
+      var ch = ((t * 4) | 0) % 2 ? JAUNE : AMBRE, cy = H / 2, s2 = Math.max(4, Math.round(Math.min(W, H) * 0.025));
+      for (i = 0; i < 3; i++) { var ox = Math.round(Math.min(W, H) * 0.03) + i * s2 * 1.4; ligne(ox + s2, cy - s2, ox, cy, ch, 2); ligne(ox, cy, ox + s2, cy + s2, ch, 2); ligne(W - ox - s2, cy - s2, W - ox, cy, ch, 2); ligne(W - ox, cy, W - ox - s2, cy + s2, ch, 2); }
+    }
+    /* l'éclair d'un coup : un voile tramé, borné (pas de flash plein écran) */
+    if (G.flash > 0) { OPA = Math.min(5, Math.round(G.flash * 24)); poly([[0, 0], [W, 0], [W, H], [0, H]], SANG); OPA = 16; }
+  }
+  function cerclEcran(cx, cy, r, c, motif, phase) { var n = 40, p0 = null; for (var k = 0; k <= n; k++) { var a = k / n * 6.2832, p = [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; if (p0 && ((k + (phase | 0)) % motif) < motif / 2) ligne(p0[0], p0[1], p[0], p[1], c); p0 = p; } }
+
+  function dessiner(t, dtR) {
+    camera(t);
+    fond(t, G.echelle < 0.7);
+    poussiere(!!G.trans);
+    var C = [[], [], []], i, k;
+    collecter(C, t);
+    piliersDessous();
+    for (i = 0; i < 3; i++) {
+      sol(i, t);
+      decals(i, t);
+      var L = C[i]; L.sort(function (a, b) { return a.d - b.d; });
+      for (k = 0; k < L.length; k++) { CM = L[k].cm; OPA = 16; L[k].f(); }
+      CM = CM_ID; OPA = 16;
+      if (i < 2) colonnes(i, t);
+    }
+    effets(t);
+    /* lignes de balayage */
+    for (var y = 1; y < H; y += 3) { var o = y * W; for (var x = (y & 1); x < W; x += 2) if (B[o + x] === NP) B[o + x] = VIDE; }
+    for (k = 0; k < B.length; k++) d32[k] = PAL32[B[k]];
+    ctx.putImageData(img, 0, 0);
+  }
+
+  /* ---------- le son : bips synthétisés et une boucle par plan, après le premier geste ---------- */
+  var AC = null, MUET = false, SORTIE = null;
+  var SONS = { cellule: ['square', 660, 990, 0.06, 0.04], coupe: ['sawtooth', 300, 70, 0.22, 0.06], mort: ['sawtooth', 220, 40, 0.7, 0.08],
+    monte: ['triangle', 180, 900, 0.6, 0.07], plonge: ['triangle', 900, 120, 0.6, 0.07], warp: ['sine', 700, 70, 0.9, 0.09],
+    verrou: ['square', 1250, 1600, 0.05, 0.025], tir: ['sawtooth', 900, 180, 0.22, 0.04], boum: ['sawtooth', 170, 30, 0.45, 0.07],
+    alerte: ['square', 470, 470, 0.09, 0.03], raie: ['sawtooth', 1500, 260, 0.32, 0.05], mine: ['triangle', 1400, 380, 0.9, 0.025], pose: ['square', 200, 120, 0.08, 0.03] };
+  function son(nom, quand) {
+    if (!AC || MUET || G.attract) return;
+    var R = SONS[nom]; if (!R) return;
+    var o = AC.createOscillator(), g = AC.createGain(), t = quand || AC.currentTime;
+    o.connect(g); g.connect(SORTIE);
+    o.type = R[0]; o.frequency.setValueAtTime(R[1], t); o.frequency.exponentialRampToValueAtTime(R[2], t + R[3]);
+    g.gain.setValueAtTime(R[4], t); g.gain.exponentialRampToValueAtTime(0.0001, t + R[3]);
+    o.start(t); o.stop(t + R[3] + 0.02);
+  }
+  function note(type, f, d, v, t) { var o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d); o.connect(g); g.connect(SORTIE); o.start(t); o.stop(t + d + 0.02); }
+  var MUS = { t: 0, pas: 0, motif: 1, voulu: 1 };
+  var BASSE = [
+    [55, 0, 0, 55, 0, 0, 55, 0, 41.2, 0, 0, 41.2, 0, 0, 49, 0],                                  // le profond : lourd, lent
+    [110, 0, 110, 0, 130.8, 0, 110, 0, 98, 0, 98, 0, 82.4, 0, 98, 0],                            // le principal
+    [220, 330, 440, 330, 261.6, 392, 523.3, 392, 196, 293.7, 392, 293.7, 164.8, 246.9, 329.6, 246.9] // le haut : arpèges
+  ];
+  function musique() {
+    if (!AC || AC.state !== 'running' || MUET || G.etat !== 'jeu') return;
+    var tempo = 112 * (G.echelle < 0.6 ? 0.5 : 1), d = 60 / tempo / 4;   // au warp, la musique passe en demi-temps
+    if (MUS.t < AC.currentTime) MUS.t = AC.currentTime + 0.03;
+    while (MUS.t < AC.currentTime + 0.12) {
+      var p = MUS.pas, f = BASSE[MUS.motif][p];
+      if (f) note(MUS.motif === 1 ? 'square' : MUS.motif === 0 ? 'triangle' : 'square', f, d * (MUS.motif === 2 ? 0.7 : 1.5), MUS.motif === 2 ? 0.014 : MUS.motif === 0 ? 0.06 : 0.025, MUS.t);
+      if (p % 4 === 0) { var o = AC.createOscillator(), g = AC.createGain(); o.frequency.setValueAtTime(150, MUS.t); o.frequency.exponentialRampToValueAtTime(42, MUS.t + 0.12); g.gain.setValueAtTime(0.07, MUS.t); g.gain.exponentialRampToValueAtTime(0.0001, MUS.t + 0.14); o.connect(g); g.connect(SORTIE); o.start(MUS.t); o.stop(MUS.t + 0.16); }
+      MUS.t += d; MUS.pas = (p + 1) % 16;
+      if (MUS.pas === 0) MUS.motif = MUS.voulu;        // le changement de plan tombe sur la barre de mesure
+    }
+  }
+
+  /* ---------- les commandes ---------- */
+  var tactile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  var AIDE = tactile ? 'GLISSE : DIRIGER · 2 DOIGTS ↑↓ : PLAN · 2E DOIGT TENU : WARP' : 'FLÈCHES · PAGE↑↓ OU W/S : PLAN · ESPACE TENU : WARP · M : SON';
+  function lancer() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); SORTIE = AC.createGain(); SORTIE.gain.value = 0.8; SORTIE.connect(AC.destination); } catch (er) { AC = null; } }
+    if (AC && AC.state === 'suspended') AC.resume();
+    if (G.etat === 'titre' || (G.etat === 'mort' && !G.attract && G.mortT > 0.8)) {
+      nouveau(false); MUS.voulu = MUS.motif = 1;
+      document.getElementById('ecran').hidden = true; mortAffiche = false;
+      annonce(NOMS[1], 'la grille');
+      return true;
+    }
+    return false;
+  }
+  var FL = {};
+  window.addEventListener('keydown', function (e) {
+    if (e.code === 'Space') { e.preventDefault(); if (e.repeat) return; if (G.etat !== 'jeu') { lancer(); return; } warpDebut('clavier'); return; }
+    if (e.code === 'Enter') { lancer(); return; }
+    if (e.code === 'KeyM') { MUET = !MUET; texte(MUET ? 'SON COUPÉ' : 'SON'); return; }
+    if (e.code === 'PageUp' || e.code === 'KeyW') { e.preventDefault(); if (G.etat === 'jeu') changerPlan(1); return; }
+    if (e.code === 'PageDown' || e.code === 'KeyS') { e.preventDefault(); if (G.etat === 'jeu') changerPlan(-1); return; }
+    if (/^Arrow/.test(e.code)) { e.preventDefault(); if (G.etat !== 'jeu') { lancer(); return; } FL[e.code] = true; }
+  });
+  window.addEventListener('keyup', function (e) { if (e.code === 'Space') warpFin(); delete FL[e.code]; });
+  function clavier() {
+    if (G.etat !== 'jeu' || AUTO) return;
+    var x = (FL.ArrowRight ? 1 : 0) - (FL.ArrowLeft ? 1 : 0), y = (FL.ArrowDown ? 1 : 0) - (FL.ArrowUp ? 1 : 0);
+    if (x || y) G.cible = angleMonde(x, y);
+  }
+  /* les doigts : un doigt dirige ; deux doigts qui balaient changent de plan ; un second doigt tenu, c'est le warp */
+  var PT = {}, NPT = 0, ancre = null, deux = null;
+  window.addEventListener('pointerdown', function (e) {
+    if (e.target.closest && e.target.closest('button')) return;
+    if (G.etat !== 'jeu') { lancer(); }
+    PT[e.pointerId] = { x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY };
+    NPT = Object.keys(PT).length;
+    if (NPT === 1) ancre = { id: e.pointerId, x: e.clientX, y: e.clientY };
+    if (NPT === 2) deux = { t: performance.now(), fait: false, id: e.pointerId };
+  });
+  window.addEventListener('pointermove', function (e) {
+    var p = PT[e.pointerId];
+    if (e.pointerType === 'mouse' && G.warp.actif) { G.warp.cx = e.clientX / PX; G.warp.cy = e.clientY / PX; G.warp.manuel = 0.9; }
+    if (!p) return;
+    var mx = e.clientX - p.x, my = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+    if (NPT >= 2 && deux && !deux.fait) {
+      var ids = Object.keys(PT), dys = ids.map(function (k) { return PT[k].y - PT[k].y0; });
+      if (dys.every(function (d) { return d < -28; }) || dys.every(function (d) { return d > 28; })) { deux.fait = true; changerPlan(dys[0] < 0 ? 1 : -1); }
+      return;
+    }
+    if (G.warp.actif && deux && e.pointerId === deux.id) { G.warp.cx += mx / PX * 1.6; G.warp.cy += my / PX * 1.6; G.warp.manuel = 0.9; return; }
+    if (ancre && e.pointerId === ancre.id && G.etat === 'jeu' && !AUTO) {
+      var dx = e.clientX - ancre.x, dy = e.clientY - ancre.y;
+      if (Math.hypot(dx, dy) > 14) { G.cible = angleMonde(dx, dy); ancre.x = e.clientX; ancre.y = e.clientY; }
+    }
+  });
+  function lever(e) {
+    if (!PT[e.pointerId]) return;
+    delete PT[e.pointerId]; NPT = Object.keys(PT).length;
+    if (ancre && ancre.id === e.pointerId) { var r = Object.keys(PT)[0]; ancre = r ? { id: +r, x: PT[r].x, y: PT[r].y } : null; }
+    if (G.warp.actif && G.warp.source === 'doigt' && NPT < 2) warpFin();
+    if (NPT < 2) deux = null;
+  }
+  window.addEventListener('pointerup', lever); window.addEventListener('pointercancel', lever);
+  function doigts() {
+    if (deux && !deux.fait && NPT >= 2 && performance.now() - deux.t > 230) {
+      var ids = Object.keys(PT), calme = ids.every(function (k) { return Math.abs(PT[k].y - PT[k].y0) < 24; });
+      if (calme) { deux.fait = true; warpDebut('doigt'); }
+    }
+  }
+  function bouton(id, bas, haut) {
+    var b = document.getElementById(id);
+    b.addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); try { b.setPointerCapture(e.pointerId); } catch (er) {} if (G.etat !== 'jeu') { lancer(); return; } bas(); });
+    if (haut) { b.addEventListener('pointerup', haut); b.addEventListener('pointercancel', haut); }
+    b.addEventListener('click', function (e) { e.preventDefault(); });
+  }
+  bouton('bh', function () { changerPlan(1); }); bouton('bb', function () { changerPlan(-1); });
+  bouton('bw', function () { warpDebut('bouton'); }, function () { if (G.warp.source === 'bouton') warpFin(); });
+
+  /* ---------- la boucle ---------- */
+  var elS = document.getElementById('score'), elL = document.getElementById('long'), elP = document.getElementById('perdu'), elA = document.getElementById('aide'),
+    elAn = document.getElementById('annonce'), elJ = document.getElementById('jw'), elBW = document.getElementById('bw'), piles = document.querySelectorAll('#pile i'), ec = document.getElementById('ecran');
+  var last = 0, tR = 0, tCam = 0, acc = 0, mortAffiche = false, imgs = 0, fpsT = 0, FPS = 0, ERR = 0, hudCache = {};
+  window.addEventListener('error', function () { ERR++; });
+  function poserTexte(el, cle, v, html) { if (hudCache[cle] === v) return; hudCache[cle] = v; if (html) el.innerHTML = v; else el.textContent = v; }
+  nouveau(true);
+  function boucle(now) {
+    requestAnimationFrame(boucle);
+    var dtR = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60; last = now; tR += dtR;
+    imgs++; fpsT += dtR; if (fpsT >= 1) { FPS = Math.round(imgs / fpsT); imgs = 0; fpsT = 0; }
+    clavier(); doigts();
+    if (G.trans) majTrans(dtR);
+    warpMaj(dtR);
+    var but = G.warp.actif ? 0.15 : 1; G.echelle += (but - G.echelle) * Math.min(1, dtR * (G.warp.actif ? 12 : 5));
+    if (Math.abs(G.echelle - but) < 0.003) G.echelle = but;
+    majTirs(dtR);
+    acc += dtR * G.echelle; var n = 0;
+    while (acc >= HSTEP && n < 14) { acc -= HSTEP; pas(HSTEP); n++; }
+    if (n >= 14) acc = 0;
+    if (CAM.sec > 0) CAM.sec = Math.max(0, CAM.sec - dtR * 2);
+    if (G.flash > 0) G.flash -= dtR;
+    if (G.texteT > 0) G.texteT -= dtR;
+    if (G.annonceT > 0) G.annonceT -= dtR;
+    if (G.etat === 'mort') {
+      G.mortT += dtR;
+      if (G.attract && G.mortT > 1.4) nouveau(true);
+      else if (!G.attract && G.mortT > 0.8 && !mortAffiche) {
+        mortAffiche = true; ec.hidden = false;
+        ec.querySelector('h1').textContent = 'SIGNAL PERDU';
+        document.getElementById('e1').textContent = 'Emporté par ' + (G.cause || 'le vide').toLowerCase() + ' · score ' + G.score + ' · longueur ' + G.long + ' · cellules ' + G.mange;
+        document.getElementById('e2').hidden = true;
+        document.getElementById('go').textContent = 'TOUCHE POUR REJOUER';
+      }
+    }
+    tCam += dtR * (0.25 + 0.75 * G.echelle);
+    dessiner(tCam, dtR);
+    musique();
+    poserTexte(elS, 's', String(G.score)); poserTexte(elL, 'l', String(G.long));
+    poserTexte(elP, 'p', G.perdus ? 'PERDUS ' + G.perdus : '');
+    var aide = G.attract ? AIDE : G.warp.actif ? 'WARP · VERROUS ' + G.warp.verrous.length + '/8 · LÂCHE POUR TIRER' : G.texteT > 0 ? G.texte : AIDE;
+    poserTexte(elA, 'a', aide); elA.style.color = !G.attract && (G.warp.actif || G.texteT > 0) ? '#ffd319' : '';
+    var pl = G.trans ? G.trans.vers : G.plan;
+    for (var i = 0; i < 3; i++) piles[i].className = (2 - i) === pl ? 'on' : '';
+    poserTexte(elAn, 'an', G.annonce + (G.sous ? '<small>' + G.sous + '</small>' : ''), true);
+    elAn.className = 'annonce' + (G.annonceT > 0 && G.etat === 'jeu' ? ' on' : '');
+    elJ.style.width = Math.round(G.warp.jauge * 100) + '%';
+    elBW.className = 'warp' + (G.warp.jauge >= 0.3 ? ' pret' : '');
+  }
+  requestAnimationFrame(boucle);
+
+  /* ---------- le crochet d'essai ---------- */
+  window.__P = {
+    get etat() { return G.etat; }, get plan() { return G.plan; }, get trans() { return G.trans ? { de: G.trans.de, vers: G.trans.vers, u: G.trans.u } : null; },
+    get zf() { return CAM.zf; }, get echelle() { return G.echelle; }, get score() { return G.score; }, get long() { return G.long; }, get fps() { return FPS; },
+    get erreurs() { return ERR; }, get cause() { return G.cause || ''; }, get resolution() { return [W, H, PX]; },
+    get etatWarp() { return { actif: G.warp.actif, jauge: G.warp.jauge, verrous: G.warp.verrous.length, tirs: G.tirs.length, lasers: G.lasers.length }; },
+    get ennemis() { var c = [0, 0, 0]; G.ennemis.forEach(function (e) { c[e.p]++; }); return c; },
+    get menaces() { return { raies: G.raies.length, mines: G.mines.length }; },
+    get tete() { return { x: G.tete.x, y: G.tete.y, a: G.tete.a }; },
+    demarrer: function () { return lancer(); },
+    monter: function () { return changerPlan(1); }, descendre: function () { return changerPlan(-1); },
+    warp: function (on) { return on ? warpDebut('test') : (warpFin(), true); },
+    pilote: function (on, warpAuto) { AUTO = !!on; AUTO_WARP = warpAuto !== false; return AUTO; },
+    invincible: function (s) { G.invul = s || 3; },
+    dieu: function (on) { DIEU = !!on; return DIEU; }
+  };
+})();
+</script>

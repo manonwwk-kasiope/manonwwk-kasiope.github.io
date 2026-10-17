@@ -810,7 +810,7 @@
       /* le film propre au personnage choisi (« chasse-elle », « chasse-lui ») s'il existe : N.art.pour */
       I.vis = pour(nom); clipOn(I.vis); I.clip = I.vis;
       var nx = FILMS[nom].suite; if (nx) clipPrep(nx === 'boss' ? 'alerte' : pour(nx));
-    } else { I.prev = null; clipOn(nom); I.clip = nom; }
+    } else { I.prev = null; I.vis = pour(nom); clipOn(I.vis); I.clip = I.vis; }   // la défaite propre au personnage (« defaite-elle »)
     journal('interlude ' + nom);
     return true;
   }
@@ -949,7 +949,7 @@
     }
   }
   function scFin(nom, u) {
-    var img = art(nom);
+    var img = art(I.vis || nom);
     if (!img) { decor(u, null); return; }
     var by = L.portrait ? bandeauY(img.h) : null;
     var pos = cadre(img.w, img.h, FOCAL[nom], derive(u, 0.25, -8, 8), derive(u, 0.4, -3, 3), by);
