@@ -1,0 +1,1305 @@
+{
+ "version": 1,
+ "genere_par": "proto-neon/tools/decor/genere.mjs (graine 2975)",
+ "format": {
+  "indexes": "0..15 = palette du jeu dans l ordre de 00-pal.js ; 16 = transparent",
+  "images": "planches horizontales : image k en x = k * imageW"
+ },
+ "plans": {
+  "P0": {
+   "facteur": [0,0.02]
+  },
+  "P1": {
+   "facteur": [0.03,0.05]
+  },
+  "P2": {
+   "facteur": [
+    0.08,
+    "f_h"
+   ]
+  },
+  "P3": {
+   "facteur": [
+    0.2,
+    "f_h"
+   ]
+  },
+  "P4": {
+   "facteur": [0.35,0.4],
+   "derive": 4
+  },
+  "P5": {
+   "facteur": [0.6,0.6]
+  },
+  "SOL": {
+   "facteur": [
+    "f_h",
+    1
+   ]
+  },
+  "PLATEAU": {
+   "facteur": [1,1]
+  },
+  "P6": {
+   "facteur": [1.4,1.4]
+  }
+ },
+ "cycleEnseignes": [14,11,9,10],
+ "cycleBalises": [14,1,15],
+ "quartiers": {
+  "docks": {
+   "nom": "LES DOCKS",
+   "ciel": "ciel-docks",
+   "soleil": {
+    "haut": 46,
+    "variante": "plein"
+   },
+   "cite": "cite-docks",
+   "structures": "structures-docks",
+   "lumiere": "aube : reflets d or sur le sol",
+   "sol": {
+    "reflet": [10,9,9],
+    "grille": 3,
+    "eau": true
+   },
+   "lut": {},
+   "enseignes": {
+    "tempo": 1
+   },
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "grue",
+      "x": 11
+     },
+     {
+      "tuile": "portique",
+      "x": 146
+     },
+     {
+      "tuile": "portique",
+      "x": 278
+     },
+     {
+      "tuile": "grue",
+      "x": 470
+     },
+     {
+      "tuile": "conteneurs",
+      "x": 656
+     }
+    ]
+   }
+  },
+  "artere": {
+   "nom": "L ARTÈRE",
+   "ciel": "ciel-calme",
+   "soleil": {
+    "haut": 48,
+    "variante": "plein"
+   },
+   "cite": "cite-artere",
+   "structures": "structures-artere",
+   "lumiere": "néons ambre et jaune qui tournent vite",
+   "sol": {
+    "reflet": [10,9,11],
+    "grille": 3
+   },
+   "lut": {},
+   "enseignes": {
+    "tempo": 2
+   },
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "pilier",
+      "x": 14
+     },
+     {
+      "tuile": "panneau",
+      "x": 102
+     },
+     {
+      "tuile": "pilier",
+      "x": 261
+     },
+     {
+      "tuile": "lampadaire",
+      "x": 379
+     },
+     {
+      "tuile": "pilier",
+      "x": 512
+     },
+     {
+      "tuile": "pilier",
+      "x": 618
+     }
+    ]
+   }
+  },
+  "centrale": {
+   "nom": "LA CENTRALE",
+   "ciel": "ciel-centrale",
+   "soleil": {
+    "haut": 42,
+    "variante": "plein"
+   },
+   "cite": "cite-centrale",
+   "structures": "structures-centrale",
+   "lumiere": "brasier, fumées de nuit",
+   "sol": {
+    "reflet": [9,11,11],
+    "grille": 3
+   },
+   "lut": {
+    "4": 14
+   },
+   "enseignes": {
+    "tempo": 1
+   },
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "conduites",
+      "x": 23
+     },
+     {
+      "tuile": "cheminee",
+      "x": 201
+     },
+     {
+      "tuile": "reservoir",
+      "x": 331
+     },
+     {
+      "tuile": "reservoir",
+      "x": 448
+     },
+     {
+      "tuile": "conduites",
+      "x": 617
+     }
+    ]
+   }
+  },
+  "ciel": {
+   "nom": "LE CIEL",
+   "ciel": "ciel-ciel",
+   "soleil": {
+    "haut": 50,
+    "variante": "plein"
+   },
+   "cite": "cite-ciel",
+   "structures": "nuages-ciel",
+   "lumiere": "soleil haut et entier, étoiles nombreuses, calme",
+   "sol": {
+    "reflet": [10,9,11],
+    "grille": 4
+   },
+   "lut": {},
+   "enseignes": {
+    "tempo": 2
+   },
+   "etoiles": 2
+  },
+  "tours": {
+   "nom": "LES TOURS",
+   "ciel": "ciel-tours",
+   "soleil": {
+    "haut": 34,
+    "variante": "plein"
+   },
+   "cite": "cite-tours",
+   "structures": "structures-tours",
+   "lumiere": "crépuscule ambre et sang",
+   "sol": {
+    "reflet": [9,11,14],
+    "grille": 3
+   },
+   "lut": {},
+   "enseignes": {
+    "tempo": 1
+   },
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "antenne",
+      "x": 11
+     },
+     {
+      "tuile": "projecteur",
+      "x": 114
+     },
+     {
+      "tuile": "projecteur",
+      "x": 214
+     },
+     {
+      "tuile": "antenne",
+      "x": 374
+     },
+     {
+      "tuile": "chateau",
+      "x": 528
+     },
+     {
+      "tuile": "projecteur",
+      "x": 618
+     }
+    ]
+   }
+  },
+  "coeur": {
+   "nom": "LE CŒUR",
+   "ciel": "ciel-coeur",
+   "soleil": {
+    "haut": 40,
+    "variante": "plein"
+   },
+   "cite": "cite-coeur",
+   "structures": "structures-coeur",
+   "lumiere": "incendie : brasier et sang, éclairs lointains",
+   "sol": {
+    "reflet": [11,11,14],
+    "grille": 3
+   },
+   "lut": {
+    "3": 14
+   },
+   "enseignes": {
+    "tempo": 2
+   },
+   "colosseLoin": true,
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "monolithe",
+      "x": 11
+     },
+     {
+      "tuile": "monolithe-large",
+      "x": 114
+     },
+     {
+      "tuile": "monolithe-large",
+      "x": 246
+     },
+     {
+      "tuile": "monolithe",
+      "x": 438
+     },
+     {
+      "tuile": "paratonnerre",
+      "x": 592
+     },
+     {
+      "tuile": "monolithe-large",
+      "x": 682
+     }
+    ]
+   }
+  },
+  "eclipse": {
+   "nom": "L ÉCLIPSE",
+   "ciel": "ciel-colosse",
+   "soleil": {
+    "haut": 46,
+    "variante": "eclipse"
+   },
+   "cite": "cite-eclipse",
+   "structures": "structures-eclipse",
+   "lumiere": "soleil éclipsé, cerclé de brasier",
+   "sol": {
+    "reflet": [11,11,14],
+    "grille": 3
+   },
+   "lut": {},
+   "enseignes": {
+    "tempo": 2
+   },
+   "colosseMi": true,
+   "rangee": {
+    "periode": 768,
+    "poses": [
+     {
+      "tuile": "ruine",
+      "x": 4
+     },
+     {
+      "tuile": "ruine",
+      "x": 128
+     },
+     {
+      "tuile": "ruine",
+      "x": 282
+     },
+     {
+      "tuile": "effondre",
+      "x": 366
+     },
+     {
+      "tuile": "ruine",
+      "x": 516
+     },
+     {
+      "tuile": "ruine",
+      "x": 648
+     }
+    ]
+   }
+  }
+ },
+ "etats": {
+  "calme": {
+   "ciel": null,
+   "soleil": null,
+   "soleilBaisse": 0,
+   "sol": {
+    "cases": 1,
+    "braiseProche": 0
+   },
+   "enseignes": 1
+  },
+  "montee": {
+   "ciel": "ciel-montee",
+   "soleil": null,
+   "soleilBaisse": 6,
+   "sol": {
+    "cases": 1,
+    "braiseProche": 0.25
+   },
+   "enseignes": 2
+  },
+  "chaos": {
+   "ciel": "ciel-chaos",
+   "soleil": "chaos",
+   "soleilBaisse": "horizon",
+   "sol": {
+    "cases": 2,
+    "braiseProche": 0.25,
+    "epaisseur": 2
+   },
+   "enseignes": 2,
+   "braises": true
+  },
+  "inversion": {
+   "ciel": "ciel-inversion",
+   "soleil": "inversion",
+   "soleilBaisse": -4,
+   "sol": {
+    "cases": 1,
+    "braiseProche": 0,
+    "pulse": true
+   },
+   "enseignes": 2
+  },
+  "colosse": {
+   "ciel": "ciel-colosse",
+   "soleil": "eclipse",
+   "soleilBaisse": 0,
+   "sol": {
+    "cases": 1,
+    "braiseProche": 0,
+    "reflet": [14,14,14]
+   },
+   "enseignes": 0
+  },
+  "victoire": {
+   "ciel": "ciel-victoire",
+   "soleil": "victoire",
+   "soleilBaisse": 0,
+   "sol": {
+    "cases": 0.5,
+    "braiseProche": 0
+   },
+   "enseignes": 0.5
+  }
+ },
+ "tuiles": {
+  "docks": [
+   {
+    "nom": "grue",
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [
+     [12,2,"sang"],
+     [63,10,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "portique",
+    "x": 64,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [
+     [1,15,"sang"],
+     [62,15,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "conteneurs",
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "lampadaire",
+    "x": 160,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,19,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   }
+  ],
+  "artere": [
+   {
+    "nom": "pylone",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,4,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "panneau",
+    "x": 32,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [
+     [16,36],
+     [48,36]
+    ],
+    "flammes": []
+   },
+   {
+    "nom": "pilier",
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "lampadaire",
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [14,19,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   }
+  ],
+  "centrale": [
+   {
+    "nom": "cheminee",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,8,"sang"],
+     [16,30,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": [
+     [16,3]
+    ]
+   },
+   {
+    "nom": "conduites",
+    "x": 32,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "reservoir",
+    "x": 96,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [
+     [32,9,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "torchere",
+    "x": 160,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": [
+     [16,13]
+    ]
+   }
+  ],
+  "tours": [
+   {
+    "nom": "antenne",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,1,"sang"],
+     [16,23,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "projecteur",
+    "x": 32,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [
+     [16,38]
+    ],
+    "flammes": []
+   },
+   {
+    "nom": "chateau",
+    "x": 64,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,1,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "antenne-haute",
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,4,"sang"],
+     [16,34,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   }
+  ],
+  "coeur": [
+   {
+    "nom": "monolithe",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,7,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "monolithe-large",
+    "x": 32,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [
+     [13,19,"ambre"],
+     [45,1,"ambre"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "paratonnerre",
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [16,6,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "dalle",
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": []
+   }
+  ],
+  "eclipse": [
+   {
+    "nom": "ruine",
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 64,
+    "balises": [
+     [26,11,"sang"]
+    ],
+    "projecteurs": [],
+    "flammes": []
+   },
+   {
+    "nom": "effondre",
+    "x": 32,
+    "y": 0,
+    "w": 64,
+    "h": 64,
+    "balises": [],
+    "projecteurs": [],
+    "flammes": []
+   }
+  ]
+ },
+ "fichiers": {
+  "ciel-calme": {
+   "fichier": "ciel-calme.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-montee": {
+   "fichier": "ciel-montee.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-chaos": {
+   "fichier": "ciel-chaos.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-inversion": {
+   "fichier": "ciel-inversion.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-colosse": {
+   "fichier": "ciel-colosse.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-victoire": {
+   "fichier": "ciel-victoire.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-docks": {
+   "fichier": "ciel-docks.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-centrale": {
+   "fichier": "ciel-centrale.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-ciel": {
+   "fichier": "ciel-ciel.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-tours": {
+   "fichier": "ciel-tours.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "ciel-coeur": {
+   "fichier": "ciel-coeur.png",
+   "w": 64,
+   "h": 256,
+   "plan": "P0",
+   "boucleX": 64,
+   "ancre": "bas sur la rangée au-dessus de l horizon ; prolonger la rangée 0 vers le haut"
+  },
+  "etoiles": {
+   "fichier": "etoiles.png",
+   "w": 512,
+   "h": 160,
+   "plan": "P1",
+   "boucleX": 512,
+   "points": [
+    [237,87,0,1],
+    [113,103,1,0],
+    [238,98,0,0],
+    [207,27,1,0],
+    [375,61,0,0],
+    [34,6,1,0],
+    [393,26,0,0],
+    [341,63,1,0],
+    [99,101,0,0],
+    [195,120,1,1],
+    [443,84,0,0],
+    [126,71,1,0],
+    [35,96,0,0],
+    [74,4,1,0],
+    [170,62,0,0],
+    [125,43,1,0],
+    [209,15,0,0],
+    [15,37,1,0],
+    [66,88,0,1],
+    [19,141,1,0],
+    [208,99,0,0],
+    [416,126,1,0],
+    [433,64,0,0],
+    [443,150,1,0],
+    [211,68,0,0],
+    [27,45,1,0],
+    [296,50,0,0],
+    [44,121,1,1],
+    [69,57,0,0],
+    [100,97,1,0],
+    [65,6,0,0],
+    [146,89,1,0],
+    [404,39,0,0],
+    [476,64,1,0],
+    [462,140,0,0],
+    [36,18,1,0],
+    [220,4,0,1],
+    [123,123,1,0],
+    [450,114,0,0],
+    [23,75,1,0],
+    [438,143,0,0],
+    [33,102,1,0],
+    [394,77,0,0],
+    [210,30,1,0],
+    [304,111,0,0],
+    [10,24,1,1],
+    [210,2,0,0],
+    [349,24,1,0],
+    [102,104,0,0],
+    [69,7,1,0],
+    [330,6,0,0],
+    [152,143,1,0],
+    [247,95,0,0],
+    [494,21,1,0],
+    [311,116,0,1],
+    [80,58,1,0],
+    [30,55,0,0],
+    [111,11,1,0],
+    [49,78,0,0],
+    [201,37,1,0]
+   ],
+   "note": "[x, y, phase, croix] ; phase 0 = acier, 1 = os ; échanger os <-> acier à chaque demi-temps"
+  },
+  "voie-lactee": {
+   "fichier": "voie-lactee.png",
+   "w": 512,
+   "h": 160,
+   "plan": "P1",
+   "boucleX": 512,
+   "note": "même champ et même facteur que les étoiles ; dessinée avant elles"
+  },
+  "soleil-plein-80": {
+   "fichier": "soleil-plein-80.png",
+   "w": 640,
+   "h": 80,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 80,
+   "diametre": 80,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-chaos-80": {
+   "fichier": "soleil-chaos-80.png",
+   "w": 640,
+   "h": 80,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 80,
+   "diametre": 80,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-inversion-80": {
+   "fichier": "soleil-inversion-80.png",
+   "w": 640,
+   "h": 80,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 80,
+   "diametre": 80,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-victoire-80": {
+   "fichier": "soleil-victoire-80.png",
+   "w": 640,
+   "h": 80,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 80,
+   "diametre": 80,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-eclipse-80": {
+   "fichier": "soleil-eclipse-80.png",
+   "w": 640,
+   "h": 80,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 80,
+   "diametre": 80,
+   "note": "disque de nuit profonde cerclé de brasier ; avancer d une image à chaque temps : la couronne crépite"
+  },
+  "soleil-plein-64": {
+   "fichier": "soleil-plein-64.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 64,
+   "diametre": 64,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-chaos-64": {
+   "fichier": "soleil-chaos-64.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 64,
+   "diametre": 64,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-inversion-64": {
+   "fichier": "soleil-inversion-64.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 64,
+   "diametre": 64,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-victoire-64": {
+   "fichier": "soleil-victoire-64.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 64,
+   "diametre": 64,
+   "note": "image k = rayures décalées de k rangées ; avancer d une image toutes les 2 mesures"
+  },
+  "soleil-eclipse-64": {
+   "fichier": "soleil-eclipse-64.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P2",
+   "images": 8,
+   "imageW": 64,
+   "diametre": 64,
+   "note": "disque de nuit profonde cerclé de brasier ; avancer d une image à chaque temps : la couronne crépite"
+  },
+  "halo-80": {
+   "fichier": "halo-80.png",
+   "w": 140,
+   "h": 140,
+   "plan": "P2",
+   "marge": 30,
+   "note": "centré sur le disque ; dessiné avant lui"
+  },
+  "halo-eclipse-80": {
+   "fichier": "halo-eclipse-80.png",
+   "w": 140,
+   "h": 140,
+   "plan": "P2",
+   "marge": 30
+  },
+  "halo-64": {
+   "fichier": "halo-64.png",
+   "w": 124,
+   "h": 124,
+   "plan": "P2",
+   "marge": 30,
+   "note": "centré sur le disque ; dessiné avant lui"
+  },
+  "halo-eclipse-64": {
+   "fichier": "halo-eclipse-64.png",
+   "w": 124,
+   "h": 124,
+   "plan": "P2",
+   "marge": 30
+  },
+  "montagnes": {
+   "fichier": "montagnes.png",
+   "w": 512,
+   "h": 56,
+   "plan": "P2",
+   "note": "bas sur l horizon ; 512 px couvrent sans boucler au facteur 0,08 ; centrer x = 256 sous le soleil"
+  },
+  "cite-docks": {
+   "fichier": "cite-docks.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-docks-fenetres": {
+   "fichier": "cite-docks-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-docks ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-docks-enseignes": {
+   "fichier": "cite-docks-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-artere": {
+   "fichier": "cite-artere.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-artere-fenetres": {
+   "fichier": "cite-artere-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-artere ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-artere-enseignes": {
+   "fichier": "cite-artere-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-centrale": {
+   "fichier": "cite-centrale.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-centrale-fenetres": {
+   "fichier": "cite-centrale-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-centrale ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-centrale-enseignes": {
+   "fichier": "cite-centrale-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-ciel": {
+   "fichier": "cite-ciel.png",
+   "w": 600,
+   "h": 30,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "haut sur l horizon"
+  },
+  "cite-ciel-fenetres": {
+   "fichier": "cite-ciel-fenetres.png",
+   "w": 600,
+   "h": 30,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-ciel ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-ciel-enseignes": {
+   "fichier": "cite-ciel-enseignes.png",
+   "w": 600,
+   "h": 30,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-tours": {
+   "fichier": "cite-tours.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-tours-fenetres": {
+   "fichier": "cite-tours-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-tours ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-tours-enseignes": {
+   "fichier": "cite-tours-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-coeur": {
+   "fichier": "cite-coeur.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-coeur-fenetres": {
+   "fichier": "cite-coeur-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-coeur ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-coeur-enseignes": {
+   "fichier": "cite-coeur-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "cite-eclipse": {
+   "fichier": "cite-eclipse.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "ancre": "bas sur l horizon"
+  },
+  "cite-eclipse-fenetres": {
+   "fichier": "cite-eclipse-fenetres.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "dessiner sur cite-eclipse ; s éteint rangée par rangée (éclipse), s allume par rangées (élite tuée)"
+  },
+  "cite-eclipse-enseignes": {
+   "fichier": "cite-eclipse-enseignes.png",
+   "w": 600,
+   "h": 100,
+   "plan": "P3",
+   "boucleX": 600,
+   "note": "encre = phase : sang 0, brasier 1, ambre 2, jaune 3 ; afficher CYCLE[(phase + n) & 3]"
+  },
+  "brume": {
+   "fichier": "brume.png",
+   "w": 256,
+   "h": 32,
+   "plan": "P4",
+   "boucleX": 256,
+   "note": "bas à 4 px sous l horizon ; dérive de 4 px/s"
+  },
+  "structures-docks": {
+   "fichier": "structures-docks.png",
+   "w": 192,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "grue",
+    "portique",
+    "conteneurs",
+    "lampadaire"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "structures-artere": {
+   "fichier": "structures-artere.png",
+   "w": 160,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "pylone",
+    "panneau",
+    "pilier",
+    "lampadaire"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "structures-centrale": {
+   "fichier": "structures-centrale.png",
+   "w": 192,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "cheminee",
+    "conduites",
+    "reservoir",
+    "torchere"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "structures-tours": {
+   "fichier": "structures-tours.png",
+   "w": 128,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "antenne",
+    "projecteur",
+    "chateau",
+    "antenne-haute"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "structures-coeur": {
+   "fichier": "structures-coeur.png",
+   "w": 160,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "monolithe",
+    "monolithe-large",
+    "paratonnerre",
+    "dalle"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "structures-eclipse": {
+   "fichier": "structures-eclipse.png",
+   "w": 96,
+   "h": 64,
+   "plan": "P5",
+   "tuiles": [
+    "ruine",
+    "effondre"
+   ],
+   "note": "tuiles posées sur le sol ; base = rangée 63 de la tuile"
+  },
+  "nuages-ciel": {
+   "fichier": "nuages-ciel.png",
+   "w": 512,
+   "h": 64,
+   "plan": "P5",
+   "boucleX": 512,
+   "note": "structures du quartier LE CIEL : bande posée à mi-hauteur du ciel, facteur 0,60, dérive de 3 px/s"
+  },
+  "flammes": {
+   "fichier": "flammes.png",
+   "w": 32,
+   "h": 14,
+   "plan": "P5",
+   "images": 4,
+   "imageW": 8,
+   "note": "bas de l image sur le point m.flammes de la tuile ; une image par demi-temps"
+  },
+  "colosse-loin": {
+   "fichier": "colosse-loin.png",
+   "w": 58,
+   "h": 48,
+   "plan": "P2",
+   "note": "silhouette lointaine, devant le soleil (LE CŒUR, puis WARNING) ; œil en (29, 9)"
+  },
+  "colosse-mi": {
+   "fichier": "colosse-mi.png",
+   "w": 96,
+   "h": 80,
+   "plan": "P5",
+   "note": "silhouette intermédiaire (L ÉCLIPSE) ; œil en (48, 15)"
+  },
+  "avant-haut": {
+   "fichier": "avant-haut.png",
+   "w": 256,
+   "h": 24,
+   "plan": "P6",
+   "boucleX": 256,
+   "note": "dans les 12 % du haut ; dessiné AVANT les entités"
+  },
+  "avant-bas": {
+   "fichier": "avant-bas.png",
+   "w": 256,
+   "h": 24,
+   "plan": "P6",
+   "boucleX": 256,
+   "note": "dans les 12 % du bas ; dessiné AVANT les entités"
+  }
+ }
+}
