@@ -3177,7 +3177,7 @@ N.art = (function () {
    cité : au moins 25 % des pixels du tampon sont « lumineux » (luminance relative > 0,10, N.pal.L) dès la
    première seconde. Le décor se tait par la forme (grandes surfaces calmes, tramages) et par le contour, jamais
    en s'éteignant : le jeu qui passe devant est cyan, magenta et os, jamais jaune tramé à 50 %.
-   En jeu, cette lumière reste au lointain ; les structures, le premier plan et le sol du plateau
+   En jeu, cette lumière reste au lointain ; les structures, le premier plan et le sol de tout l’écran
    passent par une table nuit/ardoise, afin de réserver les encres chaudes aux acteurs (codex-01).
 
    Les plans, du plus loin au plus proche, avec leur facteur de parallaxe (fraction du déplacement de la caméra) :
@@ -3251,7 +3251,7 @@ N.art = (function () {
   function enJeu() {
     if (!N.game || !N.game.etat) return false;
     var e = N.game.etat();
-    return e === 'jeu' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort';
+    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort';
   }
 
   /* ================================ outils ================================ */
@@ -4014,7 +4014,7 @@ N.art = (function () {
   }
   function taireFondJeu(cam) {
     if (!enJeu()) return;
-    var g = N.gfx, b = g.buf(), w = N.world, B = N.pal.BAYER;
+    var g = N.gfx, b = g.buf(), B = N.pal.BAYER;
     /* Ciel, soleil, cité : garder les détails et les étoiles, baisser les encres chaudes et
        leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
     for (var sy = 0; sy < YH; sy++) {
@@ -4024,16 +4024,9 @@ N.art = (function () {
         b[row + sx] = table[b[row + sx]];
       }
     }
-    if (!w) return;
-    /* Le plateau se déplace : ne taire que son intersection avec le sol écran.
-       Les murs et les acteurs ne passent jamais dans cette table. */
-    var cx = cam.x | 0, cy = cam.y | 0;
-    var x0 = Math.max(0, w.x0 - cx), x1 = Math.min(g.W - 1, w.x1 - cx);
-    var y0 = Math.max(YH, 0, w.y0 - cy), y1 = Math.min(g.H - 1, w.y1 - cy);
-    for (var y = y0; y <= y1; y++) {
-      var end = y * g.W + x1;
-      for (var x = y * g.W + x0; x <= end; x++) b[x] = lutCalmeJeu[b[x]];
-    }
+    /* Le sol se tait jusqu'aux bords de l'écran, y compris au-delà des murs mobiles :
+       aucune bande chaude collée au mur. La grille, les murs et les acteurs sont dessinés ensuite. */
+    for (var i = Math.max(0, YH) * g.W, end = g.W * g.H; i < end; i++) b[i] = lutCalmeJeu[b[i]];
   }
   function ensureCur() { var a = cache.sky[cur.q], b = cache.floor[cur.q]; if (!(a && a[cur.e] && b && b[cur.e])) ensure(cur.q, cur.e); }
 
