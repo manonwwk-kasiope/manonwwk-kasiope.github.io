@@ -318,7 +318,8 @@ var MUSIQUE_EMBED = null;
     mort: {
       rayonTete: 3,
       mur: { grace: 0.06, cosInterieur: 0.2, alerte: 24 },
-      morsure: { segMin: 6, derniersFermant: 3, rayonSegment: 3.5, rayon: 5.5, longueurSure: 9 },   // 3 + 3,5 − 1 = 5,5
+      morsure: { segMin: 6, derniersFermant: 3, rayonSegment: 3.5, rayon: 5.5, longueurSure: 9,   // 3 + 3,5 − 1 = 5,5
+        effet: 'coupe', recharge: 0.4 },   // la règle du snake (retour de la propriétaire) : se mordre COUPE le serpent au segment mordu, sans tuer ; 0,4 s sans nouvelle morsure
       ennemi: { facteurRayon: 0.8, apparition: 0.6 },      // rayon 3 + r × 0,8 ; 600 ms d'apparition sans contact
       teleMin: 0.5, teleCyclope: 0.8, annonceConvoi: 1.5,
       traineAgeMin: 0.15,
@@ -1296,7 +1297,7 @@ var MUSIQUE_EMBED = null;
     cartes: null,                                               /* armes + passifs + pouvoirs, voir plus bas */
     causes: ['mur', 'morsure', 'ennemi', 'tir', 'laser', 'souffle', 'convoi', 'traine'],
     /* une coupe du corps a la cause de ce qui l'a faite ; 'vol' = mine du VOL */
-    causesCoupe: ['mur', 'ennemi', 'tir', 'souffle', 'convoi', 'traine', 'vol'],
+    causesCoupe: ['mur', 'ennemi', 'tir', 'souffle', 'convoi', 'traine', 'vol', 'morsure'],
     auteurs: null,                                              /* ennemis + auteursAutres */
     auteursAutres: ['mur', 'murMobile', 'corps', 'convoi', 'cyclope', 'cyclope:main', 'vol'],
     etats: ['demarrage', 'ouverture', 'titre', 'attraction', 'briefing', 'plongee', 'jeu', 'nettoyage', 'cartes', 'vol',
@@ -1418,7 +1419,7 @@ var MUSIQUE_EMBED = null;
     phase: { emetteur: '73-colosse', conso: [[10, '79-jeu'], [20, '77-score'], [40, '15-decor'], [60, '79-scene'],
       [70, '78-hud'], [90, '03-socle']] },
     apparition: { emetteur: '72-ennemis', conso: [[70, '78-hud'], [90, '03-socle']] },
-    portail: { emetteur: '76-directeur', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
+    portail: { emetteur: '76-directeur', conso: [[10, '79-jeu'], [60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
     arme: { emetteur: '72-ennemis|73-colosse|73-arene', conso: [[60, '79-scene'], [90, '03-socle']] },
     pouvoir: { emetteur: '70-joueuse', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
     apogee: { emetteur: '70-joueuse', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
@@ -10394,7 +10395,11 @@ if (typeof window !== 'undefined') window.__N = N;
                      (N.fx.reset), sinon 90-boot.js les dessinerait par-dessus le panneau.
          'victoire' / 'defaite'   le FOND de l'écran de fin, assombri d'un cran : il ne gèle rien et ne
                      retarde rien (écran de fin en moins d'1 s, J-17). Révélation de 0,4 s au premier dessin.
-     N.intro.busy()             -> true PENDANT L'INTERLUDE DU COLOSSE, où le jeu est gelé (S.phase vaut aussi
+         les INTERMÈDES (refonte/INTERMEDES.md) : 'chasse' (puis 'retournement'), 'rival', 'plongee', 'reveil'
+                     (puis l'interlude 'boss'), 'apotheose'. De courts films 8 bits (cine/, N.art.play) qui PRENNENT LA
+                     MAIN comme l'interlude du colosse : jeu gelé, un toucher passé la garde saute la suite (pas
+                     l'interlude 'boss' qui suit 'reveil', sautable à part), 3 s au plus chacun, une légende sous l'image.
+     N.intro.busy()             -> true PENDANT L'INTERLUDE DU COLOSSE OU UN INTERMÈDE, où le jeu est gelé (S.phase vaut aussi
                                 'intro'). C'est la façon de savoir si un interlude est en cours.
      N.intro.current()          -> 'boss' | 'victoire' | 'defaite' | null : le dernier interlude demandé, encore
                                 à l'écran ; le fond de fin le reste jusqu'à N.intro.stop().
@@ -10464,11 +10469,22 @@ if (typeof window !== 'undefined') window.__N = N;
     { nom: 'invite', d: Infinity }
   ];
   var ALERTE_D = 1.2, BOSS_D = 1.8, FIN_REVELE = 0.4;
+  /* les intermèdes : durée, ce qui suit, légende (tapée lettre à lettre sous l'image, façon intermède d'arcade) */
+  var FILMS = {
+    chasse: { d: 2.5, suite: 'retournement', texte: 'TRAQUÉE' },
+    retournement: { d: 2.5, texte: 'LA CHASSE S\'INVERSE' },
+    rival: { d: 3.0, texte: 'UN RIVAL APPROCHE' },
+    plongee: { d: 2.0, texte: 'PLONGÉE' },
+    reveil: { d: 2.0, suite: 'boss', texte: 'IL S\'ÉVEILLE' },
+    apotheose: { d: 3.0, texte: 'LA VILLE EST LIBRE' }
+  };
+  var FILM_REVELE = 0.3;
   /* point focal de chaque illustration (coordonnées de l'image) : ce que le recadrage garde en portrait */
   var FOCAL = {
     exterieur: [205, 108], connexion: [238, 122], eveil: [214, 100], horizon: [256, 110],
     briefing: [192, 108], alerte: [192, 108], boss: [207, 100], victoire: [176, 118], defaite: [204, 130],
-    affiche: [176, 130]
+    affiche: [176, 130],
+    chasse: [150, 112], retournement: [200, 96], rival: [192, 100], plongee: [190, 140], reveil: [192, 92], apotheose: [232, 100]
   };
   var ETINCELLE = [262, 127];              // centre de l'étincelle dans « connexion »
   var OEIL = [210, 31];                    // l'œil du colosse dans « boss »
@@ -11149,12 +11165,13 @@ if (typeof window !== 'undefined') window.__N = N;
     SNAP.data.set(b); SNAP.w = g.W; SNAP.h = g.H;
   }
   function transition(nom, opts) {
-    if (nom !== 'boss' && nom !== 'victoire' && nom !== 'defaite') return false;
+    if (nom !== 'boss' && nom !== 'victoire' && nom !== 'defaite' && !FILMS[nom]) return false;
     if (!pal()) return false;
-    var s = S(), prev = (I.nom === 'boss' && I.prev !== null) ? I.prev : s.phase;
+    var s = S(), prev = (I.blk && I.prev !== null) ? I.prev : s.phase;
+    var label = (opts && opts.nom) ? String(opts.nom).toUpperCase() : (I.blk ? I.label : NOM_COLOSSE);
     stopInterlude(false);
-    I.nom = nom; I.t = 0; I.blk = nom === 'boss'; I.phase2 = false; I.typed = 0; I.bip = -1; I.vu = false;
-    I.label = (opts && opts.nom) ? String(opts.nom).toUpperCase() : NOM_COLOSSE;
+    I.nom = nom; I.t = 0; I.blk = nom === 'boss' || !!FILMS[nom]; I.phase2 = false; I.typed = 0; I.bip = -1; I.vu = false;
+    I.label = label;
     figer();
     tick.frame = s.frame | 0;               // l'image de la demande ne compte pas : l'interlude part à 0
     /* les explosions et les débris en cours : 90-boot.js les dessinerait PAR-DESSUS le panneau */
@@ -11165,6 +11182,11 @@ if (typeof window !== 'undefined') window.__N = N;
       I.prev = prev; s.phase = 'intro';
       sfx('intro');                          // montée pendant ALERTE, impact à +1,95 s : le colosse est révélé
       clipOn('alerte'); I.clip = 'alerte'; clipPrep('boss');
+    } else if (FILMS[nom]) {
+      /* un intermède prend la main comme le colosse ; le film suivant se charge pendant celui-ci */
+      I.prev = prev; s.phase = 'intro';
+      clipOn(nom); I.clip = nom;
+      var nx = FILMS[nom].suite; if (nx) clipPrep(nx === 'boss' ? 'alerte' : nx);
     } else { I.prev = null; clipOn(nom); I.clip = nom; }
     journal('interlude ' + nom);
     return true;
@@ -11173,7 +11195,7 @@ if (typeof window !== 'undefined') window.__N = N;
     if (I.clip) { clipOff(I.clip); I.clip = null; }
     if (I.nom && !silencieux) journal('fin ' + I.nom);
     var s = S();
-    if (I.nom === 'boss' && I.prev !== null && s.phase === 'intro' && !O.on) s.phase = I.prev;   // le jeu reprend
+    if (I.blk && I.prev !== null && s.phase === 'intro' && !O.on) s.phase = I.prev;   // le jeu reprend
     I.nom = null; I.blk = false; I.prev = null;
   }
   function finBoss(pourquoi) { journal(pourquoi + ' boss'); stopInterlude(true); }
@@ -11184,18 +11206,27 @@ if (typeof window !== 'undefined') window.__N = N;
       if (!I.phase2 && I.t >= ALERTE_D) { I.phase2 = true; if (I.clip) clipOff(I.clip); clipOn('boss'); I.clip = 'boss'; journal('colosse'); }
       if (I.t >= ALERTE_D + BOSS_D) { finBoss('fin'); return; }
       if (sauter) { finBoss('saut'); return; }
+    } else if (FILMS[I.nom]) {
+      var F = FILMS[I.nom];
+      if (I.t >= F.d || sauter) {
+        journal((sauter ? 'saut ' : 'fin ') + I.nom);
+        /* un toucher saute la suite du film, pas l'annonce du colosse */
+        if (F.suite && (F.suite === 'boss' || !sauter)) transition(F.suite);
+        else stopInterlude(true);
+      }
     } else if (!I.vu) {
       if (I.t >= FIN_REVELE || sauter) { I.vu = true; journal((sauter ? 'saut ' : 'revele ') + I.nom); if (sauter) I.t = Math.max(I.t, FIN_REVELE); }
     }
   }
   function drawInterlude() {
-    var g = G(), t = I.nom === 'boss' ? (I.t < ALERTE_D ? clamp01(I.t / 0.12) : 1) : clamp01(I.t / FIN_REVELE);
+    var g = G(), t = I.nom === 'boss' ? (I.t < ALERTE_D ? clamp01(I.t / 0.12) : 1) : clamp01(I.t / (FILMS[I.nom] ? FILM_REVELE : FIN_REVELE));
     /* sous le fondu : la dernière image du jeu, figée */
     if (t < 1 && SNAP.data && SNAP.w === g.W && SNAP.h === g.H && g.buf().length === SNAP.data.length) g.buf().set(SNAP.data);
     /* l'interlude couvre tout l'écran : là où le panneau ne va pas (bandeau du portrait), un voile de vide
        au même seuil de Bayer que la révélation, pour que le jeu s'efface d'un seul geste */
     if (L.portrait && g.ditherRect) g.ditherRect(0, 0, L.W, L.H, P.vide, t);
     if (I.nom === 'boss') { if (I.t < ALERTE_D) scAlerte(I.t); else scBoss(I.t - ALERTE_D); }
+    else if (FILMS[I.nom]) scFilm(I.nom, I.t);
     else scFin(I.nom, I.t);
     if (S().paused) pauseTexte();
   }
@@ -11273,6 +11304,25 @@ if (typeof window !== 'undefined') window.__N = N;
       ecrire(nom, x, y, k, P.os, n, false);
       var sub = 'COLOSSE', ks = Math.max(1, k - 1), sw = largeur(sub, ks);
       if (u > 0.9) ecrire(sub, Math.round(L.x0 + (L.sw - sw) / 2), y - 7 * ks - 3 * k - 4, ks, P.magenta, 99, true);
+    }
+  }
+  /* un intermède : le film (ou son panneau fixe) se révèle au seuil de Bayer sur la dernière image du jeu, le cyan
+     scintille, et la légende se tape sous l'image ; sans illustration, le décor de secours */
+  function scFilm(nom, u) {
+    var img = art(nom);
+    if (!img) decor(u, null);
+    else {
+      var by = L.portrait ? bandeauY(img.h) : null;
+      var pos = cadre(img.w, img.h, FOCAL[nom] || [192, 108], 0, 0, by);
+      poser(img, pos.x, pos.y, u < FILM_REVELE ? 2 : 0, clamp01(u / FILM_REVELE), null, false, Math.floor(u * 45), -1, L.portrait ? 8 : 0);
+    }
+    if (u > 0.45) {
+      var str = FILMS[nom].texte, k = echelle([str], 3, 10), w = largeur(str, k), n = Math.floor((u - 0.45) / 0.04) + 1;
+      var x = Math.round(L.x0 + (L.sw - w) / 2);
+      var y = (L.portrait && img) ? Math.min(Math.round(bandeauY(img.h) + img.h + 14), L.y1 - 7 * k - 10) : L.y1 - 7 * k - 10;
+      plaque(x - 4 * k, y - 3 * k, w + 8 * k, 13 * k);
+      ecrire(str, x, y, k, P.os, n, false);
+      if (n <= str.length && n > I.typed) { if (n - I.bip >= 2) { I.bip = n; sfx('tir', { pitch: n % 5 }); } I.typed = n; }
     }
   }
   function scFin(nom, u) {
@@ -11372,14 +11422,14 @@ if (typeof window !== 'undefined') window.__N = N;
     update: update,
     draw: draw,
     transition: transition,
-    busy: function () { return I.nom === 'boss'; },
+    busy: function () { return !!I.blk; },
     current: function () { return I.nom; },
     stop: function () { stopInterlude(false); },
-    skip: function () { if (O.on) finOuverture('saut'); else if (I.nom === 'boss') finBoss('saut'); else if (I.nom) { I.vu = true; I.t = Math.max(I.t, FIN_REVELE); } },
+    skip: function () { if (O.on) finOuverture('saut'); else if (I.nom === 'boss') finBoss('saut'); else if (FILMS[I.nom]) { journal('saut ' + I.nom); stopInterlude(true); } else if (I.nom) { I.vu = true; I.t = Math.max(I.t, FIN_REVELE); } },
     state: function () {
       return { mode: O.on ? 'ouverture' : (I.nom ? 'interlude' : null), etape: O.on ? ETAPES[O.k].nom : I.nom,
         t: O.on ? O.t : I.t, u: O.on ? O.u : I.t, guard: G_.t < GARDE, armed: G_.armed, typed: O.typed,
-        busy: I.nom === 'boss', phase: S().phase };
+        busy: !!I.blk, phase: S().phase };
     },
     plongee: {
       start: plongeeStart, update: plongeeUpdate, draw: plongeeDraw, skip: function () { if (PL.on) plongeeFin('saut'); },
@@ -11388,6 +11438,7 @@ if (typeof window !== 'undefined') window.__N = N;
     },
     log: LOG,
     ETAPES: ETAPES,
+    FILMS: FILMS,
     GARDE: GARDE
   };
 })();
@@ -11756,7 +11807,9 @@ N.outils = (function () {
      - le mur TUE (mur courant, grâce de 60 ms, REFONTE.md § 2.3) au lieu de laisser glisser ;
      - le corps ne tue pas et n'absorbe plus : un tir, un souffle ou la traînée COUPE le serpent au segment
        touché (`couper`) ; seule la tête tue ;
-     - la tête a un rayon qui tue de 3 px (N.R.mort.rayonTete) ; la morsure compte à partir du segment 6.
+     - la tête a un rayon qui tue de 3 px (N.R.mort.rayonTete) ; la morsure compte à partir du segment 6 ;
+     - se mordre COUPE le serpent au segment mordu (la queue tombe en cellules), sans tuer : la règle du snake
+       (N.R.mort.morsure.effet = 'coupe' ; 'mort' rend l'ancienne règle).
 
    INTERFACE (§ 7.8) : reset(cfg), update(dt), draw(), drawTop(), tete {x,y,ang,vit}, segs(), len(), etat,
    hitTest(x,y,r), tuer(cause, src), couper(k, src), grandir(n), invul(), pouvoir, apogee, boost, traine().
@@ -11845,7 +11898,7 @@ N.joueuse = (function () {
     P.y = at ? cfg.y : (portrait ? A.y0 + (A.y1 - A.y0) * 0.62 : cy);
     P.ang = at && typeof cfg.ang === 'number' ? cfg.ang : a0;
     P.vit = vitesse();
-    st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1;
+    st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
     clk = 0; trailReset(P.x, P.y, P.ang, 40);
     st.res = 100; st.bOn = false; st.bk = 0; st.geste = false; st.pousseT = 0; st.veutPrev = false; st.susp = false; st.panne = false; st.bas = 0;
@@ -12047,12 +12100,18 @@ N.joueuse = (function () {
         if (st.grace <= 0) { st.grace = -1; tuer('mur', { genre: m.mobile ? 'arene' : 'decor', type: m.mobile ? 'murMobile' : 'mur', id: -1 }); return; }
       }
     } else st.grace = -1;
-    /* 2. la morsure : un segment d'indice 6 ou plus qui n'est pas l'un des trois derniers */
-    var ms = mort.morsure || { segMin: 6, derniersFermant: 3, rayon: 5.5 };
+    /* 2. la morsure : un segment d'indice 6 ou plus qui n'est pas l'un des trois derniers. Elle coupe la queue à
+       partir du segment mordu ; puis 0,4 s sans nouvelle morsure, le temps que la tête sorte du corps. */
+    var ms = mort.morsure || { segMin: 6, derniersFermant: 3, rayon: 5.5, effet: 'coupe', recharge: 0.4 };
     var kmax = st.len - ms.derniersFermant;
-    for (k = ms.segMin; k < kmax; k++) {
+    if (st.mordT > 0) st.mordT -= dt;
+    else for (k = ms.segMin; k < kmax; k++) {
       segAt(k);
-      if (O.d2(P.x, P.y, SPX, SPY) < ms.rayon * ms.rayon) { tuer('morsure', { genre: 'joueuse', type: 'devore', id: -1 }); return; }
+      if (O.d2(P.x, P.y, SPX, SPY) < ms.rayon * ms.rayon) {
+        if (ms.effet === 'mort') { tuer('morsure', { genre: 'joueuse', type: 'devore', id: -1 }); return; }
+        if (couper(k, { genre: 'joueuse', type: 'devore', id: -1 }, 'morsure') > 0) st.mordT = ms.recharge || 0.4;
+        break;
+      }
     }
     var L = N.ennemis, protege = st.invul > 0 || st.trav > 0;
     if (!L) return;
@@ -17104,6 +17163,10 @@ N.game = (function () {
   var QT = [];
   var BG = null, bgKey = '';
   var mortInfo = { chute: null, annonce: false, etat: 0 };
+  /* les intermèdes (refonte/INTERMEDES.md) : un mini-film 8 bits de N.intro gèle le jeu (état `panneau`), puis
+     `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
+     (par un événement), lancé à la fin du pas. */
+  var filmsVus = {}, suiteFilm = null, filmDemande = null, filmMuet = false, secCourante = null;
 
   function S_() { return S || (S = N.S); }
   function appel(nom, fn) { try { fn(); } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('game→' + nom, e); } }
@@ -17175,10 +17238,11 @@ N.game = (function () {
   function sectionDe(nom) { var d = N.ids.tableEtats[nom]; return d ? d.section : null; }
   function aller(nom) {
     if (N.ids.etats.indexOf(nom) < 0) return false;
-    var ancienne = sectionDe(et), prev = et;
+    var ancienne = secCourante, prev = et;
     et = nom; etT = 0;
     if (JOUE[nom] && nom !== 'attraction') etatJeu = nom === 'reapparition' ? etatJeu : nom;
-    var sec = sectionDe(nom);
+    var sec = filmMuet ? null : sectionDe(nom);
+    if (sec) secCourante = sec;
     if (sec && sec !== ancienne && modOk(N.music, 'section')) appel('music.section', function () { N.music.section(sec); });
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
@@ -17197,6 +17261,7 @@ N.game = (function () {
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
     O.fxReset();
+    filmsVus = {}; suiteFilm = null; filmDemande = null;
     if (N.fx && N.fx.reset) appel('fx.reset', function () { N.fx.reset(); });
     var ordre = ['butin', 'ennemis', 'arsenal', 'score', 'dir', 'hud'];
     if (N.world && N.world.reset) appel('world.reset', function () { N.world.reset(); });
@@ -17234,6 +17299,13 @@ N.game = (function () {
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
     aller('plongee');
+  }
+  function film(nom, suite, opts) {
+    if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
+    filmsVus[nom] = 1;
+    var ok = !!O.safe('intro.transition', function () { return N.intro.transition(nom, opts); });
+    if (!ok) { suite(); return; }
+    suiteFilm = suite; filmMuet = true; aller('panneau'); filmMuet = false;     // la musique garde sa section pendant le film
   }
   function lancerVague(n) {
     N.dir.demarrer(n);
@@ -17282,6 +17354,7 @@ N.game = (function () {
       if (c.evt === 'nettoyee') finDeVague(c);
     }, '79-jeu');
     N.ev.on('vol', 10, function (c) { if (c.evt === 'fin' && et === 'vol') apresVol(); }, '79-jeu');
+    N.ev.on('portail', 10, function (c) { if (c.type === 'rival' && JOUE[et]) filmDemande = 'rival'; }, '79-jeu');
     N.ev.on('phase', 10, function (c) { if (c.evt === 'mort' && (et === 'boss' || et === 'jeu')) debutVictoire(); }, '79-jeu');
   }
 
@@ -17296,7 +17369,7 @@ N.game = (function () {
   }
   function suiteNettoyage() {
     var n = N.dir.vague(), total = N.dir.nombreVagues();
-    if (n < total) aller('cartes');
+    if (n < total) { if (n === 1) film('chasse', function () { aller('cartes'); }); else aller('cartes'); }
     else { aller('alerte'); if (N.hud) N.hud.banniere('ALERTE', { c: 'magenta', duree: CFG.alerte, clignote: true }); O.sfx('intro'); }
   }
   function apresCarte(index, id) {
@@ -17306,7 +17379,8 @@ N.game = (function () {
     }
     demarrerVol();
   }
-  function demarrerVol() {
+  function demarrerVol() { film('plongee', vol); }
+  function vol() {
     aller('vol');
     var n = N.dir.vague();
     if (N.vol && N.vol.start) appel('vol.start', function () { N.vol.start(n, n + 1); });
@@ -17397,7 +17471,7 @@ N.game = (function () {
       appel('intro.update', function () { N.intro.update(dt); });
       return;
     }
-    if (et === 'panneau' && !O.busy()) { lancerBoss(); }
+    if (et === 'panneau' && !O.busy()) { var suite = suiteFilm || lancerBoss; suiteFilm = null; suite(); }
 
     if (et === 'demarrage') {
       if (modOk(N.ui, 'update')) N.ui.update(dt);
@@ -17421,8 +17495,10 @@ N.game = (function () {
       pas(dt);
       if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
       else if (et === 'alerte' && etT >= CFG.alerte) {
-        var tr = N.intro && N.intro.transition ? !!O.safe('intro.transition', function () { return N.intro.transition('boss'); }) : false;
-        if (tr) aller('panneau'); else lancerBoss();
+        film('reveil', function () {
+          var tr = N.intro && N.intro.transition ? !!O.safe('intro.transition', function () { return N.intro.transition('boss'); }) : false;
+          if (tr) { suiteFilm = lancerBoss; aller('panneau'); } else lancerBoss();
+        }, { nom: 'LE CYCLOPE' });
       } else if (et === 'reapparition' && N.joueuse.etat === 'vivant') aller(etatJeu === 'reapparition' ? 'jeu' : etatJeu);
       if (N.dir.bossMort && N.dir.bossMort() && (et === 'boss' || et === 'jeu')) debutVictoire();
     } else if (et === 'plongee') {
@@ -17449,7 +17525,7 @@ N.game = (function () {
     } else if (et === 'victoire') {
       O.T.ak += dt; O.T.t += dt;
       N.ennemis.update(dt); N.butin.update(dt); O.fxUpdate(dt); majHud(dt);
-      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) terminer(true);
+      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) film('apotheose', function () { terminer(true); });
     } else if (et === 'fin') {
       O.T.ak += dt;
       N.ui.update(dt);
@@ -17461,6 +17537,7 @@ N.game = (function () {
     }
     /* les minuteries de la mise en scène de repli */
     for (var i = timers.length - 1; i >= 0; i--) { timers[i].left -= dt; if (timers[i].left <= 0) { var fn = timers[i].fn; timers.splice(i, 1); fn(); } }
+    if (filmDemande && JOUE[et] && et !== 'alerte') { var fd = filmDemande, reprise = et; filmDemande = null; film(fd, function () { aller(reprise); }); }
     publier();
   }
   function majHud(dt) { if (N.hud) N.hud.update(dt); }

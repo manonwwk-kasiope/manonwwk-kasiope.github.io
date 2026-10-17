@@ -16,7 +16,11 @@
                      (N.fx.reset), sinon 90-boot.js les dessinerait par-dessus le panneau.
          'victoire' / 'defaite'   le FOND de l'écran de fin, assombri d'un cran : il ne gèle rien et ne
                      retarde rien (écran de fin en moins d'1 s, J-17). Révélation de 0,4 s au premier dessin.
-     N.intro.busy()             -> true PENDANT L'INTERLUDE DU COLOSSE, où le jeu est gelé (S.phase vaut aussi
+         les INTERMÈDES (refonte/INTERMEDES.md) : 'chasse' (puis 'retournement'), 'rival', 'plongee', 'reveil'
+                     (puis l'interlude 'boss'), 'apotheose'. De courts films 8 bits (cine/, N.art.play) qui PRENNENT LA
+                     MAIN comme l'interlude du colosse : jeu gelé, un toucher passé la garde saute la suite (pas
+                     l'interlude 'boss' qui suit 'reveil', sautable à part), 3 s au plus chacun, une légende sous l'image.
+     N.intro.busy()             -> true PENDANT L'INTERLUDE DU COLOSSE OU UN INTERMÈDE, où le jeu est gelé (S.phase vaut aussi
                                 'intro'). C'est la façon de savoir si un interlude est en cours.
      N.intro.current()          -> 'boss' | 'victoire' | 'defaite' | null : le dernier interlude demandé, encore
                                 à l'écran ; le fond de fin le reste jusqu'à N.intro.stop().
@@ -86,11 +90,22 @@
     { nom: 'invite', d: Infinity }
   ];
   var ALERTE_D = 1.2, BOSS_D = 1.8, FIN_REVELE = 0.4;
+  /* les intermèdes : durée, ce qui suit, légende (tapée lettre à lettre sous l'image, façon intermède d'arcade) */
+  var FILMS = {
+    chasse: { d: 2.5, suite: 'retournement', texte: 'TRAQUÉE' },
+    retournement: { d: 2.5, texte: 'LA CHASSE S\'INVERSE' },
+    rival: { d: 3.0, texte: 'UN RIVAL APPROCHE' },
+    plongee: { d: 2.0, texte: 'PLONGÉE' },
+    reveil: { d: 2.0, suite: 'boss', texte: 'IL S\'ÉVEILLE' },
+    apotheose: { d: 3.0, texte: 'LA VILLE EST LIBRE' }
+  };
+  var FILM_REVELE = 0.3;
   /* point focal de chaque illustration (coordonnées de l'image) : ce que le recadrage garde en portrait */
   var FOCAL = {
     exterieur: [205, 108], connexion: [238, 122], eveil: [214, 100], horizon: [256, 110],
     briefing: [192, 108], alerte: [192, 108], boss: [207, 100], victoire: [176, 118], defaite: [204, 130],
-    affiche: [176, 130]
+    affiche: [176, 130],
+    chasse: [150, 112], retournement: [200, 96], rival: [192, 100], plongee: [190, 140], reveil: [192, 92], apotheose: [232, 100]
   };
   var ETINCELLE = [262, 127];              // centre de l'étincelle dans « connexion »
   var OEIL = [210, 31];                    // l'œil du colosse dans « boss »
@@ -771,12 +786,13 @@
     SNAP.data.set(b); SNAP.w = g.W; SNAP.h = g.H;
   }
   function transition(nom, opts) {
-    if (nom !== 'boss' && nom !== 'victoire' && nom !== 'defaite') return false;
+    if (nom !== 'boss' && nom !== 'victoire' && nom !== 'defaite' && !FILMS[nom]) return false;
     if (!pal()) return false;
-    var s = S(), prev = (I.nom === 'boss' && I.prev !== null) ? I.prev : s.phase;
+    var s = S(), prev = (I.blk && I.prev !== null) ? I.prev : s.phase;
+    var label = (opts && opts.nom) ? String(opts.nom).toUpperCase() : (I.blk ? I.label : NOM_COLOSSE);
     stopInterlude(false);
-    I.nom = nom; I.t = 0; I.blk = nom === 'boss'; I.phase2 = false; I.typed = 0; I.bip = -1; I.vu = false;
-    I.label = (opts && opts.nom) ? String(opts.nom).toUpperCase() : NOM_COLOSSE;
+    I.nom = nom; I.t = 0; I.blk = nom === 'boss' || !!FILMS[nom]; I.phase2 = false; I.typed = 0; I.bip = -1; I.vu = false;
+    I.label = label;
     figer();
     tick.frame = s.frame | 0;               // l'image de la demande ne compte pas : l'interlude part à 0
     /* les explosions et les débris en cours : 90-boot.js les dessinerait PAR-DESSUS le panneau */
@@ -787,6 +803,11 @@
       I.prev = prev; s.phase = 'intro';
       sfx('intro');                          // montée pendant ALERTE, impact à +1,95 s : le colosse est révélé
       clipOn('alerte'); I.clip = 'alerte'; clipPrep('boss');
+    } else if (FILMS[nom]) {
+      /* un intermède prend la main comme le colosse ; le film suivant se charge pendant celui-ci */
+      I.prev = prev; s.phase = 'intro';
+      clipOn(nom); I.clip = nom;
+      var nx = FILMS[nom].suite; if (nx) clipPrep(nx === 'boss' ? 'alerte' : nx);
     } else { I.prev = null; clipOn(nom); I.clip = nom; }
     journal('interlude ' + nom);
     return true;
@@ -795,7 +816,7 @@
     if (I.clip) { clipOff(I.clip); I.clip = null; }
     if (I.nom && !silencieux) journal('fin ' + I.nom);
     var s = S();
-    if (I.nom === 'boss' && I.prev !== null && s.phase === 'intro' && !O.on) s.phase = I.prev;   // le jeu reprend
+    if (I.blk && I.prev !== null && s.phase === 'intro' && !O.on) s.phase = I.prev;   // le jeu reprend
     I.nom = null; I.blk = false; I.prev = null;
   }
   function finBoss(pourquoi) { journal(pourquoi + ' boss'); stopInterlude(true); }
@@ -806,18 +827,27 @@
       if (!I.phase2 && I.t >= ALERTE_D) { I.phase2 = true; if (I.clip) clipOff(I.clip); clipOn('boss'); I.clip = 'boss'; journal('colosse'); }
       if (I.t >= ALERTE_D + BOSS_D) { finBoss('fin'); return; }
       if (sauter) { finBoss('saut'); return; }
+    } else if (FILMS[I.nom]) {
+      var F = FILMS[I.nom];
+      if (I.t >= F.d || sauter) {
+        journal((sauter ? 'saut ' : 'fin ') + I.nom);
+        /* un toucher saute la suite du film, pas l'annonce du colosse */
+        if (F.suite && (F.suite === 'boss' || !sauter)) transition(F.suite);
+        else stopInterlude(true);
+      }
     } else if (!I.vu) {
       if (I.t >= FIN_REVELE || sauter) { I.vu = true; journal((sauter ? 'saut ' : 'revele ') + I.nom); if (sauter) I.t = Math.max(I.t, FIN_REVELE); }
     }
   }
   function drawInterlude() {
-    var g = G(), t = I.nom === 'boss' ? (I.t < ALERTE_D ? clamp01(I.t / 0.12) : 1) : clamp01(I.t / FIN_REVELE);
+    var g = G(), t = I.nom === 'boss' ? (I.t < ALERTE_D ? clamp01(I.t / 0.12) : 1) : clamp01(I.t / (FILMS[I.nom] ? FILM_REVELE : FIN_REVELE));
     /* sous le fondu : la dernière image du jeu, figée */
     if (t < 1 && SNAP.data && SNAP.w === g.W && SNAP.h === g.H && g.buf().length === SNAP.data.length) g.buf().set(SNAP.data);
     /* l'interlude couvre tout l'écran : là où le panneau ne va pas (bandeau du portrait), un voile de vide
        au même seuil de Bayer que la révélation, pour que le jeu s'efface d'un seul geste */
     if (L.portrait && g.ditherRect) g.ditherRect(0, 0, L.W, L.H, P.vide, t);
     if (I.nom === 'boss') { if (I.t < ALERTE_D) scAlerte(I.t); else scBoss(I.t - ALERTE_D); }
+    else if (FILMS[I.nom]) scFilm(I.nom, I.t);
     else scFin(I.nom, I.t);
     if (S().paused) pauseTexte();
   }
@@ -895,6 +925,25 @@
       ecrire(nom, x, y, k, P.os, n, false);
       var sub = 'COLOSSE', ks = Math.max(1, k - 1), sw = largeur(sub, ks);
       if (u > 0.9) ecrire(sub, Math.round(L.x0 + (L.sw - sw) / 2), y - 7 * ks - 3 * k - 4, ks, P.magenta, 99, true);
+    }
+  }
+  /* un intermède : le film (ou son panneau fixe) se révèle au seuil de Bayer sur la dernière image du jeu, le cyan
+     scintille, et la légende se tape sous l'image ; sans illustration, le décor de secours */
+  function scFilm(nom, u) {
+    var img = art(nom);
+    if (!img) decor(u, null);
+    else {
+      var by = L.portrait ? bandeauY(img.h) : null;
+      var pos = cadre(img.w, img.h, FOCAL[nom] || [192, 108], 0, 0, by);
+      poser(img, pos.x, pos.y, u < FILM_REVELE ? 2 : 0, clamp01(u / FILM_REVELE), null, false, Math.floor(u * 45), -1, L.portrait ? 8 : 0);
+    }
+    if (u > 0.45) {
+      var str = FILMS[nom].texte, k = echelle([str], 3, 10), w = largeur(str, k), n = Math.floor((u - 0.45) / 0.04) + 1;
+      var x = Math.round(L.x0 + (L.sw - w) / 2);
+      var y = (L.portrait && img) ? Math.min(Math.round(bandeauY(img.h) + img.h + 14), L.y1 - 7 * k - 10) : L.y1 - 7 * k - 10;
+      plaque(x - 4 * k, y - 3 * k, w + 8 * k, 13 * k);
+      ecrire(str, x, y, k, P.os, n, false);
+      if (n <= str.length && n > I.typed) { if (n - I.bip >= 2) { I.bip = n; sfx('tir', { pitch: n % 5 }); } I.typed = n; }
     }
   }
   function scFin(nom, u) {
@@ -994,14 +1043,14 @@
     update: update,
     draw: draw,
     transition: transition,
-    busy: function () { return I.nom === 'boss'; },
+    busy: function () { return !!I.blk; },
     current: function () { return I.nom; },
     stop: function () { stopInterlude(false); },
-    skip: function () { if (O.on) finOuverture('saut'); else if (I.nom === 'boss') finBoss('saut'); else if (I.nom) { I.vu = true; I.t = Math.max(I.t, FIN_REVELE); } },
+    skip: function () { if (O.on) finOuverture('saut'); else if (I.nom === 'boss') finBoss('saut'); else if (FILMS[I.nom]) { journal('saut ' + I.nom); stopInterlude(true); } else if (I.nom) { I.vu = true; I.t = Math.max(I.t, FIN_REVELE); } },
     state: function () {
       return { mode: O.on ? 'ouverture' : (I.nom ? 'interlude' : null), etape: O.on ? ETAPES[O.k].nom : I.nom,
         t: O.on ? O.t : I.t, u: O.on ? O.u : I.t, guard: G_.t < GARDE, armed: G_.armed, typed: O.typed,
-        busy: I.nom === 'boss', phase: S().phase };
+        busy: !!I.blk, phase: S().phase };
     },
     plongee: {
       start: plongeeStart, update: plongeeUpdate, draw: plongeeDraw, skip: function () { if (PL.on) plongeeFin('saut'); },
@@ -1010,6 +1059,7 @@
     },
     log: LOG,
     ETAPES: ETAPES,
+    FILMS: FILMS,
     GARDE: GARDE
   };
 })();

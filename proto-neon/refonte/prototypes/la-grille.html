@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}</style></head><body>
+<title>SNAKE 2975 La Grille</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap">
+<style>
+/* Plein écran façon borne : le canvas en gros pixels, l'interface en surimpression ; un seul thème, celui du jeu. */
+:root {
+  color-scheme: dark;
+  --fond: #0d0221; --texte: #fffce8; --cyan: #05d9e8; --cyanp: #d1f7ff; --magenta: #ff2a6d; --ambre: #ff9e00; --jaune: #ffd319; --doux: #8a8fa3;
+  --f: "Silkscreen", "Courier New", monospace;
+}
+html, body { height: 100%; }
+body { background: var(--fond); color: var(--texte); overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; font-family: var(--f); }
+#app { position: fixed; inset: 0; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.hud { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; gap: 12px; pointer-events: none;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 0 max(14px, env(safe-area-inset-left, 0px));
+  font-size: 13px; line-height: 1.35; text-shadow: 0 2px 0 #01012b; }
+.hud .d { text-align: right; }
+.hud b { color: var(--jaune); font-weight: 400; }
+.bouclier { color: var(--cyanp); } .regen { color: var(--ambre); }
+.bas { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: flex-end; gap: 10px;
+  padding: 0 max(14px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); pointer-events: none; }
+.aide { font-size: 11px; color: var(--doux); text-shadow: 0 2px 0 #01012b; }
+button { pointer-events: auto; font: 13px var(--f); color: var(--cyan); background: rgba(13,2,33,.75); border: 2px solid var(--cyan); padding: 8px 12px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--jaune); outline-offset: 2px; }
+.ecran { position: absolute; inset: 0; background: rgba(13, 2, 33, .62); display: grid; place-content: center; text-align: center; gap: 14px; pointer-events: none;
+  padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); }
+.ecran[hidden] { display: none; }
+.ecran h1 { margin: 0; font: 400 clamp(26px, 7vw, 54px)/1 var(--f); color: var(--cyan); text-shadow: 0 4px 0 #2d1b69; }
+.ecran p { margin: 0; font-size: 13px; line-height: 1.6; max-width: 46ch; text-shadow: 0 2px 0 #01012b; }
+.ecran .clig { color: var(--jaune); animation: clig 1s steps(2) infinite; }
+@keyframes clig { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .ecran .clig { animation: none; } }
+.legende { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; font-size: 11px; }
+</style>
+
+<div id="app">
+  <canvas id="c"></canvas>
+  <div class="hud">
+    <div>SCORE <b id="score">0</b><br>LONGUEUR <b id="long">4</b></div>
+    <div class="d"><span id="bouc" class="bouclier">BOUCLIER —</span><br><span id="perdu" class="regen"></span></div>
+  </div>
+  <div class="bas">
+    <span class="aide" id="aide">GLISSE OU FLÈCHES · V : CHANGER DE VUE</span>
+    <button id="vue" type="button">VUE PLATE</button>
+  </div>
+  <div class="ecran" id="ecran">
+    <h1>LA GRILLE</h1>
+    <p>Scène d'immersion de SNAKE 2975, en isométrique incliné. Ici, le serpent suit la grille, case par case.</p>
+    <div class="legende"><span style="color:#ff9e00">■ cellule +1</span><span style="color:#ffd319">◆ régénérateur</span><span style="color:#d1f7ff">○ bouclier</span><span style="color:#ff2a6d">■ sentinelle</span></div>
+    <p>Une sentinelle qui te touche au corps t'arrache des segments : ce sont tes bonus perdus. Le régénérateur les fait repousser ; le bouclier encaisse un coup. Te mordre te coupe, sans te tuer. Le mur et les piliers tuent.</p>
+    <p class="clig" id="go">TOUCHE POUR JOUER</p>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* ---------- la palette fermée de SNAKE 2975 ---------- */
+  var HEX = ['#0d0221', '#190b28', '#241734', '#541388', '#2d1b69', '#ff2a6d', '#ff8fab', '#05d9e8',
+    '#d1f7ff', '#ff9e00', '#ffd319', '#ff5714', '#fffce8', '#8a8fa3', '#8b0f3a', '#01012b'];
+  var VIDE = 0, NUIT = 1, ARDOISE = 2, VIOLET = 3, INDIGO = 4, MAGENTA = 5, ROSE = 6, CYAN = 7, CYANP = 8,
+    AMBRE = 9, JAUNE = 10, BRASIER = 11, OS = 12, ACIER = 13, SANG = 14, NP = 15;
+  var PAL32 = new Uint32Array(16);
+  HEX.forEach(function (h, i) { var r = parseInt(h.substr(1, 2), 16), g = parseInt(h.substr(3, 2), 16), b = parseInt(h.substr(5, 2), 16); PAL32[i] = (255 << 24) | (b << 16) | (g << 8) | r; });
+  var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+
+  var cv = document.getElementById('c'), ctx = cv.getContext('2d', { alpha: false });
+  var W = 0, H = 0, B = null, img = null, PX = 2;
+  function taille() {
+    var w = window.innerWidth, h = window.innerHeight;
+    PX = Math.max(2, Math.floor(Math.min(w / 300, h / 170)));
+    W = Math.ceil(w / PX); H = Math.ceil(h / PX);
+    cv.width = W; cv.height = H;
+    B = new Uint8Array(W * H); img = ctx.createImageData(W, H);
+  }
+  window.addEventListener('resize', taille); taille();
+
+  /* ---------- primitives : tout passe par le tampon d'index, en pixels entiers ---------- */
+  function px(x, y, c) { x |= 0; y |= 0; if (x >= 0 && y >= 0 && x < W && y < H) B[y * W + x] = c; }
+  /* polygone convexe rempli, tramé entre c1 et c2 au seuil t (0..1) */
+  var XS = [];
+  function poly(P, c1, c2, t) {
+    var n = P.length, y0 = 1e9, y1 = -1e9, i;
+    for (i = 0; i < n; i++) { if (P[i][1] < y0) y0 = P[i][1]; if (P[i][1] > y1) y1 = P[i][1]; }
+    y0 = Math.max(0, Math.ceil(y0 - 0.5)); y1 = Math.min(H - 1, Math.floor(y1 - 0.5));
+    var th = (t || 0) * 16;
+    for (var y = y0; y <= y1; y++) {
+      var yc = y + 0.5; XS.length = 0;
+      for (i = 0; i < n; i++) {
+        var a = P[i], b = P[(i + 1) % n];
+        if ((a[1] <= yc && b[1] > yc) || (b[1] <= yc && a[1] > yc)) XS.push(a[0] + (yc - a[1]) / (b[1] - a[1]) * (b[0] - a[0]));
+      }
+      if (XS.length < 2) continue;
+      var xa = Math.min(XS[0], XS[1]), xb = Math.max(XS[0], XS[1]);
+      var x0 = Math.max(0, Math.ceil(xa - 0.5)), x1 = Math.min(W - 1, Math.floor(xb - 0.5)), o = y * W, br = (y & 3) << 2;
+      for (var x = x0; x <= x1; x++) B[o + x] = (th > 0 && BAYER[br | (x & 3)] < th) ? c2 : c1;
+    }
+  }
+
+  /* ---------- la caméra : isométrique inclinée, ou plate (vue de dessus) ---------- */
+  var N = 13;                                   // la grille fait N x N cases
+  var CAM = { th: 0, ph: 0, S: 10, cx: 0, cy: 0, vue: 0, vueT: 0 };
+  function camera(t) {
+    var k = CAM.vueT, e = k * k * (3 - 2 * k);   // 0 = isométrique, 1 = plat
+    var thIso = Math.PI / 4 + Math.sin(t * 0.23) * 0.16, phIso = 0.56 + Math.sin(t * 0.17) * 0.05;
+    CAM.th = thIso * (1 - e) + 0 * e;
+    CAM.ph = phIso * (1 - e) + (Math.PI / 2) * e;
+    var sp = Math.sin(CAM.ph);
+    /* l'échelle qui fait tenir le plateau, quelle que soit la vue */
+    var span = N * (Math.abs(Math.cos(CAM.th)) + Math.abs(Math.sin(CAM.th)));
+    CAM.S = Math.min(W * 0.92 / span, (H * 0.78) / (span * sp + 1.2 * Math.cos(CAM.ph)));
+    CAM.cx = W / 2; CAM.cy = H * (0.55 - 0.03 * e);
+  }
+  function P3(x, y, z) {                        // coordonnées de grille (0..N) -> écran
+    var gx = x - N / 2, gy = y - N / 2, c = Math.cos(CAM.th), s = Math.sin(CAM.th);
+    var rx = gx * c - gy * s, ry = gx * s + gy * c;
+    return [CAM.cx + rx * CAM.S, CAM.cy + ry * CAM.S * Math.sin(CAM.ph) - z * CAM.S * Math.cos(CAM.ph), ry];
+  }
+  function profondeur(x, y) { var gx = x - N / 2, gy = y - N / 2; return gx * Math.sin(CAM.th) + gy * Math.cos(CAM.th); }
+
+  /* un pavé de la case (i,j), inset m, de z0 à z1 ; couleurs du dessus et des deux flancs */
+  var NORM = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+  function pave(i, j, m, z0, z1, top, cA, cB, tt) {
+    var x0 = i + m, y0 = j + m, x1 = i + 1 - m, y1 = j + 1 - m;
+    var C = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+    var c = Math.cos(CAM.th), s = Math.sin(CAM.th);
+    for (var k = 0; k < 4; k++) {
+      var n = NORM[k], nry = n[0] * s + n[1] * c;
+      if (nry <= 0.001 || Math.cos(CAM.ph) < 0.02) continue;
+      var a = C[k], b = C[(k + 1) % 4];
+      var col = (n[0] * c - n[1] * s) > 0 ? cA : cB;      // le flanc tourné vers la droite est plus clair
+      poly([P3(a[0], a[1], z0), P3(b[0], b[1], z0), P3(b[0], b[1], z1), P3(a[0], a[1], z1)], col, col === cA ? cB : VIDE, 0.25);
+    }
+    poly([P3(x0, y0, z1), P3(x1, y0, z1), P3(x1, y1, z1), P3(x0, y1, z1)], top, tt === undefined ? top : tt, tt === undefined ? 0 : 0.5);
+  }
+
+  /* ---------- le décor : ciel tramé, soleil à bandes, étoiles ---------- */
+  var ETOILES = []; for (var e = 0; e < 70; e++) ETOILES.push([Math.random(), Math.random() * 0.45, Math.random()]);
+  function ciel(t) {
+    var bandes = [NP, NUIT, INDIGO, VIOLET, SANG, MAGENTA];
+    for (var y = 0; y < H; y++) {
+      var u = y / (H * 0.62), f = Math.min(bandes.length - 1.001, Math.max(0, u * (bandes.length - 1))), k = Math.floor(f), r = f - k, o = y * W, br = (y & 3) << 2;
+      var a = bandes[k], b = bandes[Math.min(bandes.length - 1, k + 1)];
+      if (y > H * 0.62) { a = NP; b = NUIT; r = 0.3; }
+      for (var x = 0; x < W; x++) B[o + x] = BAYER[br | (x & 3)] < r * 16 ? b : a;
+    }
+    for (var i = 0; i < ETOILES.length; i++) { var s = ETOILES[i]; if (((t * 2 + s[2] * 7) | 0) % 5) px(s[0] * W, s[1] * H, s[2] > 0.7 ? OS : ACIER); }
+    var sx = W / 2, sy = H * 0.26, R = Math.min(W, H) * 0.2;
+    for (var yy = -R; yy <= R; yy++) {
+      var w = Math.sqrt(Math.max(0, R * R - yy * yy)), v = (yy + R) / (2 * R);
+      if (v > 0.45 && ((yy + (t * 6 | 0)) % 7 + 7) % 7 < 1 + v * 3) continue;           // les bandes du soleil
+      var c = v < 0.35 ? JAUNE : v < 0.7 ? AMBRE : BRASIER;
+      for (var xx = -w; xx <= w; xx++) px(sx + xx, sy + yy, c);
+    }
+  }
+
+  /* ---------- le jeu ---------- */
+  var DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+  var PILIERS = [[3, 3], [9, 3], [3, 9], [9, 9], [6, 6]];
+  var G;
+  function nouveau() {
+    G = { etat: 'titre', snake: [], dir: 0, file: [], pousse: 0, perdu: 0, regen: 0, bouclier: false, choc: 0,
+      score: 0, mange: 0, items: [], sents: [], parts: [], tick: 0, acc: 0, t: 0, mortT: 0, flash: 0, texte: null, texteT: 0 };
+    G.snake = [[4, 1], [3, 1], [2, 1], [1, 1]];      // la rangée 1 est dégagée : on a le temps de s'orienter
+    ajouterSentinelle(); poser('cellule'); poser('cellule');
+  }
+  function libre(x, y) {
+    if (x < 0 || y < 0 || x >= N || y >= N) return false;
+    var i; for (i = 0; i < PILIERS.length; i++) if (PILIERS[i][0] === x && PILIERS[i][1] === y) return false;
+    for (i = 0; i < G.snake.length; i++) if (G.snake[i][0] === x && G.snake[i][1] === y) return false;
+    for (i = 0; i < G.items.length; i++) if (G.items[i].x === x && G.items[i].y === y) return false;
+    for (i = 0; i < G.sents.length; i++) if (G.sents[i].x === x && G.sents[i].y === y) return false;
+    return true;
+  }
+  function caseLibre() {
+    for (var k = 0; k < 200; k++) { var x = (Math.random() * N) | 0, y = (Math.random() * N) | 0, h = G.snake[0];
+      if (libre(x, y) && Math.abs(x - h[0]) + Math.abs(y - h[1]) > 3) return [x, y]; }
+    return null;
+  }
+  function poser(type) { var c = caseLibre(); if (c) G.items.push({ type: type, x: c[0], y: c[1], t: 0 }); }
+  function ajouterSentinelle() {
+    var c = caseLibre(); if (!c) return;
+    var axe = Math.random() < 0.5 ? 0 : 1;
+    G.sents.push({ x: c[0], y: c[1], dx: axe ? 0 : 1, dy: axe ? 1 : 0, px: c[0], py: c[1] });
+  }
+  function texte(s) { G.texte = s; G.texteT = 1.4; }
+  function eclats(x, y, c, n, z) {
+    for (var i = 0; i < n; i++) { var a = Math.random() * 6.283, v = 1 + Math.random() * 3;
+      G.parts.push({ x: x + 0.5, y: y + 0.5, z: z || 0.5, vx: Math.cos(a) * v, vy: Math.sin(a) * v, vz: 2 + Math.random() * 3, c: c, l: 0.5 + Math.random() * 0.5 }); }
+  }
+  /* le serpent est coupé au segment k : ce qui tombe, ce sont tes bonus perdus */
+  function couper(k, cause) {
+    if (k < 1 || k >= G.snake.length) return;
+    if (G.bouclier) { G.bouclier = false; G.choc = 0.5; son('bouclier'); texte('BOUCLIER !'); return true; }
+    var tombe = G.snake.splice(k);
+    for (var i = 0; i < tombe.length; i++) eclats(tombe[i][0], tombe[i][1], i % 2 ? CYAN : MAGENTA, 3, 0.4);
+    G.perdu += tombe.length; G.flash = 0.15; son('coupe');
+    texte(cause === 'morsure' ? 'MORSURE −' + tombe.length : 'TOUCHÉ −' + tombe.length);
+    if (G.perdu > 0 && !G.items.some(function (it) { return it.type === 'regen'; })) poser('regen');
+    return false;
+  }
+  function mourir() { G.etat = 'mort'; G.mortT = 0; son('mort'); var h = G.snake[0]; eclats(h[0], h[1], OS, 30, 0.5); for (var i = 0; i < G.snake.length; i++) eclats(G.snake[i][0], G.snake[i][1], CYAN, 4); G.flash = 0.3; }
+
+  function pas() {
+    /* la direction suivante, sans demi-tour */
+    while (G.file.length) { var d = G.file.shift(); if ((d + 2) % 4 !== G.dir) { G.dir = d; break; } }
+    var h = G.snake[0], dv = DIRS[G.dir], nx = h[0] + dv[0], ny = h[1] + dv[1];
+    var mur = nx < 0 || ny < 0 || nx >= N || ny >= N || PILIERS.some(function (p) { return p[0] === nx && p[1] === ny; });
+    if (mur) { if (G.bouclier) { G.bouclier = false; G.choc = 0.5; son('bouclier'); texte('BOUCLIER !'); G.dir = (G.dir + 1) % 4; return; } mourir(); return; }
+    for (var s = 0; s < G.sents.length; s++) {
+      var S = G.sents[s];
+      if (S.x === nx && S.y === ny) {
+        if (G.bouclier) { G.bouclier = false; G.choc = 0.5; eclats(S.x, S.y, MAGENTA, 18); G.sents.splice(s, 1); G.score += 150; son('bouclier'); texte('BOUCLIER · +150'); setTimeout(ajouterSentinelle, 3000); break; }
+        mourir(); return;
+      }
+    }
+    /* se mordre coupe, ne tue pas (la règle de SNAKE 2975) */
+    for (var k = 1; k < G.snake.length - (G.pousse > 0 ? 0 : 1); k++) if (G.snake[k][0] === nx && G.snake[k][1] === ny) { couper(k, 'morsure'); break; }
+    G.snake.unshift([nx, ny]);
+    if (G.pousse > 0) G.pousse--; else G.snake.pop();
+    for (var i = G.items.length - 1; i >= 0; i--) {
+      var it = G.items[i]; if (it.x !== nx || it.y !== ny) continue;
+      G.items.splice(i, 1);
+      if (it.type === 'cellule') {
+        G.pousse += 1; G.mange++; G.score += 10 * (1 + (G.snake.length / 8 | 0)); eclats(nx, ny, AMBRE, 8); son('cellule'); poser('cellule');
+        if (G.mange % 6 === 0 && G.sents.length < 5) { ajouterSentinelle(); texte('UNE SENTINELLE DE PLUS'); }
+        if (G.mange % 9 === 0 && !G.bouclier && !G.items.some(function (q) { return q.type === 'bouclier'; })) poser('bouclier');
+      } else if (it.type === 'regen') {
+        G.regen = G.perdu; G.score += 50; eclats(nx, ny, JAUNE, 14); son('regen'); texte('RÉGÉNÉRATION');
+      } else if (it.type === 'bouclier') {
+        G.bouclier = true; G.score += 50; eclats(nx, ny, CYANP, 14); son('bouclier'); texte('BOUCLIER ACTIF');
+      }
+    }
+    /* le régénérateur fait repousser un segment perdu à chaque pas */
+    if (G.regen > 0 && G.perdu > 0) { G.regen--; G.perdu--; G.pousse++; var q = G.snake[G.snake.length - 1]; eclats(q[0], q[1], JAUNE, 2, 0.3); }
+    /* les sentinelles avancent un pas sur deux, rebondissent, et arrachent les segments qu'elles croisent */
+    G.tick++;
+    if (G.tick % 2 === 0) for (s = 0; s < G.sents.length; s++) {
+      S = G.sents[s]; S.px = S.x; S.py = S.y;
+      var tx = S.x + S.dx, ty = S.y + S.dy;
+      if (tx < 0 || ty < 0 || tx >= N || ty >= N || PILIERS.some(function (p) { return p[0] === tx && p[1] === ty; }) ||
+        G.sents.some(function (o) { return o !== S && o.x === tx && o.y === ty; })) { S.dx = -S.dx; S.dy = -S.dy; continue; }
+      S.x = tx; S.y = ty;
+      if (G.snake[0][0] === tx && G.snake[0][1] === ty) { if (G.bouclier) { G.bouclier = false; G.choc = 0.5; S.dx = -S.dx; S.dy = -S.dy; S.x = S.px; S.y = S.py; son('bouclier'); texte('BOUCLIER !'); } else { mourir(); return; } }
+      for (k = 1; k < G.snake.length; k++) if (G.snake[k][0] === tx && G.snake[k][1] === ty) { if (couper(k, 'sentinelle')) { S.dx = -S.dx; S.dy = -S.dy; S.x = S.px; S.y = S.py; } break; }
+    }
+  }
+
+  /* ---------- dessin ---------- */
+  function dessiner(t, dt) {
+    camera(t);
+    ciel(t);
+    /* le socle du plateau */
+    var c0 = Math.cos(CAM.th), s0 = Math.sin(CAM.th);
+    var bords = [[0, 0], [N, 0], [N, N], [0, N]];
+    for (var k = 0; k < 4; k++) {
+      var n = NORM[k], nry = n[0] * s0 + n[1] * c0; if (nry <= 0 || Math.cos(CAM.ph) < 0.02) continue;
+      var a = bords[k], b = bords[(k + 1) % 4];
+      poly([P3(a[0], a[1], -0.7), P3(b[0], b[1], -0.7), P3(b[0], b[1], 0), P3(a[0], a[1], 0)], (n[0] * c0 - n[1] * s0) > 0 ? VIOLET : INDIGO, NP, 0.3);
+    }
+    poly([P3(0, 0, 0), P3(N, 0, 0), P3(N, N, 0), P3(0, N, 0)], VIOLET);
+    /* les cases : une onde de lumière parcourt la grille */
+    for (var j = 0; j < N; j++) for (var i = 0; i < N; i++) {
+      var onde = Math.sin(t * 2.2 - (i + j) * 0.45), alt = (i + j) & 1;
+      poly([P3(i + 0.06, j + 0.06, 0), P3(i + 0.94, j + 0.06, 0), P3(i + 0.94, j + 0.94, 0), P3(i + 0.06, j + 0.94, 0)],
+        alt ? NUIT : NP, INDIGO, onde > 0.75 ? 0.5 : 0.12);
+    }
+    /* tous les objets, du fond vers l'avant */
+    var L = [];
+    PILIERS.forEach(function (p) { L.push({ d: profondeur(p[0] + 0.5, p[1] + 0.5), f: function () { pave(p[0], p[1], 0.04, 0, 1.6, ACIER, ARDOISE, NUIT); pave(p[0], p[1], 0.3, 1.6, 1.75, MAGENTA, SANG, NUIT); } }); });
+    G.snake.forEach(function (sg, idx) {
+      L.push({ d: profondeur(sg[0] + 0.5, sg[1] + 0.5) + 0.001 * (G.snake.length - idx), f: function () {
+        var tete = idx === 0, m = tete ? 0.08 : 0.16 + Math.min(0.12, idx * 0.006);
+        var h = tete ? 0.75 : 0.55 + 0.08 * Math.sin(t * 8 - idx * 0.7);
+        if (G.etat === 'mort') return;
+        var top = tete ? (G.bouclier && ((t * 8) | 0) % 2 ? OS : CYANP) : (idx % 2 ? CYAN : CYANP);
+        pave(sg[0], sg[1], m, 0, h, top, CYAN, INDIGO, tete ? undefined : (idx % 2 ? INDIGO : undefined));
+        if (tete) {          // les yeux, du côté où il va
+          var dv = DIRS[G.dir], ex = sg[0] + 0.5 + dv[0] * 0.28, ey = sg[1] + 0.5 + dv[1] * 0.28;
+          var o1 = P3(ex - dv[1] * 0.2, ey + dv[0] * 0.2, h + 0.01), o2 = P3(ex + dv[1] * 0.2, ey - dv[0] * 0.2, h + 0.01);
+          px(o1[0], o1[1], VIDE); px(o2[0], o2[1], VIDE);
+        }
+      } });
+    });
+    G.items.forEach(function (it) {
+      it.t += dt;
+      L.push({ d: profondeur(it.x + 0.5, it.y + 0.5), f: function () {
+        var z = 0.35 + Math.sin(it.t * 4) * 0.12;
+        if (it.type === 'cellule') pave(it.x, it.y, 0.33, z, z + 0.32, JAUNE, AMBRE, BRASIER);
+        else if (it.type === 'regen') {     // un losange qui tourne, croix de soin
+          var a = it.t * 3, cx = it.x + 0.5, cy = it.y + 0.5, r = 0.36, P = [], zz = z + 0.3;
+          for (var k = 0; k < 4; k++) P.push(P3(cx + Math.cos(a + k * 1.5708) * r, cy + Math.sin(a + k * 1.5708) * r, zz));
+          var base = P3(cx, cy, 0.01); poly([[base[0] - 2, base[1] - 1], [base[0] + 2, base[1] - 1], [base[0] + 2, base[1] + 1], [base[0] - 2, base[1] + 1]], NP);
+          poly(P, JAUNE, OS, 0.35 + 0.3 * Math.sin(it.t * 6));
+          var c = P3(cx, cy, zz); for (var q = -2; q <= 2; q++) { px(c[0] + q, c[1], BRASIER); px(c[0], c[1] + q, BRASIER); }
+        } else {                             // le bouclier : un anneau pâle
+          var cc = P3(it.x + 0.5, it.y + 0.5, z + 0.25), R = CAM.S * 0.34;
+          for (var an = 0; an < 6.283; an += 0.08) px(cc[0] + Math.cos(an + it.t) * R, cc[1] + Math.sin(an + it.t) * R * 0.8, (an * 4 | 0) % 2 ? CYANP : OS);
+        }
+      } });
+    });
+    G.sents.forEach(function (S) {
+      L.push({ d: profondeur(S.x + 0.5, S.y + 0.5), f: function () {
+        pave(S.x, S.y, 0.14, 0, 0.7, MAGENTA, ROSE, SANG, ((t * 6) | 0) % 2 ? SANG : undefined);
+        var c = P3(S.x + 0.5, S.y + 0.5, 0.71), w = Math.max(1, CAM.S * 0.12);
+        for (var q = -w; q <= w; q++) px(c[0] + q, c[1], OS);            // l'œil-fente de la sentinelle
+      } });
+    });
+    L.sort(function (a, b) { return a.d - b.d; });
+    for (k = 0; k < L.length; k++) L[k].f();
+    /* les éclats */
+    for (k = G.parts.length - 1; k >= 0; k--) {
+      var p = G.parts[k]; p.l -= dt; if (p.l <= 0) { G.parts.splice(k, 1); continue; }
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vz -= 9 * dt; p.z += p.vz * dt; if (p.z < 0) { p.z = 0; p.vz *= -0.4; }
+      var q = P3(p.x, p.y, p.z); px(q[0], q[1], p.c); px(q[0] + 1, q[1], p.c); px(q[0], q[1] + 1, p.c); px(q[0] + 1, q[1] + 1, p.c);
+    }
+    /* l'éclair d'un coup : un voile tramé, borné (pas de flash plein écran) */
+    if (G.flash > 0) { var th = Math.min(6, G.flash * 30); for (var y = 0; y < H; y++) { var o = y * W, br = (y & 3) << 2; for (var x = 0; x < W; x++) if (BAYER[br | (x & 3)] < th) B[o + x] = SANG; } }
+    /* lignes de balayage */
+    for (y = 1; y < H; y += 3) { o = y * W; for (x = 0; x < W; x++) { var v = B[o + x]; if (v === OS || v === CYANP || v === JAUNE) continue; if ((x + y) & 1) B[o + x] = v === NP ? VIDE : v; } }
+    var d32 = new Uint32Array(img.data.buffer);
+    for (k = 0; k < B.length; k++) d32[k] = PAL32[B[k]];
+    ctx.putImageData(img, 0, 0);
+  }
+
+  /* ---------- le son : quelques bips synthétisés, après le premier geste ---------- */
+  var AC = null;
+  function son(nom) {
+    if (!AC) return;
+    var o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime;
+    o.connect(g); g.connect(AC.destination);
+    var R = { cellule: ['square', 660, 990, 0.06, 0.05], coupe: ['sawtooth', 300, 70, 0.22, 0.07], regen: ['triangle', 440, 1320, 0.35, 0.07],
+      bouclier: ['triangle', 880, 440, 0.25, 0.08], mort: ['sawtooth', 220, 40, 0.7, 0.09], tour: ['square', 520, 520, 0.02, 0.02] }[nom];
+    if (!R) return;
+    o.type = R[0]; o.frequency.setValueAtTime(R[1], t); o.frequency.exponentialRampToValueAtTime(R[2], t + R[3]);
+    g.gain.setValueAtTime(R[4], t); g.gain.exponentialRampToValueAtTime(0.0001, t + R[3]);
+    o.start(t); o.stop(t + R[3] + 0.02);
+  }
+
+  /* ---------- les commandes : la direction est choisie à l'écran, puis ramenée à la grille ---------- */
+  function versGrille(sx, sy) {
+    var best = -1, bd = -1e9, o = P3(N / 2, N / 2, 0);
+    for (var k = 0; k < 4; k++) {
+      var q = P3(N / 2 + DIRS[k][0], N / 2 + DIRS[k][1], 0), vx = q[0] - o[0], vy = q[1] - o[1], l = Math.hypot(vx, vy) || 1;
+      var d = (vx * sx + vy * sy) / l; if (d > bd) { bd = d; best = k; }
+    }
+    return best;
+  }
+  function vouloir(sx, sy) {
+    if (G.etat !== 'jeu') return;
+    var d = versGrille(sx, sy), der = G.file.length ? G.file[G.file.length - 1] : G.dir;
+    if (d !== der && G.file.length < 3) { G.file.push(d); son('tour'); }
+  }
+  function lancer() {
+    if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
+    if (AC && AC.state === 'suspended') AC.resume();
+    if (G.etat === 'titre' || (G.etat === 'mort' && G.mortT > 0.8)) {
+      var vue = CAM.vue; nouveau(); CAM.vue = vue; G.etat = 'jeu';
+      document.getElementById('ecran').hidden = true;
+    }
+  }
+  var touche = { ArrowUp: [0, -1], KeyW: [0, -1], KeyZ: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1], ArrowLeft: [-1, 0], KeyA: [-1, 0], KeyQ: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0] };
+  window.addEventListener('keydown', function (e) {
+    if (e.code === 'KeyV') { basculerVue(); return; }
+    if (e.code === 'Space' || e.code === 'Enter') { lancer(); e.preventDefault(); return; }
+    var v = touche[e.code]; if (!v) return; e.preventDefault();
+    if (G.etat !== 'jeu') { lancer(); return; }
+    vouloir(v[0], v[1]);
+  });
+  var t0 = null;
+  window.addEventListener('pointerdown', function (e) { if (e.target.tagName === 'BUTTON') return; t0 = [e.clientX, e.clientY]; if (G.etat !== 'jeu') lancer(); });
+  window.addEventListener('pointermove', function (e) {
+    if (!t0 || G.etat !== 'jeu') return;
+    var dx = e.clientX - t0[0], dy = e.clientY - t0[1];
+    if (Math.hypot(dx, dy) > 22) { vouloir(dx, dy); t0 = [e.clientX, e.clientY]; }
+  });
+  window.addEventListener('pointerup', function () { t0 = null; });
+  function basculerVue() { CAM.vue = 1 - CAM.vue; document.getElementById('vue').textContent = CAM.vue ? 'VUE ISO' : 'VUE PLATE'; }
+  document.getElementById('vue').addEventListener('click', function (e) { e.stopPropagation(); basculerVue(); });
+
+  /* ---------- la boucle ---------- */
+  var elS = document.getElementById('score'), elL = document.getElementById('long'), elB = document.getElementById('bouc'), elP = document.getElementById('perdu'), elA = document.getElementById('aide');
+  var last = 0, tGlobal = 0, mortAffiche = false;
+  nouveau();
+  function boucle(now) {
+    requestAnimationFrame(boucle);
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60; last = now; tGlobal += dt;
+    CAM.vueT += (CAM.vue - CAM.vueT) * Math.min(1, dt * 3);
+    G.periode = Math.max(0.085, 0.17 - G.snake.length * 0.003);
+    if (G.etat === 'jeu') { G.acc += dt; while (G.acc >= G.periode && G.etat === 'jeu') { G.acc -= G.periode; pas(); } }
+    if (G.etat === 'mort') {
+      G.mortT += dt;
+      if (G.mortT > 0.8 && !mortAffiche) {
+        mortAffiche = true;
+        var ec = document.getElementById('ecran'); ec.hidden = false;
+        ec.querySelector('h1').textContent = 'SIGNAL PERDU';
+        ec.querySelectorAll('p')[0].textContent = 'Score ' + G.score + ' · longueur max ' + G.snake.length + ' · cellules ' + G.mange;
+        ec.querySelectorAll('p')[1].textContent = 'Dans SNAKE 2975, ces scènes viendront s\'intercaler entre les vagues.';
+        document.getElementById('go').textContent = 'TOUCHE POUR REJOUER';
+      }
+    } else mortAffiche = false;
+    if (G.flash > 0) G.flash -= dt;
+    if (G.texteT > 0) G.texteT -= dt;
+    dessiner(tGlobal, dt);
+    elS.textContent = G.score; elL.textContent = G.snake.length;
+    elB.textContent = G.bouclier ? 'BOUCLIER ●' : 'BOUCLIER —';
+    elP.textContent = G.perdu > 0 ? 'À RÉGÉNÉRER ' + G.perdu : '';
+    elA.textContent = G.texteT > 0 ? G.texte : 'GLISSE OU FLÈCHES · V : CHANGER DE VUE';
+    elA.style.color = G.texteT > 0 ? '#ffd319' : '';
+  }
+  requestAnimationFrame(boucle);
+})();
+</script>
+
+</body></html>

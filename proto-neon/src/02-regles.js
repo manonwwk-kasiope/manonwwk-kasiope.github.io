@@ -96,7 +96,8 @@
     mort: {
       rayonTete: 3,
       mur: { grace: 0.06, cosInterieur: 0.2, alerte: 24 },
-      morsure: { segMin: 6, derniersFermant: 3, rayonSegment: 3.5, rayon: 5.5, longueurSure: 9 },   // 3 + 3,5 − 1 = 5,5
+      morsure: { segMin: 6, derniersFermant: 3, rayonSegment: 3.5, rayon: 5.5, longueurSure: 9,   // 3 + 3,5 − 1 = 5,5
+        effet: 'coupe', recharge: 0.4 },   // la règle du snake (retour de la propriétaire) : se mordre COUPE le serpent au segment mordu, sans tuer ; 0,4 s sans nouvelle morsure
       ennemi: { facteurRayon: 0.8, apparition: 0.6 },      // rayon 3 + r × 0,8 ; 600 ms d'apparition sans contact
       teleMin: 0.5, teleCyclope: 0.8, annonceConvoi: 1.5,
       traineAgeMin: 0.15,

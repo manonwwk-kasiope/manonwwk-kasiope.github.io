@@ -43,6 +43,10 @@ N.game = (function () {
   var QT = [];
   var BG = null, bgKey = '';
   var mortInfo = { chute: null, annonce: false, etat: 0 };
+  /* les intermèdes (refonte/INTERMEDES.md) : un mini-film 8 bits de N.intro gèle le jeu (état `panneau`), puis
+     `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
+     (par un événement), lancé à la fin du pas. */
+  var filmsVus = {}, suiteFilm = null, filmDemande = null, filmMuet = false, secCourante = null;
 
   function S_() { return S || (S = N.S); }
   function appel(nom, fn) { try { fn(); } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('game→' + nom, e); } }
@@ -114,10 +118,11 @@ N.game = (function () {
   function sectionDe(nom) { var d = N.ids.tableEtats[nom]; return d ? d.section : null; }
   function aller(nom) {
     if (N.ids.etats.indexOf(nom) < 0) return false;
-    var ancienne = sectionDe(et), prev = et;
+    var ancienne = secCourante, prev = et;
     et = nom; etT = 0;
     if (JOUE[nom] && nom !== 'attraction') etatJeu = nom === 'reapparition' ? etatJeu : nom;
-    var sec = sectionDe(nom);
+    var sec = filmMuet ? null : sectionDe(nom);
+    if (sec) secCourante = sec;
     if (sec && sec !== ancienne && modOk(N.music, 'section')) appel('music.section', function () { N.music.section(sec); });
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
@@ -136,6 +141,7 @@ N.game = (function () {
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
     O.fxReset();
+    filmsVus = {}; suiteFilm = null; filmDemande = null;
     if (N.fx && N.fx.reset) appel('fx.reset', function () { N.fx.reset(); });
     var ordre = ['butin', 'ennemis', 'arsenal', 'score', 'dir', 'hud'];
     if (N.world && N.world.reset) appel('world.reset', function () { N.world.reset(); });
@@ -173,6 +179,13 @@ N.game = (function () {
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
     aller('plongee');
+  }
+  function film(nom, suite, opts) {
+    if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
+    filmsVus[nom] = 1;
+    var ok = !!O.safe('intro.transition', function () { return N.intro.transition(nom, opts); });
+    if (!ok) { suite(); return; }
+    suiteFilm = suite; filmMuet = true; aller('panneau'); filmMuet = false;     // la musique garde sa section pendant le film
   }
   function lancerVague(n) {
     N.dir.demarrer(n);
@@ -221,6 +234,7 @@ N.game = (function () {
       if (c.evt === 'nettoyee') finDeVague(c);
     }, '79-jeu');
     N.ev.on('vol', 10, function (c) { if (c.evt === 'fin' && et === 'vol') apresVol(); }, '79-jeu');
+    N.ev.on('portail', 10, function (c) { if (c.type === 'rival' && JOUE[et]) filmDemande = 'rival'; }, '79-jeu');
     N.ev.on('phase', 10, function (c) { if (c.evt === 'mort' && (et === 'boss' || et === 'jeu')) debutVictoire(); }, '79-jeu');
   }
 
@@ -235,7 +249,7 @@ N.game = (function () {
   }
   function suiteNettoyage() {
     var n = N.dir.vague(), total = N.dir.nombreVagues();
-    if (n < total) aller('cartes');
+    if (n < total) { if (n === 1) film('chasse', function () { aller('cartes'); }); else aller('cartes'); }
     else { aller('alerte'); if (N.hud) N.hud.banniere('ALERTE', { c: 'magenta', duree: CFG.alerte, clignote: true }); O.sfx('intro'); }
   }
   function apresCarte(index, id) {
@@ -245,7 +259,8 @@ N.game = (function () {
     }
     demarrerVol();
   }
-  function demarrerVol() {
+  function demarrerVol() { film('plongee', vol); }
+  function vol() {
     aller('vol');
     var n = N.dir.vague();
     if (N.vol && N.vol.start) appel('vol.start', function () { N.vol.start(n, n + 1); });
@@ -336,7 +351,7 @@ N.game = (function () {
       appel('intro.update', function () { N.intro.update(dt); });
       return;
     }
-    if (et === 'panneau' && !O.busy()) { lancerBoss(); }
+    if (et === 'panneau' && !O.busy()) { var suite = suiteFilm || lancerBoss; suiteFilm = null; suite(); }
 
     if (et === 'demarrage') {
       if (modOk(N.ui, 'update')) N.ui.update(dt);
@@ -360,8 +375,10 @@ N.game = (function () {
       pas(dt);
       if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
       else if (et === 'alerte' && etT >= CFG.alerte) {
-        var tr = N.intro && N.intro.transition ? !!O.safe('intro.transition', function () { return N.intro.transition('boss'); }) : false;
-        if (tr) aller('panneau'); else lancerBoss();
+        film('reveil', function () {
+          var tr = N.intro && N.intro.transition ? !!O.safe('intro.transition', function () { return N.intro.transition('boss'); }) : false;
+          if (tr) { suiteFilm = lancerBoss; aller('panneau'); } else lancerBoss();
+        }, { nom: 'LE CYCLOPE' });
       } else if (et === 'reapparition' && N.joueuse.etat === 'vivant') aller(etatJeu === 'reapparition' ? 'jeu' : etatJeu);
       if (N.dir.bossMort && N.dir.bossMort() && (et === 'boss' || et === 'jeu')) debutVictoire();
     } else if (et === 'plongee') {
@@ -388,7 +405,7 @@ N.game = (function () {
     } else if (et === 'victoire') {
       O.T.ak += dt; O.T.t += dt;
       N.ennemis.update(dt); N.butin.update(dt); O.fxUpdate(dt); majHud(dt);
-      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) terminer(true);
+      if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) film('apotheose', function () { terminer(true); });
     } else if (et === 'fin') {
       O.T.ak += dt;
       N.ui.update(dt);
@@ -400,6 +417,7 @@ N.game = (function () {
     }
     /* les minuteries de la mise en scène de repli */
     for (var i = timers.length - 1; i >= 0; i--) { timers[i].left -= dt; if (timers[i].left <= 0) { var fn = timers[i].fn; timers.splice(i, 1); fn(); } }
+    if (filmDemande && JOUE[et] && et !== 'alerte') { var fd = filmDemande, reprise = et; filmDemande = null; film(fd, function () { aller(reprise); }); }
     publier();
   }
   function majHud(dt) { if (N.hud) N.hud.update(dt); }
