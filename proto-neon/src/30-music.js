@@ -53,11 +53,11 @@ if (typeof window !== 'undefined') window.__N = N;
      Valeurs mesurées par tools/C/mesure.mjs, pas devinées. */
   var MIX = {
     master: 1.20,
-    music: 0.58,        // niveau du bus génératif à tension 0
-    musicTension: 0.50, // ce que la tension ajoute
-    track: 0.92,        // niveau de la piste (avant le gain de tension)
+    music: 0.62,        // niveau du bus génératif à tension 0
+    musicTension: 0.95, // ce que la tension ajoute
+    track: 1.7,         // niveau de la piste (après le compresseur, avant le gain de tension)
     sfx: 1.90,
-    pad: 0.30, bass: 0.72, drum: 0.80, lead: 0.24,
+    pad: 0.22, bass: 0.42, drum: 0.80, lead: 0.85,
     perc: 0.55, spark: 0.20, inv: 0.20, heart: 0.9,
     revSend: { drum: 0.26, lead: 0.28, sfx: 0.20, bass: 0.0, pad: 0.10 },
     duckKill: 0.30, duckBig: 0.45, duckHurt: 0.32, duckInfo: 0.22
@@ -68,7 +68,7 @@ if (typeof window !== 'undefined') window.__N = N;
   var FADE_OUT = 0.018, FADE_IN = 0.04;           /* constantes de temps de la porte, en s */
   var XF = 0.010;                                 /* fondu de jointure de la piste : 10 ms, posé SUR la barre */
   var MAX_BLOCS = 4, MAX_OCTETS = 24500000;   /* au plus quatre blocs décodés, 24,5 Mo */
-  var NODE_BUDGET = 56;                           /* nœuds créés par seconde au plus (sons de basse priorité coupés au-delà) */
+  var NODE_BUDGET = 58;                           /* nœuds créés par seconde au plus (sons de basse priorité coupés au-delà) */
 
   /* ================================ outils ================================ */
   function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
@@ -192,7 +192,7 @@ if (typeof window !== 'undefined') window.__N = N;
      build() construit un moteur complet sur un contexte quelconque. Le jeu en instancie un sur un AudioContext ;
      la preuve en instancie un second sur un OfflineAudioContext. Le code de synthèse, de composition et de
      séquençage de la piste est le MÊME : la preuve mesure donc bien ce qui est joué. */
-  function build(ctx, offline, mute) {
+  function build(ctx, offline, mute, brut) {
 
     var sr = ctx.sampleRate;
     var muteMus = mute === 'music', muteSfx = mute === 'sfx';
@@ -200,17 +200,23 @@ if (typeof window !== 'undefined') window.__N = N;
     var srnd = derivedRng('music.sons');             /* sons d'information */
 
     /* ---- compteur de nœuds : N.music.noeuds() et la réserve de voix des sons de basse priorité ---- */
-    var nodeLog = [], nodeHead = 0, nodeTotal = 0;
+    var nodeLog = [], nodeHead = 0, nodeTotal = 0, sfxLog = [], sfxHead = 0, inSfx = false;
     ['createGain', 'createOscillator', 'createBufferSource', 'createBiquadFilter', 'createStereoPanner', 'createDelay',
-      'createWaveShaper', 'createChannelMerger', 'createAnalyser'].forEach(function (nm) {
+      'createWaveShaper', 'createChannelMerger', 'createAnalyser', 'createDynamicsCompressor'].forEach(function (nm) {
       var f = ctx[nm]; if (typeof f !== 'function') return;
-      ctx[nm] = function (a, b, c) { nodeLog.push(ctx.currentTime); nodeTotal++; return f.call(ctx, a, b, c); };
+      ctx[nm] = function (a, b, c) { nodeLog.push(ctx.currentTime); if (inSfx) sfxLog.push(ctx.currentTime); nodeTotal++; return f.call(ctx, a, b, c); };
     });
     function nodesLast(win) {
       var t = ctx.currentTime - (win || 1);
       while (nodeHead < nodeLog.length && nodeLog[nodeHead] < t) nodeHead++;
       if (nodeHead > 4096) { nodeLog = nodeLog.slice(nodeHead); nodeHead = 0; }
       return nodeLog.length - nodeHead;
+    }
+    function sfxNodesLast(win) {                       /* les nœuds des sons seuls : le budget des sons ne se paie pas sur la musique */
+      var t = ctx.currentTime - (win || 1);
+      while (sfxHead < sfxLog.length && sfxLog[sfxHead] < t) sfxHead++;
+      if (sfxHead > 4096) { sfxLog = sfxLog.slice(sfxHead); sfxHead = 0; }
+      return sfxLog.length - sfxHead;
     }
 
     /* ---- automation sans claquement ---- */
@@ -234,7 +240,7 @@ if (typeof window !== 'undefined') window.__N = N;
 
     /* ---- genou doux : linéaire jusqu'à T, plafond à C (−1 dBFS) ---- */
     function kneeCurve(n) {
-      var c = new Float32Array(n), T = 0.56, C = 0.89;
+      var c = new Float32Array(n), T = 0.56, C = 0.88;
       for (var i = 0; i < n; i++) {
         var x = ((i / (n - 1)) * 2 - 1) * 2, a = x < 0 ? -x : x;
         var y = a <= T ? a : T + (C - T) * Math.tanh((a - T) / (C - T));
@@ -249,7 +255,7 @@ if (typeof window !== 'undefined') window.__N = N;
        sons : sfxBus -> master                                                                     (esquive : musicDuck) */
     var master = ctx.createGain(); master.gain.value = MIX.master * 0.5;
     var shaper = ctx.createWaveShaper();
-    shaper.curve = kneeCurve(4097); shaper.oversample = '2x';
+    shaper.curve = kneeCurve(4097); shaper.oversample = 'none';   /* pas de suréchantillonnage : il faisait déborder le plafond de 2 dB sur les aigus */
     var gate = ctx.createGain(); gate.gain.value = 1;
     master.connect(shaper); shaper.connect(gate); gate.connect(ctx.destination);
 
@@ -261,14 +267,26 @@ if (typeof window !== 'undefined') window.__N = N;
     var musicChan = ctx.createGain(); musicChan.gain.value = muteMus ? 0 : 1;   /* mute('musique') */
     var OPEN = Math.min(20000, sr * 0.45);
     var muffle = ctx.createBiquadFilter(); muffle.type = 'lowpass'; muffle.frequency.value = OPEN; muffle.Q.value = 0.6;
-    musicBus.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(musicCut);
+    var genHP = ctx.createBiquadFilter(); genHP.type = 'highpass'; genHP.frequency.value = 460; genHP.Q.value = 0.8;   /* repli éclairci : pas de grave sous 460 Hz (le haut-parleur d'un téléphone ne les rend pas) */
+    musicBus.connect(genHP); genHP.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(musicCut);
     musicCut.connect(musicChan); musicChan.connect(secLP); secLP.connect(muffle); muffle.connect(master);
 
     var trackBus = ctx.createGain(); trackBus.gain.value = 1;
     var trackShelf = ctx.createBiquadFilter(); trackShelf.type = 'highshelf'; trackShelf.frequency.value = 6000; trackShelf.gain.value = -3;
     var trackLP = ctx.createBiquadFilter(); trackLP.type = 'lowpass'; trackLP.frequency.value = OPEN; trackLP.Q.value = 0.5;
-    var trackLevel = ctx.createGain(); trackLevel.gain.value = MIX.track * 0.7;
-    trackBus.connect(trackShelf); trackShelf.connect(trackLP); trackLP.connect(trackLevel); trackLevel.connect(musicDuck);
+    var trackLevel = ctx.createGain(); trackLevel.gain.value = MIX.track;
+    /* haut-parleur de téléphone : le grave (< 130 Hz) n'existe pas, il ne fait que manger la marge de crête ; un
+       compresseur doux relève le niveau moyen sans relever les crêtes */
+    var trackHP = ctx.createBiquadFilter(); trackHP.type = 'highpass'; trackHP.frequency.value = 130; trackHP.Q.value = 0.7;
+    var trackComp = ctx.createDynamicsCompressor();
+    trackComp.threshold.value = -26; trackComp.knee.value = 18; trackComp.ratio.value = 4; trackComp.attack.value = 0.005; trackComp.release.value = 0.12;
+    var trackLP2 = ctx.createBiquadFilter(); trackLP2.type = 'lowpass'; trackLP2.frequency.value = OPEN; trackLP2.Q.value = 1.3;   /* avec trackLP : Butterworth d'ordre 4 */
+    trackLP.Q.value = 0.54;
+    if (brut) { trackBus.gain.value = 0.1; trackBus.connect(musicDuck); }          /* preuve des jointures : la piste seule, sans traitement */
+    else {
+      trackBus.connect(trackHP); trackHP.connect(trackComp); trackComp.connect(trackShelf);
+      trackShelf.connect(trackLP); trackLP.connect(trackLP2); trackLP2.connect(trackLevel); trackLevel.connect(musicDuck);
+    }
 
     var sfxChan = ctx.createGain(); sfxChan.gain.value = muteSfx ? 0 : 1;
     var sfxBus = ctx.createGain(); sfxBus.gain.value = MIX.sfx;
@@ -340,7 +358,7 @@ if (typeof window !== 'undefined') window.__N = N;
     }
 
     /* ================================ nappe (repli) ================================ */
-    var padVoices = [], padFilter, padBase = 1300;
+    var padVoices = [], padFilter, padBase = 2300;
     (function () {
       var mix = ctx.createGain(); mix.gain.value = 0.25;
       padFilter = ctx.createBiquadFilter(); padFilter.type = 'lowpass';
@@ -463,8 +481,8 @@ if (typeof window !== 'undefined') window.__N = N;
     function leadNote(t, midi, dur, vel) {
       var g = ctx.createGain();
       var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 2.0;
-      lp.frequency.setValueAtTime(2900, t);
-      lp.frequency.exponentialRampToValueAtTime(1300, t + dur + 0.08);
+      lp.frequency.setValueAtTime(7500, t);
+      lp.frequency.exponentialRampToValueAtTime(3600, t + dur + 0.08);
       var a = ctx.createOscillator(), b = ctx.createOscillator();
       a.type = 'sawtooth'; b.type = 'triangle';
       a.frequency.value = hz(midi); b.frequency.value = hz(midi);
@@ -501,11 +519,14 @@ if (typeof window !== 'undefined') window.__N = N;
     /* le battement : lub-dub, deux coups graves saturés avec composante médium (deux nœuds chacun) */
     function heartbeat(t, vel, out) {
       [[0, 78, 0.9], [0.17, 66, 0.7]].forEach(function (c) {
-        var o = ctx.createOscillator(); o.type = 'triangle';
-        o.frequency.setValueAtTime(c[1] * 2.2, t + c[0]); o.frequency.exponentialRampToValueAtTime(c[1], t + c[0] + 0.08);
-        var g = ctx.createGain(); o.connect(g); g.connect(out || LAY.heart);
-        pluck(g.gain, t + c[0], 0.004, 0.16, vel * c[2]);
+        var o = ctx.createOscillator(); o.type = 'sawtooth';           /* dent de scie filtrée : le grave a sa composante médium */
+        o.frequency.setValueAtTime(c[1] * 2.6, t + c[0]); o.frequency.exponentialRampToValueAtTime(c[1], t + c[0] + 0.08);
+        var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500; lp.Q.value = 1;
+        var g = ctx.createGain(); o.connect(lp); lp.connect(g); g.connect(out || LAY.heart);
+        pluck(g.gain, t + c[0], 0.004, 0.16, vel * c[2] * 0.7);
         o.start(t + c[0]); o.stop(t + c[0] + 0.22);
+        var n = noise(t + c[0], 0.05, null, hatBuf), ng = ctx.createGain(); n.connect(ng); ng.connect(out || LAY.heart);
+        pluck(ng.gain, t + c[0], 0.002, 0.05, vel * c[2] * 0.5);
       });
     }
 
@@ -580,13 +601,12 @@ if (typeof window !== 'undefined') window.__N = N;
       tir: function (t, o, g) {
         var k = (o.pitch | 0) % 5; if (k < 0) k += 5;
         var f = hz(keyNote(74, [0, 2, 1, 3, 4][k])) * vary(0.012), d = 0.05 + srnd() * 0.016;
-        voice(t, 'triangle', f, f * 0.62, d, 0.002, d, 0.085 * g, 2600);
+        voice(t, 'triangle', f * 1.1, f * 0.7, d, 0.002, d, 0.085 * g, 2600);
         return d + 0.03;
       },
       salve: function (t, o, g) {
         var f = hz(keyNote(74, 1 + ((o.pitch | 0) % 3))) * vary(0.02);
-        voice(t, 'triangle', f * 1.3, f * 0.7, 0.07, 0.002, 0.08, 0.075 * g, 2400);
-        voice(t, 'square', f * 2, f, 0.05, 0.002, 0.045, 0.02 * g, 2200);
+        voice(t, 'triangle', f * 1.3, f * 0.7, 0.07, 0.002, 0.08, 0.085 * g, 2400);
         return 0.12;
       },
       boostOn: function (t, o, g) {
@@ -600,8 +620,8 @@ if (typeof window !== 'undefined') window.__N = N;
         return 0.3;
       },
       boostPanne: function (t, o, g) {                /* un seul clic grave */
-        voice(t, 'triangle', 240, 95, 0.05, 0.001, 0.09, 0.2 * g, 0);
-        burst(t, 'bandpass', 950, 0.9, 0.001, 0.025, 0.2 * g);
+        voice(t, 'triangle', 260, 100, 0.04, 0.001, 0.05, 0.04 * g, 0);
+        burst(t, 'bandpass', 1100, 0.9, 0.001, 0.035, 0.85 * g);
         return 0.14;
       },
       traversee: function (t, o, g) {
@@ -673,8 +693,8 @@ if (typeof window !== 'undefined') window.__N = N;
 
       /* ---- impacts ---- */
       impact: function (t, o, g) {
-        burst(t, 'bandpass', 1100 + srnd() * 300, 0.9, 0.001, 0.04, 0.13 * g);
-        voice(t, 'sine', 210, 95, 0.04, 0.001, 0.06, 0.07 * g, 0);
+        burst(t, 'bandpass', 1100 + srnd() * 300, 0.9, 0.001, 0.045, 0.36 * g);
+        voice(t, 'sine', 210, 95, 0.04, 0.001, 0.05, 0.035 * g, 0);
         return 0.08;
       },
       impactBoss: function (t, o, g) {                 /* métallique */
@@ -693,10 +713,9 @@ if (typeof window !== 'undefined') window.__N = N;
         var c = clamp(o.pitch | 0, 0, 9);
         killStack = (t - killLast < 0.14) ? Math.min(12, killStack + 1) : 0; killLast = t;   /* rapprochés : +1 demi-ton */
         var f = Math.min(2300, hz(keyNote(62, 3 + c) + killStack) * vary(0.01));
-        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.2 * g, 0);
-        voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.06 * g, 1900);
-        burst(t, 'bandpass', 1000 + srnd() * 250, 0.9, 0.001, 0.05, 0.2 * g);
-        voice(t, 'sine', 160, 55, 0.08, 0.002, 0.1, 0.045 * g, 0);
+        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.32 * g, 0);
+        voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.1 * g, 1900);
+        burst(t, 'bandpass', 1000 + srnd() * 250, 0.9, 0.001, 0.05, 0.32 * g);
         send(body, MIX.revSend.sfx, 's');
         duck(t, MIX.duckKill, 0.12);
         return 0.25;
@@ -748,10 +767,10 @@ if (typeof window !== 'undefined') window.__N = N;
 
       /* ---- ennemis et arène : médiums rêches ---- */
       tirEnnemi: function (t, o, g) {
-        var f = 640 * vary(0.03);
-        voice(t, 'sawtooth', f, f * 0.55, 0.1, 0.003, 0.12, 0.07 * g, 1500);
-        burst(t, 'bandpass', 900, 1.6, 0.001, 0.05, 0.05 * g);
-        return 0.16;
+        var f = 380 * vary(0.03);
+        voice(t, 'sawtooth', f, f * 2.2, 0.14, 0.004, 0.16, 0.085 * g, 2000);
+        burst(t, 'bandpass', 1500, 1.4, 0.004, 0.09, 0.09 * g);
+        return 0.2;
       },
       arme: function (t, o, g) {                       /* une signature par type d'armement */
         var k = armeKey(o.type), i;
@@ -797,7 +816,8 @@ if (typeof window !== 'undefined') window.__N = N;
         lp.frequency.setValueAtTime(220, t); lp.frequency.linearRampToValueAtTime(700, t + 0.5); lp.frequency.linearRampToValueAtTime(260, t + 1.0);
         var ng = ctx.createGain(); pluck(ng.gain, t, 0.3, 0.7, 0.24 * g);
         n.connect(lp); lp.connect(ng); ng.connect(OUT);
-        voice(t, 'sawtooth', 82, 74, 0.9, 0.3, 0.7, 0.07 * g, 900);
+        voice(t, 'sawtooth', 82, 74, 0.9, 0.3, 0.7, 0.09 * g, 1700);
+        burst(t, 'bandpass', 850, 0.9, 0.3, 0.7, 0.22 * g);
         return 1.1;
       },
       warning: function (t, o, g) {                    /* corne entre 1,3 et 1,8 kHz */
@@ -812,9 +832,8 @@ if (typeof window !== 'undefined') window.__N = N;
       butin: function (t, o, g) {                      /* escalier : +1 demi-ton par ramassage dans les 1,2 s, jusqu'à +12 */
         butinStack = (t - butinLast < 1.2) ? Math.min(12, butinStack + 1) : 0; butinLast = t;
         var f = hz(74 + butinStack) * vary(0.006);
-        var a = voice(t, 'triangle', f, f, 0, 0.003, 0.14, 0.11 * g, 0);
-        voice(t, 'sine', f * 1.5, f * 1.5, 0, 0.003, 0.1, 0.03 * g, 0);
-        send(a, MIX.revSend.sfx, 's'); return 0.18;
+        voice(t, 'triangle', f, f, 0, 0.003, 0.14, 0.12 * g, 0);
+        return 0.18;
       },
       noyau: function (t, o, g) {                      /* arpège */
         var d = run(t, 74, [0, 2, 3, 5], 0.055, 'triangle', 0.2, 0.1 * g, 3200);
@@ -830,9 +849,10 @@ if (typeof window !== 'undefined') window.__N = N;
 
       /* ---- danger : graves saturés avec composante médium ---- */
       coupe: function (t, o, g) {
-        voice(t, 'sawtooth', 230, 55, 0.2, 0.002, 0.28, 0.3 * g, 1300);
-        burst(t, 'bandpass', 700, 0.8, 0.001, 0.1, 0.26 * g);
-        voice(t, 'sine', 150, 50, 0.1, 0.002, 0.18, 0.12 * g, 0);
+        voice(t, 'sawtooth', 300, 70, 0.2, 0.002, 0.28, 0.5 * g, 2200);
+        burst(t, 'bandpass', 800, 0.8, 0.001, 0.12, 0.55 * g);
+        voice(t, 'square', 520, 180, 0.12, 0.002, 0.16, 0.1 * g, 1800);
+        voice(t, 'sine', 150, 50, 0.1, 0.002, 0.18, 0.07 * g, 0);
         duck(t, MIX.duckHurt, 0.3); return 0.4;
       },
       mort: function (t, o, g) {
@@ -894,8 +914,10 @@ if (typeof window !== 'undefined') window.__N = N;
         duck(t, MIX.duckInfo, 0.6); return 0.75;
       },
       defiRate: function (t, o, g) {                   /* deux notes qui retombent */
-        voice(t, 'triangle', hz(72), hz(72), 0, 0.005, 0.2, 0.14 * g, 2400);
-        voice(t + 0.17, 'triangle', hz(65), hz(63), 0.2, 0.005, 0.3, 0.14 * g, 2400); return 0.5;
+        voice(t, 'triangle', hz(79), hz(79), 0, 0.005, 0.2, 0.14 * g, 3000);
+        voice(t, 'square', hz(79), hz(79), 0, 0.005, 0.2, 0.03 * g, 2400);
+        voice(t + 0.17, 'triangle', hz(72), hz(70), 0.2, 0.005, 0.3, 0.14 * g, 3000);
+        voice(t + 0.17, 'square', hz(72), hz(70), 0.2, 0.005, 0.3, 0.03 * g, 2400); return 0.5;
       },
       record: function (t, o, g) {                     /* fanfare */
         var d = run(t, 74, [0, 2, 3, 5, 7, 8], 0.085, 'triangle', 0.26, 0.14 * g, 3200);
@@ -925,15 +947,15 @@ if (typeof window !== 'undefined') window.__N = N;
           oo.frequency.setValueAtTime(290 * v, t); oo.frequency.exponentialRampToValueAtTime(80 * v, t + 0.34);
           oo.connect(lp); oo.start(t); oo.stop(t + 0.42);
         });
-        burst(t, 'bandpass', 700, 1, 0.001, 0.09, 0.18 * g);
+        burst(t, 'bandpass', 800, 1, 0.001, 0.12, 0.32 * g);
         send(gg, MIX.revSend.sfx * 1.2, 's'); duck(t, MIX.duckHurt, 0.45);
         return 0.42;
       },
       intro: function (t, o, g) {
         var n = noise(t, 2.0, srnd), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 1.6;
-        lp.frequency.setValueAtTime(160, t); lp.frequency.exponentialRampToValueAtTime(2600, t + 1.9);
+        lp.frequency.setValueAtTime(300, t); lp.frequency.exponentialRampToValueAtTime(3600, t + 1.9);
         var gg = ctx.createGain();
-        gg.gain.setValueAtTime(0.0001, t); gg.gain.linearRampToValueAtTime(0.16 * g, t + 1.88);
+        gg.gain.setValueAtTime(0.0001, t); gg.gain.linearRampToValueAtTime(0.30 * g, t + 1.88);
         gg.gain.exponentialRampToValueAtTime(0.0001, t + 2.0);
         n.connect(lp); lp.connect(gg); gg.connect(OUT);
         var dr = ctx.createOscillator(); dr.type = 'sawtooth';
@@ -982,8 +1004,11 @@ if (typeof window !== 'undefined') window.__N = N;
       var c = SCFG[key] || DEFCFG, s = sst[key] || (sst[key] = { last: -1e9, dens: 0, ends: [] });
       if (!c.nofuse && t - s.last < c.win) { jr.fusionnes++; return; }
       if (c.basse) {                                    /* le budget de nœuds : tir a sa réserve, les autres lâchent d'abord */
-        var lim = key === 'tir' ? NODE_BUDGET : NODE_BUDGET - 16;
-        if (nodesLast(1) > lim) { jr.budget++; return; }
+        /* le budget compte les nœuds des sons seuls. Avec la piste, la musique n'en crée que 3 à 5 par seconde ; sans piste (repli),
+           le moteur génératif en crée 55 à 61 : les sons y reçoivent alors une part plus petite, mais réelle, au lieu d'être coupés. */
+        var cap = (nodesLast(1) - sfxNodesLast(1)) > 30 ? 40 : NODE_BUDGET - 6;
+        var lim = key === 'tir' ? cap : cap - 8;
+        if (sfxNodesLast(1) > lim) { jr.budget++; return; }
       }
       s.dens = s.dens * Math.exp(-(t - s.last)) + 1; s.last = t;
       var live = [];
@@ -994,7 +1019,8 @@ if (typeof window !== 'undefined') window.__N = N;
       var pn = quantPan(o.pan);
       if (pn !== 0) { var pp = ctx.createStereoPanner(); pp.pan.value = pn; pp.connect(sfxBus); OUT = pp; } else OUT = sfxBus;
       var len = 0.2;
-      try { len = SFX[key](t, o, g); } finally { OUT = sfxBus; }
+      inSfx = true;
+      try { len = SFX[key](t, o, g); } finally { OUT = sfxBus; inSfx = false; }
       s.ends.push(t + (len || 0.2));
       jr.joues[key] = (jr.joues[key] || 0) + 1;
     }
@@ -1055,7 +1081,7 @@ if (typeof window !== 'undefined') window.__N = N;
     var wantNom = 'titre', wantSet = false;
     var anchors = [];                        /* jointures à venir : {t, over, dur} ; le moteur s'y recale */
     var heartNext = 0, leadStep = 0, sparkStep = 0, invStep = 0;
-    var layerLog = [];                       /* entrées et sorties de couche : {l, on, t} (preuve G-31) */
+    var layerLog = [], itemLog = [], percJust = false;   /* entrées et sorties de couche : {l, on, t} (preuve G-31) ; tous les items de la piste */
     var accLog = [];                         /* accents : {nom, t} */
 
     function effT() {                        /* la tension du repli : la section la remonte ou la plafonne */
@@ -1103,20 +1129,24 @@ if (typeof window !== 'undefined') window.__N = N;
       /* couches : une seule fois par mesure, jamais en cours de mesure (G-31) */
       tSmooth = overMode ? tTarget : effT();
       var ts = tSmooth, bd = barDurCur;
+      rampTo(musicLevel.gain, overMode ? MIX.music + 0.5 * MIX.musicTension : MIX.music + MIX.musicTension * ts, cur, bd);
       dangerBar = dangerV;
       if (overMode) {
         var nPerc = ts >= (onPerc ? 0.55 : 0.60), nSpark = ts >= (onSpark ? 0.75 : 0.80);
         var nHeart = dangerV >= (onHeart ? 0.12 : 0.2);
         setLayer('perc', nPerc, cur); setLayer('spark', nSpark, cur); setLayer('heart', nHeart, cur);
+        if (nPerc && !onPerc) percJust = true;
+        if (nHeart && !onHeart) heartNext = cur;
         onPerc = nPerc; onSpark = nSpark; onHeart = nHeart; onDrum = false; onLead = false;
         ['pad', 'bass', 'drum', 'lead'].forEach(function (k) { rampTo(LAY[k].gain, 0, cur, 0.30); });
       } else {
-        var nDrum = ts >= (onDrum ? 0.14 : 0.20), nLead = ts >= (onLead ? 0.34 : 0.40);
+        var nDrum = ts >= (onDrum ? 0.14 : 0.20), nLead = true;     /* le lead est toujours là, plus ou moins fort */
         var nSpark2 = ts >= (onSpark ? 0.75 : 0.80), nHeart2 = dangerV >= (onHeart ? 0.12 : 0.2);
         setLayer('drum', nDrum, cur); setLayer('lead', nLead, cur); setLayer('spark', nSpark2, cur); setLayer('heart', nHeart2, cur);
+        if (nHeart2 && !onHeart) heartNext = cur;
         onDrum = nDrum; onLead = nLead; onSpark = nSpark2; onHeart = nHeart2; onPerc = false;
         rampTo(LAY.drum.gain, onDrum ? MIX.drum * (0.7 + 0.3 * ts) : 0, cur, bd);
-        rampTo(LAY.lead.gain, onLead ? MIX.lead : 0, cur, bd);
+        rampTo(LAY.lead.gain, MIX.lead * (0.75 + 0.5 * ts), cur, bd);
         rampTo(LAY.pad.gain, MIX.pad * (1 - 0.1 * ts), cur, bd);
         rampTo(LAY.bass.gain, MIX.bass * (0.85 + 0.15 * ts), cur, bd);
         leadDelay.delayTime.setTargetAtTime(stepDur * 3, cur, 0.1);
@@ -1141,14 +1171,7 @@ if (typeof window !== 'undefined') window.__N = N;
       var s = step, t = cur;
       if (overMode) stepOver(s, t); else stepFull(s, t);
       /* ÉTINCELLES, INVERSION, sirène, battement : communs aux deux modes */
-      if (onSpark && ph.sparkMask.charCodeAt(s) === 49) {
-        var sq = ph.spark, idx = sq[(sparkStep++) % sq.length];
-        sparkNote(t, keyNote(74, idx), stepDur * 1.5, 0.9);
-      }
-      if (onInv) {
-        var iq = ph.inv, ii = iq[(invStep++) % iq.length];
-        invNote(t, keyNote(74, ii + 1), stepDur * 1.15, 0.9);
-      }
+      if (s === 0) { if (onSpark) toneBar(t, 'spark'); if (onInv) toneBar(t, 'inv'); }
       if (sirenWant && s === 0) siren(t, barDurCur / 2);
       if (sirenWant && s === 8) siren(t, barDurCur / 2);
       if (onHeart) {
@@ -1161,14 +1184,45 @@ if (typeof window !== 'undefined') window.__N = N;
       step++;
       if (step >= 16) { step = 0; bar++; barT0 = cur; newBar(); }
     }
-    function stepOver(s, t) {                 /* PERCU : charleston en doubles croches, clap ; réduite à la grosse caisse en danger */
-      if (!onPerc) return;
-      if (dangerV > 0.5) { if (s % 4 === 0) kick(t, 0.9, LAY.perc); return; }
-      var hm = ph.hat.charCodeAt(s) === 49;
-      if (bp.hatMut === 'sixteen' || tSmooth > 0.8) hm = true;
-      if (bp.hatMut === 'drop' && (s === 4 || s === 12)) hm = false;
-      if (hm) hat(t, 0.85, bp.openHat && s === 10, LAY.perc);
-      if ((s === 4 || s === 12) && bp.clapOn) clap(t, 0.8, LAY.perc);
+    /* PERCU : charleston en doubles croches et clap, réduits à la grosse caisse en danger. Toute la mesure est
+       synthétisée dans UN tampon (deux nœuds par mesure, pas deux par charleston : le budget de nœuds du § 5.8). */
+    function stepOver(s, t) {
+      if (s === 0 && onPerc) percBar(t);
+    }
+    function percBar(t) {
+      var bd = barDurCur, n = Math.ceil((bd + 0.3) * sr), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0);
+      var h = hatBuf.getChannelData(0), z = noiseBuf.getChannelData(0), hl = h.length, s, i;
+      var reduce = dangerV > 0.5, first = percJust; percJust = false;
+      function addHat(at, len, amp) { var o = Math.floor(at * sr), off = (mrnd() * (hl - len - 4)) | 0, tau = len / 4; for (var k = 0; k < len && o + k < n; k++) d[o + k] += h[off + k] * amp * Math.exp(-k / tau); }
+      function addKick(at, amp) {
+        var o = Math.floor(at * sr), ph_ = 0, len = Math.floor(0.26 * sr);
+        for (var k = 0; k < len && o + k < n; k++) { var tt = k / sr, f = 42 + 108 * Math.exp(-tt / 0.03); ph_ += 2 * Math.PI * f / sr; d[o + k] += Math.sin(ph_) * amp * Math.exp(-tt / 0.07); }
+        var cl = Math.floor(0.012 * sr); for (var k2 = 0; k2 < cl && o + k2 < n; k2++) d[o + k2] += h[k2 + 100] * amp * 1.4 * Math.exp(-k2 / (cl / 3));
+      }
+      function addClap(at, amp) {                                   /* trois claquements dans une bande médium, le dernier plus long */
+        var w = 2 * Math.PI * 1150 / sr, al = Math.sin(w) / 2, a0 = 1 + al, b0 = al / a0, a1 = -2 * Math.cos(w) / a0, a2 = (1 - al) / a0;
+        var y1 = 0, y2 = 0, x1 = 0, x2 = 0, o0 = Math.floor(at * sr), off = (mrnd() * (z.length - 9000)) | 0;
+        for (var c = 0; c < 3; c++) {
+          var oc = o0 + Math.floor(c * 0.011 * sr), len = Math.floor((c === 2 ? 0.13 : 0.016) * sr);
+          for (var k = 0; k < len && oc + k < n; k++) {
+            var x = z[off + c * 1000 + k], y = b0 * (x - x2) - a1 * y1 - a2 * y2; x2 = x1; x1 = x; y2 = y1; y1 = y;
+            d[oc + k] += y * amp * 2.4 * Math.exp(-k / (len / (c === 2 ? 3.2 : 2.5)));
+          }
+        }
+      }
+      if (first) { addHat(0, Math.floor(0.19 * sr), 0.9); addClap(0, 0.7); }   /* l'entrée de la couche tombe sur la barre */
+      for (s = 0; s < 16; s++) {
+        var at = s * stepDur;
+        if (reduce) { if (s % 4 === 0) addKick(at, 0.9); continue; }
+        var hm = ph.hat.charCodeAt(s) === 49;
+        if (bp.hatMut === 'sixteen' || tSmooth > 0.8) hm = true;
+        if (bp.hatMut === 'drop' && (s === 4 || s === 12)) hm = false;
+        if (hm && !(first && s === 0)) addHat(at, Math.floor((bp.openHat && s === 10 ? 0.19 : 0.036) * sr), bp.openHat && s === 10 ? 0.5 : 0.85);
+        if ((s === 4 || s === 12) && bp.clapOn) addClap(at, 0.8);
+      }
+      var src = ctx.createBufferSource(); src.buffer = b;
+      var g = ctx.createGain(); g.gain.value = 1;
+      src.connect(g); g.connect(LAY.perc); src.start(t);
     }
     function stepFull(s, t) {                 /* le repli : un arrangement complet à quatre couches */
       var hushed = false;
@@ -1177,6 +1231,7 @@ if (typeof window !== 'undefined') window.__N = N;
       if (bp.brk === 'stab' && s >= 13) hushed = true;
       if (bp.brk === 'stab' && s === 12) { kick(t, 1); snare(t, 0.9); }
       var root = wrapRoot(ROOT_BASS + bp.chord[0], 36);   /* D2..C#3 */
+      if (!onDrum && s % 2 === 0) hat(t, 1.0, false, LAY.perc);   /* le chuintement du repli : l'air, même sans batterie */
       if (!hushed) {
         var c = ph.bass.charCodeAt(s) - 48;
         if (c >= 1 && c <= 4) {
@@ -1214,6 +1269,39 @@ if (typeof window !== 'undefined') window.__N = N;
       }
     }
 
+    /* ÉTINCELLES (arpège carré à 25 %) et INVERSION (arpège rapide en dents de scie) : toute la mesure est écrite
+       dans UN tampon par lecture d'une table à bande limitée (pas de nœud par note : budget de nœuds du § 5.8) */
+    var TAB = (function () {
+      var n = 1024, pulse = new Float32Array(n), saw = new Float32Array(n);
+      for (var h = 1; h <= 12; h++) for (var i = 0; i < n; i++) {
+        var a = 2 * Math.PI * h * i / n;
+        pulse[i] += (2 / (h * Math.PI)) * Math.sin(h * Math.PI * 0.25) * Math.cos(a - h * Math.PI * 0.25);
+        saw[i] += Math.sin(a) / h * 0.6;
+      }
+      return { n: n, spark: pulse, inv: saw };
+    })();
+    function toneBar(t, kind) {
+      var bd = barDurCur, n = Math.ceil((bd + 0.4) * sr), b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0), tab = TAB[kind], N_ = TAB.n;
+      var isSpark = kind === 'spark', sq = isSpark ? ph.spark : ph.inv, st = isSpark ? sparkStep : invStep, any = false;
+      for (var s = 0; s < 16; s++) {
+        if (isSpark && ph.sparkMask.charCodeAt(s) !== 49) continue;
+        var idx = sq[(st++) % sq.length], midi = isSpark ? keyNote(74, idx) : keyNote(74, idx + 1);
+        var o = Math.floor(s * stepDur * sr), len = Math.floor((isSpark ? 1.5 : 1.15) * stepDur * sr + 0.05 * sr);
+        var inc = hz(midi) / sr * N_, ph_ = 0, att = Math.floor(0.003 * sr), tau = (len / sr) / 5 * sr, amp = isSpark ? 0.9 : 0.8;
+        for (var k = 0; k < len && o + k < n; k++) {
+          var ip = ph_ | 0, fr = ph_ - ip, v = tab[ip & (N_ - 1)] * (1 - fr) + tab[(ip + 1) & (N_ - 1)] * fr;
+          d[o + k] += v * amp * (k < att ? k / att : Math.exp(-(k - att) / tau));
+          ph_ += inc; if (ph_ >= N_) ph_ -= N_;
+        }
+        any = true;
+      }
+      if (isSpark) sparkStep = st; else invStep = st;
+      if (!any) return;
+      var src = ctx.createBufferSource(); src.buffer = b;
+      var g = ctx.createGain(); g.gain.value = 1;
+      src.connect(g); g.connect(isSpark ? LAY.spark : LAY.inv); src.start(t);
+    }
+
     /* ---- ordonnanceur ---- */
     var running = false, begun = false;
     function doAnchor(a) {
@@ -1248,7 +1336,7 @@ if (typeof window !== 'undefined') window.__N = N;
     /* ================================ la piste : le séquenceur horizontal ================================ */
     var P = null;                              /* piste.json */
     var T = {
-      bufs: [], offs: [], suspect: [], items: [], last: null, tNext: 0, mode: 'off',
+      bufs: [], offs: [], suspect: [], decOff: 0, items: [], last: null, tNext: 0, mode: 'off',
       fam: null, want: null, pos: {}, recent: [], loopI: 0, introPlayed: false,
       cut: false, afterDeath: false, deathBloc: -1, deathAt: -1e9, resumeReq: false,
       alertSpec: null, proofAt: 0, proofDone: true, failed: 0, FAMS: {}, engagedOnce: false
@@ -1256,17 +1344,19 @@ if (typeof window !== 'undefined') window.__N = N;
     var trackTap = null;
     function trackTone() {
       /* passe-bas : 2,5 kHz à la tension 0,15 (VAGUE 1), 18 kHz à partir de 0,6, en échelle logarithmique ;
-         gain : −3 dB à 0,15, 0 dB à 0,6. La piste n'est JAMAIS accélérée. */
+         gain : de −7,2 dB à 0,15 à 0 dB à partir de 0,6 (le plan disait −3 dB : mesuré au téléphone, il ne donne que
+         2 dB d'écart calme -> chaos, et le tableau du mixage exige 6). La piste n'est JAMAIS accélérée. */
       var u = clamp((tTarget - 0.15) / 0.45, 0, 1);
       var f = 2500 * Math.pow(18000 / 2500, u);
       var sp = PROFIL[wantNom];
       if (dangerV > 0.5) f = Math.min(f, 2000 + (1 - dangerV) * 8000);
       if (invWant) f = Math.max(f, 14000);
       f = Math.min(f, OPEN);
-      var db = -3 * (1 - u);
-      var gl = MIX.track * Math.pow(10, db / 20) * 0.7;
+      var db = -7.2 * (1 - u);      /* mesuré : −3 dB ne donnait que 2 dB d'écart au téléphone ; le tableau du mixage exige +6 dB */
+      var gl = MIX.track * Math.pow(10, db / 20);
       var now = ctx.currentTime;
       trackLP.frequency.cancelScheduledValues(now); trackLP.frequency.setTargetAtTime(f, now, 0.08);
+      trackLP2.frequency.cancelScheduledValues(now); trackLP2.frequency.setTargetAtTime(f, now, 0.08);
       trackLevel.gain.cancelScheduledValues(now); trackLevel.gain.setTargetAtTime(gl, now, 0.08);
       secLP.frequency.cancelScheduledValues(now); secLP.frequency.setTargetAtTime(sp && sp.lp ? sp.lp : OPEN, now, 0.05);
     }
@@ -1301,11 +1391,22 @@ if (typeof window !== 'undefined') window.__N = N;
       if (Math.abs(off) > 0.06) { T.suspect[i] = off; return 0; }
       T.suspect[i] = 0; return off;
     }
+    /* Le retard du décodeur est une propriété du décodeur et du fichier, la même pour tous les blocs (même encodeur,
+       mêmes réglages). Chaque bloc donne une mesure ; l'attaque la plus forte peut être une autre que celle de la
+       source, la médiane des mesures plausibles écarte ces erreurs et s'affine à chaque bloc décodé. */
+    var offSamples = [];
     function setBuffer(i, buf) {
       T.bufs[i] = buf;
-      T.offs[i] = P && buf ? measureOffset(i, buf) : 0;
+      if (P && buf) {
+        var o = measureOffset(i, buf);
+        if (T.suspect[i] === 0) offSamples.push(o);
+        if (offSamples.length) {
+          var srt = offSamples.slice().sort(function (a, c) { return a - c; });
+          T.decOff = srt[srt.length >> 1];
+        }
+      }
     }
-    function dropBuffer(i) { T.bufs[i] = null; T.offs[i] = 0; }
+    function dropBuffer(i) { T.bufs[i] = null; }
     function ready(i) { return !!(P && T.bufs[i]); }
 
     /* grille de barres : celle de l'item qui couvre t, sinon la grille libre du moteur */
@@ -1392,6 +1493,7 @@ if (typeof window !== 'undefined') window.__N = N;
       src.start(tSrc, fileStart, len);
       var it = { bloc: spec.bloc, fam: spec.fam, spec: spec, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, src: src, g: g, from: from, to: to, leadD: leadD };
       T.items.push(it); T.last = it; T.tNext = tEnd; T.fam = spec.fam; T.mode = 'on';
+      itemLog.push({ bloc: spec.bloc, fam: spec.fam, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, from: from, to: to, lead: leadD > 0 });
       T.recent.push(spec.bloc); if (T.recent.length > 12) T.recent.shift();
       anchors.push({ t: tJoin, over: true, dur: barD });
       anchors.sort(function (x, y) { return x.t - y.t; });
@@ -1603,7 +1705,7 @@ if (typeof window !== 'undefined') window.__N = N;
     var rmsSfxF = offline ? function () { return 0; } : tap(sfxBus);
     var rmsOutF = offline ? function () { return 0; } : tap(gate);
     trackTap = offline ? null : tap(trackBus);
-    nodeLog.length = 0; nodeHead = 0;                 /* le graphe permanent ne compte pas dans les nœuds créés par seconde */
+    nodeLog.length = 0; nodeHead = 0; nodeTotal = 0;   /* le graphe permanent ne compte pas dans les nœuds créés par seconde */
 
     var muffleAt = 0, beatOut = { bar: 0, beat: 0, phase: 0 };
     return {
@@ -1639,7 +1741,7 @@ if (typeof window !== 'undefined') window.__N = N;
       rms: rmsMusic, rmsSfx: rmsSfxF, rmsOut: rmsOutF,
       cursor: function () { return cur; },
       barSigs: function () { return barSigs; },
-      layerLog: function () { return layerLog; }, accLog: function () { return accLog; },
+      layerLog: function () { return layerLog; }, accLog: function () { return accLog; }, itemLog: function () { return itemLog; },
       journal: function () { return jr; },
       nodes: function () { return nodesLast(1); }, nodesTotal: function () { return nodeTotal; },
       beat: function () {
@@ -1656,7 +1758,7 @@ if (typeof window !== 'undefined') window.__N = N;
         if (it) { var b = P.blocs[it.bloc]; r.mesure = Math.floor(b.mesures[0] + Math.max(0, (now - it.tCore + it.from) / it.barD)); }
         return r;
       },
-      trackState: function () { return { items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
+      trackState: function () { return { decOff: T.decOff, items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
       trackRms: function () { return trackTap ? trackTap() : 0; },
       info: function () {
         return {
@@ -1932,7 +2034,7 @@ if (typeof window !== 'undefined') window.__N = N;
       opts = opts || {};
       var sr = rate || 44100, dur = seconds;
       var ctx = new OC(2, Math.ceil(sr * dur), sr);
-      var e = build(ctx, true, mute);
+      var e = build(ctx, true, mute, !!opts.brut);
       if (opts.piste) {
         e.setPiste(opts.piste);
         for (var k in (opts.buffers || {})) e.setBuffer(+k, opts.buffers[k]);
