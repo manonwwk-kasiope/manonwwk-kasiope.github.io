@@ -4,7 +4,7 @@
    5.6 : 3 à 5 plaques, rareté lue par l'encre et par les crans, chute à 55 ms d'écart, « CHOISIS n », un toucher n'est
    accepté qu'après la garde de N.R.cartes.garde), la PAUSE (REPRENDRE, cartes prises, défi) et l'ÉCRAN DE FIN (§ 5.6 :
    cause de la mort, progression, score et écart, build, bilan, note, défi, conseil, énergie et PROCHAIN DÉBLOCAGE avec sa
-   barre, REJOUER). Les données de la fin viennent de N.score.resume() ; la main des cartes, de N.cartes.main().
+   barre, CONTINUER et REJOUER). Les données de la fin viennent de N.score.resume() ; la main des cartes, de N.cartes.main().
 
    Ce module ne change JAMAIS l'état du jeu : il lit les touchers (N.outils.taps, remplis par 79-jeu.js), dessine,
    et dépose une SORTIE que 79-jeu.js reprend : sortie() -> { ecran, action, index, id } ou null. Seule entorse : sur un
@@ -33,6 +33,7 @@ N.ui = (function () {
     if (nom !== 'titre') duo(false);
     cur = nom; T = 0; out = null; choix = 0; bruit = false;
     cur_opts = opts || {};
+    if (nom === 'fin') choix = 1; // Entrée/Espace garde REJOUER par défaut (R-35).
     if (nom === 'cartes') {
       /* la main du tirage ; sans N.cartes, le repli v0 */
       if (N.cartes && N.cartes.main) {
@@ -57,6 +58,7 @@ N.ui = (function () {
   function publier() {
     var s = N.S; if (!s) return;
     s.ecran = { nom: cur, depuis: T, cartes: cur === 'cartes' ? main.slice() : [], niveaux: cur === 'cartes' ? niv : NIV_VIDE, choix: choix, pret: T >= (cur === 'cartes' ? gardeJ : CFG.garde) };
+    if (cur === 'fin') s.ecran.fin = finActions();
   }
 
   /* ============================ les entrées ============================ */
@@ -69,10 +71,37 @@ N.ui = (function () {
       if (q.key === 'KeyM' || (q.key === null && q.bouton === 'son')) continue;         // le bouton son est au HUD
       if (cur === 'demarrage' || cur === 'titre') { if (T >= 0.15) out = { ecran: cur, action: 'jouer' }; }
       else if (cur === 'pause') { if (q.key !== 'Tab') out = { ecran: cur, action: 'reprendre' }; }
-      else if (cur === 'fin') { if (T >= CFG.garde && q.key !== 'Tab' && q.key !== 'Escape') out = { ecran: cur, action: 'rejouer' }; }
+      else if (cur === 'fin') entreeFin(q);
       else if (cur === 'cartes') entreeCartes(q);
     }
     publier();
+  }
+  function finActions() {
+    var f = R.ecrans.fin, a = f.actions, sf = O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var x0 = (sf.l | 0) + a.marge, x1 = W - (sf.r | 0) - a.marge;
+    var h = Math.ceil(f.boutonPt / px()), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
+    var x = Math.round((x0 + x1 - w * 2 - a.ecart) / 2), y = H - (sf.b | 0) - a.marge - h;
+    var age = Math.floor(Math.max(0, T - f.garde)), c = f.continuer;
+    var propose = !cur_opts.victoire && !!(N.score && N.score.continuerPossible && N.score.continuerPossible());
+    return { continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
+      propose: propose, disponible: propose && age <= c.de - c.a, restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
+  }
+  function entreeFin(q) {
+    if (out) return;
+    // La date de début vient de boot ; un doigt déjà posé pendant la garde ne valide rien au relâcher.
+    if (q.key === null && typeof q.t0 === 'number' && typeof q.t1 === 'number' && T - (q.t1 - q.t0) / R.ecrans.fin.actions.msParSeconde < R.ecrans.fin.garde) return;
+    var a = finActions(), action = null;
+    if (q.key === 'ArrowLeft' || q.key === 'ArrowUp') choix = a.disponible ? 0 : 1;
+    else if (q.key === 'ArrowRight' || q.key === 'ArrowDown') choix = 1;
+    else if (q.key === 'Digit1') action = 'continuer';
+    else if (q.key === 'Digit2') action = 'rejouer';
+    else if (q.key === 'Enter' || q.key === 'Space') action = choix === 0 ? 'continuer' : 'rejouer';
+    else if (q.key === null) {
+      ['continuer', 'rejouer'].forEach(function (nom) {
+        var r = a[nom]; if (q.x >= r.x && q.x < r.x + r.w && q.y >= r.y && q.y < r.y + r.h) action = nom;
+      });
+    }
+    if (a.pret && action && (action !== 'continuer' || a.disponible)) out = { ecran: cur, action: action };
   }
   function entreeCartes(q) {
     var n = main.length, k = -1;
@@ -271,7 +300,8 @@ N.ui = (function () {
     O.textC('SNAKE 2975', W / 2, Math.round(H * 0.28), O.OS, true, 4);
     var rec = N.score ? N.score.record() : 0, y = Math.round(H * 0.28 + 38);
     if (rec > 0) {
-      O.textC('RECORD ' + O.pad(rec, 7), W / 2, y, O.JAUNE, true, 1);
+      var cr = N.score.classement ? N.score.classement()[0] : null;
+      O.textC('RECORD ' + O.pad(rec, 7) + (cr && cr.marque ? ' ' + cr.marque : ''), W / 2, y, O.JAUNE, true, 1);
       var e = N.score.energie | 0, p = N.score.prochain ? N.score.prochain() : null;
       if (e > 0) O.textC('ÉNERGIE ' + e + (p ? '  ·  ' + (DEBNOMS[p.id] || p.id) + ' DANS ' + p.reste : ''), W / 2, y + 11, O.ACIER, true, 1);
     }
@@ -335,10 +365,11 @@ N.ui = (function () {
     var sc = r ? r.score : (N.score ? N.score.score : 0);
     if (vu()) {
       var k = O.clamp((T - (bloc - 1) * CFG.rev) / 0.9, 0, 1), aff = Math.round(sc * (1 - (1 - k) * (1 - k))), w1 = O.textW('SCORE ', 1);
-      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7), cx0 + w1, yl, O.JAUNE, false, 1);
+      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7) + (r && r.marque ? ' ' + r.marque : ''), cx0 + w1, yl, O.JAUNE, false, 1);
       if (r && r.ecart !== null && k >= 1) droite((r.ecart >= 0 ? '+' : '') + espace(r.ecart), cx0 + cw, yl, r.ecart >= 0 ? O.JAUNE : O.ACIER, 1);
       var nr = r ? r.nouveauRecord : false;
-      O.text(nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7), cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
+      var classement = N.score && N.score.classement ? N.score.classement() : [], marqueRecord = classement.length && classement[0].marque ? ' ' + classement[0].marque : '';
+      O.text((nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7)) + marqueRecord, cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
     }
     yl += 24;
     /* 5. le build : son nom et ses icônes */
@@ -347,7 +378,7 @@ N.ui = (function () {
         O.text(r.build.nom, cx0, yl, O.OS, false, 1);
         var bi = r.build.armes || [], xi = cx0 + 7;
         for (var q = 0; q < bi.length; q++) {
-          icone(bi[q].id, xi, yl + 20, O.CYANP);
+          icone(bi[q].id, xi, yl + 20, O.OS);
           O.textC(romain(bi[q].palier !== undefined ? bi[q].palier : bi[q].niveau), xi, yl + 30, O.ACIER, false, 1); xi += 19;
         }
         if (r.build.pouvoir) icone(r.build.pouvoir, xi + 3, yl + 20, O.JAUNE);
@@ -400,13 +431,16 @@ N.ui = (function () {
         }
       }
     }
-    /* 10. REJOUER : une cible de 44 pt au bas de la colonne ; tout l'écran la valide, une fois la garde passée */
-    var ch = cible(), bw = Math.min(cw, 130), bx = cx + (port ? Math.round((cw - bw) / 2) : cw - bw), by = y1 - ch - 5;
-    var pret = T >= CFG.garde, cb = pret ? (((T * 1.25) % 1 < 0.8) ? O.OS : O.ACIER) : O.ARDOISE;
-    g.rect(bx - 1, by - 1, bw + 2, ch + 2, O.NP); g.rect(bx, by, bw, ch, O.ARDOISE);
-    g.rect(bx, by, bw, 1, pret ? O.JAUNE : O.ACIER); g.rect(bx, by + ch - 1, bw, 1, pret ? O.JAUNE : O.ACIER);
-    O.textC('REJOUER', bx + bw / 2, by + Math.round(ch / 2) - 3, cb, false, 1);
-    if (!O.hasTouch() && pret) O.textC('ESPACE', bx + bw / 2, by - 9, O.ACIER, false, 1);
+    /* 10. Deux cibles fixes et distinctes, sans clignotement. Un toucher hors cible ne relance plus. */
+    var actions = finActions(), ac = R.ecrans.fin.actions;
+    ['continuer', 'rejouer'].forEach(function (nom, i) {
+      var rc = actions[nom], ok = actions.pret && (nom !== 'continuer' || actions.disponible);
+      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER —';
+      g.rect(rc.x - 1, rc.y - 1, rc.w + 2, rc.h + 2, O.NP); g.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
+      g.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER); g.rect(rc.x, rc.y + rc.h - 1, rc.w, 1, ok ? O.JAUNE : O.ACIER);
+      if (!O.hasTouch() && choix === i && ok) { g.rect(rc.x, rc.y, 1, rc.h, O.JAUNE); g.rect(rc.x + rc.w - 1, rc.y, 1, rc.h, O.JAUNE); }
+      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - ac.texteH) / 2), ok ? O.OS : O.ACIER, false, 1);
+    });
   }
 
   function draw() {
@@ -419,5 +453,5 @@ N.ui = (function () {
   }
 
   return { ouvrir: ouvrir, fermer: fermer, actif: actif, update: update, draw: draw, sortie: sortie, ecran: ecran, cartes: CARTES, veil: veil, icone: icone,
-    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; } };
+    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions };
 })();

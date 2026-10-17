@@ -1092,6 +1092,7 @@ var MUSIQUE_EMBED = null;
       reglages: { lignes: 8 },
       fin: {
         titreEchelle: 3, garde: 0.45, continuer: { de: 9, a: 0 }, boutonPt: 44,
+        actions: { marge: 5, ecart: 4, largeurMax: 150, texteH: 7, msParSeconde: 1000 }, // fin : cibles sûres et conversion des dates des touchers
         notes: { S: 'FINIR, les 2 autres défis et aucune vie perdue', A: 'FINIR et au moins un autre défi', B: 'FINIR', C: 'CYCLOPE atteint', D: 'sinon' },
         lassoBuild: 0.30
       },
@@ -12634,6 +12635,8 @@ if (typeof window !== 'undefined') window.__N = N;
   }
   function tactile() { try { return !!(N.outils && N.outils.hasTouch && N.outils.hasTouch()); } catch (e) { return false; } }
   function sfx(nom) { try { if (N.music && N.music.sfx) N.music.sfx(nom); } catch (e) {} }
+  /* le thème de chaque pilote (63-themes.js) : les deux superposés tant que personne n'est pointé */
+  function theme(qui) { try { if (N.themes) N.themes.jouer(qui, { fondu: qui === 'deux' ? 1.5 : 0.5, volume: qui === 'deux' ? 0.7 : 1 }); } catch (e) {} }
   function art(nom) { try { return N.art && N.art.get ? N.art.get(nom) : null; } catch (e) { return null; } }
   function clipOn(nom) { try { return !!(N.art && N.art.play && N.art.play(nom)); } catch (e) { return false; } }
   function clipOff(nom) { try { if (N.art && N.art.stop) N.art.stop(nom); } catch (e) {} }
@@ -13147,14 +13150,14 @@ if (typeof window !== 'undefined') window.__N = N;
     clipPrep(INFO.elle.art); clipPrep(INFO.lui.art);
     var s = S(); if (s.input) s.input.any = false;
     journal('debut' + (C.deux ? ' deux-finis' : ''));
-    if (C.focus) viser(C.focus, 'reprise', true);
+    if (C.focus) viser(C.focus, 'reprise', true); else theme('deux');
     return true;
   }
   /* pointer un personnage : son clip joue (s'il existe), l'autre s'arrête */
   function viser(qui, via, muet) {
     if (qui !== 'elle' && qui !== 'lui') return;
     var change = C.focus !== qui;
-    C.focus = qui;
+    C.focus = qui; theme(qui);
     if (C.clip && C.clip !== INFO[qui].art) { clipOff(C.clip); C.clip = null; C.clipJoue = false; }
     if (!C.clip) { C.clip = INFO[qui].art; C.clipJoue = clipOn(C.clip); }
     if (change || muet) journal('pointe ' + qui + ' (' + via + ')' + (C.clipJoue ? ' clip' : ''));
@@ -13211,6 +13214,7 @@ if (typeof window !== 'undefined') window.__N = N;
     if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
     var s = S(); if (s.paused) return;
     C.t += dt; C.pt += dt;
+    if (N.themes) { try { N.themes.update(); } catch (e) {} }
     if (C.phase === 'revele' && C.pt >= CFG.revele) { C.phase = 'choix'; C.pt = 0; journal('choix ouvert'); }
     if (C.deux) C.ouvert = clamp01((C.t - CFG.revele * 0.5) / CFG.ouverture);
     if (C.phase === 'revele' || C.phase === 'choix') entrees();
@@ -13262,7 +13266,7 @@ if (typeof window !== 'undefined') window.__N = N;
     start: start, update: update, draw: draw,
     actif: function () { return C.on; },
     phase: function () { return C.phase; },
-    stop: function () { if (C.clip) clipOff(C.clip); C.clip = null; C.on = false; C.phase = 'fini'; C.finAppele = true; },
+    stop: function () { if (N.themes) { try { N.themes.arreter(0.3); } catch (e) {} } if (C.clip) clipOff(C.clip); C.clip = null; C.on = false; C.phase = 'fini'; C.finAppele = true; },
     personnage: function () { return SESSION; },
     marquerFini: function (qui) {
       if (qui !== 'elle' && qui !== 'lui') return false;
@@ -13283,6 +13287,136 @@ if (typeof window !== 'undefined') window.__N = N;
         journal: C.journal.slice() };
     },
     CFG: CFG, FOCAL: FOCAL
+  };
+})();
+
+/* ===== 63-themes.js ===== */
+/* ===== 63-themes.js — N.themes : le thème musical de chaque pilote =====
+   refonte/HISTOIRE.md (« un thème musical par personnage ») : ELLE, des arpèges rapides et un synthé brillant ;
+   LUI, une basse lente et des nappes chaudes. Les deux thèmes sont dans la même tonalité que Neon Velocity
+   (ré mineur : ré – si bémol – fa – do, deux mesures par accord) et sur la même horloge (152 BPM, en doubles
+   croches) : LUI joue à demi-temps sur la grille d'ELLE. Ils peuvent donc se superposer exactement — c'est
+   « deux », la musique des retrouvailles, où les deux mondes se touchent.
+
+   API
+     N.themes.jouer(qui, o)   qui = 'elle' | 'lui' | 'deux' ; o.fondu (s, défaut 0,6) ; o.volume (0..1, défaut 1).
+                              Rejouer le même thème ne le relance pas ; changer de thème fond l'un dans l'autre.
+     N.themes.arreter(fondu)  s'éteint en fondu (défaut 0,8 s).
+     N.themes.update()        à appeler à chaque image tant qu'un thème joue (ordonnancement à 150 ms d'avance).
+     N.themes.qui()           le thème en cours, ou null.
+     N.themes.state()         { qui, pas, mesure, actif } pour les bancs.
+   Sur le contexte audio de N.music (déjà débloqué au premier geste) ; muet si la musique est coupée ; rien ne
+   casse sans audio. Aucun hasard : les variations suivent le numéro de mesure. */
+
+N.themes = (function () {
+  var BPM = 152, PAS = 60 / BPM / 4;                  // une double croche
+  var ACC = [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]];   // Rém, Si♭, Fa, Do (fondamentale, tierce, quinte)
+  var A = { ctx: null, out: null, delay: null, bus: { elle: null, lui: null }, next: 0, pas: 0, qui: null, actif: false };
+
+  function audio() {
+    if (A.ctx) return A.ctx;
+    var c = null;
+    try { c = N.music && N.music.context ? N.music.context() : null; } catch (e) { c = null; }
+    if (!c || !c.createOscillator) return null;
+    A.ctx = c;
+    A.out = c.createGain(); A.out.gain.value = 0; A.out.connect(c.destination);
+    /* l'écho d'ELLE : une croche pointée, brillante */
+    A.delay = c.createDelay(1); A.delay.delayTime.value = PAS * 3;
+    var fb = c.createGain(); fb.gain.value = 0.35; A.delay.connect(fb); fb.connect(A.delay);
+    var ret = c.createGain(); ret.gain.value = 0.45; A.delay.connect(ret); ret.connect(A.out);
+    ['elle', 'lui'].forEach(function (k) { var g = c.createGain(); g.gain.value = 0; g.connect(A.out); A.bus[k] = g; });
+    return c;
+  }
+  function muet() { try { return !!(N.music && N.music.muted && (N.music.muted('musique') || N.music.muted() === true)); } catch (e) { return false; } }
+  function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+  /* ---- ELLE : arpège carré filtré, qui s'ouvre au fil des deux mesures de l'accord ---- */
+  function arp(t, m, d, v, ouv, bus) {
+    var c = A.ctx, o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'square'; o.frequency.setValueAtTime(hz(m), t);
+    f.type = 'lowpass'; f.Q.value = 6; f.frequency.setValueAtTime(900 + ouv * 3200, t); f.frequency.exponentialRampToValueAtTime(500, t + d);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0008, t + d);
+    o.connect(f); f.connect(g); g.connect(bus); g.connect(A.delay);
+    o.start(t); o.stop(t + d + 0.02);
+  }
+  function scintille(t, m, v, bus) {                   // la note haute en dents de scie, sur le dernier temps
+    var c = A.ctx, o = c.createOscillator(), g = c.createGain();
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(hz(m), t); o.detune.setValueAtTime(0, t); o.detune.linearRampToValueAtTime(-30, t + PAS * 4);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.01); g.gain.exponentialRampToValueAtTime(0.0008, t + PAS * 4);
+    o.connect(g); g.connect(bus); g.connect(A.delay); o.start(t); o.stop(t + PAS * 4 + 0.02);
+  }
+  /* ---- LUI : basse ronde et nappe chaude (deux scies désaccordées, filtre fermé) ---- */
+  function basse(t, m, d, v, bus) {
+    var c = A.ctx, o = c.createOscillator(), s = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'triangle'; o.frequency.setValueAtTime(hz(m), t);
+    s.type = 'sine'; s.frequency.setValueAtTime(hz(m - 12), t);
+    f.type = 'lowpass'; f.frequency.value = 420;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.03); g.gain.setValueAtTime(v, t + d * 0.7); g.gain.linearRampToValueAtTime(0, t + d);
+    o.connect(f); s.connect(f); f.connect(g); g.connect(bus);
+    o.start(t); s.start(t); o.stop(t + d + 0.02); s.stop(t + d + 0.02);
+  }
+  function nappe(t, notes, d, v, bus) {
+    var c = A.ctx, f = c.createBiquadFilter(), g = c.createGain();
+    f.type = 'lowpass'; f.Q.value = 0.7; f.frequency.setValueAtTime(500, t); f.frequency.linearRampToValueAtTime(1100, t + d * 0.5); f.frequency.linearRampToValueAtTime(600, t + d);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + d * 0.35); g.gain.setValueAtTime(v, t + d * 0.7); g.gain.linearRampToValueAtTime(0, t + d);
+    f.connect(g); g.connect(bus);
+    notes.forEach(function (m) {
+      [-7, 7].forEach(function (dt) {
+        var o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(hz(m), t); o.detune.value = dt;
+        o.connect(f); o.start(t); o.stop(t + d + 0.05);
+      });
+    });
+  }
+
+  /* une double croche de la grille commune ; i = numéro du pas depuis le début */
+  function pas(t, i) {
+    var mes = Math.floor(i / 16), k = i % 16, a = ACC[Math.floor(mes / 2) % 4], tour = Math.floor(mes / 8);
+    var ouv = ((mes % 2) * 16 + k) / 32;               // le filtre s'ouvre sur les deux mesures de l'accord
+    /* ELLE : fondamentale, quinte, octave, tierce haute… ; au deuxième tour, l'arpège monte d'une octave sur la 2e mesure */
+    var MOTIF = [0, 2, 3, 1, 2, 3, 4, 2, 0, 2, 3, 1, 4, 3, 2, 1];
+    var gamme = [a[0] + 12, a[1] + 12, a[2] + 12, a[0] + 24, a[1] + 24];
+    var m = gamme[MOTIF[k]] + ((tour % 2 === 1 && mes % 2 === 1) ? 12 : 0);
+    arp(t, m, PAS * 1.6, k % 4 === 0 ? 0.24 : 0.17, ouv, A.bus.elle);
+    if (k === 12 && mes % 2 === 1) scintille(t, a[0] + 36, 0.08, A.bus.elle);
+    /* LUI : la basse sur les temps 1 et 3 d'une mesure sur deux (demi-temps), la nappe sur deux mesures */
+    if (k === 0 && mes % 2 === 0) { nappe(t, [a[0] + 12, a[1] + 12, a[2] + 12], PAS * 32, 0.022, A.bus.lui); basse(t, a[0] - 12, PAS * 14, 0.2, A.bus.lui); }
+    if (k === 0 && mes % 2 === 1) basse(t, (tour % 2 ? a[2] : a[0]) - 12, PAS * 6, 0.16, A.bus.lui);
+    if (k === 8 && mes % 2 === 1) basse(t, a[0] - 12, PAS * 7, 0.14, A.bus.lui);
+  }
+
+  function niveaux(qui) { return { elle: qui === 'elle' || qui === 'deux' ? 1 : 0, lui: qui === 'lui' || qui === 'deux' ? (qui === 'deux' ? 0.9 : 1.2) : 0 }; }
+  function glisse(p, v, t, d) { try { p.cancelScheduledValues(t); p.setValueAtTime(p.value, t); p.linearRampToValueAtTime(v, t + d); } catch (e) {} }
+
+  function jouer(qui, o) {
+    if (qui !== 'elle' && qui !== 'lui' && qui !== 'deux') return false;
+    o = o || {};
+    var c = audio(); if (!c) { A.qui = qui; return false; }
+    var f = o.fondu == null ? 0.6 : o.fondu, t = c.currentTime, n = niveaux(qui), vol = o.volume == null ? 1 : o.volume;
+    if (!A.actif) { A.actif = true; A.next = t + 0.06; A.pas = 0; }
+    glisse(A.out.gain, 0.5 * vol, t, f);
+    glisse(A.bus.elle.gain, n.elle, t, f); glisse(A.bus.lui.gain, n.lui, t, f);
+    A.qui = qui;
+    return true;
+  }
+  function arreter(fondu) {
+    var c = A.ctx; A.qui = null;
+    if (!c || !A.actif) { A.actif = false; return; }
+    var f = fondu == null ? 0.8 : fondu;
+    glisse(A.out.gain, 0, c.currentTime, f);
+    A.fin = c.currentTime + f;
+  }
+  function update() {
+    var c = A.ctx; if (!c || !A.actif) return;
+    if (A.qui === null && A.fin && c.currentTime >= A.fin) { A.actif = false; A.fin = 0; return; }
+    if (c.state !== 'running' || muet()) { A.next = c.currentTime + 0.06; return; }
+    if (A.next < c.currentTime) A.next = c.currentTime + 0.05;
+    while (A.next < c.currentTime + 0.15) { pas(A.next, A.pas); A.pas++; A.next += PAS; }
+  }
+
+  return {
+    jouer: jouer, arreter: arreter, update: update,
+    qui: function () { return A.qui; },
+    state: function () { return { qui: A.qui, pas: A.pas, mesure: Math.floor(A.pas / 16), actif: A.actif }; }
   };
 })();
 
@@ -13646,7 +13780,7 @@ if (typeof window !== 'undefined') window.__N = N;
      si : 'deux' (seulement quand les deux pilotes sont finis) | 'seul' (seulement sinon). */
   var ETAPES = [
     { id: 'choix', type: 'choix' },
-    { id: 'connexion', type: 'film', base: 'connexion', legende: '1976 — LE TERMINAL' },
+    { id: 'connexion', type: 'film', base: 'connexion', theme: 'qui', legende: '1976 — LE TERMINAL' },
     { id: '1976', type: 'epoque', module: 'terminal', graine: 1976 },
     { id: 'fissure', type: 'film', base: 'fissure', legende: 'LA GRILLE SE BRISE' },
     { id: '1982', type: 'epoque', module: 'arcade', graine: 1982 },
@@ -13658,14 +13792,14 @@ if (typeof window !== 'undefined') window.__N = N;
     { id: 'jeu-2001', type: 'jeu', epoque: 2001 },
     { id: 'espace', type: 'film', base: 'espace', evt: 'espace', legende: '2975 — L\'INTERGALACTIQUE' },
     { id: 'jeu-2975', type: 'jeu', epoque: 2975 },
-    { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
+    { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, theme: 'qui', legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
     { id: 'bilan', type: 'bilan' },
-    { id: 'rejouer', type: 'film', si: 'seul', base: { elle: 'pilote-lui', lui: 'pilote-elle' }, duree: 3.5,
+    { id: 'rejouer', type: 'film', si: 'seul', base: { elle: 'pilote-lui', lui: 'pilote-elle' }, duree: 3.5, theme: 'autre',
       legende: { elle: 'LE PILOTE T\'ATTEND', lui: 'LA PILOTE T\'ATTEND' } },
-    { id: 'retrouvailles', type: 'film', si: 'deux', base: 'retrouvailles', duree: 5, legende: 'LES DEUX MONDES SE TOUCHENT' },
-    { id: 'teaser', type: 'film', si: 'deux', base: 'teaser-3019', duree: 5.5,
+    { id: 'retrouvailles', type: 'film', si: 'deux', base: 'retrouvailles', duree: 5, theme: 'deux', legende: 'LES DEUX MONDES SE TOUCHENT' },
+    { id: 'teaser', type: 'film', si: 'deux', base: 'teaser-3019', duree: 5.5, theme: 'deux',
       carte: { titre: 'SNAKE 3019', sous: 'BIENTÔT. À DEUX.', haut: true } },
-    { id: 'asuivre', type: 'film', si: 'deux', base: null, duree: 12, carte: { titre: 'À SUIVRE', sous: 'SNAKE 3019' } }
+    { id: 'asuivre', type: 'film', si: 'deux', base: null, duree: 12, theme: 'deux', carte: { titre: 'À SUIVRE', sous: 'SNAKE 3019' } }
   ];
   var MAX_PAS = 64;                                          // garde-fou contre une boucle d'étapes vides
 
@@ -13708,6 +13842,14 @@ if (typeof window !== 'undefined') window.__N = N;
   function suite() { A.suite = true; }
 
   /* entre dans l'étape i, ou la première suivante qui a lieu ; les étapes instantanées s'enchaînent ici */
+  /* le thème du pilote (63-themes.js) : 'qui' le sien, 'autre' celui qui attend, 'deux' les deux superposés ;
+     une étape sans thème l'éteint (1976 et 1982 ont leur propre musique, le jeu la sienne) */
+  function ambiance(e) {
+    if (!N.themes) return;
+    var t = e && e.theme, q = A.qui === 'lui' ? 'lui' : 'elle';
+    t = t === 'qui' ? q : t === 'autre' ? (q === 'elle' ? 'lui' : 'elle') : t;
+    try { if (t) N.themes.jouer(t, { fondu: 1 }); else if (N.themes.qui()) N.themes.arreter(e && e.type === 'epoque' ? 0.3 : 1.2); } catch (x) { signaler('aventure.themes', x); }
+  }
   function entrer(i) {
     for (var pas = 0; pas < MAX_PAS; pas++, i++) {
       A.main = false;
@@ -13730,7 +13872,7 @@ if (typeof window !== 'undefined') window.__N = N;
       if (e.type === 'film') {
         var nom = nomFilm(selon(e.base));
         if (!N.film.jouer(nom, { duree: e.duree, legende: selon(e.legende), carte: e.carte, surFin: suite })) { ajournal('film impossible ' + e.id); continue; }
-        A.vus[e.id] = true; A.joues.push(nom || e.id); A.main = true;
+        A.vus[e.id] = true; A.joues.push(nom || e.id); A.main = true; ambiance(e);
         ajournal('film ' + e.id + ' ' + (nom || '-'));
         preparerSuivant(i);
         return;
@@ -13740,7 +13882,7 @@ if (typeof window !== 'undefined') window.__N = N;
         var gr = (A.opts.graines && A.opts.graines[e.id]) || e.graine;
         if (m) { try { ok = m.start({ graine: gr, surFin: suite }) !== false; } catch (x) { signaler('aventure.' + e.module, x); ok = false; } }
         if (!ok) { ajournal('époque ' + e.id + ' absente'); continue; }
-        A.main = true; ajournal('époque ' + e.id);
+        A.main = true; ajournal('époque ' + e.id); ambiance(e);
         preparerSuivant(i);
         return;
       }
@@ -13751,7 +13893,7 @@ if (typeof window !== 'undefined') window.__N = N;
         continue;
       }
       if (e.type === 'jeu') {
-        ajournal('jeu ' + e.id);
+        ajournal('jeu ' + e.id); ambiance(e);
         if (!A.aJouer) {                                     // sans jeu (page d'essai nue) : le voyage se raconte d'une traite
           ajournal('sans jeu');
           var j = indexEvt('fin', i);
@@ -13779,7 +13921,7 @@ if (typeof window !== 'undefined') window.__N = N;
   }
   function finir(issue) {
     if (!A.on) return;
-    couper();
+    couper(); if (N.themes) { try { N.themes.arreter(2); } catch (x) {} }
     A.on = false; A.main = false;
     ajournal('aventure ' + issue);
     var f = A.surFin; A.surFin = null;
@@ -13804,6 +13946,7 @@ if (typeof window !== 'undefined') window.__N = N;
     if (!A.on) return;
     if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
     A.t += dt;
+    if (N.themes) { try { N.themes.update(); } catch (x) {} }
     var e = etapeCourante();
     if (A.main && e) {
       if (e.type === 'choix' && N.choix) { try { N.choix.update(dt); } catch (x) { signaler('aventure.choix', x); } }
@@ -13847,7 +13990,7 @@ if (typeof window !== 'undefined') window.__N = N;
     actif: function () { return A.on && A.main; },
     enCours: function () { return A.on; },
     etape: function () { var e = etapeCourante(); return A.on && e ? e.id : null; },
-    stop: function () { if (!A.on) return; couper(); A.on = false; A.main = false; A.surFin = null; ajournal('stop'); },
+    stop: function () { if (!A.on) return; couper(); if (N.themes) N.themes.arreter(0.3); A.on = false; A.main = false; A.surFin = null; ajournal('stop'); },
     state: function () {
       var e = etapeCourante();
       return { enCours: A.on, actif: A.on && A.main, etape: A.on && e ? e.id : null, type: e ? e.type : null, i: A.i,
@@ -20865,7 +21008,7 @@ N.score = (function () {
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
     API.palier = null;
-    m.resume = null; m.dv = null; m.dvFaits = 0;
+    m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
     publier();
@@ -21040,14 +21183,19 @@ N.score = (function () {
   }
   function terminer(victoire) {
     if (!lu) charger();
+    if (m.resume) return { record: m.resume.record, nouveau: m.newRecord };
     m.stats.victoire = !!victoire;
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
     var dernier = pr.dernier || 0, avantE = pr.energie || 0;
-    disque.records.push(m.score); disque.records.sort(function (a, b) { return b - a; });
+    var tableau = classement();
+    tableau.push({ score: m.score, marque: m.continuations ? 'C' : '' });
+    tableau.sort(function (a, b) { return b.score - a.score; });
     var nbRec = (R && R.ecrans && R.ecrans.records && R.ecrans.records.nombre) || 10;
-    if (disque.records.length > nbRec) disque.records.length = nbRec;
-    pr.parties++;
+    if (tableau.length > nbRec) tableau.length = nbRec;
+    disque.records = tableau.map(function (r) { return r.score; });
+    disque.marquesRecords = tableau.map(function (r) { return r.marque; });
+    if (!m.continuations) pr.parties++;
     var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
     pr.energie = avantE + gagne; pr.dernier = m.score;
     for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
@@ -21060,7 +21208,7 @@ N.score = (function () {
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
     var note = victoire ? 'B' : boss ? 'C' : 'D';
     m.resume = {
-      victoire: !!victoire, score: m.score, ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
+      victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
       pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
@@ -21071,9 +21219,26 @@ N.score = (function () {
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
   }
   function record() { if (!lu) charger(); return disque.records.length ? disque.records[0] : 0; }
+  /* Les scores numériques restent compatibles ; la marque appartient à chaque rang, même en cas d'égalité.
+     Les anciens profils sans marques se lisent sans migration destructive. */
+  function classement() {
+    if (!lu) charger();
+    return disque.records.map(function (score, i) { return { score: score, marque: (disque.marquesRecords && disque.marquesRecords[i]) === 'C' ? 'C' : '' }; });
+  }
+  function continuerPossible() { return !!m.resume && !m.resume.victoire && m.continuations < R.vies.continuer.parPartie; }
+  function continuer() {
+    if (!continuerPossible()) return false;
+    m.continuations++;
+    m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
+    m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
+    m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;
+    publier();
+    return true;
+  }
 
   API = {
-    reset: reset, update: update,
+    reset: reset, update: update, continuer: continuer, continuerPossible: continuerPossible, classement: classement,
+    marque: function () { return m.continuations ? 'C' : ''; },
     palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
     defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
@@ -22375,6 +22540,7 @@ N.game = (function () {
   var timers = [];
   var QT = [];
   var BG = null, bgKey = '';
+  var reprise = null; // point d'entrée de vague/CYCLOPE, jamais l'état à la mort
   var mortInfo = { chute: null, annonce: false, etat: 0 };
   /* les intermèdes (refonte/INTERMEDES.md) : un mini-film 8 bits de N.intro gèle le jeu (état `panneau`), puis
      `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
@@ -22427,7 +22593,7 @@ N.game = (function () {
     var T = O.taps, s = S_(), inp = s && s.input, i;
     T.length = 0;
     while (QT.length) T.push(QT.shift());
-    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
+    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
     if (inp) {
       if (inp.valider) T.push({ x: -1, y: -1, key: 'Enter' });
       if (inp.retour) T.push({ x: -1, y: -1, key: 'Escape' });
@@ -22475,6 +22641,7 @@ N.game = (function () {
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
     O.fxReset();
+    reprise = null;
     filmsVus = {}; suiteFilm = null; filmDemande = null;
     if (N.fx && N.fx.reset) appel('fx.reset', function () { N.fx.reset(); });
     var ordre = ['butin', 'ennemis', 'arsenal', 'score', 'dir', 'hud'];
@@ -22578,6 +22745,7 @@ N.game = (function () {
     /* ---- les règles de la machine d'états (rang 10) ---- */
     N.ev.on('mort', 10, function (d) { debutMort(d); }, '79-jeu');
     N.ev.on('vague', 10, function (c) {
+      if (c.evt === 'entree') memoriserReprise(false);
       if (c.evt === 'nettoyee') finDeVague(c);
     }, '79-jeu');
     N.ev.on('vol', 10, function (c) { if (c.evt === 'fin' && et === 'vol') apresVol(); }, '79-jeu');
@@ -22615,9 +22783,44 @@ N.game = (function () {
   }
   function apresVol() { lancerVague(N.dir.vague() + 1); }
   function lancerBoss() {
+    memoriserReprise(true);
     aller('boss');
     if (N.cam && N.cam.mode) appel('cam.mode', function () { N.cam.mode('boss'); });
     N.dir.lancerBoss();
+  }
+  function memoriserReprise(boss) {
+    reprise = { vague: N.dir.vague(), boss: boss, longueur: N.joueuse.len(),
+      armes: N.arsenal.armes(), pouvoir: N.joueuse.pouvoir.id };
+  }
+  function continuer() {
+    if (et !== 'fin' || !reprise || !N.ui.finActions().disponible || !N.score.continuer()) return false;
+    var r = reprise, s = S_();
+    if (modOk(N.intro, 'stop')) N.intro.stop();
+    if (finClip && modOk(N.art, 'stop')) N.art.stop(finClip);
+    finClip = null; timers.length = 0; suiteFilm = null; filmDemande = null;
+    if (modOk(N.colosse, 'reset')) N.colosse.reset();
+    if (modOk(N.arene, 'reset')) N.arene.reset();
+    /* world.reset est actuellement un reset caméra (double déclaration dans 12-cam).
+       Rendre les murs par l'interface publique, avant de reconstituer la trace. */
+    if (modOk(N.world, 'stop')) N.world.stop();
+    if (modOk(N.world, 'arena')) {
+      N.world.arena({ x: 0, y: 0, w: N.world.W, h: N.world.H }, R.monde.mobile.glissementMin);
+      N.cam.update(R.monde.mobile.glissementMin);
+    }
+    O.geom(); N.joueuse.reset({ len: r.longueur });
+    if (modOk(N.joueuse, 'equiper')) N.joueuse.equiper(r.pouvoir);
+    N.butin.reset(); N.ennemis.reset(); N.arsenal.reset();
+    r.armes.forEach(function (a) {
+      for (var k = N.arsenal.niveau(a.id); k < a.niveau; k++) N.arsenal.monter(a.id);
+    });
+    N.hud.reset(); O.fxReset();
+    if (modOk(N.fx, 'reset')) N.fx.reset();
+    if (modOk(N.scene, 'reset')) N.scene.reset();
+    if (modOk(N.cam, 'reset')) N.cam.reset();
+    s.death = null; s.paused = false; fin.victoire = false;
+    N.dir.demarrer(r.vague);
+    if (r.boss) lancerBoss(); else aller('jeu');
+    return true;
   }
   function debutVictoire() {
     if (et === 'victoire' || et === 'fin') return;
@@ -22757,7 +22960,8 @@ N.game = (function () {
       O.T.ak += dt;
       N.ui.update(dt);
       var f = N.ui.sortie();
-      if (f && f.action === 'rejouer') lancer(true);
+      if (f && f.action === 'continuer') continuer();
+      else if (f && f.action === 'rejouer') lancer(true);
     } else if (et === 'pause') {
       N.ui.update(dt);
       var p = N.ui.sortie(); if (p && p.action === 'reprendre') basculerPause();
@@ -23014,7 +23218,9 @@ N.game = (function () {
   };
   /* le mode simulé : la mise à jour seule, aussi vite que possible, sans dessin ; rend le journal */
   dbg.simuler = function (sec) {
-    var n = Math.round((sec || 1) / (R && R.temps ? R.temps.h : 1 / 120)), h = R && R.temps ? R.temps.h : 1 / 120, nouveau = O.bootNouveau();
+    /* La simulation est elle-même une entrée du pas fixe : elle ne dépend pas d'une
+       première image déjà dessinée. avancer() amorce le socle avant update(). */
+    var n = Math.round((sec || 1) / (R && R.temps ? R.temps.h : 1 / 120)), h = R && R.temps ? R.temps.h : 1 / 120, nouveau = !!(N.horloge && N.horloge.avancer);
     simulant = true;
     for (var i = 0; i < n; i++) {
       var dt = nouveau ? N.horloge.avancer() : h;
@@ -23553,7 +23759,7 @@ N.scene = (function () {
    5.6 : 3 à 5 plaques, rareté lue par l'encre et par les crans, chute à 55 ms d'écart, « CHOISIS n », un toucher n'est
    accepté qu'après la garde de N.R.cartes.garde), la PAUSE (REPRENDRE, cartes prises, défi) et l'ÉCRAN DE FIN (§ 5.6 :
    cause de la mort, progression, score et écart, build, bilan, note, défi, conseil, énergie et PROCHAIN DÉBLOCAGE avec sa
-   barre, REJOUER). Les données de la fin viennent de N.score.resume() ; la main des cartes, de N.cartes.main().
+   barre, CONTINUER et REJOUER). Les données de la fin viennent de N.score.resume() ; la main des cartes, de N.cartes.main().
 
    Ce module ne change JAMAIS l'état du jeu : il lit les touchers (N.outils.taps, remplis par 79-jeu.js), dessine,
    et dépose une SORTIE que 79-jeu.js reprend : sortie() -> { ecran, action, index, id } ou null. Seule entorse : sur un
@@ -23582,6 +23788,7 @@ N.ui = (function () {
     if (nom !== 'titre') duo(false);
     cur = nom; T = 0; out = null; choix = 0; bruit = false;
     cur_opts = opts || {};
+    if (nom === 'fin') choix = 1; // Entrée/Espace garde REJOUER par défaut (R-35).
     if (nom === 'cartes') {
       /* la main du tirage ; sans N.cartes, le repli v0 */
       if (N.cartes && N.cartes.main) {
@@ -23606,6 +23813,7 @@ N.ui = (function () {
   function publier() {
     var s = N.S; if (!s) return;
     s.ecran = { nom: cur, depuis: T, cartes: cur === 'cartes' ? main.slice() : [], niveaux: cur === 'cartes' ? niv : NIV_VIDE, choix: choix, pret: T >= (cur === 'cartes' ? gardeJ : CFG.garde) };
+    if (cur === 'fin') s.ecran.fin = finActions();
   }
 
   /* ============================ les entrées ============================ */
@@ -23618,10 +23826,37 @@ N.ui = (function () {
       if (q.key === 'KeyM' || (q.key === null && q.bouton === 'son')) continue;         // le bouton son est au HUD
       if (cur === 'demarrage' || cur === 'titre') { if (T >= 0.15) out = { ecran: cur, action: 'jouer' }; }
       else if (cur === 'pause') { if (q.key !== 'Tab') out = { ecran: cur, action: 'reprendre' }; }
-      else if (cur === 'fin') { if (T >= CFG.garde && q.key !== 'Tab' && q.key !== 'Escape') out = { ecran: cur, action: 'rejouer' }; }
+      else if (cur === 'fin') entreeFin(q);
       else if (cur === 'cartes') entreeCartes(q);
     }
     publier();
+  }
+  function finActions() {
+    var f = R.ecrans.fin, a = f.actions, sf = O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var x0 = (sf.l | 0) + a.marge, x1 = W - (sf.r | 0) - a.marge;
+    var h = Math.ceil(f.boutonPt / px()), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
+    var x = Math.round((x0 + x1 - w * 2 - a.ecart) / 2), y = H - (sf.b | 0) - a.marge - h;
+    var age = Math.floor(Math.max(0, T - f.garde)), c = f.continuer;
+    var propose = !cur_opts.victoire && !!(N.score && N.score.continuerPossible && N.score.continuerPossible());
+    return { continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
+      propose: propose, disponible: propose && age <= c.de - c.a, restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
+  }
+  function entreeFin(q) {
+    if (out) return;
+    // La date de début vient de boot ; un doigt déjà posé pendant la garde ne valide rien au relâcher.
+    if (q.key === null && typeof q.t0 === 'number' && typeof q.t1 === 'number' && T - (q.t1 - q.t0) / R.ecrans.fin.actions.msParSeconde < R.ecrans.fin.garde) return;
+    var a = finActions(), action = null;
+    if (q.key === 'ArrowLeft' || q.key === 'ArrowUp') choix = a.disponible ? 0 : 1;
+    else if (q.key === 'ArrowRight' || q.key === 'ArrowDown') choix = 1;
+    else if (q.key === 'Digit1') action = 'continuer';
+    else if (q.key === 'Digit2') action = 'rejouer';
+    else if (q.key === 'Enter' || q.key === 'Space') action = choix === 0 ? 'continuer' : 'rejouer';
+    else if (q.key === null) {
+      ['continuer', 'rejouer'].forEach(function (nom) {
+        var r = a[nom]; if (q.x >= r.x && q.x < r.x + r.w && q.y >= r.y && q.y < r.y + r.h) action = nom;
+      });
+    }
+    if (a.pret && action && (action !== 'continuer' || a.disponible)) out = { ecran: cur, action: action };
   }
   function entreeCartes(q) {
     var n = main.length, k = -1;
@@ -23820,7 +24055,8 @@ N.ui = (function () {
     O.textC('SNAKE 2975', W / 2, Math.round(H * 0.28), O.OS, true, 4);
     var rec = N.score ? N.score.record() : 0, y = Math.round(H * 0.28 + 38);
     if (rec > 0) {
-      O.textC('RECORD ' + O.pad(rec, 7), W / 2, y, O.JAUNE, true, 1);
+      var cr = N.score.classement ? N.score.classement()[0] : null;
+      O.textC('RECORD ' + O.pad(rec, 7) + (cr && cr.marque ? ' ' + cr.marque : ''), W / 2, y, O.JAUNE, true, 1);
       var e = N.score.energie | 0, p = N.score.prochain ? N.score.prochain() : null;
       if (e > 0) O.textC('ÉNERGIE ' + e + (p ? '  ·  ' + (DEBNOMS[p.id] || p.id) + ' DANS ' + p.reste : ''), W / 2, y + 11, O.ACIER, true, 1);
     }
@@ -23884,10 +24120,11 @@ N.ui = (function () {
     var sc = r ? r.score : (N.score ? N.score.score : 0);
     if (vu()) {
       var k = O.clamp((T - (bloc - 1) * CFG.rev) / 0.9, 0, 1), aff = Math.round(sc * (1 - (1 - k) * (1 - k))), w1 = O.textW('SCORE ', 1);
-      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7), cx0 + w1, yl, O.JAUNE, false, 1);
+      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7) + (r && r.marque ? ' ' + r.marque : ''), cx0 + w1, yl, O.JAUNE, false, 1);
       if (r && r.ecart !== null && k >= 1) droite((r.ecart >= 0 ? '+' : '') + espace(r.ecart), cx0 + cw, yl, r.ecart >= 0 ? O.JAUNE : O.ACIER, 1);
       var nr = r ? r.nouveauRecord : false;
-      O.text(nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7), cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
+      var classement = N.score && N.score.classement ? N.score.classement() : [], marqueRecord = classement.length && classement[0].marque ? ' ' + classement[0].marque : '';
+      O.text((nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7)) + marqueRecord, cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
     }
     yl += 24;
     /* 5. le build : son nom et ses icônes */
@@ -23896,7 +24133,7 @@ N.ui = (function () {
         O.text(r.build.nom, cx0, yl, O.OS, false, 1);
         var bi = r.build.armes || [], xi = cx0 + 7;
         for (var q = 0; q < bi.length; q++) {
-          icone(bi[q].id, xi, yl + 20, O.CYANP);
+          icone(bi[q].id, xi, yl + 20, O.OS);
           O.textC(romain(bi[q].palier !== undefined ? bi[q].palier : bi[q].niveau), xi, yl + 30, O.ACIER, false, 1); xi += 19;
         }
         if (r.build.pouvoir) icone(r.build.pouvoir, xi + 3, yl + 20, O.JAUNE);
@@ -23949,13 +24186,16 @@ N.ui = (function () {
         }
       }
     }
-    /* 10. REJOUER : une cible de 44 pt au bas de la colonne ; tout l'écran la valide, une fois la garde passée */
-    var ch = cible(), bw = Math.min(cw, 130), bx = cx + (port ? Math.round((cw - bw) / 2) : cw - bw), by = y1 - ch - 5;
-    var pret = T >= CFG.garde, cb = pret ? (((T * 1.25) % 1 < 0.8) ? O.OS : O.ACIER) : O.ARDOISE;
-    g.rect(bx - 1, by - 1, bw + 2, ch + 2, O.NP); g.rect(bx, by, bw, ch, O.ARDOISE);
-    g.rect(bx, by, bw, 1, pret ? O.JAUNE : O.ACIER); g.rect(bx, by + ch - 1, bw, 1, pret ? O.JAUNE : O.ACIER);
-    O.textC('REJOUER', bx + bw / 2, by + Math.round(ch / 2) - 3, cb, false, 1);
-    if (!O.hasTouch() && pret) O.textC('ESPACE', bx + bw / 2, by - 9, O.ACIER, false, 1);
+    /* 10. Deux cibles fixes et distinctes, sans clignotement. Un toucher hors cible ne relance plus. */
+    var actions = finActions(), ac = R.ecrans.fin.actions;
+    ['continuer', 'rejouer'].forEach(function (nom, i) {
+      var rc = actions[nom], ok = actions.pret && (nom !== 'continuer' || actions.disponible);
+      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER —';
+      g.rect(rc.x - 1, rc.y - 1, rc.w + 2, rc.h + 2, O.NP); g.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
+      g.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER); g.rect(rc.x, rc.y + rc.h - 1, rc.w, 1, ok ? O.JAUNE : O.ACIER);
+      if (!O.hasTouch() && choix === i && ok) { g.rect(rc.x, rc.y, 1, rc.h, O.JAUNE); g.rect(rc.x + rc.w - 1, rc.y, 1, rc.h, O.JAUNE); }
+      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - ac.texteH) / 2), ok ? O.OS : O.ACIER, false, 1);
+    });
   }
 
   function draw() {
@@ -23968,7 +24208,7 @@ N.ui = (function () {
   }
 
   return { ouvrir: ouvrir, fermer: fermer, actif: actif, update: update, draw: draw, sortie: sortie, ecran: ecran, cartes: CARTES, veil: veil, icone: icone,
-    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; } };
+    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions };
 })();
 
 /* ===== 85-pilote.js ===== */

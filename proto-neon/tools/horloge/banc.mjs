@@ -51,6 +51,14 @@ async function one(profil, genre, repetition = 0) {
         window.__titre = N.game.etat(); return { demarrage, titre: base(), conforme: N.game.etat() === 'titre' && N.ui.ecran() === 'titre' };
       }
       N.intro.skip(); N.game.reset(2975); N.game.dbg.vague(1); N.game.dbg.god(true);
+      if (genre === 'simulation') {
+        /* Aucun tick ni dessin avant l'appel : reproduit l'entrée des critères R. */
+        N.horloge.reset(); const avant = base();
+        N.game.dbg.simuler(1); const apres = base();
+        N.game.dbg.etat('cartes'); const cartesAvant = { ...base(), depuis: S.ecran.depuis };
+        N.game.dbg.simuler(1); const cartesApres = { ...base(), depuis: S.ecran.depuis };
+        return { avant, apres, cartesAvant, cartesApres, conforme: avant.pas === 0 && apres.pas === 120 && apres.t > 0 && cartesApres.pas === 240 && cartesApres.t === cartesAvant.t && cartesApres.depuis > cartesAvant.depuis && !window.__ERR.count };
+      }
       if (genre === 'fin') {
         N.game.dbg.scene('fin'); tick(120);
         const intro = N.intro.state();

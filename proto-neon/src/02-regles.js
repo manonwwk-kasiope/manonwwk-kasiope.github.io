@@ -834,6 +834,7 @@
       reglages: { lignes: 8 },
       fin: {
         titreEchelle: 3, garde: 0.45, continuer: { de: 9, a: 0 }, boutonPt: 44,
+        actions: { marge: 5, ecart: 4, largeurMax: 150, texteH: 7, msParSeconde: 1000 }, // fin : cibles sûres et conversion des dates des touchers
         notes: { S: 'FINIR, les 2 autres défis et aucune vie perdue', A: 'FINIR et au moins un autre défi', B: 'FINIR', C: 'CYCLOPE atteint', D: 'sinon' },
         lassoBuild: 0.30
       },
