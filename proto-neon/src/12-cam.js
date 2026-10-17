@@ -263,7 +263,11 @@
       var maxY = portrait() ? cad.portraitMaxY : cad.max;
       var lx = cx - Cm.w / 2, ly = cy - Cm.h / 2;
       var sx = tete.x - lx, sy = tete.y - ly;
-      var mx0 = cad.min * Cm.w + 1, mx1 = cad.max * Cm.w - 1, my0 = cad.min * Cm.h + 1, my1 = maxY * Cm.h - 1;   // 1 px de garde : l'arrondi final ne sort pas du cadre
+      /* le cadre se mesure dans la ZONE SÛRE (hors encoche, îlot et barre d'accueil : N.S.view.safe, en px de jeu) */
+      var sf = S() && S().view && S().view.safe, sl = sf ? (sf.l | 0) : 0, st = sf ? (sf.t | 0) : 0;
+      var sw = Cm.w - sl - (sf ? (sf.r | 0) : 0), sh = Cm.h - st - (sf ? (sf.b | 0) : 0);
+      if (!(sw > 40)) { sl = 0; sw = Cm.w; } if (!(sh > 40)) { st = 0; sh = Cm.h; }
+      var mx0 = sl + cad.min * sw + 1, mx1 = sl + cad.max * sw - 1, my0 = st + cad.min * sh + 1, my1 = st + maxY * sh - 1;   // 1 px de garde : l'arrondi final ne sort pas du cadre
       if (sx < mx0) { lx = tete.x - mx0; if (vx < 0) vx = 0; } else if (sx > mx1) { lx = tete.x - mx1; if (vx > 0) vx = 0; }
       if (sy < my0) { ly = tete.y - my0; if (vy < 0) vy = 0; } else if (sy > my1) { ly = tete.y - my1; if (vy > 0) vy = 0; }
       cx = lx + Cm.w / 2; cy = ly + Cm.h / 2;
