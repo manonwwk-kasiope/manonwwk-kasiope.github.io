@@ -498,10 +498,11 @@ if (typeof window !== 'undefined') window.__N = N;
       },
       kill: function (t, o, g) {
         var c = clamp(o.pitch | 0, 0, 9), f = hz(keyNote(57, 4 + c)) * vary(0.01);
-        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.2, 0.17 * g, 0);
-        voice(t, 'sawtooth', f, f, 0, 0.002, 0.11, 0.045 * g, 2000);
-        burst(t, 'bandpass', 800 + srnd() * 200, 0.8, 0.001, 0.05, 0.12 * g);
-        voice(t, 'sine', 160, 55, 0.08, 0.002, 0.1, 0.09 * g, 0);
+        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.17 * g, 0);
+        /* l'octave carree, filtree sous 1,8 kHz : la presence dans les mediums, ou le telephone porte */
+        voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.06 * g, 1800);
+        burst(t, 'bandpass', 1000 + srnd() * 250, 0.9, 0.001, 0.05, 0.17 * g);
+        voice(t, 'sine', 160, 55, 0.08, 0.002, 0.1, 0.04 * g, 0);
         send(body, MIX.revSend.sfx, 's');
         duck(t, MIX.duckKill * g, 0.18);
         return 0.25;
@@ -522,14 +523,14 @@ if (typeof window !== 'undefined') window.__N = N;
         return 1.4;
       },
       degat: function (t, o, g) {
-        var v = vary(0.1), gg = ctx.createGain(); pluck(gg.gain, t, 0.003, 0.36, 0.21 * g); gg.connect(sfxBus);
+        var v = vary(0.1), gg = ctx.createGain(); pluck(gg.gain, t, 0.003, 0.36, 0.27 * g); gg.connect(sfxBus);
         var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 2; lp.connect(gg);
         [-14, 14].forEach(function (dt) {
           var oo = ctx.createOscillator(); oo.type = 'sawtooth'; oo.detune.value = dt;
           oo.frequency.setValueAtTime(290 * v, t); oo.frequency.exponentialRampToValueAtTime(80 * v, t + 0.34);
           oo.connect(lp); oo.start(t); oo.stop(t + 0.42);
         });
-        burst(t, 'bandpass', 620, 1, 0.001, 0.08, 0.11 * g);
+        burst(t, 'bandpass', 700, 1, 0.001, 0.09, 0.18 * g);
         send(gg, MIX.revSend.sfx * 1.2, 's'); duck(t, MIX.duckHurt, 0.45);
         return 0.42;
       },
