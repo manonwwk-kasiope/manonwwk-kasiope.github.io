@@ -117,7 +117,8 @@ N.butin = (function () {
       for (j = i + 1; j < L.length; j++) {
         var b = L[j];
         if (b.type !== 'cellule' || b._tele > 0 || b._aspire || O.d2(a.x, a.y, b.x, b.y) > d2m) continue;
-        (grp || (grp = [j])).length; if (grp.indexOf(j) < 0) grp.push(j);
+        if (!grp) grp = [];
+        grp.push(j);
         if (grp.length >= f.nombre - 1) break;
       }
       if (grp && grp.length >= f.nombre - 1) {

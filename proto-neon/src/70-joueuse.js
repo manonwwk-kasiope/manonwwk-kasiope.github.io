@@ -56,8 +56,10 @@ N.joueuse = (function () {
   function tpush(x, y) { th = (th + 1) % TN; TX[th] = x; TY[th] = y; TT[th] = clk; if (tn < TN) tn++; tlx = x; tly = y; }
   function trailReset(x, y, a, len) {
     th = 0; tn = 0;
-    var need = (len + 3) * ESP + 2, c = Math.cos(a), s = Math.sin(a);
+    var need = (len + 3) * ESP + 2, c = Math.cos(a), s = Math.sin(a), horloge = clk;
+    clk = -1e6;                                                   // la trace de départ est « ancienne » : jamais allumée, jamais refermable
     for (var i = need; i >= 0; i--) tpush(x - c * i, y - s * i);
+    clk = horloge;
   }
   function trailStep(x, y) {
     var dx = x - tlx, dy = y - tly, d = Math.sqrt(dx * dx + dy * dy), g = 0;
@@ -708,6 +710,11 @@ N.joueuse = (function () {
     var g = N.gfx, a = O.T.ak * 4;
     if (PV.etat === 'pret') g.px(P.x + Math.cos(a) * 8, P.y + Math.sin(a) * 8, O.CYANP);
     if (st.apo >= 100) for (var i = 0; i < 8; i++) { var b = i / 8 * O.TAU + O.T.ak * 2; g.px(P.x + Math.cos(b) * 12, P.y + Math.sin(b) * 12, O.JAUNE); }
+    var E = N.ennemis;
+    if (E && st.inv) for (var q = 0; q < E.list.length; q++) {                       // les proies : contour rose pâle qui bat
+      var e = E.list[q];
+      if (e._proie && !e._dead) g.ring(e.x, e.y, e.r + 2, O.ROSE, (Math.floor(O.T.ak * 6) & 1) ? 1 : 0.6);
+    }
     for (var k = 0; k < st.rings.length; k++) { var r = st.rings[k]; g.ring(P.x, P.y, r.r, k & 1 ? O.OS : O.JAUNE, Math.max(0.25, 1 - r.r / r.R * 0.7)); }
   }
 
