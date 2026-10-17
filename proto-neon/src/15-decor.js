@@ -389,14 +389,16 @@
 
   /* ---- les caches, créés à la demande ---- */
   function res(kind, q, e) {
-    var k = e ? q + '|' + e : q, box = cache[kind], im = box[k];
+    var box = cache[kind], sub = box[q];
+    if (!sub) sub = box[q] = {};
+    var k = e || '_', im = sub[k];                      // deux niveaux d'objets : aucune chaîne construite par image
     if (im) return im;
     if (kind === 'ville') im = buildVille(q);
     else if (kind === 'struct') im = buildStruct(q);
     else if (kind === 'mont') im = buildMont(q);
     else if (kind === 'sky') im = buildSky(q, e);
     else if (kind === 'floor') im = buildFloor(q, e);
-    return (box[k] = im);
+    return (sub[k] = im);
   }
   /* LE CIEL : une bande de nuages hauts, tramée, qui défile à 0,35 (la cité est loin sous l'horizon, le ciel vit) */
   function buildNuages() {
@@ -764,10 +766,14 @@
   }
   function eclairDraw(buf, W, H, yh) {
     /* un éclair : une ligne brisée d'os, et un voile d'ambre tramé à 12 % sur une petite aire (sous le limiteur) */
-    var r = flux(8800 + Math.floor(eclairX * 1000)), x = Math.round(W * (0.15 + 0.7 * eclairX)), y = 0, B = N.pal.BAYER;
+    var x = Math.round(W * (0.15 + 0.7 * eclairX)), y = 0, B = N.pal.BAYER, hs = (Math.floor(eclairX * 65536) | 0) + 1;
     var on = eclairT > 0.12;
-    if (on) {
-      while (y < yh - 2) { var seg = r.i(4, 9); for (var k = 0; k < seg && y < yh; k++, y++) { buf[y * W + x] = C.OS; if (k & 1) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; } x += r.i(-5, 5); x = clamp(x, 2, W - 3); }
+    if (on) {                                                        // une ligne brisée, tirée d'un hachage de la position (pas de flux alloué)
+      while (y < yh - 2) {
+        hs = (Math.imul(hs, 1664525) + 1013904223) | 0; var seg = 4 + ((hs >>> 8) % 6);
+        for (var k = 0; k < seg && y < yh; k++, y++) { buf[y * W + x] = C.OS; if (k & 1) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; }
+        hs = (Math.imul(hs, 1664525) + 1013904223) | 0; x += ((hs >>> 8) % 11) - 5; x = clamp(x, 2, W - 3);
+      }
     }
     for (var yy = Math.max(0, yh - 22); yy < yh; yy++) for (var xx = Math.max(0, x - 26); xx < Math.min(W, x + 26); xx++) if (0.10 * 16 > B[((yy & 3) << 2) | (xx & 3)]) buf[yy * W + xx] = C.AM;
   }
@@ -815,7 +821,7 @@
     }
     rendreFar(cur.q, cur.e, camX, camY, t);
   }
-  function ensureCur() { if (!(cache.sky[cur.q + '|' + cur.e] && cache.floor[cur.q + '|' + cur.e])) ensure(cur.q, cur.e); }
+  function ensureCur() { var a = cache.sky[cur.q], b = cache.floor[cur.q]; if (!(a && a[cur.e] && b && b[cur.e])) ensure(cur.q, cur.e); }
 
   /* ================================ le plateau (espace monde) ================================ */
   function drawPlateau(cam) {
@@ -1037,6 +1043,6 @@
     masqueCite: masqueCite, QUARTIERS: QNOMS, ETATS: Object.keys(ET),
     transition: function () { return trans ? trans.u : 1; },
     soleilX: function () { return sunXLast; },
-    prete: function (q) { return !!(cache.ville[q] && cache.struct[q]); }
+    prete: function (q) { return !!(cache.ville[q] && cache.ville[q]._ && cache.struct[q] && cache.struct[q]._); }
   };
 })();

@@ -12,7 +12,7 @@
        N.world = { W, H, x0, y0, x1, y1,
                    arena(rect, dur), reset(),             rect : {x,y,w,h}
                    travelling({largeur, vx, depuis}), stop(),
-                   enMouvement(), mursAnnonces() -> [rect], voyage() -> {actif, attend, vx, restant},
+                   enMouvement(), mursAnnonces() -> [rect] (réutilisé), voyage() -> {actif, attend, vx, restant},
                    distMur(x, y[, out]) -> {d, nx, ny, pan, mobile},
                    rect() -> {x,y,w,h} }
 
@@ -61,7 +61,7 @@
   var to = { x0: 0, y0: 0, x1: W0, y1: H0 };       // arène visée
   var glT = 0, glD = 0, gliding = false;
   var trav = { actif: false, attend: false, vx: 0, largeur: TRAV_LARGEUR, fin: 0 };
-  var annonces = [{ x: 0, y: 0, w: 0, h: 0 }];
+  var annonces = [], annPool = [{ x: 0, y: 0, w: 0, h: 0 }];
   var rectOut = { x: 0, y: 0, w: 0, h: 0 };
   var distOut = { d: 0, nx: 0, ny: 0, pan: 'g', mobile: false };
 
@@ -133,9 +133,10 @@
 
   /* les rectangles à hachurer dès maintenant : la position finale d'un glissement, ou le point d'arrêt d'un voyage */
   function mursAnnonces() {
-    annonces.length = 0;
-    if (gliding || trav.attend) { rectOut.x = to.x0; rectOut.y = to.y0; rectOut.w = to.x1 - to.x0; rectOut.h = to.y1 - to.y0; annonces.push({ x: rectOut.x, y: rectOut.y, w: rectOut.w, h: rectOut.h }); }
-    else if (trav.actif) { var L = Wd.x1 - Wd.x0; annonces.push({ x: trav.fin, y: Wd.y0, w: L, h: Wd.y1 - Wd.y0 }); }
+    annonces.length = 0;                              // le tableau et son rectangle sont réutilisés : à lire tout de suite
+    var a = annPool[0];
+    if (gliding || trav.attend) { a.x = to.x0; a.y = to.y0; a.w = to.x1 - to.x0; a.h = to.y1 - to.y0; annonces.push(a); }
+    else if (trav.actif) { a.x = trav.fin; a.y = Wd.y0; a.w = Wd.x1 - Wd.x0; a.h = Wd.y1 - Wd.y0; annonces.push(a); }
     return annonces;
   }
 
@@ -209,11 +210,11 @@
   var bx0 = 0, bx1 = 0, by0 = 0, by1 = 0;
 
   /* amorti critique (smooth-damp) : constante de temps ts, intégré en forme fermée donc stable à tout dt */
+  var amP = 0, amV = 0;                      // résultat de amorti(), lu tout de suite : aucune allocation par pas
   function amorti(pos, cible, v, dt, ts) {
     var om = 2 / ts, e = Math.exp(-om * dt);
     var d = pos - cible, tmp = (v + om * d) * dt;
-    var nv = (v - om * tmp) * e;
-    return { p: cible + (d + tmp) * e, v: nv };
+    amV = (v - om * tmp) * e; amP = cible + (d + tmp) * e;
   }
 
   function update(dt) {
@@ -246,8 +247,8 @@
       }
       var ts = (c.amorti !== undefined ? c.amorti : 0.22);
       if (dt > 0) {
-        var rx = amorti(cx, tx, vx, dt, ts), ry = amorti(cy, ty, vy, dt, ts);
-        cx = rx.p; vx = rx.v; cy = ry.p; vy = ry.v;
+        amorti(cx, tx, vx, dt, ts); cx = amP; vx = amV;
+        amorti(cy, ty, vy, dt, ts); cy = amP; vy = amV;
       }
     }
     // bornes (l'état est borné aussi : une borne qui s'écarte laisse la caméra repartir en douceur)
