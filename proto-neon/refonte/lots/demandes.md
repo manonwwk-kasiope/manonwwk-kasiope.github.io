@@ -217,3 +217,17 @@ Ajouts uniquement dans `N.R.hud.tempsForts` ; les valeurs préexistantes de `N.R
 - `derniereVie` : seuil **1 vie**, battement **1,2 Hz** (G-04), bord **4 px**, densité de Bayer minimale **0,25** et amplitude **0,50**, seuil du cœur rose **0,68**. Bord sombre et local, sans éclair plein écran ; état fixe sous mouvement réduit.
 - `protection` : **2 segments**, rayon tête **9 px** et corps **6 px**. Sauvegarde puis restitution des pixels et de leur propriétaire au-dessus du HUD, via les seules interfaces publiques.
 - `texte` : ligne de **11 px** (interligne existant du HUD, utilisé pour placer le pop sous le défi et le nom de vague en portrait) ; `ptMin` **11 pt équivalent**, seuil demandé par la mission pour la vérification de lisibilité ; les nouveaux textes sont au moins à l'échelle **2**. Le rendu réel Safari reste à vérifier.
+
+## codex-p4 — S.tele du CYCLOPE, RUCHE et lasers actifs
+
+18/10/2026 · 00 h 51 (Paris). Publication seulement ; aucun délai d'annonce, dégât, dessin ou collision modifié. Preuves : `tools/codex-p4/scenes-vm.json`, traces et journaux gzip ; méthode et limites dans `tools/codex-p4/rapport.md`.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-p4 | `02-regles.js` (`publicationTele`, ajouté) | `tirVie = 9`, `rucheDecalage = 3`, `ruchePortail = 0.4`, `cyclopeTirDepart = 12`, `cyclopeRayonDepart = 9`, `cyclopeSpiraleDecalage = 0.5` | reprendre exactement les constantes existantes de 72/73 pour calculer la portée et les positions des zones ; les producteurs réemploient les mêmes valeurs ; aucune règle nouvelle |
+| codex-p4 | `72-ennemis.js` / `73-colosse.js` | arbitrer le contact des mines du bond, sans correction dans ce lot | collision EFFECTIVE `mort` auteur mine : zone publiée 8,33 ms avant le contact après sortie du portail ; sous 500 ms et 800 ms. Avant/après identiques. Le portail existe déjà pendant 600 ms mais n'est pas dans S.tele ; aucun délai ni dégât changé |
+| codex-p4 | `73-colosse.js` / règle R-07 | arbitrer le seuil applicable au souffle des mines du bond | souffle EFFECTIF à 600 ms de la première zone : satisfait 500 ms des mines ordinaires, échoue à 800 ms si ces mines sont comptées parmi les attaques du CYCLOPE ; avant/après identiques, `phase3.armementMines = 0.6` inchangé |
+| codex-p4 | `70-joueuse.js` / journal des coups | fiabiliser l'attribution de la durée d'annonce du CYCLOPE et de ses mines | les collisions mesurées ont `teleDuree = 0` dans le journal malgré la présence de leurs zones ; la mesure de ce lot utilise les vrais états et la boucle image par image, pas ce champ seul |
+| codex-p4 | banc hors bac à sable | lancer `cd proto-neon && node tools/codex-p4/verifier.mjs` | script complet, Chromium unique muet, iPhone paysage/portrait et bureau, vrais pixels et journaux ; serveur/Chromium interdits dans cette session, aucune tentative de contournement |
+
+Interfaces publiques ajoutées : `N.colosse.publierTele(ajouter)` fournit ses zones à l'agrégateur ; `N.ennemis.publierTele()` rafraîchit S.tele après le pas de 73 (72 est mis à jour avant 73). Le pool réutilisé grandit si nécessaire, sans troncature silencieuse. Une salve ou un secteur peut nécessiter plusieurs formes portant le même id d'attaque. La RUCHE publie les emplacements de contact de sa couvée, puis de ses larves encore dans leur portail ; aucun souffle fictif autour de la mère. Les lasers et projectiles actifs du CYCLOPE restent publiés à `reste = 0` jusqu'à leur suppression réelle.
