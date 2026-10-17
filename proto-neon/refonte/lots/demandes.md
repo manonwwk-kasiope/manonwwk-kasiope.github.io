@@ -50,3 +50,12 @@ Les six mini-films 8 bits d'intermède sont livrés : `cine/{chasse,retournement
 Reste à les appeler depuis `79-jeu.js` (par `N.intro.transition` de `60-intro.js`) aux moments de
 `refonte/INTERMEDES.md` : jeu figé pendant le film, un toucher le passe (garde de 300 ms), 6 s au plus,
 jamais deux fois le même dans une partie.
+
+## codex-02 — dépendances du contrat constatées sur la branche
+
+| lot | fichier | besoin | raison |
+|---|---|---|---|
+| codex-02 | `79-jeu.js` | appeler le pilote au début de **chaque** pas, y compris cartes/VOL/mort/plongée, avant `ramasserTaps` ; le hook actuel est limité à JOUE | sans appel sur cartes le pilote ne peut choisir, et ses entrées combat restent actives pendant le VOL ; le banc ne doit pas piloter à sa place |
+| codex-02 | producteurs `71-butin.js`, `12-cam.js`, `73-arene.js`, `17-vol.js`, `72-ennemis.js` / `50-fx.js` | publier les vues contractuelles `S.butin`, `S.vue`, `S.voies`, `S.vol` et les télégraphes vivants dans `S.tele` | ces champs sont absents ou vides sur la branche ; impossible d’appliquer les attractions, les règles de vue/VOL et les dangers annoncés en ne lisant que S |
+| codex-02 | `03-socle.js`, `70-joueuse.js`, `80-ecrans.js` | accepter et publier `S.player.pouvoir` et `S.ecran.niveaux` selon la spécification des pilotes ; préciser si niveaux est indexé par carte | la spécification les exige mais les schémas et les producteurs actuels les omettent ; pas d’accès privé de contournement dans le pilote |
+| codex-02 | `79-jeu.js` / banc | préciser l’avancement des écrans à horloge arrêtée en simulation : `dbg.simuler` passe dt=0 aux cartes/panneaux | le jeu simulé doit laisser passer les séquences sans `valider` ni saut ; les écrans ont besoin du pas réel pour leurs gardes et films |
