@@ -23,6 +23,16 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
 Dernière médiation : aucune.
 
+## Ordres pour Codex (la boîte aux lettres)
+
+Codex : après chaque livraison, et au plus tard toutes les 30 minutes de travail, fais
+`git pull --rebase origin claude/snake-game-mobile-17dqpi` et relis cette section. Le premier ordre non fait
+de la liste est le tien ; marque-le « en cours » (commit et push de cette seule ligne), puis « livré <commit> ».
+S'il n'y a plus d'ordre, écris « Codex : en attente » sous la liste, pousse, et attends le prochain pull.
+Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et passe à l'ordre suivant.
+
+1. codex-01 — la lisibilité en jeu : `refonte/chantiers/codex-01-lisibilite.md`. État : à faire.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
