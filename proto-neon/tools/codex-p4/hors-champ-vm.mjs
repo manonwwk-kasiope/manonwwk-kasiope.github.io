@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import path from 'node:path';
+import { HERE, monde } from './vm.mjs';
+const m = monde();
+vm.runInContext(fs.readFileSync(path.join(HERE, 'sonde.js'), 'utf8'), m.c);
+const r = vm.runInContext('__P4.horsChamp({pixels:false})', m.c);
+const resultat = { dateParis: new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }), ...r, erreursConsole: m.erreurs };
+fs.writeFileSync(path.join(HERE, 'hors-champ-vm.json'), JSON.stringify(resultat, null, 2));
+const { trace, pixels, ...resume } = resultat;
+console.log(JSON.stringify(resume));
+if (!r.conforme || m.erreurs.length) process.exitCode = 1;

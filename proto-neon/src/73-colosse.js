@@ -67,6 +67,7 @@ N.colosse = (function () {
     K.oeil1 = p1.oeil || 1.4;
     K.ciseaux = p2.annonceCiseaux || 0.8; K.oeilMain = p2.oeilMain || 3; K.oeilSalve = p2.oeilSalve || 1.4; K.entree2 = p2.entree || 'meute';
     K.salveDouble = p3.salveDouble || 2; K.ombre = p3.ombre || 40; K.annonceBond = p3.annonceBond || 1.0; K.mines = p3.mines || 6; K.armMines = p3.armementMines || 0.6;
+    K.poseMines = Math.max(r.minesPosees.armement, K.teleMin);
     K.balles3 = p3.balles || 14; K.resserre = p3.resserre || 0.15; K.oeil3 = p3.oeil || 1.4;
     K.repit = rp.duree || 7; K.cellules = rp.cellules || 8;
     K.enrApres = eg.apres || 100; K.enrAllure = eg.allure || 1.3; K.enrInt = eg.intervalle || 0.75;
@@ -588,7 +589,7 @@ N.colosse = (function () {
     var A = O.A, a0 = O.rr('ennemis', 0, TAU);
     for (i = 0; i < K.mines && vivantes < CFG.minesMax; i++, vivantes++) {
       var ag = a0 + i * TAU / K.mines, mx = O.clamp(a.lx + Math.cos(ag) * CFG.mineRayon, A.x0 + 10, A.x1 - 10), my = O.clamp(a.ly + Math.sin(ag) * CFG.mineRayon, A.y0 + 10, A.y1 - 10);
-      O.safe('ennemis.spawn', function () { N.ennemis.spawn('mine', mx, my, { portail: 0.6, st: 'arme', stT: K.armMines }); });
+      O.safe('ennemis.spawn', function () { N.ennemis.spawn('mine', mx, my, { portail: K.poseMines, annoncePose: true, st: 'arme', stT: K.armMines }); });
     }
   }
 

@@ -117,7 +117,7 @@ N.ennemis = (function () {
     }
     e._tx = (AL + AR) / 2; e._ty = (AT + AB) / 2;
   }
-  /* spawn(type, x, y, opts) : opts { portail: s, elite, mods, st, stT, ext }. Un ennemi avec portail existe, ne touche
+  /* spawn(type, x, y, opts) : opts { portail: s, elite, mods, st, stT, ext, annoncePose }. Un ennemi avec portail existe, ne touche
      pas et n'agit pas pendant ce délai (§ 2.3 : 600 ms d'apparition) ; `apparition` part à la fin du portail. */
   function spawn(type, x, y, opts) {
     arena();
@@ -134,6 +134,13 @@ N.ennemis = (function () {
     if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
     else apparu(e);
     list.push(e);
+    if (type === 'mine' && opts.annoncePose && e.etat === 'portail') {
+      // Interface publique de pose du CYCLOPE : contact ET mèche attendent le portail.
+      e._minePosee = true;
+      e.vuDepuis = vu6(e) ? 0 : -1;
+      armer(e, 'disque', e._portailTotal, 'tout');
+      publierTele(); // dès spawn(), sans attendre l'update suivant de 72 ou 73
+    }
     return e;
   }
   function apparu(e) {
@@ -718,8 +725,13 @@ N.ennemis = (function () {
       if (e._dead) continue;
       e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
       if (e._flash > 0) e._flash -= dt;
+      if (e._minePosee && e.etat === 'portail') {
+        // Une mine hors champ attend aussi les 600 ms de visibilité continue de R-08.
+        e.vuDepuis = vu6(e) ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+      }
       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
         e._portail -= dt;
+        if (e._minePosee && e._portail <= 0 && e.vuDepuis < R.criteres.R08.visible) e._portail = R.temps.h;
         if (e._portail <= 0) { e._portail = 0; apparu(e); }
         continue;
       }
@@ -837,6 +849,11 @@ N.ennemis = (function () {
     TVN = 0;
     for (i = 0; i < list.length; i++) {
       e = list[i];
+      if (!e._dead && e._minePosee && e.etat === 'portail') {
+        e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
+          conf('mine').souffle || CFG.mineSouffle, e._portail, e._portailTotal, 'tout', e.type);
+        continue;
+      }
       if (!e._dead && e.type === 'larve' && e._mere !== undefined && e.etat === 'portail') {
         // Les enfants restent immobiles dans leur portail, puis le contact tête devient possible.
         e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
@@ -855,6 +872,8 @@ N.ennemis = (function () {
       } else if (e.type === 'larve' && st === 'mord') {
         id = teleAjouter(e.id, 'disque', e._tx, e._ty, e._tx, e._ty, 12, rest, tot, 'corps', e.type);
       } else if (e.type === 'mine' && st === 'arme') {
+        if (e._minePosee) teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
+          e.r * R.mort.ennemi.facteurRayon, 0, e._portailTotal, 'tete', e.type);
         id = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y, conf('mine').souffle || CFG.mineSouffle, rest, tot, 'tout', e.type);
       } else if (e.type === 'tourelle' && st === 'vise') {
         c = conf('tourelle').portee || 160;
@@ -1084,6 +1103,12 @@ N.ennemis = (function () {
       e = list[i];
       if (e._dead) continue;
       if (e.etat === 'portail') {                       // le portail : croix de visée et anneaux qui se resserrent
+        if (e._minePosee) {
+          // Anneau stable du vrai souffle : aucune alternance lumineuse ni flash ajouté.
+          var mp = R.colosse.minesPosees, mr = conf('mine').souffle || CFG.mineSouffle;
+          g.ring(e.x, e.y, mr + mp.contour, O.NP, mp.densiteAnneau);
+          g.ring(e.x, e.y, mr, O.MAGENTA, mp.densiteAnneau);
+        }
         var kb = e._portailTotal > 0 ? 1 - e._portail / e._portailTotal : 1;
         spawnMark(e.x, e.y, kb, e.elite ? 24 : (e.type === 'ruche' ? 22 : 12));
         continue;

@@ -266,3 +266,19 @@ Interfaces publiques ajoutées : `N.colosse.publierTele(ajouter)` fournit ses zo
 Réemploi sans changement : `ecrans.fin.continuer` (9 → 0), `ecrans.fin.garde` (0,45 s), `ecrans.fin.boutonPt` (44 pt), `vies.continuer` (une fois, trois vies, score zéro). Le raccord emploie `monde.mobile.glissementMin` pour rendre l'arène par l'API publique, car le double `reset` de `12-cam.js` signalé par codex-p6 subsiste. Aucune modification de `12-cam.js`, aucun champ privé consommé.
 
 Preuves VM : `tools/codex-p7/calibration.json` (10 parties exactes du commit e1bdc6f, cinq pilotes × deux graines), `avant.json` et `statique.json` (9 parcours, 222 contrôles, zéro erreur). La relance mesurée reste à 0,8166666666666662 s avant/après ; ceci ne qualifie pas Safari ni le résultat navigateur des critères officiels. Compte rendu et limites : `tools/codex-p7/rapport.md`.
+
+## codex-p4b — armement des mines du CYCLOPE
+
+18/10/2026 · 01 h 23 (Paris). Suite autorisée de codex-p4 ; résout les deux écarts mines de la section précédente. État courant et mesures dans `tools/codex-p4/rapport.md` ; aucune modification des autres modules.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p4b | `02-regles.js`, ajout `colosse.minesPosees.armement = 0.8` | protection de pose avant tout contact et avant le départ de la mèche ; plancher partagé avec `colosse.teleMin` | R-07 exige CYCLOPE ≥ 800 ms ; l'ancien portail de 600 ms était absent de S.tele. La mèche préexistante `phase3.armementMines = 0.6` suit la protection, soit au moins 1,4 s pose → souffle |
+| codex-p4b | `02-regles.js`, ajouts `colosse.minesPosees.contour = 1`, `densiteAnneau = 1` | contour sombre de 1 px et anneau magenta entièrement tracé pendant le portail | annoncer exactement le rayon de souffle existant, sans cyan, clignotement ni flash ajouté ; anneau stable plutôt qu'aplat lumineux |
+| codex-p4b | `72-ennemis.js`, option publique `spawn('mine',…, {annoncePose:true, portail,…})` | publication synchrone dans S.tele et événement arme dès la pose ; le portail interdit contact/mèche, puis le contact actif reste à `reste=0` séparément du souffle | éviter un pas sans annonce et distinguer les échéances des deux dangers. 73 n'écrit aucun champ privé de 72 |
+| codex-p4b | `72-ennemis.js`, visibilité de pose | compter `vuDepuis` pendant le portail ; le prolonger tant que la visibilité continue reste sous `R.criteres.R08.visible = 0.6`, avec le pas existant `R.temps.h` | R-08 : une mine hors champ ne s'active pas à son entrée dans l'écran. Réutilisation des chiffres existants, aucune nouvelle valeur |
+| codex-p4b | `tools/codex-p4/verifier.mjs`, hors bac | lancer `cd proto-neon && node tools/codex-p4/verifier.mjs` et renvoyer `playwright-p4b/resultats.json` | trois profils en série, un Chromium muet, vrais pixels de pose/armement/collision et anneau isolé, journaux et 6 parties dieu/bon avant/après. Aucune tentative serveur/Chromium dans ce bac. Les huit scènes déjà acceptées ne sont pas relancées par défaut |
+
+Le nombre et le placement des mines restent ceux de phase 3. La difficulté est évaluée sur les parties demandées ; aucune compensation chiffrée n'est inventée avant leur résultat. Aucun seuil d'acceptation abaissé. Les mesures VM ne sont pas une qualification Safari ni une preuve des pixels du navigateur.
+
+codex-p4b — mis à jour le 18/10/2026 à 01 h 29 (Paris) : VM validée sur dix références ; six scènes mines après sur trois formats satisfaites, douze parties avant/après fin sans erreur. Bon : morts auteur cyclope 2→2 ; toutes morts pendant le boss 3→5 (murs 1→3), aucune mort par mine pendant le boss. Nombre et placement conservés. Construction sortie 0 ; rapport et reçus dans `tools/codex-p4/`. Chantier bloqué uniquement sur la vérification visuelle hors bac, sans lancement navigateur ici.
