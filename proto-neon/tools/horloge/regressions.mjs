@@ -17,12 +17,12 @@ async function run(name, args) {
   fs.closeSync(log); console.log(name, 'code', code); return code;
 }
 const lis = path.join(OUT, 'lisibilite'); fs.mkdirSync(lis, { recursive: true });
-if (phase === 'apres') {
+if (phase === 'apres' && !process.argv.includes('--pilotes-seuls')) {
   const ref = path.resolve(OUT, '../avant/lisibilite/avant.json');
   if (!fs.existsSync(ref)) throw Error('Référence avant absente : ' + ref);
   fs.copyFileSync(ref, path.join(lis, 'avant.json'));
 }
-const a = await run('lisibilite', [path.join(ROOT, 'tools/lisibilite/banc.mjs'), '--phase', phase, '--bundle', bundle, '--outdir', lis]);
+const a = process.argv.includes('--pilotes-seuls') ? null : await run('lisibilite', [path.join(ROOT, 'tools/lisibilite/banc.mjs'), '--phase', phase, '--bundle', bundle, '--outdir', lis]);
 const pilots = path.join(OUT, 'pilotes'); fs.mkdirSync(pilots, { recursive: true });
 const original = path.join(ROOT, 'tools/pilotes/parties.mjs');
 let s = fs.readFileSync(original, 'utf8');

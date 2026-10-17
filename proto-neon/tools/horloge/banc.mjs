@@ -56,6 +56,57 @@ async function one(profil, genre, repetition = 0) {
         const intro = N.intro.state();
         return { intro, bilanVisible: N.ui.ecran() === 'fin' && intro.t >= 0.4 && !intro.busy, conforme: N.ui.ecran() === 'fin' && intro.t >= 0.4 && !intro.busy, ...base() };
       }
+      if (genre === 'pause') {
+        const rows = [], txt = N.outils.textC, main = N.cartes.main; let vues = [], tirages = 0, cache = false;
+        N.outils.textC = function (t) { vues.push(t); return txt.apply(this, arguments); };
+        N.cartes.main = function () { tirages++; return main.apply(this, arguments); };
+        Object.defineProperty(document, 'hidden', { configurable: true, get: () => cache });
+        const vis = h => { cache = h; document.dispatchEvent(new Event('visibilitychange')); };
+        function tap(cx, cy) {
+          const el = document.getElementById('app');
+          if (window.innerHeight > window.innerWidth || window.innerWidth < 1000) {
+            const t = new Touch({ identifier: 91, target: el, clientX: cx, clientY: cy });
+            el.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, cancelable: true, touches: [t], targetTouches: [t], changedTouches: [t] }));
+            el.dispatchEvent(new TouchEvent('touchend', { bubbles: true, cancelable: true, touches: [], targetTouches: [], changedTouches: [t] }));
+          } else {
+            el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', button: 0, buttons: 1, clientX: cx, clientY: cy }));
+            el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerType: 'mouse', button: 0, buttons: 0, clientX: cx, clientY: cy }));
+            el.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: cx, clientY: cy }));
+          }
+        }
+        const snap = () => ({ etat: N.game.etat(), ui: N.ui.ecran(), main: N.ui.main(), niveaux: { ...S.ecran.niveaux }, depuis: S.ecran.depuis, prises: { ...N.cartes.prises() }, horloge: N.horloge.t(), intro: N.intro.state(), tirages });
+        for (const nom of ['jeu', 'pause', 'panneau', 'cartes']) {
+          N.intro.stop(); N.game.reset(2975, { depart: 'jeu' }); N.game.dbg.god(true); tick(2);
+          if (nom === 'cartes') N.game.dbg.etat('cartes');
+          if (nom === 'pause') { S.input.pause = true; tick(1); }
+          if (nom === 'panneau') { N.intro.transition('boss'); tick(1); }
+          tick(30); const avant = snap();
+          vis(true); vues = []; tick(30); const pendant = snap(), overlay = vues.includes('PAUSE');
+          vis(false); tick(2); const toujours = S.paused;
+          const rc = nom === 'cartes' ? N.ui.rect(0) : { x: N.gfx.W / 2, y: N.gfx.H / 2, w: 1, h: 1 };
+          const canvas = document.getElementById('out').getBoundingClientRect(), cx = canvas.left + (rc.x + rc.w / 2) * N.gfx.PX, cy = canvas.top + (rc.y + rc.h / 2) * N.gfx.PX;
+          tap(cx, cy); tick(2); const apres = snap();
+          const conserve = x => x.etat === avant.etat && x.ui === avant.ui && JSON.stringify(x.main) === JSON.stringify(avant.main) && JSON.stringify(x.niveaux) === JSON.stringify(avant.niveaux) && JSON.stringify(x.prises) === JSON.stringify(avant.prises) && x.tirages === avant.tirages;
+          let second = null;
+          if (nom === 'cartes' || nom === 'pause') { tap(cx, cy); tick(2); second = snap(); }
+          rows.push({ nom, avant, pendant, apres, second, overlay, toujours, conforme: overlay && toujours && !S.paused && conserve(pendant) && conserve(apres) && pendant.depuis === avant.depuis && pendant.horloge === avant.horloge && (nom !== 'panneau' || pendant.intro.t === avant.intro.t) && (nom !== 'cartes' || second.etat !== 'cartes') && (nom !== 'pause' || second.etat === 'jeu') });
+        }
+        N.outils.textC = txt; N.cartes.main = main;
+        N.intro.stop(); N.game.reset(2975, { depart: 'jeu' }); N.game.dbg.etat('cartes'); tick(30); vis(true); tick(1);
+        return { rows, conforme: rows.every(r => r.conforme), ...base() };
+      }
+      if (genre === 'gel') {
+        tick(2); const samples = [], avancer = N.horloge.avancer;
+        N.horloge.avancer = function () { const k = N.fx.k(); const d = avancer.apply(this, arguments); samples.push({ k, dt: d, gel: N.horloge.gele(), arret: N.horloge.arretee() }); return d; };
+        N.fx.hitstop(6); N.joueuse.equiper('ralenti'); const lance = N.joueuse.pouvoirActiver(); tick(240);
+        const actifs = samples.filter(r => r.k < 0.999 && !r.arret), gels = actifs.filter(r => r.gel);
+        return { lance, samples, dureeReelle: actifs.length * H, gelSecondes: gels.length * H, conforme: lance && gels.length > 0 && Math.abs(actifs.length * H - N.R.pouvoirs.ralenti.duree) <= H * 2, ...base() };
+      }
+      if (genre === 'secondes') {
+        tick(60); N.intro.transition('defaite');
+        const log = N.intro.log, dernier = log[log.length - 1];
+        return { dernier, tempsS: S.t, conforme: S.t > 0.5 && Math.abs(dernier.tb - S.t) <= 0.00051, ...base() };
+      }
       if (genre === 'pas') {
         tick(2); const rows = [], adv = N.horloge.avancer, upd = N.game.update, draw = N.gfx.present;
         let pas = 0, updates = 0, dessins = 0, impulsions = 0;
