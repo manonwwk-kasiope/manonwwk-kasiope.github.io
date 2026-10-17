@@ -69,7 +69,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    b. Souris : le serpent suit le pointeur (cap vers le pointeur au-delà d'une zone morte de 24 px CSS autour de la tête, en coordonnées de jeu : lis N.cam pour convertir, sans y écrire) ; clic gauche tenu = boost ; clic droit = pouvoir ; molette = APOGÉE. Le curseur se cache après 1,5 s sans mouvement.
    c. Manette (navigator.getGamepads, lu une fois par image) : stick gauche = direction, A = boost, X = pouvoir, Y = APOGÉE, Start = pause. Remplir S.input.manette (déjà déclaré).
    d. Rien ne change sur iPhone (le manche et le second doigt restent prioritaires) ; le clavier et la souris ne s'activent qu'à leur premier usage.
-   e. Preuve : un banc `tools/commandes/banc.mjs` (bureau 1440 × 900) qui vérifie chaque commande par l'effet en jeu (boost réellement actif, pouvoir lancé, APOGÉE lancée si la jauge est pleine), plus un passage iPhone paysage qui prouve que rien n'a changé ; zéro erreur. État : à faire.
+   e. Preuve : un banc `tools/commandes/banc.mjs` (bureau 1440 × 900) qui vérifie chaque commande par l'effet en jeu (boost réellement actif, pouvoir lancé, APOGÉE lancée si la jauge est pleine), plus un passage iPhone paysage qui prouve que rien n'a changé ; zéro erreur. État : en cours (Codex, 18/10 à 01 h 02).
 
 NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
 
