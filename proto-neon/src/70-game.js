@@ -65,7 +65,7 @@ N.game = (function () {
   var VIES = 3, INVUL = 2.0;
   var DZ = 22;                  // approche d'un bord : le cap se couche le long du mur
   var BOSS_T = 76, BOSS_TELE = 2.4, BOSS_PV = 120;
-  var MORT_D = 0.4;             // dissolution du serpent avant le fond de défaite (J-17 : fin en moins d'1 s)
+  var MORT_D = 0.28;            // dissolution du serpent avant le fond de défaite (J-17 : fin en moins d'1 s)
   var GARDE = 0.45;             // l'écran de fin n'accepte un NOUVEAU toucher qu'après ce délai (J-17)
   var K_SON = 'snake2975.son', K_REC = 'snake2975.record';
   var TAU = Math.PI * 2;
@@ -561,7 +561,7 @@ N.game = (function () {
   function die() {
     st = 'mort'; stT = 0;
     if (DEFI.etat === 'actif') defiRate();
-    boom(P.x, P.y, 0.7, CYAN); hitstop(8);
+    boom(P.x, P.y, 0.7, CYAN); hitstop(4);
     sfx('bigkill');
     stats.deathT = t;
   }
