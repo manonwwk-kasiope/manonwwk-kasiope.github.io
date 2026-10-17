@@ -170,6 +170,7 @@
   function art(nom) { try { return N.art && N.art.get ? N.art.get(nom) : null; } catch (e) { return null; } }
   function clipOn(nom) { try { if (N.art && N.art.play) N.art.play(nom); } catch (e) {} }
   function clipOff(nom) { try { if (N.art && N.art.stop) N.art.stop(nom); } catch (e) {} }
+  function pour(nom) { try { return N.art && N.art.pour ? N.art.pour(nom) : nom; } catch (e) { return nom; } }
   function clipPrep(nom) { try { if (N.art && N.art.prepare) N.art.prepare(nom); } catch (e) {} }
   function sfx(nom, o) { try { if (N.music && N.music.sfx) N.music.sfx(nom, o); } catch (e) {} }
   function secousse(a) {
@@ -806,8 +807,9 @@
     } else if (FILMS[nom]) {
       /* un intermède prend la main comme le colosse ; le film suivant se charge pendant celui-ci */
       I.prev = prev; s.phase = 'intro';
-      clipOn(nom); I.clip = nom;
-      var nx = FILMS[nom].suite; if (nx) clipPrep(nx === 'boss' ? 'alerte' : nx);
+      /* le film propre au personnage choisi (« chasse-elle », « chasse-lui ») s'il existe : N.art.pour */
+      I.vis = pour(nom); clipOn(I.vis); I.clip = I.vis;
+      var nx = FILMS[nom].suite; if (nx) clipPrep(nx === 'boss' ? 'alerte' : pour(nx));
     } else { I.prev = null; clipOn(nom); I.clip = nom; }
     journal('interlude ' + nom);
     return true;
@@ -930,7 +932,7 @@
   /* un intermède : le film (ou son panneau fixe) se révèle au seuil de Bayer sur la dernière image du jeu, le cyan
      scintille, et la légende se tape sous l'image ; sans illustration, le décor de secours */
   function scFilm(nom, u) {
-    var img = art(nom);
+    var img = art(I.vis || nom);
     if (!img) decor(u, null);
     else {
       var by = L.portrait ? bandeauY(img.h) : null;

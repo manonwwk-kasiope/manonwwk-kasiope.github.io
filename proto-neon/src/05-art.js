@@ -29,7 +29,10 @@ N.art = (function () {
     'pilote-elle': [1, 1], 'pilote-lui': [1, 1], 'connexion-elle': [0, 1], 'connexion-lui': [0, 1],
     'fissure-elle': [0, 1], 'fissure-lui': [0, 1], 'profondeur-elle': [0, 1], 'profondeur-lui': [0, 1],
     'warp-elle': [0, 1], 'warp-lui': [0, 1], 'espace-elle': [0, 1], 'espace-lui': [0, 1],
-    'fin-elle': [0, 1], 'fin-lui': [0, 1], retrouvailles: [0, 1], 'teaser-3019': [0, 1] };
+    'fin-elle': [0, 1], 'fin-lui': [0, 1], retrouvailles: [0, 1], 'teaser-3019': [0, 1],
+    'chasse-elle': [0, 1], 'chasse-lui': [0, 1], 'retournement-elle': [0, 1], 'retournement-lui': [0, 1],
+    'rival-elle': [0, 1], 'rival-lui': [0, 1], 'plongee-elle': [0, 1], 'plongee-lui': [0, 1],
+    'reveil-elle': [0, 1], 'reveil-lui': [0, 1], 'apotheose-elle': [0, 1], 'apotheose-lui': [0, 1] };
   var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;
