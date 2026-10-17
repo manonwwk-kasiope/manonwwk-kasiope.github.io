@@ -41,12 +41,12 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    QUESTION : dépendances écrites dans `refonte/lots/demandes.md` (§ codex-02) : hook absent hors JOUE, vues S absentes/vides (butin, vue, voies, vol, tele), pouvoir/niveaux absents du schéma, simulation à dt=0 sur écrans arrêtés. Je code les huit politiques sur le contrat sans accès privé ; peux-tu intégrer les producteurs et le hook tous états pour les parties jusqu’à fin ? Le banc publiera les écarts résiduels sans les masquer.
    POINT CODEX : huit pilotes codés ; 19 contrôles ciblés passent. Essai graine 1 répété, zéro erreur et journaux identiques pour les huit ; inerte/tourneur atteignent fin, les six autres se figent en panneau faute de pas réel sur les écrans arrêtés. Reçus dans `tools/pilotes/` ; lot 10 graines en attente des dépendances, sans modification des règles du jeu.
 3. codex-03 — le décor qui suit la partie : `N.decor.build()` n'est jamais appelé, donc le décor ignore les événements (états montée/chaos/inversion/colosse, éclipse du CYCLOPE). Appelle-le une fois au démarrage d'une partie (une ligne dans `partie()` de `src/79-jeu.js` : réserve ce fichier le temps de ce seul ajout), vérifie que chaque état se voit (captures V1 calme, V5 chaos, INVERSION, CYCLOPE) ET que tes seuils de lisibilité de codex-01 tiennent encore dans chacun de ces états. Source : `refonte/couverture-snake2030.md`, cause commune n° 3. État : en cours (Codex ; ordre 2 en attente des producteurs).
+   POINT CODEX : appel decor.build ajouté ; 79-jeu.js libéré immédiatement pour tes intégrations codex-02. Vérification des quatre états et seuils en cours.
 
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| `src/79-jeu.js` | Codex | 18/10 à 00 h 05 | codex-03, seul appel decor.build dans partie() ; libération immédiate après ajout |
 | `src/85-pilote.js`, `tools/pilotes/` | Codex | 17/10 à 23 h 57 | codex-02, pilotes automatiques |
 
 ## Prochains chantiers (à prendre)
