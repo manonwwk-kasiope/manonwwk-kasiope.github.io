@@ -1,28 +1,41 @@
-/* ===== 76-directeur.js — N.dir : les vagues, les apparitions, l'énergie libre, la tension =====
+/* ===== 76-directeur.js — N.dir : les cinq vagues du secteur 1, leurs formations, la pastille, le traqueur, la tension =====
 
-   Tiré de 70-game.js (lot 0b) : spawnPoint, spawnGroup, counts, cible, director, la cadence de l'énergie libre.
-   REPLI du lot 5a : la démo menait deux minutes d'un seul tenant ; ici le même directeur mène les cinq vagues
-   de N.R.secteurs[0].vagues (durée, plafond, vitesse, quartier lus dans N.R), dans l'ordre. Les formations
-   nommées, le TRAQUEUR, la PASTILLE, le DÉFILÉ et les portails arrivent avec le lot 5a.
+   REFONTE.md § 4.1 (structure), § 4.2 (vagues chiffrées), § 4.3 (formations annoncées 1 s avant), § 4.5 (élites), § 3.8
+   (apparitions justes). Les cinq vagues nommées (ÉVEIL, MEUTE, BATTERIE, ESSAIM, DÉFERLANTE) sont lues dans
+   N.R.secteurs[0].vagues : durée nominale, quota, plafond d'ennemis vivants, charges de flèches, formations datées (« instant
+   après l'entrée »), TRAVELLING, CONVOIS, PASTILLE, PIC (élite avec bannière). À chaque vague, le quartier et l'état du décor
+   sont posés (N.decor.quartier / N.decor.etat) puis `vague` est émis.
 
-   RIEN NE NAÎT DANS LE CHAMP : les ennemis ordinaires naissent hors de la vue (N.cam / N.outils.VUE), à plus de
-   80 px de la tête, et entrent. Chaque apparition est comptée (stats.spawns) pour la preuve.
+   RIEN NE NAÎT DANS LE CHAMP (§ 3.8) : un ennemi naît hors de la vue courante ET de la vue anticipée (la tête avancée de 1,15 s),
+   avec 24 px de marge, à 70 px au moins de la tête, à 16 px au moins à l'intérieur des murs courants (donc devant le mur arrière
+   pendant un TRAVELLING). Faute de point valide, la formation attend. Tout passe par un portail de 600 ms ; les deux seules
+   exceptions annoncées par leur propre marqueur de 1,5 s sont le DUO et le CHAMP DE MINES (sur la trajectoire anticipée). Les
+   formations tombent sur la grille des temps de jeu (144,6 BPM) : au plus tard au temps suivant.
 
-   ÉMET `vague` (seul émetteur) : { n, etape: 'vague', evt: 'entree'|'pic'|'nettoyee'|'soupape', nom, quartier }.
-   C'est 79-jeu.js (rang 10) qui en déduit NETTOYAGE, CARTES, VOL ; ce module ne change jamais d'état de jeu.
-   Il DEMANDE : N.ennemis.spawn, N.butin.libre, N.ennemis.purge (fin de vague).
+   ÉMET `vague` (seul émetteur) : { n, etape: 'vague', evt: 'entree'|'pic'|'nettoyee'|'soupape', nom, quartier } et `portail`
+   (élites, traqueur). C'est 79-jeu.js (rang 10) qui en déduit NETTOYAGE, CARTES, VOL ; ce module ne change jamais d'état de jeu.
+   DEMANDE : N.ennemis.spawn / fuir / counts, N.butin.libre / lacher (PASTILLE), N.arene.entree(w) / pic() / nettoyee() (73-arene
+   n'écoute pas `vague` : le contrat n'en prévoit pas), N.colosse.start() / surKill(c) / estOeil(id), N.hud.banniere / tag.
+   CONSOMME `kill` (10) : mort de l'œil du CYCLOPE, dernière action de la joueuse (TRAQUEUR) ; `ramassage` (10) : idem ;
+   `inversion` (10) : les apparitions s'arrêtent pendant la chasse retournée.
 
    Interface (§ 7.8) : reset(secteur, opts), update(dt), vague(), phase(), tension(), progression(), entrees().
-   Ajouts : demarrer(n), info(), lancerBoss(), fini(). */
+   Ajouts : demarrer(n), info(), lancerBoss(), fini(), bossMort(), stats, nombreVagues(), tempsVague(), fin(), formation(nom, opts). */
 N.dir = (function () {
   'use strict';
   var O = N.outils, R = N.R;
   var CFG = {                                    // → N.R
-    premierEnnemi: 4.5, cadence: [0.55, 0.45, 0.4, 0.34, 0.28], energieLibre: 2.6, energieMin: 3, bossTele: 2.4,
-    maxMines: [4, 4, 6, 7, 7], maxTourelles: 6, maxSentinelles: 4
+    energieLibre: 2.6, energieMin: 3, maxMines: 12, plafondDur: 40,
+    inactionTraqueur: 7, secondTraqueur: 6, soupape: 12, elroyReste: 0.20, elroyAcc: 1.3,
+    margeVue: 24, anticipee: 1.15, distTete: 70, murs: 16, entree: 6, rapide: 0.10, temps: 60 / 144.6,
+    premierGate: 3, premierGateSuivantes: 1
   };
-  var st = { n: 0, tw: 0, phase: 'attente', spawnCd: 0, freeCd: 2, entrees: 0, fini: false, secteur: 0, tuto: true, nettoye: false, bossMort: false };
-  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [] };
+  var st = {
+    n: 0, tw: 0, phase: 'attente', entrees: 0, fini: false, secteur: 0, tuto: true, nettoye: false, bossMort: false,
+    queue: [], spawned: 0, freeCd: 2, pic: null, picFait: false, pastilleFaite: false, derniereAction: 0, traqueurs: 0, traqueurT: -99,
+    melangeT: 0, lastBeat: -1, beat: false, gate: 0, turn: 0, angPrec: null, vus: {}, alive: 0, elroy: false, premiere: true
+  };
+  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9 };
   var VAGUES = null;
 
   function vagues() { return VAGUES || (VAGUES = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues) || []); }
@@ -30,12 +43,17 @@ N.dir = (function () {
   function rr(a, b) { return O.rr('dir', a, b); }
   function ri(a, b) { return O.ri('dir', a, b); }
   function rnd() { return O.rf('dir'); }
+  function tete() { return N.joueuse && N.joueuse.tete; }
+  function banniere(t, o) { if (N.hud && N.hud.banniere) O.safe('hud.banniere', function () { N.hud.banniere(t, o); }); }
+  function etiquette(t) { if (N.hud && N.hud.tag) O.safe('hud.tag', function () { N.hud.tag(t); }); }
 
   function reset(secteur, opts) {
     VAGUES = null;
-    st.n = 0; st.tw = 0; st.phase = 'attente'; st.spawnCd = 0; st.freeCd = 2; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
+    st.n = 0; st.tw = 0; st.phase = 'attente'; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
+    st.queue.length = 0; st.spawned = 0; st.freeCd = 2; st.pic = null; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99;
+    st.melangeT = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
     st.secteur = secteur | 0; st.tuto = !(opts && opts.sansTuto);
-    stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0;
+    stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0; stats.maxAlive = 0; stats.minDistTele = 1e9;
     if (opts && opts.vague) demarrer(opts.vague);
   }
 
@@ -43,98 +61,336 @@ N.dir = (function () {
   function demarrer(n) {
     var vs = vagues();
     n = O.clamp(n | 0, 1, vs.length || 1);
-    st.n = n; st.tw = 0; st.phase = 'vague'; st.spawnCd = 0; st.fini = false; st.nettoye = false; st.entrees++;
     var w = vs[n - 1] || {};
+    st.n = n; st.tw = 0; st.phase = 'vague'; st.fini = false; st.nettoye = false; st.entrees++;
+    st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.melangeT = 0; st.elroy = false;
+    st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
+    st.queue.length = 0;
+    var fs = w.formations || [];
+    for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false, annonce: 0 });
+    st.queue.sort(function (a, b) { return a.t - b.t; });
+    if (n === 1 && st.premiere) {                      // le premier ennemi de la première partie : 3 s après un virage de plus de 45°, 6 s au plus tard
+      st.gate = st.tuto ? CFG.premierGate : CFG.premierGateSuivantes; st.turn = 0; st.angPrec = null;
+    } else st.gate = 0;
+    if (N.decor) {                                     // le quartier et l'état de la vague (le décor le déduit aussi de `vague`)
+      if (N.decor.quartier) O.safe('decor.quartier', function () { N.decor.quartier(w.quartier || 'docks'); });
+      if (N.decor.etat) O.safe('decor.etat', function () { N.decor.etat(w.etat || 'montee'); });
+    }
     if (N.ev) N.ev.emit('vague', { n: n, etape: 'vague', evt: 'entree', nom: w.nom || ('VAGUE ' + n), quartier: w.quartier || 'docks' });
+    if (N.arene && N.arene.entree) O.safe('arene.entree', function () { N.arene.entree(w); });
   }
 
-  /* ---- un point de naissance hors de la vue, à 80 px au moins de la tête ---- */
-  function spawnPoint(r) {
-    var m = r + 8, V = O.VUE, P = N.joueuse.tete, portrait = O.geo.portrait, A = O.A;
-    for (var k = 0; k < 14; k++) {
-      var side = ri(0, 3), x, y;
-      if (portrait && side === 2 && rnd() < 0.5) side = ri(0, 1);        // portrait : moins souvent par le bas
-      if (side === 0) { x = V.x - m; y = rr(A.y0 - 4, Math.min(V.y + V.h - 8, A.y1 + 20)); }
-      else if (side === 1) { x = V.x + V.w + m; y = rr(A.y0 - 4, Math.min(V.y + V.h - 8, A.y1 + 20)); }
-      else if (side === 2) { x = rr(V.x + 8, V.x + V.w - 8); y = V.y + V.h + m; }
-      else { x = rr(V.x + 8, V.x + V.w - 8); y = V.y - m; }
-      if (O.d2(x, y, P.x, P.y) >= 80 * 80) return { x: x, y: y, side: side };
+  /* ============================ les points de naissance (§ 3.8) ============================ */
+  var QV = { x: 0, y: 0, w: 0, h: 0 };
+  function validePt(x, y, vue) {
+    var V = O.VUE, a = CFG.margeVue, A = O.A, P = tete();
+    if (x > V.x - a && x < V.x + V.w + a && y > V.y - a && y < V.y + V.h + a) return false;
+    if (vue && x > vue.x - a && x < vue.x + vue.w + a && y > vue.y - a && y < vue.y + vue.h + a) return false;
+    if (x < A.x0 + CFG.murs || x > A.x1 - CFG.murs || y < A.y0 + CFG.murs || y > A.y1 - CFG.murs) return false;
+    if (P && O.d2(x, y, P.x, P.y) < CFG.distTete * CFG.distTete) return false;
+    if (O.geo.portrait && y > V.y + V.h && rnd() < (((R && R.apparitions && R.apparitions.portraitBas) !== undefined ? R.apparitions.portraitBas : 0.5))) return false;
+    var m = N.arene && N.arene.murArriere ? N.arene.murArriere() : null;
+    if (m && m.actif) { if ((m.sens > 0 && x < m.x + 24) || (m.sens < 0 && x > m.x - 24)) return false; }          // devant le mur arrière, jamais derrière
+    return true;
+  }
+  function vueAnt() {
+    if (!N.cam || !N.cam.anticipee) return null;
+    var q = N.cam.anticipee(CFG.anticipee, QV);
+    return q;
+  }
+  /* un point hors de la vue, au plus à 110 px de son bord, sinon n'importe où dans l'arène */
+  function pointHors() {
+    var V = O.VUE, A = O.A, vue = vueAnt(), k, x, y;
+    for (k = 0; k < 36; k++) {
+      x = rr(V.x - 110, V.x + V.w + 110); y = rr(V.y - 110, V.y + V.h + 110);
+      if (validePt(x, y, vue)) return { x: x, y: y };
     }
-    return null;                                       // pas de place sûre : on réessaiera
+    for (k = 0; k < 40; k++) {
+      x = rr(A.x0 + CFG.murs, A.x1 - CFG.murs); y = rr(A.y0 + CFG.murs, A.y1 - CFG.murs);
+      if (validePt(x, y, vue)) return { x: x, y: y };
+    }
+    return null;
   }
-  function logSpawn(e) {
-    var V = O.VUE, P = N.joueuse.tete;
+  function cote() {
+    var P = tete();
+    return P ? Math.atan2(P.y, P.x) : 0;
+  }
+  function logSpawn(e, tele) {
+    var V = O.VUE, P = tete();
     var inView = e.x > V.x - e.r && e.x < V.x + V.w + e.r && e.y > V.y - e.r && e.y < V.y + V.h + e.r;
-    var dist = Math.sqrt(O.d2(e.x, e.y, P.x, P.y));
-    stats.spawns.push({ t: Math.round(O.T.t * 100) / 100, k: e.type, x: Math.round(e.x), y: Math.round(e.y), inView: inView, tele: 0, dist: Math.round(dist), vague: st.n });
-    if (inView) stats.inView++;
-    else if (dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist);
+    var dist = P ? Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) : 0;
+    stats.spawns.push({ t: Math.round(O.T.t * 100) / 100, k: e.type, x: Math.round(e.x), y: Math.round(e.y), inView: inView, tele: tele || 0, dist: Math.round(dist), vague: st.n });
+    if (inView && !(tele >= 0.6)) stats.inView++;
+    if (!inView) { if (dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist); }
+    else if (tele >= 0.6 && dist < stats.minDistTele) stats.minDistTele = Math.round(dist);
   }
-  function spawnGroup(type) {
-    var r = (R && R.ennemis && R.ennemis[type] && R.ennemis[type].r) || 5, sp0 = spawnPoint(r), P = N.joueuse.tete;
-    if (!sp0) return 0;
-    var n = 1;
-    if (type === 'fleche') n = st.n <= 1 ? ri(1, 2) : st.n <= 3 ? ri(2, 3) : ri(2, 4);
-    var made = 0;
+  /* créer un ennemi : portail de 600 ms (le double pour une élite), modificateur RAPIDE de la vague 5, compte du quota */
+  function mk(type, x, y, o) {
+    o = o || {};
+    var w = info(), por = o.portail !== undefined ? o.portail : ((R && R.apparitions && R.apparitions.portail) || 0.6) * (o.elite ? 2 : 1);
+    var mods = o.mods || {};
+    if (w && w.rapide && !o.elite && type !== 'mine' && type !== 'ruche' && rnd() < w.rapide) { mods = { rapide: true }; }
+    var e = N.ennemis.spawn(type, x, y, { portail: por, elite: !!o.elite, mods: mods, st: o.st });
+    if (o.cd0 !== undefined) e._cd0 = o.cd0;
+    if (o.mere) e._mere = o.mere;
+    if (o.tx !== undefined) { e._tx = o.tx; e._ty = o.ty; }
+    if (!o.sansCompte) st.spawned++;
+    logSpawn(e, por);
+    if (N.ev && (o.elite || type === 'traqueur')) N.ev.emit('portail', { type: type, x: x, y: y, dur: por, elite: !!o.elite });
+    return e;
+  }
+  /* membre d'une formation à (x, y) : s'il est dans le champ, on le recule le long de l'axe depuis la tête, sinon on l'abandonne */
+  function membre(type, x, y, a, o) {
+    var vue = vueAnt(), P = tete(), k;
+    for (k = 0; k < 4; k++) {
+      if (validePt(x, y, vue)) return mk(type, x, y, o);
+      if (!P) break;
+      var d = Math.sqrt(O.d2(x, y, P.x, P.y)) || 1; x += (x - P.x) / d * 10; y += (y - P.y) / d * 10;
+    }
+    return null;
+  }
+  function dirTete(p) { var P = tete(); return P ? Math.atan2(P.y - p.y, P.x - p.x) : 0; }
+
+  /* ============================ les formations (§ 4.3) ============================ */
+  var TAILLE = { file: 3, meute: 6, nuee: 7, duoMines: 2, champMines: 9, pince: 2, batterie: 3, essaim: 7, duel: 2, garde: 5 };
+  var NOMS = { file: 'FILE', meute: 'MEUTE', nuee: 'NUÉE', duoMines: 'DUO DE MINES', champMines: 'CHAMP DE MINES', pince: 'PINCE',
+    batterie: 'BATTERIE', essaim: 'ESSAIM', duel: 'DUEL', garde: 'GARDE' };
+  function ligne(type, p, n, esp, o) {
+    var a = dirTete(p), c = Math.cos(a + Math.PI / 2), s = Math.sin(a + Math.PI / 2), made = 0;
     for (var i = 0; i < n; i++) {
-      var off = (i - (n - 1) / 2) * 13, x = sp0.x, y = sp0.y, back = (i % 2) * 9;
-      if (sp0.side < 2) { y += off; x += sp0.side === 0 ? -back : back; } else { x += off; y += sp0.side === 2 ? back : -back; }
-      if (O.d2(x, y, P.x, P.y) < 70 * 70) continue;       // G-14 : jamais près de la tête, même hors champ
-      var e = N.ennemis.spawn(type, x, y);
-      logSpawn(e); made++;
+      var off = (i - (n - 1) / 2) * esp;
+      if (membre(type, p.x + c * off, p.y + s * off, a, o)) made++;
     }
     return made;
   }
-  function plafond() { var w = info(); return (w && w.plafond) || 10; }
-  /* la montée : le nombre d'ennemis visé croît dans la vague jusqu'au plafond de N.R */
-  function cible() {
-    var w = info(); if (!w) return 0;
-    var dep = st.tuto && st.n === 1 ? CFG.premierEnnemi : 1;
-    if (st.tw < dep) return 0;
-    return 2 + (plafond() - 2) * O.clamp((st.tw - dep) / Math.max(1, w.duree * 0.7 - dep), 0, 1);
+  function deuxCotes() {
+    var P = tete(), vue = vueAnt(), k, a, b;
+    for (k = 0; k < 24; k++) {
+      a = pointHors(); b = pointHors();
+      if (!a || !b) break;
+      if (P) {
+        var dx1 = a.x - P.x, dy1 = a.y - P.y, dx2 = b.x - P.x, dy2 = b.y - P.y;
+        var cs = (dx1 * dx2 + dy1 * dy2) / ((Math.sqrt(dx1 * dx1 + dy1 * dy1) * Math.sqrt(dx2 * dx2 + dy2 * dy2)) || 1);
+        if (cs > -0.2) continue;
+      }
+      return [a, b];
+    }
+    a = pointHors(); b = pointHors();
+    return a && b ? [a, b] : null;
   }
+  function devantTete(d) {
+    var P = tete(), A = O.A;
+    if (!P) return { x: (A.x0 + A.x1) / 2, y: (A.y0 + A.y1) / 2 };
+    return { x: O.clamp(P.x + Math.cos(P.ang) * d, A.x0 + 24, A.x1 - 24), y: O.clamp(P.y + Math.sin(P.ang) * d, A.y0 + 24, A.y1 - 24) };
+  }
+  function nbMines() { var c = N.ennemis.counts(); return c.mine || 0; }
+  /* formation(nom, opts) -> nombre d'ennemis créés (0 : pas de place, on réessaie) */
+  function formation(nom, opts) {
+    var made = 0, p, i, e, n, P = tete(), o = opts || {};
+    if (!P) return 0;
+    if (nom === 'file') { p = pointHors(); if (!p) return 0; made = ligne('fleche', p, 3, 14); }
+    else if (nom === 'meute') {
+      p = pointHors(); if (!p) return 0;
+      var a = dirTete(p), c = Math.cos(a + Math.PI / 2), s = Math.sin(a + Math.PI / 2), cx = Math.cos(a), cy = Math.sin(a);
+      for (i = 0; i < 6; i++) {                                    // un V dont la pointe regarde la tête
+        var lat = (i - 2.5) * 13, back = Math.abs(lat) * 0.8;
+        if (membre('fleche', p.x + c * lat - cx * back, p.y + s * lat - cy * back, a, null)) made++;
+      }
+    } else if (nom === 'nuee') {
+      p = pointHors(); if (!p) return 0;
+      n = ri(6, 8);
+      for (i = 0; i < n; i++) { var ra = 5 + i * 3, an = i * 0.95; if (membre('larve', p.x + Math.cos(an) * ra, p.y + Math.sin(an) * ra, an, null)) made++; }
+    } else if (nom === 'duoMines' || nom === 'champMines') {
+      var f = (R && R.formations && R.formations[nom]) || {}, mar = f.marqueurs || 1.5, A = O.A, spots = [];
+      if (nbMines() > CFG.maxMines - (nom === 'champMines' ? 9 : 2)) return 0;
+      if (nom === 'duoMines') {
+        var d0 = Math.max(90, f.distanceMin || 90), lat0 = rr(0, 1) < 0.5 ? 1 : -1;
+        for (i = 0; i < 2; i++) { var pp = devantTete(d0 + 14 + i * 26); spots.push({ x: pp.x + Math.cos(P.ang + Math.PI / 2) * lat0 * (10 + i * 22), y: pp.y + Math.sin(P.ang + Math.PI / 2) * lat0 * (10 + i * 22) }); }
+      } else {
+        var cc = devantTete(Math.max(100, f.distanceMin || 100) + 40);
+        for (i = 0; i < 9; i++) spots.push({ x: cc.x + ((i % 3) - 1) * 30, y: cc.y + (((i / 3) | 0) - 1) * 30 });
+      }
+      for (i = 0; i < spots.length; i++) {
+        var sx = O.clamp(spots[i].x, A.x0 + 18, A.x1 - 18), sy = O.clamp(spots[i].y, A.y0 + 18, A.y1 - 18);
+        if (O.d2(sx, sy, P.x, P.y) < (nom === 'champMines' ? 100 : 90) * (nom === 'champMines' ? 100 : 90)) continue;
+        mk('mine', sx, sy, { portail: mar, st: 'pose' }); made++;
+      }
+    } else if (nom === 'pince') {
+      var cs2 = deuxCotes(); if (!cs2) return 0;
+      for (i = 0; i < 2; i++) if (membre('dard', cs2[i].x, cs2[i].y, 0, null)) made++;
+    } else if (nom === 'duel') {
+      var ds = deuxCotes(); if (!ds) return 0;
+      for (i = 0; i < 2; i++) if (membre('lame', ds[i].x, ds[i].y, 0, null)) made++;
+    } else if (nom === 'batterie') {
+      p = pointHors(); if (!p) return 0;
+      var ab = dirTete(p), cb = Math.cos(ab + Math.PI / 2), sb = Math.sin(ab + Math.PI / 2);
+      for (i = 0; i < 3; i++) {
+        var lb = (i - 1) * 24;
+        if (membre('tourelle', p.x + cb * lb, p.y + sb * lb, ab, { cd0: 0.9 + i * ((R && R.formations && R.formations.batterie && R.formations.batterie.ecartTirs) || 0.4) })) made++;
+      }
+    } else if (nom === 'essaim') {
+      p = pointHors(); if (!p) return 0;
+      var hive = membre('ruche', p.x, p.y, 0, null);
+      if (!hive) return 0;
+      made++;
+      for (i = 0; i < 6; i++) { var ar = i / 6 * O.TAU; var l = mk('larve', hive.x + Math.cos(ar) * (hive.r + 6), hive.y + Math.sin(ar) * (hive.r + 6), { mere: hive.id }); if (l) made++; }
+    } else if (nom === 'garde') {
+      p = pointHors(); if (!p) return 0;
+      if (membre('sentinelle', p.x, p.y, 0, null)) made++;
+      var ag = dirTete(p), cg = Math.cos(ag + Math.PI / 2), sg = Math.sin(ag + Math.PI / 2);
+      for (i = 0; i < 4; i++) { var lg = (i - 1.5) * 14; if (membre('fleche', p.x + cg * lg - Math.cos(ag) * 16, p.y + sg * lg - Math.sin(ag) * 16, ag, null)) made++; }
+    } else return 0;
+    if (made > 0 && !o.sansEtiquette) {
+      var nm = NOMS[nom] || nom.toUpperCase();
+      if (!st.vus[nom]) { st.vus[nom] = true; banniere(nm, { c: 'magenta', duree: 1.2 }); } else etiquette(nm);
+    }
+    return made;
+  }
+
+  /* ============================ le pic de la vague : une élite avec bannière (§ 4.5) ============================ */
+  function lancerPic() {
+    var w = info(), pc = w && w.pic;
+    if (!pc) return true;
+    var E = (R && R.elites && R.elites[pc.elite]) || {}, p = pointHors();
+    if (!p) return false;
+    var e;
+    if (pc.elite === 'rival') e = mk('rival', p.x, p.y, { elite: true });
+    else e = mk(E.type || 'fleche', p.x, p.y, { elite: true, mods: (E.mods || []).reduce(function (m, k) { m[k] = true; return m; }, {}) });
+    if (pc.avec) formation(pc.avec, { sansEtiquette: true });
+    if (pc.banniere) banniere(E.nom || pc.elite.toUpperCase(), { c: 'magenta', duree: 2.2, clignote: true });
+    if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'pic', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+    if (N.arene && N.arene.pic) O.safe('arene.pic', function () { N.arene.pic(); });
+    O.sfx('portail');
+    return !!e;
+  }
+  /* la PASTILLE : un seul objet par vague, devant la tête, qui lance l'INVERSION quand on la prend (72-ennemis) */
+  function poserPastille() {
+    var P = tete(), A = O.A;
+    if (!P) return false;
+    var d = [70, 90, 55, 110], i;
+    for (i = 0; i < d.length; i++) {
+      var q = devantTete(d[i]);
+      if (O.d2(q.x, q.y, P.x, P.y) > 45 * 45 && q.x > A.x0 + 20 && q.x < A.x1 - 20) {
+        if (N.butin && N.butin.lacher) N.butin.lacher(q.x, q.y, 1, { type: 'pastille', vie: (R && R.butin && R.butin.pastille && R.butin.pastille.expire) || 12 });
+        O.sfx('pastille');
+        return true;
+      }
+    }
+    return false;
+  }
+  /* le TRAQUEUR, de la vague 2 à la vague 5 : il entre si la joueuse n'a ni détruit ni ramassé quoi que ce soit pendant 7 s */
+  function traqueur() {
+    var T = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].traqueur) || { vagues: [2, 3, 4, 5], inaction: 7, annonce: 1.5, second: 6 };
+    if (T.vagues.indexOf(st.n) < 0 || st.tw < 6) return;
+    var now = O.T.t, inaction = now - st.derniereAction;
+    if (st.traqueurs >= 2) return;
+    if (st.traqueurs === 0 && inaction < (T.inaction || 7)) return;
+    if (st.traqueurs === 1 && (inaction < (T.inaction || 7) || now - st.traqueurT < (T.second || 6))) return;
+    var p = pointHors();
+    if (!p) return;
+    mk('traqueur', p.x, p.y, { portail: T.annonce || 1.5, sansCompte: true });
+    st.traqueurs++; st.traqueurT = now;
+    banniere('TRAQUEUR', { c: 'magenta', duree: T.annonce || 1.5, clignote: true });
+    O.sfx('traqueur');
+  }
+
+  /* ============================ la vague ============================ */
+  function vivants() { var c = N.ennemis.counts(); return c.regular; }
   function update(dt) {
     if (st.phase !== 'vague') return;
     var w = info(); if (!w) return;
-    st.tw += dt; st.spawnCd -= dt;
-    var c = N.ennemis.counts(), i = st.n - 1;
-    if (!st.fini && c.regular < cible() && st.spawnCd <= 0) {
-      var pick = 'fleche', wt;
-      if (st.n === 1) wt = st.tw < 12 ? { fleche: 1 } : { fleche: 0.7, mine: 0.3 };
-      else if (st.n === 2) wt = { fleche: 0.55, mine: 0.25, tourelle: 0.2 };
-      else wt = { fleche: 0.34, mine: 0.16, tourelle: 0.28, sentinelle: 0.22 };
-      if (c.mine >= CFG.maxMines[Math.min(4, i)]) wt.mine = 0;
-      if (c.tourelle >= CFG.maxTourelles) wt.tourelle = 0;
-      if (c.sentinelle >= CFG.maxSentinelles) wt.sentinelle = 0;
-      var sum = 0, k; for (k in wt) sum += wt[k];
-      var r = rnd() * sum; for (k in wt) { r -= wt[k]; if (r <= 0) { pick = k; break; } }
-      spawnGroup(pick);
-      st.spawnCd = CFG.cadence[Math.min(4, i)];
+    var P = tete(), c = N.ennemis.counts(), i;
+    st.tw += dt;
+    st.alive = c.regular;
+    if (c.regular > stats.maxAlive) stats.maxAlive = c.regular;
+    var chassePause = N.ennemis.inversion && N.ennemis.inversion() > 0;
+    /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard) */
+    var b = Math.floor(O.T.t / CFG.temps); st.beat = b !== st.lastBeat; st.lastBeat = b;
+    /* le virage de plus de 45° du premier ennemi de la première partie */
+    if (st.gate > 0 && P) {
+      if (st.angPrec !== null) st.turn += Math.abs(O.wrapA(P.ang - st.angPrec));
+      st.angPrec = P.ang;
+      if (st.turn > Math.PI / 4 && st.tw < st.gate) st.gate = st.tw;
     }
+    var plafond = Math.min(w.plafond || 10, CFG.plafondDur);
+    /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
+    if (!chassePause && st.beat) {
+      for (i = 0; i < st.queue.length; i++) {
+        var q = st.queue[i];
+        if (q.fait) continue;
+        if (q.t > st.tw) break;
+        if (i > 0 && st.tw < CFG.entree) break;                            // entrée calme de 6 s : seule la première formation
+        if (i === 0 && st.gate > st.tw) break;
+        if (c.regular + (TAILLE[q.f] || 3) > plafond && q.t + 20 > st.tw) break;   // au plafond : on attend (au plus 20 s)
+        if (!q.annonce) {                                                   // annoncée 1 s avant (§ 4.3) : son nom d'abord, ses ennemis ensuite
+          q.annonce = st.tw;
+          var nm = NOMS[q.f] || q.f.toUpperCase();
+          if (!st.vus[q.f]) { st.vus[q.f] = true; banniere(nm, { c: 'magenta', duree: 1.4 }); } else etiquette(nm);
+          break;
+        }
+        if (st.tw - q.annonce < ((R && R.formations && R.formations.annonce) || 1)) break;
+        var made = formation(q.f, { sansEtiquette: true });
+        if (made > 0) { q.fait = true; break; }
+        q.essais++;
+        if (q.essais > 60) { q.fait = true; }
+        break;
+      }
+    }
+    /* V5 : toutes les formations, deux à la fois, toutes les 5 s */
+    if (!chassePause && w.melange && st.tw >= (w.melange.demarre !== undefined ? w.melange.demarre : (w.travelling ? w.travelling.t : 6)) && st.tw >= st.melangeT && st.beat && c.regular + 8 <= plafond) {
+      var toutes = ['file', 'meute', 'nuee', 'duoMines', 'champMines', 'pince', 'batterie', 'essaim', 'duel', 'garde'];
+      for (i = 0; i < (w.melange.parSalve || 2); i++) formation(toutes[ri(0, toutes.length - 1)]);
+      st.melangeT = st.tw + (w.melange.intervalle || 5);
+    }
+    /* le remplissage : tant que le quota n'est pas atteint et que la vague manque d'ennemis, une FILE (ou une formation de la vague) */
+    var attendu = (w.quota || 20) * O.clamp(st.tw / Math.max(10, (w.duree || 30) * 0.85), 0, 1);
+    if (!chassePause && st.beat && st.tw > 2 && st.spawned < (w.quota || 20) && st.spawned < attendu && c.regular + 3 <= plafond && !(st.gate > st.tw)) {
+      var rem = w.remplissage;
+      if (!rem && w.formations && w.formations.length) rem = w.formations[ri(0, w.formations.length - 1)].f;
+      if (rem && rem !== 'champMines' && rem !== 'duoMines') formation(rem, { sansEtiquette: true });
+    }
+    /* le pic, entre 55 et 75 % de la durée */
+    if (!st.picFait && w.pic && st.tw >= w.pic.t) { if (lancerPic()) st.picFait = true; }
+    if (!st.pastilleFaite && w.pastille && st.tw >= w.pastille) { st.pastilleFaite = poserPastille(); if (!st.pastilleFaite && st.tw > w.pastille + 6) st.pastilleFaite = true; }
+    if (!chassePause) traqueur();
+    /* la traque de fin de vague (Cruise Elroy) : moins de 20 % du quota à venir, les dernières flèches accélèrent de 30 % */
+    if (!st.elroy && st.spawned >= (w.quota || 20) * (1 - CFG.elroyReste)) st.elroy = true;
+    if (st.elroy) for (i = 0; i < N.ennemis.list.length; i++) { var en = N.ennemis.list[i]; if (en.type === 'fleche') en._traque = true; }
     /* énergie libre : toujours un peu à prendre */
     st.freeCd -= dt;
     if (st.freeCd <= 0) {
       st.freeCd = CFG.energieLibre;
       if (N.butin.nbLibres() < CFG.energieMin) N.butin.libre(0.5);
     }
-    /* la fin de la vague : plus d'apparition ; le nettoyage purge ce qui reste (79-jeu le déclenche) */
-    if (st.tw >= w.duree && !st.fini) {
-      st.fini = true; st.phase = 'nettoyage'; st.nettoye = true;
-      stats.parVague.push({ n: st.n, duree: st.tw });
-      if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'nettoyee', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+    /* la fin de la vague : tout le quota est apparu et il reste au plus 2 ennemis ; sinon la soupape (durée nominale + 12 s) */
+    var tousLances = true;
+    for (i = 0; i < st.queue.length; i++) if (!st.queue[i].fait) tousLances = false;
+    var quotaFait = st.spawned >= (w.quota || 20) * 0.9 || (st.tw > (w.duree || 30) + 4 && st.spawned >= (w.quota || 20) * 0.6);
+    var reste = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].finVague && R.secteurs[0].finVague.vivantsMax) || 2;
+    if (!st.fini) {
+      if (tousLances && quotaFait && c.regular <= reste && st.tw > 5) terminerVague('nettoyee', w);
+      else if (st.tw >= (w.duree || 30) + CFG.soupape) {
+        if (N.ennemis.fuir) N.ennemis.fuir();
+        if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'soupape', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+        terminerVague('nettoyee', w);
+      }
     }
   }
+  function terminerVague(evt, w) {
+    st.fini = true; st.phase = 'nettoyage'; st.nettoye = true;
+    stats.parVague.push({ n: st.n, duree: st.tw, spawns: st.spawned });
+    if (st.n === 1) st.premiere = false;
+    if (N.ennemis.fuir) N.ennemis.fuir();
+    if (N.arene && N.arene.nettoyee) O.safe('arene.nettoyee', function () { N.arene.nettoyee(); });
+    if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: evt, nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+  }
 
-  /* le gros ennemi : naît en face de la tête, après un portail de 2,4 s (G-14) */
+  /* le gros ennemi : N.colosse (73-colosse.js) mène le combat ; 79-jeu a déjà passé WARNING et le panneau */
   function lancerBoss() {
-    var A = O.A, P = N.joueuse.tete, cx = (A.x0 + A.x1) / 2, cy = (A.y0 + A.y1) / 2, x, y;
-    if (O.geo.portrait) { x = cx; y = P.y > cy ? A.y0 + (A.y1 - A.y0) * 0.3 : A.y0 + (A.y1 - A.y0) * 0.7; }
-    else { y = cy; x = P.x > cx ? A.x0 + (A.x1 - A.x0) * 0.25 : A.x0 + (A.x1 - A.x0) * 0.75; }
     st.phase = 'boss';
-    var e = N.ennemis.spawn('cyclope', x, y, { portail: CFG.bossTele });
-    logSpawn(e);
-    if (N.ev) N.ev.emit('portail', { type: 'cyclope', x: x, y: y, dur: CFG.bossTele, elite: false });
-    return e;
+    if (N.arene && N.arene.nettoyee) O.safe('arene.nettoyee', function () { N.arene.nettoyee(); });      // plus de TRAVELLING ni de CONVOIS pendant le combat
+    if (N.colosse && N.colosse.start) { O.safe('colosse.start', function () { N.colosse.start(); }); return null; }
+    return null;
   }
 
   function progression() {
@@ -143,15 +399,26 @@ N.dir = (function () {
     if (st.phase === 'boss' || st.n > vs.length) return 1;
     return tot > 0 ? O.clamp(fait / tot, 0, 1) : 0;
   }
-  /* croissante vague après vague (critère 6 de DIRECTION.md) : 0,06 au départ, 1 au colosse */
+  /* croissante vague après vague (critère 6 de DIRECTION.md) : 0,06 au départ, 1 au colosse ; la densité du moment s'y ajoute */
   function tension() {
     if (st.phase === 'attente') return 0.06;
     if (st.phase === 'boss') return 1;
-    return O.clamp(0.06 + 0.9 * progression(), 0, 1);
+    var w = info(), dens = w && w.plafond ? O.clamp(st.alive / w.plafond, 0, 1) : 0;
+    return O.clamp(0.06 + 0.62 * progression() + 0.3 * dens, 0, 1);
   }
 
-  /* `kill` rang 10 : la mort du gros ennemi ferme le secteur (79-jeu lit bossMort(), puis passe en VICTOIRE) */
-  if (N.ev) N.ev.on('kill', 10, function (c) { if (c.boss && !(c.src && c.src.genre === 'decor')) st.bossMort = true; }, '76-directeur');
+  /* `kill` rang 10 : la mort de l'œil du gros ennemi ferme le secteur (79-jeu lit bossMort(), puis passe en VICTOIRE) ;
+     la dernière action de la joueuse repousse le TRAQUEUR ; N.colosse est prévenu de chaque kill (il n'a pas d'écouteur) */
+  if (N.ev) {
+    N.ev.on('kill', 10, function (c) {
+      var decor = c.src && c.src.genre === 'decor';
+      if (!decor) st.derniereAction = O.T.t;
+      if (N.colosse && N.colosse.surKill) O.safe('colosse.surKill', function () { N.colosse.surKill(c); });
+      if (c.boss && !decor && !(N.colosse && N.colosse.estOeil && !N.colosse.estOeil(c.id))) st.bossMort = true;
+    }, '76-directeur');
+    N.ev.on('ramassage', 10, function () { st.derniereAction = O.T.t; }, '76-directeur');
+    N.ev.on('inversion', 10, function (c) { if (c.evt === 'fin') st.derniereAction = O.T.t; }, '76-directeur');
+  }
 
   return {
     bossMort: function () { return st.bossMort; },
@@ -159,6 +426,6 @@ N.dir = (function () {
     tension: tension, progression: progression, entrees: function () { return st.entrees; },
     demarrer: demarrer, info: info, lancerBoss: lancerBoss, fini: function () { return st.fini; }, stats: stats,
     tempsVague: function () { return st.tw; }, nombreVagues: function () { return vagues().length; },
-    fin: function () { st.phase = 'attente'; }
+    fin: function () { st.phase = 'attente'; }, formation: formation
   };
 })();
