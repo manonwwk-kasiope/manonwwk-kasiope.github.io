@@ -21782,6 +21782,7 @@ N.game = (function () {
   var timers = [];
   var QT = [];
   var BG = null, bgKey = '';
+  var reprise = null; // point d'entrée de vague/CYCLOPE, jamais l'état à la mort
   var mortInfo = { chute: null, annonce: false, etat: 0 };
   /* les intermèdes (refonte/INTERMEDES.md) : un mini-film 8 bits de N.intro gèle le jeu (état `panneau`), puis
      `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
@@ -21834,7 +21835,7 @@ N.game = (function () {
     var T = O.taps, s = S_(), inp = s && s.input, i;
     T.length = 0;
     while (QT.length) T.push(QT.shift());
-    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
+    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
     if (inp) {
       if (inp.valider) T.push({ x: -1, y: -1, key: 'Enter' });
       if (inp.retour) T.push({ x: -1, y: -1, key: 'Escape' });
@@ -21882,6 +21883,7 @@ N.game = (function () {
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
     O.fxReset();
+    reprise = null;
     filmsVus = {}; suiteFilm = null; filmDemande = null;
     if (N.fx && N.fx.reset) appel('fx.reset', function () { N.fx.reset(); });
     var ordre = ['butin', 'ennemis', 'arsenal', 'score', 'dir', 'hud'];
@@ -21985,6 +21987,7 @@ N.game = (function () {
     /* ---- les règles de la machine d'états (rang 10) ---- */
     N.ev.on('mort', 10, function (d) { debutMort(d); }, '79-jeu');
     N.ev.on('vague', 10, function (c) {
+      if (c.evt === 'entree') memoriserReprise(false);
       if (c.evt === 'nettoyee') finDeVague(c);
     }, '79-jeu');
     N.ev.on('vol', 10, function (c) { if (c.evt === 'fin' && et === 'vol') apresVol(); }, '79-jeu');
@@ -22022,9 +22025,44 @@ N.game = (function () {
   }
   function apresVol() { lancerVague(N.dir.vague() + 1); }
   function lancerBoss() {
+    memoriserReprise(true);
     aller('boss');
     if (N.cam && N.cam.mode) appel('cam.mode', function () { N.cam.mode('boss'); });
     N.dir.lancerBoss();
+  }
+  function memoriserReprise(boss) {
+    reprise = { vague: N.dir.vague(), boss: boss, longueur: N.joueuse.len(),
+      armes: N.arsenal.armes(), pouvoir: N.joueuse.pouvoir.id };
+  }
+  function continuer() {
+    if (et !== 'fin' || !reprise || !N.ui.finActions().disponible || !N.score.continuer()) return false;
+    var r = reprise, s = S_();
+    if (modOk(N.intro, 'stop')) N.intro.stop();
+    if (finClip && modOk(N.art, 'stop')) N.art.stop(finClip);
+    finClip = null; timers.length = 0; suiteFilm = null; filmDemande = null;
+    if (modOk(N.colosse, 'reset')) N.colosse.reset();
+    if (modOk(N.arene, 'reset')) N.arene.reset();
+    /* world.reset est actuellement un reset caméra (double déclaration dans 12-cam).
+       Rendre les murs par l'interface publique, avant de reconstituer la trace. */
+    if (modOk(N.world, 'stop')) N.world.stop();
+    if (modOk(N.world, 'arena')) {
+      N.world.arena({ x: 0, y: 0, w: N.world.W, h: N.world.H }, R.monde.mobile.glissementMin);
+      N.cam.update(R.monde.mobile.glissementMin);
+    }
+    O.geom(); N.joueuse.reset({ len: r.longueur });
+    if (modOk(N.joueuse, 'equiper')) N.joueuse.equiper(r.pouvoir);
+    N.butin.reset(); N.ennemis.reset(); N.arsenal.reset();
+    r.armes.forEach(function (a) {
+      for (var k = N.arsenal.niveau(a.id); k < a.niveau; k++) N.arsenal.monter(a.id);
+    });
+    N.hud.reset(); O.fxReset();
+    if (modOk(N.fx, 'reset')) N.fx.reset();
+    if (modOk(N.scene, 'reset')) N.scene.reset();
+    if (modOk(N.cam, 'reset')) N.cam.reset();
+    s.death = null; s.paused = false; fin.victoire = false;
+    N.dir.demarrer(r.vague);
+    if (r.boss) lancerBoss(); else aller('jeu');
+    return true;
   }
   function debutVictoire() {
     if (et === 'victoire' || et === 'fin') return;
@@ -22164,7 +22202,8 @@ N.game = (function () {
       O.T.ak += dt;
       N.ui.update(dt);
       var f = N.ui.sortie();
-      if (f && f.action === 'rejouer') lancer(true);
+      if (f && f.action === 'continuer') continuer();
+      else if (f && f.action === 'rejouer') lancer(true);
     } else if (et === 'pause') {
       N.ui.update(dt);
       var p = N.ui.sortie(); if (p && p.action === 'reprendre') basculerPause();
