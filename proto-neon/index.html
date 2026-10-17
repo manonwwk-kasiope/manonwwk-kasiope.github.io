@@ -23299,6 +23299,10 @@ function frame(now) {
          Un hitstop n'est pas un arrêt d'écran : son zéro est conservé. */
       var dtJeu = S.dt === 0 && h.arretee() ? h.H : S.dt;
       step('game.update', N.game && N.game.update ? function () { N.game.update(dtJeu); } : null);
+      /* Les fonds de fin ne sont pas des interludes bloquants : ils se révèlent
+         dans le temps d'interface, même quand le monde s'est arrêté. */
+      if (N.game && N.game.etat && N.game.etat() === 'fin' && N.intro && N.intro.current && N.intro.current() && !N.intro.busy())
+        step('intro.updateFin', function () { N.intro.update(h.H); });
       step('fx.update', N.fx && N.fx.update ? function () { N.fx.update(S.dt); } : null);
       /* 79-jeu.js avance déjà la caméra une fois par pas ; ne pas la doubler ici. */
     }
@@ -23334,10 +23338,13 @@ function frame(now) {
     if (h && h.pas() > 0) {
       var plein = N.ids && N.ids.tableEtats[etat] && N.ids.tableEtats[etat].plein;
       var film = N.intro && N.intro.current && N.intro.current();
+      /* 60-intro : victoire/défaite sont le FOND du bilan ; les films bloquants
+         sont au-dessus de l'interface. Les dessiner tous après ui effaçait le bilan. */
+      if (film && !N.intro.busy()) step('intro.fondFin', function () { N.intro.draw(); });
       if (!plein && etat !== 'titre' && etat !== 'plongee' && !(film && N.intro.busy()))
         step('hud.draw', N.hud && N.hud.draw ? function () { N.hud.draw(); } : null);
       step('ui.draw', N.ui && N.ui.actif && N.ui.actif() ? function () { N.ui.draw(); } : null);
-      if (film) step('intro.draw', function () { N.intro.draw(); });
+      if (film && N.intro.busy()) step('intro.draw', function () { N.intro.draw(); });
     }
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     if (PERF_AFF) step('perf.draw', drawPerf);
