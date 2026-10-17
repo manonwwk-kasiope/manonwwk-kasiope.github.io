@@ -127,3 +127,13 @@ Dépend de l'horloge à pas fixe (codex-05) pour un vrai ralenti du monde.
 | codex-06 | `03-socle.js`, `72-ennemis.js` | autoriser une source de contact dédiée BRAISE et transmettre la génération GRAPPE au champ `kill.gen` | la traînée utilise provisoirement la source de contact joueuse/tete déjà valide ; les générations sont bornées dans l'arsenal mais `72-ennemis` émet toujours gen=0. Aucun champ privé ni charge d'événement d'un autre propriétaire n'est modifié |
 | codex-06 | `03-socle.js` | enregistrer noms/identifiants/schémas de PERFORATION, SURTENSION, ÉPINES avant un lot ultérieur qui les ajoute au vivier | les listes N.ids et leurs schémas sont profondément gelés ; ne pas introduire de cartes choisissables qui échoueraient à la validation du bus. Optionnels laissés hors de ce lot |
 | codex-06 | `79-jeu.js` (coordination avec codex-02) | appeler le pilote hors des seuls états JOUE, notamment sur CARTES | le pilote bon est bloqué sur CARTES avant comme après pour les graines 2975/2030 en paysage et bureau ; reçus `tools/codex-06/{avant,apres}-etat.json`. Les essais d'endurance signalent explicitement leur reprise supervisée ; ils ne prouvent pas le parcours autonome |
+
+## Demande du cloud (18 octobre, 01 h 45) — brancher l'écran de choix (`src/62-choix.js`)
+Livré : `N.choix` (vision § 6), autonome, essayé par `tools/choix/` (40 vérifications sur 40, trois profils, zéro
+erreur ; dessin p95 ≤ 3,3 ms ; garde de 300 ms vérifiée ; profil `snake2975.pilotes` par `N.outils.store`).
+1. un état `choix` après l'ouverture (« TOUCHE POUR JOUER »), avant l'époque 1976 :
+   `N.choix.start({ surFin: function (qui) { /* étape suivante */ } })`, puis `update` / `draw` à la place du jeu
+   tant que `N.choix.actif()` (modèle : `tools/choix/panneau.html`) ;
+2. tout film propre au personnage passe par `N.art.pour(base)` (déjà fait dans `60-intro.js` pour les intermèdes) ;
+3. à la fin de la partie gagnée : `N.choix.marquerFini(N.choix.personnage())` ; si `N.choix.lesDeuxFinis()`,
+   enchaîner `retrouvailles` puis `teaser-3019` (le module `64-aventure.js`, en cours, s'en chargera).

@@ -1,0 +1,28 @@
+<script>
+/* page d'essai de l'écran de choix : le jeu principal reste à l'arrêt, N.choix prend la main sur la boucle.
+   ?finis=elle | lui | elle,lui marque ces personnages comme finis avant de lancer ; ?oublie=1 vide le profil.
+   window.__choix.lancer(o) relance l'écran ; window.__CHOIX_FIN reçoit le personnage choisi. */
+(function () {
+  var N = window.__N;
+  function lancer(o) {
+    window.__CHOIX_FIN = null;
+    N.S.phase = 'choix';
+    o = o || {};
+    o.surFin = function (qui) { window.__CHOIX_FIN = qui; };
+    return N.choix.start(o);
+  }
+  function brancher() {
+    var q = location.search;
+    if (/[?&]oublie=1\b/.test(q)) { try { localStorage.removeItem('snake2975.pilotes'); } catch (e) {} }
+    var m = /[?&]finis=([a-z,]+)/.exec(q);
+    if (m) m[1].split(',').forEach(function (qui) { N.choix.marquerFini(qui); });
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop;
+    g.update = function (dt) { if (N.choix.actif()) N.choix.update(dt); else if (!window.__CHOIX_FIN) u0.call(g, dt); };
+    g.draw = function () { if (N.choix.actif() || N.choix.phase() === 'fini') N.choix.draw(); else d0.call(g); };
+    g.drawTop = function () { if (!N.choix.actif() && N.choix.phase() !== 'fini') t0.call(g); };
+    window.__choix = { lancer: lancer };
+    lancer();
+  }
+  if (document.readyState === 'complete') setTimeout(brancher, 50); else window.addEventListener('load', function () { setTimeout(brancher, 50); });
+})();
+</script>
