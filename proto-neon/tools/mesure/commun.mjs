@@ -122,6 +122,14 @@ export class Banc {
     this.empreinte = await empreinteBundle(this.url);
     return this;
   }
+  /* une vue du banc pour un critère : mêmes options et même navigateur, mais ses propres sessions, que
+     mesurerCritere ferme à la fin du critère sans toucher à celles des critères qui tournent en parallèle */
+  enfant() {
+    const e = Object.create(this);
+    e.sessions = new Set();
+    e.ouvrir = async (profil = 'paysage', opts = {}) => { const s = new Session(e, profil, opts); await s.ouvrir(); e.sessions.add(s); return s; };
+    return e;
+  }
   /* graines à employer : --graines, sinon la valeur du plan, réduite par --rapide */
   graines(plan, rapide = 3) { return this.o.graines || Array.from({ length: this.o.rapide ? rapide : plan }, (_, i) => i + 1); }
   profils(defaut = TOUS_PROFILS) { return this.o.profils || defaut; }
@@ -341,9 +349,9 @@ export const pct = v => v === null || v === undefined ? '—' : (100 * v).toFixe
 export function principal(urlModule) { return process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === urlModule; }
 
 export async function mesurerCritere(banc, mod) {
-  const res = new Resultat(mod.meta);
-  try { await mod.mesurer(banc, res); } catch (e) { res.erreur(e); }
-  for (const s of [...banc.sessions]) { try { await s.fermer(); } catch (e) { } }
+  const res = new Resultat(mod.meta), b0 = banc.enfant();
+  try { await mod.mesurer(b0, res); } catch (e) { res.erreur(e); }
+  for (const s of [...b0.sessions]) { try { await s.fermer(); } catch (e) { } }
   const b = res.bilan();
   b.bundle = { url: banc.url, empreinte: banc.empreinte };
   b.date = new Date().toISOString();

@@ -8,7 +8,7 @@ import { executer, principal, exiger } from '../commun.mjs';
 export const meta = { id: 'R-18', titre: 'Écran de fin', seuil: 'cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER', bloquant: true };
 const RUBRIQUES = {
   progression: /\bV\s?[1-5]\b|VAGUE|%/, ecart: /ÉCART|[+−-]\s?\d/, build: /CANON|TOURELLES|ARC|MISSILES|DRONES|MINES/, record: /RECORD|MEILLEUR/,
-  defis: /DÉFI/, note: /NOTE|RANG|\b[SABCDE]\b/, conseil: /CONSEIL|ASTUCE|ESSAIE|PENSE/, deblocage: /DÉBLOC|PROCHAIN|ÉNERGIE/
+  defis: /DÉFI|FINIR|✓|✗/, note: /NOTE|RANG|\b[SABCDE]\b/, conseil: /CONSEIL|ASTUCE|ESSAIE|PENSE/, deblocage: /DÉBLOC|PROCHAIN|ÉNERGIE/
 };
 
 export async function mesurer(banc, res) {

@@ -6,15 +6,14 @@ export class Doigts {
   constructor(session) { this.s = session; this.actifs = new Map(); this.id = 1; }
   async init() { this.cdp = await this.s.cdpSession(); return this; }
   points() { return [...this.actifs.entries()].map(([id, p]) => ({ x: p.x, y: p.y, id, radiusX: 8, radiusY: 8, force: 1 })); }
-  async envoyer(type) { await this.cdp.send('Input.dispatchTouchEvent', { type, touchPoints: type === 'touchEnd' && !this.actifs.size ? [] : this.points() }); }
+  async envoyer(type) { await this.cdp.send('Input.dispatchTouchEvent', { type, touchPoints: this.points() }); }
   async poser(x, y) { const id = this.id++; this.actifs.set(id, { x, y }); await this.envoyer('touchStart'); return id; }
   async bouger(id, x, y) { const p = this.actifs.get(id); if (!p) return; p.x = x; p.y = y; await this.envoyer('touchMove'); }
   async lever(id) {
-    if (!this.actifs.has(id)) return;
-    const reste = new Map(this.actifs); reste.delete(id);
-    /* touchEnd : les points restants seulement (le doigt levé n'y figure plus) */
-    this.actifs = reste;
-    await this.cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: this.points() });
+    const p = this.actifs.get(id); if (!p) return;
+    /* Chromium relâche les points LISTÉS dans un touchEnd : on n'y met que le doigt levé */
+    this.actifs.delete(id);
+    await this.cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [{ x: p.x, y: p.y, id, radiusX: 8, radiusY: 8, force: 1 }] });
   }
   async toutLever() { for (const id of [...this.actifs.keys()]) await this.lever(id); }
   attendre(ms) { return this.s.page.waitForTimeout(Math.max(0, ms)); }
@@ -48,4 +47,48 @@ export async function preparerJeu(session) {
   await session.eval(() => { try { window.__N.journal.dump({ vider: true }); } catch (e) { } });
   await session.images(20);
   return r;
+}
+
+/* un tirage reproductible pour les séries « humaines » (mulberry32) */
+export function hasard(graine) { let a = graine >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+/* la taille de la vue en points CSS */
+export function vue(session) { const v = session.page.viewportSize(); return { w: v.width, h: v.height }; }
+
+/* n gestes du second doigt (genre 'toucher' | 'glisse' | 'tenu'), pouce tenu sur le manche ;
+   rend {gestes:{genre:{action:n}}, actions, boosts:[durées en s]} */
+export async function serieSecondDoigt(session, genre, n, o = {}) {
+  const d = await new Doigts(session).init(), V = vue(session);
+  await session.eval(() => {
+    try { window.__N.journal.dump({ vider: true }); } catch (e) { }
+    window.__MESURE.parImage('boost', 'return { b: !!(S.input && S.input.boost), p: !!(S.player && S.player.boost), r: performance.now() };');
+    /* les instants de pose et de relâcher vus par la page, par identifiant */
+    window.__DOIGTS = []; if (!window.__DOIGTS_ECOUTE) { window.__DOIGTS_ECOUTE = true;
+      for (const t of ['touchstart', 'touchend']) window.addEventListener(t, e => { for (const c of e.changedTouches) (window.__DOIGTS || []).push({ t, id: c.identifier, r: performance.now() }); }, { capture: true, passive: true }); }
+  });
+  const pouce = await d.manche(V.w * 0.22, V.h * 0.62, 26, 0);
+  await d.attendre(260);
+  for (let k = 0; k < n; k++) {
+    const x = V.w * (0.6 + 0.2 * ((k * 7) % 5) / 5), y = V.h * (0.3 + 0.3 * ((k * 3) % 5) / 5);
+    const id = await d.poser(x, y);
+    if (genre === 'toucher') await d.attendre(o.duree || 70);
+    else if (genre === 'glisse') await d.glisser(id, x + 70, y - 20, o.duree || 110);
+    else if (genre === 'tenu') await d.attendre((o.duree || 0.5) * 1000);
+    await d.lever(id);
+    await d.attendre(o.pause || 280);
+  }
+  await d.toutLever(); await d.attendre(200);
+  const I = await session.eval(() => window.__MESURE.arreter('boost'));
+  const L = await lireGestes(session);
+  /* les accélérations : suites d'images où S.input.boost est vrai */
+  const runs = []; let deb = null;
+  for (let i = 0; i < I.length; i++) { if (I[i].b && deb === null) deb = I[i].r; if (!I[i].b && deb !== null) { runs.push((I[i].r - deb) / 1000); deb = null; } }
+  const parGenre = {};
+  for (const g of (L ? L.gestes : [])) { const c = parGenre[g.genre] || (parGenre[g.genre] = {}); c[g.action] = (c[g.action] || 0) + 1; }
+  /* durées d'appui du second doigt vues par la page (le pouce est le premier identifiant posé) */
+  const E = await session.eval(() => window.__DOIGTS || []), pouceId = E.length ? E[0].id : null, tenues = [];
+  for (const e of E) if (e.t === 'touchstart' && e.id !== pouceId) { const f = E.find(x => x.t === 'touchend' && x.id === e.id && x.r >= e.r); if (f) tenues.push((f.r - e.r) / 1000); }
+  const ips = I.length > 2 ? (I.length - 1) / ((I[I.length - 1].r - I[0].r) / 1000) : 60;
+  void pouce;
+  return { gestes: parGenre, journal: !!L, actions: L ? L.gestes.reduce((o2, g) => { o2[g.action] = (o2[g.action] || 0) + 1; return o2; }, {}) : null, boosts: runs, tenues, ips };
 }

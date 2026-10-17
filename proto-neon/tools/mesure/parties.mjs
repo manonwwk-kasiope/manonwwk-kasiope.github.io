@@ -17,7 +17,7 @@ export const PILOTES = ['inerte', 'tourneur', 'maladroit', 'kamikaze', 'humain',
 export const JOUR = 20261017;
 
 function cle(banc, o) {
-  return [banc.empreinte, o.profil || 'paysage', o.pilote, o.variante || '-', o.graine, o.actions || '-', o.god ? 'god' : '-', o.maxT || 540, o.jour || JOUR].join('_');
+  return [banc.empreinte, o.profil || 'paysage', o.pilote, o.variante || '-', o.graine, o.actions || '-', o.god ? 'god' : '-', o.maxT || 540, o.jour || JOUR, o.reducedMotion ? 'reduit' : '-'].join('_');
 }
 function fichierCache(banc, o) { return path.join(banc.sortie, 'parties', cle(banc, o) + '.json.gz'); }
 
@@ -40,7 +40,7 @@ export async function partie(banc, o, sessionPartagee = null) {
   if (banc.o.cache && !o.echantillon && fs.existsSync(f)) {
     try { return JSON.parse(zlib.gunzipSync(fs.readFileSync(f)).toString('utf8')); } catch (e) { /* cache abîmé : on rejoue */ }
   }
-  const s = sessionPartagee || await banc.ouvrir(o.profil || 'paysage', { dt: 1 / 60, graine: o.graine, nodraw: true, query: { nodraw: '1' }, garderStockage: o.garderStockage });
+  const s = sessionPartagee || await banc.ouvrir(o.profil || 'paysage', { dt: 1 / 60, graine: o.graine, nodraw: true, query: { nodraw: '1' }, garderStockage: o.garderStockage, reducedMotion: o.reducedMotion });
   try {
     const abs = await absentsPartie(s, o);
     if (abs.length) return { ok: false, raison: 'interface ' + abs.join(', ') + ' absente', absents: abs };

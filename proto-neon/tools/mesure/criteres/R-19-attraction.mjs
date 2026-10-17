@@ -4,7 +4,7 @@
 import { executer, principal, seuils, exiger } from '../commun.mjs';
 import { allerTitre } from '../scenes.mjs';
 
-export const meta = { id: 'R-19', titre: 'Attraction (P3)', seuil: 'démo après 15 s d’inaction, galerie, records, invitation', bloquant: false };
+export const meta = { id: 'R-19', titre: 'Attraction (P3)', seuil: 'démo après 15 s d’inaction, galerie, records, invitation', bloquant: false, exclusif: true };
 
 export async function mesurer(banc, res) {
   const s = await banc.ouvrir('paysage', {});
