@@ -8,6 +8,7 @@
    CONSOMME `kill` (rang 40) : le largage de l'ennemi tué ; `coupe` (rang 40) : une cellule pour deux segments
    détachés ; `lasso` (rang 40) : l'aspiration des tués, quand N.joueuse l'émettra.
 
+   PUBLIE S.butin = la liste vivante (même tableau que N.butin.list), republiée à reset() et à chaque update() (lot I).
    Interface : reset(), update(dt), draw(), lacher(x, y, n, {type, vie, libre, tele}), aspirer(poly), pluie(n),
    list. Chiffres : N.R.butin ; ceux de la démo qui manquent sont dans CFG, marqués « → N.R ». */
 N.butin = (function () {
@@ -37,6 +38,7 @@ N.butin = (function () {
     S = N.S;
     L.length = 0;
     XP.total = 0; XP.niveau = 0; PA.vague = -1; PA.t = 0; PA.faite = false; fusT = 0;
+    if (S) S.butin = L;                                            // la vue du contrat : la liste vivante (objets au schéma `butin`), lue par les pilotes
   }
 
   function lacher(x, y, n, opts) {
@@ -130,6 +132,7 @@ N.butin = (function () {
 
   function update(dt) {
     if (!S) S = N.S;
+    if (S && S.butin !== L) S.butin = L;
     if (N.joueuse && N.joueuse.apres) O.safe('joueuse.apres', function () { N.joueuse.apres(dt); });     // après N.ennemis.update : l'INVERSION
     pastilleAuto(dt);
     fusT += dt; if (fusT >= 0.2) { fusT = 0; fusionner(); }

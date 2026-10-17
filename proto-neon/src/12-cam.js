@@ -176,6 +176,13 @@
   var init = false;
 
   function S() { return N.S || null; }
+  /* S.vue (lot I) : le rectangle de la vue en coordonnées monde, un seul objet réutilisé, mis à jour à la fin de chaque update() et reset() */
+  var SV = { x: 0, y: 0, w: 0, h: 0 };
+  function publierVue() {
+    var s = S(); if (!s) return;
+    SV.x = Cm.x; SV.y = Cm.y; SV.w = Cm.w; SV.h = Cm.h;
+    if (s.vue !== SV) s.vue = SV;
+  }
   function vue() { Cm.w = (N.gfx && N.gfx.W) | 0 || 422; Cm.h = (N.gfx && N.gfx.H) | 0 || 195; }
   function portrait() { return Cm.h > Cm.w; }
 
@@ -281,6 +288,7 @@
     }
     // arrondi UNIQUE, en dernier
     Cm.x = Math.round(ex + jx); Cm.y = Math.round(ey + jy);
+    publierVue();
   }
 
   function reset(x, y) {
@@ -292,6 +300,7 @@
     var ex = clamp(cx - Cm.w / 2, bx0, bx1), ey = clamp(cy - Cm.h / 2, by0, by1);
     cx = ex + Cm.w / 2; cy = ey + Cm.h / 2;
     Cm.x = Math.round(ex); Cm.y = Math.round(ey);
+    publierVue();
   }
 
   function toScreen(x, y, out) { out = out || {}; out.x = x - Cm.x; out.y = y - Cm.y; return out; }

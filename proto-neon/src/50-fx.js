@@ -47,7 +47,7 @@
      N.fx.onde(x,y,r0,r1,ci,dur[,{epaisseur,ecran}])  un anneau tramé qui s'étend, maigrit et se troue
      N.fx.pickup(x,y), N.fx.lasso(poly,n), N.fx.glitch(force,dur), N.fx.vignette(angle,force)
      N.fx.desintegre(points,dur)  anneau cyan par point (plat [x,y,…] ou objets), étalés sur dur (0 : tous d'un coup)
-     N.fx.tele(desc) / drawTele()  télégraphes au schéma du § 7.5 ; S.tele les liste ; gaine nuit profonde, rose pâle dans les 300 dernières ms
+     N.fx.tele(desc) / drawTele()  télégraphes au schéma du § 7.5 ; S.tele les liste (lot I : aujourd'hui S.tele est publié par 72-ennemis.js, qui dessine encore ses propres télégraphes et n'appelle pas N.fx.tele ; le jour où il l'appellera, c'est tele() qui publiera) ; gaine nuit profonde, rose pâle dans les 300 dernières ms
      N.fx.drawEcran()         explosions d'écran, vignette, glitch (à appeler après N.gfx.origin(0,0))
 
   Extras publiés, documentés pour 70-game.js :

@@ -20,6 +20,8 @@
    pointerdown et keydown lui-même (transitoire, retiré avec l'ancien 90-boot.js). Tout est ramené à N.outils.taps :
    [{ x, y, key, bouton }] que N.hud (boutons son et pause) et N.ui lisent.
 
+   LE PILOTE (lot I). window.__PILOT (85-pilote.js, les bancs) est appelé au début de CHAQUE pas de update(), dans tous les états,
+   avant ramasserTaps() ; et dbg.simuler donne le pas réel aux écrans à horloge arrêtée (cartes, panneaux, films, fin).
    Interface (§ 7.8, contrat de 90-boot.js inchangé) : reset(graine, opts), update(dt), draw(), drawTop(), tension(),
    etat(), dbg { god(b), vague(n), boss(), input(o), etat(nom?), scene(nom), simuler(sec), masque() }. dbg est aussi
    appelable : dbg() rend l'instantané de la démo, lu par les bancs de tools/jeu. */
@@ -340,6 +342,7 @@ N.game = (function () {
     if (dt > 0.05) dt = 0.05;
     O.geom();
     redimensionne();
+    appelerPilote();                                  // AVANT ramasserTaps, à CHAQUE pas et dans TOUS les états (cartes, VOL, mort, panneaux…)
     ramasserTaps();
     var nouveau = O.bootNouveau();
     /* l'ancienne boucle ne remet pas le compteur d'événements par pas à zéro : on le fait à sa place */
@@ -365,7 +368,6 @@ N.game = (function () {
       var b = N.ui.sortie(); if (b && b.action === 'jouer') lancer(false);
       return;
     }
-    if (typeof window !== 'undefined' && typeof window.__PILOT === 'function' && JOUE[et]) { try { window.__PILOT(dbg()); } catch (x) { /* pilote de test */ } }
     if (hsCd > 0) hsCd -= dt;
     etT += dt;
     /* la caméra suit la tête à chaque pas de jeu (le mode simulé l'avance lui-même) */
@@ -422,6 +424,17 @@ N.game = (function () {
     publier();
   }
   function majHud(dt) { if (N.hud) N.hud.update(dt); }
+
+  /* le crochet des pilotes automatiques (85-pilote.js, les bancs) : window.__PILOT, appelé au début de chaque pas, quel que soit
+     l'état, pour que le pilote lise S tel que le pas précédent l'a laissé et écrive S.input avant que ramasserTaps() le consomme
+     (le pilote décide lui-même quoi faire dans un état qui n'est pas du combat : cartes, VOL, rien). Le cliché de dbg() ne sert
+     qu'aux anciens bancs (tools/jeu) ; s'il ne peut pas être construit, le pilote est appelé quand même. */
+  function appelerPilote() {
+    if (typeof window === 'undefined' || typeof window.__PILOT !== 'function') return;
+    var d = null;
+    try { d = dbg(); } catch (x) { d = null; }
+    try { window.__PILOT(d); } catch (x2) { /* pilote de test */ }
+  }
 
   /* l'ordre des mises à jour d'une image de jeu (§ 7.7) */
   function pas(dt) {
@@ -663,6 +676,10 @@ N.game = (function () {
     simulant = true;
     for (var i = 0; i < n; i++) {
       var dt = nouveau ? N.horloge.avancer() : h;
+      /* les écrans à horloge arrêtée (cartes, panneaux, films, fin) reçoivent le pas réel : leurs gardes (0,45 s des cartes, durée d'un
+         film) avancent comme dans la boucle de 90-boot.js, qui leur donne S.dt, sans valider ni saut. Le monde, lui, reste figé :
+         ces états n'ont aucune mise à jour du monde, et le temps de jeu N.horloge.t() n'avance pas. */
+      if (nouveau && dt === 0 && N.horloge.arretee() && !(N.S && N.S.paused)) dt = h;
       N.game.update(dt);
       if (N.fx && N.fx.update) N.fx.update(dt);
       if (N.cam && N.cam.update) N.cam.update(dt);

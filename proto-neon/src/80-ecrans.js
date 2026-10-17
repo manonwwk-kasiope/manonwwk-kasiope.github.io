@@ -26,6 +26,7 @@ N.ui = (function () {
   var cur = null, T = 0, out = null, choix = 0, cur_opts = {};
   var DARK = null, FINBUF = null;
   var main = [], restant = 1, nChoix = 1, gardeJ = 0, bruit = false;
+  var niv = {}, NIV_VIDE = {};                       // S.ecran.niveaux : { idCarte: palier que la carte donnerait } (1 à 4 ; 4 = l'ULTIME d'une arme)
 
   function garde() { return (R && R.cartes && R.cartes.garde) || 0.4; }
   function ouvrir(nom, opts) {
@@ -37,6 +38,11 @@ N.ui = (function () {
         main = O.safe('cartes.main', function () { return N.cartes.main(null, { vague: N.dir && N.dir.vague ? N.dir.vague() : 0, trophee: !!cur_opts.trophee, rareGarantie: !!cur_opts.rareGarantie }); }) || [];
         nChoix = Math.max(1, N.cartes.choix());
       } else { main = CARTES.map(function (c) { return c.id; }); nChoix = 1; }
+      niv = {};
+      for (var q = 0; q < main.length; q++) {
+        var tx = (N.cartes && N.cartes.texte) ? O.safe('cartes.texte', function () { return N.cartes.texte(main[q]); }) : null;
+        niv[main[q]] = (tx && typeof tx.palier === 'number') ? Math.max(0, Math.min(4, tx.palier | 0)) : 1;
+      }
       restant = nChoix; gardeJ = garde();
       if (!main.length) out = { ecran: 'cartes', action: 'carte', index: 0, id: null };      // vivier vide : on passe
       O.sfx('carte');
@@ -49,7 +55,7 @@ N.ui = (function () {
   function sortie() { var o = out; out = null; return o; }
   function publier() {
     var s = N.S; if (!s) return;
-    s.ecran = { nom: cur, depuis: T, cartes: cur === 'cartes' ? main.slice() : [], choix: choix, pret: T >= (cur === 'cartes' ? gardeJ : CFG.garde) };
+    s.ecran = { nom: cur, depuis: T, cartes: cur === 'cartes' ? main.slice() : [], niveaux: cur === 'cartes' ? niv : NIV_VIDE, choix: choix, pret: T >= (cur === 'cartes' ? gardeJ : CFG.garde) };
   }
 
   /* ============================ les entrées ============================ */

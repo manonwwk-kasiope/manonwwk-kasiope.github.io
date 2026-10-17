@@ -57,6 +57,7 @@
    typés kind (0 cellule, 1 porte, 2 mine), st (0 en vol, 1 pris / traversé / touché, 2 manqué / évité), ray (r0), tc, ox,
    oy, vu (premier instant où le rayon projeté atteint 1), ord (indices du plus loin au plus proche).
 
+   Il PUBLIE S.vol (schéma `vol` de 03-socle.js, null hors du VOL) pour les pilotes : tete, objets visibles, reste.
    Aucune allocation structurelle par image : pools et tableaux typés préalloués, charges d'événements en anneau,
    flottants chauds dans un Float64Array, aucune fermeture ni tableau créé dans update/draw. Aucune couleur écrite ici :
    seulement N.pal.i(nom). Le cyan est la joueuse seule (tête et anneaux du corps).
@@ -489,6 +490,7 @@
       snap = copie(snap); snapW = W; snapH = H; snapOK = !!snap;
     }
     phase = 1;
+    publierVol();
     emettre('debut', false);
     son('travelling', -1);                                       // le souffle qui monte
   }
@@ -592,6 +594,7 @@
       if (st[i] === 0 && tc[i] <= t) resoudre(i);
     }
     if (t + 1e-9 >= D.duree) finir();
+    publierVol();
   }
 
   /* ================================ le dessin ================================ */
@@ -826,6 +829,30 @@
     }
   }
 
+  /* ---- S.vol (lot I) : LE VOL vu par les pilotes, au schéma `vol` de 03-socle.js ; null hors du VOL. Les objets en vol et déjà
+     visibles (rayon projeté ≥ 1), du plus proche au plus loin, avec x, y = l'endroit où ils croiseront la tête (dans le repère de
+     `tete`), z = leur profondeur actuelle, r = leur rayon dans le plan de la tête, avant = les secondes avant le croisement.
+     Objets et tableau préalloués : aucune allocation par pas. ---- */
+  var VOLS = { tete: { x: 0, y: 0 }, objets: [], reste: 0 }, VOLO = [], NOM_VOL = ['cellule', 'porte', 'mine'];
+  for (var qv = 0; qv < MAXO; qv++) VOLO.push({ type: 'cellule', x: 0, y: 0, z: 0, r: 0, avant: 0 });
+  function publierVol() {
+    var s = N.S;
+    if (!s) return;
+    if (!phase) { if (s.vol) s.vol = null; return; }
+    var t = Q[T], n = 0, q, i, o;
+    VOLS.tete.x = Q[HX]; VOLS.tete.y = Q[HY];
+    VOLS.reste = D.duree > t ? D.duree - t : 0;
+    for (q = nObj - 1; q >= 0; q--) {
+      i = ord[q];
+      if (st[i] !== 0 || tc[i] <= t || vu[i] > t) continue;
+      o = VOLO[n];
+      o.type = NOM_VOL[kind[i]]; o.x = cx + ox[i]; o.y = hor + oy[i]; o.z = D.Z0 + D.V * (tc[i] - t); o.r = ray[i]; o.avant = tc[i] - t;
+      VOLS.objets[n++] = o;
+    }
+    VOLS.objets.length = n;
+    s.vol = VOLS;
+  }
+
   /* ---- lecture seule, pour les pilotes et les bancs ---- */
   var ET = {
     actif: false, t: 0, hx: 0, hy: 0, cx: 0, hor: 0, sol0: 0, z0: 64, vz: 0,
@@ -851,6 +878,6 @@
     },
     etat: etat,
     ligne: function (tt, out) { return cheminA(tt, out || PT); },
-    annuler: function () { phase = 0; }
+    annuler: function () { phase = 0; publierVol(); }
   };
 })();

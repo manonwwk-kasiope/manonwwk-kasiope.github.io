@@ -121,7 +121,7 @@ N.joueuse = (function () {
     var p = S.player;
     if (!p || p === N.joueuse.tete) p = S.player = {};
     p.x = P.x; p.y = P.y; p.ang = P.ang; p.angVise = st.target; p.vit = P.vit; p.len = st.len;
-    N.joueuse.apogee = st.apo; p.segs = segs(); p.etat = st.etat; p.boost = st.bOn && !st.susp; p.reserve = st.res; p.apogee = st.apo; p.pouvoirPret = PV.etat === 'pret';
+    N.joueuse.apogee = st.apo; p.segs = segs(); p.etat = st.etat; p.boost = st.bOn && !st.susp; p.reserve = st.res; p.apogee = st.apo; p.pouvoirPret = PV.etat === 'pret'; p.pouvoir = PV.id;
   }
 
   /* ============================ murs : distance, normale, alerte ============================ */
@@ -473,6 +473,7 @@ N.joueuse = (function () {
   function equiper(id) {
     if (N.ids.pouvoirs.indexOf(id) < 0 || PV.etat === 'actif') return false;
     PV.id = id; PV.etat = 'pret'; PV.reste = 0; PV.recharge = 0;
+    publier();                                                   // S.player.pouvoir suit tout de suite (les pilotes le lisent)
     return true;
   }
   function pouvoirActiver() {

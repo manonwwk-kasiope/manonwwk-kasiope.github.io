@@ -45,7 +45,7 @@
    Il LIT : N.world (travelling, arena, stop, enMouvement, mursAnnonces, x0…y1), N.outils (A, VUE, T, sp, put, mk, hasard
    du flux 'arene'), N.joueuse (tete, segs, etat, couper, tuer, invul, distMur), N.ennemis (list, tirs, hit), N.butin.list,
    N.score (ajouter, mult), N.hud (banniere, tag, pop), N.cam.jolt, N.dir.info (repli de entree()).
-   IL ÉCRIT : N.S.monde (schéma `monde`), créé s'il manque.
+   IL ÉCRIT : N.S.monde (schéma `monde`), créé s'il manque ; N.S.voies (schéma `voie`, la voie du convoi), à chaque pas de jeu.
    IL DEMANDE aux autres (demandes.md) : 70-joueuse.js, un multiplicateur de vitesse externe (le sillage) ;
    76-directeur / 72-ennemis, de naître devant le mur arrière en lisant murArriere() (§ 3.8).
    REPLIS : sans N.world, le travelling est ignoré (les convois fonctionnent sur O.A) ; sans N.dir.info ni argument,
@@ -311,6 +311,7 @@ N.arene = (function () {
     effetsMurs();
     majSillage(dt);
     majMonde();
+    publierVoies();
   }
   function update(dt) {
     if (!(dt > 0)) return;
@@ -360,6 +361,7 @@ N.arene = (function () {
     CV.ph = 'off'; CV.broyes = 0; CV.tag = false;
     cv.next = -1; cv.derniere = -1; cv.periode = 9; cv.alea = 2;
     vagueOn = false; tw = 0; tvAt = -1; tvDone = false; eliteT = -99; touche = false; inWake = false; panD = 99; frame = 0; QN = -1;
+    publierVoies();
   }
 
   /* ============================ appels à la main (débogage) ============================ */
@@ -390,6 +392,9 @@ N.arene = (function () {
     VOL.push(VO);
     return VOL;
   }
+  /* S.voies (lot I) : la voie du convoi annoncé ou en passage (au schéma `voie`), la même liste réutilisée que voies() ;
+     republiée à chaque pas de jeu et vidée à reset() */
+  function publierVoies() { var s = N.S; if (s) s.voies = voies(); }
   function actif() { return tv.ph === 'mise' || tv.ph === 'marche' || CV.ph !== 'off'; }
   function etat() {
     return { tw: tw, vague: nVague, vagueOn: vagueOn, tv: tv.ph, tvT: tv.t, vx: tv.vx, depuis: tv.depuis, cv: CV.ph, voie: CV.voie, sens: CV.sens,

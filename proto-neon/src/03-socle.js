@@ -386,7 +386,8 @@
   });
   SCH.player = obj({
     x: 'n', y: 'n', ang: 'n', angVise: 'n', vit: 'n+', len: 'i+', segs: 'nums', etat: un(L.etatsJoueuse),
-    boost: 'b', reserve: entre(0, 100), apogee: entre(0, 100), pouvoirPret: 'b'
+    boost: 'b', reserve: entre(0, 100), apogee: entre(0, 100), pouvoirPret: 'b',
+    pouvoir: un(L.pouvoirs)                                     /* le pouvoir équipé (lot I, demande de codex-02) : lu par les pilotes */
   });
   SCH.mods = obj({
     degats: 'n+', cadence: 'n+', aimant: 'n+', lenMax: 'i+', reparation: entierEntre(0, 2), bouclier: entierEntre(0, 1),
@@ -411,7 +412,21 @@
   SCH.voie = obj({ id: 'i', y0: 'n', y1: 'n', etat: un(['annonce', 'passage']), sens: un([-1, 1]), x: 'n', reste: 'n' });
   SCH.monde = obj({ x0: 'n', y0: 'n', x1: 'n', y1: 'n', vx: 'n', vy: 'n', mobile: 'b', annonce: liste(liste('n', 4, 4)) });
   SCH.vue = obj({ x: 'n', y: 'n', w: 'n+', h: 'n+' });
-  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), choix: 'i+', pret: 'b' });
+  /* niveaux (lot I, demande de codex-02) : le palier que CHAQUE carte proposée donnerait si on la prenait (1 à 4 ; 4 = l'ULTIME d'une
+     arme), publié par 80-ecrans en dictionnaire { idCarte: palier } ({} hors de l'écran des cartes), la forme que lit le pilote
+     (S.ecran.niveaux[idCarte]). La forme « tableau parallèle à cartes » de l'exemple de tools/contrat/tests.js reste acceptée. */
+  var NIVEAUX = fn(function (v) {
+    if (Array.isArray(v)) { for (var i = 0; i < v.length; i++) if (!(typeof v[i] === 'number' && (v[i] | 0) === v[i] && v[i] >= 0 && v[i] <= 4)) return false; return true; }
+    if (!v || typeof v !== 'object') return false;
+    for (var k in v) if (L.cartes.indexOf(k) < 0 || !(typeof v[k] === 'number' && (v[k] | 0) === v[k] && v[k] >= 0 && v[k] <= 4)) return false;
+    return true;
+  }, 'niveaux : { idCarte: palier 0 à 4 } ou tableau de paliers');
+  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b' });
+  /* S.vol (lot I) : LE VOL vu par les pilotes, null hors du VOL. Les objets visibles seulement (rayon projeté ≥ 1), dans le plan de la
+     tête : x, y = l'endroit où l'objet croisera la tête, dans le repère de `tete` ; z = sa profondeur actuelle ; r = son rayon dans le
+     plan de la tête ; avant = les secondes avant qu'il croise la tête ; reste = les secondes qui restent au VOL. */
+  SCH.volObjet = obj({ type: un(['cellule', 'porte', 'mine']), x: 'n', y: 'n', z: 'n+', r: 'n+', avant: 'n+' });
+  SCH.vol = obj({ tete: obj({ x: 'n', y: 'n' }), objets: liste(SCH.volObjet), reste: 'n+' });
   SCH.vague = obj({ n: 'i+', etape: un(L.etapes), nom: 's', quartier: un(L.quartiers), t: 'n+', evt: un(['entree', 'pic', 'nettoyee', 'soupape']) });
   SCH.perf = obj({ p50: 'n+', p90: 'n+', p95: 'n+', p99: 'n+', niveau: 's' });
   SCH.sprite = obj({
@@ -535,7 +550,7 @@
   }
   /* N.ids.valider(genre, objet) -> tableau d'erreurs (vide si l'objet est conforme).
      genre : 'ennemi','tir','src','tele','death','player','mods','reglages','input','butin','voie','monde','vue',
-     'ecran','vague','perf','sprite', 'charge:<événement>', 'journal:<type>' (enregistrement complet) */
+     'ecran','vol','vague','perf','sprite', 'charge:<événement>', 'journal:<type>' (enregistrement complet) */
   function valider(genre, o) {
     var err = [], t;
     if (genre.indexOf('charge:') === 0) t = CH[genre.slice(7)];

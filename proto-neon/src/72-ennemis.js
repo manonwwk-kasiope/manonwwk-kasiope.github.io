@@ -71,7 +71,8 @@ N.ennemis = (function () {
     charges = 0; purgeFile = null; purgeI = 0;
     if (inv.t > 0 && N.ev) N.ev.emit('inversion', { evt: 'fin', dur: 0 });
     inv.t = 0; inv.total = 0;
-    if (S) { S.enemies = list; S.shots = tirs; if (!S.tele) S.tele = []; }
+    TVN = 0; TV.length = 0;
+    if (S) { S.enemies = list; S.shots = tirs; S.tele = TV; }
   }
 
   /* ============================ naissance ============================ */
@@ -791,6 +792,81 @@ N.ennemis = (function () {
     }
     compact(tirs); compact(lasers);
     for (i = list.length - 1; i >= 0; i--) if (list[i]._dead) list.splice(i, 1);
+    vitesses(dt);
+    publierTele();
+  }
+
+  /* ---- vx, vy : la vitesse observée de chaque ennemi (px/s), déplacement entre deux mises à jour. Les pilotes prédisent « déplacé de
+     (vx, vy) × t » (refonte/lots/pilotes.md § 3) ; avant, ces champs du schéma `ennemi` restaient à 0. Lecture seule : aucun module
+     du jeu ne les lit. Un saut de rappel ou de portail (plus de 600 px/s) n'est pas une vitesse : il compte pour 0. ---- */
+  function vitesses(dt) {
+    if (!(dt > 0)) return;
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e._px === undefined) { e.vx = 0; e.vy = 0; }
+      else {
+        var vx = (e.x - e._px) / dt, vy = (e.y - e._py) / dt;
+        if (vx * vx + vy * vy > 360000) { vx = 0; vy = 0; }
+        e.vx = vx; e.vy = vy;
+      }
+      e._px = e.x; e._py = e.y;
+    }
+  }
+
+  /* ---- S.tele (lot I) : les télégraphes vivants, au schéma `tele` de 03-socle.js, recalculés à chaque pas de jeu à l'endroit exact des
+     dégâts (REFONTE.md § 4.4) : la zone que lira le pilote (pilotes.md § 3.1), pas son dessin. `r` est le rayon qui tue de la zone
+     SANS la tête (la marge de 4 px du pilote la rajoute) ; `reste` va de `total` à 0 ; `cible` dit ce qui est frappé. Objets et
+     tableau préalloués. Le dessin reste celui de drawTele() ci-dessous (le repli de N.fx.tele, que personne n'appelle encore :
+     quand 72 passera par N.fx.tele, c'est lui qui publiera S.tele). Hors périmètre : le CYCLOPE (73-colosse.js a ses propres
+     télégraphes) et la RUCHE (sa couvée ne blesse pas). Un laser déjà tiré (la SENTINELLE, 0,35 s) n'est plus un télégraphe. ---- */
+  var TVN = 0, TV = [], TVP = [];
+  for (var qt = 0; qt < 48; qt++) TVP.push({ id: 0, forme: 'ligne', x0: 0, y0: 0, x1: 0, y1: 0, r: 0, a0: 0, a1: 0, reste: 0, total: 0, cible: 'tete', par: { type: '', id: -1 } });
+  function teleAjouter(id, forme, x0, y0, x1, y1, r, reste, total, cible, type) {
+    if (TVN >= TVP.length) return -1;
+    var t = TVP[TVN]; TV[TVN] = t; TVN++;
+    t.id = id; t.forme = forme; t.x0 = x0; t.y0 = y0; t.x1 = x1; t.y1 = y1; t.r = r; t.a0 = 0; t.a1 = 0;
+    t.reste = reste > 0 ? reste : 0; t.total = total > 0 ? total : 0; t.cible = cible; t.par.type = type; t.par.id = id;
+    return id;
+  }
+  function publierTele() {
+    var s = S || N.S, i, e, r, u, id;
+    if (!s) return;
+    TVN = 0;
+    for (i = 0; i < list.length; i++) {
+      e = list[i];
+      if (e._dead || e.etat === 'portail' || e._ext || e._st === 'proie') { e.tele = -1; continue; }
+      id = -1; r = 0.8 * e.r;
+      var st = e._st, tot = e._teleTotal || 0.6, rest = e._stT, c;
+      if (e.type === 'fleche' && st === 'vise') {
+        c = (conf('fleche').bond && conf('fleche').bond.longueur) || 67;
+        id = teleAjouter(e.id, 'ligne', e.x, e.y, e.x + Math.cos(e._aim) * c, e.y + Math.sin(e._aim) * c, r, rest, tot, 'tete', e.type);
+      } else if (e.type === 'dard' && st === 'verrou') {
+        c = (conf('dard').fuseau && conf('dard').fuseau.longueur) || 82;
+        id = teleAjouter(e.id, 'ligne', e.x, e.y, e.x + Math.cos(e._aim) * c, e.y + Math.sin(e._aim) * c, r, rest, tot, 'tete', e.type);
+      } else if (e.type === 'larve' && st === 'mord') {
+        id = teleAjouter(e.id, 'disque', e._tx, e._ty, e._tx, e._ty, 12, rest, tot, 'corps', e.type);
+      } else if (e.type === 'mine' && st === 'arme') {
+        id = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y, conf('mine').souffle || CFG.mineSouffle, rest, tot, 'tout', e.type);
+      } else if (e.type === 'tourelle' && st === 'vise') {
+        c = conf('tourelle').portee || 160;
+        id = teleAjouter(e.id, 'ligne', e.x, e.y, e.x + Math.cos(e._aim) * c, e.y + Math.sin(e._aim) * c, CFG.tirTaille, rest, tot, 'tete', e.type);
+      } else if (e.type === 'sentinelle' && st === 'vise') {
+        c = conf('sentinelle').longueur || 300;
+        id = teleAjouter(e.id, 'ligne', e.x, e.y, e.x + Math.cos(e._aim) * c, e.y + Math.sin(e._aim) * c, 1.5, rest, tot, 'tete', e.type);
+      } else if (e.type === 'lame' && st === 'recule') {
+        c = (conf('lame').traverse && conf('lame').traverse.longueur) || 190;
+        id = teleAjouter(e.id, 'ligne', e._tx, e._ty, e._tx + Math.cos(e._aim) * c, e._ty + Math.sin(e._aim) * c, r, rest + 0.2, tot, 'tout', e.type);
+      } else if (e.type === 'rival' && st === 'arme') {
+        id = teleAjouter(e.id, 'losange', e._tx, e._ty, e._tx, e._ty, 5, rest, tot, 'tete', e.type);
+      }
+      e.tele = id;
+    }
+    for (i = 0; i < fuses.length; i++) {                      // la mèche d'un INSTABLE : le disque de souffle
+      u = fuses[i];
+      teleAjouter(-1 - i, 'disque', u.x, u.y, u.x, u.y, u.r, u.t, u.d, 'tout', 'instable');
+    }
+    TV.length = TVN;
+    if (s.tele !== TV) s.tele = TV;
   }
   function compact(L) { var j = 0; for (var i = 0; i < L.length; i++) if (!L[i]._dead) L[j++] = L[i]; L.length = j; }
 
