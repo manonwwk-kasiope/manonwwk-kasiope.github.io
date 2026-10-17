@@ -335,55 +335,79 @@ function drawPerf() {
 }
 
 /* ---- boucle ---- */
-var last = 0, DTMAX = 1 / 20;
+var last = null, SANS_DESSIN = false;
 function frame(now) {
   requestAnimationFrame(frame);
-  var t0 = maintenant(), dtReel = last ? (now - last) / 1000 : 1 / 60;
-  var dt = last ? (now - last) / 1000 : 1 / 60;
+  var t0 = maintenant(), dtReel = last === null ? 1 / 60 : (now - last) / 1000;
   last = now;
-  if (typeof window !== 'undefined' && window.__DT) dt = window.__DT;
-  if (dt > DTMAX) dt = DTMAX;
-  if (dt < 0) dt = 0;
-
-  var frozen = N.fx && N.fx.hitstopLeft ? N.fx.hitstopLeft() > 0 : false;
-  S.dt = frozen ? dt * 0.08 : dt;
-  S.t += S.dt * 1000;
+  /* Le pas de test remplace aussi le temps fourni à l'accumulateur (zéro est permis).
+     La borne de rattrapage appartient à l'horloge : PAS_MAX, aucun grand pas variable. */
+  if (typeof window !== 'undefined' && typeof window.__DT === 'number' && isFinite(window.__DT)) dtReel = window.__DT;
+  if (!(dtReel >= 0) || !isFinite(dtReel)) dtReel = 0;
+  var dtImage = Math.min(dtReel, 0.05), h = N.horloge, n = 0;
   S.frame++;
   if (typeof window !== 'undefined') window.__FRAME = S.frame;
-
   entreeUpdate();
-  if (!S.paused) {
-    if (S.phase === 'intro') step('intro.update', N.intro && N.intro.update ? function () { N.intro.update(S.dt); } : null);
-    else step('game.update', N.game && N.game.update ? function () { N.game.update(S.dt); } : null);
-    step('fx.update', N.fx && N.fx.update ? function () { N.fx.update(S.dt); } : null);
+  step('horloge.image', function () { n = h.image(dtReel); });
+  for (var i = 0; i < n; i++) {
+    step('horloge.avancer', function () { S.dt = h.avancer(); S.t = h.t(); });
+    if (!S.paused) {
+      /* Les écrans arrêtent LE MONDE, pas leur garde ni leurs films. Même convention
+         que dbg.simuler (79-jeu.js) : H pour les interfaces, dtMonde pour le reste.
+         Un hitstop n'est pas un arrêt d'écran : son zéro est conservé. */
+      var dtJeu = S.dt === 0 && h.arretee() ? h.H : S.dt;
+      step('game.update', N.game && N.game.update ? function () { N.game.update(dtJeu); } : null);
+      step('fx.update', N.fx && N.fx.update ? function () { N.fx.update(S.dt); } : null);
+      /* 79-jeu.js avance déjà la caméra une fois par pas ; ne pas la doubler ici. */
+    }
+    /* Aucun effacement si l'image n'a rendu aucun pas (écrans à 144 Hz, par exemple).
+       Une impulsion ne doit jamais être consommée par les deux pas d'une même image. */
+    entreeFin();
   }
-  entreeFin();
 
   if (N.game && N.game.tension) step('tension', function () {
     S.tension = N.game.tension();
     if (N.music && N.music.tension) N.music.tension(S.tension);
   });
 
-  /* dessin : tampon basse résolution, puis agrandissement, puis post-traitement */
+  if (SANS_DESSIN) { perfNote(maintenant() - t0, dtReel); return; }
+
+  /* § 7.7 : le monde, les explosions, les acteurs du dessus, puis les écrans.
+     game.draw() possède déjà drawFar / drawPlateau / drawFront et leur origine. */
   var drew = false;
   if (N.gfx && N.gfx.clear) {
-    step('gfx.clear', function () { N.gfx.clear(0); });
-    if (S.phase === 'intro') step('intro.draw', N.intro && N.intro.draw ? function () { N.intro.draw(); drew = true; } : null);
-    else step('game.draw', N.game && N.game.draw ? function () { N.game.draw(); drew = true; } : null);
-    step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
-    /* couche du dessus : ce qui doit rester lisible par-dessus les explosions (menaces, joueuse, interface) */
-    if (S.phase !== 'intro') step('game.drawTop', N.game && N.game.drawTop ? function () { N.game.drawTop(); } : null);
+    step('gfx.clear', function () { N.gfx.origin(0, 0); N.gfx.clear(0); });
+    var etat = N.game && N.game.etat ? N.game.etat() : null;
+    var vol = etat === 'vol' && N.vol && N.vol.actif && N.vol.actif();
+    if (vol) step('vol.draw', function () { N.vol.draw(); drew = true; });
+    else {
+      step('game.draw', N.game && N.game.draw ? function () { N.game.draw(); drew = true; } : null);
+      step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
+      step('game.drawTop', N.game && N.game.drawTop ? function () { N.game.drawTop(); } : null);
+    }
+    step('gfx.origin', function () { N.gfx.origin(0, 0); });
+    step('fx.drawEcran', N.fx && N.fx.drawEcran ? function () { N.fx.drawEcran(); } : null);
+    /* Le repli d'ecranVieux dessine déjà l'interface quand reset() vient de remettre
+       pas() à zéro en fin d'image. Éviter une seconde couche pendant cette seule image. */
+    if (h && h.pas() > 0) {
+      var plein = N.ids && N.ids.tableEtats[etat] && N.ids.tableEtats[etat].plein;
+      var film = N.intro && N.intro.current && N.intro.current();
+      if (!plein && etat !== 'titre' && etat !== 'plongee' && !(film && N.intro.busy()))
+        step('hud.draw', N.hud && N.hud.draw ? function () { N.hud.draw(); } : null);
+      step('ui.draw', N.ui && N.ui.actif && N.ui.actif() ? function () { N.ui.draw(); } : null);
+      if (film) step('intro.draw', function () { N.intro.draw(); });
+    }
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     if (PERF_AFF) step('perf.draw', drawPerf);
-    step('gfx.present', function () { N.gfx.present(); drew = drew || true; });
-    step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(S.dt); } : null);
+    step('gfx.present', function () { N.gfx.present({ skipScale: !!(N.crt && N.crt._actif && N.crt._actif()) }); drew = true; });
+    step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(dtImage); } : null);
   }
   if (!drew) step('mire', mire);
   perfNote(maintenant() - t0, dtReel);
 
-  /* décroissance des secousses après lecture par le post-traitement */
-  if (S.shake > 0) { S.shake *= Math.pow(0.001, S.dt); if (S.shake < 0.05) S.shake = 0; }
-  if (S.heat > 0) { S.heat *= Math.pow(0.02, S.dt); if (S.heat < 0.01) S.heat = 0; }
+  /* Le tube et les secousses sont des effets d'image, même pendant un gel du monde. */
+  if (S.shake > 0) { S.shake *= Math.pow(0.001, dtImage); if (S.shake < 0.05) S.shake = 0; }
+  if (S.heat > 0) { S.heat *= Math.pow(0.02, dtImage); if (S.heat < 0.01) S.heat = 0; }
 }
 
 function boot() {
@@ -396,6 +420,7 @@ function boot() {
   }
   var q = (typeof location !== 'undefined' && location.search) || '';
   PERF_AFF = /[?&]perf=1\b/.test(q);
+  SANS_DESSIN = /[?&]nodraw(?:=1)?(?:&|$)/.test(q);
   step('gfx.init', N.gfx && N.gfx.init ? function () { N.gfx.init(out); } : null);
   var tb = /[?&]tube=(riche|sobre|pur|coupe)\b/.exec(q);
   if (tb && N.crt && N.crt.preset) step('crt.preset', function () { N.crt.preset(tb[1]); if (N.crt.auto) N.crt.auto(false); });
@@ -434,7 +459,9 @@ function boot() {
   app.addEventListener('click', gesture);
   window.addEventListener('blur', function () { keys = {}; stick.id = null; entreeRaz(); stickUpdate(); S.input.fire = false; });
 
-  step('intro.reset', N.intro && N.intro.reset ? function () { N.intro.reset(); } : null);
+  /* 79-jeu dirige désormais demarrage → titre → plongee ; l'ancienne ouverture
+     ne doit pas lancer une seconde machine d'états au-dessus de 80-ecrans. */
+  S.phase = 'play';
   step('game.reset', N.game && N.game.reset ? function () { N.game.reset(S.seed); } : null);
   requestAnimationFrame(frame);
 }
