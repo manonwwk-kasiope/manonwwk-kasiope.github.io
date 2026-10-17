@@ -1,18 +1,25 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 01 h 44)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
-  d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état).
+  d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
+  dort : tout est automatisé**, sans fenêtre d'autorisation (chemins `${X:?}`), relance de session aux minutes 13 et 43
+  de 2 h à 9 h, guetteur `~/Projets/wt-snake/guetter.sh` (sort à chaque fin de session Codex, nouveau `.final.md` ou commit).
 - Codex travaille par deux voies : la boîte aux lettres (`COORDINATION.md`, dans le dossier principal) et des
   sessions `codex exec` parallèles, chacune dans `~/Projets/wt-snake/<nom>` (consignes dans
   `~/Projets/wt-snake/consignes/`, journal `<nom>.log`, réponse `<nom>.final.md`). Leur bac à sable interdit
-  serveur local et Chromium : la cheffe d'orchestre exécute leurs `verifier.mjs` hors bac.
+  serveur local et Chromium : la cheffe d'orchestre exécute leurs `verifier.mjs` hors bac, un Chromium à la fois.
 - Intégration : jamais dans le dossier principal (Codex y écrit) ; copie `~/Projets/wt-snake/chef` et
-  `~/Projets/wt-snake/integrer.sh <copie> <auteur> <message> <chemins…>` (NOPUSH=1 pour vérifier avant de publier).
-- En cours à 01 h 36 : codex-p5 (réglage), codex-p4b (mines), codex-p3c (diagnostic), Codex boîte (05b puis 01c).
-- Prochaines actions : vérifier et intégrer chaque livraison ; ordres tirés du diagnostic p3c ; quand réglage et
-  ambiance sont faits, jury (`tools/jury/partie.mjs`) puis publication sur gh-pages.
+  `~/Projets/wt-snake/integrer.sh <copie> <auteur> <message> <chemins…>` (NOPUSH=1 pour vérifier avant de publier) ;
+  écritures de suivi dans la copie `~/Projets/wt-snake/integ`.
+- Fait depuis 01 h 36 : codex-01c tranché (candidat non retenu, 01b gardé, porte lisibilité fermée) ; codex-05b relu.
+- En cours à 01 h 44 : batterie R-01..R-38 sur `8f55a91` (tâche de fond, attend la fin du banc 01c de la boîte ;
+  reçu `~/Projets/wt-snake/recus/batterie-8f55a91.log`) ; codex-p5 (réglage) ; codex-p3c (diagnostic, copie codex-08) ;
+  codex-09 (aventure dans le vrai jeu) ; codex-p4b livré, son `tools/codex-p4/verifier.mjs` est à lancer après la batterie.
+- Prochaines actions : verdict 05b sur la batterie ; vérifier puis intégrer p4b (72, 73, 02-regles) ; ordres tirés de p3c ;
+  après p4b : ennemis qui durcissent (72-ennemis) ; quand réglage et aventure sont faits : jury (`tools/jury/partie.mjs`),
+  publication sur gh-pages, demande de JALON.
 
 ## État au 17/10/2026 · 23 h 30 (le projet vit désormais sur l'ordinateur)
 
