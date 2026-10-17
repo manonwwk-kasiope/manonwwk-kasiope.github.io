@@ -12,7 +12,7 @@
        N.world = { W, H, x0, y0, x1, y1,
                    arena(rect, dur), reset(),             rect : {x,y,w,h}
                    travelling({largeur, vx, depuis}), stop(),
-                   enMouvement(), mursAnnonces() -> [rect], voyage() -> {actif, vx, restant},
+                   enMouvement(), mursAnnonces() -> [rect], voyage() -> {actif, attend, vx, restant},
                    distMur(x, y[, out]) -> {d, nx, ny, pan, mobile},
                    rect() -> {x,y,w,h} }
 
@@ -25,14 +25,15 @@
                  update(dt), reset([x, y]),
                  toScreen(x,y,out), toWorld(sx,sy,out),
                  visible(x,y,m), shown(x,y,m), anticipee(sec,out), devant(),
-                 jolt(dx,dy), focus(x,y,dur), mode('jeu'|'boss'|'libre'),
+                 jolt(dx,dy), secousse(amp,dx,dy), focus(x,y,dur), mode('jeu'|'boss'|'libre'),
                  suit(obj) }                              obj {x,y,ang,vit} ; par défaut N.joueuse.tete
 
    La cible = la tête + une avance dans le sens du cap visé (0,30 × la demi-largeur à l'horizontale, 0,42 × la
    demi-hauteur à la verticale, × 1,4 en accélération). Le suivi est un amorti critique (constante 0,22 s). La tête
-   reste entre 15 % et 85 % de la vue sur les deux axes (en portrait, en vertical, entre 15 % et 72 %), SAUF quand
-   la caméra touche une borne : elle est bornée au monde (ou à l'arène courante) avec 16 px de débord, parce qu'on
-   voit alors le mur et un peu de décor au-delà — c'est ce qui rend juste la mort au mur.
+   reste entre 15 % et 85 % de la vue sur les deux axes (en portrait, en vertical, entre 15 % et 72 %). La caméra
+   est bornée au monde (ou à l'arène courante) avec 16 px de débord : on voit le mur et un peu de décor au-delà,
+   c'est ce qui rend juste la mort au mur. Quand la tête longe un mur, le cadre PASSE AVANT la borne (la vue
+   déborde alors de quelques px de plus, sur du décor) : sinon les deux règles se contrediraient.
    Aucun module n'appelle N.world.update : c'est N.cam.update qui avance les murs.
 */
 (function () {
@@ -153,7 +154,7 @@
     return out;
   }
   function rect() { rectOut.x = Wd.x0; rectOut.y = Wd.y0; rectOut.w = Wd.x1 - Wd.x0; rectOut.h = Wd.y1 - Wd.y0; return rectOut; }
-  function voyage() { return { actif: trav.actif || trav.attend, vx: trav.vx, restant: trav.actif ? Math.abs(trav.fin - Wd.x0) : 0 }; }
+  function voyage() { return { actif: trav.actif, attend: trav.attend, vx: trav.vx, restant: (trav.actif || trav.attend) ? Math.abs(trav.fin - Wd.x0) : 0 }; }
 
   Wd.arena = arena; Wd.reset = reset; Wd.travelling = travelling; Wd.stop = stop;
   Wd.enMouvement = enMouvement; Wd.mursAnnonces = mursAnnonces; Wd.distMur = distMur; Wd.rect = rect; Wd.voyage = voyage;
@@ -248,22 +249,25 @@
         var rx = amorti(cx, tx, vx, dt, ts), ry = amorti(cy, ty, vy, dt, ts);
         cx = rx.p; vx = rx.v; cy = ry.p; vy = ry.v;
       }
-      // la tête dans le cadre (15 à 85 %, en portrait 15 à 72 % en vertical)
-      if (ok) {
-        var cad = c.cadre || { min: 0.15, max: 0.85, portraitMaxY: 0.72 };
-        var maxY = portrait() ? cad.portraitMaxY : cad.max;
-        var lx = cx - Cm.w / 2, ly = cy - Cm.h / 2;
-        var sx = tete.x - lx, sy = tete.y - ly;
-        if (sx < cad.min * Cm.w) lx = tete.x - cad.min * Cm.w; else if (sx > cad.max * Cm.w) lx = tete.x - cad.max * Cm.w;
-        if (sy < cad.min * Cm.h) ly = tete.y - cad.min * Cm.h; else if (sy > maxY * Cm.h) ly = tete.y - maxY * Cm.h;
-        cx = lx + Cm.w / 2; cy = ly + Cm.h / 2;
-      }
     }
     // bornes (l'état est borné aussi : une borne qui s'écarte laisse la caméra repartir en douceur)
     var ex = cx - Cm.w / 2, ey = cy - Cm.h / 2;
     if (ex < bx0) { ex = bx0; if (vx < 0) vx = 0; } else if (ex > bx1) { ex = bx1; if (vx > 0) vx = 0; }
     if (ey < by0) { ey = by0; if (vy < 0) vy = 0; } else if (ey > by1) { ey = by1; if (vy > 0) vy = 0; }
     cx = ex + Cm.w / 2; cy = ey + Cm.h / 2;
+    // la tête dans le cadre (15 à 85 %, en portrait 15 à 72 % en vertical) : elle PASSE AVANT la borne. Contre un mur,
+    // la vue montre alors un peu plus que les 16 px de débord (du décor, rien d'autre) : devant() n'y perd rien.
+    if (ok) {
+      var cad = c.cadre || { min: 0.15, max: 0.85, portraitMaxY: 0.72 };
+      var maxY = portrait() ? cad.portraitMaxY : cad.max;
+      var lx = cx - Cm.w / 2, ly = cy - Cm.h / 2;
+      var sx = tete.x - lx, sy = tete.y - ly;
+      var mx0 = cad.min * Cm.w + 1, mx1 = cad.max * Cm.w - 1, my0 = cad.min * Cm.h + 1, my1 = maxY * Cm.h - 1;   // 1 px de garde : l'arrondi final ne sort pas du cadre
+      if (sx < mx0) { lx = tete.x - mx0; if (vx < 0) vx = 0; } else if (sx > mx1) { lx = tete.x - mx1; if (vx > 0) vx = 0; }
+      if (sy < my0) { ly = tete.y - my0; if (vy < 0) vy = 0; } else if (sy > my1) { ly = tete.y - my1; if (vy > 0) vy = 0; }
+      cx = lx + Cm.w / 2; cy = ly + Cm.h / 2;
+      ex = lx; ey = ly;
+    }
     // poussées : s'amortissent en 0,15 s ; rien si la secousse est coupée
     if (jx !== 0 || jy !== 0) {
       var f = Math.exp(-dt * 20);
@@ -327,6 +331,15 @@
     var a = clamp(m, j.min, j.max) * facteurSecousse();
     jx += dx / m * a; jy += dy / m * a;
   }
+  /* la secousse À TRAUMA reste dans 20-crt.js, en espace écran : N.S.shake (amplitude, px de jeu) et la direction
+     facultative N.S.shakeX/shakeY, lues par 20-crt.js. Ce raccourci les écrit, multipliées par le réglage SECOUSSE. */
+  function secousse(amp, dx, dy) {
+    var s = S(); if (!s) return;
+    var a = (+amp || 0) * facteurSecousse();
+    if (a > (s.shake || 0)) s.shake = a;
+    var m = Math.sqrt((dx || 0) * (dx || 0) + (dy || 0) * (dy || 0));
+    if (m > 0) { s.shakeX = dx / m; s.shakeY = dy / m; }
+  }
   /* cadrage scénarisé : pendant dur secondes la cible est (x,y), puis la caméra revient à la tête */
   function focus(x, y, dur) { fo.x = x; fo.y = y; fo.t = Math.max(0, +dur || 0); fo.d = fo.t; }
   function mode(m) {
@@ -337,7 +350,7 @@
 
   Cm.update = update; Cm.reset = reset; Cm.toScreen = toScreen; Cm.toWorld = toWorld;
   Cm.visible = visible; Cm.shown = shown; Cm.anticipee = anticipee; Cm.devant = devant;
-  Cm.jolt = jolt; Cm.focus = focus; Cm.mode = mode; Cm.suit = suit;
+  Cm.jolt = jolt; Cm.secousse = secousse; Cm.focus = focus; Cm.mode = mode; Cm.suit = suit;
   Cm.bornes = function () { bornes(); return { x0: bx0, x1: bx1, y0: by0, y1: by1 }; };   // pour les tests
   N.cam = Cm;
 })();

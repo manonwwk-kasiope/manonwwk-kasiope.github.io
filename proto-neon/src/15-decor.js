@@ -122,9 +122,9 @@
     centrale: { nom: 'LA CENTRALE', seed: 3303, sun: 0.88, ciel: { br: 0.86, am: 0.34, sa: 1.4, haut: 44 }, fen: 1.0, bande: 3, miroir: 0.8,
                 ville: { wMin: 18, wMax: 40, hMin: 30, hMax: 70, ecartMin: 0, ecartMax: 5, toit: 'reacteur', enseignes: 8 },
                 struct: ['cheminee', 'conduite', 'cheminee', 'cheminee', 'conduite'], remap: { 9: 'BR', 10: 'AM' }, cyc: ['SA', 'BR', 'BR', 'AM'], montagnes: 0.5 },
-    ciel:     { nom: 'LE CIEL', seed: 4404, sun: 1.45, ciel: { br: 0.6, am: 0.55, sa: 0.8, haut: 36 }, fen: 0.45, bande: 2, miroir: 0.4, etoiles: 120,
-                ville: { wMin: 6, wMax: 14, hMin: 8, hMax: 26, ecartMin: 0, ecartMax: 4, toit: 'plat', enseignes: 3 },
-                struct: ['nuage', 'nuage', 'nuage', 'nuage'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.0 },
+    ciel:     { nom: 'LE CIEL', seed: 4404, sun: 1.45, ciel: { br: 0.72, am: 0.55, sa: 0.8, haut: 36 }, fen: 0.45, bande: 2, miroir: 0.4, etoiles: 120,
+                ville: { wMin: 6, wMax: 14, hMin: 10, hMax: 34, ecartMin: 0, ecartMax: 4, toit: 'plat', enseignes: 3 },
+                struct: ['nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.0 },
     tours:    { nom: 'LES TOURS', seed: 5505, sun: 0.78, ciel: { br: 0.7, am: 0.42, sa: 1.3, haut: 46 }, fen: 1.0, bande: 3, miroir: 0.7,
                 ville: { wMin: 9, wMax: 20, hMin: 52, hMax: 92, ecartMin: -1, ecartMax: 2, toit: 'antenne', enseignes: 10 },
                 struct: ['antenne', 'projecteur', 'antenne', 'projecteur'], remap: { 9: 'JA', 10: 'AM' }, cyc: ['SA', 'AM', 'JA', 'BR'], montagnes: 0.3 },
@@ -310,7 +310,7 @@
   }
   function nuage(img, r, x, base) {
     var y = base - r.i(14, 46);
-    for (var k = 0; k < 4; k++) fd(img, x + k * 14, y + r.i(-3, 3), r.i(24, 46), r.i(6, 11), C.AR, 0.5);
+    for (var k = 0; k < 5; k++) fd(img, x + k * 14, y + r.i(-3, 3), r.i(30, 60), r.i(7, 13), C.AR, 0.5);
     for (var k2 = 0; k2 < 3; k2++) fd(img, x + k2 * 16 + 4, y + 8 + r.i(0, 3), r.i(18, 38), 4, C.AM, 0.12);
   }
   function monolithe(img, r, x, base) {
@@ -390,6 +390,13 @@
     else if (kind === 'floor') im = buildFloor(q, e);
     return (box[k] = im);
   }
+  /* LE CIEL : une bande de nuages hauts, tramée, qui défile à 0,35 (la cité est loin sous l'horizon, le ciel vit) */
+  function buildNuages() {
+    var r = flux(4141), img = newImg(MISTW, 64);
+    for (var k = 0; k < 14; k++) { var y = r.i(2, 50), x = r.i(0, MISTW - 1), w = r.i(40, 100); fd(img, x, y, w, r.i(7, 14), C.AR, 0.45); fd(img, x + 4, y + 7, w - 10, 3, C.AM, 0.16); }
+    return img;
+  }
+  function nuages() { return cache.nuages || (cache.nuages = buildNuages()); }
   function mist() { return cache.mist || (cache.mist = buildMist()); }
   function p6img() { return cache.p6 || (cache.p6 = buildP6()); }
   function verifierVue() {
@@ -484,7 +491,7 @@
     var blink = E.blink ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
     var f9 = C[Q.remap[9]], f10 = C[Q.remap[10]];
     for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutFire[i] = i; lutP5[i] = i; }
-    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : f9; lutBase[9] = f9; lutBase[10] = f10;
+    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t * 1.4) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
     lutLit[5] = a; lutLit[6] = b; lutLit[7] = C.AM; lutLit[8] = C.JA; lutLit[9] = f9; lutLit[10] = f10;
     lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (Math.floor(t * 6) & 1) ? C.BR : C.SA; lutDark[8] = (Math.floor(t * 4) & 1) ? C.AM : C.BR;
     lutDark[9] = C.NU; lutDark[10] = C.NU; lutDark[12] = C.AR;      // la cité s'éteint ; restent les incendies (étiquettes 7 et 8)
@@ -668,6 +675,7 @@
     /* P4 : la brume, dérive de 4 px/s */
     var dr = mouvementCoupe() ? 0 : t * 4;
     g.layer(mist(), { x: -Math.round(camX * F_P4X + dr), y: yh - MISTH + 3, wrapX: true });
+    if (q === 'ciel') g.layer(nuages(), { x: -Math.round(camX * F_P4X + dr * 1.5), y: yh - 118, wrapX: true });
     /* le sol : fond, reflet de la cité, lignes, reflet du soleil */
     g.layer(fl, { x: 0, y: yh, opaque: true });
     reflet(buf, W, H, yh, ville, Math.round(camX * F_P3), lutRows, Q.miroir * (e === 'chaos' ? 1.2 : 1));
