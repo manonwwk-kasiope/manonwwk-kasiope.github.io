@@ -848,7 +848,7 @@ N.ennemis = (function () {
     if (FB[k]) return FB[k];
     var p = nom.split(':'), b = p[0], s = null;
     if (b === 'dard') s = tourne(rows(ART.dard, true), (parseInt(p[1], 10) || 0) * Math.PI / 8);
-    else if (b === 'lame') s = rows(p[1] === 'deploye' ? ART.lameD : ART.lame, true);
+    else if (b === 'lame') s = rows((p[1] === 'deployee' || p[1] === 'deploye') ? ART.lameD : ART.lame, true);
     else if (ART[b]) s = rows(ART[b], true);
     else s = rows(['.k.', 'kkk', '.k.'], false);
     FB[k] = s;
@@ -866,7 +866,7 @@ N.ennemis = (function () {
     if (t === 'tourelle') return O.sp(e._st === 'vise' ? 'tourelle:charge' : 'tourelle', f);
     if (t === 'mine') return O.sp(e._st === 'arme' ? 'mine:alerte' : 'mine', f);
     if (t === 'dard') return spr('dard:' + O.dir16(e._st === 'fonce' || e._st === 'verrou' ? e._aim : e.ang), f);
-    if (t === 'lame') return spr((e._st === 'recule' || e._st === 'fonce') ? 'lame:deploye' : 'lame', f);
+    if (t === 'lame') return spr((e._st === 'recule' || e._st === 'fonce') ? 'lame:deployee' : 'lame', f);
     if (t === 'rival') return spr('rivalT', f);
     return spr(t, f);
   }

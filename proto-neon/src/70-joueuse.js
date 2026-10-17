@@ -49,7 +49,7 @@ N.joueuse = (function () {
     inv: null, inoff: 0,
     /* BOUCLIER et RÉPARATION (cartes de survie, N.R.passifs) : la charge du bouclier, sa recharge, l'éclat d'un
        coup absorbé ; les segments perdus (coupes, morts) que la RÉPARATION fait repousser un à un */
-    bcl: 0, bclArme: false, bclRech: 0, bclFx: -1, perdu: 0, repT: 0
+    bcl: 0, bclArme: false, bclRech: 0, bclFx: -1, perdu: 0, repT: 0, pvAttente: null
   };
   var clk = 0;                                   // horloge de la joueuse (somme des dt joueuse), pour l'âge de la traînée
   var PV = { id: 'traversee', etat: 'pret', reste: 0, dur: 0, recharge: 0 };   // N.joueuse.pouvoir (même référence)
@@ -101,7 +101,7 @@ N.joueuse = (function () {
     P.ang = at && typeof cfg.ang === 'number' ? cfg.ang : a0;
     P.vit = vitesse();
     st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
-    st.bcl = 0; st.bclArme = false; st.bclRech = 0; st.bclFx = -1; st.perdu = 0; st.repT = 0;
+    st.bcl = 0; st.bclArme = false; st.bclRech = 0; st.bclFx = -1; st.perdu = 0; st.repT = 0; st.pvAttente = null;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
     clk = 0; trailReset(P.x, P.y, P.ang, 40);
     st.res = 100; st.bOn = false; st.bk = 0; st.geste = false; st.pousseT = 0; st.veutPrev = false; st.susp = false; st.panne = false; st.bas = 0;
@@ -109,6 +109,7 @@ N.joueuse = (function () {
     st.apo = 0; st.apoT = -1; st.apoN = 0; st.rings.length = 0; st.lassoCd = 0; st.annonce = null; st.annonceCd = 0; st.lassoFx = null; st.lassos = 0;
     if (st.inv) finInversion(true);
     st.inv = null; st.inoff = 0;
+    PV.id = 'traversee';                                           // chaque partie repart avec TRAVERSÉE ; les cartes de pouvoir l'échangent
     PV.etat = 'pret'; PV.reste = 0; PV.recharge = 0;
     N.joueuse.etat = 'vivant'; N.joueuse.boost = false; N.joueuse.apogee = 0; N.joueuse.degatsMul = 1;
     publier();
@@ -285,6 +286,8 @@ N.joueuse = (function () {
   /* la carte CROISSANCE (+5 segments) : N.cartes l'émet, la joueuse la prend (rang 10) */
   if (N.ev) N.ev.on('carte', 10, function (c) {
     if (c.id === 'croissance') grandir((R && R.longueur && R.longueur.parCroissance) || 5);
+    /* une carte de pouvoir (RALENTI, REPLI…) remplace le pouvoir équipé ; s'il est actif, au prochain pas où il ne l'est plus */
+    else if (N.ids.pouvoirs.indexOf(c.id) >= 0 && !equiper(c.id)) st.pvAttente = c.id;
   }, '70-joueuse');
 
   /* ============================ mise à jour ============================ */
@@ -315,6 +318,7 @@ N.joueuse = (function () {
     if (st.ready > 0) st.ready -= dt;
     if (st.pulse >= 0) { st.pulse += dt * 60; if (st.pulse > st.len + 4) st.pulse = -1; }
     if (st.inoff > 0) st.inoff -= dt;
+    if (st.pvAttente && equiper(st.pvAttente)) st.pvAttente = null;
     pouvoirMaj(dt);
     apogeeMaj(dt);
     survie(dt);
