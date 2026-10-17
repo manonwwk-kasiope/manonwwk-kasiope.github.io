@@ -6130,8 +6130,8 @@ if (typeof window !== 'undefined') window.__N = N;
      Valeurs mesurées par tools/C/mesure.mjs, pas devinées. */
   var MIX = {
     master: 1.20,
-    music: 0.62,        // niveau du bus génératif à tension 0
-    musicTension: 0.95, // ce que la tension ajoute
+    music: 0.72,        // niveau du bus génératif à tension 0 (R-26 : calme ≥ −20 dBFS)
+    musicTension: 0.85, // ce que la tension ajoute
     track: 1.7,         // niveau de la piste (après le compresseur, avant le gain de tension)
     sfx: 1.90,
     pad: 0.22, bass: 0.42, drum: 0.80, lead: 0.85,
@@ -6799,16 +6799,16 @@ if (typeof window !== 'undefined') window.__N = N;
         var c = clamp(o.pitch | 0, 0, 9);
         killStack = (t - killLast < 0.14) ? Math.min(12, killStack + 1) : 0; killLast = t;   /* rapprochés : +1 demi-ton */
         var f = Math.min(2300, hz(keyNote(62, 3 + c) + killStack) * vary(0.01));
-        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.32 * g, 0);
-        voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.1 * g, 1900);
-        burst(t, 'bandpass', 1000 + srnd() * 250, 0.9, 0.001, 0.05, 0.32 * g);
+        var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.58 * g, 0);   /* R-26 : kill 3 à 6 dB au-dessus de la musique */
+        voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.18 * g, 1900);
+        burst(t, 'bandpass', 1000 + srnd() * 250, 0.9, 0.001, 0.05, 0.66 * g);
         send(body, MIX.revSend.sfx, 's');
         duck(t, MIX.duckKill, 0.12);
         return 0.25;
       },
       bigkill: function (t, o, g) {
         var v = vary(0.12);
-        voice(t, 'sine', 118 * v, 30, 0.9, 0.004, 1.05, 0.20 * g, 0);
+        voice(t, 'sine', 118 * v, 30, 0.9, 0.004, 1.05, 0.13 * g, 0);   /* R-26 : moins de grave, ≥ 25 % au-dessus de 400 Hz */
         voice(t, 'triangle', 260 * v, 90, 0.3, 0.003, 0.34, 0.30 * g, 0);
         var n = noise(t, 1.4, srnd), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 0.9;
         lp.frequency.setValueAtTime(2000 * v, t); lp.frequency.exponentialRampToValueAtTime(110, t + 1.15);
@@ -6942,15 +6942,15 @@ if (typeof window !== 'undefined') window.__N = N;
         duck(t, MIX.duckHurt, 0.3); return 0.4;
       },
       mort: function (t, o, g) {
-        var v = vary(0.08), gg = ctx.createGain(); pluck(gg.gain, t, 0.003, 0.9, 0.3 * g); gg.connect(OUT);
+        var v = vary(0.08), gg = ctx.createGain(); pluck(gg.gain, t, 0.003, 0.9, 0.19 * g); gg.connect(OUT);   /* R-26 : mort 3 à 6 dB au-dessus */
         var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500; lp.Q.value = 2; lp.connect(gg);
         [-16, 16].forEach(function (dt) {
           var oo = ctx.createOscillator(); oo.type = 'sawtooth'; oo.detune.value = dt;
           oo.frequency.setValueAtTime(330 * v, t); oo.frequency.exponentialRampToValueAtTime(42, t + 0.85);
           oo.connect(lp); oo.start(t); oo.stop(t + 0.95);
         });
-        burst(t, 'bandpass', 650, 0.8, 0.001, 0.16, 0.24 * g);
-        voice(t, 'sine', 120, 32, 0.6, 0.002, 0.7, 0.16 * g, 0);
+        burst(t, 'bandpass', 650, 0.8, 0.001, 0.16, 0.16 * g);
+        voice(t, 'sine', 120, 32, 0.6, 0.002, 0.7, 0.09 * g, 0);
         send(gg, MIX.revSend.sfx * 1.4, 's'); duck(t, MIX.duckBig, 0.8); return 1.0;
       },
       gameover: function (t, o, g) {                   /* jingle de quatre notes, posé sur le temps */
