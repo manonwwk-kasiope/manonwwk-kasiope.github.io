@@ -35,7 +35,9 @@ N.art = (function () {
     'reveil-elle': [0, 1], 'reveil-lui': [0, 1], 'apotheose-elle': [0, 1], 'apotheose-lui': [0, 1],
     'amiral-elle': [0, 1], 'amiral-lui': [0, 1], 'defaite-elle': [1, 1], 'defaite-lui': [1, 1],
     /* l'affiche du titre : les deux pilotes dos à dos, de part et d'autre de la fissure */
-    'affiche-duo': [1, 1] };
+    'affiche-duo': [1, 1],
+    /* 1982 → 1987 : l'écran de la borne d'arcade éclate, le serpent en sort et devient néon */
+    'neon-elle': [0, 1], 'neon-lui': [0, 1] };
   var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;

@@ -361,6 +361,7 @@
     { id: '1976', type: 'epoque', module: 'terminal', graine: 1976 },
     { id: 'fissure', type: 'film', base: 'fissure', legende: 'LA GRILLE SE BRISE' },
     { id: '1982', type: 'epoque', module: 'arcade', graine: 1982 },
+    { id: 'eclat', type: 'film', base: 'neon', legende: '1987 — LE NÉON' },
     { id: 'neon', type: 'jeu', epoque: 1987 },
     { id: 'profondeur', type: 'film', base: 'profondeur', evt: 'profondeur', legende: '1993 — LA PROFONDEUR' },
     { id: 'jeu-1993', type: 'jeu', epoque: 1993 },
