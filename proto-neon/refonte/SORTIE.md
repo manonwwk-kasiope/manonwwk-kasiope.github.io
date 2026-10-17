@@ -33,6 +33,17 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
 7. **Le JALON de la propriétaire** (R-38) : une partie sur son iPhone ; chaque « non » reçoit une correction ou une
    raison écrite. Il ne bloque pas la publication d'une version candidate ; il peut rouvrir n'importe quelle porte.
 
+## Décisions de spécification prises en route
+
+- **R-05** (00 h 41) : la morsure coupe et ne tue pas (invariant) ; sept causes de mort naturelles.
+- **R-11** (00 h 47) : la part de pixels lumineux sur tout le tampon (≥ 25 / 28 / 32 / 25 %) et la luminance
+  moyenne deviennent **indicatives**. Démonstration : sous l'horizon (au moins la moitié de l'écran), le décor doit
+  rester sous 8 % de pixels lumineux (codex-01, la lisibilité prime) ; le ciel devrait alors être lumineux à plus
+  de 42 %, avec au plus 12 % d'encres chaudes et moins de 0,5 % de magenta et rose pâle (R-11 lui-même) : seul
+  l'acier gris resterait, que le jury a jugé terne. Le reste de R-11 reste bloquant (0 cyan dans le décor, magenta
+  et rose pâle < 0,5 %, vide < 30 %, gaine des menaces). Le « pas triste » (retour n° 1 de la propriétaire) se juge
+  au jury (ambiance ≥ 8/10) et au JALON.
+
 ## Arrêt de non-convergence
 
 Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
@@ -42,9 +53,9 @@ diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un p
 
 | porte | état | preuve |
 |---|---|---|
-| 1. Batterie R-01 à R-38 | mesure de départ en cours (18/10, 00 h 24, mode rapide) | — |
-| 2. Pilotes | codex-02 bloqué par les vues S : lot I en cours | `tools/pilotes/rapport.md` |
-| 3. Lisibilité | codex-01 accepté avec réserves ; codex-01b ordonné | `mediation/2026-10-18-codex-01.md` |
+| 1. Batterie R-01 à R-38 | instrument réparé (3883b2a) : 1 ok, 7 échecs, 6 partiels, 23 non mesurables (00 h 41, rapide) ; départ, scènes et masque en cours (codex-p6) | `tools/mesure/sortie/` (codex-08) |
+| 2. Pilotes | codex-02 et lot I acceptés : 80/80 parties ; jeu trop dur (bon : V5 dans 2/10) ; réglage en cours (codex-p5) | `mediation/2026-10-18-codex-02-lot-I.md` |
+| 3. Lisibilité | codex-01, 01b, 03 acceptés ; ambiance A en cours (codex-01c) | `mediation/` |
 | 4. Performance | à mesurer | — |
 | 5. Jury | pas encore | — |
 | 6. Publication | version du 17/10 en ligne, antérieure | — |
