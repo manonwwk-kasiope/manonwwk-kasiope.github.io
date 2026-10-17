@@ -90,7 +90,8 @@ TEMPS MORT = AMORTISSEURS, ÉLAN = INERTIE, SPECTRE = MARCHE DU VIDE.
   blanc 0,4 et anneau de 900 (24-upgrades.js:183-193).
 - **Pourquoi c'est bien.** Progression visible : on voit son arme grandir. Le palier ultime est un moment
   de puissance que la joueuse vise ; le poids de tirage de la carte monte ×1,3 juste avant (l. 177).
-- **Défauts.** Six paliers, c'est cinq cartes de la même arme : l'audit (septembre, avant G7) mesurait une
+- **Défauts.** Six paliers, c'est six cartes de la même arme (cinq pour le canon de départ) : l'audit
+  (septembre, avant G7) mesurait une
   arme au palier 6 dans **9 %** des parties seulement ; le contenu le plus spectaculaire du jeu restait
   invisible. Les paliers ne sont pas réglés entre eux (§ 4).
 - **En mieux.** **Quatre paliers** (base, +, ++, ULTIME), pour que l'ultime d'au moins une arme tombe
@@ -117,7 +118,8 @@ TEMPS MORT = AMORTISSEURS, ÉLAN = INERTIE, SPECTRE = MARCHE DU VIDE.
 - **Défauts.** Les pourcentages sont petits et l'audit les mesurait dans le bruit (PUISSANCE ×5 : +14 % de
   kills ; CADENCE ×5 : +4 % ; PORTÉE ×4 : 0 % ; POINT FAIBLE ×3 : −12 % ; ACCÉLÉRATEUR ×3 : −9 %). Le
   ricochet est écrasé par les obus de flak et les missiles, qui posent leur propre `onHit` (l. 329-338).
-  Les dégâts du ricochet sont fixes (2,1) : inutiles passé le premier secteur. La documentation en tête
+  Les dégâts du ricochet ne dépendent pas de l'arme (≈ 2,1, seule PUISSANCE les fait monter) : inutiles
+  passé le premier secteur. La documentation en tête
   de 24-upgrades.js (l. 22-114) contredit le code sur une douzaine de valeurs (critique « 9 %, triple »,
   vitesse « +15 % », rebond « +8 % », souffle « +22 % de rayon sur toute explosion »…).
 - **En mieux.** Moins de cartes de pourcentage, des pas plus gros (+25 % au lieu de +10 %), et **le texte
@@ -198,8 +200,9 @@ Chaque tableau reprend les paliers tels que le code les définit. « Recharge »
   90-boot.js:1376). Chaque palier se lit autrement : bouches alternées, tir double, longues lances, orbes
   explosives, rayon. Le rayon est le moment « je suis invincible devant moi » et un outil défensif.
 - **Défauts.** Le palier 5 baisse la cadence et le DPS sur cible unique (100 → 88) : sur un boss, c'est un
-  recul. L'ultime ne vaut que 105 contre 100 au palier 4 : il change de nature, pas de puissance. Le rayon
-  partait de la tête et la masquait (corrigé en G11).
+  recul. L'ultime ne vaut que 105 contre 100 au palier 4 : il change de nature, pas de puissance. Le cœur du
+  rayon, qui part de la tête, écrivait du blanc pur et se confondait avec elle (corrigé en G11 par la
+  composition, l. 1663-1667).
 - **En mieux dans 2975.** Le palier 1 est la démo actuelle (sprite `tir` 7 × 7 cyan à tête pâle, 6,5 tirs/s,
   210 px/s, 1,4 s : 70-game.js:66, 529). Paliers en formes de pixels : deux bouches à ± 2 px, puis une
   lance de 1 × 5 px à cœur `cyanPale` qui perce, puis une orbe 3 × 3 à cœur `os` qui éclate en petite
@@ -297,8 +300,8 @@ Chaque tableau reprend les paliers tels que le code les définit. « Recharge »
   et cœur blanc, nœuds lumineux, 0,26 s de vie ; son `zap`.
 - **Pourquoi c'est bien.** Elle choisit les cibles dangereuses, adore les foules, et la queue comme
   seconde borne donne de la puissance aux deux bouts du serpent. L'ultime fait de l'écran un orage.
-- **Défauts.** Le plus faible départ des armes directes (9,7) pour le plus fort palier final (875) :
-  l'audit mesurait ARC ×6 à + 64 % de kills, la meilleure arme, mais une montée longue et terne. La
+- **Défauts.** Un départ faible (9,7 DPS) pour le plus fort palier final (875) : l'audit mesurait ARC ×6
+  à + 64 % de kills, la meilleure arme, mais au prix d'une montée longue et terne. La
   paralysie est une multiplication de vitesse unique, presque invisible. « Ionisation » du palier 6 n'a
   rien à voir avec la carte IONISATION.
 - **En mieux.** L'arme qui sera la plus belle en gros pixels : polyligne de Bresenham à deux points de
@@ -877,7 +880,7 @@ prérequis cachés.
 | Arme | Rôle | Palier 1 | Palier 2 | Palier 3 | ULTIME | En pixels | Son |
 |---|---|---|---|---|---|---|---|
 | CANON | devant | 6,5 tirs/s (la démo) | deux bouches | lances qui percent | RAYON ≈ 130 px qui efface les tirs | trait 7 × 7 → ligne de 3 px tramée | `tir` pentatonique |
-| TOURELLES | flancs, longueur | 1 tous les 6 segments, ± 25° | les deux flancs, 1 tous les 4 | rafale de deux | BORDÉE EN VAGUE, 1 tous les 2 | module 3 × 3 sur la perle | pincements fusionnés |
+| TOURELLES | flancs, longueur | 1 tous les 6 segments, les deux flancs, ± 25° | 1 tous les 4 | rafale de deux | BORDÉE EN VAGUE, 1 tous les 2 | module 3 × 3 sur la perle | pincements fusionnés |
 | SILLAGE | derrière, LASSO | trace 0,9 s, ENCERCLÉ dès ici | plus longue, freine | gerbes, boucle plus forte | MUR qui avale les tirs | trace d'un pixel tramée par l'âge | souffle, accent sur ENCERCLÉ |
 | ARC | à distance | 3 sauts, 60 px | 4 sauts | deux arcs | ORAGE : quatre arcs de huit sauts, tête et queue | polyligne, nœuds `os` 3 × 3 | crépitement à la double croche |
 | MISSILES | priorité | 2 missiles, élites d'abord | 3 | sous-munitions | NUÉE de six | 3 × 5, traînée, crochets de verrouillage | souffle montant, médiums |
