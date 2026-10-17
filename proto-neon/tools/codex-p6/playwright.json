@@ -1,0 +1,4154 @@
+{
+  "dateParis": "18/10/2026 00:54:14",
+  "bundleSha256": "a14e9bf281cdb0ca6b1fd636e6efa5ebbc7dd8c4afe84c95d449373398dc395b",
+  "profils": [
+    {
+      "nom": "paysage",
+      "departs": [
+        {
+          "depart": "demarrage",
+          "ok": true,
+          "etat": "demarrage",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "demarrage"
+        },
+        {
+          "depart": "ouverture",
+          "ok": true,
+          "etat": "ouverture",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "ouverture"
+        },
+        {
+          "depart": "titre",
+          "ok": true,
+          "etat": "titre",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "titre"
+        },
+        {
+          "depart": "briefing",
+          "ok": true,
+          "etat": "briefing",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "briefing"
+        },
+        {
+          "depart": "plongee",
+          "ok": true,
+          "etat": "plongee",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "plongee"
+        },
+        {
+          "depart": "jeu",
+          "ok": true,
+          "etat": "jeu",
+          "phase": "play",
+          "intro": null,
+          "vague": 1,
+          "joueuse": "vivant",
+          "apresPremierPas": "jeu"
+        }
+      ],
+      "scenes": [
+        {
+          "nom": "charge",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 30,
+          "tirs": 60,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 0,
+            "depuis": 0,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 68,
+              "type": "fleche",
+              "x": 383.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 69,
+              "type": "dard",
+              "x": 403.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 70,
+              "type": "larve",
+              "x": 423.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 71,
+              "type": "mine",
+              "x": 443.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 72,
+              "type": "tourelle",
+              "x": 463.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 73,
+              "type": "lame",
+              "x": 483.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 74,
+              "type": "ruche",
+              "x": 503.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 75,
+              "type": "sentinelle",
+              "x": 523.1217451388889,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 76,
+              "type": "rival",
+              "x": 383.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 77,
+              "type": "planeur",
+              "x": 403.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 78,
+              "type": "traqueur",
+              "x": 423.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 79,
+              "type": "fleche",
+              "x": 443.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 80,
+              "type": "dard",
+              "x": 463.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 81,
+              "type": "larve",
+              "x": 483.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 82,
+              "type": "mine",
+              "x": 503.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 83,
+              "type": "tourelle",
+              "x": 523.1217451388889,
+              "y": 246,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 84,
+              "type": "lame",
+              "x": 383.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 85,
+              "type": "ruche",
+              "x": 403.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 86,
+              "type": "sentinelle",
+              "x": 423.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 87,
+              "type": "rival",
+              "x": 443.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 88,
+              "type": "planeur",
+              "x": 463.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 89,
+              "type": "traqueur",
+              "x": 483.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 90,
+              "type": "fleche",
+              "x": 503.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 91,
+              "type": "dard",
+              "x": 523.1217451388889,
+              "y": 266,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 92,
+              "type": "larve",
+              "x": 383.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 93,
+              "type": "mine",
+              "x": 403.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 94,
+              "type": "tourelle",
+              "x": 423.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 95,
+              "type": "lame",
+              "x": 443.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 96,
+              "type": "ruche",
+              "x": 463.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 97,
+              "type": "sentinelle",
+              "x": 483.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "f73825f0a928ef3d1c356b36c041606874ce7924a51a4db0b80ae11b6f175a07",
+          "masqueSha256": "2abb1d3f4a4397f5dea3e9a2e96adaf44015f723efa167184cb19f2f9f0de433",
+          "proprietaires": [
+            0,
+            94,
+            1685,
+            102,
+            123,
+            15629,
+            0,
+            0,
+            60547,
+            4110
+          ],
+          "journalSha256": "e99a0d3846f9d98148bc475e936c1ec72a00f3beade351f328a8a17d1c9e03f0",
+          "evenements": 59
+        },
+        {
+          "nom": "v5",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 5,
+          "phase": 0,
+          "ennemis": 32,
+          "tirs": 0,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 5,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "annonce",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": 12,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "annonce",
+              "sens": 1,
+              "x": 128,
+              "reste": 1.5
+            }
+          ],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 362,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 382,
+              "y": 226,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 402,
+              "y": 226,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 422,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 442,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 462,
+              "y": 226,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 482,
+              "y": 226,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 502,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "rival",
+              "x": 362,
+              "y": 246,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 10,
+              "type": "planeur",
+              "x": 382,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 11,
+              "type": "traqueur",
+              "x": 402,
+              "y": 246,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 12,
+              "type": "fleche",
+              "x": 422,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 13,
+              "type": "dard",
+              "x": 442,
+              "y": 246,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 14,
+              "type": "larve",
+              "x": 462,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 15,
+              "type": "mine",
+              "x": 482,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 16,
+              "type": "tourelle",
+              "x": 502,
+              "y": 246,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 17,
+              "type": "lame",
+              "x": 362,
+              "y": 266,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 18,
+              "type": "ruche",
+              "x": 382,
+              "y": 266,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 19,
+              "type": "sentinelle",
+              "x": 402,
+              "y": 266,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 20,
+              "type": "rival",
+              "x": 422,
+              "y": 266,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 21,
+              "type": "planeur",
+              "x": 442,
+              "y": 266,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 22,
+              "type": "traqueur",
+              "x": 462,
+              "y": 266,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 23,
+              "type": "fleche",
+              "x": 482,
+              "y": 266,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 24,
+              "type": "dard",
+              "x": 502,
+              "y": 266,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 25,
+              "type": "larve",
+              "x": 362,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 26,
+              "type": "mine",
+              "x": 382,
+              "y": 286,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 27,
+              "type": "tourelle",
+              "x": 402,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 28,
+              "type": "lame",
+              "x": 422,
+              "y": 286,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 29,
+              "type": "ruche",
+              "x": 442,
+              "y": 286,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 30,
+              "type": "sentinelle",
+              "x": 462,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 31,
+              "type": "rival",
+              "x": 482,
+              "y": 286,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 32,
+              "type": "planeur",
+              "x": 502,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            }
+          ],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "cb5d2ef9173ff6194f71b6df8bcc98457020be60b6dfe1ac52d4e84e44ab0dc5",
+          "masqueSha256": "d4dad3c5655f580ba229056064744229841bab5d907240468e94fde2b0661c13",
+          "proprietaires": [
+            0,
+            94,
+            1686,
+            42,
+            123,
+            6243,
+            0,
+            0,
+            67145,
+            6957
+          ],
+          "journalSha256": "41fbaed7eeb9d5a04a9ada01af4ed7a45183f8580af22c57c1801fe2dd5b09f2",
+          "evenements": 100
+        },
+        {
+          "nom": "lasso6",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 20,
+          "longueurPubliee": 20,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 3,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "tourelle",
+              "x": 441.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 2,
+              "type": "tourelle",
+              "x": 453.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 3,
+              "type": "tourelle",
+              "x": 465.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 4,
+              "type": "tourelle",
+              "x": 441.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 453.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "tourelle",
+              "x": 465.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 422,
+          "H": 195,
+          "ciblesFixes": true,
+          "tuesParLasso": 6,
+          "pixelsSha256": "91198ec4d58c881b06bd8085cd477e94148ec6bb87a68c933c4390e791f42980",
+          "masqueSha256": "1a926e88f67db16f2d48f98ce2b118a5266397d6be0d1862258bb513d26cbde8",
+          "proprietaires": [
+            0,
+            94,
+            786,
+            0,
+            123,
+            1021,
+            0,
+            0,
+            73669,
+            6597
+          ],
+          "journalSha256": "f84d4d35038a96a8b0a291ccc96fc7f554579e75c1eb030d55eaf5df1ea10291",
+          "evenements": 109
+        },
+        {
+          "nom": "inversion",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 2,
+          "phase": 0,
+          "ennemis": 12,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 12,
+          "inversion": {
+            "actif": true,
+            "t": 6,
+            "dur": 6,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 2,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "artere",
+            "etat": "inversion"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 383.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 403.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 423.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 443.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 463.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 483.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 503.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 523.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "fleche",
+              "x": 383.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 10,
+              "type": "dard",
+              "x": 403.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 11,
+              "type": "larve",
+              "x": 423.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 12,
+              "type": "mine",
+              "x": 443.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 20
+            }
+          ],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "69cdb3cd0a7fffc9d2e0831fff66664a8edb9ea1c810f4b992c0786d81f23746",
+          "masqueSha256": "3b1e18c820b2467240c77b41bb62de7db0fa8ce75d150daaf59d15eefde0e30a",
+          "proprietaires": [
+            0,
+            94,
+            578,
+            0,
+            123,
+            1680,
+            0,
+            64,
+            73802,
+            5949
+          ],
+          "journalSha256": "c1d3a3dac894ca9bc7660a64212018661a039f593059373f4ba18492eea53ce4",
+          "evenements": 133
+        },
+        {
+          "nom": "convoi",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 1.7499999999999962,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "passage",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "passage",
+              "sens": 1,
+              "x": 58,
+              "reste": 4.533333333333333
+            }
+          ],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 2,
+              "type": "mine",
+              "x": 512,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 3,
+              "type": "mine",
+              "x": 532,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 552,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "mine",
+              "x": 572,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 6,
+              "type": "mine",
+              "x": 592,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 7,
+              "type": "mine",
+              "x": 612,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            }
+          ],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "e5b7a4e8d5c4c7d8959bcd41bfb107398d3a46f241c2c09a0ce32658b9c3a956",
+          "masqueSha256": "401f26bafffe359065cc6a04b1216410b9541766b2ca982eefe38959eef28296",
+          "proprietaires": [
+            0,
+            94,
+            246,
+            0,
+            123,
+            1612,
+            0,
+            0,
+            73618,
+            6597
+          ],
+          "journalSha256": "55ea69799bc81003b11ae3efe87b4133803181c4da0c9f5200bfac6119b2770a",
+          "evenements": 146
+        },
+        {
+          "nom": "travelling",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 3,
+          "phase": 0,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 3,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "centrale",
+            "etat": "montee"
+          },
+          "cibles": [],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "44ba99dfa92701062f6048d2476cca8f9b036fb7555551edc92225896ce0050b",
+          "masqueSha256": "24e1eddfdffb45b0d3539011c5590da9d094377df309491ee0123e2c879b643f",
+          "proprietaires": [
+            516,
+            94,
+            246,
+            0,
+            123,
+            44,
+            0,
+            0,
+            74742,
+            6525
+          ],
+          "journalSha256": "5ff20292135d738c3eeca9e18e5ae22a0327df6ada16d0a92ef82811a2150b6e",
+          "evenements": 152
+        },
+        {
+          "nom": "boss3",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "eclipse",
+            "etat": "colosse"
+          },
+          "cibles": [],
+          "W": 422,
+          "H": 195,
+          "pixelsSha256": "ea99e84e119cffe9a0fff0276a833f3c6f27ee43fb4054d5e6254c2c620b86c6",
+          "masqueSha256": "189168f4a41b6521f50bb085348d7d0f019cb6bf7ff885ecbc98dbb7c1173c0a",
+          "proprietaires": [
+            0,
+            94,
+            254,
+            60,
+            123,
+            11202,
+            0,
+            0,
+            66447,
+            4110
+          ],
+          "journalSha256": "f9364e6fbf4c420085bacc5598b7a989e742671cab92d0b86ca4bb2dbe4879f6",
+          "evenements": 169
+        }
+      ],
+      "regles": {
+        "scenes": {
+          "charge": {
+            "ennemis": 30,
+            "tirs": 60
+          },
+          "boss": {
+            "phase": 3,
+            "preparationMax": 120
+          },
+          "lasso6": {
+            "cibles": 6,
+            "longueur": 20,
+            "colonnes": 3,
+            "ecart": 12
+          },
+          "inversion": {
+            "proies": 12,
+            "vague": 2
+          },
+          "convoi": {
+            "cibles": 6,
+            "voie": 2,
+            "sens": 1,
+            "avance": 0.25
+          },
+          "travelling": {
+            "vague": 3,
+            "queueMur": 40,
+            "depuis": 128,
+            "sens": 1
+          },
+          "groupe": {
+            "colonnes": 8,
+            "marge": 24,
+            "ecart": 20,
+            "devant": 64
+          }
+        },
+        "masque": {
+          "radar": {
+            "retraitBouton": 4,
+            "bord": 1
+          }
+        },
+        "mesureVM": {
+          "chauffe": 5,
+          "images": 30
+        }
+      },
+      "sansOptions": "demarrage",
+      "departInvalide": {
+        "retour": false,
+        "inchange": true
+      },
+      "calme": {
+        "W": 422,
+        "H": 195,
+        "taille": 82290,
+        "codes": [
+          9,
+          8,
+          4,
+          1,
+          5,
+          2
+        ],
+        "cyan": 340,
+        "cyanHors": 0,
+        "partCorrecte": 1,
+        "pixelsSha256": "ad9b4cec5ce75b2bc7ce7674d75618e09b4b17d72527e2c4c3041e1a680e0636",
+        "masqueSha256": "4367124fee7f217e74b443e890fc41626a2769af92ee2898dec5a651b9b47dff",
+        "proprietaires": [
+          0,
+          94,
+          246,
+          0,
+          123,
+          10769,
+          0,
+          0,
+          64457,
+          6601
+        ]
+      },
+      "erreurs": {
+        "count": 0,
+        "sigs": {},
+        "console": []
+      },
+      "conforme": true
+    },
+    {
+      "nom": "portrait",
+      "departs": [
+        {
+          "depart": "demarrage",
+          "ok": true,
+          "etat": "demarrage",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "demarrage"
+        },
+        {
+          "depart": "ouverture",
+          "ok": true,
+          "etat": "ouverture",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "ouverture"
+        },
+        {
+          "depart": "titre",
+          "ok": true,
+          "etat": "titre",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "titre"
+        },
+        {
+          "depart": "briefing",
+          "ok": true,
+          "etat": "briefing",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "briefing"
+        },
+        {
+          "depart": "plongee",
+          "ok": true,
+          "etat": "plongee",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "plongee"
+        },
+        {
+          "depart": "jeu",
+          "ok": true,
+          "etat": "jeu",
+          "phase": "play",
+          "intro": null,
+          "vague": 1,
+          "joueuse": "vivant",
+          "apresPremierPas": "jeu"
+        }
+      ],
+      "scenes": [
+        {
+          "nom": "charge",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 30,
+          "tirs": 60,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 0,
+            "depuis": 0,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 74,
+              "type": "fleche",
+              "x": 456,
+              "y": 264,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 75,
+              "type": "dard",
+              "x": 476,
+              "y": 264,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 76,
+              "type": "larve",
+              "x": 496,
+              "y": 264,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 77,
+              "type": "mine",
+              "x": 516,
+              "y": 264,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 78,
+              "type": "tourelle",
+              "x": 536,
+              "y": 264,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 79,
+              "type": "lame",
+              "x": 556,
+              "y": 264,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 80,
+              "type": "ruche",
+              "x": 576,
+              "y": 264,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 81,
+              "type": "sentinelle",
+              "x": 456,
+              "y": 284,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 82,
+              "type": "rival",
+              "x": 476,
+              "y": 284,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 83,
+              "type": "planeur",
+              "x": 496,
+              "y": 284,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 84,
+              "type": "traqueur",
+              "x": 516,
+              "y": 284,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 85,
+              "type": "fleche",
+              "x": 536,
+              "y": 284,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 86,
+              "type": "dard",
+              "x": 556,
+              "y": 284,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 87,
+              "type": "larve",
+              "x": 576,
+              "y": 284,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 88,
+              "type": "mine",
+              "x": 456,
+              "y": 304,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 89,
+              "type": "tourelle",
+              "x": 476,
+              "y": 304,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 90,
+              "type": "lame",
+              "x": 496,
+              "y": 304,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 91,
+              "type": "ruche",
+              "x": 516,
+              "y": 304,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 92,
+              "type": "sentinelle",
+              "x": 536,
+              "y": 304,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 93,
+              "type": "rival",
+              "x": 556,
+              "y": 304,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 94,
+              "type": "planeur",
+              "x": 576,
+              "y": 304,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 95,
+              "type": "traqueur",
+              "x": 456,
+              "y": 324,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 96,
+              "type": "fleche",
+              "x": 476,
+              "y": 324,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 97,
+              "type": "dard",
+              "x": 496,
+              "y": 324,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 98,
+              "type": "larve",
+              "x": 516,
+              "y": 324,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 99,
+              "type": "mine",
+              "x": 536,
+              "y": 324,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 100,
+              "type": "tourelle",
+              "x": 556,
+              "y": 324,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 101,
+              "type": "lame",
+              "x": 576,
+              "y": 324,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 102,
+              "type": "ruche",
+              "x": 456,
+              "y": 344,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 103,
+              "type": "sentinelle",
+              "x": 476,
+              "y": 344,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "6cd78534d73b2f8add3409a93c1e8f8b745608e3a37b969efb7d85b9e659d588",
+          "masqueSha256": "0205f7eee35d729d226a5ce4fc22019e65fe9877f092b0fbb7b11bd0ad15eb47",
+          "proprietaires": [
+            1169,
+            94,
+            830,
+            76,
+            123,
+            13781,
+            0,
+            0,
+            61113,
+            5104
+          ],
+          "journalSha256": "add9b27eea6be545240aec47991836458f93bde6626a1feda5d792eec50a411a",
+          "evenements": 76
+        },
+        {
+          "nom": "v5",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 5,
+          "phase": 0,
+          "ennemis": 32,
+          "tirs": 0,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 5,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "annonce",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": 12,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "annonce",
+              "sens": 1,
+              "x": 128,
+              "reste": 1.5
+            }
+          ],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 312,
+              "y": 216,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 332,
+              "y": 216,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 352,
+              "y": 216,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 372,
+              "y": 216,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 392,
+              "y": 216,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 412,
+              "y": 216,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 432,
+              "y": 216,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 312,
+              "y": 236,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "rival",
+              "x": 332,
+              "y": 236,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 10,
+              "type": "planeur",
+              "x": 352,
+              "y": 236,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 11,
+              "type": "traqueur",
+              "x": 372,
+              "y": 236,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 12,
+              "type": "fleche",
+              "x": 392,
+              "y": 236,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 13,
+              "type": "dard",
+              "x": 412,
+              "y": 236,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 14,
+              "type": "larve",
+              "x": 432,
+              "y": 236,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 15,
+              "type": "mine",
+              "x": 312,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 16,
+              "type": "tourelle",
+              "x": 332,
+              "y": 256,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 17,
+              "type": "lame",
+              "x": 352,
+              "y": 256,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 18,
+              "type": "ruche",
+              "x": 372,
+              "y": 256,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 19,
+              "type": "sentinelle",
+              "x": 392,
+              "y": 256,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 20,
+              "type": "rival",
+              "x": 412,
+              "y": 256,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 21,
+              "type": "planeur",
+              "x": 432,
+              "y": 256,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 22,
+              "type": "traqueur",
+              "x": 312,
+              "y": 276,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 23,
+              "type": "fleche",
+              "x": 332,
+              "y": 276,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 24,
+              "type": "dard",
+              "x": 352,
+              "y": 276,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 25,
+              "type": "larve",
+              "x": 372,
+              "y": 276,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 26,
+              "type": "mine",
+              "x": 392,
+              "y": 276,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 27,
+              "type": "tourelle",
+              "x": 412,
+              "y": 276,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 28,
+              "type": "lame",
+              "x": 432,
+              "y": 276,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 29,
+              "type": "ruche",
+              "x": 312,
+              "y": 296,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 30,
+              "type": "sentinelle",
+              "x": 332,
+              "y": 296,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 31,
+              "type": "rival",
+              "x": 352,
+              "y": 296,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 32,
+              "type": "planeur",
+              "x": 372,
+              "y": 296,
+              "etat": "approche",
+              "pv": 10
+            }
+          ],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "7534a0f440bd462a02e6f67a646d61c6b6be62a6248de9a10a3a6ec9b188def3",
+          "masqueSha256": "604662a19e54a2aeefa53eda3c4c2da1af039bcffc32af38a5925a16c63e2f24",
+          "proprietaires": [
+            0,
+            94,
+            831,
+            16,
+            123,
+            4847,
+            0,
+            0,
+            69513,
+            6866
+          ],
+          "journalSha256": "36ad2b19b7837d2791733a8b433d8b978387ad9e466da6101e42a04d68f93cf5",
+          "evenements": 117
+        },
+        {
+          "nom": "lasso6",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 20,
+          "longueurPubliee": 20,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 3,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "tourelle",
+              "x": 556,
+              "y": 311.44,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 2,
+              "type": "tourelle",
+              "x": 568,
+              "y": 311.44,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 3,
+              "type": "tourelle",
+              "x": 580,
+              "y": 311.44,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 4,
+              "type": "tourelle",
+              "x": 556,
+              "y": 323.44,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 568,
+              "y": 323.44,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "tourelle",
+              "x": 580,
+              "y": 323.44,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 195,
+          "H": 422,
+          "ciblesFixes": true,
+          "tuesParLasso": 6,
+          "pixelsSha256": "9841c072e65fd19ba4db7d64808877dcf39489fcb787635dc0f2c820491039d6",
+          "masqueSha256": "3bc5c36396ff670c4819e4189022a04b90cdb74a4d4e462f3917ddb05177c5f0",
+          "proprietaires": [
+            585,
+            94,
+            786,
+            0,
+            123,
+            1021,
+            0,
+            0,
+            73145,
+            6536
+          ],
+          "journalSha256": "0f42e77e89c8dedb8972cb52cf5ef8235f3c4fa251af784bb78eb04dd2eae578",
+          "evenements": 126
+        },
+        {
+          "nom": "inversion",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 2,
+          "phase": 0,
+          "ennemis": 12,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 12,
+          "inversion": {
+            "actif": true,
+            "t": 6,
+            "dur": 6,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 2,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "artere",
+            "etat": "inversion"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 456,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 476,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 496,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 516,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 536,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 556,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 576,
+              "y": 307.44,
+              "etat": "proie",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 456,
+              "y": 327.44,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "fleche",
+              "x": 476,
+              "y": 327.44,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 10,
+              "type": "dard",
+              "x": 496,
+              "y": 327.44,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 11,
+              "type": "larve",
+              "x": 516,
+              "y": 327.44,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 12,
+              "type": "mine",
+              "x": 536,
+              "y": 327.44,
+              "etat": "proie",
+              "pv": 20
+            }
+          ],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "22f8c5060e2f18dde2dcd1e4606f3d50457fdd280c92e9c9b8ef2f05fde29210",
+          "masqueSha256": "331354e75c47c547e0fae66f29ed63ca0fa787bdd61798cab0c2119d1b06cc0e",
+          "proprietaires": [
+            585,
+            94,
+            576,
+            0,
+            123,
+            1649,
+            0,
+            64,
+            73311,
+            5888
+          ],
+          "journalSha256": "b317196861907ab8348dad3e4af4dd787080434daec2413bce0247cdcfef1d38",
+          "evenements": 150
+        },
+        {
+          "nom": "convoi",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 1.7499999999999962,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "passage",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "passage",
+              "sens": 1,
+              "x": 58,
+              "reste": 4.533333333333333
+            }
+          ],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 2,
+              "type": "mine",
+              "x": 512,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 3,
+              "type": "mine",
+              "x": 532,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 552,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "mine",
+              "x": 572,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 6,
+              "type": "mine",
+              "x": 592,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 7,
+              "type": "mine",
+              "x": 612,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            }
+          ],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "8a5987927d429df8b3aad9ea0d07f90bc157c1d6a0d0d4e8f89f9139f99f2902",
+          "masqueSha256": "9f407e97b2ce00b8ff73b008e13d92b8df13285d1971567dbc6683c295de2de3",
+          "proprietaires": [
+            0,
+            94,
+            246,
+            0,
+            123,
+            1248,
+            0,
+            0,
+            74018,
+            6561
+          ],
+          "journalSha256": "923723da0073c70ffd3bc7bbcdc65947d8d5f2521e0f389a37ad46692ddeb64a",
+          "evenements": 163
+        },
+        {
+          "nom": "travelling",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 3,
+          "phase": 0,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 3,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "centrale",
+            "etat": "montee"
+          },
+          "cibles": [],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "fc5cd90642a699ccfa6fc3fdbd9afad1065f36274516a23734417653103f03d4",
+          "masqueSha256": "8ec4c8f8997eb27fd363b2bdff89fae3d096a89399d30d9ee8423e50f8805ae6",
+          "proprietaires": [
+            1161,
+            94,
+            246,
+            0,
+            123,
+            92,
+            0,
+            0,
+            74128,
+            6446
+          ],
+          "journalSha256": "5d48ccb78d08c4842a155f1d119220948f8e2857c888a618ad732238270833cd",
+          "evenements": 169
+        },
+        {
+          "nom": "boss3",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "eclipse",
+            "etat": "colosse"
+          },
+          "cibles": [],
+          "W": 195,
+          "H": 422,
+          "pixelsSha256": "4c656c46ce3e87a9ff0ce13dd42248d3db815743a89419fd040327d3ca7775ac",
+          "masqueSha256": "e9af7ee9dc9956524f2e758329ae077c4b658f657bf6d96bd2f10b52b33b55da",
+          "proprietaires": [
+            1169,
+            94,
+            255,
+            60,
+            123,
+            10554,
+            0,
+            0,
+            64931,
+            5104
+          ],
+          "journalSha256": "ca8cf54a277658d7eeb24fa4020d124ff724d6a01bbc072a5cc763fc653e3cd1",
+          "evenements": 203
+        }
+      ],
+      "regles": {
+        "scenes": {
+          "charge": {
+            "ennemis": 30,
+            "tirs": 60
+          },
+          "boss": {
+            "phase": 3,
+            "preparationMax": 120
+          },
+          "lasso6": {
+            "cibles": 6,
+            "longueur": 20,
+            "colonnes": 3,
+            "ecart": 12
+          },
+          "inversion": {
+            "proies": 12,
+            "vague": 2
+          },
+          "convoi": {
+            "cibles": 6,
+            "voie": 2,
+            "sens": 1,
+            "avance": 0.25
+          },
+          "travelling": {
+            "vague": 3,
+            "queueMur": 40,
+            "depuis": 128,
+            "sens": 1
+          },
+          "groupe": {
+            "colonnes": 8,
+            "marge": 24,
+            "ecart": 20,
+            "devant": 64
+          }
+        },
+        "masque": {
+          "radar": {
+            "retraitBouton": 4,
+            "bord": 1
+          }
+        },
+        "mesureVM": {
+          "chauffe": 5,
+          "images": 30
+        }
+      },
+      "sansOptions": "demarrage",
+      "departInvalide": {
+        "retour": false,
+        "inchange": true
+      },
+      "calme": {
+        "W": 195,
+        "H": 422,
+        "taille": 82290,
+        "codes": [
+          9,
+          8,
+          4,
+          1,
+          5,
+          0,
+          2
+        ],
+        "cyan": 340,
+        "cyanHors": 0,
+        "partCorrecte": 1,
+        "pixelsSha256": "3347f731c2b648ce2f2b063e7c0e7cb6ac7e381788f762b9800bbd8fe1bc2403",
+        "masqueSha256": "ad3913783b8cd2d481c8d0b12c53aa431828eb16dab80c510ed88f146de30a0d",
+        "proprietaires": [
+          1170,
+          94,
+          246,
+          0,
+          123,
+          10597,
+          0,
+          0,
+          63447,
+          6613
+        ]
+      },
+      "erreurs": {
+        "count": 0,
+        "sigs": {},
+        "console": []
+      },
+      "conforme": true
+    },
+    {
+      "nom": "bureau",
+      "departs": [
+        {
+          "depart": "demarrage",
+          "ok": true,
+          "etat": "demarrage",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "demarrage"
+        },
+        {
+          "depart": "ouverture",
+          "ok": true,
+          "etat": "ouverture",
+          "phase": "intro",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "ouverture"
+        },
+        {
+          "depart": "titre",
+          "ok": true,
+          "etat": "titre",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "titre"
+        },
+        {
+          "depart": "briefing",
+          "ok": true,
+          "etat": "briefing",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "briefing"
+        },
+        {
+          "depart": "plongee",
+          "ok": true,
+          "etat": "plongee",
+          "phase": "play",
+          "intro": null,
+          "vague": 0,
+          "joueuse": "vivant",
+          "apresPremierPas": "plongee"
+        },
+        {
+          "depart": "jeu",
+          "ok": true,
+          "etat": "jeu",
+          "phase": "play",
+          "intro": null,
+          "vague": 1,
+          "joueuse": "vivant",
+          "apresPremierPas": "jeu"
+        }
+      ],
+      "scenes": [
+        {
+          "nom": "charge",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 30,
+          "tirs": 60,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 0,
+            "depuis": 0,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 74,
+              "type": "fleche",
+              "x": 383.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 75,
+              "type": "dard",
+              "x": 403.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 76,
+              "type": "larve",
+              "x": 423.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 77,
+              "type": "mine",
+              "x": 443.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 78,
+              "type": "tourelle",
+              "x": 463.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 79,
+              "type": "lame",
+              "x": 483.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 80,
+              "type": "ruche",
+              "x": 503.12174513888885,
+              "y": 226,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 81,
+              "type": "sentinelle",
+              "x": 523.1217451388889,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 82,
+              "type": "rival",
+              "x": 383.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 83,
+              "type": "planeur",
+              "x": 403.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 84,
+              "type": "traqueur",
+              "x": 423.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 85,
+              "type": "fleche",
+              "x": 443.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 86,
+              "type": "dard",
+              "x": 463.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 87,
+              "type": "larve",
+              "x": 483.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 88,
+              "type": "mine",
+              "x": 503.12174513888885,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 89,
+              "type": "tourelle",
+              "x": 523.1217451388889,
+              "y": 246,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 90,
+              "type": "lame",
+              "x": 383.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 91,
+              "type": "ruche",
+              "x": 403.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 92,
+              "type": "sentinelle",
+              "x": 423.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 93,
+              "type": "rival",
+              "x": 443.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 94,
+              "type": "planeur",
+              "x": 463.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 95,
+              "type": "traqueur",
+              "x": 483.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 96,
+              "type": "fleche",
+              "x": 503.12174513888885,
+              "y": 266,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 97,
+              "type": "dard",
+              "x": 523.1217451388889,
+              "y": 266,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 98,
+              "type": "larve",
+              "x": 383.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 99,
+              "type": "mine",
+              "x": 403.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 100,
+              "type": "tourelle",
+              "x": 423.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 101,
+              "type": "lame",
+              "x": 443.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 102,
+              "type": "ruche",
+              "x": 463.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 103,
+              "type": "sentinelle",
+              "x": 483.12174513888885,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "7812ec354da1a63a0ed115748c2133c5539ae3c2161ca8c9f7c71d3230915573",
+          "masqueSha256": "8cfa257cbafda6e29fbf0aa193e349a732bdcad1a840e161e88c016707becd7e",
+          "proprietaires": [
+            0,
+            94,
+            1577,
+            75,
+            123,
+            15392,
+            0,
+            0,
+            58575,
+            5164
+          ],
+          "journalSha256": "d722df17f289fc315d04bc6e438ae0b9eb5bfa147f0b0aab37207d390309f7fc",
+          "evenements": 75
+        },
+        {
+          "nom": "v5",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 5,
+          "phase": 0,
+          "ennemis": 32,
+          "tirs": 0,
+          "longueur": 40,
+          "longueurPubliee": 40,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 4,
+            "tourelles": 4,
+            "arc": 4,
+            "missiles": 4,
+            "drones": 4,
+            "minesQ": 4
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 5,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "annonce",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": 12,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "annonce",
+              "sens": 1,
+              "x": 128,
+              "reste": 1.5
+            }
+          ],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "coeur",
+            "etat": "chaos"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 362,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 382,
+              "y": 226,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 402,
+              "y": 226,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 422,
+              "y": 226,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 442,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 462,
+              "y": 226,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 482,
+              "y": 226,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 502,
+              "y": 226,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "rival",
+              "x": 362,
+              "y": 246,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 10,
+              "type": "planeur",
+              "x": 382,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 11,
+              "type": "traqueur",
+              "x": 402,
+              "y": 246,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 12,
+              "type": "fleche",
+              "x": 422,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 13,
+              "type": "dard",
+              "x": 442,
+              "y": 246,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 14,
+              "type": "larve",
+              "x": 462,
+              "y": 246,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 15,
+              "type": "mine",
+              "x": 482,
+              "y": 246,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 16,
+              "type": "tourelle",
+              "x": 502,
+              "y": 246,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 17,
+              "type": "lame",
+              "x": 362,
+              "y": 266,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 18,
+              "type": "ruche",
+              "x": 382,
+              "y": 266,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 19,
+              "type": "sentinelle",
+              "x": 402,
+              "y": 266,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 20,
+              "type": "rival",
+              "x": 422,
+              "y": 266,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 21,
+              "type": "planeur",
+              "x": 442,
+              "y": 266,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 22,
+              "type": "traqueur",
+              "x": 462,
+              "y": 266,
+              "etat": "approche",
+              "pv": 1
+            },
+            {
+              "id": 23,
+              "type": "fleche",
+              "x": 482,
+              "y": 266,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 24,
+              "type": "dard",
+              "x": 502,
+              "y": 266,
+              "etat": "approche",
+              "pv": 30
+            },
+            {
+              "id": 25,
+              "type": "larve",
+              "x": 362,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            },
+            {
+              "id": 26,
+              "type": "mine",
+              "x": 382,
+              "y": 286,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 27,
+              "type": "tourelle",
+              "x": 402,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 28,
+              "type": "lame",
+              "x": 422,
+              "y": 286,
+              "etat": "approche",
+              "pv": 50
+            },
+            {
+              "id": 29,
+              "type": "ruche",
+              "x": 442,
+              "y": 286,
+              "etat": "approche",
+              "pv": 240
+            },
+            {
+              "id": 30,
+              "type": "sentinelle",
+              "x": 462,
+              "y": 286,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 31,
+              "type": "rival",
+              "x": 482,
+              "y": 286,
+              "etat": "approche",
+              "pv": 180
+            },
+            {
+              "id": 32,
+              "type": "planeur",
+              "x": 502,
+              "y": 286,
+              "etat": "approche",
+              "pv": 10
+            }
+          ],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "85983fabebd8346d5ff2498e82ed930f6c3b299ea01a9c4abb90f78a68b305fb",
+          "masqueSha256": "4c6daf36ecbe2356aa91f8711b71df8c13d1076f0020abcd05fd0644a2c62268",
+          "proprietaires": [
+            0,
+            94,
+            1578,
+            30,
+            123,
+            5805,
+            0,
+            0,
+            66156,
+            7214
+          ],
+          "journalSha256": "b1e5263b1c8848f85b40bd283fe28a8e84cf22d6d0d0f04d242a1c1ffd093da5",
+          "evenements": 116
+        },
+        {
+          "nom": "lasso6",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 20,
+          "longueurPubliee": 20,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 3,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "tourelle",
+              "x": 441.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 2,
+              "type": "tourelle",
+              "x": 453.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 3,
+              "type": "tourelle",
+              "x": 465.12,
+              "y": 250,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 4,
+              "type": "tourelle",
+              "x": 441.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 453.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "tourelle",
+              "x": 465.12,
+              "y": 262,
+              "etat": "approche",
+              "pv": 60
+            }
+          ],
+          "W": 360,
+          "H": 225,
+          "ciblesFixes": true,
+          "tuesParLasso": 6,
+          "pixelsSha256": "8b8d84bde1f0193756a0d12f318145c2ea81a15f9b578ef49400e3153bb12616",
+          "masqueSha256": "3539144040d407fd69cf0d3edd1bf9ee558a7f84bdfdc6f124e46132a8c85881",
+          "proprietaires": [
+            0,
+            94,
+            786,
+            0,
+            123,
+            1021,
+            0,
+            0,
+            72122,
+            6854
+          ],
+          "journalSha256": "c767536b22b12cc754af49a89d73682a8ee7a38423fea2169bd98bf2920bbb9a",
+          "evenements": 125
+        },
+        {
+          "nom": "inversion",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 2,
+          "phase": 0,
+          "ennemis": 12,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 12,
+          "inversion": {
+            "actif": true,
+            "t": 6,
+            "dur": 6,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 2,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "artere",
+            "etat": "inversion"
+          },
+          "cibles": [
+            {
+              "id": 1,
+              "type": "fleche",
+              "x": 383.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 2,
+              "type": "dard",
+              "x": 403.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 3,
+              "type": "larve",
+              "x": 423.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 443.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "tourelle",
+              "x": 463.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 6,
+              "type": "lame",
+              "x": 483.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 50
+            },
+            {
+              "id": 7,
+              "type": "ruche",
+              "x": 503.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 240
+            },
+            {
+              "id": 8,
+              "type": "sentinelle",
+              "x": 523.12,
+              "y": 246,
+              "etat": "proie",
+              "pv": 60
+            },
+            {
+              "id": 9,
+              "type": "fleche",
+              "x": 383.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 20
+            },
+            {
+              "id": 10,
+              "type": "dard",
+              "x": 403.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 30
+            },
+            {
+              "id": 11,
+              "type": "larve",
+              "x": 423.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 10
+            },
+            {
+              "id": 12,
+              "type": "mine",
+              "x": 443.12,
+              "y": 266,
+              "etat": "proie",
+              "pv": 20
+            }
+          ],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "14efff22654a185a720c7006f734b862ebf4badac40061a1405e016b086e59a1",
+          "masqueSha256": "3b49722a5bac59e3a5e14bcf149b648a5500dc5f75df6b75035112c7761a426b",
+          "proprietaires": [
+            0,
+            94,
+            579,
+            0,
+            123,
+            1681,
+            0,
+            65,
+            72252,
+            6206
+          ],
+          "journalSha256": "eada7ea380525673a86bbd6cb289bfaa71973f864b20830c2604dd1f3fd1a928",
+          "evenements": 149
+        },
+        {
+          "nom": "convoi",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 1,
+          "phase": 0,
+          "ennemis": 6,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 1.7499999999999962,
+            "vague": 1,
+            "vagueOn": true,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 14,
+            "depuis": 128,
+            "cv": "passage",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": 2,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [
+            {
+              "id": 2,
+              "y0": 246,
+              "y1": 266,
+              "etat": "passage",
+              "sens": 1,
+              "x": 58,
+              "reste": 4.533333333333333
+            }
+          ],
+          "queueMur": null,
+          "decor": {
+            "quartier": "docks",
+            "etat": "calme"
+          },
+          "cibles": [
+            {
+              "id": 2,
+              "type": "mine",
+              "x": 512,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 3,
+              "type": "mine",
+              "x": 532,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 4,
+              "type": "mine",
+              "x": 552,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 5,
+              "type": "mine",
+              "x": 572,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 6,
+              "type": "mine",
+              "x": 592,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            },
+            {
+              "id": 7,
+              "type": "mine",
+              "x": 612,
+              "y": 256,
+              "etat": "approche",
+              "pv": 20
+            }
+          ],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "94a4c5ea4c653a1de2aa04e33801db61db82b1f9f652ea9e8f54b64503771982",
+          "masqueSha256": "f6ff3c4ef1d8f32f6bc9a2f837b3ecf835231fdaa38a8ccc510b7b560f825e3a",
+          "proprietaires": [
+            0,
+            94,
+            246,
+            0,
+            123,
+            1749,
+            0,
+            0,
+            71934,
+            6854
+          ],
+          "journalSha256": "3efbd333b4da27d721c6171bbbf51c883a48046b0aeeb5f51544cb2e56c06e4d",
+          "evenements": 162
+        },
+        {
+          "nom": "travelling",
+          "ok": true,
+          "etat": "jeu",
+          "vague": 3,
+          "phase": 0,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 3.0083333333333253,
+            "vague": 3,
+            "vagueOn": true,
+            "tv": "marche",
+            "tvT": 3.0083333333333253,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 40
+          },
+          "voie": [],
+          "queueMur": 40,
+          "decor": {
+            "quartier": "centrale",
+            "etat": "montee"
+          },
+          "cibles": [],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "7b7f85786da4a98662c72803508391b8a702a2363a6f9ed3b93cf9b217669b1e",
+          "masqueSha256": "7eb1b8157a3f76993198b5a72310fb313176a17bad03182c45c7dfca60538252",
+          "proprietaires": [
+            606,
+            94,
+            246,
+            0,
+            123,
+            50,
+            0,
+            0,
+            73099,
+            6782
+          ],
+          "journalSha256": "c93fc4001dae12d9c8a7f2c3abf063eef8889d21258a8ea9cc0a9c2d65a58c9c",
+          "evenements": 168
+        },
+        {
+          "nom": "boss3",
+          "ok": true,
+          "etat": "boss",
+          "vague": 5,
+          "phase": 3,
+          "ennemis": 0,
+          "tirs": 0,
+          "longueur": 8,
+          "longueurPubliee": 8,
+          "proies": 0,
+          "inversion": {
+            "actif": false,
+            "t": 0,
+            "dur": 0,
+            "devores": 0
+          },
+          "boss": [
+            {
+              "type": "cyclope",
+              "partie": "oeil",
+              "pv": 1500
+            }
+          ],
+          "armes": {
+            "canon": 1,
+            "tourelles": 0,
+            "arc": 0,
+            "missiles": 0,
+            "drones": 0,
+            "minesQ": 0
+          },
+          "arene": {
+            "tw": 0,
+            "vague": 5,
+            "vagueOn": false,
+            "tv": "off",
+            "tvT": 0,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 2,
+            "sens": 1,
+            "xf": 58,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          },
+          "voie": [],
+          "queueMur": null,
+          "decor": {
+            "quartier": "eclipse",
+            "etat": "colosse"
+          },
+          "cibles": [],
+          "W": 360,
+          "H": 225,
+          "pixelsSha256": "e0dcd06fa08e0312c6879889bf6ade766c53ca58cca4daed5bc94aa3421bebd3",
+          "masqueSha256": "6b3543506638b95b600c058ec1204a13c8cbe85ee331d2ef99eb7bddf5de2555",
+          "proprietaires": [
+            0,
+            94,
+            254,
+            45,
+            123,
+            10983,
+            0,
+            0,
+            64337,
+            5164
+          ],
+          "journalSha256": "f76b75cd14613c49451090b574f06bccafe2f2c8b6ff680a8321d3a7d2c76ebf",
+          "evenements": 201
+        }
+      ],
+      "regles": {
+        "scenes": {
+          "charge": {
+            "ennemis": 30,
+            "tirs": 60
+          },
+          "boss": {
+            "phase": 3,
+            "preparationMax": 120
+          },
+          "lasso6": {
+            "cibles": 6,
+            "longueur": 20,
+            "colonnes": 3,
+            "ecart": 12
+          },
+          "inversion": {
+            "proies": 12,
+            "vague": 2
+          },
+          "convoi": {
+            "cibles": 6,
+            "voie": 2,
+            "sens": 1,
+            "avance": 0.25
+          },
+          "travelling": {
+            "vague": 3,
+            "queueMur": 40,
+            "depuis": 128,
+            "sens": 1
+          },
+          "groupe": {
+            "colonnes": 8,
+            "marge": 24,
+            "ecart": 20,
+            "devant": 64
+          }
+        },
+        "masque": {
+          "radar": {
+            "retraitBouton": 4,
+            "bord": 1
+          }
+        },
+        "mesureVM": {
+          "chauffe": 5,
+          "images": 30
+        }
+      },
+      "sansOptions": "demarrage",
+      "departInvalide": {
+        "retour": false,
+        "inchange": true
+      },
+      "calme": {
+        "W": 360,
+        "H": 225,
+        "taille": 81000,
+        "codes": [
+          9,
+          8,
+          4,
+          1,
+          5,
+          2
+        ],
+        "cyan": 340,
+        "cyanHors": 0,
+        "partCorrecte": 1,
+        "pixelsSha256": "99b99d1532f16b3d5d0c60a1bdf6f010032c727061002529365beea996e80704",
+        "masqueSha256": "fc0ecefa3767dcf5bb98df0c4ab187e97fb54c1bd201d2c206eb8aae2e0bb75a",
+        "proprietaires": [
+          0,
+          94,
+          246,
+          0,
+          123,
+          11021,
+          0,
+          0,
+          62628,
+          6888
+        ]
+      },
+      "erreurs": {
+        "count": 0,
+        "sigs": {},
+        "console": []
+      },
+      "conforme": true
+    }
+  ],
+  "chromium": "140.0.7339.16"
+}

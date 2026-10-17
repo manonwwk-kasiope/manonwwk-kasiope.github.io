@@ -953,6 +953,21 @@
     }
   };
 
+  /* codex-p6 — fixtures de test, REFONTE § 7.12 ; jamais lues en partie normale. */
+  R.tests = {
+    scenes: {
+      charge: { ennemis: 30, tirs: 60 },
+      boss: { phase: 3, preparationMax: 120 },
+      lasso6: { cibles: 6, longueur: 20, colonnes: 3, ecart: 12 },
+      inversion: { proies: 12, vague: 2 },
+      convoi: { cibles: 6, voie: 2, sens: 1, avance: 0.25 },
+      travelling: { vague: 3, queueMur: 40, depuis: 128, sens: 1 },
+      groupe: { colonnes: 8, marge: 24, ecart: 20, devant: 64 }
+    },
+    masque: { radar: { retraitBouton: 4, bord: 1 } }, // géométrie du marqueur de tête de 78-hud
+    mesureVM: { chauffe: 5, images: 30 } // coût du dessin instrumenté, hors qualification navigateur
+  };
+
   /* ---- les formules : une seule écriture pour tous les lots ---- */
   R.f = {
     /* taux de virage maximal (rad/s) à la vitesse v */
