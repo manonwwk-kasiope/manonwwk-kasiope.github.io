@@ -39,11 +39,32 @@
    (toutes les portes, aucune mine) existe donc pour toute graine, par construction.
    Visibilité des mines : une mine ne naît jamais plus tard que `balayage + 1,2 + 0,15` s avant son contact (la vue de
    poursuite est alors entièrement dessinée), et son rayon r0 est tel que ⌊r0 × Z0 / z⌋ ≥ 1 dès
-   (r0 − 1) × Z0 / v ≥ 1,2 + 0,15 s avant le contact ; son ombre au sol, 1,3 fois plus large, apparaît avant elle.
+   (r0 − 1) × Z0 / v ≥ 1,2 + 0,15 s avant le contact ; son ombre au sol, 1,3 fois plus large, apparaît avant elle et se
+   détache d'elle (la mine est tirée assez haut au-dessus du sol pour cela). Le placement écarte aussi les mines qu'une
+   autre mine ou une cellule plus proche cacherait pendant cette fenêtre.
 
-   Aucune allocation par image : pools et tableaux typés préalloués, charges d'événements en anneau, aucune
-   fermeture ni tableau créé dans update/draw. Aucune couleur écrite ici : seulement N.pal.i(nom). Le cyan est la
-   joueuse seule (tête et anneaux du corps).
+   Le dessin, du fond vers l'avant : le fond (N.decor.drawVol), le corps du serpent, les portes, les cellules, les mines
+   avec leur ombre (les menaces ne sont jamais cachées par un bord d'anneau), la tête, puis ce qui a dépassé le plan de
+   la tête (grossit et sort de l'écran), les éclats, enfin le balayage. Dans chaque couche, du plus loin au plus proche.
+
+   Les coordonnées. Un objet vit dans le plan de la tête (profondeur Z0) à (cx + ox, hor + oy), cx = ⌊W / 2⌋ le point de
+   fuite, hor la rangée de l'horizon ; à la profondeur z il est dessiné en (cx + ox × Z0 / z, hor + oy × Z0 / z) avec le
+   rayon ⌊r0 × Z0 / z⌋ et z = Z0 + v × (tc − t), tc étant l'instant où il croise la tête. v = 6 cases × 24 px par temps de
+   jeu : la vitesse du sol. Le contact se teste à cet instant exact (position de la tête interpolée), à tout dt.
+
+   N.vol.etat() rend un objet réutilisé : actif, t, hx, hy (la tête), cx, hor, sol0, z0, vz, portes, mines, cellules,
+   nPortes, nMines, nCellules, replis (mines posées sans la règle des occlusions : rare), n (objets), et les tableaux
+   typés kind (0 cellule, 1 porte, 2 mine), st (0 en vol, 1 pris / traversé / touché, 2 manqué / évité), ray (r0), tc, ox,
+   oy, vu (premier instant où le rayon projeté atteint 1), ord (indices du plus loin au plus proche).
+
+   Aucune allocation structurelle par image : pools et tableaux typés préalloués, charges d'événements en anneau,
+   flottants chauds dans un Float64Array, aucune fermeture ni tableau créé dans update/draw. Aucune couleur écrite ici :
+   seulement N.pal.i(nom). Le cyan est la joueuse seule (tête et anneaux du corps).
+
+   Décisions prises sans le gardien (à confirmer) : (1) la coupe d'une mine appelle N.joueuse.couper(k, {genre:'decor',
+   type:'vol'}) avec k = max(8, L − ⌊L / 4⌋), seulement si k < L ; un coup absorbé (retour false : BOUCLIER,
+   TRAVERSÉE) ne compte pas comme mine et n'émet pas `mine` ; (2) la cellule prise émet `ramassage` (x, y écran, valeur 1) ;
+   (3) rien ne donne les 5 XP d'une porte : EVT.vol n'a pas de consommateur de rang 30 ; (4) `avance` du décor en px de sol.
 
    Chiffres de N.R.vol (02-regles.js) lus au start(). Ceux que N.R.vol ne porte pas encore sont dans le bloc
    « → N.R » ci-dessous, à demander au gardien. Module chargeable seul : N.decor, N.joueuse, N.music, N.ev, N.R,
@@ -134,10 +155,12 @@
   /* ---- l'état du VOL ---- */
   var G = null;                                   // N.gfx
   var phase = 0;                                  // 0 inactif, 1 en cours
-  var t = 0, tprev = 0, avance = 0, AVN = 0;
+  /* Les flottants écrits à chaque pas vivent dans un Float64Array : une variable de fermeture qui reçoit un
+     flottant est reboxée par le moteur à chaque écriture, soit de l'allocation à chaque image. */
+  var Q = new Float64Array(8), T = 0, TP = 1, AV = 2, HX = 3, HY = 4, HPX = 5, HPY = 6;
+  var AVN = 0;
   var dep = 'docks', ver = 'artere';
   var W = 422, H = 195, cx = 211, hor = 74, sol0 = 185, xmin = 63, xmax = 359, ymin = 107, ymax = 175;
-  var hx = 211, hy = 140, hpx = 211, hpy = 140;
   var cPortes = 0, cMines = 0, cCell = 0, chaine = 0, nG = 6, nM = 4, nC = 24;
   var RES = { portes: 0, mines: 0, parfait: false };
 
@@ -146,7 +169,7 @@
   var kind = new Uint8Array(MAXO), st = new Uint8Array(MAXO), ray = new Uint8Array(MAXO);
   var tc = new Float64Array(MAXO), ox = new Float32Array(MAXO), oy = new Float32Array(MAXO), vu = new Float32Array(MAXO);
   var ord = new Uint8Array(MAXO);                 // indices triés par tc décroissant : du plus loin au plus proche
-  var nObj = 0;
+  var nObj = 0, nRepli = 0;
   // st : 0 en vol, 1 pris / traversé / touché, 2 manqué / évité
 
   var wt = new Float64Array(10), wx = new Float32Array(10), wy = new Float32Array(10), nWp = 0;   // l'itinéraire parfait
@@ -226,8 +249,8 @@
     cx = W >> 1;
     hor = Math.round(D.horizon * H);
     sol0 = Math.round(L_SOL0 * H);
-    xmin = Math.round(D.cx0 * W); xmax = Math.round(D.cx1 * W);
-    ymin = Math.round(D.cy0 * H); ymax = Math.round(D.cy1 * H);
+    xmin = Math.ceil(D.cx0 * W); xmax = Math.floor(D.cx1 * W);          // le cadre, arrondi vers l'intérieur
+    ymin = Math.ceil(D.cy0 * H); ymax = Math.floor(D.cy1 * H);
   }
 
   /* ---- l'itinéraire parfait ---- */
@@ -260,7 +283,23 @@
   function dist2(ax, ay, bx, by) { var dx = ax - bx, dy = ay - by; return dx * dx + dy * dy; }
   function borne(v, a, b) { return v < a ? a : (v > b ? b : v); }
 
-  function mineOK(tm, mx, my, ecart, rm) {
+  /* Vrai si l'objet j (contact tcj, centre (xj, yj) à la profondeur de la tête, rayon rj) peut cacher, pendant les 1,15 s
+     qui précèdent de 0,2 s le contact de l'objet i, le point (xi, yi) de celui-ci : son centre, ou le centre de son ombre.
+     Seuls les objets plus proches que i (profondeur plus petite) le cachent. Les deux sont projetés à chaque instant.
+     Ne vaut que pour des disques pleins (mines, cellules) : une porte est un anneau, on voit à travers. */
+  function cache(tcj, xj, yj, rj, tci, xi, yi) {
+    for (var ts = tci - 1.35; ts <= tci - 0.2; ts += 0.05) {
+      var zi = D.Z0 + D.V * (tci - ts), zj = D.Z0 + D.V * (tcj - ts);
+      if (zj >= zi || zj < L_ZMIN) continue;
+      var ki = D.Z0 / zi, kj = D.Z0 / zj;
+      var dx = kj * (xj - cx) - ki * (xi - cx), dy = kj * (yj - hor) - ki * (yi - hor);
+      var rr = ((rj * kj) | 0) + 2;
+      if (dx * dx + dy * dy <= rr * rr) return true;
+    }
+    return false;
+  }
+
+  function mineOK(tm, mx, my, ecart, rm, strict) {
     var e2 = ecart * ecart, p, i;
     for (p = -1; p <= 1; p++) {                    // l'itinéraire un peu avant, pendant, un peu après
       cheminA(tm + p * 0.1, PT);
@@ -273,6 +312,12 @@
       } else if (kind[i] === KM) {
         if (dt < 0.25 && dist2(mx, my, cx + ox[i], hor + oy[i]) < 4900) return false;     // 70 px entre deux mines voisines
       }
+      var xj = cx + ox[i], yj = hor + oy[i];
+      if (!strict || kind[i] !== KM) continue;
+      var rj = ray[i] + (ray[i] >> 1) + 1, rn = rm + (rm >> 1) + 1;               // les piques d'une mine comptent
+      if (tc[i] < tm) {                                      // plus proche : peut cacher la nouvelle mine ou son ombre
+        if (cache(tc[i], xj, yj, rj, tm, mx, my) || cache(tc[i], xj, yj, rj, tm, mx, sol0)) return false;
+      } else if (cache(tm, mx, my, rn, tc[i], xj, yj) || cache(tm, mx, my, rn, tc[i], xj, sol0)) return false;   // plus loin : la nouvelle peut cacher l'ancienne
     }
     return true;
   }
@@ -281,23 +326,30 @@
     var tmin = D.balayage + D.ombre + L_MARGE_VISIBLE;      // vue de poursuite entière, 1,2 s + marge avant le contact
     var tmax = D.duree - D.balayage - 0.3;
     var rm = D.rMine, ecart = rm * L_MINE_TOUCHE + L_TETE_TOUCHE + L_ECART_MINE;
-    for (var essai = 0; essai < 80; essai++) {
+    // l'ombre au sol doit se détacher de la mine dès 1,2 s avant le contact : sa rangée (sol0) est plus basse que celle
+    // de la mine, à cette profondeur, d'au moins le rayon projeté + son contour + 2 rangées
+    var k12 = D.Z0 / (D.Z0 + D.V * D.ombre), ymaxM = sol0 - (Math.ceil((((rm * k12) | 0) + 2) / k12) + 2);
+    if (ymaxM > ymax) ymaxM = ymax;
+    if (ymaxM < ymin + 20) ymaxM = ymin + 20;
+    for (var essai = 0; essai < 600; essai++) {             // d'abord toutes les règles ; au-delà de 480 essais, sans la règle des occlusions
       var tm = F.r(tmin, tmax);
       cheminA(tm, PT);
       var mx, my;
       if (F.f() < 0.7) {                                    // une mine qui serre l'itinéraire : on la voit venir
         mx = PT.x + (F.f() < 0.5 ? -1 : 1) * F.r(ecart, ecart + 60); my = PT.y + F.r(-30, 30);
-      } else { mx = F.r(xmin, xmax); my = F.r(ymin, ymax); }
-      mx = borne(mx, xmin, xmax); my = borne(my, ymin, ymax);
-      if (!mineOK(tm, mx, my, ecart, rm)) continue;
+      } else { mx = F.r(xmin, xmax); my = F.r(ymin, ymaxM); }
+      mx = borne(mx, xmin, xmax); my = borne(my, ymin, ymaxM);
+      if (!mineOK(tm, mx, my, ecart, rm, essai < 480)) continue;
+      if (essai >= 480) nRepli++;
       ajouter(KM, tm, mx, my, rm);
       return;
     }
     // repli : l'heure la moins chargée, du côté du cadre le plus éloigné de l'itinéraire
+    nRepli++;
     var tf = tmin + (nObj % 5) * 0.3;
     if (tf > tmax) tf = tmax;
     cheminA(tf, PT);
-    ajouter(KM, tf, PT.x > cx ? xmin : xmax, borne(PT.y, ymin, ymax), rm);
+    ajouter(KM, tf, PT.x > cx ? xmin : xmax, borne(PT.y, ymin, ymaxM), rm);
   }
 
   function celluleOK(tcc, x, y, rm) {
@@ -306,6 +358,7 @@
       var px = cx + ox[i], py = hor + oy[i];
       if (kind[i] === KM) {
         if (dt < 0.14) { var lm = rm + L_CELLULE + 5; if (dist2(x, y, px, py) < lm * lm) return false; }
+        if (tcc < tc[i] && (cache(tcc, x, y, L_CELLULE, tc[i], px, py) || cache(tcc, x, y, L_CELLULE, tc[i], px, sol0))) return false;
       } else if (kind[i] === KP) {
         if (dt < 0.12) {
           var d = Math.sqrt(dist2(x, y, px, py));
@@ -320,7 +373,7 @@
     var tmax = D.duree - D.balayage - 0.25 - (nb - 1) * 0.12, tmin = 0.8, c, i;
     for (var essai = 0; essai < 40; essai++) {
       var t0 = F.r(tmin, tmax);
-      var A = essai < 30 ? F.r(0, 24) : 0, B = essai < 30 ? F.r(0, 10) : 0, ph = F.r(0, 6.283);
+      var A = essai < 30 ? F.r(0, 40) : 0, B = essai < 30 ? F.r(0, 14) : 0, ph = F.r(0, 6.283);   // la houle : certaines cellules demandent un détour
       var ok = true;
       for (c = 0; c < nb; c++) {
         var tcc = t0 + c * 0.12;
@@ -346,12 +399,12 @@
 
   function generer() {
     var F = flux(), g, m;
-    nObj = 0;
+    nObj = 0; nRepli = 0;
     nG = D.nPorte;
     nM = (ver === 'coeur') ? D.nMineCoeur : D.nMine;
     if (nM > 12) nM = 12;
     nC = D.nCell; if (nC > 30) nC = 30;
-    wt[0] = 0; wx[0] = hx; wy[0] = hy; nWp = nG + 1;
+    wt[0] = 0; wx[0] = Q[HX]; wy[0] = Q[HY]; nWp = nG + 1;
     // les portes, sur l'itinéraire : chaque centre est à portée de la manche depuis le précédent
     var tg0 = 0.85 + F.r(0, 0.10), tfin = D.duree - D.balayage - 0.25;
     var sp = nG > 1 ? (tfin - tg0) / (nG - 1) : 0;
@@ -423,11 +476,11 @@
     lire(); couleurs(); geom();
     chercherTete();
     dep = quartierOK(depuis, 'docks'); ver = quartierOK(vers, 'artere');
-    t = 0; tprev = 0; avance = 0; AVN = D.V;
+    Q[T] = 0; Q[TP] = 0; Q[AV] = 0; AVN = D.V;
     cPortes = 0; cMines = 0; cCell = 0; chaine = 0;
-    hx = cx; hy = Math.round(0.72 * H); hpx = hx; hpy = hy;
+    Q[HX] = cx; Q[HY] = borne(Math.round(0.72 * H), ymin, ymax); Q[HPX] = Q[HX]; Q[HPY] = Q[HY];
     var k;
-    for (k = 0; k < NA; k++) { bX[k] = hx - cx; bY[k] = hy - hor; }
+    for (k = 0; k < NA; k++) { bX[k] = Q[HX] - cx; bY[k] = Q[HY] - hor; }
     for (k = 0; k < NB; k++) eOn[k] = 0;
     RES.portes = 0; RES.mines = 0; RES.parfait = false;
     destPret = false; snapOK = false;
@@ -460,11 +513,12 @@
 
   function eclat(x, y, k, r) {
     var j = eI; eI = (eI + 1) % NB;
-    eX[j] = Math.round(x); eY[j] = Math.round(y); eT0[j] = t; eK[j] = k; eR[j] = r > 255 ? 255 : r; eOn[j] = 1;
+    eX[j] = Math.round(x); eY[j] = Math.round(y); eT0[j] = Q[T]; eK[j] = k; eR[j] = r > 255 ? 255 : r; eOn[j] = 1;
   }
 
   /* ---- ce qui se passe quand un objet franchit le plan de la tête ---- */
   function resoudre(i) {
+    var t = Q[T], tprev = Q[TP], hx = Q[HX], hy = Q[HY], hpx = Q[HPX], hpy = Q[HPY];
     var f = 1, span = t - tprev;
     if (span > 1e-12) { f = (tc[i] - tprev) / span; if (f < 0) f = 0; else if (f > 1) f = 1; }
     var qx = hpx + (hx - hpx) * f, qy = hpy + (hy - hpy) * f;     // la tête à l'instant exact du contact
@@ -510,8 +564,9 @@
     dt = +dt;
     if (!(dt > 0)) return;
     geom();
-    tprev = t; t += dt;
-    hpx = hx; hpy = hy;
+    var t = Q[T] + dt, hx = Q[HX], hy = Q[HY];
+    Q[TP] = Q[T]; Q[T] = t;
+    Q[HPX] = hx; Q[HPY] = hy;
     // la manche, sans inertie : direction × course, à 140 px/s
     var S = N.S, inp = S && S.input, vx = 0, vy = 0;
     if (inp) {
@@ -523,13 +578,14 @@
     }
     hx = borne(hx + vx * D.vitesse * dt, xmin, xmax);
     hy = borne(hy + vy * D.vitesse * dt, ymin, ymax);
+    Q[HX] = hx; Q[HY] = hy;
     // le corps : chaque anneau suit le précédent avec un retard (les positions sont relatives au point de fuite)
     var a = 1 - Math.exp(-dt / L_CORPS_TAU), px = hx - cx, py = hy - hor;
     for (var k = 0; k < NA; k++) {
       bX[k] += (px - bX[k]) * a; bY[k] += (py - bY[k]) * a;
       px = bX[k]; py = bY[k];
     }
-    avance += dt * AVN;
+    Q[AV] += dt * AVN;
     // les contacts, dans l'ordre du temps (ord va du plus loin au plus proche)
     for (var q = nObj - 1; q >= 0; q--) {
       var i = ord[q];
@@ -539,23 +595,45 @@
   }
 
   /* ================================ le dessin ================================ */
-  function own(c) { if (G.owner) G.owner(c); }
+  /* Le propriétaire des pixels posés ensuite (masque de test de N.gfx) : les trois formes qui écrivent dans le tampon
+     (losange, lentille, tête à l'échelle 2) tiennent le masque elles-mêmes, les autres passent par N.gfx. */
+  var curOwn = 0, mk = null, BAY = null;
+  function own(c) { curOwn = c; if (G.owner) G.owner(c); }
 
-  function losange(x, y, r, c) {
-    for (var dy = -r; dy <= r; dy++) {
-      var w = r - (dy < 0 ? -dy : dy);
-      G.rect(x - w, y + dy, 2 * w + 1, 1, c);
+  function losange(x, y, r, c) {                                 // un losange de rayon entier, plein
+    var b = G.buf(), y0 = y - r, y1 = y + r;
+    if (y0 < 0) y0 = 0;
+    if (y1 > H - 1) y1 = H - 1;
+    for (var yy = y0; yy <= y1; yy++) {
+      var w = r - (yy < y ? y - yy : yy - y), xa = x - w, xb = x + w;
+      if (xb < 0 || xa > W - 1) continue;
+      if (xa < 0) xa = 0;
+      if (xb > W - 1) xb = W - 1;
+      var o = yy * W;
+      b.fill(c, o + xa, o + xb + 1);
+      if (mk) mk.fill(curOwn, o + xa, o + xb + 1);
     }
   }
-  function lentille(x, y, rs, c, tr) {                           // ombre au sol : un losange aplati
-    var ry = rs >> 2;
+  function lentille(x, y, rs, c, tr) {                           // ombre au sol : un losange aplati, tramé si tr < 1
+    var b = G.buf(), ry = rs >> 2, lim = tr * 16;
     if (ry > 4) ry = 4;
     for (var dy = -ry; dy <= ry; dy++) {
-      var ad = dy < 0 ? -dy : dy, w = rs - (((rs * ad) / (ry + 1)) | 0);
-      G.ditherRect(x - w, y + dy, 2 * w + 1, 1, c, tr);
+      var yy = y + dy;
+      if (yy < 0 || yy >= H) continue;
+      var ad = dy < 0 ? -dy : dy, w = rs - (((rs * ad) / (ry + 1)) | 0), xa = x - w, xb = x + w;
+      if (xb < 0 || xa > W - 1) continue;
+      if (xa < 0) xa = 0;
+      if (xb > W - 1) xb = W - 1;
+      var o = yy * W;
+      if (tr >= 1) {
+        b.fill(c, o + xa, o + xb + 1);
+        if (mk) mk.fill(curOwn, o + xa, o + xb + 1);
+      } else {
+        for (var xx = xa; xx <= xb; xx++) if (lim > BAY[((yy & 3) << 2) | (xx & 3)]) { b[o + xx] = c; if (mk) mk[o + xx] = curOwn; }
+      }
     }
   }
-  function blitEchelle(s, x0, y0, k) {
+  function blitEchelle(s, x0, y0, k) {                           // un sprite à l'échelle entière k (2 pour la tête)
     var b = G.buf(), w = s.w, h = s.h, d = s.data;
     for (var yy = 0; yy < h; yy++) {
       for (var xx = 0; xx < w; xx++) {
@@ -567,7 +645,7 @@
           if (Y < 0 || Y >= H) continue;
           for (var dx = 0; dx < k; dx++) {
             var X = x0 + xx * k + dx;
-            if (X >= 0 && X < W) b[Y * W + X] = v;
+            if (X >= 0 && X < W) { b[Y * W + X] = v; if (mk) mk[Y * W + X] = curOwn; }
           }
         }
       }
@@ -580,7 +658,7 @@
     var den = sol0 - hor; if (den < 1) den = 1;
     var sc = (H - 1 - hor) / den, k, j;
     for (k = -9; k <= 9; k++) G.line(cx, hor, cx + Math.round(k * 32 * sc), H - 1, cViolet);
-    var fr = avance % D.pas;                                     // profondeur déjà parcourue dans la case courante
+    var fr = Q[AV] % D.pas;                                     // profondeur déjà parcourue dans la case courante
     for (j = 0; j < 26; j++) {
       var z = (j + 1) * D.pas - fr, y = hor + Math.round(den * D.Z0 / z);
       if (y < H) G.line(0, y, W - 1, y, cViolet);
@@ -589,7 +667,8 @@
   function fond() {
     var d = N.decor;
     if (d && typeof d.drawVol === 'function') {
-      DV.horizon = hor; DV.sol0 = sol0; DV.avance = L_AVANCE_PX ? avance : avance / D.pas; DV.depuis = dep; DV.vers = ver;
+      var t = Q[T];
+      DV.horizon = hor; DV.sol0 = sol0; DV.avance = L_AVANCE_PX ? Q[AV] : Q[AV] / D.pas; DV.depuis = dep; DV.vers = ver;
       DV.montee = t >= 2 ? 1 : t * 0.5;
       d.drawVol(DV);
     } else fondRepli();
@@ -609,8 +688,9 @@
     dest = copie(dest); destW = W; destH = H; destPret = true;
   }
 
-  function dessinerOmbre(i, den) {                               // l'ombre d'une mine : annoncée, puis clignotante au dernier moment
-    var zz = D.Z0 + D.V * (tc[i] - t);
+  function dessinerOmbre(i) {                                    // l'ombre d'une mine : annoncée, puis clignotante au dernier moment
+    var den = sol0 - hor;
+    var t = Q[T], zz = D.Z0 + D.V * (tc[i] - t);
     if (zz < L_ZMIN) return;
     var k = D.Z0 / zz, rs = (L_OMBRE * ray[i] * k) | 0;
     if (rs < 1) return;
@@ -623,7 +703,7 @@
   function dessinerObjet(i) {
     var kd = kind[i];
     if (st[i] === 1 && kd !== KP) return;                        // cellule prise, mine explosée : disparues
-    var zz = D.Z0 + D.V * (tc[i] - t);
+    var t = Q[T], zz = D.Z0 + D.V * (tc[i] - t);
     if (zz < L_ZMIN) return;
     var k = D.Z0 / zz, r = (ray[i] * k) | 0;
     if (r < 1) return;
@@ -640,6 +720,8 @@
       G.disc(sx, sy, r - th, r, st[i] === 1 ? cOs : cJaune);
       if (r >= 8) G.disc(sx, sy, r - th - 3, r - th - 2, cAmbre, 0.5);
     } else {
+      own(oEffet);
+      dessinerOmbre(i);                                          // l'ombre est au sol, sous la mine, au-dessus de ce qui est plus loin
       own(oEnnemi);
       if (r >= 3) {
         var sp = r + (r >> 1) + 1, dd = (sp * 0.7) | 0;
@@ -652,16 +734,21 @@
     }
   }
 
-  function dessinerSerpent() {
-    var hxr = Math.round(hx), hyr = Math.round(hy), k;
+  function dessinerCorps() {
+    var k;
     own(oCorps);
-    lentille(hxr, sol0, 12, cNuitP, 0.75);                       // son ombre au sol
     for (k = NA - 1; k >= 0; k--) {                              // du plus loin au plus proche : rayons 5, 4, 3, 2, 1
       var rho = ANNEAUX[k], s = (rho + 0.5) / L_CORPS_R0;        // ⌊8 × s⌋ = rho
       var x = cx + Math.round(bX[k] * s), y = hor + Math.round(bY[k] * s);
       if (rho >= 3) G.circ(x, y, rho - 1, cNuitP);
       if (rho >= 2) G.disc(x, y, rho - 1, rho, cCyan); else G.circ(x, y, rho, cCyan);
     }
+  }
+
+  function dessinerTete() {
+    var t = Q[T], hxr = Math.round(Q[HX]), hyr = Math.round(Q[HY]);
+    own(oCorps);
+    lentille(hxr, sol0, 12, cNuitP, 0.75);                       // son ombre au sol
     own(oTete);
     var sp = (((t * 6) | 0) & 1) ? spr1 : spr0;
     if (sp) {
@@ -676,6 +763,7 @@
 
   function dessinerEclats() {
     own(oEffet);
+    var t = Q[T];
     for (var j = 0; j < NB; j++) {
       if (!eOn[j]) continue;
       var kd = eK[j], dur = E_DUREE[kd], a = t - eT0[j];
@@ -706,23 +794,28 @@
     if (!G || typeof G.buf !== 'function' || !G.buf()) return;
     geom();
     if (typeof G.origin === 'function') G.origin(0, 0);
-    var tS = D.duree - D.balayage, den = sol0 - hor, i, q;
+    mk = (typeof G.mask === 'function') ? G.mask() : null;
+    BAY = N.pal.BAYER;
+    var t = Q[T], tS = D.duree - D.balayage, i, q;
     if (t >= tS && !destPret) preparerDestination();
     fond();
-    // les ombres au sol, du plus loin au plus proche
+    dessinerCorps();                                             // sous tous les objets : une menace n'est jamais cachée par la queue
+    // Ce qui n'a pas encore croisé le plan de la tête, par couches : les portes (des anneaux, on voit à travers), les
+    // cellules, puis les mines avec leur ombre, qui restent donc au-dessus : une menace n'est jamais cachée par un bord.
+    // Dans chaque couche, du plus loin au plus proche. Puis la tête, puis ce qui l'a dépassée.
+    for (var passe = 0; passe < 3; passe++) {
+      var kd = passe === 0 ? KP : (passe === 1 ? KC : KM);
+      for (q = 0; q < nObj; q++) {
+        i = ord[q];
+        if (tc[i] <= t) break;                                   // ord décroît en tc : le reste a dépassé la tête
+        if (kind[i] === kd) dessinerObjet(i);
+      }
+    }
+    dessinerTete();
     for (q = 0; q < nObj; q++) {
       i = ord[q];
-      if (kind[i] === KM && st[i] !== 1) dessinerOmbre(i, den);
+      if (tc[i] <= t) dessinerObjet(i);
     }
-    // les objets du plus loin au plus proche ; le serpent se glisse entre ceux qui n'ont pas encore croisé sa tête
-    // et ceux qui l'ont dépassée
-    var fait = false;
-    for (q = 0; q < nObj; q++) {
-      i = ord[q];
-      if (!fait && tc[i] <= t) { dessinerSerpent(); fait = true; }
-      dessinerObjet(i);
-    }
-    if (!fait) dessinerSerpent();
     dessinerEclats();
     own(0);
     // les balayages de Bayer
@@ -737,13 +830,13 @@
   var ET = {
     actif: false, t: 0, hx: 0, hy: 0, cx: 0, hor: 0, sol0: 0, z0: 64, vz: 0,
     portes: 0, mines: 0, cellules: 0, nPortes: 0, nMines: 0, nCellules: 0,
-    n: 0, kind: kind, st: st, ray: ray, tc: tc, ox: ox, oy: oy, vu: vu, ord: ord,
+    n: 0, replis: 0, kind: kind, st: st, ray: ray, tc: tc, ox: ox, oy: oy, vu: vu, ord: ord,
     KC: KC, KP: KP, KM: KM
   };
   function etat() {
-    ET.actif = phase !== 0; ET.t = t; ET.hx = hx; ET.hy = hy; ET.cx = cx; ET.hor = hor; ET.sol0 = sol0;
+    ET.actif = phase !== 0; ET.t = Q[T]; ET.hx = Q[HX]; ET.hy = Q[HY]; ET.cx = cx; ET.hor = hor; ET.sol0 = sol0;
     ET.z0 = D.Z0; ET.vz = D.V; ET.portes = cPortes; ET.mines = cMines; ET.cellules = cCell;
-    ET.nPortes = nG; ET.nMines = nM; ET.nCellules = nC; ET.n = nObj;
+    ET.nPortes = nG; ET.nMines = nM; ET.nCellules = nC; ET.n = nObj; ET.replis = nRepli;
     return ET;
   }
 
