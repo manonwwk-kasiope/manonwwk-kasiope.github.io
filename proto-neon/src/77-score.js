@@ -27,7 +27,7 @@ N.score = (function () {
   var API = null;
   var S = null;
   var m = {                                       // l'état de la partie
-    score: 0, chaine: 0, dernier: -99, vies: 3, bonus: false, defi: null, gain: null, stats: null, newRecord: false, resume: null
+    score: 0, chaine: 0, dernier: -99, vies: 3, bonus: false, defi: null, gain: null, stats: null, newRecord: false, resume: null, dv: null, dvFaits: 0
   };
   var disque = { v: 1, profil: { energie: 0, deblocages: [], defisFaits: [], parties: 0, codex: [], gestesVus: [] }, records: [], reglages: null };
   var lu = false;
@@ -72,7 +72,7 @@ N.score = (function () {
     m.score = 0; m.chaine = 0; m.dernier = -99; m.vies = (R && R.vies && R.vies.depart) || 3; m.bonus = false; m.newRecord = false; m.gain = null;
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
-    m.resume = null;
+    m.resume = null; m.dv = null; m.dvFaits = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
     publier();
@@ -123,6 +123,34 @@ N.score = (function () {
     if (N.ev) N.ev.emit('defi', { id: 'finir', ok: false, prime: 0 });
   }
 
+  /* ---- le défi de vague (§ 2.14) : un objectif parmi trois, tiré par le flux 'defis' à l'entrée de chaque vague ;
+     réussi : 1 000 × le numéro de la vague et 10 énergie. Seuls les objectifs que les événements mesurent aujourd'hui
+     sont tirés (lassos, enfermés, cellules, mines, tourelles, broyés, multiplicateur) ; les autres attendent leurs événements. */
+  function butDe(d) { return d.lassos || d.enfermes || d.cellules || d.mines || d.tourelles || d.mult || d.broyes || 0; }
+  function tirerDefiVague(n) {
+    var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
+    if (!L) return null;
+    var ok = L.filter(butDe);
+    if (!ok.length) return null;
+    var d = ok[Math.min(ok.length - 1, (O.rf('defis') * ok.length) | 0)];
+    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', n: n };
+  }
+  function avanceDv(champ, v, max) {
+    var d = m.dv;
+    if (!d || d.etat !== 'actif' || !d.def[champ]) return;
+    d.prog = max ? Math.max(d.prog, v) : d.prog + v;
+    if (d.prog >= d.but) dvOk();
+  }
+  function dvOk() {
+    var d = m.dv, V = R.defis.vague, prime = V.prime * d.n;
+    d.etat = 'reussi'; d.prog = d.but; m.dvFaits++;
+    ajouter(prime, null, null);
+    m.stats.energie += V.energie;
+    O.sfx('defi');
+    if (N.hud && N.hud.toast) N.hud.toast('✓ ' + d.texte + '  +' + prime);
+    if (N.ev) N.ev.emit('defi', { id: d.id, ok: true, prime: prime });
+  }
+
   /* ============================ les consommateurs ============================ */
   function estPurge(src) { return src && src.genre === 'decor' && src.type === 'purge'; }
   if (N.ev) {
@@ -139,17 +167,22 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('kill', 80, function (c) {
       if (estPurge(c.src)) return;
+      if (c.src && c.src.genre === 'arene' && c.src.type === 'convoi') avanceDv('broyes', 1);        // BROIE n : ennemis broyés par un convoi
+      if (c.type === 'mine') avanceDv('mines', 1);
+      else if (c.type === 'tourelle') avanceDv('tourelles', 1);       // → N.R : l'angle de 45° (v3Cote) n'est pas mesuré
       var d = m.defi;
       if (d && d.etat === 'actif') { d.prog = m.chaine; if (m.chaine > d.meilleur) d.meilleur = m.chaine; if (m.chaine >= d.but) defiOk(); }
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
+      if (c.type === 'cellule') avanceDv('cellules', 1);
       m.stats.energie += (R && R.butin && R.butin[c.type] && R.butin[c.type].energie) || 0;      // § 2.6 : 1 par cellule, 5 par noyau
       var pts = ((R && R.butin && R.butin[c.type] && R.butin[c.type].points) || 0) * mult();
       ajouter(pts, c.x, c.y);
     }, '77-score');
     N.ev.on('lasso', 20, function (c) {
       m.stats.lassos++; if (c.n > m.stats.maxLasso) m.stats.maxLasso = c.n;
+      avanceDv('lassos', 1); avanceDv('enfermes', c.n, true);
     }, '77-score');
     N.ev.on('coupe', 20, function () {
       m.stats.coupes++;
@@ -164,7 +197,13 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); }, '77-score');
     N.ev.on('vague', 20, function (c) {
+      if (c.evt === 'entree') {
+        m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
+        if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
+        return;
+      }
       if (c.evt !== 'nettoyee') return;
+      if (m.dv && m.dv.etat === 'actif') m.dv.etat = 'rate';
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
       ajouter(p * c.n, null, null);
     }, '77-score');
@@ -173,6 +212,7 @@ N.score = (function () {
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
   }
 
@@ -226,7 +266,7 @@ N.score = (function () {
     m.resume = {
       victoire: !!victoire, score: m.score, ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
-      pertes: m.stats.morts.length, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
+      pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
       build: build(), defi: m.defi ? { nom: m.defi.nom, etat: m.defi.etat, prog: m.defi.prog, but: m.defi.but, meilleur: m.defi.meilleur } : null,
       energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,

@@ -150,7 +150,7 @@ N.hud = (function () {
   function drawToasts() {
     var sf = O.geo.safe, W = O.geo.W;
     for (var i = 0; i < toasts.length; i++) {
-      var t = toasts[i], w = O.textW(t.s, 1), x = Math.round(W / 2 - w / 2), y = (sf.t | 0) + 26;
+      var t = toasts[i], w = O.textW(t.s, 1), x = Math.round(W / 2 - w / 2), y = (sf.t | 0) + (O.geo.portrait ? 56 : 42);      // sous le radar et son étiquette
       plate(x - 3, y - 2, w + 6, 11);
       O.text(t.s, x, y, O.OS, true, 1);
     }

@@ -146,7 +146,7 @@ N.ui = (function () {
     var pr = N.cartes && N.cartes.prises ? N.cartes.prises() : {}, ids = [], k;
     for (k in pr) if (pr[k] > 0) ids.push(k);
     var d = N.score && N.score.defi, ch = cible();
-    var bh = 32 + ch + (ids.length ? 24 : 0) + (d ? 14 : 0), y = Math.round(H / 2 - bh / 2);
+    var dvq = N.score && N.score.defiVague, bh = 32 + ch + (ids.length ? 24 : 0) + (d ? 14 : 0) + (dvq ? 11 : 0), y = Math.round(H / 2 - bh / 2);
     veil();
     g.rect(x - 1, y - 1, bw + 2, bh + 2, O.NP); g.rect(x, y, bw, bh, O.NUIT); g.rect(x, y, bw, 1, O.ACIER);
     O.textC('PAUSE', W / 2, y + 6, O.OS, false, 2);
@@ -163,7 +163,8 @@ N.ui = (function () {
       }
       yy += 24;
     }
-    if (d) O.textC((d.etat === 'reussi' ? '✓ ' : '') + d.nom + (d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : ''), W / 2, yy, d.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1);
+    if (d) { O.textC((d.etat === 'reussi' ? '✓ ' : '') + d.nom + (d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : ''), W / 2, yy, d.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1); yy += 11; }
+    if (dvq) O.textC((dvq.etat === 'reussi' ? '✓ ' : dvq.etat === 'rate' ? '✗ ' : '') + 'V' + dvq.n + ' : ' + dvq.texte + (dvq.etat === 'actif' ? ' ' + dvq.prog + '/' + dvq.but : ''), W / 2, yy, dvq.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1);
   }
 
   /* ============================ les cartes ============================ */
@@ -356,6 +357,7 @@ N.ui = (function () {
       if (r.defi) {
         var ok = r.defi.etat === 'reussi', dl = coupe((ok ? '✓ ' : '✗ ') + r.defi.nom + (ok ? '' : ' ' + r.defi.meilleur + '/' + r.defi.but), cw - 52);
         for (var dd = 0; dd < dl.length; dd++) O.text(dl[dd], cx + 52, y + 1 + dd * 9, ok ? O.AMBRE : O.ACIER, false, 1);
+        if (r.defisVague) O.text('DÉFIS DE VAGUE ×' + r.defisVague, cx + 52, y + 1 + dl.length * 9, O.AMBRE, false, 1);
       }
     }
     y += 26;
