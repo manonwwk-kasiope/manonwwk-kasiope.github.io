@@ -149,3 +149,15 @@ musique 3 voix en la mineur, 132 → 152 → 168 BPM ; passage vers 1987 (palett
 3. la piste principale se tait pendant 1976 et 1982, Neon Velocity reprend au `surFin` de l'arcade ;
 4. `N.arcade.skip()` pour qui l'a déjà finie (saute au passage, jamais par-dessus).
 À régler : le texte « TIR TRIPLE » passe sur le serpent (le placer hors de la tête).
+
+
+## codex-05 — dépendances constatées dans la vraie boucle (18/10/2026 · 00 h 55 Paris)
+
+La boucle à pas fixe est branchée dans 90-boot : titre sur trois profils, conservation des impulsions sur une image sans pas, deux/quatre pas par image, zéro erreur au précontrôle. Les écarts suivants sont hors de ma réservation :
+
+- `src/50-fx.js`, `ralenti()`, ligne 857 : plafond inconditionnel `dur > 3` ; la carte RALENTI demande bien k=0,35 et 3,5 s (70-joueuse/02-regles), mais les pas réels de frame n'en ralentissent que **3,00 s**. Demande : respecter la durée officielle du pouvoir (sans diminuer N.R).
+- `src/79-scene.js`, `onPhase()` : ne réagit pas à `evt:'arrivee'` de 73-colosse (`start`, ligne 280). Demande : déclencher R.scene.cyclope.ralenti / duree (0,3 / 2,2 s). Le banc observe **zéro pas ralenti** après `dbg.boss()`. 73-colosse précise que cette mise en scène appartient à 79-scene.
+- `src/79-jeu.js`, `ecranVieux()` lignes 623–625 : l'indicateur et les transitions de pause automatique de l'application sont seulement dans le chemin ancien. Nouveau chemin : S.paused gèle le monde, mais aucune UI de pause ne s'ouvre. Demande : exposer/gérer la pause automatique dans update ou une méthode publique, en conservant le panneau courant (notamment cartes ; ne pas refaire une main). 90-boot continue de geler/reprendre les pas selon S.paused.
+- `src/60-intro.js` : les journaux privés d'ouverture utilisent encore `S.t / 1000` alors que S.t est désormais en secondes selon contrat. La longue ouverture historique n'est plus lancée en parallèle du titre 80-ecrans. À corriger lors de l'intégration des époques si ces journaux servent encore.
+
+Preuve de précontrôle : `tools/horloge/banc.mjs`, mode ralentis (avant/après distincts, reçus à livrer) ; aucun seuil retouché. Montée de niveau : un premier essai à k=0,15 a duré 0,35 s ; le banc final provoque désormais la montée par N.cartes.xp (pas d'événement niveau injecté). Pas d'ajout d'un ralenti de secours dans le boot.
