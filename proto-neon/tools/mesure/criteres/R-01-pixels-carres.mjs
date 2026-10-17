@@ -18,6 +18,9 @@ export async function mesurer(banc, res) {
     const tube = await couperTube(s);
     if (!tube) { res.absent(`${profil} : écran avant tube`, 'N.crt.preset'); await s.fermer(); continue; }
     await s.images(3);
+    const crt = await s.eval(() => ({ off: window.__N.crt.off, niveau: window.__N.crt.niveau(), auto: window.__N.crt.auto(), stats: { ...window.__N.crt.stats } }));
+    res.note(`${profil} : état du tube avant capture : ${JSON.stringify(crt)}`);
+    if (!crt.off || crt.niveau !== 'coupe') { res.nonMesurable(`${profil} : écran avant tube`, 'le jeu a réactivé le tube après la coupure : ' + JSON.stringify(crt)); await s.fermer(); continue; }
     /* la toile affichée : la plus grande du document */
     const g = await s.eval(() => {
       const cs = [...document.querySelectorAll('canvas')].map(c => ({ c, r: c.getBoundingClientRect() })).filter(o => o.r.width > 0).sort((a, b) => b.r.width * b.r.height - a.r.width * a.r.height);

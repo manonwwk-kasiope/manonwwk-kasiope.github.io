@@ -245,3 +245,13 @@ Un masque entièrement nul est indisponible ; il ne peut ni autoriser le cyan ni
 R-21 observe aussi les erreurs avant le départ. R-30 compare séparément les journaux initiaux de reset ; cette sous-mesure ne valide jamais les parties dessinées et simulées. Un journal vide ne constitue pas une preuve de déterminisme.
 
 En cas d’interdiction locale du serveur ou de Chromium, le lanceur écrit les critères non mesurables avec la cause d’environnement, puis sort en 1. R-38 reste lisible sans navigateur. Voir REMISE-EN-ETAT.md pour les preuves et les dépendances du jeu.
+
+## Diagnostic codex-p3b — 18/10/2026
+
+La décision de `refonte/SORTIE.md` (00 h 47) rend indicatives la part lumineuse globale et la luminance
+moyenne, y compris en mouvement réduit et la comparaison globale avec SNAKE 2030. Les valeurs et les
+cibles restent publiées. Les autres contrôles de R-11 et R-28 restent bloquants.
+
+Hors bac : `node tools/mesure/verifier.mjs --diagnostic-p3b` depuis `proto-neon/`. Cette passe séquentielle
+conserve les reçus historiques dans `sortie/` et écrit dans `diagnostic/navigateur/`. Aucun seuil chiffré
+n'est réduit. Voir `DIAGNOSTIC-ECHECS.md` pour les causes, corrections d'instrument et limites.

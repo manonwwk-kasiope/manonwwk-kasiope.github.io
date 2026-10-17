@@ -11,6 +11,9 @@ import { chromium, devices } from 'playwright';
 import { Banc, options, PROTO, ICI, PROFILS, mesurerCritere, dateParis } from './commun.mjs';
 import { cle, comparer } from './criteres/R-30-rejouabilite.mjs';
 
+// La passe p3b n'exécute aucun des anciens précontrôles VM. Elle exige localhost et Chromium.
+if (process.argv.includes('--diagnostic-p3b')) { await import('./diagnostic-navigateur.mjs'); process.exit(process.exitCode || 0); }
+
 const sortie = path.join(ICI, 'verification');
 fs.mkdirSync(sortie, { recursive: true });
 const preuves = { dateParis: dateParis(), limite: 'Node/VM sans DOM : états et sonde seulement, aucune qualification Safari ni capture navigateur.', controles: [] };

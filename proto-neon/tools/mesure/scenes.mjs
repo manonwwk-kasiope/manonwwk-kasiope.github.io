@@ -56,8 +56,7 @@ export async function couperTube(session) {
   return session.eval(() => {
     const N = window.__N;
     try { if (N.crt && N.crt.auto) N.crt.auto(false); } catch (e) { }
-    try { if (window.__S && window.__S.reglages) window.__S.reglages.ecran = 'pur'; } catch (e) { }
-    try { if (N.crt && N.crt.preset) { N.crt.preset('coupe'); return true; } } catch (e) { }
+    try { if (N.crt && N.crt.preset) { N.crt.preset('coupe'); return N.crt.off === true && (!N.crt.niveau || N.crt.niveau() === 'coupe'); } } catch (e) { }
     return false;
   });
 }

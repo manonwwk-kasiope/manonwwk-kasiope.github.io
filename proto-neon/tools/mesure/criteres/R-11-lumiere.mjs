@@ -8,14 +8,15 @@ import { executer, principal, seuils, exiger, stats, pct } from '../commun.mjs';
 import { atteindre } from '../scenes.mjs';
 import { ouvrirSnake2030, partLumineuseCapture } from '../snake2030.mjs';
 
-export const meta = { id: 'R-11', titre: 'Lumière, et décor qui se tait par la forme', seuil: '≥ 25/28/32/25 % lumineux ; moyenne ≥ 0,075/0,085/0,095/0,075 ; décor 18-28 % ; vide < 30 % ; gaine 100 %', bloquant: true };
+// Décision SORTIE.md du 18/10 à 00 h 47 : valeurs et cibles conservées, lumière globale indicative.
+export const meta = { id: 'R-11', titre: 'Lumière, et décor qui se tait par la forme', seuil: 'lumière globale indicative (SORTIE.md) ; décor 18-28 % ; vide < 30 % ; cyan décor 0 ; magenta décor < 0,5 % ; gaine 100 %', bloquant: true };
 const ETATS = ['calme', 'montee', 'chaos', 'colosse'];
 const LUM_PLAN = { seuil: 0.1, calme: { part: 0.25, moyenne: 0.075 }, montee: { part: 0.28, moyenne: 0.085 }, chaos: { part: 0.32, moyenne: 0.095 }, colosse: { part: 0.25, moyenne: 0.075 }, decorSeul: [0.18, 0.28], videMax: 0.3 };
 
 function juger(res, nom, a, C, etat) {
   const c = C[etat] || C.calme;
-  res.verifie(`${nom} : pixels lumineux`, a.lumineux, '≥ ' + c.part, a.lumineux >= c.part);
-  res.verifie(`${nom} : luminance moyenne`, a.moyenneL, '≥ ' + c.moyenne, a.moyenneL >= c.moyenne);
+  res.indicatif(`${nom} : pixels lumineux`, a.lumineux, '≥ ' + c.part, a.lumineux >= c.part);
+  res.indicatif(`${nom} : luminance moyenne`, a.moyenneL, '≥ ' + c.moyenne, a.moyenneL >= c.moyenne);
   res.verifie(`${nom} : vide`, a.vide, '< ' + C.videMax, a.vide < C.videMax);
   if (!a.masque) { res.nonMesurable(`${nom} : décor seul, cyan et magenta du décor, gaine`, a.raisonMasque || 'masque de propriété indisponible'); return; }
   res.verifie(`${nom} : décor seul lumineux (code 8)`, a.decorLumineux, C.decorSeul, a.decorLumineux >= C.decorSeul[0] && a.decorLumineux <= C.decorSeul[1]);
@@ -56,7 +57,7 @@ export async function mesurer(banc, res) {
     await z.s.page.waitForTimeout(30000);
     const f = await z.s.capture('R-11-snake2030-t30'); res.capture(f);
     const eux = partLumineuseCapture(f);
-    res.verifie('part lumineuse à t = 30 s (capture), SNAKE 2975 / SNAKE 2030', { snake2975: nous, snake2030: eux }, 'snake2975 ≥ snake2030', nous >= eux);
+    res.indicatif('part lumineuse à t = 30 s (capture), SNAKE 2975 / SNAKE 2030', { snake2975: nous, snake2030: eux }, 'snake2975 ≥ snake2030', nous >= eux);
   }
   if (z.s) await z.s.fermer();
   /* 4. 10 captures par état du décor sur une partie du pilote bon (médiane) */
@@ -77,8 +78,8 @@ export async function mesurer(banc, res) {
         if (!l.length) { res.nonMesurable(`partie du pilote bon, état ${e}`, 'état jamais atteint pendant la partie'); continue; }
         const c = C[e];
         const pm = stats.mediane(l.map(a => a.lumineux)), mm = stats.mediane(l.map(a => a.moyenneL));
-        res.verifie(`partie du pilote bon, état ${e} : pixels lumineux (médiane de ${l.length})`, pm, '≥ ' + c.part, pm >= c.part);
-        res.verifie(`partie du pilote bon, état ${e} : luminance moyenne (médiane)`, mm, '≥ ' + c.moyenne, mm >= c.moyenne);
+        res.indicatif(`partie du pilote bon, état ${e} : pixels lumineux (médiane de ${l.length})`, pm, '≥ ' + c.part, pm >= c.part);
+        res.indicatif(`partie du pilote bon, état ${e} : luminance moyenne (médiane)`, mm, '≥ ' + c.moyenne, mm >= c.moyenne);
       }
     }
   } else res.note('--rapide : les 10 captures par état d’une partie du pilote bon ne sont pas prises');
