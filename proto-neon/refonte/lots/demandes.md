@@ -12,3 +12,9 @@ On ne modifie jamais le fichier d'un autre lot.
 | 0b | `03-socle.js` | `SCH.player` : accepter `lives` et `invul` ? | refusé par moi : ces champs restent dans `N.score.vies` et `N.joueuse.invul()` ; aucune action |
 | 0b | `03-socle.js` | accepter dans `N.ids.cartes` l'identifiant `cadence` du repli CARTES v0 (déjà présent) et signaler que les cartes `canon`, `croissance`, `cadence` du repli sont émises par 79-jeu en l'absence de `N.cartes` | un seul émetteur de `carte` : N.cartes ; le repli la remplace tant que 75-cartes.js manque |
 | 0b | `72-ennemis.js` | le gros ennemi de la démo vit ici (type `cyclope`, boss, partie `oeil`) jusqu'à `73-colosse.js` | lot 5b : à retirer de 72-ennemis quand N.colosse existe |
+
+## Demande du pilote (17 octobre, soir) — tempo réel de la piste
+Mesuré par la préparation musicale (tools/musique/LISEZMOI.md) : la piste de la propriétaire est à
+**114,995 BPM** (mesure de 2,08705 s), pas 144,6. 02-regles.js (BPM et table musique), l'horloge du
+CONTRAT et les numéros de mesures des sections (alerte à la mesure 56, boucle du boss 107-122) sont à
+corriger à l'intégration A, avant tout réglage.
