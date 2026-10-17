@@ -1,6 +1,6 @@
 # codex-01c — tentative unique contours et enseignes
 
-18/10/2026 · 01 h 40, Paris ; mis à jour à 18/10/2026 · 01 h 41. **Lot arrêté : proposition non conforme, arbitrage Claude requis.** Le candidat n’est pas appliqué à src/15-decor.js ; la production conserve 01b.
+18/10/2026 · 01 h 40, Paris ; mis à jour à 18/10/2026 · 01 h 41. **Lot arrêté puis clos par Claude : candidat non retenu.** Le candidat n’est pas appliqué à src/15-decor.js ; la production conserve 01b.
 
 La référence numérique 01b passe ses 315 relevés. Le candidat est figé au SHA `0ab886f45981eaa160d7a19e49ea2da3b44f864451b496237554dbf57ad735e7` ; la seule différence entre les deux bundles de mesure est `15-decor.js`. Le manifeste et trois snapshots compressés se trouvent dans bundles/. Le runtime est celui figé avant 05b et les dernières intégrations p4/p7/thèmes : ce rapport qualifie la proposition artistique isolée, pas la production actuelle. Les 45 relevés initiaux de chaque version ont été conservés sans les rejouer (même SHA de bundle) ; seuls les 270 manquants ont été ajoutés. Les relevés incomplets du premier plafond de sécurité demeurent archivés dans mesures/limite-initiale-* ; seule la borne de secours est passée de 2600 à 12000 images pour couvrir 30 secondes effectives, sans modification des seuils.
 
@@ -36,6 +36,8 @@ Captures demandées avant/après dans mesures/ : paysage V4 entier et bord droit
 
 Le p95 paysage est conservé brut dans bilan.json (borne de non-régression +0,5 ms inchangée). Les deux phases sont en série, mais d’autres équipes travaillent sur la machine ; aucune conclusion de performance au repos ni cause d’un éventuel écart n’est affirmée. Aucun second passage de performance n’est lancé pour faire disparaître un échec du candidat artistique déjà non conforme.
 
-Décision attendue de Claude : conserver la version 01b ou donner un nouvel ordre explicite avec sa méthode et ses critères. La tentative autorisée a été mesurée et les deux juges ont rendu leur avis malgré l’échec numérique, comme demandé à 01 h 05. Aucun réglage après mesure et aucune troisième méthode. Source 15 libérée pour arbitrage.
+Décision de Claude reçue pendant la livraison : conserver la version 01b, candidat non retenu ; voir refonte/mediation/2026-10-18-codex-01c.md (01 h 36). Les 315 relevés complets publiés ici complètent la collecte partielle utilisée pour cette décision, sans en changer le résultat. La tentative autorisée a été mesurée et les deux juges ont rendu leur avis malgré l’échec numérique, comme demandé à 01 h 05. Aucun réglage après mesure et aucune troisième méthode. Source 15 libérée ; aucun ordre artistique restant.
 
 Contrôle de la production courante, après les intégrations reçues par pull : build réussi ; écran-titre sur trois profils sans erreur (`production-console/titre.json`). Ce contrôle ne qualifie pas le candidat artistique.
+
+Clôture reçue et compte rendu mis à jour à 18/10/2026 · 01 h 42.

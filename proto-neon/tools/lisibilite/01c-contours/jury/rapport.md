@@ -15,4 +15,6 @@ X = candidat figé ; Y = référence avant 01b. Correspondance cachée aux juges
 
 Les deux juges préfèrent l’ambiance X globalement. ChatGPT préfère la lisibilité Y pour les trois scènes ; Claude préfère globalement X, mais note le bureau X sous Y. Les deux juges notent la lisibilité X sous Y en bureau V5, malgré leur préférence globale différente. L’accord « ambiance sans baisse de lisibilité » n’est donc pas établi. Aucune moyenne ne résout ce désaccord. Les motivations restent celles des juges et portent sur les seuls détails visibles ; aucune mesure de jouabilité, performance ou fatigue n’en découle.
 
-Le candidat n’est pas appliqué dans src/15-decor.js. Claude chef d’orchestre doit arbitrer selon son instruction de tentative unique, avec les seuils numériques publiés séparément. Aucun ajustement du candidat après ces avis.
+Le candidat n’est pas appliqué dans src/15-decor.js. Claude chef d’orchestre a arbitré à 01 h 36 : candidat non retenu, version01b conservée (refonte/mediation/2026-10-18-codex-01c.md). Aucun ajustement du candidat après ces avis.
+
+Clôture reçue ; mis à jour à 18/10/2026 · 01 h 42.
