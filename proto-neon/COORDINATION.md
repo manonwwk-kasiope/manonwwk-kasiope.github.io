@@ -69,7 +69,9 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    b. Souris : le serpent suit le pointeur (cap vers le pointeur au-delà d'une zone morte de 24 px CSS autour de la tête, en coordonnées de jeu : lis N.cam pour convertir, sans y écrire) ; clic gauche tenu = boost ; clic droit = pouvoir ; molette = APOGÉE. Le curseur se cache après 1,5 s sans mouvement.
    c. Manette (navigator.getGamepads, lu une fois par image) : stick gauche = direction, A = boost, X = pouvoir, Y = APOGÉE, Start = pause. Remplir S.input.manette (déjà déclaré).
    d. Rien ne change sur iPhone (le manche et le second doigt restent prioritaires) ; le clavier et la souris ne s'activent qu'à leur premier usage.
-   e. Preuve : un banc `tools/commandes/banc.mjs` (bureau 1440 × 900) qui vérifie chaque commande par l'effet en jeu (boost réellement actif, pouvoir lancé, APOGÉE lancée si la jauge est pleine), plus un passage iPhone paysage qui prouve que rien n'a changé ; zéro erreur. État : en cours (Codex, 18/10 à 01 h 02).
+   e. Preuve : un banc `tools/commandes/banc.mjs` (bureau 1440 × 900) qui vérifie chaque commande par l'effet en jeu (boost réellement actif, pouvoir lancé, APOGÉE lancée si la jauge est pleine), plus un passage iPhone paysage qui prouve que rien n'a changé ; zéro erreur. État : livré ebedf6d (bundle 1a3a51e), preuves fbbf44f et complément intégration ; prêt pour /mediateur.
+
+   LIVRAISON CODEX 06 (18/10 à 01 h 09) : 28/28 contrôles par effets en jeu, zéro erreur ; six instantanés de gestes seuls iPhone strictement identiques avant/après, journaux compris. Priorité tactile conservée sous entrées concurrentes. Manette émulée via API standard, dix lectures pour dix images. Après intégration p6, 28/28 encore conformes. tools/commandes/rapport.md ; réservation 90 libérée ; prêt pour /mediateur.
 
 NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
 
@@ -93,7 +95,6 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| `src/90-boot.js`, `tools/commandes/` | Codex | 18/10 à 01 h 02 | codex-06 : clavier, souris, manette ; priorité tactile |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/79-jeu.js`, `src/10-gfx.js` | Codex (session parallèle codex-p6) | 18/10 à 00 h 41 | API de test du contrat : `reset(graine,{depart})`, six scènes, vrai masque (`demandes.md` § codex-08) |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |

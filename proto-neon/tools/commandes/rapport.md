@@ -17,4 +17,6 @@ Les premiers résultats de l'instrument sont conservés séparément (`instrumen
 
 Les SHA des bundles et du protocole sont dans chaque JSON. Chromium muet, bureau 1440 × 900 et iPhone 13 paysage 844 × 390 émulés. Le bilan des contrôles ne qualifie ni la difficulté ni l'appareil physique. Les réserves de codex-05 restent ouvertes dans `tools/horloge/rapport.md` ; aucune ne se transforme en réussite par cette livraison.
 
+Mis à jour à 01 h 09 : après intégration du nouveau 79-jeu / 10-gfx (codex-p6) et de l’affiche duo, les 28 contrôles passent encore, zéro erreur (`integration/sortie.json`). Aucun autre banc déjà conforme rejoué.
+
 Prêt pour /mediateur.
