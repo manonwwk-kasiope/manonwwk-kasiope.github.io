@@ -1,5 +1,5 @@
 /* tools/sons/mesure.mjs — le banc de la banque de sons.
-   Ouvre tools/sons/index.html dans Chromium (Playwright), qui rend chaque son hors ligne
+   Ouvre tools/sons/ecoute.html dans Chromium (Playwright), qui rend chaque son hors ligne
    (OfflineAudioContext, 48 kHz) et le mesure : crete, RMS sur 100 ms, duree, parts d'energie
    au-dessus de 400 Hz et de 4 kHz, centroide, niveau en simulation de haut-parleur de telephone,
    emergence au-dessus de la piste de la proprietaire (bloc PLATEAU ramene a -14 dBFS RMS).
@@ -26,7 +26,7 @@ const serveur = http.createServer((req, res) => {
   fs.createReadStream(p).pipe(res);
 });
 await new Promise(r => serveur.listen(0, '127.0.0.1', r));
-const URL_PAGE = `http://127.0.0.1:${serveur.address().port}/proto-neon/tools/sons/index.html`;
+const URL_PAGE = `http://127.0.0.1:${serveur.address().port}/proto-neon/tools/sons/ecoute.html`;
 
 const navigateur = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required'] });
 const page = await navigateur.newPage({ viewport: { width: 1280, height: 900 } });

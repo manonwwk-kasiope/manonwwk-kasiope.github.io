@@ -8,7 +8,7 @@ partie) : il n'est branché sur rien. Aucun fichier de `src/` n'a été touché.
 |---|---|
 | `sons/banque.js` | **les définitions** : JavaScript pur, sans dépendance, sans URL, sans fichier audio. Chaque son est une recette (couches d'oscillateurs et de bruit, enveloppes, filtres, hauteurs, glissandos, niveau visé en dBFS), plus la tonalité, les sept panoramiques, les classes de timbre et le calibrage. Le schéma est décrit en tête du fichier. |
 | `sons/jouer.js` | **le lecteur de référence** : transforme une recette en nœuds sur n'importe quel contexte (AudioContext ou OfflineAudioContext), avec la **réserve de voix** des sons fréquents et la **garde** (FUSION, PLAFOND, USURE, empilement des kills, escalier du butin). |
-| `tools/sons/index.html` | **la page d'écoute et de mesure** : chaque son et ses variantes, la hauteur réglable, les 7 panoramiques, l'écoute « téléphone » (passe-haut 350 Hz), la piste de la propriétaire en dessous (calme ou chaos), 14 séquences (chaîne de kills, rafale empilée, escalier de butin, 16 tourelles, LASSO de 2 à 8, mort puis GAME OVER, scène de charge…), et le bilan des mesures. |
+| `tools/sons/ecoute.html` | **la page d'écoute et de mesure** : chaque son et ses variantes, la hauteur réglable, les 7 panoramiques, l'écoute « téléphone » (passe-haut 350 Hz), la piste de la propriétaire en dessous (calme ou chaos), 14 séquences (chaîne de kills, rafale empilée, escalier de butin, 16 tourelles, LASSO de 2 à 8, mort puis GAME OVER, scène de charge…), et le bilan des mesures. |
 | `tools/sons/analyse.js` | les mesures (crête, RMS, durée, parts d'énergie, centroïde, simulation de téléphone, corrélation). |
 | `tools/sons/mesure.mjs` | **le banc** : Chromium par Playwright, rendu hors ligne de chaque son, critères, calibrage, clic de chaque bouton de la page. |
 | `tools/sons/mesures.json` | le dernier rapport du banc. |
@@ -19,7 +19,7 @@ partie) : il n'est branché sur rien. Aucun fichier de `src/` n'a été touché.
 
 ```sh
 # la page (la musique en dessous demande un serveur http à la racine du dépôt)
-npx http-server -p 8123 .          # puis http://127.0.0.1:8123/proto-neon/tools/sons/
+npx http-server -p 8123 .          # puis http://127.0.0.1:8123/proto-neon/tools/sons/ecoute.html
 # le banc : mesure et critères -> tools/sons/mesures.json ; code de sortie 1 si un critère tombe
 node proto-neon/tools/sons/mesure.mjs
 # après toute retouche d'une recette : recalcule CALIBRAGE (crête sur `niveau`), réécrit le bloc, remesure
