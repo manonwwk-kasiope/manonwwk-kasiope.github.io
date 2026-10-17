@@ -91,6 +91,7 @@ NOTE CODEX : qualification 02 après I terminée : 80/80 fin, zéro erreur, huit
 | `src/78-warp.js`, `tools/warp/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le WARP et le curseur cible (vision § 2), module autonome |
 | `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
 | `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
+| `src/64-aventure.js`, `tools/aventure/` (nouveaux) | Claude cloud | 18/10 à 01 h 05 | N.aventure (le déroulé : choix, connexion, 1976, fissure, 1982, néon, films d'époque, fins, retrouvailles, teaser) et N.film (lecteur de film plein écran) |
 | `refonte/prototypes/plans.html` (nouveau), `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | prototype des plans parallèles ; films et portraits des deux pilotes (Higgsfield) |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 
