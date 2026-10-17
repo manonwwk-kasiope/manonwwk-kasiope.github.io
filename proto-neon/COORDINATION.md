@@ -27,7 +27,7 @@ Dernière médiation : aucune.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| — | — | — | — |
+| `src/15-decor.js`, `tools/lisibilite/` | Codex | 17 oct., 23 h 55 | chantier codex-01, la lisibilité en jeu (`refonte/chantiers/codex-01-lisibilite.md`) |
 
 ## Prochains chantiers (à prendre)
 
@@ -35,7 +35,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 1. Trancher le tempo de Neon Velocity (144,6 / 143,8 / 115 BPM) et l'aligner partout (N.R, piste.json, sons).
 2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`.
-3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs.
+3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
 4. Donner un effet aux cartes BOUCLIER et RÉPARATION (bonus protégés et régénérés), puis les régénérateurs à ramasser.
 5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury.
 6. Scènes d'immersion : intégrer `refonte/prototypes/la-grille.html` (isométrique incliné, serpent sur grille)
