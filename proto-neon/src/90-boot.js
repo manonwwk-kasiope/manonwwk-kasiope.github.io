@@ -46,7 +46,9 @@ function resize() {
   var dpr = 1;                                  // un pixel de jeu est un carré net : jamais de DPR ici
   out.style.width = cssW + 'px'; out.style.height = cssH + 'px';
   if (N.gfx && N.gfx.resize) {
-    var r = N.gfx.resize(cssW, cssH);
+    /* la zone sûre (encoche, barre d'accueil) est passée à gfx.resize, qui en tire la taille du pixel */
+    var sa = safeArea();
+    var r = N.gfx.resize(cssW, cssH, Math.max(1, cssW - sa.l - sa.r), Math.max(1, cssH - sa.t - sa.b));
     /* le canvas fait EXACTEMENT tampon x px en CSS, centré, quitte à déborder de moins d'un pixel de
        jeu : sinon le navigateur le réduit d'un facteur non entier et ampute une rangée de pixels */
     var ow = r.w * r.px, oh = r.h * r.px;
@@ -54,7 +56,6 @@ function resize() {
     out.style.left = Math.floor((cssW - ow) / 2) + 'px'; out.style.top = Math.floor((cssH - oh) / 2) + 'px';
     out.width = Math.round(ow * dpr); out.height = Math.round(oh * dpr);
     S.view.w = r.w; S.view.h = r.h;
-    var sa = safeArea();                        // encoche, barre d'accueil : en pixels de jeu, arrondis vers le haut
     S.view.safe = { l: Math.ceil(sa.l / r.px), t: Math.ceil(sa.t / r.px), r: Math.ceil(sa.r / r.px), b: Math.ceil(sa.b / r.px) };
   } else {
     out.width = cssW; out.height = cssH; S.view.w = cssW; S.view.h = cssH;
@@ -200,6 +201,8 @@ function frame(now) {
     if (S.phase === 'intro') step('intro.draw', N.intro && N.intro.draw ? function () { N.intro.draw(); drew = true; } : null);
     else step('game.draw', N.game && N.game.draw ? function () { N.game.draw(); drew = true; } : null);
     step('fx.draw', N.fx && N.fx.draw ? function () { N.fx.draw(); } : null);
+    /* couche du dessus : ce qui doit rester lisible par-dessus les explosions (menaces, joueuse, interface) */
+    if (S.phase !== 'intro') step('game.drawTop', N.game && N.game.drawTop ? function () { N.game.drawTop(); } : null);
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     step('gfx.present', function () { N.gfx.present(); drew = drew || true; });
     step('crt.apply', N.crt && N.crt.apply ? function () { N.crt.apply(S.dt); } : null);

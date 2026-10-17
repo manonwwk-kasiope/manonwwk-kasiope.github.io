@@ -66,6 +66,9 @@ N.fx.shake(amplitude)        // en pixels de jeu
 N.fx.update(dt), N.fx.draw()
 
 N.game.reset(graine), N.game.update(dt), N.game.draw(), N.game.tension()  // -> 0 à 1
+N.game.drawTop()             // facultatif, appelé APRÈS N.fx.draw() : menaces, joueuse et interface
+                             // y restent lisibles par-dessus les explosions
+N.gfx.resize(cssW,cssH,sûreW,sûreH)  // 90-boot.js passe aussi la zone sûre, d'où se tire la taille du pixel
 N.S                          // état partagé : t, dt, phase, shake, heat, seed, score, enemies, …
 ```
 
