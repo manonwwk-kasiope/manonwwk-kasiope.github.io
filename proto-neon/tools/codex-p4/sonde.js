@@ -177,16 +177,39 @@ window.__P4 = (function () {
     N.intro.skip(); N.game.reset(7); N.game.dbg.god(true); N.pilote.arreter();
     N.journal.actif(true); N.game.dbg.boss(); N.horloge.avancer();
     var trace = [], mine = null, apparition = null, premier = null, degat = null, mort = null, erreursSchema = [], pixels = [];
-    var ancien = N.joueuse.tuer, avantTele = [];
+    var ancien = N.joueuse.tuer, spawn = N.ennemis.spawn, avantTele = [], poses = [], armementProtege = true;
+    var contactVisible = null, miArmement = false, decalage = null;
+    function tampon(moment) {
+      if (!opts.pixels) return;
+      N.gfx.clear(0); N.game.draw(); N.fx.draw(); N.game.drawTop();
+      var b = N.gfx.buf(), hist = Array(N.pal.C.length).fill(0), horsPalette = 0, anneauMagenta = 0;
+      var vue = N.outils.VUE, cx = Math.round(mine.x) - Math.round(vue.x), cy = Math.round(mine.y) - Math.round(vue.y);
+      var rayon = N.R.ennemis.mine.souffle;
+      for (var y = 0; y < N.gfx.H; y++) for (var x = 0; x < N.gfx.W; x++) {
+        var c = b[y * N.gfx.W + x]; if (c < hist.length) hist[c]++; else horsPalette++;
+        if (Math.abs(Math.hypot(x - cx, y - cy) - rayon) <= 1 && c === N.pal.i('magenta')) anneauMagenta++;
+      }
+      pixels.push({ moment: moment, t: N.horloge.t(), w: N.gfx.W, h: N.gfx.H, histogramme: hist,
+        horsPalette: horsPalette, anneauMagenta: anneauMagenta, centre: { x: cx, y: cy }, rayon: rayon, indices: Array.from(b) });
+    }
+    N.ennemis.spawn = function () {
+      var e = spawn.apply(this, arguments);
+      if (e && e.type === 'mine' && N.colosse.phase() === 3) {
+        var tele = copie((S.tele || []).filter(z => z.par.type === 'mine' && z.par.id === e.id));
+        poses.push({ id: e.id, t: N.horloge.t(), etat: e.etat, tele: tele,
+          publiee: tele.some(z => z.forme === 'disque' && z.x0 === e.x && z.y0 === e.y && z.r === N.R.ennemis.mine.souffle && z.cible === 'tout' && z.reste >= N.R.criteres.R07.cyclope) });
+      }
+      return e;
+    };
     N.joueuse.tuer = function (cause, src) {
       var pos = copie(N.joueuse.tete), ok = ancien.apply(this, arguments);
-      if (ok && mine && src?.type === 'mine' && !mort) { mort = { cause: cause, pos: pos, src: copie(src), t: N.horloge.t() }; degat = mort.t; }
+      if (ok && mine && src?.type === 'mine' && src.id === mine.id && !mort) { mort = { cause: cause, pos: pos, src: copie(src), t: N.horloge.t() }; degat = mort.t; }
       return ok;
     };
     // Les contacts de 70 passent par sa fonction tuer locale, pas par l'export.
     // L'événement de mort confirme la collision EFFECTIVE dans les deux chemins.
     N.ev.on('mort', 99, function (d) {
-      if (mine && d.auteur === 'mine' && !mort) {
+      if (mine && d.auteur === 'mine' && d.auteurId === mine.id && !mort) {
         mort = { cause: d.cause, pos: { x: d.x, y: d.y }, src: { type: d.auteur, id: d.auteurId }, journal: copie(d), t: N.horloge.t() };
         degat = mort.t;
       }
@@ -195,7 +218,12 @@ window.__P4 = (function () {
       for (var i = 0; i < 90 / h; i++) {
         var pos = { x: 512, y: 290, ang: Math.PI / 2, trace: true };
         if (mine) {
-          pos.x = mine.x + (opts.type === 'mines-souffle' ? 15 : 0); pos.y = mine.y;
+          if (!decalage) {
+            var oeil = N.colosse.oeil(), dx = mine.x - oeil.x, dy = mine.y - oeil.y, dist = Math.hypot(dx, dy) || 1;
+            decalage = opts.type === 'mines-souffle' ? { x: dx / dist * 15, y: dy / dist * 15 } : { x: 0, y: 0 };
+          }
+          // Hors contact de la mine et de l'œil, mais dans le vrai disque de souffle.
+          pos.x = mine.x + decalage.x; pos.y = mine.y + decalage.y;
           N.game.dbg.god(false);
         }
         N.joueuse.force(pos);
@@ -206,29 +234,84 @@ window.__P4 = (function () {
         N.game.dbg.simuler(h);
         if (!mine && N.colosse.phase() === 3) {
           mine = N.ennemis.list.find(e => e.type === 'mine') || null;
-          if (mine) apparition = N.horloge.t();
+          if (mine) { apparition = N.horloge.t(); tampon('pose'); }
         }
         var tele = copie((S.tele || []).filter(z => z.par.type === 'mine' && z.par.id === mine?.id));
         if (mine) {
           for (var z of tele) { var er = N.ids.valider('tele', z); if (er.length) erreursSchema.push(er); }
           if (premier === null && tele.length) premier = N.horloge.t();
-          trace.push({ t: N.horloge.t(), etat: N.game.etat(), tele: tele, mine: { id: mine.id, x: mine.x, y: mine.y, etat: mine.etat } });
+          var age = N.horloge.t() - apparition;
+          if (age < N.R.criteres.R07.cyclope && mine.etat !== 'portail') armementProtege = false;
+          if (!miArmement && age >= N.R.criteres.R07.cyclope / 2) { miArmement = true; tampon('armement'); }
+          if (contactVisible === null && mine.etat !== 'portail') contactVisible = mine.vuDepuis;
+          trace.push({ t: N.horloge.t(), etat: N.game.etat(), tele: tele, mine: { id: mine.id, x: mine.x, y: mine.y, etat: mine.etat, vuDepuis: mine.vuDepuis } });
         }
         if (mort) break;
         avantTele = tele;
       }
-    } finally { N.joueuse.tuer = ancien; }
-    if (opts.pixels) {
-      N.gfx.clear(0); N.game.draw(); N.fx.draw(); N.game.drawTop();
-      var b = N.gfx.buf(), hist = Array(N.pal.C.length).fill(0), horsPalette = 0;
-      for (var c of b) { if (c < hist.length) hist[c]++; else horsPalette++; }
-      pixels.push({ moment: 'collision', w: N.gfx.W, h: N.gfx.H, histogramme: hist, horsPalette: horsPalette, indices: Array.from(b) });
-    }
+    } finally { N.joueuse.tuer = ancien; N.ennemis.spawn = spawn; }
+    tampon('collision');
     var rate = mort && !avantTele.some(z => couvre(z, mort.pos.x, mort.pos.y, N.R.mort.rayonTete));
     return { phase: 3, type: opts.type, arme: null, apparition: apparition, premiereZone: premier, premierDegatPossible: degat,
+      pose: { mines: poses, toutesPubliees: poses.length > 0 && poses.every(p => p.publiee) },
+      armementProtege: armementProtege, contactVisible: contactVisible, seuilVisible: N.R.criteres.R08.visible,
       avance: degat === null || premier === null ? null : degat - premier, borne: !mort,
       couverture: { points: mort ? 1 : 0, rates: rate ? 1 : 0 }, erreursSchema: erreursSchema,
       collisions: mort ? [mort] : [], creations: [], trace: trace, journal: N.journal.dump(), err: copie(window.__ERR), pixels: pixels };
   }
-  return { scene: scene, couvre: couvre };
+  // Test d'intégration du producteur : aucune caméra ni IA remplacée.
+  // Seules les interfaces publiques déplacent la vue, les vrais update comptent la visibilité.
+  function horsChamp(opts) {
+    var N = window.__N, S = window.__S, h = N.R.temps.h, trace = [], pixels = [];
+    localStorage.clear(); S.jour = 20261017; S.reglages.actions = 'doigts';
+    N.intro.skip(); N.game.reset(7); N.game.dbg.god(true); N.pilote.arreter(); N.ennemis.reset();
+    var x, y = N.world.H / 2;
+    // Deux centres opposés : le point de pose doit effectivement être hors champ.
+    N.cam.reset(0, y); N.outils.geom();
+    x = N.world.W - N.R.ennemis.mine.souffle;
+    var e = N.ennemis.spawn('mine', x, y, { portail: N.R.colosse.minesPosees.armement,
+      annoncePose: true, st: 'arme', stT: N.R.colosse.phase3.armementMines });
+    function zones() { return copie((S.tele || []).filter(z => z.par.id === e.id && z.par.type === 'mine')); }
+    var pose = zones(), initialementHorsChamp = !N.cam.shown(x, y, 6);
+    function avancer(nom, duree) {
+      for (var i = 0; i < Math.ceil(duree / h); i++) {
+        N.ennemis.update(h);
+        trace.push({ etape: nom, etat: e.etat, visibleDepuis: e.vuDepuis, tele: zones() });
+      }
+    }
+    function tampon(moment) {
+      if (!opts.pixels) return;
+      N.outils.geom(); N.gfx.clear(0); N.outils.origineMonde(); N.ennemis.drawTele(); N.outils.origine(0, 0);
+      var b = N.gfx.buf(), hist = Array(N.pal.C.length).fill(0), horsPalette = 0;
+      for (var c of b) { if (c < hist.length) hist[c]++; else horsPalette++; }
+      var centre = N.cam.toScreen(e.x, e.y), anneau = [];
+      for (var y = 0; y < N.gfx.H; y++) for (var x = 0; x < N.gfx.W; x++)
+        if (Math.abs(Math.hypot(x - Math.round(centre.x), y - Math.round(centre.y)) - N.R.ennemis.mine.souffle) <= 1)
+          anneau.push(b[y * N.gfx.W + x]);
+      pixels.push({ moment: moment, w: N.gfx.W, h: N.gfx.H, horsPalette: horsPalette, histogramme: hist,
+        anneau: anneau, anneauMagenta: anneau.filter(c => c === N.pal.i('magenta')).length, indices: Array.from(b) });
+    }
+    avancer('cachee', N.R.colosse.minesPosees.armement + N.R.criteres.R08.visible);
+    var attendHorsChamp = e.etat === 'portail';
+    N.cam.reset(x, y); avancer('premiere-visibilite', N.R.criteres.R08.visible / 2); tampon('visibilite-interrompue');
+    N.cam.reset(0, y); avancer('interruption', h);
+    var reinitialise = e.vuDepuis < 0 && e.etat === 'portail';
+    N.cam.reset(x, y); tampon('retour-visible');
+    // Toujours protégé tant que le compteur public n'atteint pas R-08.
+    var protege = true, borne = 0;
+    while (e.etat === 'portail' && borne++ < Math.ceil(N.R.criteres.R08.visible / h) * 2) {
+      var avant = e.vuDepuis; N.ennemis.update(h);
+      if (e.etat !== 'portail' && e.vuDepuis < N.R.criteres.R08.visible) protege = false;
+      trace.push({ etape: 'visibilite-continue', etat: e.etat, avant: avant, visibleDepuis: e.vuDepuis, tele: zones() });
+    }
+    var zeroCyan = !opts.pixels ? null : pixels.every(p => !p.histogramme[N.pal.i('cyan')] && !p.histogramme[N.pal.i('cyanPale')]);
+    var anneauStable = !opts.pixels ? null : pixels.length === 2 && pixels[0].anneauMagenta > 0 &&
+      JSON.stringify(pixels[0].anneau) === JSON.stringify(pixels[1].anneau);
+    return { initialementHorsChamp: initialementHorsChamp, pose: pose, attendHorsChamp: attendHorsChamp,
+      reinitialise: reinitialise, protege: protege, activationVisible: e.vuDepuis, etatFinal: e.etat,
+      anneauStable: anneauStable, zeroCyan: zeroCyan, pixels: pixels, trace: trace, err: copie(window.__ERR),
+      conforme: initialementHorsChamp && pose.length > 0 && attendHorsChamp && reinitialise && protege &&
+        e.etat === 'arme' && e.vuDepuis >= N.R.criteres.R08.visible && (!opts.pixels || anneauStable && zeroCyan) && !window.__ERR.count };
+  }
+  return { scene: scene, couvre: couvre, horsChamp: horsChamp };
 })();

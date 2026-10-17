@@ -747,6 +747,8 @@
       },
       phase2: { annonceCiseaux: 0.8, oeilMain: 3, oeilSalve: 1.4, entree: 'meute' },
       phase3: { ombre: 40, annonceBond: 1.0, mines: 6, armementMines: 0.6, salveDouble: 2, balles: 14, resserre: 0.15, oeil: 1.4 },
+      // codex-p4b : protection de pose avant contact ; la mèche phase3.armementMines suit cette annonce.
+      minesPosees: { armement: 0.8, contour: 1, densiteAnneau: 1 },
       repit: { duree: 7, cellules: 8 },
       enrage: { apres: 100, allure: 1.3, intervalle: 0.75 },
       mort: { arretImages: 24, explosions: 5, cascade: 0.66, brasier: 0.08, brasierImages: 4, camera: 6, carcasse: 3, purge: 0.045 },

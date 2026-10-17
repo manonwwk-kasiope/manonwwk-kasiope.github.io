@@ -1,61 +1,59 @@
-# codex-p4 — les télégraphes manquants
+# codex-p4b — mines annoncées du CYCLOPE
 
-18/10/2026 · 00 h 52 (Paris) — mis à jour à 00 h 54. **Commande hors bac :** `cd proto-neon && node tools/codex-p4/verifier.mjs`.
+18/10/2026 · 01 h 22 (Paris) — mis à jour le 18/10/2026 01:29:42 (Paris).
 
-**Livré pour revue ; palier R-07 non validé.** Les publications demandées sont vérifiées en VM. La vérification navigateur est bloquée dans ce bac ; le script est prêt. Aucun serveur ni Chromium n'a été lancé. Aucun commit.
+**Commande hors bac :** `cd proto-neon && node tools/codex-p4/verifier.mjs`.
+Commande VM complète sans navigateur : `cd proto-neon && node tools/codex-p4/verifier.mjs --statique`.
 
-## Modifications
+**Lot livré pour revue ; contrôles logiques satisfaits. Palier visuel R-07/R-08 à vérifier hors bac.** Aucun serveur ni Chromium lancé dans cette session. Aucun commit. Rapport du lot déjà accepté conservé dans [rapport-p4-archive.md](rapport-p4-archive.md).
 
-- CYCLOPE : secteur balayé avec ses capsules de bord ; chaque trajectoire des deux salves et de la double spirale ; deux bandes des ciseaux pendant leur charge ; disque d'impact du bond. Les vrais lasers et tirs continuent d'être publiés jusqu'à leur suppression, avec `reste = 0` lorsqu'ils sont actifs. Le laser ne blesse que la tête ; les projectiles et les ciseaux peuvent couper le corps.
-- RUCHE : contacts aux positions prévues des larves de la couvée, puis positions réelles tant que leurs portails sont actifs. La couvée ne produit aucun souffle et ne blesse pas directement. Les morsures ultérieures des larves gardent leur publication existante dans 72.
-- SENTINELLE : le laser réel, ses deux extrémités et sa demi-largeur restent dans S.tele pendant toute sa vie. Avant, seul l'avertissement était présent.
-- Agrégation publique : `N.colosse.publierTele(ajouter)` et `N.ennemis.publierTele()`. Rafraîchissement après 73 pour respecter l'ordre 72 → 73 de la boucle. Pool réutilisé extensible, sans plafond silencieux à 48 zones. Plusieurs formes peuvent décrire une seule attaque avec le même id.
-- Six constantes existantes déplacées/copartagées dans `N.R.publicationTele`, raisons et valeurs dans la section codex-p4 de `refonte/lots/demandes.md`. Les délais, dégâts, dessins, palette, flashs, mur et morsure n'ont pas été changés.
+## Ce qui change
 
-## Mesures avant/après : scènes
+- `73-colosse.js` pose ses mines par l'interface publique `N.ennemis.spawn`, avec `annoncePose:true` et un portail protégé d'au moins `N.R.colosse.minesPosees.armement` (0,8 s), borné aussi par `colosse.teleMin`.
+- `72-ennemis.js` publie le disque dans S.tele et l'événement arme dans le même appel de pose. Le portail interdit le contact et empêche le départ de la mèche. Après armement, une zone de contact à reste=0 est distincte du disque de souffle encore à retardement.
+- Le portail est prolongé si la source n'a pas été visible en continu pendant les 0,6 s déjà définies par R-08. Le compteur public vuDepuis fonctionne dès la pose ; une sortie du champ le remet à -1. Les mines ordinaires ne reçoivent pas cette nouvelle option.
+- Pendant ce portail, un anneau magenta stable annonce le rayon de souffle existant ; gaine sombre de 1 px, densité 1, dans N.R. Aucun clignotement ni flash nouveau. La mèche préexistante de 0,6 s commence ensuite : souffle nominal au plus tôt 1,4 s après pose.
+- Le nombre (6), le placement, les dégâts et le rayon préexistants sont conservés. Aucune compensation de difficulté appliquée sans preuve qu'elle soit nécessaire. Les constantes ajoutées et leurs raisons sont dans la section codex-p4b de demandes.md.
 
-Sources : [scenes-vm.json](scenes-vm.json) ; journaux, créations physiques et états de chaque pas dans les fichiers `courant-*.json.gz` / `85b389d-*.json.gz`. Temps en secondes de jeu depuis le début de chaque scène. Graine 7, pas de 1/120 s (plus fin qu'une image de référence), vraies sources triées comme build.mjs, aucune IA de jeu remplacée. Les phases 2/3 sont atteintes par `N.ennemis.hit` sur l'œil vulnérable ; les placements passent par `N.joueuse.force`.
+## Mesures réelles en VM
 
-| Phase | Attaque | Première zone s | Premier dégât possible s | Avance ms | Points couverts | R-07 |
-|---|---|---:|---:|---:|---:|---|
-| 1 | Rayon balayé | 3,425000 | 4,341667 | 916,67 | 334/334 | ≥ seuil |
-| 1 | Salves radiales | 7,558333 | 8,375000 | 816,67 | 1232/1232 | ≥ seuil |
-| 2 | Ciseaux | 13,825000 | 14,741667 | 916,67 | 518/518 | ≥ seuil |
-| 2 | Salves radiales | 17,358333 | 18,175000 | 816,67 | 1232/1232 | ≥ seuil |
-| 3 | Bond / impact | 27,225000 | 28,233333 | 1008,33 | 1/1 | ≥ seuil |
-| 3 | Double spirale | 30,250000 | 31,066667 | 816,67 | 1232/1232 | ≥ seuil |
-| — | RUCHE / contact des larves | 1,833333 | 3,541667 | 1708,33 | 708/708 | ≥ seuil |
-| — | SENTINELLE / laser | 3,133333 | 4,000000 | 866,67 | 126/126 | ≥ seuil |
-| 3 | Mines du bond / contact | 28,841667 | 28,850000 | 8,33 | 1/1 | **écart préexistant** |
-| 3 | Mines du bond / souffle | 28,841667 | 29,441667 | 600,00 | 1/1 | **écart préexistant** |
+Sources : [scenes-p4b-vm.json](scenes-p4b-vm.json), traces et journaux complets `p4b-{098bd37,courant}-{profil}-3-mines-*.json.gz`. Base exacte : 098bd37 (les télégraphes précédents sont déjà intégrés). Graine 7, pas fixe de 1/120 s. Les phases sont atteintes par les dégâts publics sur l'œil ; le jeu et ses collisions ne sont pas remplacés. Les temps sont ceux de N.horloge.t(), capturés au pas où une mort effective est constatée. La différence d'un pas entre l'événement et sa réception reste dans les reçus.
 
-**Avant** : aucune zone CYCLOPE ni RUCHE dans ces scènes ; l'avertissement SENTINELLE apparaissait au même instant mais disparaissait au tir (115/126 points de contrôle manquants). Les deux défauts des mines étaient déjà présents. **Après** : 5385 points de contrôle couverts, aucune erreur de schéma ni erreur VM/console. Ces points échantillonnent les centres et bords des trajectoires réelles, les lasers pendant leur vie, les mains, les larves et les collisions effectives ; ils ne constituent pas une preuve exhaustive sur toutes les graines.
+Délais en **secondes depuis la première zone S.tele**, avant → après :
 
-Le premier dégât possible des tirs/lasers/contact des mains est déduit des vrais objets créés et de l'ordre de boucle : 70 teste les collisions avant 72/73, donc au pas suivant. Le bond et les mines sont confirmés par une mort effective (retour du module ou événement mort avec coordonnées) ; les ciseaux produisent aussi de vraies coupes. La géométrie est contrôlée au dernier avertissement et sur les dangers créés, avec leur largeur ; aucun compteur d'appels seul ne donne le verdict. Les dates de première création et les objets physiques émis sont **identiques avant/après dans les dix scènes** ([controles.json](controles.json)).
+| Format VM | Contact | Souffle | Visibilité à l'activation après |
+|---|---:|---:|---:|
+| paysage | 0,008 → 0,817 | 0,600 → 1,408 | 0,808 |
+| portrait | 0,008 → 0,817 | 0,600 → 1,408 | 0,808 |
+| bureau | 0,008 → 0,817 | 0,600 → 1,403 | 0,808 |
 
-**Écarts laissés tels quels, inscrits dans demandes.md :** le contact d'une mine du bond peut tuer 8,33 ms après la première zone S.tele, sous les deux seuils. Son portail visuel est déjà présent avant, mais il n'est pas publié dans S.tele. Le souffle arrive après 600 ms : conforme au seuil général de 500 ms, insuffisant au seuil CYCLOPE de 800 ms si ces mines lui sont rattachées. Les journaux de ces coups peuvent porter `teleDuree = 0` malgré une zone existante ; ce champ n'est pas utilisé comme preuve de délai. Aucun seuil abaissé, aucun temps corrigé.
+Les six scènes après satisfont ≥0,8 s. [controles-p4b.json](controles-p4b.json) vérifie aussi les rayons exacts publiés et les champs d'annonce/visibilité des morts réelles dans les reçus, contre N.R. Dans chacune, les six mines sont publiées dès leur création, avec au moins 0,8 s restantes, et restent protégées pendant cette durée ; zéro erreur VM/console, zéro erreur de schéma et couverture de chaque mort effective par la zone publiée au pas précédent. Avant : contact à 8,33 ms de la zone (pose antérieure non publiée) et souffle à 600 ms, écarts conservés comme échecs. Les journaux des coups après donnent teleDuree=0,8 ; les morts par contact donnent visibleDepuis≈0,808 s, celles par souffle ≥1,4 s.
 
-## Parties des pilotes
+**Échec conservé de l'instrument :** le premier essai du souffle en portrait n'atteignait aucune mort par la mine (avance=null, borne=true). Le journal montre une mort par contact avec l'œil du CYCLOPE avant le souffle. Reçus : [scenes-p4b-vm-initial.json](scenes-p4b-vm-initial.json), [p4b-portrait-souffle-initial.json.gz](p4b-portrait-souffle-initial.json.gz). La sonde a été déplacée à 15 px de la mine, dans la direction opposée à l'œil, et vérifie désormais aussi l'id de la mine meurtrière. Seule la sonde change ; seuils et jeu inchangés. Les trois formats ont ensuite été remesurés.
 
-[parties-vm.json](parties-vm.json), reçus complets `avant/apres-{dieu,bon}-{1,2,3}.json.gz`. Protocole de tools/pilotes/parties.mjs : stockage vide, S.jour=20261017, réglage actions, intro.skip, reset départ plongée et crochet seulement si demarrage, pilote, dieu invulnérable, journal actif, horloge.avancer initial puis simuler(0.25) jusqu'à fin. Aucun écran intermédiaire sauté. Borne de 540 s de jeu et garde de blocage inchangées.
+[hors-champ-vm.json](hors-champ-vm.json) : vrai spawn, vrais update et déplacements par N.cam.reset, sans remplacement de caméra. Source initialement hors champ, portail encore protégé après 1,4 s ; première visibilité interrompue après 0,3 s, compteur réinitialisé ; activation seulement après 0,600 s continues. Zéro erreur. Aucun pixel mesuré en VM : anneauStable et zeroCyan valent null, pas une réussite visuelle.
 
-| Pilote | Graine | Temps jeu avant → après s | Score avant → après | Morts CYCLOPE avant → après | Boss atteint après | Arrêt / erreurs après |
-|---|---:|---|---|---:|---|---|
-| dieu | 1 | 349.908 → 346.725 | 187660 → 202370 | 0 → 0 | oui | fin / 0 |
-| dieu | 2 | 328.990 → 325.652 | 143860 → 118190 | 0 → 0 | oui | fin / 0 |
-| dieu | 3 | 434.908 → 415.885 | 202520 → 200250 | 0 → 0 | oui | fin / 0 |
-| bon | 1 | 81.137 → 81.137 | 1280 → 1280 | 0 → 0 | non | fin / 0 |
-| bon | 2 | 318.545 → 322.583 | 118090 → 143110 | 3 → 2 | oui | fin / 0 |
-| bon | 3 | 84.132 → 84.132 | 2180 → 2180 | 0 → 0 | non | fin / 0 |
+[validation-vm.json](validation-vm.json), [validation-p4b.log](validation-p4b.log) : 10 parties inerte, graines 1–10, sources exactes du commit e1bdc6f ; temps, vague et score identiques aux références de tools/pilotes/sortie.json, zéro erreur. Validation effectuée avant de conclure sur la VM. Le chargeur contrôle que chaque source appartient exactement au bundle, dans l'ordre de build.mjs ; seul boot() n'est pas appelé.
 
-Les douze parties vont à fin, zéro erreur et zéro erreur console. Sur ce petit lot, bon passe de **3 à 2 morts attribuées au CYCLOPE**, toutes sur la graine 2 ; les graines 1/3 n'atteignent pas le boss. Dieu est invulnérable par protocole : ses zéros ne qualifient pas la difficulté. Aucune conclusion statistique sur les pilotes.
+## Parties dieu/bon
 
-## Instrument, construction et reste
+[parties-p4b-vm.json](parties-p4b-vm.json), [parties-p4b-vm.log](parties-p4b-vm.log), journaux `p4b-{avant,apres}-{dieu,bon}-{1,2,3}.json.gz` ; détail des morts pendant le boss : [morts-boss-p4b.json](morts-boss-p4b.json).
 
-[validation-vm.json](validation-vm.json) : dix parties inerte, graines 1 à 10, sources de e1bdc6f, redonnent exactement les temps de jeu, vagues et scores de tools/pilotes/sortie.json ; zéro erreur. Le chargeur vérifie aussi que chaque source exacte appartient au bundle de son état. Initialement, plusieurs contextes dans un même processus ont arrêté Node avec le code 139 après quatre concordances ; chaque partie tourne désormais dans un processus isolé. Une adaptation initiale du chemin git ls-tree a donné un TypeError (gfx absent), corrigé avant la nouvelle série complète de dix concordances.
+Protocole de tools/pilotes/parties.mjs : stockage vide, S.jour=20261017, actions=doigts, intro.skip, reset départ plongée, crochet uniquement si demarrage, pilote, dieu invulnérable, journal actif, horloge.avancer initial, tranches de simuler(0.25) jusqu'à fin. Borne 540 s de jeu ; aucun écran de partie sauté. Une partie par processus, en série.
 
-La première sonde produisait jusqu'à deux faux négatifs après modification (collisions d'une attaque antérieure et laser déjà retiré) et ne voyait pas l'appel lexical du laser SENTINELLE : [scenes-vm-initial.json](scenes-vm-initial.json). Elle a été corrigée pour observer les vrais objets publics et l'événement mort, puis les scènes ont été remesurées, sans affaiblir les seuils. Le contact des mines reste un vrai échec de délai, pas une réussite masquée.
+| Pilote | Graine | Temps jeu s | Score | Morts auteur cyclope | Toutes morts après arrivée du boss | Après : arrêt / erreurs |
+|---|---:|---|---|---|---|---|
+| dieu | 1 | 359,958 → 397,233 | 175660 → 176210 | 0 → 0 | 0 → 0 | fin / 0 |
+| dieu | 2 | 297,994 → 325,160 | 143030 → 143410 | 0 → 0 | 0 → 0 | fin / 0 |
+| dieu | 3 | 390,169 → 410,994 | 173620 → 174290 | 0 → 0 | 0 → 0 | fin / 0 |
+| bon | 1 | 81,137 → 81,137 | 1280 → 1280 | 0 → 0 | 0 → 0 | fin / 0 |
+| bon | 2 | 316,783 → 301,308 | 142920 → 117370 | 2 → 2 | 3 → 5 | fin / 0 |
+| bon | 3 | 84,132 → 84,132 | 2180 → 2180 | 0 → 0 | 0 → 0 | fin / 0 |
 
-Build : `cd proto-neon && node build.mjs`, sortie 0, [build.log](build.log). Avant : `39a4aeca0f9d469b75b7a4608cc94b2055cc466b5bba6f8524548a5239390538`. Après : `04aaf1bbd7b852f3ece520f386b32f48c8d42d1b6d4b6d133891815a41954e44`. Le manifeste des parties conserve aussi l'empreinte initiale prise avant la migration de la constante du rayon ; les enfants après ont tous été lancés après le dernier build (ordre séquentiel du banc, reçu avant-bon-3 postérieur à ce build).
+La colonne auteur cyclope garde la définition du banc précédent ; elle exclut cyclope:main et mine. La colonne suivante couvre toutes les causes pendant le boss, dont ses mines ; les causes et coordonnées sont publiées séparément. Dieu est invulnérable : ses zéros ne prouvent pas la difficulté. Les graines bon qui n'atteignent pas le boss ne qualifient pas la phase 3. Sur ces six paires, bon garde deux morts directement attribuées au CYCLOPE ; aucune mort par mine n'est ajoutée pendant le boss. Aucune facilité excessive n'est démontrée par ce lot ; le nombre et le placement des mines sont donc conservés. Ce petit lot ne constitue pas une mesure statistique de difficulté.
 
-**Reste indispensable hors bac :** lancer verifier.mjs. Il sert les deux bundles, ouvre un seul Chromium muet, teste les profils tactiles iPhone 844×390 / 390×844 et bureau 1440×900 en série, conserve les pixels de N.gfx.buf(), leurs histogrammes/empreintes, captures, journaux et les parties. Il doit rapporter les défauts connus des mines comme échecs, pas adapter les seuils. Aucune mesure de pixels, capture, performance navigateur ou compatibilité Safari réelle n'est revendiquée ici. La cheffe d'orchestre relit/intègre le diff ; le palier R-07 demeure non validé.
+## Construction et suite
+
+`cd proto-neon && node build.mjs` : **sortie 0**, [build-p4b.log](build-p4b.log). Avant SHA-256 : `8b16215a8aa7025e7b1da5bbc0a90fdaebd5e4018b1c6355e0ec6204a502ca3a`. Après : `634c0df895ae64e96dba86baeae5ab76326d56c6d732528609ff3480703293ae`. Copie avant identique au bundle Git de 098bd37 ; empreintes dans [provenance-p4b.json](provenance-p4b.json). Seuls les fichiers attribués, N.R en ajout, demandes.md dans cette section, les outils du lot et le bundle reconstruit changent.
+
+**Reste hors bac :** exécuter la commande en tête et rendre `tools/codex-p4/playwright-p4b/resultats.json`. Le script sert les deux bundles sur port libre, un seul Chromium muet, contextes en série : iPhone 13 paysage tactile 844×390, portrait 390×844, bureau 1440×900 ; scènes contact/souffle, pose synchrone, pixels complets à pose/armement/collision et contrôle isolé d'un anneau stable sans cyan, captures, journaux et six parties par version. Les huit scènes précédemment acceptées restent optionnelles (`--regressions`), non relancées ici. Aucun seuil abaissé. Les échecs avant ne doivent pas rendre les scènes après conformes par défaut. Chromium avec profils iPhone ne qualifie pas Safari réel. Les pixels, flashs et la présentation sur appareil restent à vérifier ; le palier visuel n'est pas annoncé validé.

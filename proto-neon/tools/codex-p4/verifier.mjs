@@ -1,5 +1,6 @@
-/* HORS BAC UNIQUEMENT : cd proto-neon && node tools/codex-p4/verifier.mjs
-   Serveur sur port libre ; un seul Chromium muet ; tous les contextes en série. */
+/* Sans option : HORS BAC UNIQUEMENT, cd proto-neon && node tools/codex-p4/verifier.mjs
+   Serveur sur port libre ; un seul Chromium muet ; tous les contextes en série.
+   --statique : VM Node seulement, aucun listen ni lancement de Chromium. */
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
@@ -7,20 +8,24 @@ import crypto from 'node:crypto';
 import zlib from 'node:zlib';
 import { chromium, devices } from 'playwright';
 import { HERE, ROOT, partie } from './vm.mjs';
+if (process.argv.includes('--statique')) {
+  await import('./statique-p4b.mjs');
+} else {
 const profils = {
   paysage: { ...devices['iPhone 13 landscape'], viewport: { width: 844, height: 390 } },
   portrait: { ...devices['iPhone 13'], viewport: { width: 390, height: 844 } },
   bureau: { viewport: { width: 1440, height: 900 } }
 };
-const scenes = [{ phase: 1, type: 'rayon' }, { phase: 1, type: 'salve' }, { phase: 2, type: 'ciseaux' },
+const regressions = [{ phase: 1, type: 'rayon' }, { phase: 1, type: 'salve' }, { phase: 2, type: 'ciseaux' },
   { phase: 2, type: 'salve' }, { phase: 3, type: 'bond' }, { phase: 3, type: 'salve2' }, { type: 'ruche' }, { type: 'sentinelle' },
   { phase: 3, type: 'mines-contact' }, { phase: 3, type: 'mines-souffle' }];
-const bundles = { avant: fs.readFileSync(path.join(HERE, 'avant.html')), apres: fs.readFileSync(path.join(ROOT, 'index.html')) };
+const scenes = process.argv.includes('--regressions') ? regressions : regressions.filter(c => c.type.startsWith('mines-'));
+const bundles = { avant: fs.readFileSync(path.join(HERE, 'avant-p4b.html')), apres: fs.readFileSync(path.join(ROOT, 'index.html')) };
 const sonde = fs.readFileSync(path.join(HERE, 'sonde.js'), 'utf8');
-const sortie = path.join(HERE, 'playwright'); fs.mkdirSync(sortie, { recursive: true });
+const sortie = path.join(HERE, 'playwright-p4b'); fs.mkdirSync(sortie, { recursive: true });
 const bilan = { dateParis: new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' }),
   sha256: Object.fromEntries(Object.entries(bundles).map(([k, b]) => [k, crypto.createHash('sha256').update(b).digest('hex')])),
-  limite: 'Chromium avec profils iPhone ; ne qualifie pas Safari sur appareil.', scenes: [], parties: [] };
+  limite: 'Chromium avec profils iPhone ; ne qualifie pas Safari sur appareil.', scenes: [], parties: [], horsChamp: [] };
 const save = () => fs.writeFileSync(path.join(sortie, 'resultats.json'), JSON.stringify(bilan, null, 2));
 const server = http.createServer((req, res) => {
   const parts = decodeURIComponent(new URL(req.url, 'http://local').pathname).split('/').filter(Boolean), version = parts.shift();
@@ -52,11 +57,26 @@ try {
         fs.writeFileSync(path.join(sortie, nom + '.json.gz'), zlib.gzipSync(JSON.stringify(r)));
         const { trace, journal, creations, pixels, ...resume } = r;
         const seuil = await page.evaluate(type => type === 'ruche' || type === 'sentinelle' ? window.__N.R.criteres.R07.tele : window.__N.R.criteres.R07.cyclope, opts.type);
-        const conforme = !r.borne && r.avance !== null && r.avance + 1e-9 >= seuil && !r.couverture.rates && !r.erreursSchema.length && !r.err.count && !erreurs.length && pixels.every(p => p.horsPalette === 0);
+        const conforme = !r.borne && r.avance !== null && r.avance + 1e-9 >= seuil && !r.couverture.rates && !r.erreursSchema.length && !r.err.count && !erreurs.length && pixels.every(p => p.horsPalette === 0) && (!opts.type.startsWith('mines-') || r.pose?.toutesPubliees && r.contactVisible >= r.seuilVisible && r.armementProtege && pixels.some(p => p.moment === 'pose' && p.anneauMagenta > 0) && pixels.some(p => p.moment === 'armement' && p.anneauMagenta > 0));
         bilan.scenes.push({ version, profil, ...resume, seuil, conforme, erreursConsole: erreurs,
           pixels: pixels.map(({ indices, ...p }) => ({ ...p, sha256: crypto.createHash('sha256').update(Buffer.from(indices)).digest('hex') })), fichier: nom + '.json.gz', images: trace.length, creations: creations.length });
         await page.screenshot({ path: path.join(sortie, nom + '.png') });
       } catch (e) { bilan.scenes.push({ version, profil, ...opts, exception: String(e.stack || e), conforme: false }); }
+      finally { await ctx.close(); save(); }
+    }
+    if (version === 'apres') for (const profil of Object.keys(profils)) {
+      const { ctx, page, erreurs } = await ouvrir(version, profil, 7);
+      try {
+        await page.addScriptTag({ content: sonde });
+        const r = await page.evaluate(() => window.__P4.horsChamp({ pixels: true }));
+        const fichier = `hors-champ-${profil}.json.gz`;
+        fs.writeFileSync(path.join(sortie, fichier), zlib.gzipSync(JSON.stringify(r)));
+        const { trace, pixels, ...resume } = r;
+        bilan.horsChamp.push({ profil, ...resume, fichier, erreursConsole: erreurs,
+          conforme: r.conforme && !erreurs.length && pixels.length > 0 && pixels.every(p => !p.horsPalette),
+          pixels: pixels.map(({ indices, ...p }) => ({ ...p, sha256: crypto.createHash('sha256').update(Buffer.from(indices)).digest('hex') })) });
+        await page.screenshot({ path: path.join(sortie, `hors-champ-${profil}.png`) });
+      } catch (e) { bilan.horsChamp.push({ profil, conforme: false, exception: String(e.stack || e) }); }
       finally { await ctx.close(); save(); }
     }
     for (const pilote of ['dieu', 'bon']) for (const graine of [1, 2, 3]) {
@@ -69,8 +89,10 @@ try {
       finally { await ctx.close(); save(); }
     }
   }
-  bilan.conforme = bilan.scenes.filter(r => r.version === 'apres').length === scenes.length * Object.keys(profils).length && bilan.scenes.filter(r => r.version === 'apres').every(r => r.conforme) && bilan.parties.length === 12 && bilan.parties.every(r => r.raison === 'fin' && r.err === 0 && !r.erreursConsole?.length);
+  bilan.conforme = bilan.scenes.filter(r => r.version === 'apres').length === scenes.length * Object.keys(profils).length && bilan.scenes.filter(r => r.version === 'apres').every(r => r.conforme) && bilan.horsChamp.length === Object.keys(profils).length && bilan.horsChamp.every(r => r.conforme) && bilan.parties.length === 12 && bilan.parties.every(r => r.raison === 'fin' && r.err === 0 && !r.erreursConsole?.length);
   if (!bilan.conforme) process.exitCode = 1;
 } catch (e) { bilan.environnement = String(e.stack || e); process.exitCode = 1; }
 finally { save(); if (browser) await browser.close(); if (server.listening) await new Promise(r => server.close(r)); }
 console.log(JSON.stringify({ conforme: bilan.conforme, scenes: bilan.scenes.length, parties: bilan.parties.length, environnement: bilan.environnement }));
+
+}
