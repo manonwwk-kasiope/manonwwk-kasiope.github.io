@@ -1,0 +1,261 @@
+{
+  "dateParis": "18/10/2026 00:59:33",
+  "phase": "avant",
+  "mode": "ralentis",
+  "bundleSha256": "a00d55e81ea427e19d931dcb101dcacf03a2834deeb73eb5ff33c365c2c49cfd",
+  "protocoleSha256": "3a169953d67106bfb8846f385679c408f21d64754777d7273e8fbb47526bce5c",
+  "navigateur": "140.0.7339.16",
+  "cas": [
+    {
+      "profil": "paysage",
+      "genre": "ralentis",
+      "repetition": 0,
+      "probes": [
+        {
+          "nom": "ralenti",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "ralenti",
+              "k": 0.35,
+              "d": 3.5,
+              "o": {
+                "joueuse": false
+              }
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.35,
+            "duree": 3.5
+          },
+          "conforme": false
+        },
+        {
+          "nom": "niveau",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "niveau",
+              "k": 0.15,
+              "d": 0.35
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.15,
+            "duree": 0.35
+          },
+          "conforme": false
+        },
+        {
+          "nom": "cyclope",
+          "declenche": true,
+          "demande": [],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.3,
+            "duree": 2.2
+          },
+          "conforme": false
+        }
+      ],
+      "conforme": false,
+      "etat": "boss",
+      "ecran": {
+        "nom": null,
+        "depuis": 0,
+        "cartes": [],
+        "niveaux": {},
+        "choix": 0,
+        "pret": false
+      },
+      "pas": 0,
+      "t": 0,
+      "frame": 461,
+      "err": 0,
+      "erreursConsole": [],
+      "capture": "ralentis-paysage-0.png"
+    },
+    {
+      "profil": "portrait",
+      "genre": "ralentis",
+      "repetition": 0,
+      "probes": [
+        {
+          "nom": "ralenti",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "ralenti",
+              "k": 0.35,
+              "d": 3.5,
+              "o": {
+                "joueuse": false
+              }
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.35,
+            "duree": 3.5
+          },
+          "conforme": false
+        },
+        {
+          "nom": "niveau",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "niveau",
+              "k": 0.15,
+              "d": 0.35
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.15,
+            "duree": 0.35
+          },
+          "conforme": false
+        },
+        {
+          "nom": "cyclope",
+          "declenche": true,
+          "demande": [],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.3,
+            "duree": 2.2
+          },
+          "conforme": false
+        }
+      ],
+      "conforme": false,
+      "etat": "boss",
+      "ecran": {
+        "nom": null,
+        "depuis": 0,
+        "cartes": [],
+        "niveaux": {},
+        "choix": 0,
+        "pret": false
+      },
+      "pas": 0,
+      "t": 0,
+      "frame": 461,
+      "err": 0,
+      "erreursConsole": [],
+      "capture": "ralentis-portrait-0.png"
+    },
+    {
+      "profil": "bureau",
+      "genre": "ralentis",
+      "repetition": 0,
+      "probes": [
+        {
+          "nom": "ralenti",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "ralenti",
+              "k": 0.35,
+              "d": 3.5,
+              "o": {
+                "joueuse": false
+              }
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.35,
+            "duree": 3.5
+          },
+          "conforme": false
+        },
+        {
+          "nom": "niveau",
+          "declenche": true,
+          "demande": [
+            {
+              "cas": "niveau",
+              "k": 0.15,
+              "d": 0.35
+            }
+          ],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.15,
+            "duree": 0.35
+          },
+          "conforme": false
+        },
+        {
+          "nom": "cyclope",
+          "declenche": true,
+          "demande": [],
+          "echantillons": [],
+          "secondesRalenties": 0,
+          "facteurs": [],
+          "horlogeAppelee": false,
+          "facteursAppliques": false,
+          "attendu": {
+            "facteur": 0.3,
+            "duree": 2.2
+          },
+          "conforme": false
+        }
+      ],
+      "conforme": false,
+      "etat": "boss",
+      "ecran": {
+        "nom": null,
+        "depuis": 0,
+        "cartes": [],
+        "niveaux": {},
+        "choix": 0,
+        "pret": false
+      },
+      "pas": 0,
+      "t": 0,
+      "frame": 461,
+      "err": 0,
+      "erreursConsole": [],
+      "capture": "ralentis-bureau-0.png"
+    }
+  ],
+  "determinisme": null,
+  "conforme": false
+}

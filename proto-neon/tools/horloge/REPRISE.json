@@ -1,20 +1,18 @@
 {
-  "dateParis": "18/10/2026 · 00 h 57",
+  "dateParis": "18/10/2026 · 01 h 01",
   "objectif": "codex-05 : vraie boucle fixe, titre, ralentis, parties, non-régression ; puis codex-06",
-  "source": "31281f2",
-  "bundle": "8fbabfe",
+  "source": "31281f2 + 9e65758 (fond de fin)",
+  "bundle": "8fbabfe + 6f11b94 (fond de fin)",
   "preuves": [
-    "/tmp/snake-horloge-probe : titre 3 profils, pas fixes",
-    "/tmp/snake-horloge-regressions/avant : lisibilite conforme, 80/80 pilotes et repetitions",
-    "/tmp/snake-horloge-{avant,apres}/perf.json : mediane p95 1,6 -> 1,7 ms"
+    "rapport.md et JSON relatifs dans ce dossier ; 80/80 pilotes avant/après, parties réelles 3 profils, titre et bilan visibles",
+    "reprise-performance : seconde paire dans borne, machine non isolée"
   ],
-  "enCours": "parties corrigées sans invulnérabilité de préparation ; processus 1614",
+  "enCours": null,
   "restant": [
-    "finir parties",
-    "régression après et comparaison",
-    "ralentis finaux avec montée XP réelle",
-    "documenter dépendances et livrer",
-    "relire ordres et prendre commandes"
+    "corrections producteurs ralentis et pause par Claude",
+    "mesure performance au repos",
+    "arbitrage empreintes hors jeu",
+    "enchaîner codex-06"
   ],
   "dependances": [
     "50-fx : durée 3 au lieu de 3,5 s",
@@ -22,6 +20,6 @@
     "79-jeu : UI pause automatique absente du nouveau chemin"
   ],
   "budget": "aucune dépense ; pas de budget chiffré fixé ; Chromium en série",
-  "prochaineAction": "attendre fin réelle du processus avant tout autre banc navigateur",
+  "prochaineAction": "livraison partielle explicite, pull et relecture puis réservation des commandes",
   "ecartInstrument": "Premier run interrompu : god du préchauffage restait actif après reset ; ne compte pas dans qualification. Reçu partiel archivé /tmp/snake-horloge-abandon-god."
 }
