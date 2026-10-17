@@ -22,7 +22,9 @@ N.art = (function () {
   var cache = {}, ready = false, pending = null;
   /* [boucle, cyan permis] : le cyan n'apparaît que là où le serpent, c'est-à-dire la joueuse, est à l'image */
   var CLIPS = { affiche: [1, 1], briefing: [1, 0], victoire: [1, 1], defaite: [1, 1],
-    exterieur: [0, 0], connexion: [0, 1], eveil: [0, 1], alerte: [0, 0], boss: [0, 0] };
+    exterieur: [0, 0], connexion: [0, 1], eveil: [0, 1], alerte: [0, 0], boss: [0, 0],
+    /* les intermèdes (refonte/INTERMEDES.md) : de courts films entre les moments de jeu */
+    chasse: [0, 1], retournement: [0, 1], rival: [0, 1], plongee: [0, 1], reveil: [0, 0], apotheose: [0, 1] };
   var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;
