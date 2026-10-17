@@ -33,6 +33,7 @@
        eclair()                   un éclair sur l'horizon                         eclipse(t)  0..1 : l'éclipse du CYCLOPE
        silhouette(nom,plan,x,y,k) silhouettes du CYCLOPE dans P2 et P5            horizon() -> rangée écran de l'horizon
        drawVol(o)                 le fond du VOL (voir 17-vol.js)                 masqueCite(nom) -> Uint8Array (tests)
+       acceler(k)                 multiplie la vitesse du sol (la plongée) ; fixer(q,e) pose un quartier sans balayage (essais)
    Le temps est celui du jeu (N.horloge.t()) : pause et gel arrêtent le décor ; mouvement réduit : tout s'immobilise
    (prefers-reduced-motion, ou SECOUSSE à 0), sauf la lumière.
 */
@@ -112,19 +113,19 @@
      table de couleurs. sun : hauteur du soleil (1 = posé sur l'horizon, entier) ; ciel : intensité des tramages
      brasier/ambre/sang de l'horizon ; remap : table de couleurs des fenêtres (étiquettes 9 et 10). */
   var QU = {
-    docks:    { nom: 'LES DOCKS', seed: 1101, sun: 1.12, ciel: { br: 0.55, am: 0.34, sa: 1.0, haut: 38 }, fen: 0.95, bande: 3, miroir: 0.9,
+    docks:    { nom: 'LES DOCKS', seed: 1101, sun: 1.12, ciel: { br: 0.5, am: 0.3, sa: 1.0, haut: 38 }, fen: 0.95, bande: 3, miroir: 0.9,
                 ville: { wMin: 14, wMax: 38, hMin: 22, hMax: 50, ecartMin: -2, ecartMax: 3, toit: 'conteneurs', enseignes: 6 },
                 struct: ['grue', 'portique', 'grue', 'conteneurs'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.6 },
-    artere:   { nom: "L'ARTÈRE", seed: 2202, sun: 0.95, ciel: { br: 0.5, am: 0.3, sa: 1.1, haut: 40 }, fen: 0.9, bande: 3, miroir: 0.7,
+    artere:   { nom: "L'ARTÈRE", seed: 2202, sun: 0.95, ciel: { br: 0.66, am: 0.42, sa: 1.1, haut: 40 }, fen: 0.95, bande: 3, miroir: 0.7,
                 ville: { wMin: 10, wMax: 24, hMin: 40, hMax: 84, ecartMin: -1, ecartMax: 2, toit: 'tour', enseignes: 18, monorail: true },
                 struct: ['pylone', 'panneau', 'pylone', 'panneau', 'rail'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.4 },
-    centrale: { nom: 'LA CENTRALE', seed: 3303, sun: 0.88, ciel: { br: 0.7, am: 0.18, sa: 1.4, haut: 44 }, fen: 0.9, bande: 3, miroir: 0.8,
+    centrale: { nom: 'LA CENTRALE', seed: 3303, sun: 0.88, ciel: { br: 0.86, am: 0.34, sa: 1.4, haut: 44 }, fen: 1.0, bande: 3, miroir: 0.8,
                 ville: { wMin: 18, wMax: 40, hMin: 30, hMax: 70, ecartMin: 0, ecartMax: 5, toit: 'reacteur', enseignes: 8 },
                 struct: ['cheminee', 'conduite', 'cheminee', 'cheminee', 'conduite'], remap: { 9: 'BR', 10: 'AM' }, cyc: ['SA', 'BR', 'BR', 'AM'], montagnes: 0.5 },
     ciel:     { nom: 'LE CIEL', seed: 4404, sun: 1.45, ciel: { br: 0.6, am: 0.55, sa: 0.8, haut: 36 }, fen: 0.45, bande: 2, miroir: 0.4, etoiles: 120,
                 ville: { wMin: 6, wMax: 14, hMin: 8, hMax: 26, ecartMin: 0, ecartMax: 4, toit: 'plat', enseignes: 3 },
                 struct: ['nuage', 'nuage', 'nuage', 'nuage'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.0 },
-    tours:    { nom: 'LES TOURS', seed: 5505, sun: 0.78, ciel: { br: 0.5, am: 0.35, sa: 1.3, haut: 46 }, fen: 1.0, bande: 3, miroir: 0.7,
+    tours:    { nom: 'LES TOURS', seed: 5505, sun: 0.78, ciel: { br: 0.7, am: 0.42, sa: 1.3, haut: 46 }, fen: 1.0, bande: 3, miroir: 0.7,
                 ville: { wMin: 9, wMax: 20, hMin: 52, hMax: 92, ecartMin: -1, ecartMax: 2, toit: 'antenne', enseignes: 10 },
                 struct: ['antenne', 'projecteur', 'antenne', 'projecteur'], remap: { 9: 'JA', 10: 'AM' }, cyc: ['SA', 'AM', 'JA', 'BR'], montagnes: 0.3 },
     coeur:    { nom: 'LE CŒUR', seed: 6606, sun: 0.62, ciel: { br: 0.85, am: 0.12, sa: 1.6, haut: 50 }, fen: 0.9, bande: 3, miroir: 0.9,
@@ -139,10 +140,10 @@
   /* les états (§ 3.6) : ce que la tension change à l'intérieur d'un quartier */
   var ET = {
     calme:     { sun: 1.00, ciel: 1.00, avance: 1.0, signs: 1, fen: 1.00, lignes: 0, blink: 0, braises: 0, eclairs: 0, rank: 0 },
-    montee:    { sun: 0.86, ciel: 1.15, avance: 1.0, signs: 2, fen: 1.12, lignes: 1, blink: 0, braises: 0, eclairs: 0, rank: 1 },
-    chaos:     { sun: 0.62, ciel: 1.35, avance: 2.0, signs: 3, fen: 1.25, lignes: 2, blink: 1, braises: 1, eclairs: 1, rank: 2 },
-    inversion: { sun: 0.96, ciel: 1.25, avance: 1.0, signs: 2, fen: 1.15, lignes: 1, blink: 0, braises: 0, eclairs: 0, rank: 1, pulse: 1 },
-    colosse:   { sun: 1.00, ciel: 1.20, avance: 1.0, signs: 1, fen: 0.80, lignes: 1, blink: 0, braises: 1, eclairs: 0, rank: 2, eclipse: 1 },
+    montee:    { sun: 0.86, ciel: 1.30, avance: 1.0, signs: 2, fen: 1.12, lignes: 1, blink: 0, braises: 0, eclairs: 0, rank: 1 },
+    chaos:     { sun: 0.62, ciel: 1.65, avance: 2.0, signs: 3, fen: 1.25, lignes: 2, blink: 1, braises: 1, eclairs: 1, rank: 2 },
+    inversion: { sun: 0.96, ciel: 1.40, avance: 1.0, signs: 2, fen: 1.15, lignes: 1, blink: 0, braises: 0, eclairs: 0, rank: 1, pulse: 1 },
+    colosse:   { sun: 1.00, ciel: 1.75, avance: 1.0, signs: 1, fen: 0.80, lignes: 1, blink: 0, braises: 1, eclairs: 0, rank: 2, eclipse: 1 },
     victoire:  { sun: 1.10, ciel: 1.05, avance: 0.5, signs: 1, fen: 1.00, lignes: 0, blink: 0, braises: 0, eclairs: 0, rank: 0 }
   };
 
@@ -330,8 +331,8 @@
       var dd = SH - 1 - y;                                       // distance au-dessus de l'horizon
       var nuT = clamp01(0.35 + dd / (SH * 0.45));                // vide en haut, nuit en bas
       var saT = clamp01(1 - dd / (haut * 1.8)) * saD;            // sang tramé, monte haut
-      var brT = clamp01(1 - dd / FOND) * brD * 1.1 + clamp01(1 - dd / haut) * brD * 0.6;
-      var amT = clamp01(1 - dd / (FOND * 0.7)) * amD + clamp01(1 - dd / (haut * 0.7)) * amD * 0.4;
+      var brT = clamp01(1 - dd / FOND) * brD * 1.1 + clamp01(1 - dd / haut) * brD * 0.35;
+      var amT = clamp01(1 - dd / (FOND * 0.7)) * amD + clamp01(1 - dd / (haut * 0.7)) * amD * 0.4 + clamp01(1 - dd / haut) * brD * 0.4 + clamp01(1 - dd / (SH * 0.95)) * Math.min(0.34, brD * 0.4);   // la longue traîne du ciel : de l'ambre tramé, plus clair que le magenta des ennemis
       if (E.eclipse) { saT = clamp01(1 - dd / (haut * 2.2)) * 1.0; amT *= 0.1; }
       var o = y * W, br = (y & 3) << 2, br2 = ((y + 2) & 3) << 2, br3 = ((y + 1) & 3) << 2;
       for (var x = 0; x < W; x++) {
@@ -353,8 +354,8 @@
       var inT = 0.12 + 0.28 * clamp01(dy / 90);
       var saT = clamp01(1 - dy / 22) * Math.min(0.9, ck.sa * kk * 0.7);
       var brT = clamp01(1 - dy / 40) * Math.min(0.7, ck.br * kk * 0.7);
-      var amT = clamp01(1 - dy / 20) * Math.min(0.5, ck.am * kk * 0.9);
-      if (E.eclipse) { amT = 0; brT *= 0.6; saT = clamp01(1 - dy / 40) * 0.9; }
+      var amT = clamp01(1 - dy / 20) * Math.min(0.5, ck.am * kk * 0.9) + clamp01(1 - dy / (FH * 0.85)) * Math.min(0.22, 0.15 * ck.br * kk);
+      if (E.eclipse) { amT = 0; brT *= 0.95; saT = clamp01(1 - dy / 40) * 0.9; }
       var jaT = dy === 0 ? 0.5 : 0;
       var o = dy * W, br = (dy & 3) << 2, br2 = ((dy + 2) & 3) << 2, br3 = ((dy + 1) & 3) << 2;
       for (var x = 0; x < W; x++) {
@@ -408,7 +409,7 @@
   var ondeN = 0;
   var scratch = null, tmpLut = null;
   var etapes = [], preparing = '';
-  var branche = false, etatAvantInversion = null;
+  var branche = false, etatAvantInversion = null, accelK = 1;
 
   function reducedMotion() {
     if (reduit !== null) return reduit;
@@ -465,11 +466,11 @@
   function tranche() { if (etapes.length) { var f = etapes.shift(); f(); } }
 
   /* ================================ la lumière du moment ================================ */
-  var lutBase = null, lutLit = null, lutDark = null, lutRows = null, lutP5 = null;
+  var lutBase = null, lutLit = null, lutDark = null, lutFire = null, lutRows = null, lutP5 = null;
   function mk(a) { var t = new Uint8Array(16); for (var i = 0; i < 16; i++) t[i] = a ? a[i] : i; return t; }
   function lumieres() {
     if (lutBase) return;
-    lutBase = mk(); lutLit = mk(); lutDark = mk(); lutP5 = mk(); lutRows = new Array(CH);
+    lutBase = mk(); lutLit = mk(); lutDark = mk(); lutFire = mk(); lutP5 = mk(); lutRows = new Array(CH);
     for (var i = 0; i < CH; i++) lutRows[i] = lutBase;
   }
   /* table de couleurs de la cité pour (q, e, t) : enseignes qui tournent, fenêtres qui clignotent */
@@ -482,11 +483,13 @@
     var a = C[cyc[(ph * rapide) & 3]], b = C[cyc[((ph * rapide) + 2) & 3]];
     var blink = E.blink ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
     var f9 = C[Q.remap[9]], f10 = C[Q.remap[10]];
-    for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutP5[i] = i; }
+    for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutFire[i] = i; lutP5[i] = i; }
     lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : f9; lutBase[9] = f9; lutBase[10] = f10;
     lutLit[5] = a; lutLit[6] = b; lutLit[7] = C.AM; lutLit[8] = C.JA; lutLit[9] = f9; lutLit[10] = f10;
     lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (Math.floor(t * 6) & 1) ? C.BR : C.SA; lutDark[8] = (Math.floor(t * 4) & 1) ? C.AM : C.BR;
     lutDark[9] = C.NU; lutDark[10] = C.NU; lutDark[12] = C.AR;      // la cité s'éteint ; restent les incendies (étiquettes 7 et 8)
+    var fa = (Math.floor(t * 6) & 1) ? C.BR : C.AM, fb = (Math.floor(t * 5 + 1) & 1) ? C.AM : C.BR;
+    lutFire[5] = fa; lutFire[6] = fb; lutFire[7] = fa; lutFire[8] = fb; lutFire[9] = fb; lutFire[10] = fa; lutFire[12] = C.AR;   // les étages qui brûlent
     /* les balises des structures : sang / nuit à la noire, ambre / nuit à contretemps */
     var bt = (Math.floor(tm * 0.5) & 1) === 0;
     lutP5[5] = bt ? C.SA : C.NU; lutP5[6] = bt ? C.NU : C.AM; lutP5[9] = C.AM; lutP5[10] = C.JA;
@@ -497,7 +500,7 @@
     for (var r = 0; r < CH; r++) {
       var L = lutBase;
       if (lit > 0 && ((r + fenRanges) % 7) < 3 + 3 * lit) L = lutLit;
-      if (r < rowsDark) L = lutDark;
+      if (r < rowsDark) L = (((r * 3 + fenRanges) % 4) === 0) ? lutFire : lutDark;
       lutRows[r] = L;
     }
   }
@@ -766,7 +769,7 @@
     ensureCur();
     tranche();
     /* le sol avance d'une case par temps de jeu (deux au chaos, six pendant LE VOL), plus vite en accélération */
-    var E = ET[cur.e], mult = E.avance;
+    var E = ET[cur.e], mult = E.avance * accelK;
     if (N.S && N.S.input && N.S.input.boost) mult *= (RD().sol && RD().sol.avanceBoost) || 1.6;
     if (!mouvementCoupe()) avZ += dt * (PAS_Z / TEMPS) * mult;
     if (fenT > 0) fenT -= dt;
@@ -920,6 +923,8 @@
   function eclair() { eclairT = 0.32; eclairX = ((Math.floor(tDecor * 1000) * 2654435761) >>> 0) / 4294967296; }
   function eclipse(t) { eclipseK = clamp01(+t || 0); }
   function horizon() { return YH; }
+  /* multiplie la vitesse d'avance du sol (la plongée : les lignes accélèrent) ; 1 = normal */
+  function acceler(k) { accelK = clamp(+k || 1, 0, 16); }
 
   /* silhouettes du CYCLOPE dans P2 (grande, loin) et P5 (plus près) : un disque de nuit profonde, un œil en brasier */
   function silhouette(nom, plan, x, y, k) {
@@ -1005,12 +1010,12 @@
     if (N.gfx && N.gfx.W) { verifierVue(); ensure(q, e); }
     trans = null; cur.q = q; cur.e = e;
   }
-  function reset() { trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
+  function reset() { accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
 
   N.decor = {
     build: build, reset: reset, fixer: fixer, etat: etat, quartier: quartier, preparer: preparer,
     drawFar: drawFar, drawPlateau: drawPlateau, drawFront: drawFront, drawVol: drawVol,
-    ondule: ondule, fenetres: fenetres, eclair: eclair, silhouette: silhouette, eclipse: eclipse, horizon: horizon,
+    acceler: acceler, ondule: ondule, fenetres: fenetres, eclair: eclair, silhouette: silhouette, eclipse: eclipse, horizon: horizon,
     masqueCite: masqueCite, QUARTIERS: QNOMS, ETATS: Object.keys(ET),
     transition: function () { return trans ? trans.u : 1; },
     soleilX: function () { return sunXLast; },

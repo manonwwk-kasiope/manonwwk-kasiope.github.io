@@ -3,7 +3,7 @@
    1 024 × 512 px, le passage d'un quartier à l'autre, et LE VOL. Rien de ce fichier n'entre dans le jeu.
 
    Paramètres d'adresse :
-     ?essai=decor (défaut) | vol          le banc
+     ?essai=decor (défaut) | vol | plongee   le banc
      &q=docks|artere|centrale|ciel|tours|coeur|eclipse    quartier de départ        &e=calme|montee|chaos|...
      &auto=0                              ne change pas de quartier tout seul (sinon un toutes les 7 s)
      &parcours=promenade|murs|fixe        la tête : promenade lente, le long des quatre murs, immobile
@@ -70,6 +70,7 @@
       for (var k = 0; k < n; k++) {
         var d = N.horloge.avancer();
         if (mode === 'vol' && N.vol && N.vol.actif()) { N.vol.update(d); continue; }
+        if (mode === 'plongee') { N.intro.plongee.update(d); continue; }
         avancer(d);
         N.cam.update(d);
       }
@@ -77,12 +78,14 @@
         var pr = PAIRES[volPaire % PAIRES.length]; volPaire++;
         N.decor.quartier(pr[0]); N.vol.start(pr[0], pr[1]);
       }
+      if (mode === 'plongee' && !N.intro.plongee.actif() && N.horloge.t() > 0.2) N.intro.plongee.start({ x: 300, y: 175 });
       tq += dt;
       if (mode === 'decor' && auto && tq > 7) { tq = 0; qi = (qi + 1) % QS.length; N.decor.quartier(QS[qi]); N.decor.etat(PARQ[QS[qi]]); }
     },
     draw: function () {
       var g = N.gfx, cam = N.cam;
       if (mode === 'vol' && N.vol && N.vol.actif()) { var t0v = performance.now(); N.vol.draw(); coutVol.push(performance.now() - t0v); if (coutVol.length > 600) coutVol.shift(); return; }
+      if (mode === 'plongee') { g.clear(0); N.intro.plongee.draw(); return; }
       var t0 = performance.now();
       g.clear(0); g.origin(0, 0);
       N.decor.drawFar(cam);

@@ -923,6 +923,69 @@
     else if (I.nom) drawInterlude();
   }
 
+  /* ================================ la plongée (§ 5.6) ================================
+     Après l'ouverture, la caméra descend de l'horizon du titre dans le monde de jeu, comme dans Tempest : 0,8 s.
+     C'est le monde de jeu qui apparaît : le décor lumineux de N.decor (ciel, soleil, cité, sol), pas un panneau.
+     La caméra part haut (le ciel envahit l'écran, l'horizon est bas) et descend jusqu'à sa place de départ ;
+     les lignes du sol accélèrent puis se calment ; l'horizon reste en place et devient le ciel du jeu. À la fin,
+     le serpent jaillit d'une étincelle cyan (la joueuse, seule autorisée à être cyan), puis READY! et GO! sont
+     l'affaire du HUD. Sautable à un toucher, avec la garde de 300 ms.
+       N.intro.plongee.start({x, y})   x, y : coin de la vue de départ du jeu (par défaut N.cam) -> true si elle part
+       .update(dt)  .draw()  .actif()  .skip()  .progres() -> 0..1  .resultat() -> 'fin' | 'saut' | null
+     79-jeu.js la lance à l'état `plongee` et passe à `jeu` quand actif() redevient faux. Elle n'appelle rien
+     au chargement et se replie (vide, étincelle seule) si N.decor n'existe pas. */
+  var PL = { on: false, t: 0, dur: 0.8, x: 0, y: 0, y0: 0, fin: null, garde: 0, ex: 0, ey: 0 };
+  var cPl = { x: 0, y: 0 };
+  function plongeeStart(o) {
+    if (!pal()) return false;
+    o = o || {};
+    var cam = N.cam || { x: 0, y: 0 };
+    PL.on = true; PL.t = 0; PL.fin = null; PL.garde = 0;
+    PL.dur = o.duree > 0 ? +o.duree : 0.8;                          // → N.R.secteurs[0].structure.plongee (0,8 s visibles)
+    PL.x = typeof o.x === 'number' ? o.x : (cam.x | 0);
+    PL.y = typeof o.y === 'number' ? o.y : (cam.y | 0);
+    PL.y0 = 0;                                                      // la caméra part tout en haut du monde : l'horizon est bas
+    var s = S(); if (s.input) s.input.any = false;
+    if (N.decor && N.decor.acceler) N.decor.acceler(8);
+    return true;
+  }
+  function plongeeFin(pourquoi) {
+    PL.on = false; PL.fin = pourquoi;
+    if (N.decor && N.decor.acceler) N.decor.acceler(1);
+  }
+  function plongeeUpdate(dt) {
+    if (!PL.on) return;
+    if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
+    PL.t += dt; PL.garde += dt;
+    var u = clamp01(PL.t / PL.dur), k = 1 - easeOut(u);
+    if (N.decor && N.decor.acceler) N.decor.acceler(1 + 7 * k * k);
+    var s = S(), inp = s.input;
+    if (PL.garde >= GARDE && inp && inp.any) { plongeeFin('saut'); return; }
+    if (PL.garde < GARDE && inp) inp.any = false;
+    if (PL.t >= PL.dur) plongeeFin('fin');
+  }
+  function plongeeDraw() {
+    if (!PL.on || !pal() || !G() || !G().buf) return;
+    var g = G(), u = clamp01(PL.t / PL.dur), e = easeOut(u), H = g.H | 0, W = g.W | 0;
+    g.origin(0, 0);
+    var cy = PL.y0 + (PL.y - PL.y0) * e;
+    cPl.x = PL.x; cPl.y = Math.round(cy);
+    if (N.decor && N.decor.drawFar) N.decor.drawFar(cPl);
+    else g.clear(P.vide);
+    /* l'étincelle cyan : elle naît au point de départ du serpent (centre de la zone sûre) et jaillit sur la fin */
+    var us = clamp01((u - 0.55) / 0.45);
+    if (us > 0) {
+      var cx = W >> 1, cyy = Math.round(H * 0.62), r = Math.round(2 + us * 14), a = 1 - us * 0.6;
+      g.ring(cx, cyy, r, P.cyan, a);
+      g.ring(cx, cyy, Math.max(1, r - 3), P.cyanP, a * 0.8);
+      for (var k = 0; k < 4; k++) {
+        var ax = k < 2 ? (k ? 1 : -1) : 0, ay = k >= 2 ? (k === 3 ? 1 : -1) : 0, l = Math.round(3 + us * 9);
+        g.line(cx + ax * 2, cyy + ay * 2, cx + ax * (2 + l), cyy + ay * (2 + l), P.cyanP);
+      }
+      g.rect(cx - 1, cyy - 1, 3, 3, P.os);
+    }
+  }
+
   N.intro = {
     reset: reset,
     update: update,
@@ -936,6 +999,11 @@
       return { mode: O.on ? 'ouverture' : (I.nom ? 'interlude' : null), etape: O.on ? ETAPES[O.k].nom : I.nom,
         t: O.on ? O.t : I.t, u: O.on ? O.u : I.t, guard: G_.t < GARDE, armed: G_.armed, typed: O.typed,
         busy: I.nom === 'boss', phase: S().phase };
+    },
+    plongee: {
+      start: plongeeStart, update: plongeeUpdate, draw: plongeeDraw, skip: function () { if (PL.on) plongeeFin('saut'); },
+      actif: function () { return PL.on; }, progres: function () { return PL.dur > 0 ? clamp01(PL.t / PL.dur) : 1; },
+      resultat: function () { return PL.fin; }
     },
     log: LOG,
     ETAPES: ETAPES,
