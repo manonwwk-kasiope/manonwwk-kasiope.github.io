@@ -11,7 +11,9 @@ var S = {
   t: 0, dt: 0, frame: 0, phase: 'intro', seed: 2084, rngState: 2084,
   shake: 0, heat: 0, score: 0, lives: 3, tension: 0,
   enemies: [], player: null, challenge: null, paused: false,
-  view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } }, input: { x: 0, y: 0, mag: 0, fire: false, any: false },
+  view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } },
+  /* REFONTE § 7.8 : boost, pouvoir, apogee (vrais pendant un pas, vidés après la mise à jour), gestes et taps (vidés après la mise à jour) */
+  input: { x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [] },
 };
 N.S = S;
 
@@ -118,19 +120,86 @@ function stickUpdate() {
   if (a < STICK_MORT) { S.input.mag = 0; return; }        // la dernière direction est gardée
   S.input.x = dx / m; S.input.y = dy / m; S.input.mag = a;
 }
+/* ---- § 2.16 : un geste, une action, aucune confusion ----
+   Le manche est le premier doigt posé. Un doigt posé pendant que le manche est tenu depuis au moins 150 ms est un
+   doigt d'action ; posé avant, il attend (si le manche se lève il devient le manche, sinon il n'est rien). Le doigt
+   d'action est classé UNE fois, au premier de trois instants : TOUCHER (relevé en moins de 180 ms, déplacé de moins
+   de 10 pt : pouvoir), GLISSÉ (24 pt ou plus en moins de 220 ms : apogée, dès le seuil), TENU (encore posé à 180 ms,
+   moins de 24 pt : boost tant qu'il reste posé). Tout autre geste ne fait rien. Unités : les seuils en pt (px CSS) ;
+   x, y des gestes et des taps en px ÉCRAN (pixels du tampon), dx, dy en pt. Chiffres de § 2.16, → N.R.entree. */
+var G_ATTENTE = 150, G_TOUCHER_T = 180, G_TOUCHER_D = 10, G_GLISSE_D = 24, G_GLISSE_T = 220, G_BORD = 20, G_TAP_T = 300;   // ms, pt
+var doigts = [], stickT0 = 0;
+function doigtDe(id) { for (var i = 0; i < doigts.length; i++) if (doigts[i].id === id) return doigts[i]; return null; }
+function retirer(d) { var i = doigts.indexOf(d); if (i >= 0) doigts.splice(i, 1); }
+function deplace(d) { return Math.hypot(d.x - d.x0, d.y - d.y0); }
+function pxEcran(cx, cy, o) {
+  var r = out ? out.getBoundingClientRect() : { left: 0, top: 0 }, p = (N.gfx && N.gfx.PX) || 1;
+  o.x = Math.round((cx - r.left) / p); o.y = Math.round((cy - r.top) / p);
+  return o;
+}
+function geste(genre, d, t1) {
+  var o = { genre: genre, doigt: 'action', t0: d.t0, t1: t1, x: 0, y: 0, dx: d.x - d.x0, dy: d.y - d.y0 };
+  pxEcran(d.x0, d.y0, o);
+  S.input.gestes.push(o);
+}
+function tap(d, t1) {
+  var o = { x: 0, y: 0, t0: d.t0, t1: t1, doigt: d.role === 'manche' ? 'manche' : 'action' };
+  pxEcran(d.x, d.y, o);
+  S.input.taps.push(o);
+}
+function prendreManche(d, now) {
+  /* l'origine ne naît jamais à moins de 20 pt des bords gauche, droit et bas de la zone sûre : décalée vers l'intérieur */
+  var sa = safeArea(), W = window.innerWidth, H = window.innerHeight;
+  var ox = Math.min(Math.max(d.x, sa.l + G_BORD), Math.max(sa.l + G_BORD, W - sa.r - G_BORD));
+  var oy = Math.min(d.y, Math.max(0, H - sa.b - G_BORD));
+  d.role = 'manche';
+  stick.id = d.id; stick.ox = ox; stick.oy = oy; stick.x = d.x; stick.y = d.y;
+  stickT0 = now;
+  stickUpdate();
+}
+/* à chaque image, avant la mise à jour : les doigts qui attendent, et le TENU */
+function entreeUpdate() {
+  if (!doigts.length) return;
+  var now = performance.now(), boost = false;
+  for (var i = 0; i < doigts.length; i++) {
+    var d = doigts[i];
+    if (d.role === 'attente' && stick.id !== null && now - stickT0 >= G_ATTENTE) d.role = 'rien';
+    if (d.role !== 'action') continue;
+    if (d.classe === null && now - d.t0 >= G_TOUCHER_T) { d.classe = 'tenu'; geste('tenu', d, now); }
+    if (d.classe === 'tenu') boost = true;
+  }
+  S.input.boost = boost;
+}
+/* après la mise à jour : un pas de pouvoir ou d'apogée, et les listes d'événements, ne durent qu'une image */
+function entreeFin() {
+  S.input.pouvoir = false; S.input.apogee = false;
+  S.input.gestes.length = 0; S.input.taps.length = 0;
+}
+function entreeRaz() { doigts.length = 0; S.input.boost = false; S.input.pouvoir = false; S.input.apogee = false; S.input.gestes.length = 0; S.input.taps.length = 0; }
 function onTouchStart(e) {
   S.input.any = true; gesture();
-  if (stick.id === null && e.changedTouches && e.changedTouches.length) {
-    var t = e.changedTouches[0];
-    stick.id = t.identifier; stick.ox = stick.x = t.clientX; stick.oy = stick.y = t.clientY;
-    stickUpdate();
+  var now = performance.now();
+  for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
+    var t = e.changedTouches[i];
+    if (doigtDe(t.identifier)) continue;
+    var d = { id: t.identifier, role: 'rien', x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, t0: now, classe: null };
+    doigts.push(d);
+    if (stick.id === null) prendreManche(d, now);                 // le premier doigt posé est le manche, jamais une action
+    else d.role = (now - stickT0 >= G_ATTENTE) ? 'action' : 'attente';
   }
   if (e.cancelable) e.preventDefault();
 }
 function onTouchMove(e) {
+  var now = performance.now();
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
-    var t = e.changedTouches[i];
-    if (t.identifier !== stick.id) continue;
+    var t = e.changedTouches[i], d = doigtDe(t.identifier);
+    if (d) { d.x = t.clientX; d.y = t.clientY; }
+    if (t.identifier !== stick.id) {
+      if (d && d.role === 'action' && d.classe === null && deplace(d) >= G_GLISSE_D && now - d.t0 < G_GLISSE_T) {
+        d.classe = 'glisse'; geste('glisse', d, now); S.input.apogee = true;       // dès que le seuil est franchi
+      }
+      continue;
+    }
     stick.x = t.clientX; stick.y = t.clientY;
     var dx = stick.x - stick.ox, dy = stick.y - stick.oy, m = Math.hypot(dx, dy);
     if (m > STICK_R) { stick.ox = stick.x - dx / m * STICK_R; stick.oy = stick.y - dy / m * STICK_R; }
@@ -139,9 +208,29 @@ function onTouchMove(e) {
   if (e.cancelable) e.preventDefault();
 }
 function onTouchEnd(e) {
-  for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++)
-    if (e.changedTouches[i].identifier === stick.id) { stick.id = null; stickUpdate(); }
-  if (e.type === 'touchend') gesture();                 // pour le toucher, seul touchend vaut geste (MDN)
+  var now = performance.now(), fin = e.type === 'touchend';
+  for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
+    var t = e.changedTouches[i], d = doigtDe(t.identifier);
+    if (!d) continue;
+    d.x = t.clientX; d.y = t.clientY;
+    retirer(d);
+    var court = now - d.t0 < G_TAP_T && deplace(d) < G_TOUCHER_D;
+    if (d.role === 'manche') {
+      stick.id = null; stickUpdate();
+      if (fin && court) tap(d, now);                                // le toucher bref du manche ne fait que poser une origine
+      for (var j = 0; j < doigts.length; j++) if (doigts[j].role === 'attente') {   // le doigt qui attendait devient le manche
+        prendreManche(doigts[j], now); break;
+      }
+    } else if (d.role === 'action') {
+      if (fin && d.classe === null && now - d.t0 < G_TOUCHER_T && deplace(d) < G_TOUCHER_D) {
+        d.classe = 'toucher'; geste('toucher', d, now); S.input.pouvoir = true; tap(d, now);   // au relâcher
+      }
+    }
+  }
+  var boost = false;
+  for (var k = 0; k < doigts.length; k++) if (doigts[k].role === 'action' && doigts[k].classe === 'tenu') boost = true;
+  S.input.boost = boost;
+  if (fin) gesture();                                    // pour le toucher, seul touchend vaut geste (MDN)
   if (e.cancelable) e.preventDefault();
 }
 /* l'indicateur : un anneau tramé à l'origine et un point sous le pouce, en couleurs d'interface */
@@ -183,11 +272,13 @@ function frame(now) {
   S.frame++;
   if (typeof window !== 'undefined') window.__FRAME = S.frame;
 
+  entreeUpdate();
   if (!S.paused) {
     if (S.phase === 'intro') step('intro.update', N.intro && N.intro.update ? function () { N.intro.update(S.dt); } : null);
     else step('game.update', N.game && N.game.update ? function () { N.game.update(S.dt); } : null);
     step('fx.update', N.fx && N.fx.update ? function () { N.fx.update(S.dt); } : null);
   }
+  entreeFin();
 
   if (N.game && N.game.tension) step('tension', function () {
     S.tension = N.game.tension();
@@ -230,6 +321,12 @@ function boot() {
   window.addEventListener('keydown', function (e) { onKey(e, true); }, { passive: false });
   window.addEventListener('keyup', function (e) { onKey(e, false); });
   var app = document.getElementById('app') || window;
+  /* les gestes du système neutralisés (§ 2.16) : plus de « page précédente » au balayage du bord, ni de sélection ni de loupe */
+  if (app.style) {
+    app.style.touchAction = 'none'; app.style.overscrollBehavior = 'none'; app.style.userSelect = 'none';
+    app.style.webkitUserSelect = 'none'; app.style.webkitTouchCallout = 'none';
+  }
+  if (document.body && document.body.style) { document.body.style.overscrollBehavior = 'none'; document.body.style.touchAction = 'none'; }
   app.addEventListener('touchstart', onTouchStart, { passive: false });
   app.addEventListener('touchmove', onTouchMove, { passive: false });
   app.addEventListener('touchend', onTouchEnd, { passive: false });
@@ -238,14 +335,14 @@ function boot() {
      attend le premier geste (70-game.js affiche PAUSE tant que S.paused est vrai) */
   document.addEventListener('visibilitychange', function () {
     if (document.hidden) {
-      S.paused = true; keys = {}; stick.id = null; stickUpdate();
+      S.paused = true; keys = {}; stick.id = null; entreeRaz(); stickUpdate();
       step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
     } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
   });
   app.addEventListener('pointerdown', gesture);
   app.addEventListener('pointerup', gesture);
   app.addEventListener('click', gesture);
-  window.addEventListener('blur', function () { keys = {}; stick.id = null; stickUpdate(); S.input.fire = false; });
+  window.addEventListener('blur', function () { keys = {}; stick.id = null; entreeRaz(); stickUpdate(); S.input.fire = false; });
 
   step('intro.reset', N.intro && N.intro.reset ? function () { N.intro.reset(); } : null);
   step('game.reset', N.game && N.game.reset ? function () { N.game.reset(S.seed); } : null);
