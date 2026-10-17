@@ -489,7 +489,7 @@ N.joueuse = (function () {
     var c = pvConf();
     PV.etat = 'actif'; PV.reste = c.duree; PV.dur = c.duree;
     if (PV.id === 'traversee') st.trav = c.duree;
-    else if (PV.id === 'ralenti') { if (N.fx && N.fx.ralenti) O.safe('fx.ralenti', function () { N.fx.ralenti(c.monde, c.duree, { joueuse: false }); }); }
+    else if (PV.id === 'ralenti') { if (N.fx && N.fx.ralenti) O.safe('fx.ralenti', function () { N.fx.ralenti(c.monde, c.duree, { joueuse: false, long: true }); }); }
     else if (PV.id === 'repli') {
       st.lenAvant = st.len; st.len = Math.max(c.longueurMin, Math.round(st.len * (1 - c.longueur))); st.repli = c.duree;
       N.joueuse.degatsMul = c.degats || CFG.repliDegats;

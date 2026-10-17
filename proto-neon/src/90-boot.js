@@ -98,12 +98,14 @@ function mire() {
 }
 
 /* ---- entrées : un seul point d'entrée, clavier et doigt ---- */
+var repriseGarde = false;
 var keys = {}, clavierActif = false, sourisActive = false, sourceBureau = null;
 var sourisDernier = 0, curseurCache = false, padAvant = 0;
 function onKey(e, down) {
   if (down && (e.ctrlKey || e.metaKey || e.altKey)) return;
   if (e.repeat) return;
   keys[e.code] = down;
+  if (!down && (e.code === 'Space' || e.code === 'Enter')) repriseGarde = false;
   if (down) {
     clavierActif = true; S.input.any = true;
     if (/^(Arrow(?:Left|Right|Up|Down)|Key[AWZQSD])$/.test(e.code) || sourceBureau === null) sourceBureau = 'clavier';
@@ -144,10 +146,11 @@ function onPointer(e) {
   } else if (e.type === 'pointermove') sourisMaj(e, true);
   else if (e.type === 'pointerup' || e.type === 'pointercancel') {
     sourisMaj(e, e.type !== 'pointercancel');
-    if (!doigts.length && e.type === 'pointerup' && e.button === 0) {
+    if (!doigts.length && !repriseGarde && e.type === 'pointerup' && e.button === 0) {
       var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
       pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
     }
+    repriseGarde = false;
   }
 }
 function onWheel(e) {
@@ -334,6 +337,7 @@ function onTouchEnd(e) {
   var boost = false;
   for (var k = 0; k < doigts.length; k++) if (doigts[k].role === 'action' && doigts[k].classe === 'tenu') boost = true;
   S.input.boost = boost;
+  if (repriseGarde) { entreeFin(); S.input.any = false; repriseGarde = false; }
   if (fin) gesture();                                    // pour le toucher, seul touchend vaut geste (MDN)
   if (e.cancelable) e.preventDefault();
 }
@@ -347,6 +351,7 @@ function drawStick() {
 /* chaque geste débloque les vidéos préparées depuis le précédent ; le premier lance aussi le son */
 var audioStarted = false;
 function gesture() {
+  if (S.paused) { repriseGarde = true; entreeFin(); S.input.any = false; }
   step('art.unlock', N.art && N.art.unlock ? function () { N.art.unlock(); } : null);
   S.paused = false;                                      // un retour d'arrière-plan reprend au premier geste
   /* un touchstart ne vaut pas geste pour l'iPhone : le contexte audio créé là peut rester suspendu,
@@ -391,6 +396,22 @@ function drawPerf() {
   } else {
     var yb = G.H - (sf.b | 0) - 8, q = [S.perf.p50, S.perf.p95, S.perf.p99], c = ['acier', 'ambre', 'brasier'];
     for (var i = 0; i < 3; i++) G.rect(x, yb + i * 2, Math.min(60, Math.round(q[i] * 2)), 1, N.pal.i(c[i]));
+  }
+}
+
+/* Arrière-plan : le monde et l'interface courante restent en place. Une surimpression seule
+   évite de remplacer les cartes par N.ui.ouvrir('pause'), puis de retirer leur main à la reprise. */
+function drawPauseApplication() {
+  var G = N.gfx, O = N.outils;
+  G.origin(0, 0);
+  G.ditherRect(0, 0, G.W, G.H, N.pal.i('nuitProfonde'), 0.75);
+  if (O && O.textC) {
+    O.textC('PAUSE', G.W / 2, Math.round(G.H / 2) - 12, N.pal.i('os'), true, 2);
+    var sc = (G.PX || 1) * 7 < 17 ? 2 : 1, mot = 'TOUCHE POUR REPRENDRE', y = Math.round(G.H / 2) + 10;
+    if (O.textW(mot, sc) > G.W - 12) {
+      O.textC('TOUCHE POUR', G.W / 2, y, N.pal.i('acier'), true, sc);
+      O.textC('REPRENDRE', G.W / 2, y + 9 * sc, N.pal.i('acier'), true, sc);
+    } else O.textC(mot, G.W / 2, y, N.pal.i('acier'), true, sc);
   }
 }
 
@@ -464,6 +485,7 @@ function frame(now) {
       step('ui.draw', N.ui && N.ui.actif && N.ui.actif() ? function () { N.ui.draw(); } : null);
       if (film && N.intro.busy()) step('intro.draw', function () { N.intro.draw(); });
     }
+    if (S.paused) step('pause.application', drawPauseApplication);
     if (S.input.stick.active) step('stick.draw', N.gfx.ring && N.pal && N.pal.i ? drawStick : null);
     if (PERF_AFF) step('perf.draw', drawPerf);
     step('gfx.present', function () { N.gfx.present({ skipScale: !!(N.crt && N.crt._actif && N.crt._actif()) }); drew = true; });

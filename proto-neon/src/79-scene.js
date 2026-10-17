@@ -194,7 +194,10 @@ N.scene = (function () {
     else if (c.evt === 'convoiPasse') { jolt(0, (RS.convoi && RS.convoi.jolt) || 2); pop(head() ? head().x : 0, head() ? head().y - 14 : 0, 'BROYÉ', 'rose'); }
   }
   function onPhase(c) {
-    if (c.evt === 'entree') banniere(c.n ? 'PHASE ' + c.n : 'LE CYCLOPE', { c: 'magenta', duree: 2.0 }, 2);
+    if (c.evt === 'arrivee') {
+      var A = RS.cyclope;
+      if (A) ralenti(A.ralenti, A.duree, { long: true });
+    } else if (c.evt === 'entree') banniere(c.n ? 'PHASE ' + c.n : 'LE CYCLOPE', { c: 'magenta', duree: 2.0 }, 2);
     else if (c.evt === 'enrage') banniere("LE CYCLOPE S'EMBALLE", { c: 'magenta', duree: 2.0, clignote: true }, 2);
     else if (c.evt === 'repit') { sfx('vague'); tag('RÉPIT'); }
   }

@@ -851,9 +851,9 @@
   /* k de 0 à 1 ; dur en secondes de TEMPS RÉEL ; o : { joueuse:false (exemptée), visuel:true, long:true (au-delà du gel) } */
   function ralenti(k, dur, o) {
     k = +k; dur = +dur;
-    if (!(k > 0) || !(dur > 0)) return false;
+    if (!(k > 0) || !(dur > 0) || !isFinite(k) || !isFinite(dur)) return false;
     if (k > 1) k = 1;
-    if (dur > 3) dur = 3;
+    /* La durée appartient à N.R chez l'appelant (RALENTI = 3,5 s), pas à un plafond local. */
     var visuel = !!(o && o.visuel);
     if (!visuel && !(o && o.long)) {                       /* ralenti et gel ne se cumulent pas au-delà de 0,5 s */
       var gl = hitstopLeft() / 60;
@@ -867,7 +867,10 @@
   }
   function kVisuel() { return kVis; }
   function ralentiTick(dtR) {
-    var any = false, rd = kMonde > 0.05 ? dtR / kMonde : dtR;
+    var h = N.horloge, fixe = h && h.pas && h.pas() > 0;
+    /* Un gel donne dtMonde=0 mais consomme du temps réel. Un écran arrêté, lui,
+       suspend les ralentis : leur durée ne s'use pas dans le choix de cartes ou la pause. */
+    var any = false, rd = fixe ? (h.arretee() ? 0 : h.H) : (kMonde > 0.05 ? dtR / kMonde : dtR);
     for (var i = 0; i < RL_N; i++) if (rlL[i] > 0) { rlL[i] -= rd; if (rlL[i] < 0) rlL[i] = 0; any = true; }
     if (any) recalcK();
   }

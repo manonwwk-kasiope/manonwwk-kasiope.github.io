@@ -507,7 +507,7 @@
 
   function journal(quoi) {
     var s = S();
-    LOG.push({ e: quoi, t: +(O.on ? O.t : I.t).toFixed(3), tb: +((s.t || 0) / 1000).toFixed(3), f: s.frame | 0 });
+    LOG.push({ e: quoi, t: +(O.on ? O.t : I.t).toFixed(3), tb: +(s.t || 0).toFixed(3), f: s.frame | 0 });
     if (LOG.length > 64) LOG.shift();
   }
   function garde() {                       // nouvelle séquence : on oublie les gestes déjà faits
