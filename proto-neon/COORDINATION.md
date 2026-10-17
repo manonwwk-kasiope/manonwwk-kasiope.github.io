@@ -105,7 +105,6 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
 | `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
-| `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 
 ## Prochains chantiers (à prendre)
 
@@ -123,7 +122,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
      coup de frein puis reprise plus rapide à l'arrivée du CYCLOPE, tempo propre au VOL et aux intermèdes ;
    - la surprise doit rester lisible : annoncée par la musique (montée, coupure, stinger), pas par une rupture
      qui fait rater un virage.
-2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`. **En cours : Claude Mac, lot H** (six morceaux électro et chantés retenus par mesure, `musique/morceaux/`).
+2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`. **Fait le 18/10 (Claude Mac, lot H)** : six morceaux électro et chantés retenus par mesure (`musique/morceaux/`, `morceaux.json`), joués par vague au-dessus de la piste en blocs ; test `tools/H/morceaux.mjs` (180 contrôles).
 3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
 4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain.
 5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury. **Ordre n° 2 de Codex.**
