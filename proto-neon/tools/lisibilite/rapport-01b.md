@@ -83,3 +83,5 @@ node tools/lisibilite/banc-01b.mjs --phase apres --bundle /tmp/snake-codex01b-ap
 ```
 
 Objectif technique du lot vérifié sur les instantanés ci-dessus ; source et preuves prêtes pour livraison. Aucune dépense externe. Reste : synchroniser le bundle avec les fichiers que Claude modifie en parallèle, libérer la réservation lors de la livraison, et attendre sa revue. Prochaine action après push : pull et relecture intégrale de « Ordres pour Codex » ; reprendre codex-02 dès que le lot I est livré.
+
+Mis à jour à 18/10/2026 · 00 h 24 (Paris) : source et preuves livrées dans `2ec8ee9`, bundle mesuré dans `f90018a` (commit distinct) ; réservation de 15-decor libérée dans la coordination. Le pull et le push attendent que les fichiers en cours du lot I soient commités par Claude : aucune intervention sur ces changements d’autrui. La revue peut porter sur l’instantané f90018a, cohérent avec les reçus.

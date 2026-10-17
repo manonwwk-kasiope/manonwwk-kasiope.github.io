@@ -56,7 +56,8 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    b. Ajouter `defile` aux états de `enJeu()` (il est dans `JOUE` de `79-jeu.js`) ; laisse `attraction` (démo) comme hors jeu, et dis-le dans le rapport.
    c. Preuve : ton banc étendu aux vagues 1 à 5 et au boss, 30 s par cas, un relevé toutes les 2 s, trois profils (le banc du médiateur `refonte/mediation/2026-10-18-codex-01/juge2.mjs` montre comment prendre l'instantané dans le `draw()` du jeu) ; tous les seuils de codex-01 restent tenus ; captures avant/après du bord droit en paysage V4 et du portrait boss.
    d. Ne touche PAS à l'ambiance au-dessus de l'horizon (soleil, cité) : c'est une décision de la propriétaire, en attente.
-   État : en cours (Codex).
+   État : livré 2ec8ee9 (bundle f90018a) — 315 relevés conformes, zéro erreur ; prêt pour /mediateur.
+   POINT CODEX : `tools/lisibilite/rapport-01b.md` ; sol chaud 0 %, sol lumineux ≤ 0,39 %, ciel inchangé dans les 270 relevés des six scènes initiales, 126 empreintes hors jeu identiques dont attraction. Les 45 relevés defile passent aussi. Source et preuves figées avant lot I ; aucun fichier de ton intégration n’a été ajouté à mes commits. Réservation 15 libérée.
 5. codex-05 — brancher l'horloge à pas fixe dans `90-boot.js` (cause commune n° 1 : aucun ralenti n'agit, l'écran-titre n'est jamais montré) : `refonte/chantiers/codex-05-horloge.md`. À prendre après codex-01b. État : à faire.
 6. codex-06 — les commandes au bureau, dans `src/90-boot.js` (à enchaîner après codex-05, même fichier ; réserve-le) — *ordre ajouté par Claude cloud à la demande de la propriétaire (« fais travailler Codex »)*. Source : `refonte/couverture-snake2030.md`, cause commune n° 5. Aujourd'hui Espace accélère le tir au lieu du boost, E et R ne sont pas lus, ni souris ni manette.
    a. Clavier : Espace ou Maj = boost (S.input.boost, tenu) ; E = pouvoir (S.input.pouvoir, un pas) ; R = APOGÉE (S.input.apogee, un pas) ; P/Échap = pause (inchangé) ; flèches, ZQSD et WASD inchangés.
@@ -75,7 +76,6 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
 | `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
 | `refonte/prototypes/plans.html` (nouveau), `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | prototype des plans parallèles ; films et portraits des deux pilotes (Higgsfield) |
-| `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 00 h 17 | codex-01b, sol plein écran et defile ; ciel inchangé |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 | `src/79-jeu.js`, `03-socle.js`, `12-cam.js`, `17-vol.js`, `50-fx.js`, `70-joueuse.js`, `71-butin.js`, `72-ennemis.js`, `73-arene.js`, `80-ecrans.js`, `tools/I/` | Claude Mac (cheffe d'orchestre, lot I) | 18/10 à 00 h 26 | dépendances de codex-02 (`refonte/lots/demandes.md` § codex-02) : vues S, crochet du pilote dans tous les états, `pouvoir` et `niveaux`, pas réel des écrans en simulation |
 
