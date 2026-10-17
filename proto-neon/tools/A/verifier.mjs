@@ -17,6 +17,8 @@ await page.addInitScript(g => { window.__SEED = g; }, GRAINE);
 await page.goto(URL_JEU);
 await page.waitForFunction(() => window.__N && window.__N.game && window.__S);
 await page.evaluate(() => window.__N.intro.skip());
+/* depuis le nouveau démarrage (horloge à pas fixes), sauter l'ouverture ne suffit plus : on touche l'écran comme une joueuse, jusqu'à la partie */
+for (let k = 0; k < 12; k++) { const e0 = await page.evaluate(() => window.__N.game.etat()); if (!['demarrage', 'ouverture', 'titre', 'briefing'].includes(e0)) break; const v = page.viewportSize(); if ((await page.evaluate(() => 'ontouchstart' in window))) await page.touchscreen.tap(v.width / 2, v.height / 2); else await page.mouse.click(v.width / 2, v.height / 2); await page.waitForFunction(e => window.__N.game.etat() !== e && (window.__N.game.etat() === 'titre' || window.__N.game.etat() === 'plongee' || window.__N.game.etat() === 'jeu' ? (window.__N.game.dbg.god(true), true) : true), e0, { timeout: 3000, polling: 'raf' }).catch(() => {}); }
 await page.waitForFunction(() => window.__N.game.etat() !== 'demarrage', null, { timeout: 20000 });
 const r = await page.evaluate(async (secs) => {
   const N = window.__N, S = window.__S, g = N.game;

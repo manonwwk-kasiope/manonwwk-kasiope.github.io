@@ -20,10 +20,13 @@ const images = n => page.evaluate(n => new Promise(r => { const f0 = window.__FR
 const trace = []; let ok = true;
 const veut = async (nom, ms) => { try { await att(nom, ms); trace.push(nom); } catch (e) { ok = false; trace.push('!' + nom + '(est ' + await etat() + ')'); } };
 await page.evaluate(() => window.__N.intro.skip());
+/* depuis le nouveau démarrage (horloge à pas fixes), sauter l'ouverture ne suffit plus : on touche l'écran comme une joueuse, jusqu'à la partie */
+for (let k = 0; k < 12; k++) { const e0 = await page.evaluate(() => window.__N.game.etat()); if (!['demarrage', 'ouverture', 'titre', 'briefing'].includes(e0)) break; const v = page.viewportSize(); if (P.hasTouch) await page.touchscreen.tap(v.width / 2, v.height / 2); else await page.mouse.click(v.width / 2, v.height / 2); await page.waitForFunction(e => window.__N.game.etat() !== e && (window.__N.game.etat() === 'titre' || window.__N.game.etat() === 'plongee' || window.__N.game.etat() === 'jeu' ? (window.__N.game.dbg.god(true), true) : true), e0, { timeout: 3000, polling: 'raf' }).catch(() => {}); }
 await veut('plongee', 5000); await veut('jeu', 5000);
 // de l'XP pour une montée de niveau, puis la fin de la vague 1 : l'écran des cartes
 await page.evaluate(() => { const N = window.__N; N.cartes.xp(N.R.xp.seuils[1]); N.game.dbg.god(true); N.game.dbg.simuler(21.5); });
 await veut('nettoyage', 8000); await veut('cartes', 8000);
+if (process.env.TRACE) console.log('trace', trace.join(' > '));
 await images(60);
 await page.screenshot({ path: DIR + '/cartes-' + PROFIL + '.png' });
 const info = await page.evaluate(() => { const N = window.__N, r = N.gfx.canvas().getBoundingClientRect(); return { px: N.gfx.PX, left: r.left, top: r.top, n: N.ui.main().length, rects: N.ui.main().map((_, i) => N.ui.rect(i)), main: N.ui.main(), ecran: window.__S.ecran, garde: N.R.cartes.garde }; });
