@@ -687,6 +687,14 @@
       convoi: { codex: 'BALAIE SA VOIE' }
     },
 
+    /* codex-p4 : géométrie publiée, reprise des constantes EXISTANTES de 72/73.
+       Aucun temps d'annonce, collision, dégât ou dessin nouveau. */
+    publicationTele: {
+      tirVie: 9,                  // CFG.vieTir de 72 : portée maximale des salves du CYCLOPE
+      rucheDecalage: 3, ruchePortail: 0.4, // emplacement et délai de contact de la couvée existante
+      cyclopeTirDepart: 12, cyclopeRayonDepart: 9, cyclopeSpiraleDecalage: 0.5
+    },
+
     /* ---------------------------------------------------------------- § 4.5 les élites et les modificateurs */
     elites: {
       pv: 3, sprite: [19, 21], gelImages: 5, force: 0.8, cellules: 6, noyaux: 1, apogee: 12,
