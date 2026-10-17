@@ -103,7 +103,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
-| `src/50-fx.js`, `src/79-scene.js`, `src/79-jeu.js`, `src/60-intro.js`, `src/90-boot.js`, `tools/horloge/` | Codex | 18/10 à 01 h 18 | codex-05b ; 90 nécessaire au raccord pause car il saute update lorsque S.paused ; surimpression sans remplacer les cartes |
+| `src/50-fx.js`, `src/79-scene.js`, `src/79-jeu.js`, `src/60-intro.js`, `src/90-boot.js`, `src/70-joueuse.js`, `tools/horloge/` | Codex | 18/10 à 01 h 18 | codex-05b ; 90 nécessaire au raccord pause ; 70 doit déclarer RALENTI long:true pour ne pas tronquer 3,5 s si un gel est actif ; aucun remplacement de main |
 | `src/80-ecrans.js`, `src/77-score.js` | Codex (session parallèle codex-p7) | 18/10 à 01 h 26 | CONTINUER ? sur l'écran de fin (R-18) ; raccord de `79-jeu.js` livré en correctif |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 01 h 10 | codex-01c : tentative unique contours/enseignes, soleil plein, jury |
