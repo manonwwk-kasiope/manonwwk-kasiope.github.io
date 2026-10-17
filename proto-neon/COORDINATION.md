@@ -57,6 +57,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
+| `src/68-terminal.js` (nouveau), `tools/terminal/` | Claude cloud | 18/10 à 00 h 20 | l'époque 1976, module autonome (`refonte/VISION-PROGRESSION.md` § 1, étape 2) ; branchement dans `79-jeu.js` et musique demandés à la cheffe d'orchestre, pas faits par moi |
 
 ## Prochains chantiers (à prendre)
 

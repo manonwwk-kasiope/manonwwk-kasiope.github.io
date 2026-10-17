@@ -40,6 +40,21 @@ La palette fermée de seize couleurs reste la règle : les époques anciennes en
 (2, puis 4, puis 16), elles n'en ajoutent pas. Le cyan reste à la joueuse. L'iPhone reste la plateforme de
 référence à chaque époque.
 
+### La musique du début : bidon, mais menaçante
+
+Consigne de la propriétaire (18 octobre) : « musiques vraiment bidons au début, mais qui laissent transparaître que
+ça va tout pulvériser ensuite ». En 1976, la musique est un **bip binaire** à une voix, onde carrée, deux ou trois
+notes, presque ridicule. Mais sous elle, de plus en plus, des signes que quelque chose d'énorme arrive :
+
+- une **sous-basse** presque inaudible qui gronde par moments, comme un moteur qui chauffe sous le plancher ;
+- des **notes du motif de Neon Velocity** cachées dans les bips, de plus en plus reconnaissables ;
+- des **glitchs** : un bip qui se dédouble, une mesure qui saute, une seconde de distorsion ;
+- un **compte à rebours implicite** : à chaque objectif atteint, une couche s'ajoute (un deuxième bip, un écho,
+  un battement de grosse caisse étouffé), jusqu'à la « fissure » où tout explose dans la musique de 1982.
+
+À l'image, la même menace : la grille qui tremble au rythme de la sous-basse, une case qui clignote en couleur
+une image sur deux cents, un reflet de néon qui passe sous l'écran (petite surface, jamais un flash plein écran).
+
 ## 2. Le WARP et le curseur cible
 
 - **Quand** : par moments choisis (pas au hasard) — jauge de warp pleine, pick-up WARP, ou automatiquement
