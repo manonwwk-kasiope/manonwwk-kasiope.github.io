@@ -23,6 +23,9 @@
      N.intro.stop()             retire l'interlude ou le fond de fin (relance d'une partie). Rend la main au jeu.
      N.intro.skip()             saute ce qui est en cours, comme un toucher.
      N.intro.state(), .log      état et journal horodaté des étapes, pour les tests ; .ETAPES, .GARDE.
+     N.intro.plongee            la PLONGÉE de 0,8 s vers le monde de jeu (REFONTE.md § 5.6), lancée par 79-jeu.js à l'état
+                                `plongee` : .start({x,y}) .update(dt) .draw() .actif() .skip() .progres() .resultat().
+                                Elle dessine le décor lumineux de N.decor ; voir le bloc « la plongée » plus bas.
 
    CE QUE 70-game.js FAIT (et fait déjà) :
 

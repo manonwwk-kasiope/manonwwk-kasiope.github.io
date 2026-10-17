@@ -113,26 +113,26 @@
      table de couleurs. sun : hauteur du soleil (1 = posé sur l'horizon, entier) ; ciel : intensité des tramages
      brasier/ambre/sang de l'horizon ; remap : table de couleurs des fenêtres (étiquettes 9 et 10). */
   var QU = {
-    docks:    { nom: 'LES DOCKS', seed: 1101, sun: 1.12, ciel: { br: 0.5, am: 0.3, sa: 1.0, haut: 38 }, fen: 0.95, bande: 3, miroir: 0.9,
-                ville: { wMin: 14, wMax: 38, hMin: 22, hMax: 50, ecartMin: -2, ecartMax: 3, toit: 'conteneurs', enseignes: 6 },
+    docks:    { nom: 'LES DOCKS', seed: 1101, sun: 1.12, ciel: { br: 0.6, am: 0.34, sa: 1.0, haut: 38 }, fen: 0.95, bande: 3, miroir: 0.9,
+                ville: { wMin: 14, wMax: 38, env: [13, 13, 13, 13], ecartMin: -2, ecartMax: 3, toit: 'conteneurs', enseignes: 6 },
                 struct: ['grue', 'portique', 'grue', 'conteneurs'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.6 },
     artere:   { nom: "L'ARTÈRE", seed: 2202, sun: 0.95, ciel: { br: 0.66, am: 0.42, sa: 1.1, haut: 40 }, fen: 0.95, bande: 3, miroir: 0.7,
-                ville: { wMin: 10, wMax: 24, hMin: 40, hMax: 84, ecartMin: -1, ecartMax: 2, toit: 'tour', enseignes: 18, monorail: true },
+                ville: { wMin: 10, wMax: 24, env: [62, 54, 12, 10], ecartMin: -1, ecartMax: 2, toit: 'tour', enseignes: 18, monorail: true },
                 struct: ['pylone', 'panneau', 'pylone', 'panneau', 'rail'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.4 },
     centrale: { nom: 'LA CENTRALE', seed: 3303, sun: 0.88, ciel: { br: 0.86, am: 0.34, sa: 1.4, haut: 44 }, fen: 1.0, bande: 3, miroir: 0.8,
-                ville: { wMin: 18, wMax: 40, hMin: 30, hMax: 70, ecartMin: 0, ecartMax: 5, toit: 'reacteur', enseignes: 8 },
+                ville: { wMin: 18, wMax: 40, env: [10, 10, 12, 60], ecartMin: 0, ecartMax: 5, toit: 'reacteur', enseignes: 8 },
                 struct: ['cheminee', 'conduite', 'cheminee', 'cheminee', 'conduite'], remap: { 9: 'BR', 10: 'AM' }, cyc: ['SA', 'BR', 'BR', 'AM'], montagnes: 0.5 },
-    ciel:     { nom: 'LE CIEL', seed: 4404, sun: 1.45, ciel: { br: 0.72, am: 0.55, sa: 0.8, haut: 36 }, fen: 0.45, bande: 2, miroir: 0.4, etoiles: 120,
-                ville: { wMin: 6, wMax: 14, hMin: 10, hMax: 34, ecartMin: 0, ecartMax: 4, toit: 'plat', enseignes: 3 },
+    ciel:     { nom: 'LE CIEL', seed: 4404, sun: 1.45, ciel: { br: 0.62, am: 0.55, sa: 0.8, haut: 36 }, fen: 0.45, bande: 2, miroir: 0.4, etoiles: 120,
+                ville: { wMin: 6, wMax: 14, env: [5, 5, 5, 5], ecartMin: 0, ecartMax: 4, toit: 'plat', enseignes: 3 },
                 struct: ['nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage', 'nuage'], remap: { 9: 'AM', 10: 'JA' }, cyc: ['SA', 'BR', 'AM', 'JA'], montagnes: 0.0 },
     tours:    { nom: 'LES TOURS', seed: 5505, sun: 0.78, ciel: { br: 0.7, am: 0.42, sa: 1.3, haut: 46 }, fen: 1.0, bande: 3, miroir: 0.7,
-                ville: { wMin: 9, wMax: 20, hMin: 52, hMax: 92, ecartMin: -1, ecartMax: 2, toit: 'antenne', enseignes: 10 },
+                ville: { wMin: 9, wMax: 20, env: [84, 88, 86, 82], ecartMin: -1, ecartMax: 2, toit: 'antenne', enseignes: 10 },
                 struct: ['antenne', 'projecteur', 'antenne', 'projecteur'], remap: { 9: 'JA', 10: 'AM' }, cyc: ['SA', 'AM', 'JA', 'BR'], montagnes: 0.3 },
     coeur:    { nom: 'LE CŒUR', seed: 6606, sun: 0.62, ciel: { br: 0.85, am: 0.12, sa: 1.6, haut: 50 }, fen: 0.9, bande: 3, miroir: 0.9,
-                ville: { wMin: 12, wMax: 30, hMin: 30, hMax: 66, ecartMin: -2, ecartMax: 2, toit: 'tour', enseignes: 12, centrale: true },
+                ville: { wMin: 12, wMax: 30, env: [8, 12, 62, 8], ecartMin: -2, ecartMax: 2, toit: 'tour', enseignes: 12, centrale: true },
                 struct: ['monolithe', 'monolithe', 'eclair', 'monolithe'], remap: { 9: 'BR', 10: 'AM' }, cyc: ['SA', 'BR', 'BR', 'AM'], montagnes: 0.5 },
     eclipse:  { nom: "L'ÉCLIPSE", seed: 7707, sun: 1.0, ciel: { br: 0.7, am: 0.0, sa: 1.8, haut: 50 }, fen: 0.7, bande: 3, miroir: 0.6,
-                ville: { wMin: 12, wMax: 30, hMin: 28, hMax: 64, ecartMin: -2, ecartMax: 3, toit: 'tour', enseignes: 6 },
+                ville: { wMin: 6, wMax: 14, env: [26, 32, 28, 32], ecartMin: 8, ecartMax: 26, toit: 'tour', enseignes: 6 },
                 struct: ['monolithe', 'cheminee', 'monolithe', 'cheminee'], remap: { 9: 'BR', 10: 'AM' }, cyc: ['SA', 'BR', 'SA', 'BR'], montagnes: 0.5 }
   };
   var QNOMS = ['docks', 'artere', 'centrale', 'ciel', 'tours', 'coeur', 'eclipse'];
@@ -151,6 +151,12 @@
   var cache = { ville: {}, struct: {}, mont: {}, sky: {}, floor: {}, mist: null, p6: null, cles: '' };
   var vueW = 0, vueH = 0;
 
+  /* l'enveloppe des hauteurs d'un quartier : quatre points, interpolés, périodiques sur la largeur de la cité. Elle donne
+     à chaque quartier sa silhouette (qui est haut, où) : deux quartiers n'ont jamais la même, IoU des masques < 0,5. */
+  function envAt(env, x) {
+    var p = (((x % CW) + CW) % CW) / CW * 4, i0 = Math.floor(p), f = p - i0;
+    return env[i0 & 3] + (env[(i0 + 1) & 3] - env[i0 & 3]) * f;
+  }
   /* ---- P3 : la cité, 640 × 96, bouclée ---- */
   function buildVille(q) {
     var Q = QU[q], V = Q.ville, r = flux(Q.seed), img = newImg(CW, CH), base = CH - 1;
@@ -160,7 +166,7 @@
       var x = -r.i(0, 18);
       var corps = pass === 0 ? C.NU : C.AR;
       while (x < CW) {
-        var w = r.i(V.wMin, V.wMax), h = r.i(V.hMin, V.hMax);
+        var w = r.i(V.wMin, V.wMax), h = Math.max(4, Math.round(envAt(V.env, x + (w >> 1)) * r.r(0.78, 1.22)));
         if (pass === 0) h = Math.round(h * 0.78) + 3;
         if (V.centrale && pass === 1 && x > CW / 2 - 70 && x < CW / 2 + 40) h = r.i(60, 90);
         h = Math.min(h, CH - 2);
@@ -488,17 +494,17 @@
     if (mouvementCoupe()) ph = 0;
     var rapide = E.pulse ? 2 : 1;
     var a = C[cyc[(ph * rapide) & 3]], b = C[cyc[((ph * rapide) + 2) & 3]];
-    var blink = E.blink ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
+    var blink = (E.blink && !mouvementCoupe()) ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
     var f9 = C[Q.remap[9]], f10 = C[Q.remap[10]];
     for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutFire[i] = i; lutP5[i] = i; }
     lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t * 1.4) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
     lutLit[5] = a; lutLit[6] = b; lutLit[7] = C.AM; lutLit[8] = C.JA; lutLit[9] = f9; lutLit[10] = f10;
-    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (Math.floor(t * 6) & 1) ? C.BR : C.SA; lutDark[8] = (Math.floor(t * 4) & 1) ? C.AM : C.BR;
+    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (!mouvementCoupe() && (Math.floor(t * 6) & 1)) ? C.BR : C.SA; lutDark[8] = (!mouvementCoupe() && (Math.floor(t * 4) & 1)) ? C.AM : C.BR;
     lutDark[9] = C.NU; lutDark[10] = C.NU; lutDark[12] = C.AR;      // la cité s'éteint ; restent les incendies (étiquettes 7 et 8)
-    var fa = (Math.floor(t * 6) & 1) ? C.BR : C.AM, fb = (Math.floor(t * 5 + 1) & 1) ? C.AM : C.BR;
+    var mc = mouvementCoupe(), fa = (!mc && (Math.floor(t * 6) & 1)) ? C.BR : C.AM, fb = (!mc && (Math.floor(t * 5 + 1) & 1)) ? C.AM : C.BR;
     lutFire[5] = fa; lutFire[6] = fb; lutFire[7] = fa; lutFire[8] = fb; lutFire[9] = fb; lutFire[10] = fa; lutFire[12] = C.AR;   // les étages qui brûlent
     /* les balises des structures : sang / nuit à la noire, ambre / nuit à contretemps */
-    var bt = (Math.floor(tm * 0.5) & 1) === 0;
+    var bt = mouvementCoupe() || (Math.floor(tm * 0.5) & 1) === 0;
     lutP5[5] = bt ? C.SA : C.NU; lutP5[6] = bt ? C.NU : C.AM; lutP5[9] = C.AM; lutP5[10] = C.JA;
     /* par rangée : les fenêtres allumées par les élites (fenetres()), l'éclipse qui éteint la cité rangée par rangée */
     var lit = fenT > 0 ? clamp01(fenT / 1.8) : 0;
@@ -771,6 +777,7 @@
     verifierVue();
     if (!cam) cam = N.cam || { x: 0, y: 0 };
     var camX = cam.x | 0, camY = cam.y | 0;
+    if (mouvementCoupe()) { camX = 300; camY = 160; }                  // mouvement réduit : tous les facteurs de P0 à P6 passent à 0
     var t = tempsJeu();
     var dt = lastT < 0 ? 0 : t - lastT; lastT = t; if (dt < 0) dt = 0; if (dt > 0.25) dt = 0.25;
     tDecor = t;

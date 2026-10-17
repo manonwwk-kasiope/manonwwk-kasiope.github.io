@@ -56,6 +56,7 @@
   N.world.reset();
   N.decor.reset(); N.decor.build();
   setQ(QS[qi]); N.decor.quartier(QS[qi]); N.decor.etat(P.get('e') || PARQ[QS[qi]]);
+  if (!N.joueuse) N.joueuse = { tete: head };          // l'alerte de proximité du plateau lit N.joueuse.tete
   N.cam.suit(head); N.cam.reset(512, 256);
   var phaseVol = 0, volPaire = 0;
   var PAIRES = [['docks', 'artere'], ['artere', 'centrale'], ['centrale', 'ciel'], ['ciel', 'tours'], ['tours', 'coeur']];
