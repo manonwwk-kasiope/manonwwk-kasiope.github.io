@@ -1,0 +1,6016 @@
+{
+  "dateParis": "18/10/2026 01:24:32",
+  "calibration": "10/10 e1bdc6f",
+  "profils": [
+    {
+      "nom": "paysage",
+      "option": {},
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 59,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 213,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "jeu",
+          "attendu": "jeu",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 338.57472214155905,
+            "y": 216.7317265938059,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 286.2828997379024,
+            "y": 186.82863056484098,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 338.57472214155905,
+            "y": 216.7317265938059,
+            "t": 0.6000000000000003,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 286.2828997379024,
+            "y": 186.82863056484098,
+            "t": 0.7999999999999996,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "paysage",
+      "option": {
+        "boss": true
+      },
+      "debut": {
+        "etat": "boss",
+        "joueuse": "vivant",
+        "vague": 5,
+        "phase": "boss",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 59,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 213,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "boss",
+          "attendu": "boss",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 5,
+          "attendu": 5,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "cyclope",
+            "x": 389.12,
+            "y": 208,
+            "elite": false,
+            "vue": {
+              "x": 178,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "anticipee": {
+              "x": 256,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "distTete": 48
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 157,
+          "t": 1.141666666666665,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 545.2717085662607,
+            "y": 279.43518277214616,
+            "t": 0.19999999999999998,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 550.881104336582,
+            "y": 263.76346975175693,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 2,
+            "type": "cyclope",
+            "x": 389.12,
+            "y": 208,
+            "elite": false,
+            "vue": {
+              "x": 178,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "anticipee": {
+              "x": 275,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "distTete": 48
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 755,
+          "t": 4.941666666666702,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 545.2634526363627,
+            "y": 279.46067009282433,
+            "t": 0.6000000000000003,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 549.8750752524791,
+            "y": 263.75984794480155,
+            "t": 0.7999999999999996,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "paysage",
+      "option": {
+        "expiration": true
+      },
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 59,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            300,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 213,
+            "y": 157,
+            "w": 150,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "décompte complet",
+          "valeur": [
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "attendu": "9 → 0",
+          "ok": true
+        },
+        {
+          "nom": "zéro encore proposé",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "délai expiré : refus",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 338.57472214155905,
+            "y": 216.7317265938059,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 286.2828997379024,
+            "y": 186.82863056484098,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "portrait",
+      "option": {},
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "jeu",
+          "attendu": "jeu",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 473.4481149378162,
+            "y": 117.39410238639925,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 444.2909739731422,
+            "y": 95.7514732063845,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 473.4481149378162,
+            "y": 117.39410238639925,
+            "t": 0.6000000000000003,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 444.2909739731422,
+            "y": 95.7514732063845,
+            "t": 0.7999999999999996,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "portrait",
+      "option": {
+        "boss": true
+      },
+      "debut": {
+        "etat": "boss",
+        "joueuse": "vivant",
+        "vague": 5,
+        "phase": "boss",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "boss",
+          "attendu": "boss",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 5,
+          "attendu": 5,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "cyclope",
+            "x": 512,
+            "y": 256,
+            "elite": false,
+            "vue": {
+              "x": 415,
+              "y": 106,
+              "w": 195,
+              "h": 422
+            },
+            "anticipee": {
+              "x": 415,
+              "y": 28,
+              "w": 195,
+              "h": 422
+            },
+            "distTete": 61.44
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 157,
+          "t": 1.141666666666665,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 549.4326992005444,
+            "y": 365.5937863254403,
+            "t": 0.19999999999999998,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 562.8963596213971,
+            "y": 361.2012528575816,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 2,
+            "type": "cyclope",
+            "x": 512,
+            "y": 256,
+            "elite": false,
+            "vue": {
+              "x": 415,
+              "y": 106,
+              "w": 195,
+              "h": 422
+            },
+            "anticipee": {
+              "x": 415,
+              "y": 9,
+              "w": 195,
+              "h": 422
+            },
+            "distTete": 61.44
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 755,
+          "t": 4.941666666666702,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 549.4277487672853,
+            "y": 365.68181398386184,
+            "t": 0.6000000000000003,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 562.8762031987526,
+            "y": 361.1003543450876,
+            "t": 0.7999999999999996,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "portrait",
+      "option": {
+        "expiration": true
+      },
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            180,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "décompte complet",
+          "valeur": [
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "attendu": "9 → 0",
+          "ok": true
+        },
+        {
+          "nom": "zéro encore proposé",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "délai expiré : refus",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 473.4481149378162,
+            "y": 117.39410238639925,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 444.2909739731422,
+            "y": 95.7514732063845,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "bureau",
+      "option": {},
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 28,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 182,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "jeu",
+          "attendu": "jeu",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 352.5199245661597,
+            "y": 206.62075250575776,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 313.00436730200545,
+            "y": 172.03411977121004,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 352.5199245661597,
+            "y": 206.62075250575776,
+            "t": 0.6000000000000003,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 313.00436730200545,
+            "y": 172.03411977121004,
+            "t": 0.7999999999999996,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "bureau",
+      "option": {
+        "boss": true
+      },
+      "debut": {
+        "etat": "boss",
+        "joueuse": "vivant",
+        "vague": 5,
+        "phase": "boss",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        },
+        {
+          "etat": "boss",
+          "joueuse": "vivant",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": "C"
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 5,
+          "phase": "boss",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 2345,
+          "vies": 0,
+          "marque": "C"
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 28,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 182,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "CONTINUER → jeu",
+          "valeur": "boss",
+          "attendu": "boss",
+          "ok": true
+        },
+        {
+          "nom": "joueuse vivante",
+          "valeur": "vivant",
+          "attendu": "vivant",
+          "ok": true
+        },
+        {
+          "nom": "longueur début de vague",
+          "valeur": 13,
+          "attendu": 13,
+          "ok": true
+        },
+        {
+          "nom": "cartes conservées",
+          "valeur": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "attendu": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "ok": true
+        },
+        {
+          "nom": "armes début de vague",
+          "valeur": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "attendu": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "vies",
+          "valeur": 3,
+          "attendu": 3,
+          "ok": true
+        },
+        {
+          "nom": "score",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        },
+        {
+          "nom": "vague conservée",
+          "valeur": 5,
+          "attendu": 5,
+          "ok": true
+        },
+        {
+          "nom": "marque",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "record C",
+          "valeur": "C",
+          "attendu": "C",
+          "ok": true
+        },
+        {
+          "nom": "record C persisté/rechargé",
+          "valeur": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "attendu": [
+            {
+              "score": 2345,
+              "marque": "C"
+            },
+            {
+              "score": 1234,
+              "marque": ""
+            }
+          ],
+          "ok": true
+        },
+        {
+          "nom": "fin idempotente",
+          "valeur": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "attendu": "{\"v\":1,\"profil\":{\"energie\":0,\"deblocages\":[],\"defisFaits\":[],\"parties\":1,\"codex\":[],\"gestesVus\":[],\"dernier\":2345},\"records\":[2345,1234],\"reglages\":{\"musique\":true,\"effets\":true,\"secousse\":1,\"flashs\":true,\"ecran\":\"riche\",\"texte\":1,\"manche\":1,\"actions\":\"doigts\"},\"marquesRecords\":[\"C\",\"\"]}",
+          "ok": true
+        },
+        {
+          "nom": "seconde offre refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "second toucher refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "seconde API refusée",
+          "valeur": false,
+          "attendu": false,
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "cyclope",
+            "x": 389.12,
+            "y": 208,
+            "elite": false,
+            "vue": {
+              "x": 209,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "anticipee": {
+              "x": 287,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "distTete": 48
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 157,
+          "t": 1.141666666666665,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 518.0897098967171,
+            "y": 286.4546056747886,
+            "t": 0.19999999999999998,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 536.2683694981188,
+            "y": 268.35942867474006,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 5,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "DÉFERLANTE",
+            "quartier": "coeur"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "boss"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 2,
+            "type": "cyclope",
+            "x": 389.12,
+            "y": 208,
+            "elite": false,
+            "vue": {
+              "x": 209,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "anticipee": {
+              "x": 306,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "distTete": 48
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "phase",
+          "d": {
+            "n": 1,
+            "evt": "arrivee"
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.4000000000000004,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 599,
+          "t": 3.8083333333333225,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 755,
+          "t": 4.941666666666702,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 518.054299567797,
+            "y": 286.50710592207224,
+            "t": 0.6000000000000003,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 779,
+          "t": 5.141666666666712,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 536.2684864926905,
+            "y": 268.397353809893,
+            "t": 0.7999999999999996,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 959,
+          "t": 6.4750000000001116,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    },
+    {
+      "nom": "bureau",
+      "option": {
+        "expiration": true
+      },
+      "debut": {
+        "etat": "jeu",
+        "joueuse": "vivant",
+        "vague": 3,
+        "phase": "vague",
+        "longueur": 13,
+        "cartes": {
+          "croissance": 1,
+          "canon": 2,
+          "bouclier": 1,
+          "grappe": 1
+        },
+        "armes": [
+          {
+            "id": "canon",
+            "niveau": 4
+          }
+        ],
+        "score": 0,
+        "vies": 3,
+        "marque": ""
+      },
+      "trace": [
+        {
+          "etat": "jeu",
+          "joueuse": "vivant",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 13,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 4
+            }
+          ],
+          "score": 0,
+          "vies": 3,
+          "marque": ""
+        },
+        {
+          "etat": "fin",
+          "joueuse": "mort",
+          "vague": 3,
+          "phase": "vague",
+          "longueur": 8,
+          "cartes": {
+            "croissance": 1,
+            "canon": 2,
+            "bouclier": 1,
+            "grappe": 1
+          },
+          "armes": [
+            {
+              "id": "canon",
+              "niveau": 1
+            }
+          ],
+          "score": 1234,
+          "vies": 0,
+          "marque": ""
+        }
+      ],
+      "controles": [
+        {
+          "nom": "mort → fin",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "garde : toucher précoce refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "doigt posé avant la garde refusé",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "continuer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "continuer zone sûre",
+          "valeur": {
+            "x": 28,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "rejouer cible pt",
+          "valeur": [
+            600,
+            44
+          ],
+          "attendu": "≥ 44",
+          "ok": true
+        },
+        {
+          "nom": "rejouer zone sûre",
+          "valeur": {
+            "x": 182,
+            "y": 209,
+            "w": 150,
+            "h": 11
+          },
+          "attendu": "dans S.view.safe",
+          "ok": true
+        },
+        {
+          "nom": "cibles séparées",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "hors cible : aucune relance",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "décompte complet",
+          "valeur": [
+            9,
+            8,
+            7,
+            6,
+            5,
+            4,
+            3,
+            2,
+            1,
+            0
+          ],
+          "attendu": "9 → 0",
+          "ok": true
+        },
+        {
+          "nom": "zéro encore proposé",
+          "valeur": true,
+          "attendu": true,
+          "ok": true
+        },
+        {
+          "nom": "délai expiré : refus",
+          "valeur": "fin",
+          "attendu": "fin",
+          "ok": true
+        },
+        {
+          "nom": "R-35 relance s",
+          "valeur": 0.8166666666666662,
+          "attendu": "< 2",
+          "ok": true
+        },
+        {
+          "nom": "R-35 sans briefing",
+          "valeur": [
+            "plongee",
+            "jeu"
+          ],
+          "attendu": "aucun briefing/ouverture",
+          "ok": true
+        },
+        {
+          "nom": "REJOUER réarme continuation",
+          "valeur": "",
+          "attendu": "",
+          "ok": true
+        },
+        {
+          "nom": "zéro erreur",
+          "valeur": 0,
+          "attendu": 0,
+          "ok": true
+        }
+      ],
+      "relance": 0.8166666666666662,
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "croissance",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "canon",
+            "niveau": 2
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "bouclier",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "carte",
+          "d": {
+            "id": "grappe",
+            "niveau": 1
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 3,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "BATTERIE",
+            "quartier": "centrale"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 352.5199245661597,
+            "y": 206.62075250575776,
+            "t": 0.19999999999999998,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 181,
+          "t": 1.3416666666666643,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 313.00436730200545,
+            "y": 172.03411977121004,
+            "t": 0.4000000000000004,
+            "vague": 3,
+            "quartier": "centrale",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 361,
+          "t": 2.674999999999993,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "conforme": true,
+      "console": []
+    }
+  ],
+  "conforme": true
+}

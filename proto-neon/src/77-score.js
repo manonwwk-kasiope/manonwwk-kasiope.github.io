@@ -73,7 +73,7 @@ N.score = (function () {
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
     API.palier = null;
-    m.resume = null; m.dv = null; m.dvFaits = 0;
+    m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
     publier();
@@ -248,14 +248,19 @@ N.score = (function () {
   }
   function terminer(victoire) {
     if (!lu) charger();
+    if (m.resume) return { record: m.resume.record, nouveau: m.newRecord };
     m.stats.victoire = !!victoire;
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
     var dernier = pr.dernier || 0, avantE = pr.energie || 0;
-    disque.records.push(m.score); disque.records.sort(function (a, b) { return b - a; });
+    var tableau = classement();
+    tableau.push({ score: m.score, marque: m.continuations ? 'C' : '' });
+    tableau.sort(function (a, b) { return b.score - a.score; });
     var nbRec = (R && R.ecrans && R.ecrans.records && R.ecrans.records.nombre) || 10;
-    if (disque.records.length > nbRec) disque.records.length = nbRec;
-    pr.parties++;
+    if (tableau.length > nbRec) tableau.length = nbRec;
+    disque.records = tableau.map(function (r) { return r.score; });
+    disque.marquesRecords = tableau.map(function (r) { return r.marque; });
+    if (!m.continuations) pr.parties++;
     var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
     pr.energie = avantE + gagne; pr.dernier = m.score;
     for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
@@ -268,7 +273,7 @@ N.score = (function () {
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
     var note = victoire ? 'B' : boss ? 'C' : 'D';
     m.resume = {
-      victoire: !!victoire, score: m.score, ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
+      victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
       pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
@@ -279,9 +284,26 @@ N.score = (function () {
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
   }
   function record() { if (!lu) charger(); return disque.records.length ? disque.records[0] : 0; }
+  /* Les scores numériques restent compatibles ; la marque appartient à chaque rang, même en cas d'égalité.
+     Les anciens profils sans marques se lisent sans migration destructive. */
+  function classement() {
+    if (!lu) charger();
+    return disque.records.map(function (score, i) { return { score: score, marque: (disque.marquesRecords && disque.marquesRecords[i]) === 'C' ? 'C' : '' }; });
+  }
+  function continuerPossible() { return !!m.resume && !m.resume.victoire && m.continuations < R.vies.continuer.parPartie; }
+  function continuer() {
+    if (!continuerPossible()) return false;
+    m.continuations++;
+    m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
+    m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
+    m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;
+    publier();
+    return true;
+  }
 
   API = {
-    reset: reset, update: update,
+    reset: reset, update: update, continuer: continuer, continuerPossible: continuerPossible, classement: classement,
+    marque: function () { return m.continuations ? 'C' : ''; },
     palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
     defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
