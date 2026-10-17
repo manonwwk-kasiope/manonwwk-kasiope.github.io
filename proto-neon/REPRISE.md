@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 00 h 34
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 00 h 21
 
 - Relais pris de la session cloud. Les ordres de Codex sont dans `COORDINATION.md` § « Ordres pour Codex ».
 - Jugés : **codex-01 ACCEPTÉ AVEC RÉSERVES** (`refonte/mediation/2026-10-18-codex-01.md`), **codex-03 ACCEPTÉ**
