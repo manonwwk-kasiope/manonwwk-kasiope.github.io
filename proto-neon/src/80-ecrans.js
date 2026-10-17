@@ -30,6 +30,7 @@ N.ui = (function () {
 
   function garde() { return (R && R.cartes && R.cartes.garde) || 0.4; }
   function ouvrir(nom, opts) {
+    if (nom !== 'titre') duo(false);
     cur = nom; T = 0; out = null; choix = 0; bruit = false;
     cur_opts = opts || {};
     if (nom === 'cartes') {
@@ -49,7 +50,7 @@ N.ui = (function () {
     }
     publier();
   }
-  function fermer() { cur = null; out = null; publier(); }
+  function fermer() { duo(false); cur = null; out = null; publier(); }
   function actif() { return cur !== null; }
   function ecran() { return cur; }
   function sortie() { var o = out; out = null; return o; }
@@ -254,8 +255,18 @@ N.ui = (function () {
     O.textC('SNAKE 2975', W / 2, Math.round(H / 2 - 24), O.OS, false, 4);
     if ((T * hz) % 1 < 0.7) O.textC(O.hasTouch() ? 'TOUCHE POUR COMMENCER' : 'ESPACE POUR COMMENCER', W / 2, Math.round(H / 2 + 10), O.ACIER, false, 1);
   }
+  /* l'affiche des deux pilotes dos à dos (art/affiche-duo.png, son film en boucle s'il est dans cine/) ;
+     sans elle, l'affiche d'origine */
+  var duoVive = false;
+  function duo(on) {
+    if (!N.art || !N.art.play) return;
+    if (on && !duoVive) { duoVive = true; O.safe('art.play', function () { N.art.play('affiche-duo'); }); }
+    else if (!on && duoVive) { duoVive = false; O.safe('art.stop', function () { N.art.stop('affiche-duo'); }); }
+  }
   function titre() {
-    var W = O.geo.W, H = O.geo.H, a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get('affiche'); }) : null;
+    var W = O.geo.W, H = O.geo.H, a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get('affiche-duo'); }) : null;
+    if (a && a.data) duo(true);
+    else a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get('affiche'); }) : null;
     if (a && a.data) fond(a, 0.7);
     O.textC('SNAKE 2975', W / 2, Math.round(H * 0.28), O.OS, true, 4);
     var rec = N.score ? N.score.record() : 0, y = Math.round(H * 0.28 + 38);
