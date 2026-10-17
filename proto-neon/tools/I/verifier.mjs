@@ -1,5 +1,5 @@
 /* tools/I/verifier.mjs — vérification du lot I (dépendances de codex-02) sur une COPIE PROPRE du dépôt.
-     node tools/I/verifier.mjs [--ref HEAD] [--base REF] [--overlay] [--graines 3] [--max 540] [--section a,b,c] [--sans-rapport]
+     node tools/I/verifier.mjs [--ref HEAD] [--base REF] [--overlay] [--graines 3] [--max 540] [--section a,b,c] [--sortie fichier.json] [--sans-rapport]
 
    La copie : `git archive <ref> proto-neon` extrait dans un dossier temporaire, puis `node build.mjs` DANS cette copie (jamais dans
    le dossier de travail, où d'autres agents écrivent en même temps). --overlay recopie par-dessus les fichiers du lot I tels qu'ils
@@ -343,7 +343,8 @@ try {
   await browser.close(); srvVrai.close(); if (srvBase) srvBase.close();
 }
 sortie.echecs = echecs; sortie.conforme = echecs.length === 0;
-fs.writeFileSync(path.join(HERE, 'sortie.json'), JSON.stringify(sortie, null, 1) + '\n');
+const SORTIE = arg('--sortie', path.join(HERE, 'sortie.json'));
+fs.writeFileSync(SORTIE, JSON.stringify(sortie, null, 1) + '\n');
 console.log(echecs.length ? `${echecs.length} échec(s)` : 'toutes les mesures passent');
 if (!drapeau('--sans-rapport')) {
   const { ecrireRapport } = await import('./rapport-ecrire.mjs');
