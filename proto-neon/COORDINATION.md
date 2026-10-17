@@ -133,6 +133,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 ## Livré par la session cloud (à brancher)
 
+- **`demo/index.html` — la démo du voyage entier, jouable dès maintenant** (https://raw.githack.com/manonwwk-kasiope/manonwwk-kasiope.github.io/claude/snake-game-mobile-17dqpi/proto-neon/demo/index.html) : `demo/panneau.html` relie N.aventure au vrai jeu sans toucher 79-jeu.js (choix → 1976 → 1982 → néon ; films profondeur / warp / espace aux vagues 3, 4, 5 ; fin à la victoire). Construire avec `node build.mjs demo/index.html`. Modèle à suivre pour le vrai branchement.
 - **`src/64-aventure.js` — PRIORITÉ : brancher N.aventure dans 79-jeu.js relie d'un coup tout le reste** (choix, 1976, 1982, films par personnage, fins, retrouvailles, teaser) : voir `refonte/lots/demandes.md`, « LE branchement qui relie tout ».
 - `refonte/prototypes/plans.html` — prototype jouable des trois plans parallèles, du changement de hauteur et du warp (vision § 3) : pour intégrer, horloge à pas fixe, rendu en couches dans 10-gfx, fusion avec 78-warp.
 - `src/69-arcade.js` — l'époque 1982 : voir `refonte/lots/demandes.md`, « brancher l'époque 1982 ».
