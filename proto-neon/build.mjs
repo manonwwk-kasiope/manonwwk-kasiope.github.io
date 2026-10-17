@@ -8,7 +8,10 @@ import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(HERE, 'src');
-const OUT = process.argv[2] ? path.resolve(process.argv[2]) : path.join(HERE, 'index.html');   // sortie ailleurs pour un essai
+const ARGS = process.argv.slice(2);
+const EMBED = ARGS.includes('--embed');                              // --embed : un seul fichier autonome, blocs de musique inline
+const POS = ARGS.filter(a => !a.startsWith('--'));
+const OUT = POS[0] ? path.resolve(POS[0]) : path.join(HERE, 'index.html');   // sortie ailleurs pour un essai
 
 const files = fs.readdirSync(SRC).filter(f => f.endsWith('.js')).sort();
 if (!files.length) { console.error('build : aucun module dans src/'); process.exit(2); }
@@ -21,13 +24,27 @@ const artSrc = "/* ===== préambule (build.mjs) : l objet partagé existe AVANT 
 const CINE = path.join(HERE, "cine");
 const cineFiles = fs.existsSync(CINE) ? fs.readdirSync(CINE).filter(f => f.endsWith(".mp4")).sort() : [];
 const cineSrc = "var CINE_DISPO = " + JSON.stringify(cineFiles.map(f => f.replace(/\.mp4$/, ""))) + ";\n";
-const parts = [artSrc + cineSrc].concat(files.map(f => `/* ===== ${f} ===== */\n` + fs.readFileSync(path.join(SRC, f), "utf8")));
+/* la musique : musique/nv-NN.mp3 et piste.json (tools/musique/decoupe.mjs), chargés à la demande par 30-music.js.
+   MUSIQUE_BASE = le chemin relatif DU FICHIER PRODUIT jusqu'à proto-neon/musique/ ('musique/' pour index.html,
+   '../../musique/' pour tools/<lot>/index.html). MUSIQUE_EMBED : null, ou, avec --embed, la piste et tous les
+   blocs en base64 (le jeu tient alors dans un seul fichier, qui joue sans réseau). */
+const MUS = path.join(HERE, 'musique');
+const musFiles = fs.existsSync(MUS) ? fs.readdirSync(MUS).filter(f => /^nv-\d+\.mp3$/.test(f)).sort() : [];
+const musJson = path.join(MUS, 'piste.json');
+let musRel = path.relative(path.dirname(OUT), MUS).split(path.sep).join('/');
+if (!musRel) musRel = '.';
+const musicSrc = 'var MUSIQUE_BASE = ' + JSON.stringify(musRel + '/') + ';\n'
+  + 'var MUSIQUE_EMBED = ' + ((EMBED && musFiles.length && fs.existsSync(musJson))
+    ? '{ piste: ' + fs.readFileSync(musJson, 'utf8').trim() + ', blocs: {\n'
+      + musFiles.map(f => '  ' + JSON.stringify(f) + ': "data:audio/mpeg;base64,' + fs.readFileSync(path.join(MUS, f)).toString('base64') + '"').join(',\n') + '\n} }'
+    : 'null') + ';\n';
+const parts = [artSrc + cineSrc + musicSrc].concat(files.map(f => `/* ===== ${f} ===== */\n` + fs.readFileSync(path.join(SRC, f), "utf8")));
 const script = '"use strict";\n(function(){' + parts.join('\n') + '\nboot();})();';
 
 try { new vm.Script(script, { filename: 'proto-neon.bundle.js' }); }
 catch (e) { console.error('build : erreur de syntaxe —', e.message); process.exit(1); }
 
-const html = `<!doctype html><html lang="fr"><head>
+let html = `<!doctype html><html lang="fr"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0d0221">
@@ -46,10 +63,15 @@ html,body{margin:0;padding:0;background:#0d0221;overflow:hidden;height:100%;
 <script>${script}</script>
 </body></html>`;
 
+/* un panneau d'essai à côté de la sortie (tools/<lot>/panneau.html) est inséré avant </body> : boutons, curseurs,
+   affichage d'état. Il n'existe que pour les pages d'essai ; index.html n'en a pas. */
+const PANNEAU = path.join(path.dirname(OUT), 'panneau.html');
+if (OUT !== path.join(HERE, 'index.html') && fs.existsSync(PANNEAU)) html = html.replace('</body>', () => fs.readFileSync(PANNEAU, 'utf8') + '\n</body>');
 fs.writeFileSync(OUT, html);
 const bytes = Buffer.byteLength(html);
 console.log(`build : ${files.length} modules, ${bytes} octets → index.html`);
 for (const f of files) console.log('  ' + f);
 for (const f of artFiles) console.log('  art/' + f);
 for (const f of cineFiles) console.log('  cine/' + f);
+console.log('  musique : ' + musFiles.length + ' blocs, MUSIQUE_BASE = ' + musRel + '/' + (EMBED ? ' (--embed : inline)' : ''));
 process.exit(0);

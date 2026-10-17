@@ -1,0 +1,64 @@
+
+== Jointures de blocs (corrélation sur 0,5 s de chaque côté, recherche ± 20 ms)
+   nv-02.mp3 -> nv-03.mp3 à 16.695 s : retard -0.132 ms puis -0.27 ms, écart -0.138 ms (rho 0.874 / 0.895)
+   nv-03.mp3 -> nv-04.mp3 à 30.05 s : retard -0.271 ms puis -0.377 ms, écart -0.106 ms (rho 0.878 / 0.9)
+   nv-04.mp3 -> nv-05.mp3 à 43.406 s : retard -0.351 ms puis -0.48 ms, écart -0.129 ms (rho 0.898 / 0.909)
+   nv-05.mp3 -> nv-06.mp3 à 56.762 s : retard -0.479 ms puis -0.605 ms, écart -0.127 ms (rho 0.86 / 0.835)
+   nv-06.mp3 -> nv-07.mp3 à 70.118 s : retard -0.606 ms puis -0.73 ms, écart -0.124 ms (rho 0.88 / 0.848)
+   nv-07.mp3 -> nv-08.mp3 à 83.473 s : retard -0.732 ms puis -0.856 ms, écart -0.124 ms (rho 0.869 / 0.864)
+   nv-08.mp3 -> nv-09.mp3 à 96.829 s : retard -0.834 ms puis -0.961 ms, écart -0.127 ms (rho 0.892 / 0.894)
+   nv-09.mp3 -> nv-06.mp3 à 103.507 s : retard -0.96 ms puis -0.614 ms, écart 0.347 ms (rho 0.891 / 0.838)
+   écart max 0.347 ms (seuil 1 ms) OK 
+   plus grande dérivée d'échantillon aux jointures 0.0465 contre seuil fixé sur la piste d'origine 0.0722 OK 
+
+== Mixage (musique seule, jeu, simulation de téléphone : passe-haut de Butterworth d'ordre 4 à 350 Hz)
+   tension 1 : -13.21 dBFS RMS (téléphone), -10.11 dBFS (large bande), crête -1.11 dBFS, centroïde 1006 Hz
+   tension 0.15 : -19.65 dBFS RMS (téléphone), -16.83 dBFS (large bande), crête -2.97 dBFS, centroïde 660 Hz
+   tension 0.4 : -16.17 dBFS RMS (téléphone), -13.13 dBFS (large bande), crête -1.21 dBFS, centroïde 871 Hz
+   tension 0.6 : -13.41 dBFS RMS (téléphone), -10.2 dBFS (large bande), crête -1.12 dBFS, centroïde 853 Hz
+   tension 0.8 : -13.31 dBFS RMS (téléphone), -10.16 dBFS (large bande), crête -1.12 dBFS, centroïde 861 Hz
+   calme >= -20 dBFS : -19.65 OK  | chaos ~ -14 dBFS : -13.21 OK  | écart >= 6 dB : 6.4 OK 
+   corrélation tension <-> niveau sur 3 minutes (fenêtres de 10 s) : 0.891 OK  | crête sur 3 minutes -1.1131268489878847 dBFS OK 
+
+== Sons contre la musique (RMS téléphone sur la durée du son ; plus : momentané 20 ms contre la musique)
+   tension 1 : kill -5.07 dB (mom. 4.44), coupe -4.58 (4.47), mort -3.75 (5.23), tir -20.26 (-9.85), bigkill -6.08
+   tension 0.15 : kill 2.12 dB (mom. 11.35), coupe 2.62 (11.39), mort 2.96 (12.15), tir -13.07 (-2.93), bigkill 0.64
+   tension 0.6 : kill -4.69 dB (mom. 4.72), coupe -4.19 (4.76), mort -3.84 (5.52), tir -19.88 (-9.56), bigkill -6.17
+   tir sous kill (momentané téléphone) : 14.64 dB (>= 6) OK 
+   esquive : profondeur 0.293 (visée 0,30), relâchement 110 ms (visé 120)
+   kills muets : demandés 40 joués 40 OK 
+
+== Banque de sons : part d'énergie au-dessus de 400 Hz (>= 25 %)
+   50 sons mesurés, 50 conformes OK 
+   minimum : degat 25.22 ; explosion 26.56 ; colosseMort 26.95 ; ultime 27.41 ; bigkill 27.83
+   corrélation tirEnnemi / tir : 0.122 (< 0,5) OK 
+
+== Scène « charge » (16 tourelles, tir, kills, butin, impacts, tirs ennemis, tension 0,95, 60 s)
+   nœuds créés par seconde : 55.6 (< 60) OK  | crête -1.11 dBFS (<= -1) OK  | échantillons écrêtés 0
+   salve : demandées 960 jouées 41 | tir demandés 420 joués 231 | coupés par le budget de nœuds 1829
+
+== Couches et accents sur la grille (3 minutes, tensions variées, danger, INVERSION)
+   changements de couche à moins de 10 ms d'une barre : 16/16 OK 
+   accents (stinger, drop, vague, coupure ; plongée sur le temps) : 6/6 OK 
+     stinger à 31.72 s : écart barre 0 ms, écart temps 0 ms
+     drop à 51.753 s : écart barre 0 ms, écart temps 0 ms
+     plongee à 80.552 s : écart barre 417.37 ms, écart temps 0 ms
+     vague à 101.837 s : écart barre 0 ms, écart temps 0 ms
+     stinger à 141.905 s : écart barre 0 ms, écart temps 0 ms
+     drop à 161.938 s : écart barre 0 ms, écart temps 0 ms
+   mesures rendues 122 ; plus longue série de mesures identiques : 1 (< 3) OK 
+
+== Après une mort
+   bloc de la mort 03 -> reprise sur 04 à 25.042 s ; premier bloc du PLATEAU 02 OK 
+   niveau avant -10.2 dB, pendant la coupure -35.9 dB, après la reprise -10 dB
+
+== Répétition (3 minutes de jeu, fenêtres de 4 s)
+   distance minimale entre deux fenêtres disjointes : 0.0478 (>= 0,01) OK  | fenêtres < 1 % : 0 | mesures identiques consécutives (max) : 1
+
+== Repli (sans piste)
+   tension 0.06 : -18.33 dBFS (téléphone -18.8), centroïde 916 Hz, crête -1.11
+   tension 0.5 : -14.3 dBFS (téléphone -14.8), centroïde 877 Hz, crête -1.11
+   tension 1 : -11.14 dBFS (téléphone -11.6), centroïde 876 Hz, crête -1.11
+   centroïde au calme 900-1500 Hz : 916 OK  | premier son à 0.00015873015873015873 s (< 1 mesure = 1.66947 s) OK 
+
+erreurs de console : 0
