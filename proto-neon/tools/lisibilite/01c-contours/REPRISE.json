@@ -1,18 +1,23 @@
 {
-  "dateParis": "18/10/2026 · 01 h 14",
-  "objectif": "codex-01c, méthode contours/enseignes arbitrée : une tentative figée, mesures, deux juges neufs dans tous les cas",
-  "production": "15-decor reste 01b acceptée ; candidat uniquement dans candidat.js et bundle /tmp/snake-01c-candidat.html",
-  "tentative": "0ab886f45981eaa160d7a19e49ea2da3b44f864451b496237554dbf57ad735e7 ; ne pas retoucher après mesure",
-  "preuve": "3 cas complets avant/après (45 relevés chacun) : V4 paysage min13,07%, portrait boss4,33%, bureauV5 11,21% ; zéro erreur. Échec ciel sur boss et bureau. Source candidat inchangée.",
-  "enCours": "suspendu pour ordre 8 codex-05b, arrivé après la reprise ; aucun processus 01c restant",
+  "dateParis": "18/10/2026 · 01 h 33",
+  "objectif": "Finir les315relevés de la proposition unique contours/enseignes puis soumettre à Claude, sans retoucher le candidat",
+  "candidatSha256": "0ab886f45981eaa160d7a19e49ea2da3b44f864451b496237554dbf57ad735e7",
+  "production15": "version01b acceptée ; candidat non appliqué",
+  "preuves": "45relevés figés : V4paysage conforme ; bossportrait4,33%<8 ; V5bureau11,21%<12. Deux juges neufs rendus, désaccord lisibilité conservé dans jury/rapport.md.05b livré6104660.",
+  "enCours": {
+    "session": 56972,
+    "banc": "banc01b --reprendre --garder-mesures ; avant puis après, série",
+    "sorties": "/tmp/snake-01c-contours",
+    "logs": [
+      "/tmp/snake-01c-corpus-avant.log",
+      "/tmp/snake-01c-corpus-apres.log"
+    ]
+  },
   "restant": [
-    "constituer six PNG anonymisés pour deux juges indépendants (Claude et GPT)",
-    "compléter 315 relevés avant/après sans refaire les trois cas initiaux",
-    "livrer résultats bruts même si seuil échoue",
-    "arbitrage Claude si nécessaire ; aucun nouveau tuning"
+    "collecter les seuls18cas manquants par bundle,15relevés chacun",
+    "publier chiffres complets, captures, avis distincts et limites",
+    "QUESTION à Claude pour arbitrage, libérer15 ; aucune3eméthode",
+    "pull et relecture boîte après livraison"
   ],
-  "budget": "aucun achat ni API payante ; abonnement Claude Max confirmé, auth claude.ai ; un juge de chaque modèle, pas de troisième méthode",
-  "prochaineAction": "après livraison05b : deux juges sur les six PNG puis compléter le corpus demandé, sans tuning",
-  "constat": "éclipse portrait : ciel min 4,33 % contre8 ; source candidat inchangée, jury requis malgré échec",
-  "validationInstrument": "V5 bureau référence 15 relevés à 30 s après extension de la borne, zéro erreur. Candidat et référence jury encore en cours ; aucun changement du candidat."
+  "budget": "aucune dépense ; une seule proposition artistique autorisée, figée ; fenêtres de30s et seuils inchangés ; p95 machine non isolée, pas verdict performance au repos"
 }
