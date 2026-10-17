@@ -243,7 +243,7 @@ jamais pour en produire les effets.
 commence par `_` : c'est l'état privé d'un module, que personne d'autre ne lit. `N.ids.valider(genre, objet)`
 rend la liste des écarts (vide si l'objet est conforme) ; les tests et le mode vérification s'en servent.
 Genres : `ennemi`, `tir`, `src`, `tele`, `death`, `player`, `mods`, `reglages`, `input`, `butin`, `voie`,
-`monde`, `vue`, `ecran`, `vague`, `perf`, `sprite`, `charge:<événement>`, `journal:<type>`.
+`monde`, `vue`, `ecran`, `vague`, `vol`, `volObjet`, `perf`, `sprite`, `charge:<événement>`, `journal:<type>`.
 
 ```
 // ---- un ennemi : élément de N.ennemis.list (et S.enemies, même tableau)
@@ -269,7 +269,9 @@ src = { genre:'arme'|'ennemi'|'arene'|'joueuse'|'decor', type, id }   // id : ce
   reste, total, cible:'tete'|'corps'|'tout', par:{type, id} }
   // ligne : de (x0,y0) à (x1,y1), demi-largeur r ; disque : centre (x0,y0), rayon r ;
   // secteur : centre (x0,y0), rayon r, de a0 à a1 ; rect et voie : (x0,y0)-(x1,y1) ; losange : centre, rayon r.
-  // reste : s avant les dégâts ; total : durée totale du télégraphe.
+  // reste : s avant les dégâts ; total : durée totale du télégraphe. Une attaque qui dure (laser, rayon,
+  // traversée de la lame, passage d'un convoi) reste enregistrée pendant sa phase active, avec reste ≤ 0,
+  // jusqu'à la fin des dégâts : un pilote ou une mesure y voit toujours la zone qui tue.
 
 // ---- la mort
 S.death = { cause, auteur, auteurId, x, y, t, vague, quartier, visibleDepuis, teleDuree }
@@ -279,9 +281,10 @@ S.death = { cause, auteur, auteurId, x, y, t, vague, quartier, visibleDepuis, te
   // N.ids.texte(cause, auteur) -> 'TIR DE TOURELLE', 'MUR ARRIÈRE', 'TRAÎNÉE DU RIVAL'…
 
 // ---- la joueuse, pour les pilotes et les mesures
-S.player = { x, y, ang, angVise, vit, len, segs, etat, boost, reserve, apogee, pouvoirPret }
+S.player = { x, y, ang, angVise, vit, len, segs, etat, boost, reserve, apogee, pouvoirPret, pouvoir }
   // segs : tableau (ou Float32Array) [x0,y0, x1,y1, …] de len segments, tête comprise, coordonnées MONDE
   // etat ∈ 'vivant'|'mort'|'reapparition'|'absent' ; reserve et apogee de 0 à 100
+  // pouvoir : identifiant du pouvoir équipé ('traversee'|'ralenti'|'repli') ou null
 
 // ---- les modificateurs de cartes : écrits par N.cartes seulement, lus par tous
 N.cartes.mods = { degats:1, cadence:1, aimant:28, lenMax:40, reparation:0, bouclier:0,
@@ -305,7 +308,8 @@ que `S`) ; chacun a un seul écrivain, qui le tient à jour à chaque pas :
 | `S.monde` | `12-cam` | `{x0, y0, x1, y1, vx, vy, mobile, annonce:[[x0,y0,x1,y1]…]}` : murs courants et positions annoncées |
 | `S.vue` | `12-cam` | `{x, y, w, h}` : la vue en coordonnées MONDE |
 | `S.vague` | `76-directeur` | `{n, etape, nom, quartier, t, evt}` : la vague en cours, `t` depuis son entrée |
-| `S.ecran` | `80-ecrans` | `{nom, depuis, cartes:[id…], choix, pret}` : l'écran ouvert ; `pret` quand la garde est passée |
+| `S.ecran` | `80-ecrans` | `{nom, depuis, cartes:[id…], niveaux:[n…], choix, pret}` : l'écran ouvert ; `niveaux` : le palier (armes, 1 à 4) ou le nombre de prises (autres) que donnerait chaque carte ; `choix` : choix restants ; `pret` quand la garde est passée |
+| `S.vol` | `17-vol` | `{tete:{x,y}, objets:[{type:'cellule'\|'porte'\|'mine', x, y, z, r, avant}], reste}` en px ÉCRAN pendant LE VOL ; `avant` : s avant le contact ; `null` hors du VOL |
 | `S.reglages` | `77-score` | § 11 |
 
 **`S.tele` est tenu en double tampon.** Un propriétaire de télégraphe appelle `N.fx.tele(desc)` **à chaque

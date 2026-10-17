@@ -587,7 +587,7 @@
     tir: { id: 2, x: 1, y: 2, vx: 95, vy: 0, r: 2, vie: 1.2, src: { genre: 'ennemi', type: 'tourelle', id: 42 } },
     tele: { id: 3, forme: 'ligne', x0: 0, y0: 0, x1: 67, y1: 0, r: 2, a0: 0, a1: 0, reste: 0.3, total: 0.6, cible: 'tete', par: { type: 'fleche', id: 1 } },
     death: DEATH,
-    player: { x: 1, y: 2, ang: 0, angVise: 0.2, vit: 68, len: 8, segs: new Float32Array(16), etat: 'vivant', boost: false, reserve: 100, apogee: 40, pouvoirPret: true },
+    player: { x: 1, y: 2, ang: 0, angVise: 0.2, vit: 68, len: 8, segs: new Float32Array(16), etat: 'vivant', boost: false, reserve: 100, apogee: 40, pouvoirPret: true, pouvoir: 'traversee' },
     mods: { degats: 1.25, cadence: 1, aimant: 48, lenMax: 45, reparation: 1, bouclier: 0, eperon: false, grappe: 2, sangFroid: true, braise: 0 },
     reglages: { musique: true, effets: false, secousse: 0.5, flashs: true, ecran: 'sobre', texte: 2, manche: 1.25, actions: 'auto' },
     input: { x: 1, y: 0, mag: 0.8, boost: false, pouvoir: false, apogee: false, pause: false, valider: false, retour: false, chiffre: 0, car: '', any: true,
@@ -597,7 +597,8 @@
     voie: { id: 5, y0: 150, y1: 170, etat: 'annonce', sens: 1, x: 0, reste: 1.2 },
     monde: { x0: 0, y0: 0, x1: 1024, y1: 512, vx: 0, vy: 0, mobile: false, annonce: [[100, 0, 676, 512]] },
     vue: { x: 300, y: 100, w: 422, h: 195 },
-    ecran: { nom: 'cartes', depuis: 0.5, cartes: ['canon', 'aimant', 'traversee'], choix: 1, pret: true },
+    ecran: { nom: 'cartes', depuis: 0.5, cartes: ['canon', 'aimant', 'traversee'], niveaux: [3, 1, 1], choix: 1, pret: true },
+    vol: { tete: { x: 211, y: 160 }, objets: [{ type: 'porte', x: 200, y: 120, z: 300, r: 6, avant: 0.9 }, { type: 'mine', x: 260, y: 130, z: 500, r: 3, avant: 1.6 }], reste: 2.1 },
     vague: { n: 1, etape: 'vague', nom: 'ÉVEIL', quartier: 'docks', t: 3.5, evt: 'entree' },
     perf: { p50: 6, p90: 8, p95: 9, p99: 12, niveau: 'riche' },
     sprite: { w: 2, h: 2, data: new Uint8Array(4) }

@@ -738,7 +738,10 @@
       cibles: { combat: [55, 90], kamikazeMin: 30, partCoups: 0.35, teleTous: 0.8 }
     },
 
-    /* ---------------------------------------------------------------- § 4.10 la difficulté chiffrée */
+    /* ---------------------------------------------------------------- § 4.10 la difficulté chiffrée
+       Les CIBLES des pilotes. Leurs paramètres de comportement (réaction, bruit, seuils de LASSO, de
+       pouvoir, d'APOGÉE) sont recopiés ici comme repères seulement : ils sont GELÉS par
+       refonte/lots/pilotes.md et vivent dans 85-pilote.js. Le lot 9 règle N.R, jamais un pilote. */
     pilotes: {
       banc: { profil: 'iPhone 13 paysage', dt: 1 / 60, graines: 50, grainesAutres: 5, coutPartie: 10, passe: 3600 },
       inerte: { perdAvant: 35, partPerd: 1.0, premiereMortAvant: 8 },
@@ -858,7 +861,7 @@
       etouffoirs: { pause: 420, cartes: 900, ralenti: 1200, danger: 2000 },
       couches: { percu: 0.6, etincelles: 0.8, etincellesRapport: 0.25, etincellesOctaves: ['ré5', 'ré6'] },
       accents: { stingerMesures: 1, drop: 0.25, plongee: { niveau: 0.10, duree: 0.09, retour: 1.28 } },
-      repli: { refrain: { notes: 8, mesures: 2 }, centroide: [900, 1500], couches: 4 },
+      repli: { refrain: { notes: 8, mesures: 2 }, centroide: [900, 1500], leadOctaves: [4, 5], couches: 4 },
       calage: { barreMs: 10 },
       demarrage: { mesures: 1, releve: 3 },
       reprise: 1                                  // coupure, suspension et reprise sous 1 s (J-19)

@@ -386,7 +386,7 @@
   });
   SCH.player = obj({
     x: 'n', y: 'n', ang: 'n', angVise: 'n', vit: 'n+', len: 'i+', segs: 'nums', etat: un(L.etatsJoueuse),
-    boost: 'b', reserve: entre(0, 100), apogee: entre(0, 100), pouvoirPret: 'b'
+    boost: 'b', reserve: entre(0, 100), apogee: entre(0, 100), pouvoirPret: 'b', pouvoir: un(L.pouvoirs.concat([null]))
   });
   SCH.mods = obj({
     degats: 'n+', cadence: 'n+', aimant: 'n+', lenMax: 'i+', reparation: entierEntre(0, 2), bouclier: entierEntre(0, 1),
@@ -411,7 +411,10 @@
   SCH.voie = obj({ id: 'i', y0: 'n', y1: 'n', etat: un(['annonce', 'passage']), sens: un([-1, 1]), x: 'n', reste: 'n' });
   SCH.monde = obj({ x0: 'n', y0: 'n', x1: 'n', y1: 'n', vx: 'n', vy: 'n', mobile: 'b', annonce: liste(liste('n', 4, 4)) });
   SCH.vue = obj({ x: 'n', y: 'n', w: 'n+', h: 'n+' });
-  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), choix: 'i+', pret: 'b' });
+  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: liste('i+'), choix: 'i+', pret: 'b',
+    _ctl: fn(function (o) { return o.niveaux.length === o.cartes.length; }, 'un niveau par carte') });
+  SCH.volObjet = obj({ type: un(['cellule', 'porte', 'mine']), x: 'n', y: 'n', z: 'n', r: 'n+', avant: 'n' });
+  SCH.vol = obj({ tete: obj({ x: 'n', y: 'n' }), objets: liste(SCH.volObjet), reste: 'n' });
   SCH.vague = obj({ n: 'i+', etape: un(L.etapes), nom: 's', quartier: un(L.quartiers), t: 'n+', evt: un(['entree', 'pic', 'nettoyee', 'soupape']) });
   SCH.perf = obj({ p50: 'n+', p90: 'n+', p95: 'n+', p99: 'n+', niveau: 's' });
   SCH.sprite = obj({
@@ -535,7 +538,7 @@
   }
   /* N.ids.valider(genre, objet) -> tableau d'erreurs (vide si l'objet est conforme).
      genre : 'ennemi','tir','src','tele','death','player','mods','reglages','input','butin','voie','monde','vue',
-     'ecran','vague','perf','sprite', 'charge:<événement>', 'journal:<type>' (enregistrement complet) */
+     'ecran','vague','vol','volObjet','perf','sprite', 'charge:<événement>', 'journal:<type>' (enregistrement complet) */
   function valider(genre, o) {
     var err = [], t;
     if (genre.indexOf('charge:') === 0) t = CH[genre.slice(7)];
