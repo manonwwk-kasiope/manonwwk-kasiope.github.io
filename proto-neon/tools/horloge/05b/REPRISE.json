@@ -2,9 +2,15 @@
   "dateParis": "18/10/2026 · 01 h 23",
   "objectif": "05b prioritaire : fermer les quatre réserves de l'horloge avant 01c",
   "source": "six modules réservés : 50-fx,60-intro,70-joueuse,79-jeu,79-scene,90-boot ; 15-decor production inchangé",
-  "preuves": "précontrôles trois profils : RALENTI 3,5 s ; CYCLOPE 2,2 s ; niveau 0,35 s ; ralenti pendant gel, journal en secondes, pause non destructive dans jeu/pause/panneau/cartes ; zéro erreur",
-  "enCours": "banc 02 complet avant puis après, processus issu de regressions.mjs --pilotes-seuls ; sorties /tmp/snake-05b-pilotes ; ne pas doublonner",
-  "restant": ["finir les 80 parties avant/après et les répétitions", "capturer l'overlay à taille de texte corrigée (pause trois profils)", "confirmer les commandes après raccord de reprise", "livrer source/bundle séparés et reçus, libérer les réservations", "reprendre 01c figé puis jury et corpus restant"],
+  "preuves": "80/80 avant et après, zéro erreur ; 8 répétitions identiques par bundle. Pause finale 3 profils et commandes28 passent. Complément simulation : échec avant / réussite après 3 profils sans dessin préalable.",
+  "enCours": "réexécution des 80 uniquement après ajout explicite de 01h29 (dbg.simuler sans première image) ; /tmp/snake-05b-pilotes/final ; session37098",
+  "restant": [
+    "Comparer 80 finaux aux 80 après : identiques exigés",
+    "recevoir raccord p7 par pull",
+    "livrer les reçus et libérer réservations05b",
+    "finir315relevés01c sans rejouer les45 existants, avis des2juges acquis"
+  ],
   "budget": "aucune dépense, plafonds des bancs inchangés (540 s de jeu), Chromium en série",
-  "prochaineAction": "attendre fin du processus avant les autres bancs navigateur ; continuer les préparations sans écrire dans les fichiers d'autrui"
+  "prochaineAction": "attendre fin du processus avant les autres bancs navigateur ; continuer les préparations sans écrire dans les fichiers d'autrui",
+  "misAJourParis": "18/10/2026 · 01 h 31"
 }
