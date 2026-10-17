@@ -10,6 +10,10 @@
    CONSOMME (jamais d'appel direct des effets, § 7.4) : `kill` rang 20 (points et chaîne) et 80 (défi), `ramassage`
    20 (points de la cellule), `coupe` 20 (chaîne ÷ 2), `mort` 20 (une vie de moins), `vague` 20 (prime de fin de
    vague). ÉMET `defi` : { id, ok, prime }.
+   LE RÉSUMÉ (lot F) : terminer(victoire) range dans resume() tout ce que l'écran de fin affiche (cause, vague, quartier,
+   heure, progression, écart à la partie précédente, record, build, bilan, note, défi, conseil du § 5.6.1, énergie gagnée,
+   déblocages franchis, prochain déblocage avant / après), met l'énergie au profil (cellule 1, noyau 5, défi 20, FINIR 50),
+   ouvre les déblocages (émet `deblocage`) et garde les dix records. Note : B si le CYCLOPE tombe, C s'il est atteint, sinon D.
    Interface (§ 7.8) : reset(), score, chaine(), mult(), objectif(), vies, defis, defiVague, stats, build(), energie,
    deblocages, prochain(), profil { charger, sauver, reglages(obj?) }, records. Ajout : defi (le défi courant,
    que 78-hud lit), gain (le dernier gain de points, pour les gains flottants), update(dt). */
@@ -23,7 +27,7 @@ N.score = (function () {
   var API = null;
   var S = null;
   var m = {                                       // l'état de la partie
-    score: 0, chaine: 0, dernier: -99, vies: 3, bonus: false, defi: null, gain: null, stats: null, newRecord: false
+    score: 0, chaine: 0, dernier: -99, vies: 3, bonus: false, defi: null, gain: null, stats: null, newRecord: false, resume: null, dv: null, dvFaits: 0
   };
   var disque = { v: 1, profil: { energie: 0, deblocages: [], defisFaits: [], parties: 0, codex: [], gestesVus: [] }, records: [], reglages: null };
   var lu = false;
@@ -67,7 +71,8 @@ N.score = (function () {
     if (!lu) charger();
     m.score = 0; m.chaine = 0; m.dernier = -99; m.vies = (R && R.vies && R.vies.depart) || 3; m.bonus = false; m.newRecord = false; m.gain = null;
     m.defi = nouveauDefi();
-    m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null };
+    m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
+    m.resume = null; m.dv = null; m.dvFaits = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
     publier();
@@ -101,6 +106,7 @@ N.score = (function () {
     var d = m.defi;
     d.etat = 'reussi'; d.t = O.T.t; d.prog = d.but;
     ajouter(CFG.defiPrime, null, null);
+    m.stats.energie += 20;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
     if (N.arsenal && N.arsenal.surcharger) N.arsenal.surcharger(true);
     var max = (R && R.vies && R.vies.max) || 4; if (m.vies < max) m.vies++;
     O.sfx('defi');
@@ -115,6 +121,34 @@ N.score = (function () {
     O.sfx('degat');
     if (N.hud && N.hud.banniere) N.hud.banniere(['DÉFI RATÉ', d.nom], { c: 'rose', icone: '✗', duree: 2.4 });
     if (N.ev) N.ev.emit('defi', { id: 'finir', ok: false, prime: 0 });
+  }
+
+  /* ---- le défi de vague (§ 2.14) : un objectif parmi trois, tiré par le flux 'defis' à l'entrée de chaque vague ;
+     réussi : 1 000 × le numéro de la vague et 10 énergie. Seuls les objectifs que les événements mesurent aujourd'hui
+     sont tirés (lassos, enfermés, cellules, mines, tourelles, broyés, multiplicateur) ; les autres attendent leurs événements. */
+  function butDe(d) { return d.lassos || d.enfermes || d.cellules || d.mines || d.tourelles || d.mult || d.broyes || 0; }
+  function tirerDefiVague(n) {
+    var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
+    if (!L) return null;
+    var ok = L.filter(butDe);
+    if (!ok.length) return null;
+    var d = ok[Math.min(ok.length - 1, (O.rf('defis') * ok.length) | 0)];
+    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', n: n };
+  }
+  function avanceDv(champ, v, max) {
+    var d = m.dv;
+    if (!d || d.etat !== 'actif' || !d.def[champ]) return;
+    d.prog = max ? Math.max(d.prog, v) : d.prog + v;
+    if (d.prog >= d.but) dvOk();
+  }
+  function dvOk() {
+    var d = m.dv, V = R.defis.vague, prime = V.prime * d.n;
+    d.etat = 'reussi'; d.prog = d.but; m.dvFaits++;
+    ajouter(prime, null, null);
+    m.stats.energie += V.energie;
+    O.sfx('defi');
+    if (N.hud && N.hud.toast) N.hud.toast('✓ ' + d.texte + '  +' + prime);
+    if (N.ev) N.ev.emit('defi', { id: d.id, ok: true, prime: prime });
   }
 
   /* ============================ les consommateurs ============================ */
@@ -133,13 +167,22 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('kill', 80, function (c) {
       if (estPurge(c.src)) return;
+      if (c.src && c.src.genre === 'arene' && c.src.type === 'convoi') avanceDv('broyes', 1);        // BROIE n : ennemis broyés par un convoi
+      if (c.type === 'mine') avanceDv('mines', 1);
+      else if (c.type === 'tourelle') avanceDv('tourelles', 1);       // → N.R : l'angle de 45° (v3Cote) n'est pas mesuré
       var d = m.defi;
       if (d && d.etat === 'actif') { d.prog = m.chaine; if (m.chaine > d.meilleur) d.meilleur = m.chaine; if (m.chaine >= d.but) defiOk(); }
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
+      if (c.type === 'cellule') avanceDv('cellules', 1);
+      m.stats.energie += (R && R.butin && R.butin[c.type] && R.butin[c.type].energie) || 0;      // § 2.6 : 1 par cellule, 5 par noyau
       var pts = ((R && R.butin && R.butin[c.type] && R.butin[c.type].points) || 0) * mult();
       ajouter(pts, c.x, c.y);
+    }, '77-score');
+    N.ev.on('lasso', 20, function (c) {
+      m.stats.lassos++; if (c.n > m.stats.maxLasso) m.stats.maxLasso = c.n;
+      avanceDv('lassos', 1); avanceDv('enfermes', c.n, true);
     }, '77-score');
     N.ev.on('coupe', 20, function () {
       m.stats.coupes++;
@@ -154,7 +197,13 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); }, '77-score');
     N.ev.on('vague', 20, function (c) {
+      if (c.evt === 'entree') {
+        m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
+        if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
+        return;
+      }
       if (c.evt !== 'nettoyee') return;
+      if (m.dv && m.dv.etat === 'actif') m.dv.etat = 'rate';
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
       ajouter(p * c.n, null, null);
     }, '77-score');
@@ -163,18 +212,66 @@ N.score = (function () {
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
   }
 
-  /* fin de partie : le record, mémorisé ; `victoire` vrai si le colosse est tombé */
+  /* fin de partie : le record, l'énergie, les déblocages, et le RÉSUMÉ que lit l'écran de fin ; `victoire` vrai si le colosse est tombé */
+  function seuils() { return (R && R.deblocages) || []; }
+  function prochainPour(e) {
+    var L = seuils(), prec = 0;
+    for (var i = 0; i < L.length; i++) { if (e < L[i].seuil) return { id: L[i].id, reste: L[i].seuil - e, part: O.clamp((e - prec) / (L[i].seuil - prec), 0, 1), seuil: L[i].seuil, prec: prec }; prec = L[i].seuil; }
+    return null;
+  }
+  var FAMILLES = { canon: 'TIREUSE', tourelles: 'ARTILLEUSE', missiles: 'ARTILLEUSE', arc: 'ORAGE', drones: 'ESSAIM', minesQ: 'POSEUSE' };
+  function build() {
+    var armes = N.cartes && N.cartes.armes ? N.cartes.armes() : (N.arsenal ? N.arsenal.armes() : []), pal = {}, best = 'TIREUSE', top = -1, i;
+    for (i = 0; i < armes.length; i++) {
+      var a = armes[i], p = a.palier !== undefined ? a.palier : a.niveau || 1, f = FAMILLES[a.id] || 'TIREUSE';
+      pal[f] = (pal[f] || 0) + p - (a.id === 'canon' ? 0.5 : 0);        // le canon seul ne l'emporte pas sur une arme prise
+    }
+    for (var k in pal) if (pal[k] > top) { top = pal[k]; best = k; }
+    var lassoPart = m.stats && m.stats.kills ? 0 : 0;                   // → N.R : LASSO si plus de 30 % des destructions au lasso (non suivi : 70-joueuse ne l'émet pas par ennemi)
+    return { nom: best, armes: armes, pouvoir: N.cartes && N.cartes.pouvoir ? N.cartes.pouvoir() : null, lasso: lassoPart };
+  }
+  function conseil(cause, auteur) {
+    var L = (R && R.ecrans && R.ecrans.conseils) || [], clef = null, i;
+    if (cause === 'mur') clef = 'mur'; else if (cause === 'morsure') clef = 'morsure'; else if (cause === 'convoi') clef = 'convoi'; else if (cause === 'traine') clef = 'traine';
+    else if (auteur && { fleche: 1, dard: 1, tourelle: 1, lame: 1, mine: 1, sentinelle: 1, traqueur: 1 }[auteur]) clef = auteur;
+    else if (m.stats && m.stats.lassos === 0) clef = 'aucunLasso';
+    for (i = 0; i < L.length; i++) if (L[i][0] === clef) return L[i][1];
+    return null;
+  }
   function terminer(victoire) {
     if (!lu) charger();
     m.stats.victoire = !!victoire;
-    var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0;
+    var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
-    disque.records.push(m.score); disque.records.sort(function (a, b) { return b - a; }); if (disque.records.length > 5) disque.records.length = 5;
-    disque.profil.parties++;
+    var dernier = pr.dernier || 0, avantE = pr.energie || 0;
+    disque.records.push(m.score); disque.records.sort(function (a, b) { return b - a; });
+    var nbRec = (R && R.ecrans && R.ecrans.records && R.ecrans.records.nombre) || 10;
+    if (disque.records.length > nbRec) disque.records.length = nbRec;
+    pr.parties++;
+    var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
+    pr.energie = avantE + gagne; pr.dernier = m.score;
+    for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
+      pr.deblocages.push(L[i].id); debloques.push(L[i].id);
+      if (N.ev) N.ev.emit('deblocage', { id: L[i].id });
+    }
     sauver();
+    var d = (S && S.death) || m.stats.morts[m.stats.morts.length - 1] || null, dir = N.dir;
+    var tot = dir && dir.nombreVagues ? dir.nombreVagues() : 5, vague = d && d.vague ? d.vague : (dir && dir.vague ? dir.vague() : 1);
+    var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
+    var note = victoire ? 'B' : boss ? 'C' : 'D';
+    m.resume = {
+      victoire: !!victoire, score: m.score, ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
+      kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
+      pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
+      temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
+      build: build(), defi: m.defi ? { nom: m.defi.nom, etat: m.defi.etat, prog: m.defi.prog, but: m.defi.but, meilleur: m.defi.meilleur } : null,
+      energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
+      conseil: conseil(d ? d.cause : null, d ? d.auteur : null), cartes: N.cartes && N.cartes.prises ? N.cartes.prises() : {}
+    };
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
   }
   function record() { if (!lu) charger(); return disque.records.length ? disque.records[0] : 0; }
@@ -183,8 +280,8 @@ N.score = (function () {
     reset: reset, update: update,
     score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
     defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
-    build: function () { return { nom: 'TIREUSE', armes: N.arsenal ? N.arsenal.armes() : [] }; },
-    energie: 0, deblocages: [], prochain: function () { var d = (R && R.deblocages && R.deblocages[0]) || { id: 'ralenti' }; return { id: d.id, reste: 0, part: 0 }; },
+    build: build, resume: function () { return m.resume; },
+    energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
     profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],
     fenetreRestante: function () { return O.clamp(1 - (O.T.t - m.dernier) / fenetre(), 0, 1); },
     terminer: terminer, record: record, defiRate: defiRate, nouveauRecord: function () { return m.newRecord; },

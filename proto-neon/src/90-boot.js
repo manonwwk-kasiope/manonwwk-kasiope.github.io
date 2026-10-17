@@ -13,7 +13,13 @@ var S = {
   enemies: [], player: null, challenge: null, paused: false,
   view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } },
   /* REFONTE § 7.8 : boost, pouvoir, apogee (vrais pendant un pas, vidés après la mise à jour), gestes et taps (vidés après la mise à jour) */
-  input: { x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [] },
+  input: {
+    x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [],
+    /* § 7.8 : vrais pendant UN pas (vidés après la mise à jour) ; chiffre 1..4 ou 0 ; car = lettres tapées pendant l'image */
+    pause: false, valider: false, retour: false, chiffre: 0, car: '',
+    pointer: { x: 0, y: 0, actif: false, boutons: 0 },                 // souris, en px ÉCRAN
+    manette: { connectee: false, x: 0, y: 0, boutons: 0 }              // → demandes.md : lecture de navigator.getGamepads pas encore faite
+  },
 };
 N.S = S;
 
@@ -101,8 +107,38 @@ function onKey(e, down) {
   S.input.x = (r ? 1 : 0) - (l ? 1 : 0); S.input.y = (d ? 1 : 0) - (u ? 1 : 0);
   S.input.mag = (S.input.x || S.input.y) ? 1 : 0;
   S.input.fire = !!(keys.Space || keys.KeyK);
+  if (down) clavierMenus(e);
   if (down && (e.code === 'Space' || e.code === 'Enter')) gesture();
   if (down) e.preventDefault();
+}
+/* § 2.15 : Entrée et Espace valident, Échap et Retour arrière reviennent, P met en pause, 1 à 4 choisissent une carte ;
+   les lettres tapées s'accumulent dans car (initiales). Chaque champ ne dure qu'un pas (entreeFin). */
+function clavierMenus(e) {
+  var c = e.code, m = /^(?:Digit|Numpad)([1-4])$/.exec(c);
+  if (c === 'Space' || c === 'Enter' || c === 'NumpadEnter') S.input.valider = true;
+  else if (c === 'Escape' || c === 'Backspace') S.input.retour = true;
+  else if (c === 'KeyP') S.input.pause = true;
+  if (m) S.input.chiffre = +m[1];
+  if (e.key && e.key.length === 1 && /[A-Za-z0-9]/.test(e.key) && S.input.car.length < 8) S.input.car += e.key.toUpperCase();
+}
+/* souris (§ 2.15) : le curseur en px ÉCRAN ; un clic gauche relâché est un tap (les écrans et les boutons du HUD le lisent) */
+function sourisMaj(e, actif) {
+  var p = S.input.pointer;
+  pxEcran(e.clientX, e.clientY, p);
+  if (actif !== undefined) p.actif = actif;
+  p.boutons = e.buttons | 0;
+}
+function onPointer(e) {
+  if (e.pointerType !== 'mouse') return;                 // le doigt passe par les événements tactiles (§ 2.16)
+  if (e.type === 'pointerdown') { sourisMaj(e, true); S.input.any = true; }
+  else if (e.type === 'pointermove') sourisMaj(e);
+  else if (e.type === 'pointerup' || e.type === 'pointercancel') {
+    sourisMaj(e, false);
+    if (e.type === 'pointerup' && e.button === 0) {
+      var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
+      pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
+    }
+  }
 }
 /* Au doigt : manche virtuel flottant, le standard des jeux d'action sur téléphone (recherche/
    jouabilite-mobile.md). Il naît là où le pouce se pose, n'importe où sur l'écran, et reste invisible
@@ -172,10 +208,16 @@ function entreeUpdate() {
 }
 /* après la mise à jour : un pas de pouvoir ou d'apogée, et les listes d'événements, ne durent qu'une image */
 function entreeFin() {
-  S.input.pouvoir = false; S.input.apogee = false;
-  S.input.gestes.length = 0; S.input.taps.length = 0;
+  var I = S.input;
+  I.pouvoir = false; I.apogee = false;
+  I.pause = false; I.valider = false; I.retour = false; I.chiffre = 0; I.car = '';
+  I.gestes.length = 0; I.taps.length = 0;
 }
-function entreeRaz() { doigts.length = 0; S.input.boost = false; S.input.pouvoir = false; S.input.apogee = false; S.input.gestes.length = 0; S.input.taps.length = 0; }
+function entreeRaz() {
+  doigts.length = 0; S.input.boost = false; S.input.pouvoir = false; S.input.apogee = false; S.input.gestes.length = 0; S.input.taps.length = 0;
+  S.input.pause = false; S.input.valider = false; S.input.retour = false; S.input.chiffre = 0; S.input.car = '';
+  S.input.pointer.actif = false; S.input.pointer.boutons = 0;
+}
 function onTouchStart(e) {
   S.input.any = true; gesture();
   var now = performance.now();
@@ -339,6 +381,10 @@ function boot() {
       step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
     } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
   });
+  app.addEventListener('pointerdown', onPointer);
+  app.addEventListener('pointermove', onPointer);
+  app.addEventListener('pointerup', onPointer);
+  app.addEventListener('pointercancel', onPointer);
   app.addEventListener('pointerdown', gesture);
   app.addEventListener('pointerup', gesture);
   app.addEventListener('click', gesture);
