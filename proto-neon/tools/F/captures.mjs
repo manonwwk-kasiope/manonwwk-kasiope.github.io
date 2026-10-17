@@ -67,7 +67,9 @@ if (!resume) { console.log(trace.join(' → ')); console.log('ERR', JSON.stringi
 console.log('résumé :', JSON.stringify({ cause: resume.cause, auteur: resume.auteur, vague: resume.vague, note: resume.note, build: resume.build.nom, conseil: resume.conseil, energie: resume.energieGagnee, prochain: resume.prochain && resume.prochain.id }));
 // REJOUER : le serpent en main en moins de 2 s
 const t0 = Date.now();
-if (P.hasTouch) await page.touchscreen.tap(P.viewport ? P.viewport.width / 2 : 400, 100); else await page.mouse.click(700, 300);
+/* depuis CONTINUER ? (codex-p7), la fin a deux boutons : on touche REJOUER lui-même */
+const rj = await page.evaluate(() => { const N = window.__N, r = N.gfx.canvas().getBoundingClientRect(), b = N.ui.finActions().rejouer; return { x: r.left + (b.x + b.w / 2) * N.gfx.PX, y: r.top + (b.y + b.h / 2) * N.gfx.PX }; });
+if (P.hasTouch) await page.touchscreen.tap(rj.x, rj.y); else await page.mouse.click(rj.x, rj.y);
 await veut('plongee', 4000); await veut('jeu', 4000);
 const dtRejouer = Date.now() - t0;
 const err = await page.evaluate(() => ({ n: window.__ERR.count, sigs: Object.keys(window.__ERR.sigs) }));
