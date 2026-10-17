@@ -357,7 +357,7 @@
      si : 'deux' (seulement quand les deux pilotes sont finis) | 'seul' (seulement sinon). */
   var ETAPES = [
     { id: 'choix', type: 'choix' },
-    { id: 'connexion', type: 'film', base: 'connexion', legende: '1976 — LE TERMINAL' },
+    { id: 'connexion', type: 'film', base: 'connexion', theme: 'qui', legende: '1976 — LE TERMINAL' },
     { id: '1976', type: 'epoque', module: 'terminal', graine: 1976 },
     { id: 'fissure', type: 'film', base: 'fissure', legende: 'LA GRILLE SE BRISE' },
     { id: '1982', type: 'epoque', module: 'arcade', graine: 1982 },
@@ -369,14 +369,14 @@
     { id: 'jeu-2001', type: 'jeu', epoque: 2001 },
     { id: 'espace', type: 'film', base: 'espace', evt: 'espace', legende: '2975 — L\'INTERGALACTIQUE' },
     { id: 'jeu-2975', type: 'jeu', epoque: 2975 },
-    { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
+    { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, theme: 'qui', legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
     { id: 'bilan', type: 'bilan' },
-    { id: 'rejouer', type: 'film', si: 'seul', base: { elle: 'pilote-lui', lui: 'pilote-elle' }, duree: 3.5,
+    { id: 'rejouer', type: 'film', si: 'seul', base: { elle: 'pilote-lui', lui: 'pilote-elle' }, duree: 3.5, theme: 'autre',
       legende: { elle: 'LE PILOTE T\'ATTEND', lui: 'LA PILOTE T\'ATTEND' } },
-    { id: 'retrouvailles', type: 'film', si: 'deux', base: 'retrouvailles', duree: 5, legende: 'LES DEUX MONDES SE TOUCHENT' },
-    { id: 'teaser', type: 'film', si: 'deux', base: 'teaser-3019', duree: 5.5,
+    { id: 'retrouvailles', type: 'film', si: 'deux', base: 'retrouvailles', duree: 5, theme: 'deux', legende: 'LES DEUX MONDES SE TOUCHENT' },
+    { id: 'teaser', type: 'film', si: 'deux', base: 'teaser-3019', duree: 5.5, theme: 'deux',
       carte: { titre: 'SNAKE 3019', sous: 'BIENTÔT. À DEUX.', haut: true } },
-    { id: 'asuivre', type: 'film', si: 'deux', base: null, duree: 12, carte: { titre: 'À SUIVRE', sous: 'SNAKE 3019' } }
+    { id: 'asuivre', type: 'film', si: 'deux', base: null, duree: 12, theme: 'deux', carte: { titre: 'À SUIVRE', sous: 'SNAKE 3019' } }
   ];
   var MAX_PAS = 64;                                          // garde-fou contre une boucle d'étapes vides
 
@@ -419,6 +419,14 @@
   function suite() { A.suite = true; }
 
   /* entre dans l'étape i, ou la première suivante qui a lieu ; les étapes instantanées s'enchaînent ici */
+  /* le thème du pilote (63-themes.js) : 'qui' le sien, 'autre' celui qui attend, 'deux' les deux superposés ;
+     une étape sans thème l'éteint (1976 et 1982 ont leur propre musique, le jeu la sienne) */
+  function ambiance(e) {
+    if (!N.themes) return;
+    var t = e && e.theme, q = A.qui === 'lui' ? 'lui' : 'elle';
+    t = t === 'qui' ? q : t === 'autre' ? (q === 'elle' ? 'lui' : 'elle') : t;
+    try { if (t) N.themes.jouer(t, { fondu: 1 }); else if (N.themes.qui()) N.themes.arreter(e && e.type === 'epoque' ? 0.3 : 1.2); } catch (x) { signaler('aventure.themes', x); }
+  }
   function entrer(i) {
     for (var pas = 0; pas < MAX_PAS; pas++, i++) {
       A.main = false;
@@ -441,7 +449,7 @@
       if (e.type === 'film') {
         var nom = nomFilm(selon(e.base));
         if (!N.film.jouer(nom, { duree: e.duree, legende: selon(e.legende), carte: e.carte, surFin: suite })) { ajournal('film impossible ' + e.id); continue; }
-        A.vus[e.id] = true; A.joues.push(nom || e.id); A.main = true;
+        A.vus[e.id] = true; A.joues.push(nom || e.id); A.main = true; ambiance(e);
         ajournal('film ' + e.id + ' ' + (nom || '-'));
         preparerSuivant(i);
         return;
@@ -451,7 +459,7 @@
         var gr = (A.opts.graines && A.opts.graines[e.id]) || e.graine;
         if (m) { try { ok = m.start({ graine: gr, surFin: suite }) !== false; } catch (x) { signaler('aventure.' + e.module, x); ok = false; } }
         if (!ok) { ajournal('époque ' + e.id + ' absente'); continue; }
-        A.main = true; ajournal('époque ' + e.id);
+        A.main = true; ajournal('époque ' + e.id); ambiance(e);
         preparerSuivant(i);
         return;
       }
@@ -462,7 +470,7 @@
         continue;
       }
       if (e.type === 'jeu') {
-        ajournal('jeu ' + e.id);
+        ajournal('jeu ' + e.id); ambiance(e);
         if (!A.aJouer) {                                     // sans jeu (page d'essai nue) : le voyage se raconte d'une traite
           ajournal('sans jeu');
           var j = indexEvt('fin', i);
@@ -490,7 +498,7 @@
   }
   function finir(issue) {
     if (!A.on) return;
-    couper();
+    couper(); if (N.themes) { try { N.themes.arreter(2); } catch (x) {} }
     A.on = false; A.main = false;
     ajournal('aventure ' + issue);
     var f = A.surFin; A.surFin = null;
@@ -515,6 +523,7 @@
     if (!A.on) return;
     if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
     A.t += dt;
+    if (N.themes) { try { N.themes.update(); } catch (x) {} }
     var e = etapeCourante();
     if (A.main && e) {
       if (e.type === 'choix' && N.choix) { try { N.choix.update(dt); } catch (x) { signaler('aventure.choix', x); } }
@@ -558,7 +567,7 @@
     actif: function () { return A.on && A.main; },
     enCours: function () { return A.on; },
     etape: function () { var e = etapeCourante(); return A.on && e ? e.id : null; },
-    stop: function () { if (!A.on) return; couper(); A.on = false; A.main = false; A.surFin = null; ajournal('stop'); },
+    stop: function () { if (!A.on) return; couper(); if (N.themes) N.themes.arreter(0.3); A.on = false; A.main = false; A.surFin = null; ajournal('stop'); },
     state: function () {
       var e = etapeCourante();
       return { enCours: A.on, actif: A.on && A.main, etape: A.on && e ? e.id : null, type: e ? e.type : null, i: A.i,

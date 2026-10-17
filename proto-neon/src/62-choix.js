@@ -102,6 +102,8 @@
   }
   function tactile() { try { return !!(N.outils && N.outils.hasTouch && N.outils.hasTouch()); } catch (e) { return false; } }
   function sfx(nom) { try { if (N.music && N.music.sfx) N.music.sfx(nom); } catch (e) {} }
+  /* le thème de chaque pilote (63-themes.js) : les deux superposés tant que personne n'est pointé */
+  function theme(qui) { try { if (N.themes) N.themes.jouer(qui, { fondu: qui === 'deux' ? 1.5 : 0.5, volume: qui === 'deux' ? 0.7 : 1 }); } catch (e) {} }
   function art(nom) { try { return N.art && N.art.get ? N.art.get(nom) : null; } catch (e) { return null; } }
   function clipOn(nom) { try { return !!(N.art && N.art.play && N.art.play(nom)); } catch (e) { return false; } }
   function clipOff(nom) { try { if (N.art && N.art.stop) N.art.stop(nom); } catch (e) {} }
@@ -615,14 +617,14 @@
     clipPrep(INFO.elle.art); clipPrep(INFO.lui.art);
     var s = S(); if (s.input) s.input.any = false;
     journal('debut' + (C.deux ? ' deux-finis' : ''));
-    if (C.focus) viser(C.focus, 'reprise', true);
+    if (C.focus) viser(C.focus, 'reprise', true); else theme('deux');
     return true;
   }
   /* pointer un personnage : son clip joue (s'il existe), l'autre s'arrête */
   function viser(qui, via, muet) {
     if (qui !== 'elle' && qui !== 'lui') return;
     var change = C.focus !== qui;
-    C.focus = qui;
+    C.focus = qui; theme(qui);
     if (C.clip && C.clip !== INFO[qui].art) { clipOff(C.clip); C.clip = null; C.clipJoue = false; }
     if (!C.clip) { C.clip = INFO[qui].art; C.clipJoue = clipOn(C.clip); }
     if (change || muet) journal('pointe ' + qui + ' (' + via + ')' + (C.clipJoue ? ' clip' : ''));
@@ -679,6 +681,7 @@
     if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
     var s = S(); if (s.paused) return;
     C.t += dt; C.pt += dt;
+    if (N.themes) { try { N.themes.update(); } catch (e) {} }
     if (C.phase === 'revele' && C.pt >= CFG.revele) { C.phase = 'choix'; C.pt = 0; journal('choix ouvert'); }
     if (C.deux) C.ouvert = clamp01((C.t - CFG.revele * 0.5) / CFG.ouverture);
     if (C.phase === 'revele' || C.phase === 'choix') entrees();
@@ -730,7 +733,7 @@
     start: start, update: update, draw: draw,
     actif: function () { return C.on; },
     phase: function () { return C.phase; },
-    stop: function () { if (C.clip) clipOff(C.clip); C.clip = null; C.on = false; C.phase = 'fini'; C.finAppele = true; },
+    stop: function () { if (N.themes) { try { N.themes.arreter(0.3); } catch (e) {} } if (C.clip) clipOff(C.clip); C.clip = null; C.on = false; C.phase = 'fini'; C.finAppele = true; },
     personnage: function () { return SESSION; },
     marquerFini: function (qui) {
       if (qui !== 'elle' && qui !== 'lui') return false;
