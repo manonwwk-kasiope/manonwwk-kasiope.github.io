@@ -711,11 +711,323 @@
     return contour(fromMap(['..g..', '.ggg.', 'gg.gg', '.ggg.', '..g..']), NP, false);
   }
 
+
+  /* ---------------------------------------------------------------------------------------------- */
+  /* LOT G — LE BESTIAIRE DU § 4.4 : dard, larve, traqueur, planeur, lame, ruche, rival, flèche armée     */
+  /* Même règles : magenta, sang et rose pâle, contour d'un pixel en nuit profonde, jamais de cyan.       */
+  /* ---------------------------------------------------------------------------------------------- */
+  function disk(s, cx, cy, r, c) {
+    for (var y = -Math.ceil(r); y <= Math.ceil(r); y++) for (var x = -Math.ceil(r); x <= Math.ceil(r); x++) {
+      if (x * x + y * y <= r * r + r * 0.6) {
+        var px = cx + x, py = cy + y;
+        if (px >= 0 && py >= 0 && px < s.w && py < s.h) s.data[py * s.w + px] = c;
+      }
+    }
+  }
+  function setpx(s, x, y, c) { x = Math.round(x); y = Math.round(y); if (x >= 0 && y >= 0 && x < s.w && y < s.h) s.data[y * s.w + x] = c; }
+  function ln(s, x0, y0, x1, y1, c) {
+    var n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) || 1;
+    for (var i = 0; i <= n; i++) setpx(s, x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n, c);
+  }
+  /* un sprite dirigé, dessiné pointe en haut : les seize directions sortent d'une seule carte (comme la flèche) */
+  var dirBase = {}, dirMemo = {};
+  function genDir(key, rows, f, k, ombre) {
+    var kk = key + f;
+    if (!dirBase[kk]) { var up = fromMap(rows); up.cx = (up.w - 1) >> 1; up.cy = (up.h - 1) >> 1; dirBase[kk] = rot90(up); dirMemo[kk] = {}; }
+    var s = dir16(dirBase[kk], k, dirMemo[kk]);
+    return contour(ombre ? shadeHull(s) : s, NP, true);
+  }
+
+  /* LE DARD : le coupeur, un fuseau à deux fourches avant ; 15 × 15 ; 16 directions ; 2 images (les fourches battent) */
+  var DARD = [
+    [
+      '.m.........m.',
+      '.mm.......mm.',
+      '.mrm.....mrm.',
+      '..mmm...mmm..',
+      '..smmm.mmms..',
+      '...smmmmms...',
+      '....mmrmm....',
+      '....mmrmm....',
+      '....smrms....',
+      '.....mrm.....',
+      '.....smm.....',
+      '......m......',
+      '......s......'
+    ],
+    [
+      '..m.......m..',
+      '.mm.......mm.',
+      '.mmm.....mmm.',
+      '..mmm...mmm..',
+      '..smmm.mmms..',
+      '...smmmmms...',
+      '....mmrmm....',
+      '....mmrmm....',
+      '....smrms....',
+      '.....mrm.....',
+      '.....smm.....',
+      '......m......',
+      '......s......'
+    ]
+  ];
+  function genDard(k, f) { return genDir('dard', DARD[f & 1], f & 1, k, true); }
+
+  /* LA LARVE : un éclat à pattes, 9 × 9 ; 2 images (les pattes) */
+  var LARVE = [
+    ['.m...m.', '..mmm..', '.mmrmm.', 'mmmrmmm', '.mmmmm.', '..sss..', '.s...s.'],
+    ['m.....m', '.mmmmm.', '.mmrmm.', 'mmmrmmm', '.mmmmm.', '..sss..', 's.....s']
+  ];
+  function genLarve(f) { return contour(shadeHull(fromMap(LARVE[f & 1])), NP, true); }
+
+  /* LE TRAQUEUR : un disque à œil fendu, 15 × 15, dans un halo de pointillés qui tourne (4 images) ; jamais confondu avec le RIVAL */
+  function genTraqueur(f) {
+    var s = spr(13, 13), i, c = 6;
+    disk(s, c, c, 3.2, SANG);
+    disk(s, c, c, 2.4, MAG);
+    for (i = -1; i <= 1; i++) setpx(s, c, c + i, i === 0 ? NP : ROSE);                  /* la fente de l'œil, verticale */
+    setpx(s, c - 1, c - 2, ROSE); setpx(s, c + 1, c - 2, ROSE);
+    for (i = 0; i < 8; i++) {                                                          /* le halo : huit points, un sur deux allumé, qui tournent */
+      var a = (i + (f & 3) * 0.25) * Math.PI / 4;
+      setpx(s, c + Math.cos(a) * 6, c + Math.sin(a) * 6, (i & 1) ? ROSE : MAG);
+    }
+    s.cx = c; s.cy = c;
+    return contour(s, NP, true);
+  }
+
+  /* LE PLANEUR : la cible bonus du DÉFILÉ, une aile en chevron ouvert, rose pâle et sang ; 9 × 9 ; 2 images (battement) */
+  var PLANEUR = [
+    ['r.....r', 'rr...rr', '.rr.rr.', '..rwr..', '..rsr..', '...s...', '.......'],
+    ['.......', 'r.....r', 'rr...rr', '.rrwrr.', '..rsr..', '...s...', '.......']
+  ];
+  function genPlaneur(f) { return contour(fromMap(PLANEUR[f & 1]), NP, true); }
+
+  /* LA LAME : le trancheur. Au repos 15 × 15 (corps rond, quatre pointes) ; ':deployee' 21 × 21 (quatre lames qui tournent) ; 2 images */
+  function genLame(variant, f) {
+    var dep = variant === 'deployee', n = dep ? 19 : 13, c = (n - 1) / 2, s = spr(n, n), i, a, L = dep ? 9 : 6;
+    var d = (f & 1) ? Math.PI / 4 : Math.PI / 4 + 0.0;       /* au repos : un X de lames repliées ; déployée : huit lames qui tournent */
+    var nb = dep ? 8 : 4;
+    for (i = 0; i < nb; i++) {
+      a = (dep && (f & 1) ? Math.PI / 8 : 0) + d * (dep ? 0 : 1) + i * (dep ? Math.PI / 4 : Math.PI / 2);
+      var l = dep ? (i & 1 ? L - 2 : L) : L;
+      ln(s, c + Math.cos(a) * 2, c + Math.sin(a) * 2, c + Math.cos(a) * l, c + Math.sin(a) * l, ROSE);
+      ln(s, c + Math.cos(a + 0.3) * 2, c + Math.sin(a + 0.3) * 2, c + Math.cos(a) * l, c + Math.sin(a) * l, MAG);
+      if (dep) ln(s, c + Math.cos(a - 0.3) * 2, c + Math.sin(a - 0.3) * 2, c + Math.cos(a) * l, c + Math.sin(a) * l, SANG);
+    }
+    disk(s, c, c, 2.4, SANG); disk(s, c, c, 1.6, MAG);
+    setpx(s, c, c, dep ? OS : ROSE);
+    s.cx = c; s.cy = c;
+    return contour(s, NP, true);
+  }
+
+  /* LA RUCHE : la source, 23 × 23 ; trois états de pétales (':p0' fermée, ':p1' à moitié ouverte, ':p2' ouverte) ; 2 images (le cœur blanchit) */
+  function genRuche(variant, f) {
+    var st = variant === 'p2' ? 2 : (variant === 'p1' ? 1 : 0), n = 21, c = 10, s = spr(n, n), i, a;
+    var R = [6.5, 8, 9][st], pr = [3.4, 3.1, 2.8][st];
+    disk(s, c, c, 6.5, SANG);
+    for (i = 0; i < 8; i++) {
+      a = i * Math.PI / 4 + Math.PI / 8;
+      var px = c + Math.cos(a) * R, py = c + Math.sin(a) * R;
+      disk(s, Math.round(px), Math.round(py), pr, SANG);
+      disk(s, Math.round(px), Math.round(py), pr - 1, MAG);
+      setpx(s, px - 0.5, py - 1, ROSE);
+    }
+    disk(s, c, c, 4.4, MAG);
+    disk(s, c, c, 3.2, NP);
+    disk(s, c, c, 2.2, (f & 1) ? OS : ROSE);
+    setpx(s, c, c, (f & 1) ? OS : SANG);
+    if (st >= 1) for (i = 0; i < 4; i++) { a = i * Math.PI / 2 + Math.PI / 4; setpx(s, c + Math.cos(a) * 5.4, c + Math.sin(a) * 5.4, ROSE); }
+    s.cx = c; s.cy = c;
+    return contour(s, NP, true);
+  }
+
+  /* LE RIVAL : l'autre serpent. Tête de 11 × 11 à mâchoires (16 directions, 2 images : les mâchoires battent) ; perles de 7 × 7 en sang à cœur magenta */
+  var RIVALTETE = [
+    ['..ssss...', '.smmmmm..', 'smmrrmmm.', 'smmormmmm', 'smmmmmm.s', 'smmormmmm', 'smmrrmmm.', '.smmmmm..', '..ssss...'],
+    ['..ssss...', '.smmmmm..', 'smmrrmmmm', 'smmormmm.', 'smmmmmm.s', 'smmormmm.', 'smmrrmmmm', '.smmmmm..', '..ssss...']
+  ];
+  var rivBase = [], rivMemo = [{}, {}];
+  function genRivalTete(k, f) {
+    f &= 1;
+    if (!rivBase[f]) { rivBase[f] = fromMap(RIVALTETE[f]); rivBase[f].cx = 4; rivBase[f].cy = 4; }
+    return contour(dir16(rivBase[f], k, rivMemo[f]), NP, true);
+  }
+  function genPerle(f) { return contour(fromMap(['.sss.', 'ssmss', 'smmms', 'ssmss', '.sss.']), NP, true); }
+
+  /* LA FLÈCHE ARMÉE : elle gonfle d'un pixel et son cœur passe de sang à rose pâle (§ 4.4) ; 16 directions */
+  var FLECHE_ARMEE = [
+    '......m......', '.....mmm.....', '....mmmmm....', '....mmmmm....', '...mmmmmmm...', '..mmrrrrrmm..', '..mrrrrrrrm..',
+    '..mmmrrrmmm..', '.mmmmmmmmmmm.', '.mmmmomommmm.', '.mmmoommoomm.', '.mm..mm.mm.m.', '.............'
+  ];
+  var flecheA = null, flecheAMemo = {};
+  function genFlecheArmee(k) {
+    if (!flecheA) { var up = fromMap(FLECHE_ARMEE); up.cx = 6; up.cy = 6; flecheA = rot90(up); }
+    return contour(shadeHull(dir16(flecheA, k, flecheAMemo)), NP, true);
+  }
+  /* LA FLÈCHE ÉLITE : 19 × 19, couronne de pointes (§ 4.5) : la flèche, agrandie, avec trois piques d'os sur le dos */
+  function genFlecheElite(k, f) {
+    var base = genFleche(k, f), o = spr(base.w + 4, base.h + 4), x, y;
+    for (y = 0; y < base.h; y++) for (x = 0; x < base.w; x++) o.data[(y + 2) * o.w + x + 2] = base.data[y * base.w + x];
+    o.cx = base.cx + 2; o.cy = base.cy + 2;
+    var c = o.w >> 1;
+    setpx(o, c, 0, ROSE); setpx(o, c - 5, 1, ROSE); setpx(o, c + 5, 1, ROSE); setpx(o, c, 1, SANG);
+    return contour(o, NP, true);
+  }
+
+  /* LA PASTILLE : rayons jaunes autour d'un disque ambre (11 × 11, 4 images : les rayons passent des axes aux diagonales) ; NOYAU : butin de grappe, 11 × 11 */
+  function genPastille(f) {
+    var s = spr(9, 9), c = 4, i, a;
+    disk(s, c, c, 2.6, AMBRE); disk(s, c, c, 1.6, JAUNE); setpx(s, c, c, OS); setpx(s, c - 1, c - 1, OS);
+    for (i = 0; i < 4; i++) {
+      a = i * Math.PI / 2 + ((f & 1) ? Math.PI / 4 : 0);
+      var r = (f & 2) ? 4 : 3.4;
+      ln(s, c + Math.cos(a) * 3.2, c + Math.sin(a) * 3.2, c + Math.cos(a) * r, c + Math.sin(a) * r, JAUNE);
+    }
+    s.cx = c; s.cy = c;
+    return contour(s, NP, true);
+  }
+  function genNoyau(f) {
+    var s = spr(9, 9), c = 4;
+    disk(s, c, c, 3.7, AMBRE); disk(s, c, c, 2.6, JAUNE); disk(s, c, c, 1.2, OS);
+    setpx(s, c, 0, JAUNE); setpx(s, c, 8, JAUNE); setpx(s, 0, c, JAUNE); setpx(s, 8, c, JAUNE);
+    if (f & 1) { setpx(s, 2, 2, OS); setpx(s, 6, 6, OS); }
+    s.cx = c; s.cy = c;
+    return contour(s, NP, true);
+  }
+
+  /* LES MINI-SILHOUETTES de 5 × 5 (radar, codex), une par type ; et les PASTILLES DE VIE de 5 × 5 */
+  var MINI = {
+    fleche: ['..m..', '.mmm.', '.mrm.', 'mmmmm', 'm...m'], dard: ['m...m', 'mm.mm', '.mrm.', '..m..', '..s..'], larve: ['.m.m.', 'mmmmm', '.mrm.', 'mmmmm', 'm...m'],
+    mine: ['m.m.m', '.mmm.', 'mmrmm', '.mmm.', 'm.m.m'], tourelle: ['mmmmm', 'mrrrm', 'mmrmm', 'mmmmm', 'm...m'], lame: ['r.m.r', '.mmm.', 'mmrmm', '.mmm.', 'r.m.r'],
+    ruche: ['.mmm.', 'mmrmm', 'mrwrm', 'mmrmm', '.mmm.'], sentinelle: ['..m..', '.mrm.', 'mrorm', '.mrm.', '..m..'], rival: ['mm...', 'mrm..', '.mmm.', '..mmm', '...ms'],
+    planeur: ['r...r', '.r.r.', '..r..', '..r..', '.....'], traqueur: ['.rrr.', 'rmomr', 'rmomr', 'rmmmr', '.rrr.']
+  };
+  function genMini(t) { var s = fromMap(MINI[t] || MINI.fleche); s.cx = 2; s.cy = 2; return s; }
+  function genVie5(plein) {
+    return fromMap(plein ? ['.rrr.', 'rwwwr', 'rwwwr', 'rwwwr', '.rrr.'] : ['.ggg.', 'g...g', 'g...g', 'g...g', '.ggg.']);
+  }
+  /* le chevron de bord d'écran pour les portails et les ennemis hors champ (16 directions) : magenta, pointe rose pâle */
+  var chevP = null, chevPMemo = {};
+  function genChevronP(k) {
+    if (!chevP) { chevP = fromMap(['.......', '..m....', '...m...', '....r..', '...m...', '..m....', '.......']); chevP.cx = 3; chevP.cy = 3; }
+    return contour(dir16(chevP, k, chevPMemo), NP, true);
+  }
+
+  /* LES MONTURES D'ARMES SUR LE CORPS (cyan : ce sont les siennes) : tourelle de queue, drone, missile (16 directions), mine de queue, orbe */
+  function genTourelleJ(f) {
+    var s = fromMap(['.ppp.', 'pcccp', 'pcwcp', 'pcccp', '.ppp.']);
+    if (f & 1) { s.data[2 * 5 + 2] = OS; } else s.data[2 * 5 + 2] = CYP;
+    s.cx = 2; s.cy = 2;
+    return s;
+  }
+  function genDrone(f) {
+    var s = fromMap((f & 1) ? ['c.p.c', '.ppp.', 'cpwpc', '.ppp.', 'c.p.c'] : ['.cpc.', 'cpppc', 'pcwcp', 'cpppc', '.cpc.']);
+    s.cx = 2; s.cy = 2;
+    return s;
+  }
+  var missBase = null, missMemo = {};
+  function genMissile(k) {
+    if (!missBase) { missBase = fromMap(['.......', '.ccp...', 'cppwpp.', '.ccp...', '.......']); missBase.cx = 3; missBase.cy = 2; }
+    return dir16(missBase, k, missMemo);
+  }
+  function genMineJ(f) {
+    var s = fromMap((f & 1) ? ['..p..', '.ccc.', 'pcwcp', '.ccc.', '..p..'] : ['p.p.p', '.ccc.', 'pcwcp', '.ccc.', 'p.p.p']);
+    s.cx = 2; s.cy = 2;
+    return s;
+  }
+  function genOrbe(f) {
+    var s = fromMap(['..ccc..', '.cpppc.', 'cppwppc', 'cpwwwpc', 'cppwppc', '.cpppc.', '..ccc..']);
+    if (f & 1) { s.data[1 * 7 + 3] = OS; s.data[5 * 7 + 3] = OS; }
+    s.cx = 3; s.cy = 3;
+    return s;
+  }
+
+  /* ---------------------------------------------------------------------------------------------- */
+  /* LE CYCLOPE EN GRAND (§ 4.8) : des PIÈCES à assembler (tronc et tête 40 × 32, mains 24 × 24, plaques 12 × 12), plus ses silhouettes */
+  /* ---------------------------------------------------------------------------------------------- */
+  /* le tronc et la tête : un cube blindé, l'œil unique dans une fente ; ':oeil' l'allume ; ':enrage' passe l'œil au brasier */
+  function genCyclopeTronc(variant, f) {
+    var w = 40, h = 32, s = spr(w, h), x, y, ex = 20, ey = 13;
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+      var inTete = y < 20 && x >= 5 && x < 35 && (y > 1 || (x > 8 && x < 32));
+      var inTronc = y >= 18 && x >= 2 && x < 38 && (y < 30 || (x > 6 && x < 34));
+      if (!(inTete || inTronc)) continue;
+      var c = MAG;
+      if (inTete ? (y === 1 || y === 2 || x === 5 || x === 6) : (y === 18 || y === 19 || x === 2 || x === 3)) c = ROSE;
+      else if (inTete ? (y >= 19 || x >= 33) : (y >= 28 || x >= 36)) c = SANG;
+      s.data[y * w + x] = c;
+    }
+    for (x = 8; x < 32; x++) { s.data[3 * w + x] = SANG; s.data[17 * w + x] = SANG; }            /* joints du casque */
+    for (x = 8; x < 32; x++) s.data[18 * w + x] = SANG;
+    for (y = 22; y < 29; y += 3) for (x = 8; x < 32; x += 6) { s.data[y * w + x] = SANG; s.data[y * w + x + 1] = SANG; }    /* évents */
+    for (y = 8; y <= 17; y++) for (x = 10; x <= 29; x++) s.data[y * w + x] = NP;                  /* la fente de l'œil */
+    var lit = variant === 'oeil' || variant === 'enrage', hot = variant === 'enrage';
+    disk(s, ex, ey, 3.6, lit ? (hot ? BRAS : JAUNE) : SANG);
+    disk(s, ex, ey, 2.4, lit ? (hot ? JAUNE : OS) : ROSE);
+    setpx(s, ex, ey, lit ? OS : NP);
+    if (lit) { for (x = 11; x <= 28; x++) if (Math.abs(x - ex) > 4 && ((x + (f & 1)) & 1)) setpx(s, x, ey, hot ? BRAS : JAUNE); }
+    s.cx = 20; s.cy = 16;
+    return contour(s, NP, true);
+  }
+  /* une main : une pince à trois doigts, 24 × 24 ; 2 images (les doigts battent) ; ':ouverte' */
+  function genCyclopeMain(variant, f) {
+    var s = spr(24, 24), i;
+    disk(s, 12, 8, 7, SANG); disk(s, 12, 8, 6, MAG); disk(s, 11, 6, 3, ROSE); disk(s, 12, 9, 2, SANG);
+    var ouv = (f & 1) || variant === 'ouverte';
+    for (i = -1; i <= 1; i++) {
+      var ax = 12 + i * (ouv ? 6 : 4), ay = ouv ? 23 : 21;
+      ln(s, 12 + i * 3, 14, ax, ay, MAG); ln(s, 13 + i * 3, 14, ax + 1, ay, SANG); ln(s, 11 + i * 3, 14, ax - 1, ay, ROSE);
+    }
+    s.cx = 12; s.cy = 12;
+    return contour(s, NP, true);
+  }
+  /* une plaque d'armure, 12 × 12 : tombe au sol à la phase 2 ; ':sol' la montre éteinte, en sang et ardoise */
+  function genCyclopePlaque(variant) {
+    var s = spr(12, 12), x, y, sol = variant === 'sol';
+    for (y = 0; y < 12; y++) for (x = 0; x < 12; x++) {
+      if (x + y < 2 || x + y > 20 || (x > 9 && y < 2)) continue;
+      var c = sol ? 2 : MAG;
+      if (!sol) { if (y < 2 || x < 2) c = ROSE; else if (y > 9 || x > 9) c = SANG; }
+      else if (y > 9 || x > 9) c = 4;
+      s.data[y * 12 + x] = c;
+    }
+    setpx(s, 5, 5, sol ? 4 : SANG); setpx(s, 6, 6, sol ? 4 : SANG);
+    return contour(s, NP, true);
+  }
+  /* la carcasse (§ 4.8) : le cyclope éteint, sang et ardoise, pour le plan des structures ; ':loin' 48 px, ':mi' 80 px (sang et nuit, comme découpés de boss.png) */
+  function silhouetteCyclope(w, h, loin) {
+    var s = spr(w, h), x, y, c = (w - 1) / 2;
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+      var u = x / (w - 1) - 0.5, v = y / (h - 1), on = false;
+      if (v < 0.30) on = Math.abs(u) < 0.26 - (v < 0.04 ? 0.12 : 0);                              /* la tête */
+      else if (v < 0.78) on = Math.abs(u) < 0.42 - (v - 0.30) * 0.25;                             /* le tronc et les épaules */
+      else on = Math.abs(u) < 0.20 && ((x + y) & 1) === 0 || Math.abs(u) < 0.15;                     /* les jambes */
+      if (v > 0.30 && v < 0.62 && Math.abs(Math.abs(u) - 0.44) < 0.07) on = true;                  /* les bras */
+      if (on) s.data[y * w + x] = (u > 0.18 || v > 0.86) ? (loin ? 4 : 2) : SANG;
+    }
+    var ex = Math.round(c), ey = Math.round(h * 0.17);
+    setpx(s, ex, ey, loin ? ROSE : MAG); setpx(s, ex - 1, ey, SANG); setpx(s, ex + 1, ey, SANG);
+    s.cx = Math.round(c); s.cy = h >> 1;
+    return s;
+  }
+  /* le CYCLOPE ASSEMBLÉ, 96 × 128 : tronc et tête, deux mains, six plaques ; pour la planche et la mise en scène (le colosse réel les pose à part) */
+  function genCyclope(variant, f) {
+    var W = 96, H = 128, s = spr(W, H), tronc = genCyclopeTronc(variant, f), main = genCyclopeMain('', f), pl = genCyclopePlaque(''), i;
+    function blit(a, ox, oy) { for (var y = 0; y < a.h; y++) for (var x = 0; x < a.w; x++) { var v = a.data[y * a.w + x]; if (v) { var X = ox + x, Y = oy + y; if (X >= 0 && Y >= 0 && X < W && Y < H) s.data[Y * W + X] = v; } } }
+    blit(tronc, 28, 26);
+    blit(main, 2, 70); blit(main, 70, 70);
+    for (i = 0; i < 6; i++) blit(pl, 24 + (i % 3) * 18, 62 + ((i / 3) | 0) * 14);
+    s.cx = 48; s.cy = 64;
+    return s;
+  }
+
   /* ---------------------------------------------------------------------------------------------- */
   /* registre                                                                                         */
   /* ---------------------------------------------------------------------------------------------- */
   function dirOf(v, def) {
-    var n = parseInt(v, 10);
+    var t = String(v === undefined || v === null ? '' : v), q = t.lastIndexOf('/');
+    if (q >= 0) t = t.slice(q + 1);
+    var n = parseInt(t, 10);
     if (isNaN(n)) return def;
     return ((n % 16) + 16) % 16;
   }
@@ -725,11 +1037,41 @@
     queue: { fr: 3, gen: function (v, f) { return genCorps(3, f); } },
     tir: { fr: 2, gen: function (v, f) { return genTir(dirOf(v, 0), f); } },
     chevron: { fr: 1, gen: function (v) { return genChevron(dirOf(v, 0)); } },
-    fleche: { fr: 2, gen: function (v, f) { return genFleche(dirOf(v, 0), f); } },
+    fleche: { fr: 2, gen: function (v, f) { var p = String(v).split('/')[0]; return p === 'armee' ? genFlecheArmee(dirOf(v, 0)) : (p === 'elite' ? genFlecheElite(dirOf(v, 0), f) : genFleche(dirOf(v, 0), f)); } },
+    dard: { fr: 2, gen: function (v, f) { return genDard(dirOf(v, 0), f); } },
+    larve: { fr: 2, gen: function (v, f) { return genLarve(f); } },
+    traqueur: { fr: 4, gen: function (v, f) { return genTraqueur(f); } },
+    planeur: { fr: 2, gen: function (v, f) { return genPlaneur(f); } },
+    lame: { fr: 2, gen: function (v, f) { return genLame(v, f); } },
+    ruche: { fr: 2, gen: function (v, f) { return genRuche(v, f); } },
+    rival: { fr: 2, gen: function (v, f) { return genRivalTete(dirOf(v, 0), f); } },
+    perle: { fr: 1, gen: function (v, f) { return genPerle(f); } },
+    pastille: { fr: 4, gen: function (v, f) { return genPastille(f); } },
+    noyau: { fr: 2, gen: function (v, f) { return genNoyau(f); } },
+    mini: { fr: 1, gen: function (v) { return genMini(v); } },
+    vie5: { fr: 1, gen: function () { return genVie5(true); } },
+    vie5vide: { fr: 1, gen: function () { return genVie5(false); } },
+    chevronp: { fr: 1, gen: function (v) { return genChevronP(dirOf(v, 0)); } },
+    tourellej: { fr: 2, gen: function (v, f) { return genTourelleJ(f); } },
+    drone: { fr: 2, gen: function (v, f) { return genDrone(f); } },
+    missile: { fr: 1, gen: function (v) { return genMissile(dirOf(v, 0)); } },
+    minej: { fr: 2, gen: function (v, f) { return genMineJ(f); } },
+    orbe: { fr: 2, gen: function (v, f) { return genOrbe(f); } },
+    cyclope: { fr: 2, gen: function (v, f) { return genCyclope(v, f); } },
+    colosseloin: { fr: 1, gen: function () { return silhouetteCyclope(48, 48, true); } },
+    colossemi: { fr: 1, gen: function () { return silhouetteCyclope(80, 80, false); } },
     tourelle: { fr: 2, gen: function (v, f) { return genTourelle(v, f); } },
     sentinelle: { fr: 4, gen: function (v, f) { return genSentinelle(f); } },
     mine: { fr: 2, gen: function (v, f) { return genMine(v, f); } },
-    colosse: { fr: 2, gen: function (v, f) { return genColosse(v, f); } },
+    colosse: { fr: 2, gen: function (v, f) {
+      if (v === 'tronc') return genCyclopeTronc('', f);
+      if (v === 'troncoeil') return genCyclopeTronc('oeil', f);
+      if (v === 'troncenrage') return genCyclopeTronc('enrage', f);
+      if (v === 'main' || v === 'mainouverte') return genCyclopeMain(v === 'mainouverte' ? 'ouverte' : '', f);
+      if (v === 'plaque' || v === 'plaquesol') return genCyclopePlaque(v === 'plaquesol' ? 'sol' : '');
+      if (v === 'carcasse') return silhouetteCyclope(96, 64, false);
+      return genColosse(v, f);
+    } },
     tirennemi: { fr: 2, gen: function (v, f) { return genTirEnnemi(v, f); } },
     butin: { fr: 4, gen: function (v, f) { return genButin(f); } },
     son: { fr: 1, gen: function (v) { return genIcone('son', v); } },
@@ -749,7 +1091,10 @@
   var LISTE = ['tete', 'tete:0..15', 'corps', 'corps:9', 'corps:7', 'corps:5', 'corps:3', 'queue', 'tir', 'tir:0..15',
     'chevron', 'chevron:0..15', 'fleche', 'fleche:0..15', 'tourelle', 'tourelle:charge', 'sentinelle', 'mine', 'mine:alerte',
     'colosse', 'colosse:oeil', 'tirEnnemi', 'tirEnnemi:petit', 'tirEnnemi:gros', 'butin', 'son', 'muet', 'pause', 'lecture',
-    'vie', 'vieVide', 'ok', 'ko'];
+    'vie', 'vieVide', 'ok', 'ko',
+    'fleche:armee/0..15', 'fleche:elite/0..15', 'dard', 'dard:0..15', 'larve', 'traqueur', 'planeur', 'lame', 'lame:deployee', 'ruche:p0', 'ruche:p1', 'ruche:p2',
+    'rival', 'rival:0..15', 'perle', 'pastille', 'noyau', 'mini:<type>', 'vie5', 'vie5vide', 'chevronP', 'chevronP:0..15', 'tourelleJ', 'drone', 'missile:0..15', 'mineJ', 'orbe',
+    'cyclope', 'colosse:tronc', 'colosse:troncoeil', 'colosse:troncenrage', 'colosse:main', 'colosse:mainouverte', 'colosse:plaque', 'colosse:plaquesol', 'colosse:carcasse', 'colosseLoin', 'colosseMi'];
 
   function norm(s) {
     s = String(s === undefined || s === null ? '' : s).toLowerCase();
@@ -1063,7 +1408,39 @@
     return { w: Math.max(1, tw * k + m0 + m1), h: th * k + m0 + m1 };
   }
 
+  /* N.spr.get(nom, dir, img) : le nom du § 7.5 (« fleche:armee », « lame:deployee », « ruche:p2 »), la direction 0..15 pour les sprites
+     dirigés, l'image d'animation. Aucune allocation une fois le nom vu : les noms dirigés sont mémorisés par direction. */
+  var DIRIGES = { tete: 1, tir: 1, chevron: 1, fleche: 1, dard: 1, rival: 1, chevronp: 1, missile: 1 };
+  var GC = {};
+  function get(nom, d, img) {
+    if (d === undefined || d === null) return make(nom, img);
+    var e = GC[nom];
+    if (!e) {
+      var n = norm(nom), c = n.indexOf(':'), b = c >= 0 ? n.slice(0, c) : n;
+      b = ALIASN[b] || b;
+      e = GC[nom] = { dirs: !!DIRIGES[b], base: b, v: c >= 0 ? n.slice(c + 1).split('/')[0] : '', noms: [] };
+    }
+    if (!e.dirs) return make(nom, img);
+    var k = dirOf(d, 0), nm = e.noms[k];
+    if (!nm) nm = e.noms[k] = e.base + ':' + (e.v ? e.v + '/' : '') + k;
+    return make(nm, img);
+  }
+  var CATALOGUE = null;
+  function catalogue() {
+    if (CATALOGUE) return CATALOGUE;
+    var noms = ['fleche', 'fleche:armee', 'fleche:elite', 'dard', 'larve', 'mine', 'mine:alerte', 'tourelle', 'tourelle:charge', 'lame', 'lame:deployee', 'ruche:p0', 'ruche:p1', 'ruche:p2',
+      'sentinelle', 'rival', 'perle', 'planeur', 'traqueur', 'pastille', 'noyau', 'butin', 'tirEnnemi', 'tirEnnemi:petit', 'tirEnnemi:gros', 'tete', 'corps', 'queue', 'tir',
+      'tourelleJ', 'drone', 'missile', 'mineJ', 'orbe', 'chevronP', 'vie5', 'vie5vide', 'colosse', 'colosse:oeil', 'colosse:tronc', 'colosse:troncoeil', 'colosse:main',
+      'colosse:plaque', 'colosse:carcasse', 'colosseLoin', 'colosseMi', 'cyclope', 'mini:fleche', 'mini:ruche'];
+    CATALOGUE = noms.map(function (nom) {
+      var s = get(nom, DIRIGES[(ALIASN[norm(nom).split(':')[0]] || norm(nom).split(':')[0])] ? 0 : undefined, 0);
+      return { nom: nom, w: s.w, h: s.h, images: frames(nom), dirs: !!DIRIGES[(ALIASN[norm(nom).split(':')[0]] || norm(nom).split(':')[0])] };
+    });
+    return CATALOGUE;
+  }
+
   N.spr = {
+    get: get, catalogue: catalogue,
     make: make, text: text, measure: measure, draw: draw, dir: dir, frames: frames, warm: warm,
     names: function () { return LISTE.slice(); },
     glyphs: function () { return Object.keys(G).concat(Object.keys(COMPOSE)); },

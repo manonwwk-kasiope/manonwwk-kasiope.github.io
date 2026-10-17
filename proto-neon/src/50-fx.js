@@ -749,11 +749,12 @@
   }
 
   /* en l'air : traînées, éclats, étincelles, par-dessus les explosions */
-  function drawAir() {
+  function drawAir(mode) {
     var i, k;
+    mode = mode | 0;                                      /* 0 : tout ; 1 : sans les éclats de la joueuse ; 2 : eux seuls (après le remappage de la mort) */
     /* traînées fixes */
     for (i = 0; i < CAP; i++) {
-      if (pk[i] !== K_TRAIL) continue;
+      if (pk[i] !== K_TRAIL || mode === 2) continue;
       var tt = 1 - pa[i] / pl[i];
       streak(Math.round(pqx[i]) - OX, Math.round(pqy[i]) - OY, Math.round(ppx[i]) - OX, Math.round(ppy[i]) - OY, pc[i], tt, tt * 0.85);
     }
@@ -761,6 +762,7 @@
     for (i = 0; i < CAP; i++) {
       k = pk[i];
       if (k !== K_SHARD && k !== K_BODY) continue;
+      if ((mode === 1 && pvr[i]) || (mode === 2 && !pvr[i])) continue;
       var u = pa[i] / pl[i], head, tail;
       if (k === K_SHARD) {
         if (u < 0.12) { head = pc[i]; tail = JAUNE; }
@@ -788,6 +790,7 @@
     /* étincelles : un pixel et un fil */
     for (i = 0; i < CAP; i++) {
       if (pk[i] !== K_SPARK) continue;
+      if ((mode === 1 && pvr[i]) || (mode === 2 && !pvr[i])) continue;
       var w = pa[i] / pl[i], c0 = pc[i], c1;
       if (c0 === OS) { c0 = w < 0.3 ? OS : (w < 0.65 ? JAUNE : AMBRE); c1 = w < 0.3 ? JAUNE : (w < 0.65 ? AMBRE : BRAS); }
       else c1 = c0;
@@ -806,14 +809,14 @@
     W = g.W | 0; H = g.H | 0;
     if (!buf || W <= 0 || H <= 0) return;
     OX = g.ox ? g.ox() : 0; OY = g.oy ? g.oy() : 0;
-    var e;
+    var e, md = enMort() ? 1 : 0;           /* à la mort, ce qui est de la joueuse se dessine APRÈS le remappage : drawMort() */
     drawGround();
     drawOndes();
-    drawDesint();
+    if (!md) drawDesint();
     drawLasso();
-    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e]) drawRings(e);
-    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e]) { if (eAtt[e]) drawCore(e); else drawFire(e); }
-    drawAir();
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e] && !(md && eVar[e])) drawRings(e);
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e] && !(md && eVar[e])) { if (eAtt[e]) drawCore(e); else drawFire(e); }
+    drawAir(md);
     if (frameNo() - ecranVu > 2) drawEcranFx();           /* repli : l'ancienne boucle n'appelle pas drawEcran */
   }
 
@@ -1060,6 +1063,16 @@
     }
   }
   var ecranVu = -99;
+  function enMort() { var G = N.game; return !!(G && G.etat && G.etat() === 'mort'); }
+  /* la mort : par-dessus le monde remappé en nuit et ardoise, la désintégration cyan et l'explosion de la tête (appelée par 79-scene.drawCause) */
+  function drawMort() {
+    if (!bind()) return;
+    var g = N.gfx, e; OX = g.ox ? g.ox() : 0; OY = g.oy ? g.oy() : 0;
+    drawDesint();
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e] && eVar[e]) drawRings(e);
+    for (e = 0; e < NEX; e++) if (eOn[e] && !eScr[e] && eVar[e]) { if (eAtt[e]) drawCore(e); else drawFire(e); }
+    drawAir(2);
+  }
   function drawEcranFx() {
     var e, ox = OX, oy = OY;
     OX = 0; OY = 0;
@@ -1214,6 +1227,6 @@
     /* lot G (REFONTE.md § 7.8) */
     ralenti: ralenti, k: function () { return kMonde; }, kJoueuse: function () { return kJou; }, kVisuel: function () { return kVis; },
     apres: apres, onde: onde, pickup: pickup, lasso: lasso, glitch: glitch, vignette: vignette, desintegre: desintegre,
-    tele: tele, drawTele: drawTele, drawEcran: drawEcran
+    tele: tele, drawTele: drawTele, drawEcran: drawEcran, drawMort: drawMort
   };
 })();

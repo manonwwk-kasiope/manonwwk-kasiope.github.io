@@ -252,6 +252,7 @@ N.scene = (function () {
   /* la cause entourée d'un anneau magenta d'un pixel, qui clignote à 3 Hz ; dessinée par-dessus le monde remappé */
   function drawCause() {
     var S = N.S, d = S && S.death;
+    if (N.fx && N.fx.drawMort) { try { N.fx.drawMort(); } catch (e0) { sig('drawMort', e0); } }
     if (!d) return;
     var g = N.gfx, hz = (RM.anneauHz || 3) * 2, vis = (Math.floor((mt >= 0 ? mt : T) * hz) & 1) === 0, e = null, i, L = N.ennemis;
     if (!vis) return;
