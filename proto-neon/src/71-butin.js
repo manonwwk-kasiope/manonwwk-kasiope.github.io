@@ -16,10 +16,14 @@ N.butin = (function () {
   var CFG = {                                  // → N.R
     libreVie: 14,                              // une cellule libre dure 14 s dans la démo
     largage: { fleche: 1, mine: 1, tourelle: 2, sentinelle: 2, cyclope: 24 },
-    vitesseLacher: 50, plafond: 140
+    vitesseLacher: 50, plafond: 140,
+    pastilleMarge: 24, pastilleDist: 160            // la pastille naît à 160 px au moins de la tête (§ 2.17)
   };
   var L = [];
   var S = null;
+  var XP = { total: 0, niveau: 0 };                 // l'expérience gagnée (75-cartes la dépense) : relevé de repli
+  var PA = { vague: -1, t: 0, faite: false, auto: true };   // la pastille de la vague, tant que 76-directeur ne la demande pas
+  var fusT = 0;
 
   function conf(type) { return (R && R.butin && R.butin[type]) || {}; }
   function prise() { return (R && R.butin && R.butin.prise) || 8; }
@@ -32,6 +36,7 @@ N.butin = (function () {
   function reset() {
     S = N.S;
     L.length = 0;
+    XP.total = 0; XP.niveau = 0; PA.vague = -1; PA.t = 0; PA.faite = false; fusT = 0;
   }
 
   function lacher(x, y, n, opts) {
@@ -56,6 +61,34 @@ N.butin = (function () {
       if (!J || O.d2(x, y, J.x, J.y) > 45 * 45) { lacher(x, y, 1, { libre: true, tele: tele || 0 }); return; }
     }
   }
+  /* pastille(x, y) : l'objet ramassable qui déclenche l'INVERSION (§ 2.6, 2.17). Jamais aimantée, expire en 12 s.
+     Sans position, 160 px au moins de la tête, dans l'arène. Rend l'objet. */
+  function pastille(x, y) {
+    var A = O.A, J = N.joueuse && N.joueuse.tete, k, m = CFG.pastilleMarge;
+    if (typeof x !== 'number') {
+      for (k = 0; k < 24; k++) {
+        x = O.rr('butin', A.x0 + m, Math.max(A.x0 + m + 1, A.x1 - m)); y = O.rr('butin', A.y0 + m, Math.max(A.y0 + m + 1, A.y1 - m));
+        if (!J || O.d2(x, y, J.x, J.y) >= CFG.pastilleDist * CFG.pastilleDist) break;
+      }
+    }
+    var c = conf('pastille'), o = { id: N.ids.suivant(), type: 'pastille', x: x, y: y, valeur: 1, vie: c.expire || 12,
+      _vx: 0, _vy: 0, _t: 0, _tele: 0, _libre: true, _f: 0, _aspire: false };
+    L.push(o);
+    return o;
+  }
+  /* la pastille de la vague, en repli : V2 à V5, à +20 / +14 / +18 / +22 s ; l'événement `vague` n'est pas consommé ici (hors tableau) */
+  function pastilleAuto(dt) {
+    var iv = R && R.inversion;
+    if (!iv || !PA.auto || !N.dir || !N.dir.vague) return;
+    if (N.dir.pastille) return;                                    // 76-directeur la demande lui-même
+    var w = N.dir.vague(), n = (w && typeof w === 'object') ? (w.n | 0) : (w | 0);
+    if (n !== PA.vague) { PA.vague = n; PA.t = 0; PA.faite = false; }
+    if (PA.faite || iv.vagues.indexOf(n) < 0) return;
+    var ph = N.dir.phase ? N.dir.phase() : '';
+    if (ph === 'boss' || ph === 'vol' || ph === 'defile' || ph === 'nettoyage') return;
+    PA.t += dt;
+    if (PA.t >= iv.apparition[n]) { PA.faite = true; pastille(); }
+  }
   function pluie(n) { for (var i = 0; i < (n | 0); i++) libre(0.5); }
   function nbLibres() { var n = 0; for (var i = 0; i < L.length; i++) if (L[i]._libre) n++; return n; }
 
@@ -74,8 +107,31 @@ N.butin = (function () {
     return n;
   }
 
+  /* trois cellules à moins de 10 px les unes des autres fusionnent en une seule, qui garde leur valeur cumulée (§ 2.6) */
+  function fusionner() {
+    var f = (R && R.butin && R.butin.fusion) || { nombre: 3, distance: 10 }, d2m = f.distance * f.distance, i, j, k;
+    for (i = 0; i < L.length; i++) {
+      var a = L[i];
+      if (a.type !== 'cellule' || a._tele > 0 || a._aspire) continue;
+      var grp = null;
+      for (j = i + 1; j < L.length; j++) {
+        var b = L[j];
+        if (b.type !== 'cellule' || b._tele > 0 || b._aspire || O.d2(a.x, a.y, b.x, b.y) > d2m) continue;
+        (grp || (grp = [j])).length; if (grp.indexOf(j) < 0) grp.push(j);
+        if (grp.length >= f.nombre - 1) break;
+      }
+      if (grp && grp.length >= f.nombre - 1) {
+        for (k = grp.length - 1; k >= 0; k--) { a.valeur += L[grp[k]].valeur; a.vie = Math.max(a.vie, L[grp[k]].vie); L.splice(grp[k], 1); }
+        return;                                                    // une fusion par passage : l'indice des suivantes a bougé
+      }
+    }
+  }
+
   function update(dt) {
     if (!S) S = N.S;
+    if (N.joueuse && N.joueuse.apres) O.safe('joueuse.apres', function () { N.joueuse.apres(dt); });     // après N.ennemis.update : l'INVERSION
+    pastilleAuto(dt);
+    fusT += dt; if (fusT >= 0.2) { fusT = 0; fusionner(); }
     var J = N.joueuse, T = J && J.tete, vivant = J && (J.etat === 'vivant' || J.etat === 'reapparition');
     var am = aimant(), pr = prise();
     for (var i = L.length - 1; i >= 0; i--) {
@@ -93,6 +149,7 @@ N.butin = (function () {
         }
         if (dd < pr * pr) {
           L.splice(i, 1);
+          XP.total += conf(c.type).xp || 0; XP.niveau = R.f.niveau(XP.total);
           if (N.ev) N.ev.emit('ramassage', { type: c.type, x: c.x, y: c.y, valeur: c.valeur });
           continue;
         }
@@ -112,16 +169,30 @@ N.butin = (function () {
         g.px(c.x, c.y, O.AMBRE); g.px(c.x - 3 * k, c.y, O.AMBRE); g.px(c.x + 3 * k, c.y, O.AMBRE); g.px(c.x, c.y - 3 * k, O.AMBRE); g.px(c.x, c.y + 3 * k, O.AMBRE);
         continue;
       }
-      if (c.vie < 2 && (f & 1)) continue;
+      if (c.vie < ((R && R.butin && R.butin.clignoteAvant) || 2) && (f & 1)) continue;
+      if (c.type === 'pastille') { drawPastille(c); continue; }
       O.put(O.sp(c.type === 'noyau' ? 'butin:noyau' : 'butin', f + c._f), c.x, c.y);
+      if (c.valeur > 1 && c.type === 'cellule') g.ring(c.x, c.y, 5, O.AMBRE, 0.6);          // une cellule fusionnée se voit
     }
+  }
+
+  /* la pastille : disque os à quatre rayons jaunes, qui bat à 2 Hz (§ 2.6) ; repli de N.spr */
+  function drawPastille(c) {
+    var g = N.gfx, bat = (Math.floor(O.T.ak * 4) & 1) ? 1 : 0, x = Math.round(c.x), y = Math.round(c.y), r = 3 + bat, i;
+    g.circ(x, y, 3, O.OS);
+    g.px(x, y, O.JAUNE);
+    for (i = 4; i <= 5 + bat; i++) { g.px(x + i, y, O.JAUNE); g.px(x - i, y, O.JAUNE); g.px(x, y + i, O.JAUNE); g.px(x, y - i, O.JAUNE); }
+    g.ring(x, y, r + 3, O.JAUNE, bat ? 1 : 0.5);
   }
 
   /* ---- les consommateurs ---- */
   if (N.ev) {
     N.ev.on('kill', 40, function (c) {
       if (c.src && c.src.genre === 'decor') return;               // la purge de fin de vague ne largue rien
-      var n = c.boss ? CFG.largage.cyclope : (CFG.largage[c.type] || 1);
+      var lg = (R && R.butin && R.butin.largages) || {}, n;
+      if (c.boss) n = CFG.largage.cyclope;
+      else if (c.elite) { n = (lg.elite && lg.elite.cellules) || 6; if (!c.boss) lacher(c.x, c.y, (lg.elite && lg.elite.noyaux) || 1, { type: 'noyau' }); }
+      else n = O.rf('butin') < ((c.type === 'larve' ? lg.larve : lg.ordinaire) || 0.45) ? 1 : 0;       // 1 cellule dans 45 % des cas
       if (c.boss) {                                         // le colosse éclate en couronne
         for (var k = 0; k < n; k++) {
           var a = k / n * O.TAU, v = O.rr('butin', 40, 90);
@@ -129,6 +200,13 @@ N.butin = (function () {
             _vx: Math.cos(a) * v, _vy: Math.sin(a) * v, _t: 0, _tele: 0, _libre: false, _f: L.length & 3, _aspire: false });
         }
       } else lacher(c.x, c.y, n, { type: 'cellule' });
+    }, '71-butin');
+    N.ev.on('lasso', 40, function (c) {
+      /* 1 cellule par ennemi enfermé, et 1 noyau à partir de 4 : elles tombent au centre de la boucle et sont aspirées */
+      var lg = (R && R.butin && R.butin.largages && R.butin.largages.lasso) || { parEnnemi: 1, noyauDes: 4 }, i, a, v, mark = L.length;
+      for (i = 0; i < c.n * lg.parEnnemi; i++) lacher(c.x, c.y, 1, { type: 'cellule' });
+      if (c.n >= lg.noyauDes) lacher(c.x, c.y, 1, { type: 'noyau' });
+      for (i = mark; i < L.length; i++) { a = i * 2.4; v = O.rr('butin', 10, 30); L[i]._vx = Math.cos(a) * v; L[i]._vy = Math.sin(a) * v; L[i]._aspire = true; }
     }, '71-butin');
     N.ev.on('coupe', 40, function (c) {
       /* une cellule pour deux segments détachés, à l'endroit où ils étaient (la trace les garde encore) */
@@ -142,5 +220,5 @@ N.butin = (function () {
     }, '71-butin');
   }
 
-  return { reset: reset, update: update, draw: draw, lacher: lacher, aspirer: aspirer, pluie: pluie, libre: libre, nbLibres: nbLibres, list: L };
+  return { reset: reset, update: update, draw: draw, lacher: lacher, aspirer: aspirer, pluie: pluie, libre: libre, nbLibres: nbLibres, pastille: pastille, xp: XP, fusionner: fusionner, list: L };
 })();
