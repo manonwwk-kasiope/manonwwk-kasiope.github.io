@@ -13,7 +13,11 @@
      N.pal.NAMES        les seize noms, dans l'ordre
      N.pal.R/G/B        Uint8Array(16) des composantes
      N.pal.U32          Uint32Array(16) prêt pour un ImageData (boutisme détecté)
-     N.pal.LUM          Float32Array(16) luminance relative 0..1
+     N.pal.LUM          Float32Array(16) luma 0..1 (pondération 0,299 / 0,587 / 0,114), pour l'ombrage
+     N.pal.L            Float32Array(16) luminance relative WCAG de chaque encre, FIXÉE par REFONTE.md
+                        § 5.1 (contrat 1.0) : c'est elle que mesurent les critères de lumière (R-11)
+     N.pal.lumineux(i)  -> true si N.pal.L[i] > 0,10 : magenta, rose pâle, cyan, cyan pâle, ambre, jaune,
+                        brasier, os, acier
      N.pal.css(ci)      '#rrggbb'
      N.pal.rgba(ci,a)   'rgba(r,g,b,a)'  — pour les voiles du post-traitement
      N.pal.near(r,g,b)  index de palette le plus proche (métrique pondérée)
@@ -64,6 +68,17 @@
     R[k] = (v >> 16) & 255; G[k] = (v >> 8) & 255; B[k] = v & 255;
     LUM[k] = (0.299 * R[k] + 0.587 * G[k] + 0.114 * B[k]) / 255;
   }
+
+  /* ---- luminance relative WCAG, figée (REFONTE.md § 5.1) : vide 0,002 ; nuit 0,006 ; ardoise 0,012 ;
+     violet 0,041 ; indigo 0,024 ; magenta 0,240 ; rose pâle 0,438 ; cyan 0,555 ; cyan pâle 0,873 ;
+     ambre 0,457 ; jaune 0,679 ; brasier 0,281 ; os 0,967 ; acier 0,277 ; sang 0,061 ; nuit profonde 0,002.
+     Une encre est « lumineuse » au-delà de 0,10. ---- */
+  var LW = new Float32Array([0.002, 0.006, 0.012, 0.041, 0.024, 0.240, 0.438, 0.555,
+    0.873, 0.457, 0.679, 0.281, 0.967, 0.277, 0.061, 0.002]);
+  var SEUIL_LUMINEUX = 0.10;
+  var LUMINEUX = new Uint8Array(NC);
+  for (var lw = 0; lw < NC; lw++) LUMINEUX[lw] = LW[lw] > SEUIL_LUMINEUX ? 1 : 0;
+  function lumineux(ci) { return LUMINEUX[i(ci) & 15] === 1; }
 
   var IDX = {};
   for (var n = 0; n < NC; n++) IDX[NAMES[n]] = n;
@@ -147,6 +162,7 @@
     C: C, NAMES: NAMES, N: NC,
     i: i, dither: dither,
     R: R, G: G, B: B, LUM: LUM, U32: U32, LE: LE,
+    L: LW, SEUIL_LUMINEUX: SEUIL_LUMINEUX, LUMINEUX: LUMINEUX, lumineux: lumineux,
     BAYER: BAYER,
     css: css, rgba: rgba, near: near, shade: shade, mix: mix, SHADE: SHADE, SL: SL,
 
