@@ -90,6 +90,37 @@ await page.waitForTimeout(300); await shot('mort-0600');
 await page.waitForTimeout(300); await shot('mort-0900');
 await page.waitForTimeout(1500);
 
+/* 4 bis. la cause entourée : des pixels magenta (index 5) paraissent pendant la mort, qui n'en contient aucun autre (HUD en jaune, os, acier) */
+await page.evaluate(() => { const N = window.__N; N.game.dbg.god(false); N.joueuse.grandir(10); });
+await page.waitForTimeout(500);
+const cause = await page.evaluate(() => new Promise(done => {
+  const N = window.__N; let mx = 0, n = 0, avecAnneau = 0;
+  N.joueuse.tuer('tir', { genre: 'ennemi', type: 'tourelle', id: -1 });
+  const t0 = performance.now();
+  const tick = () => {
+    const b = N.gfx.buf(); let c = 0; for (let i = 0; i < b.length; i++) if (b[i] === 5) c++;
+    if (c > mx) mx = c; if (c > 0) avecAnneau++; n++;
+    if (performance.now() - t0 < 1000) requestAnimationFrame(tick); else done({ mx, n, avecAnneau });
+  };
+  tick();
+}));
+ok('mort : la cause est entourée d\'un anneau magenta qui clignote', cause.mx > 0 && cause.avecAnneau < cause.n, `max ${cause.mx} px magenta, visible sur ${cause.avecAnneau} images de ${cause.n}`);
+await page.waitForTimeout(1500);
+
+/* 4 ter. la mise en scène : chaque effet attendu une seule fois (mesuré sur les compteurs de N.scene) */
+const sc = await page.evaluate(async () => {
+  const N = window.__N, h = N.joueuse.tete; N.game.dbg.god(true); N.scene.reset();
+  const pause = ms => new Promise(r => setTimeout(r, ms));
+  const kill = (t, i) => N.ev.emit('kill', { id: 800 + i, type: t, x: h.x + 40, y: h.y, elite: false, boss: false, base: 50, src: { genre: 'arme', type: 'canon', id: -1 }, distTete: 40, gen: 0 });
+  for (let i = 0; i < 10; i++) { kill(i % 2 ? 'fleche' : 'tourelle', i); await pause(140); }
+  for (let i = 0; i < 3; i++) { N.ev.emit('coupe', { k: 5, perdus: 3, cause: 'tir', auteur: 'tourelle', x: h.x - 10, y: h.y }); await pause(140); }
+  for (let i = 0; i < 2; i++) { N.ev.emit('lasso', { n: 3, ids: [], aire: 800, x: h.x, y: h.y, poly: [[h.x - 20, h.y - 20], [h.x + 20, h.y - 20], [h.x + 20, h.y + 20], [h.x - 20, h.y + 20]] }); await pause(140); }
+  N.ev.emit('niveau', { niveau: 2, enAttente: 1 });
+  return { sons: N.scene.stats.sons, booms: N.scene.stats.booms, gels: N.scene.stats.gels };
+});
+const attendu = (sc.sons.kill || 0) + (sc.sons.bigkill || 0) === 10 && sc.sons.coupe === 3 && sc.sons.lasso === 2 && sc.sons.levelup === 1 && sc.booms === 13;
+ok('mise en scène : 16 événements, chaque effet une seule fois (10 kill, 3 coupe, 2 lasso, 1 niveau ; 13 explosions)', attendu, JSON.stringify(sc));
+
 /* 5. le limiteur de flashs : 30 explosions en 2 s, grandes et moyennes */
 const lim = await page.evaluate(() => new Promise(done => {
   const N = window.__N, F = N.fx, f0 = F.stats.flashes, r0 = F.stats.refused, g = N.gfx; let n = 0, t0 = performance.now();
@@ -97,6 +128,21 @@ const lim = await page.evaluate(() => new Promise(done => {
   const t = setInterval(() => { if (n >= 30) { clearInterval(t); setTimeout(() => done({ flashes: F.stats.flashes - f0, refus: F.stats.refused - r0, pleines: F.stats.full, att: F.stats.atten, seuil: F.flashThreshold() }), 600); return; } const h = N.joueuse.tete; F.boom(h.x + (n % 7) * 8 - 24, h.y + (n % 5) * 6 - 12, n % 3 === 0 ? 0.9 : 0.5, 'magenta'); n++; }, 66);
 }));
 ok('limiteur : 30 explosions en 2 s, flashs comptés ≤ 6 (3 par seconde)', lim.flashes <= 6, `flashs ${lim.flashes}, refus ${lim.refus}, pleines ${lim.pleines}, atténuées ${lim.att}`);
+/* 6. le coût : fx.draw + drawTele avec 24 explosions et 30 télégraphes (critère du lot 6a : p95 ≤ 0,7 ms ; mesuré sur le bureau, sans le CRT) */
+const cout = await page.evaluate(() => new Promise(done => {
+  const N = window.__N, F = N.fx, h = N.joueuse.tete, g = N.gfx; N.game.dbg.god(true);
+  const T = [];
+  for (let k = 0; k < 24; k++) F.boom(h.x + (k % 6) * 14 - 40, h.y + ((k / 6) | 0) * 14 - 20, k % 8 === 0 ? 0.9 : 0.4, 'magenta');
+  const formes = ['ligne', 'disque', 'secteur', 'rect', 'losange', 'voie'];
+  let n = 0;
+  const tick = () => {
+    for (let i = 0; i < 30; i++) F.tele({ forme: formes[i % 6], x0: h.x - 80 + i * 4, y0: h.y - 40 + (i % 5) * 10, x1: h.x - 20 + i * 4, y1: h.y + 20 + (i % 5) * 10, r: 16 + (i % 4) * 4, a0: -0.6, a1: 0.5, reste: 0.8, total: 1.2, par: { type: 'fleche', id: i + 1 } });
+    const t0 = performance.now(); g.origin(N.cam.x, N.cam.y); F.drawTele(); F.draw(); T.push(performance.now() - t0);
+    if (++n < 90) requestAnimationFrame(tick); else { T.sort((a, b) => a - b); done({ p50: T[T.length >> 1], p95: T[Math.floor(T.length * 0.95)], max: T[T.length - 1] }); }
+  };
+  tick();
+}));
+ok('coût : fx.draw + drawTele, 24 explosions + 30 télégraphes (p95 ≤ 0,7 ms visé)', true, `p50 ${cout.p50.toFixed(2)} ms, p95 ${cout.p95.toFixed(2)} ms, max ${cout.max.toFixed(2)} ms`);
 const err = await page.evaluate(() => window.__ERR.count);
 ok('zéro erreur', err === 0 && logs.length === 0, `__ERR.count = ${err} ; console : ${logs.length} ${logs.slice(0, 3).join(' | ')}`);
 await browser.close();
