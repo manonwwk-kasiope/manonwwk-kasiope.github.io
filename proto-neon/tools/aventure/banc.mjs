@@ -183,17 +183,34 @@ async function aventureLui(page, P, M) {
   verifie(!!await attendreEtape(page, 'neon', 12000), `${P.nom} : LUI au néon`);
   /* chaque époque future rendue par son événement ; le jeu reprend entre chaque */
   const evts = [['profondeur', 'jeu-1993', '16-profondeur-lui'], ['warp', 'jeu-2001', '17-warp-lui'], ['espace', 'jeu-2975', '18-espace-lui']];
+  const cosmos = await page.evaluate(() => !!(window.__N.cosmos && window.__N.cosmos.start));
   for (const [evt, apres, cap] of evts) {
     await attendre(300);
     await page.evaluate(e => window.__aventure.rendre(e), evt);
     M.films.push(await film(page, P, evt, { cap }));
+    if (evt === 'espace' && cosmos) {
+      /* 2975 : N.cosmos remplace le retour au jeu ; on le saute (amiral, puis fin) jusqu'au film de fin */
+      verifie(!!await attendreEtape(page, '2975', 3000), `${P.nom} : époque 2975 (N.cosmos)`);
+      await attendre(1500);
+      await capture(page, P, '18b-2975');
+      let sorti = false;
+      for (let k = 0; k < 40 && !sorti; k++) {
+        await page.evaluate(() => window.__N.aventure.sauter());
+        await attendre(500);
+        sorti = await page.evaluate(() => window.__N.aventure.etape() !== '2975');
+      }
+      verifie(sorti, `${P.nom} : 2975 se termine et rend la main à l'aventure`);
+      const et = await page.evaluate(() => window.__N.aventure.etape());
+      verifie(et === 'fin', `${P.nom} : après 2975, le film de fin (étape ${et}) sans repasser par le jeu`);
+      break;
+    }
     const jj = await attendreQue(page, a => (window.__AV_JEU && window.__AV_JEU.etape === a && !window.__N.aventure.actif()) ? window.__AV_JEU : null, apres, 3000);
     verifie(!!jj, `${P.nom} : après ${evt}, aJouer({ etape: ${apres}, epoque: ${jj && jj.epoque} })`);
   }
   /* un reprendre hors de propos est refusé */
   const refus = await page.evaluate(() => window.__N.aventure.reprendre('profondeur'));
   verifie(refus === false, `${P.nom} : reprendre('profondeur') déjà passé refusé`);
-  await page.evaluate(() => window.__aventure.rendre('fin'));
+  if (!cosmos) await page.evaluate(() => window.__aventure.rendre('fin'));
   M.films.push(await film(page, P, 'fin', { cap: '19-fin-lui' }));
   M.films.push(await film(page, P, 'retrouvailles', { cap: '20-retrouvailles', capT: 2.5, jusquauBout: true }));
   M.films.push(await film(page, P, 'teaser', { cap: '21-teaser-3019', capT: 4.4 }));
