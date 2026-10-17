@@ -12872,7 +12872,19 @@ N.hud = (function () {
   }
   function toast(texte) { toasts.length = 0; toasts.push({ s: String(texte), t: 0, d: 2.2 }); }
   function tag(texte) { tags.length = 0; tags.push({ s: String(texte), t: 0, d: 1.0 }); }
-  function pop(x, y, texte, opts) { O.pop(x, y, texte, couleur((opts && opts.c) || 'jaune')); }
+  /* les gains flottants (§ 2.13) : les gains identiques et voisins fusionnent (« +2000 ×2 »), ceux qui se chevauchent se décalent de 8 px,
+     et l'échelle passe à 2 à partir d'une chaîne de 6 */
+  function pop(x, y, texte, opts) {
+    var g = O.pops, i, p;
+    for (i = g.length - 1; i >= 0; i--) {
+      p = g[i];
+      if (p.t < 0.45 && p.base === texte && Math.abs(p.x - x) < 14 && Math.abs(p.y - y) < 14) { p.n = (p.n || 1) + 1; p.s = texte + ' ×' + p.n; p.t = 0; return; }
+    }
+    for (i = 0; i < g.length; i++) if (Math.abs(g[i].x - x) < 12 && Math.abs(g[i].y - y) < 6 && g[i].t < 0.5) y -= 8;
+    O.pop(x, y, texte, couleur((opts && opts.c) || 'jaune'));
+    p = g[g.length - 1];
+    if (p) { p.base = texte; p.n = 1; p.k = N.score && N.score.chaine && N.score.chaine() >= 6 ? 2 : 1; }
+  }
   function codex(type) { toast('NOUVEAU : ' + (N.ids ? N.ids.nom(type) : String(type).toUpperCase())); }
 
   function update(dt) {
@@ -12960,7 +12972,7 @@ N.hud = (function () {
     var g = O.pops;
     for (var i = 0; i < g.length; i++) {
       var p = g[i]; if (p.t > 0.6 && (Math.floor(O.T.ak * 15) & 1)) continue;
-      var s = ecran(p.x, p.y); O.textC(p.s, s.x, s.y, p.c, true, 1);
+      var s = ecran(p.x, p.y); O.textC(p.s, s.x, s.y, p.c, true, p.k || 1);
     }
   }
 
