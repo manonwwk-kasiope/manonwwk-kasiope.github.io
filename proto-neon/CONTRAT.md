@@ -285,3 +285,7 @@ dessine l'interface lui-même dans `drawTop`, remet `N.ev.nouveauPas()` à zéro
 `S.phase` vaut `'play'`. Dès que `N.horloge.pas() > 0` (la boucle du lot 1), il laisse `90-boot.js` appeler `N.hud.draw`,
 `N.ui.draw` et `N.intro.draw`, et attend un toucher à l'écran de démarrage. Les écouteurs `pointerdown` et `keydown` de
 `79-jeu.js` sont transitoires : ils disparaissent avec l'ancienne boucle, quand `S.input.taps` existe.
+
+**Essais du lot 0b** (`tools/A/`, tous sortent en code 0 quand tout passe) : `etats.mjs` (parcours des états du § 7.6),
+`verifier.mjs` (partie simulée sous `N.ev.verifier(true)`, journal validé), `regles.mjs` (les règles de mort du § 2.3, des vies et
+de la réapparition du § 2.4, de la séquence du § 5.4, 24 cas aux verdicts connus), `ev.mjs` (exécute un fichier JS dans la page).
