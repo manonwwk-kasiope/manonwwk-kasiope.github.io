@@ -15,7 +15,7 @@ import path from 'node:path';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import { spawn } from 'node:child_process';
-import { ICI, DEPOT, SOURCE, SORTIE, SR, decode, ecrisWav, rmsStereo, dB, arr, lameTag } from './lib.mjs';
+import { ICI, DEPOT, SOURCE, SORTIE, SR, decode, ecrisWav, rmsStereo, dB, arr, lameTag, regression } from './lib.mjs';
 
 const A = JSON.parse(fs.readFileSync(path.join(ICI, 'analyse.json'), 'utf8'));
 const MES = A.mesures, NM = A.nMesures, BAR = A.barres;              /* BAR[m-1] = debut de la mesure m */
@@ -100,6 +100,15 @@ blocsDef.forEach((b, k) => {
   let crete = 0; for (let i = cD; i < cF; i++) crete = Math.max(crete, Math.abs(L[i]), Math.abs(R[i]));
   const att = MES.slice(b.de - 1, b.a).reduce((s, me) => s + me.attaques, 0) / (b.a - b.de + 1);
   const barres = []; for (let m = b.de; m <= b.a + 1; m++) barres.push(arr((ech(barre(m) ?? n / SR) - f0) / SR, 6));
+  /* la mesure de ce bloc, mesuree sur ses attaques (regression locale), et leur ecart a la grille */
+  const att2 = A.attaques.filter(([, ta]) => ta >= barre(b.de) - 0.02 && ta < barre(b.a + 1) - 0.02);
+  let mesLoc = null, ecartMoy = null, ecartMax = null;
+  if (att2.length >= 8) {
+    const r = regression(att2.map(v => v[0]), att2.map(v => v[1]));
+    mesLoc = arr(4 * r.b, 5);
+    const res = att2.map(([k, ta]) => (ta - (A.premiereMesure + k * A.tempo.periodeTemps)) * 1000);
+    ecartMoy = arr(res.reduce((s, v) => s + v, 0) / res.length, 2); ecartMax = arr(Math.max(...res.map(Math.abs)), 1);
+  }
   blocs.push({
     id, fichier: id + '.mp3', section: b.section, partie: sousPartie(b),
     mesures: [b.de, b.a], nMesures: b.a - b.de + 1,
@@ -108,6 +117,7 @@ blocsDef.forEach((b, k) => {
     avant: arr((cD - f0) / SR, 6), apres: arr((f1 - cF) / SR, 6),
     avantMesures: avantM, apresMesures: apresM ? 1 : arr((f1 - cF) / SR / A.tempo.periodeMesure, 3),
     mesureS: A.tempo.periodeMesure, barres,
+    mesureMesuree: { s: mesLoc, attaques: att2.length, ecartMoyenMs: ecartMoy, ecartMaxMs: ecartMax },
     niveau: arr(niv, 2), creteDb: arr(dB(crete), 2),
     intensite: arr(Math.min(1, Math.max(0, 0.75 * (niv + 28) / 14 + 0.25 * Math.min(1, att / 70))), 2),
     accords: MES.slice(b.de - 1, b.a).map(me => me.accord),
@@ -160,7 +170,7 @@ function boucle(nom, de, a) {
   return { nom, bloc: b.id, de, a, debutS: b.barres[de - b.mesures[0]], finS: b.barres[a + 1 - b.mesures[0]], score: compat(a, de) };
 }
 const boucles = [boucle('intro', 1, 8), boucle('intro-courte', 3, 8), boucle('outro', 123, 130), boucle('outro-entiere', 123, 131),
-  boucle('respiration', 59, 66), boucle('remontee', 75, 82)];
+  boucle('respiration', 59, 66), boucle('remontee', 75, 82), boucle('alerte', 56, 56)];
 console.log('boucles', boucles.map(b => b.nom + ' ' + b.de + '-' + b.a + ' : ' + b.score).join(', '));
 
 /* ---------- tonalite par section : sixte (si / sib) et seconde (mi / mib) de re ---------- */
@@ -173,8 +183,12 @@ function chromaDe(de, a) {
 const tonaliteSections = {};
 for (const s of SECTIONS) {
   const c = chromaDe(s.de, s.a), si = c[11], sib = c[10];
-  tonaliteSections[s.nom] = { mode: si > sib ? 'dorien' : 'eolien', si: arr(si, 3), sib: arr(sib, 3), do: arr(c[0], 3), 'do#': arr(c[1], 3) };
+  /* sixte : dorien si le si domine nettement, eolien si le sib domine, sinon indecis (a eviter) */
+  const mode = si > 1.5 * sib ? 'dorien' : sib > 1.5 * si ? 'eolien' : 'indecis';
+  const gamme = c.map((v, k) => [NOMS[k], v]).sort((x, y) => y[1] - x[1]).slice(0, 8).map(([nm, v]) => nm + ' ' + arr(v, 3));
+  tonaliteSections[s.nom] = { mode, si: arr(si, 3), sib: arr(sib, 3), do: arr(c[0], 3), 'do#': arr(c[1], 3), notes: gamme };
 }
+const listeModes = m => SECTIONS.filter(s => tonaliteSections[s.nom].mode === m).map(s => s.nom).join(', ');
 
 /* ---------- piste.json ---------- */
 const bloc = m => blocs.find(b => m >= b.mesures[0] && m <= b.mesures[1]).id;
@@ -191,25 +205,27 @@ const piste = {
     residuMs: A.tempo.residuMs, tempsFiables: A.tempo.tempsFiables, tempsTotal: A.tempo.tempsTotal,
   },
   tonalite: {
-    centre: 're', mode: 'mineur', detail: 're mineur (eolien : sib, mi, do) dans PLATEAU et RETOUR ; re dorien (si naturel, accord de sol majeur) dans RESPIRATION et OUTRO ; do# de passage (la majeur, dominante) dans l INTRO',
+    centre: 're', mode: 'mineur',
+    detail: `re eolien (sib) dans ${listeModes('eolien')} ; re dorien (si naturel, accord de sol majeur) dans ${listeModes('dorien')} ; sixte indecise dans ${listeModes('indecis') || 'aucune'} (y eviter si et sib) ; do# frequent dans PLATEAU et RETOUR (la majeur, dominante : mineur harmonique sur le temps de la)`,
+    conseil: 'generatif : re eolien (re mi fa sol la sib do) sur PLATEAU et RETOUR, do# permis sur l accord de la ; re dorien (si naturel) sur INTRO, PONT et RESPIRATION ; pentatonique de re mineur (re fa sol la do) partout ou la section est indecise',
     krumhansl: A.tonalite.candidats.slice(0, 3), parSection: tonaliteSections,
     cycle: 'harmonie en cycles de 8 mesures qui commencent sur la mineur (v) : la m | la m | sol m (sol) | sol m (sol) | re m | re m | fa | sol m (sol)',
   },
   frequence: SR,
   encodage: { codec: 'mp3', encodeur: 'libmp3lame (ffmpeg)', debitKbps: DEBIT, mode: 'CBR', canaux: 2, frequence: SR, entete: 'Xing + LAME (retard, bourrage)', pochette: false },
-  sections: SECTIONS.map(s => ({ nom: s.nom, mesures: [s.de, s.a], debut: t(s.de), fin: arr(BAR[s.a] ?? A.source.duree, 4),
+  sections: SECTIONS.map(s => ({ nom: s.nom, mesures: [s.de, s.a], debut: Math.max(0, t(s.de)), fin: arr(BAR[s.a] ?? A.source.duree, 4),
     niveau: arr(dB(rmsStereo(L, R, ech(BAR[s.de - 1]), ech(BAR[s.a] ?? n / SR))), 1), blocs: parSection(s.nom).map(b => b.id), usage: s.usage })),
   sectionsJeu: {
-    titre: { section: 'INTRO', boucle: { bloc: bloc(1), de: 1, a: 8 } },
-    attraction: { section: 'INTRO', boucle: { bloc: bloc(1), de: 1, a: 8 } },
-    briefing: { section: 'INTRO', boucle: { bloc: bloc(1), de: 1, a: 8 } },
+    titre: { section: 'INTRO', boucle: 'intro-courte', note: 'le bloc part de la mesure 1, puis boucle sur 3 a 8' },
+    attraction: { section: 'INTRO', boucle: 'intro-courte' },
+    briefing: { section: 'INTRO', boucle: 'intro-courte' },
     jeu: { section: 'PLATEAU', entree: { bloc: bloc(9), mesure: 9 }, tirage: 'a la fin de la section, un bloc de PLATEAU qui n a pas joue depuis trois blocs' },
     repit: { section: 'RESPIRATION', levee: bloc(57), entree: { bloc: bloc(59), mesure: 59 }, remontee: bloc(75) },
-    alerte: { section: 'PLATEAU', mesure: 56, bloc: bloc(56), note: 'coupure de 250 ms sur la barre, puis la mesure 56 sous passe-bas a 300 Hz (equivalent de l ancienne mesure 70)' },
+    alerte: { section: 'PLATEAU', mesure: 56, bloc: bloc(56), boucle: 'alerte', note: 'coupure de 250 ms sur la barre, puis la mesure 56 sous passe-bas a 300 Hz (equivalent de l ancienne mesure 70)' },
     boss: { section: 'RETOUR', entree: { bloc: bloc(83), mesure: 83 }, boucle: { de: 107, a: 122, blocs: [bloc(107), bloc(115)] } },
-    victoire: { section: 'OUTRO', bloc: bloc(123) },
-    defaite: { section: 'OUTRO', bloc: bloc(123), filtre: 'passe-bas 1,2 kHz' },
-    initiales: { section: 'OUTRO', bloc: bloc(123) },
+    victoire: { section: 'OUTRO', bloc: bloc(123), boucle: 'outro' },
+    defaite: { section: 'OUTRO', bloc: bloc(123), boucle: 'outro', filtre: 'passe-bas 1,2 kHz' },
+    initiales: { section: 'OUTRO', bloc: bloc(123), boucle: 'outro' },
   },
   reperes: {
     decollage: { mesure: 9, t: t(9), bloc: bloc(9) },
@@ -231,4 +247,4 @@ const piste = {
 fs.writeFileSync(path.join(SORTIE, 'piste.json'), JSON.stringify(piste, null, 1));
 const tot = blocs.reduce((s, b) => s + b.octets, 0);
 console.log('piste.json ecrit :', blocs.length, 'blocs,', arr(tot / 1e6, 2), 'Mo en tout ; D0', arr(D0, 3));
-for (const b of blocs) console.log(b.id, b.section.padEnd(11), b.mesures.join('-').padEnd(7), 'niv', b.niveau, 'int', b.intensite, Math.round(b.octets / 1024) + ' Kio', 'lame', JSON.stringify(b.lame), '->', b.suivants.map(s => s.id + (s.type === 'naturel' ? '*' : '') + ':' + s.score).join(' '));
+for (const b of blocs) console.log(b.id, b.section.padEnd(11), b.mesures.join('-').padEnd(7), 'niv', b.niveau, 'int', b.intensite, Math.round(b.octets / 1024) + ' Kio', 'mesure', JSON.stringify(b.mesureMesuree), '->', b.suivants.map(s => s.id + (s.type === 'naturel' ? '*' : '') + ':' + s.score).join(' '));

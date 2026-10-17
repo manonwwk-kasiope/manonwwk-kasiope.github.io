@@ -30,7 +30,8 @@
  "tonalite": {
   "centre": "re",
   "mode": "mineur",
-  "detail": "re mineur (eolien : sib, mi, do) dans PLATEAU et RETOUR ; re dorien (si naturel, accord de sol majeur) dans RESPIRATION et OUTRO ; do# de passage (la majeur, dominante) dans l INTRO",
+  "detail": "re eolien (sib) dans PLATEAU, RETOUR ; re dorien (si naturel, accord de sol majeur) dans INTRO, PONT, RESPIRATION ; sixte indecise dans OUTRO (y eviter si et sib) ; do# frequent dans PLATEAU et RETOUR (la majeur, dominante : mineur harmonique sur le temps de la)",
+  "conseil": "generatif : re eolien (re mi fa sol la sib do) sur PLATEAU et RETOUR, do# permis sur l accord de la ; re dorien (si naturel) sur INTRO, PONT et RESPIRATION ; pentatonique de re mineur (re fa sol la do) partout ou la section est indecise",
   "krumhansl": [
    {
     "nom": "re mineur",
@@ -51,42 +52,102 @@
     "si": 0.055,
     "sib": 0.016,
     "do": 0.036,
-    "do#": 0.027
+    "do#": 0.027,
+    "notes": [
+     "re 0.206",
+     "mi 0.192",
+     "la 0.148",
+     "sol 0.124",
+     "fa 0.095",
+     "si 0.055",
+     "lab 0.045",
+     "fa# 0.038"
+    ]
    },
    "PLATEAU": {
     "mode": "eolien",
     "si": 0.034,
     "sib": 0.156,
     "do": 0.127,
-    "do#": 0.109
+    "do#": 0.109,
+    "notes": [
+     "sib 0.156",
+     "re 0.14",
+     "do 0.127",
+     "do# 0.109",
+     "la 0.093",
+     "sol 0.085",
+     "mi 0.081",
+     "fa 0.067"
+    ]
    },
    "PONT": {
     "mode": "dorien",
     "si": 0.08,
     "sib": 0.031,
     "do": 0.405,
-    "do#": 0.026
+    "do#": 0.026,
+    "notes": [
+     "do 0.405",
+     "sol 0.149",
+     "mi 0.113",
+     "la 0.092",
+     "si 0.08",
+     "lab 0.035",
+     "re 0.034",
+     "sib 0.031"
+    ]
    },
    "RESPIRATION": {
     "mode": "dorien",
     "si": 0.126,
     "sib": 0.013,
     "do": 0.12,
-    "do#": 0.027
+    "do#": 0.027,
+    "notes": [
+     "re 0.195",
+     "la 0.152",
+     "si 0.126",
+     "do 0.12",
+     "sol 0.116",
+     "mi 0.1",
+     "fa 0.085",
+     "fa# 0.033"
+    ]
    },
    "RETOUR": {
     "mode": "eolien",
     "si": 0.026,
     "sib": 0.166,
     "do": 0.143,
-    "do#": 0.13
+    "do#": 0.13,
+    "notes": [
+     "sib 0.166",
+     "do 0.143",
+     "re 0.136",
+     "do# 0.13",
+     "sol 0.081",
+     "mi 0.078",
+     "la 0.074",
+     "fa 0.065"
+    ]
    },
    "OUTRO": {
-    "mode": "eolien",
+    "mode": "indecis",
     "si": 0.056,
     "sib": 0.062,
     "do": 0.062,
-    "do#": 0.051
+    "do#": 0.051,
+    "notes": [
+     "sol 0.205",
+     "re 0.172",
+     "la 0.146",
+     "fa 0.073",
+     "lab 0.064",
+     "mi 0.062",
+     "do 0.062",
+     "sib 0.062"
+    ]
    }
   },
   "cycle": "harmonie en cycles de 8 mesures qui commencent sur la mineur (v) : la m | la m | sol m (sol) | sol m (sol) | re m | re m | fa | sol m (sol)"
@@ -109,7 +170,7 @@
     1,
     8
    ],
-   "debut": -0.0006,
+   "debut": 0,
    "fin": 16.6957,
    "niveau": -25.4,
    "blocs": [
@@ -202,27 +263,16 @@
  "sectionsJeu": {
   "titre": {
    "section": "INTRO",
-   "boucle": {
-    "bloc": "nv-01",
-    "de": 1,
-    "a": 8
-   }
+   "boucle": "intro-courte",
+   "note": "le bloc part de la mesure 1, puis boucle sur 3 a 8"
   },
   "attraction": {
    "section": "INTRO",
-   "boucle": {
-    "bloc": "nv-01",
-    "de": 1,
-    "a": 8
-   }
+   "boucle": "intro-courte"
   },
   "briefing": {
    "section": "INTRO",
-   "boucle": {
-    "bloc": "nv-01",
-    "de": 1,
-    "a": 8
-   }
+   "boucle": "intro-courte"
   },
   "jeu": {
    "section": "PLATEAU",
@@ -245,6 +295,7 @@
    "section": "PLATEAU",
    "mesure": 56,
    "bloc": "nv-07",
+   "boucle": "alerte",
    "note": "coupure de 250 ms sur la barre, puis la mesure 56 sous passe-bas a 300 Hz (equivalent de l ancienne mesure 70)"
   },
   "boss": {
@@ -264,16 +315,19 @@
   },
   "victoire": {
    "section": "OUTRO",
-   "bloc": "nv-17"
+   "bloc": "nv-17",
+   "boucle": "outro"
   },
   "defaite": {
    "section": "OUTRO",
    "bloc": "nv-17",
+   "boucle": "outro",
    "filtre": "passe-bas 1,2 kHz"
   },
   "initiales": {
    "section": "OUTRO",
-   "bloc": "nv-17"
+   "bloc": "nv-17",
+   "boucle": "outro"
   }
  },
  "reperes": {
@@ -363,6 +417,15 @@
    "debutS": 2.087029,
    "finS": 18.783401,
    "score": 0.62
+  },
+  {
+   "nom": "alerte",
+   "bloc": "nv-07",
+   "de": 56,
+   "a": 56,
+   "debutS": 16.696372,
+   "finS": 18.783401,
+   "score": 0.9
   }
  ],
  "blocs": [
@@ -403,6 +466,12 @@
     14.608685,
     16.695737
    ],
+   "mesureMesuree": {
+    "s": null,
+    "attaques": 7,
+    "ecartMoyenMs": null,
+    "ecartMaxMs": null
+   },
    "niveau": -25.37,
    "creteDb": -0.74,
    "intensite": 0.39,
@@ -538,6 +607,12 @@
     16.696349,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08662,
+    "attaques": 21,
+    "ecartMoyenMs": 0.38,
+    "ecartMaxMs": 11.5
+   },
    "niveau": -14.42,
    "creteDb": -2.61,
    "intensite": 0.93,
@@ -668,6 +743,12 @@
     16.696372,
     18.783424
    ],
+   "mesureMesuree": {
+    "s": 2.0872,
+    "attaques": 27,
+    "ecartMoyenMs": -1.31,
+    "ecartMaxMs": 11.4
+   },
    "niveau": -14.3,
    "creteDb": -1.66,
    "intensite": 0.9,
@@ -798,6 +879,12 @@
     16.696372,
     18.783424
    ],
+   "mesureMesuree": {
+    "s": 2.08643,
+    "attaques": 18,
+    "ecartMoyenMs": -1.48,
+    "ecartMaxMs": 11.8
+   },
    "niveau": -14.17,
    "creteDb": -2.43,
    "intensite": 0.85,
@@ -928,6 +1015,12 @@
     16.696372,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08786,
+    "attaques": 15,
+    "ecartMoyenMs": 4.48,
+    "ecartMaxMs": 11.8
+   },
    "niveau": -15.44,
    "creteDb": -2.77,
    "intensite": 0.88,
@@ -1058,6 +1151,12 @@
     16.696349,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08518,
+    "attaques": 11,
+    "ecartMoyenMs": 2.97,
+    "ecartMaxMs": 10.9
+   },
    "niveau": -15.04,
    "creteDb": -2.42,
    "intensite": 0.91,
@@ -1188,6 +1287,12 @@
     16.696372,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08624,
+    "attaques": 17,
+    "ecartMoyenMs": -3.51,
+    "ecartMaxMs": 11.3
+   },
    "niveau": -14.17,
    "creteDb": -2.36,
    "intensite": 0.92,
@@ -1312,6 +1417,12 @@
     4.174082,
     6.261134
    ],
+   "mesureMesuree": {
+    "s": null,
+    "attaques": 1,
+    "ecartMoyenMs": null,
+    "ecartMaxMs": null
+   },
    "niveau": -26.06,
    "creteDb": -2.21,
    "intensite": 0.16,
@@ -1401,6 +1512,12 @@
     16.696372,
     18.783424
    ],
+   "mesureMesuree": {
+    "s": null,
+    "attaques": 5,
+    "ecartMoyenMs": null,
+    "ecartMaxMs": null
+   },
    "niveau": -21.65,
    "creteDb": -3.17,
    "intensite": 0.49,
@@ -1501,6 +1618,12 @@
     16.696372,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08734,
+    "attaques": 9,
+    "ecartMoyenMs": 2.83,
+    "ecartMaxMs": 11.7
+   },
    "niveau": -20.32,
    "creteDb": -2.17,
    "intensite": 0.57,
@@ -1596,6 +1719,12 @@
     16.696349,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": null,
+    "attaques": 5,
+    "ecartMoyenMs": null,
+    "ecartMaxMs": null
+   },
    "niveau": -20.99,
    "creteDb": -0.26,
    "intensite": 0.59,
@@ -1736,6 +1865,12 @@
     16.696372,
     18.783424
    ],
+   "mesureMesuree": {
+    "s": 2.08682,
+    "attaques": 20,
+    "ecartMoyenMs": 0.85,
+    "ecartMaxMs": 10.5
+   },
    "niveau": -14,
    "creteDb": -1.25,
    "intensite": 0.86,
@@ -1866,6 +2001,12 @@
     16.696372,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08689,
+    "attaques": 14,
+    "ecartMoyenMs": 1.4,
+    "ecartMaxMs": 8.6
+   },
    "niveau": -14.54,
    "creteDb": -1.14,
    "intensite": 0.86,
@@ -1996,6 +2137,12 @@
     16.696349,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08728,
+    "attaques": 14,
+    "ecartMoyenMs": 3.49,
+    "ecartMaxMs": 5.8
+   },
    "niveau": -15.93,
    "creteDb": -0.35,
    "intensite": 0.85,
@@ -2126,6 +2273,12 @@
     16.696372,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08691,
+    "attaques": 11,
+    "ecartMoyenMs": 0.56,
+    "ecartMaxMs": 9.2
+   },
    "niveau": -14.05,
    "creteDb": -1.24,
    "intensite": 0.94,
@@ -2256,6 +2409,12 @@
     16.696349,
     18.783401
    ],
+   "mesureMesuree": {
+    "s": 2.08619,
+    "attaques": 14,
+    "ecartMoyenMs": 0.22,
+    "ecartMaxMs": 9.3
+   },
    "niveau": -14.09,
    "creteDb": -0.72,
    "intensite": 0.92,
@@ -2387,6 +2546,12 @@
     18.783424,
     20.870476
    ],
+   "mesureMesuree": {
+    "s": 2.08725,
+    "attaques": 12,
+    "ecartMoyenMs": 2.59,
+    "ecartMaxMs": 10.6
+   },
    "niveau": -21.23,
    "creteDb": -2.82,
    "intensite": 0.4,

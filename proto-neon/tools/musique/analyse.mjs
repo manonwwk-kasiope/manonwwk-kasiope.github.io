@@ -291,6 +291,8 @@ const res = {
   tonalite: { candidats: cles.slice(0, 6).map(c => ({ nom: c.nom, r: arr(c.r, 3) })), chroma: chromaG.map(v => arr(v, 4)), noms: NOMS,
     sixteMajeure: arr(sixteMaj, 4), sixteMineure: arr(sixteMin, 4), secondeMajeure: arr(secondeMaj, 4), secondeMineure: arr(secondeMin, 4) },
   ruptures, mesures,
+  /* attaques retenues (temps n, instant), pour que decoupe.mjs mesure la mesure de chaque bloc */
+  attaques: okF.map(v => [v.b, arr(v.a, 5)]),
 };
 fs.writeFileSync(out, JSON.stringify(res, null, 1));
 console.log('ecrit', out, Date.now() - t0, 'ms');
