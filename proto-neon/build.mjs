@@ -17,7 +17,11 @@ const artFiles = fs.existsSync(ART) ? fs.readdirSync(ART).filter(f => f.endsWith
 const artSrc = "/* ===== préambule (build.mjs) : l objet partagé existe AVANT le premier module, quel que soit l ordre ===== */\nvar N = (typeof window !== \x27undefined\x27) ? (window.__N || (window.__N = {})) : {};\n\n/* ===== illustrations (générées, injectées par build.mjs) ===== */\nvar ART_SRC = {\n"
   + artFiles.map(f => "  " + JSON.stringify(f.replace(/\.png$/, "")) + ": \"data:image/png;base64," + fs.readFileSync(path.join(ART, f)).toString("base64") + "\"").join(",\n")
   + "\n};\n";
-const parts = [artSrc].concat(files.map(f => `/* ===== ${f} ===== */\n` + fs.readFileSync(path.join(SRC, f), "utf8")));
+/* les clips de cinématique réellement présents dans cine/ : 05-art.js ne demande jamais un fichier absent */
+const CINE = path.join(HERE, "cine");
+const cineFiles = fs.existsSync(CINE) ? fs.readdirSync(CINE).filter(f => f.endsWith(".mp4")).sort() : [];
+const cineSrc = "var CINE_DISPO = " + JSON.stringify(cineFiles.map(f => f.replace(/\.mp4$/, ""))) + ";\n";
+const parts = [artSrc + cineSrc].concat(files.map(f => `/* ===== ${f} ===== */\n` + fs.readFileSync(path.join(SRC, f), "utf8")));
 const script = '"use strict";\n(function(){' + parts.join('\n') + '\nboot();})();';
 
 try { new vm.Script(script, { filename: 'proto-neon.bundle.js' }); }
@@ -27,6 +31,7 @@ const html = `<!doctype html><html lang="fr"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0d0221">
+<link rel="icon" href="data:,">
 <title>SNAKE 2975</title>
 <style>
 html,body{margin:0;padding:0;background:#0d0221;overflow:hidden;height:100%;
@@ -46,4 +51,5 @@ const bytes = Buffer.byteLength(html);
 console.log(`build : ${files.length} modules, ${bytes} octets → index.html`);
 for (const f of files) console.log('  ' + f);
 for (const f of artFiles) console.log('  art/' + f);
+for (const f of cineFiles) console.log('  cine/' + f);
 process.exit(0);

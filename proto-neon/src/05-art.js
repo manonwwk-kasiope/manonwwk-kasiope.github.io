@@ -26,6 +26,9 @@ N.art = (function () {
   var OUVERTURE = ['exterieur', 'connexion', 'eveil'];        // préchargés : ils jouent dans les premières secondes
   var BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
   var vids = {}, cur = {}, LUT = {}, blessed = {}, Q = null;
+  /* build.mjs injecte la liste des clips présents dans cine/ : un clip absent n'est jamais demandé,
+     ce qui évite des erreurs 404 dans la console tant que les vidéos ne sont pas installées */
+  var DISPO = (typeof CINE_DISPO !== 'undefined') ? CINE_DISPO : [];
   var SRC = (typeof ART_SRC !== 'undefined') ? ART_SRC : {};
 
   function table() {
@@ -102,6 +105,7 @@ N.art = (function () {
 
   function vid(name) {
     if (vids[name] !== undefined) return vids[name];
+    if (DISPO.indexOf(name) < 0) return (vids[name] = null);
     var v = null;
     try {
       v = document.createElement('video');
