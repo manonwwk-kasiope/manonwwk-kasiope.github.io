@@ -43,3 +43,10 @@ Mesuré par la préparation musicale (tools/musique/LISEZMOI.md) : la piste de l
 **114,995 BPM** (mesure de 2,08705 s), pas 144,6. 02-regles.js (BPM et table musique), l'horloge du
 CONTRAT et les numéros de mesures des sections (alerte à la mesure 56, boucle du boss 107-122) sont à
 corriger à l'intégration A, avant tout réglage.
+
+## Demande du cloud (17 octobre, nuit) — brancher les intermèdes
+Les six mini-films 8 bits d'intermède sont livrés : `cine/{chasse,retournement,rival,plongee,reveil,apotheose}.mp4`
+(384 x 216, 12 i/s) et leurs panneaux de repli `art/<nom>.png` ; `05-art.js` les connaît (table CLIPS).
+Reste à les appeler depuis `79-jeu.js` (par `N.intro.transition` de `60-intro.js`) aux moments de
+`refonte/INTERMEDES.md` : jeu figé pendant le film, un toucher le passe (garde de 300 ms), 6 s au plus,
+jamais deux fois le même dans une partie.
