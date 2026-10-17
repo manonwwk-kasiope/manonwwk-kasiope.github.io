@@ -80,8 +80,8 @@
     ennemis: ['fleche', 'dard', 'larve', 'mine', 'tourelle', 'lame', 'ruche', 'sentinelle', 'rival', 'planeur', 'traqueur'],
     /* les parties du CYCLOPE vivent dans N.ennemis.list avec boss:true et ce type */
     ennemisBoss: ['cyclope'],
-    armes: ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ'],
-    passifs: ['puissance', 'cadence', 'aimant', 'croissance', 'reparation', 'bouclier', 'eperon', 'grappe', 'sangFroid', 'braise'],
+    armes: ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ', 'onde', 'sillage'],
+    passifs: ['puissance', 'cadence', 'aimant', 'croissance', 'reparation', 'bouclier', 'eperon', 'grappe', 'sangFroid', 'braise', 'perforation', 'surtension', 'epines'],
     pouvoirs: ['traversee', 'ralenti', 'repli'],
     cartes: null,                                               /* armes + passifs + pouvoirs, voir plus bas */
     causes: ['mur', 'morsure', 'ennemi', 'tir', 'laser', 'souffle', 'convoi', 'traine'],
@@ -146,7 +146,7 @@
 
   /* les types de sources (§ 7.5), par genre */
   var SRC_TYPES = {
-    arme: L.armes.concat(['lasso', 'apogee', 'grappe', 'eperon']),     /* minesQ est déjà une arme */
+    arme: L.armes.concat(['lasso', 'apogee', 'grappe', 'eperon', 'epines']),     /* minesQ est déjà une arme */
     ennemi: L.ennemis.concat(L.ennemisBoss),
     arene: ['convoi', 'murMobile'],
     joueuse: ['devore', 'lasso', 'apogee', 'tete'],
@@ -221,7 +221,7 @@
   var PROPRIETAIRES = { aucun: 0, tete: 1, corps: 2, arsenal: 3, vies: 4, ennemi: 5, butin: 6, effet: 7, decor: 8, hud: 9 };
 
   /* ---- les noms affichés (police 5 × 7 accentuée) ---- */
-  var NOMS = {
+  var NOMS = { onde: 'ONDE DE CHOC', sillage: 'SILLAGE', perforation: 'PERFORATION', surtension: 'SURTENSION', epines: 'ÉPINES',
     fleche: 'FLÈCHE', dard: 'DARD', larve: 'LARVE', mine: 'MINE', tourelle: 'TOURELLE', lame: 'LAME', ruche: 'RUCHE',
     sentinelle: 'SENTINELLE', rival: 'RIVAL', planeur: 'PLANEUR', traqueur: 'TRAQUEUR', cyclope: 'CYCLOPE',
     convoi: 'CONVOI', canon: 'CANON', tourelles: 'TOURELLES', arc: 'ARC', missiles: 'MISSILES', drones: 'DRONES',
@@ -391,7 +391,7 @@
   });
   SCH.mods = obj({
     degats: 'n+', cadence: 'n+', aimant: 'n+', lenMax: 'i+', reparation: entierEntre(0, 2), bouclier: entierEntre(0, 1),
-    eperon: 'b', grappe: entierEntre(0, 2), sangFroid: 'b', braise: entierEntre(0, 2)
+    eperon: 'b', grappe: entierEntre(0, 2), sangFroid: 'b', braise: entierEntre(0, 2), perforation: entierEntre(0, 3), surtension: entierEntre(0, 3), epines: entierEntre(0, 3)
   });
   SCH.reglages = obj({
     musique: 'b', effets: 'b', secousse: un([1, 0.5, 0]), flashs: 'b', ecran: un(['riche', 'sobre', 'pur']),
