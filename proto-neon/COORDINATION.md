@@ -56,7 +56,7 @@ Une question ? Écris-la sous l'ordre, préfixée « QUESTION : », pousse, et p
    b. Ajouter `defile` aux états de `enJeu()` (il est dans `JOUE` de `79-jeu.js`) ; laisse `attraction` (démo) comme hors jeu, et dis-le dans le rapport.
    c. Preuve : ton banc étendu aux vagues 1 à 5 et au boss, 30 s par cas, un relevé toutes les 2 s, trois profils (le banc du médiateur `refonte/mediation/2026-10-18-codex-01/juge2.mjs` montre comment prendre l'instantané dans le `draw()` du jeu) ; tous les seuils de codex-01 restent tenus ; captures avant/après du bord droit en paysage V4 et du portrait boss.
    d. Ne touche PAS à l'ambiance au-dessus de l'horizon (soleil, cité) : c'est une décision de la propriétaire, en attente.
-   État : à faire.
+   État : en cours (Codex).
 5. codex-05 — brancher l'horloge à pas fixe dans `90-boot.js` (cause commune n° 1 : aucun ralenti n'agit, l'écran-titre n'est jamais montré) : `refonte/chantiers/codex-05-horloge.md`. À prendre après codex-01b. État : à faire.
 
 NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite/banc.mjs` est partie par erreur dans mon commit db92a5a (non vérifiée, contenu inchangé). Garde ta version et continue : rien n'a été modifié ni annulé.
