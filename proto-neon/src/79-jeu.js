@@ -508,7 +508,12 @@ N.game = (function () {
     O.geom();
     if (fondEcran() || et === 'titre') return;
     if (et === 'vol' && N.vol && N.vol.actif && N.vol.actif()) return;                 // le VOL dessine à la place (§ 7.7)
+    /* § 7.7 : le lointain en espace écran, puis le plateau et tout ce qui vit dans le monde sous l'origine de la caméra */
+    O.origine(0, 0);
+    if (N.decor && N.decor.drawFar && O.geo.cam) appel('decor.drawFar', function () { N.decor.drawFar(N.cam); });
+    O.origineMonde();
     if (N.decor && N.decor.drawPlateau) appel('decor.drawPlateau', function () { N.decor.drawPlateau(N.cam); }); else drawBG();
+    if (N.decor && N.decor.drawFront && O.geo.cam) appel('decor.drawFront', function () { N.decor.drawFront(N.cam); });
     drawMurs();
     appel('butin.draw', function () { N.butin.draw(); });
     appel('ennemis.draw', function () { N.ennemis.draw(); });
@@ -558,6 +563,7 @@ N.game = (function () {
     if (et === 'fin') { ecranVieux(); return; }
     if (et === 'titre') { ecranVieux(); return; }
     if (et === 'vol' && N.vol && N.vol.actif && N.vol.actif()) { ecranVieux(); return; }
+    O.origineMonde();
     if (N.fx && N.fx.drawTele) appel('fx.drawTele', function () { N.fx.drawTele(); }); else appel('ennemis.drawTele', function () { N.ennemis.drawTele(); });
     if (N.colosse && N.colosse.drawTop && N.colosse.actif && N.colosse.actif()) appel('colosse.drawTop', function () { N.colosse.drawTop(); });
     if (et === 'mort') {
@@ -572,8 +578,8 @@ N.game = (function () {
   /* l'interface : dessinée ici tant que 90-boot.js n'appelle pas N.hud.draw / N.ui.draw / N.intro.draw lui-même */
   function ecranVieux() {
     var s = S_();
-    if (O.bootNouveau()) return;
     O.origine(0, 0);
+    if (O.bootNouveau()) return;
     var intro = O.current();
     if (intro && N.intro && N.intro.draw) { appel('intro.draw', function () { N.intro.draw(); }); if (O.busy()) return; }
     if (JOUE_OU_PAUSE() && et !== 'mort') appel('hud.draw', function () { N.hud.draw(); });
