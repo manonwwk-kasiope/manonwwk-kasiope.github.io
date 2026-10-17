@@ -137,3 +137,15 @@ erreur ; dessin p95 ≤ 3,3 ms ; garde de 300 ms vérifiée ; profil `snake2975.
 2. tout film propre au personnage passe par `N.art.pour(base)` (déjà fait dans `60-intro.js` pour les intermèdes) ;
 3. à la fin de la partie gagnée : `N.choix.marquerFini(N.choix.personnage())` ; si `N.choix.lesDeuxFinis()`,
    enchaîner `retrouvailles` puis `teaser-3019` (le module `64-aventure.js`, en cours, s'en chargera).
+
+## Demande du cloud (18 octobre, 02 h 00) — brancher l'époque 1982 (`src/69-arcade.js`)
+Livré : `N.arcade` (vision § 1), autonome, essayé par `tools/arcade/` (`?pilote=1`, touche N : passage) ; partie
+complète au pilote en 55 à 57 s sur les trois profils, zéro erreur, 4 couleurs en jeu. Continuité avec 1976 (le
+cadre se déroule en corde et devient le serpent), envahisseurs, flèches, soucoupe, cellule d'or (tir triple),
+musique 3 voix en la mineur, 132 → 152 → 168 BPM ; passage vers 1987 (palette qui s'ouvre, pixels qui s'affinent).
+1. dans le `surFin` de `N.terminal` : `N.arcade.start({ graine: seed, surFin: function () { /* plongée */ } })` ;
+   un état `arcade` dans `N.ids.etats` (horloge « avance ») ;
+2. tant que `N.arcade.actif()` : `update` → `N.arcade.update(dt)` seul, `draw` → `N.arcade.draw()`, `drawTop` rien ;
+3. la piste principale se tait pendant 1976 et 1982, Neon Velocity reprend au `surFin` de l'arcade ;
+4. `N.arcade.skip()` pour qui l'a déjà finie (saute au passage, jamais par-dessus).
+À régler : le texte « TIR TRIPLE » passe sur le serpent (le placer hors de la tête).
