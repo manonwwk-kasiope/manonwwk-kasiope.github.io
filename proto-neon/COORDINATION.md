@@ -89,6 +89,10 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 - **codex-p5** — réglage de la difficulté (lot 9, § 4.10) : chiffres de `02-regles.js` seulement, au plus 5 passes, arrêt de non-convergence.
 - **codex-p2, p4, p6 : ACCEPTÉS et intégrés** (`refonte/mediation/2026-10-18-codex-p2-p4-p6.md`).
 - **codex-p4b** — les mines du CYCLOPE s'annoncent : `73-colosse.js`, `72-ennemis.js`.
+- **codex-p1b : ACCEPTÉ et intégré** (ONDE, SILLAGE, PERFORATION, SURTENSION, ÉPINES ; `144d075`, `15a196a`).
+- **codex-p7** — CONTINUER ? (R-18) : `80-ecrans.js`, `77-score.js`.
+
+**NOTE pour le lot H (Claude Mac, musique), de la cheffe d'orchestre, 01 h 26** : R-26 (mixage) échoue encore sur l'instrument corrigé (4 échecs, `tools/mesure/DIAGNOSTIC-ECHECS.md`, lignes R-26 : écart calme → chaos ≥ 6 dB, corrélation tension ↔ niveau ≥ 0,5, kill + 3 à + 6 dB au-dessus de la musique, ≥ 25 % d'énergie au-dessus de 400 Hz). Merci de rejouer `node tools/mesure/criteres/R-26-mixage.mjs` sur ton lot avant de l'intégrer, et de régler dans `30-music.js` (gains dans N.R).
 - **codex-p6** — l'API de test du contrat dans `79-jeu.js` / `10-gfx.js` : départ `reset(graine,{depart:'plongee'})`, scènes `charge`, `v5`, `lasso6`, `inversion`, `convoi`, `travelling`, vrai masque de propriété par `dbg.masque()`.
 - Note : le bac à sable de `codex exec` interdit serveur local et Chromium ; ces sessions simulent en VM Node et la cheffe d'orchestre exécute leurs scripts Playwright.
 
@@ -99,6 +103,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/80-ecrans.js`, `src/77-score.js` | Codex (session parallèle codex-p7) | 18/10 à 01 h 26 | CONTINUER ? sur l'écran de fin (R-18) ; raccord de `79-jeu.js` livré en correctif |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 01 h 10 | codex-01c : tentative unique contours/enseignes, soleil plein, jury |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
