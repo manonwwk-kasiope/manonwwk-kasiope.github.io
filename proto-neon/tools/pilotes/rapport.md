@@ -98,3 +98,11 @@ Mis à jour à 18/10/2026 · 00 h 10 (Paris). Les 80 parties demandées sont ex�
 Les 19 contrôles ciblés du pilote passent ([conformite.json](conformite.json), [conformite.mjs](conformite.mjs)) : droits d’accès, réaction, bruit, continuité entre états de combat, actions et variantes, cartes et VOL. Le code est limité à src/85-pilote.js ; il ne lit aucun objet privé du jeu et n’écrit que S.input, hors raccord du hook et publication de sa propre interface.
 
 **Lot arrêté en attente des intégrations Claude**, demandées dans refonte/lots/demandes.md : appel tous états, pas réel sur les écrans arrêtés, publication des vues S et des champs pouvoir/niveaux. Code, banc et reçus livrés ; critères de fin sans blocage non validés. Prochaine action : pull et lecture de « Ordres pour Codex » ; après intégration, rejouer les seuls reçus invalidés par le changement, pas les tests unitaires inchangés. Coût externe nul, simulation locale seulement.
+
+## Correctif de conformité LASSO / INVERSION
+
+Mis à jour à 18/10/2026 · 00 h 15 (Paris). Le § 4.1 de `refonte/lots/pilotes.md` exige de recalculer le centre sur les membres du groupe encore vivants et de sortir pour `vide` uniquement lorsque plus aucun ne vit. Le filtre du pilote réutilisait celui des ennemis dangereux : il retirait à tort les membres devenus proies. Le nouveau test « lasso conserve les membres devenus proies et sort quand ils meurent » échouait avant correction, puis passe après remplacement de ce seul filtre par le filtre des vivants. Aucun seuil, retard, bruit, poids ou règle de décision n’est ajusté.
+
+Le reçu historique `conformite.json` contient **18** réussites, malgré l’annonce précédente de 19 contrôles : cette annonce n’était pas étayée par ce reçu. Le script comportait un contrôle supplémentaire de continuité entre jeu et nettoyage. Le nouveau [conformite-cible.json](conformite-cible.json) prouve **9 contrôles ciblés exécutés sur le correctif**, dont cette continuité, les deux cas LASSO, les impulsions, les variantes, les cartes, le VOL et les écrans arrêtés. Il identifie la source par SHA-256. Les autres contrôles historiques ne sont pas rejoués.
+
+Les 80 reçus de parties sont conservés dans leur état daté, antérieur à ce correctif ; ils ne qualifient pas le nouveau bundle. La qualification jusqu’à fin attend toujours les intégrations Claude signalées plus haut.

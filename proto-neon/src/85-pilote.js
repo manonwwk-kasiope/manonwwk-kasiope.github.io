@@ -188,7 +188,7 @@
       }
     }
     if (!L) return null;
-    var members = (S.enemies || []).filter(function (e) { return danger(e) && L.ids.indexOf(e.id) >= 0; });
+    var members = (S.enemies || []).filter(function (e) { return vivant(e) && L.ids.indexOf(e.id) >= 0; });
     L.tourne += Math.abs(angle(p.ang - L.ang)); L.ang = p.ang;
     if (!members.length) { finirLasso('vide'); return null; }
     L.c = centre(members);
