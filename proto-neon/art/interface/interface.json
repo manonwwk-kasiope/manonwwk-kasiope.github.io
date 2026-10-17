@@ -1,0 +1,2930 @@
+{
+ "version": 1,
+ "genere_par": "proto-neon/tools/interface/genere.mjs",
+ "format": {
+  "png": "indexé 8 bits ; PLTE = les 16 encres de DIRECTION.md dans l ordre de src/00-pal.js ; tRNS : index 0 transparent. Un octet = un index de palette du jeu, 0 = rien (le vide n est jamais posé : on prend la nuit profonde).",
+  "planche": "images côte à côte en x ; pour un sprite à directions, image (d, k) en x = (d * images + k) * w ; direction 0 = droite, sens horaire, y vers le bas",
+  "ancre": "pixel posé sur le point visé (centre de l objet, ou coin haut gauche pour les plaques, cadres et jauges)"
+ },
+ "verifications": {
+  "iouMaxIcones": {
+   "valeur": 0.52,
+   "paire": [
+    "bouclier",
+    "braise"
+   ],
+   "seuil": 0.6
+  },
+  "cyanParIcone": {
+   "canon": 10,
+   "tourelles": 28,
+   "arc": 26,
+   "missiles": 4,
+   "drones": 5,
+   "minesQ": 27,
+   "puissance": 0,
+   "cadence": 0,
+   "aimant": 0,
+   "croissance": 41,
+   "reparation": 0,
+   "bouclier": 5,
+   "eperon": 0,
+   "grappe": 0,
+   "sangFroid": 0,
+   "braise": 0,
+   "traversee": 24,
+   "ralenti": 0,
+   "repli": 17
+  }
+ },
+ "sprites": {
+  "carte:canon": {
+   "fichier": "carte-canon.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte canon (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "jaune",
+    "cyan",
+    "cyanPale"
+   ]
+  },
+  "carte:tourelles": {
+   "fichier": "carte-tourelles.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte tourelles (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "cyan",
+    "cyanPale",
+    "indigo"
+   ]
+  },
+  "carte:arc": {
+   "fichier": "carte-arc.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte arc (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyanPale",
+    "cyan"
+   ]
+  },
+  "carte:missiles": {
+   "fichier": "carte-missiles.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte missiles (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "cyanPale",
+    "os",
+    "acier",
+    "ardoise",
+    "jaune",
+    "ambre",
+    "brasier"
+   ]
+  },
+  "carte:drones": {
+   "fichier": "carte-drones.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte drones (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "cyanPale",
+    "cyan"
+   ]
+  },
+  "carte:minesQ": {
+   "fichier": "carte-minesQ.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte minesQ (arme), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyanPale",
+    "indigo",
+    "cyan"
+   ]
+  },
+  "carte:puissance": {
+   "fichier": "carte-puissance.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte puissance (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os"
+   ]
+  },
+  "carte:cadence": {
+   "fichier": "carte-cadence.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte cadence (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os"
+   ]
+  },
+  "carte:aimant": {
+   "fichier": "carte-aimant.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte aimant (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "brasier",
+    "os",
+    "ambre",
+    "jaune"
+   ]
+  },
+  "carte:croissance": {
+   "fichier": "carte-croissance.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte croissance (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "cyan",
+    "cyanPale",
+    "indigo"
+   ]
+  },
+  "carte:reparation": {
+   "fichier": "carte-reparation.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte reparation (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "jaune"
+   ]
+  },
+  "carte:bouclier": {
+   "fichier": "carte-bouclier.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte bouclier (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "cyanPale"
+   ]
+  },
+  "carte:eperon": {
+   "fichier": "carte-eperon.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte eperon (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "carte:grappe": {
+   "fichier": "carte-grappe.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte grappe (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "brasier",
+    "os"
+   ]
+  },
+  "carte:sangFroid": {
+   "fichier": "carte-sangFroid.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte sangFroid (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "carte:braise": {
+   "fichier": "carte-braise.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte braise (passif), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "brasier",
+    "ambre",
+    "jaune",
+    "os"
+   ]
+  },
+  "carte:traversee": {
+   "fichier": "carte-traversee.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte traversee (pouvoir), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "cyanPale",
+    "cyan"
+   ]
+  },
+  "carte:ralenti": {
+   "fichier": "carte-ralenti.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte ralenti (pouvoir), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "ambre"
+   ]
+  },
+  "carte:repli": {
+   "fichier": "carte-repli.png",
+   "w": 16,
+   "h": 16,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    8
+   ],
+   "role": "icône de la carte repli (pouvoir), au centre haut de la carte et dans les bandeaux",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyan",
+    "cyanPale",
+    "indigo"
+   ]
+  },
+  "carte8:canon": {
+   "fichier": "carte8-canon.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de canon : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "cyan",
+    "cyanPale",
+    "jaune"
+   ]
+  },
+  "carte8:tourelles": {
+   "fichier": "carte8-tourelles.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de tourelles : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "cyan",
+    "cyanPale"
+   ]
+  },
+  "carte8:arc": {
+   "fichier": "carte8-arc.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de arc : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyanPale"
+   ]
+  },
+  "carte8:missiles": {
+   "fichier": "carte8-missiles.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de missiles : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "cyanPale",
+    "os",
+    "acier",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "carte8:drones": {
+   "fichier": "carte8-drones.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de drones : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "cyanPale",
+    "cyan"
+   ]
+  },
+  "carte8:minesQ": {
+   "fichier": "carte8-minesQ.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de minesQ : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyanPale",
+    "cyan"
+   ]
+  },
+  "carte8:puissance": {
+   "fichier": "carte8-puissance.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de puissance : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os"
+   ]
+  },
+  "carte8:cadence": {
+   "fichier": "carte8-cadence.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de cadence : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os"
+   ]
+  },
+  "carte8:aimant": {
+   "fichier": "carte8-aimant.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de aimant : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "brasier",
+    "os",
+    "ambre"
+   ]
+  },
+  "carte8:croissance": {
+   "fichier": "carte8-croissance.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de croissance : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "cyan",
+    "cyanPale",
+    "jaune"
+   ]
+  },
+  "carte8:reparation": {
+   "fichier": "carte8-reparation.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de reparation : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "carte8:bouclier": {
+   "fichier": "carte8-bouclier.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de bouclier : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "cyanPale"
+   ]
+  },
+  "carte8:eperon": {
+   "fichier": "carte8-eperon.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de eperon : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "carte8:grappe": {
+   "fichier": "carte8-grappe.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de grappe : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "brasier"
+   ]
+  },
+  "carte8:sangFroid": {
+   "fichier": "carte8-sangFroid.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de sangFroid : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "carte8:braise": {
+   "fichier": "carte8-braise.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de braise : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "brasier",
+    "ambre",
+    "jaune",
+    "os"
+   ]
+  },
+  "carte8:traversee": {
+   "fichier": "carte8-traversee.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de traversee : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "cyan",
+    "cyanPale"
+   ]
+  },
+  "carte8:ralenti": {
+   "fichier": "carte8-ralenti.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de ralenti : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "ambre"
+   ]
+  },
+  "carte8:repli": {
+   "fichier": "carte8-repli.png",
+   "w": 8,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "petite icône de repli : pause (cartes prises) et build de l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "cyan",
+    "cyanPale",
+    "indigo"
+   ]
+  },
+  "cadre:commune:paysage": {
+   "fichier": "cadre-commune-paysage.png",
+   "w": 120,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte commune 120 × 80 (paysage)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:rare:paysage": {
+   "fichier": "cadre-rare-paysage.png",
+   "w": 120,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte rare 120 × 80 (paysage)",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:epique:paysage": {
+   "fichier": "cadre-epique-paysage.png",
+   "w": 120,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte epique 120 × 80 (paysage)",
+   "encres": [
+    "nuitProfonde",
+    "ambre",
+    "brasier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:ultime:paysage": {
+   "fichier": "cadre-ultime-paysage.png",
+   "w": 120,
+   "h": 80,
+   "images": 16,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte ULTIME 120 × 80 (paysage) ; 16 images à 16 i/s : le reflet passe une fois par seconde",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:choisie:paysage": {
+   "fichier": "cadre-choisie-paysage.png",
+   "w": 120,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de la carte touchée, 120 × 80 : deux images de flash (§ 5.6), puis la carte part",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:commune:serre": {
+   "fichier": "cadre-commune-serre.png",
+   "w": 96,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte commune 96 × 80 (serre)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:rare:serre": {
+   "fichier": "cadre-rare-serre.png",
+   "w": 96,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte rare 96 × 80 (serre)",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:epique:serre": {
+   "fichier": "cadre-epique-serre.png",
+   "w": 96,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte epique 96 × 80 (serre)",
+   "encres": [
+    "nuitProfonde",
+    "ambre",
+    "brasier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:ultime:serre": {
+   "fichier": "cadre-ultime-serre.png",
+   "w": 96,
+   "h": 80,
+   "images": 16,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte ULTIME 96 × 80 (serre) ; 16 images à 16 i/s : le reflet passe une fois par seconde",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:choisie:serre": {
+   "fichier": "cadre-choisie-serre.png",
+   "w": 96,
+   "h": 80,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de la carte touchée, 96 × 80 : deux images de flash (§ 5.6), puis la carte part",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:commune:portrait": {
+   "fichier": "cadre-commune-portrait.png",
+   "w": 180,
+   "h": 48,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte commune 180 × 48 (portrait)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:rare:portrait": {
+   "fichier": "cadre-rare-portrait.png",
+   "w": 180,
+   "h": 48,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte rare 180 × 48 (portrait)",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:epique:portrait": {
+   "fichier": "cadre-epique-portrait.png",
+   "w": 180,
+   "h": 48,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte epique 180 × 48 (portrait)",
+   "encres": [
+    "nuitProfonde",
+    "ambre",
+    "brasier",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:ultime:portrait": {
+   "fichier": "cadre-ultime-portrait.png",
+   "w": 180,
+   "h": 48,
+   "images": 16,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de carte ULTIME 180 × 48 (portrait) ; 16 images à 16 i/s : le reflet passe une fois par seconde",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "cadre:choisie:portrait": {
+   "fichier": "cadre-choisie-portrait.png",
+   "w": 180,
+   "h": 48,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de la carte touchée, 180 × 48 : deux images de flash (§ 5.6), puis la carte part",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "ardoise",
+    "nuit"
+   ]
+  },
+  "jauge:cyclope:cadre": {
+   "fichier": "jauge-cyclope-cadre.png",
+   "w": 124,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de la jauge du CYCLOPE ; intérieur 120 × 3 en (2, 2) ; encoches d'os aux deux changements de phase",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "sang"
+   ]
+  },
+  "jauge:cyclope:plein": {
+   "fichier": "jauge-cyclope-plein.png",
+   "w": 120,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "remplissage de la jauge du CYCLOPE, rogné à la valeur par le code (de gauche à droite)",
+   "encres": [
+    "rosePale",
+    "magenta",
+    "sang"
+   ]
+  },
+  "jauge:cyclope:vide": {
+   "fichier": "jauge-cyclope-vide.png",
+   "w": 120,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "fond de la jauge du CYCLOPE (PV perdus)",
+   "encres": [
+    "sang",
+    "nuitProfonde"
+   ]
+  },
+  "jauge:deblocage:cadre": {
+   "fichier": "jauge-deblocage-cadre.png",
+   "w": 124,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "cadre de la barre PROCHAIN DÉBLOCAGE (écran de fin) ; intérieur 120 × 3 en (2, 2)",
+   "encres": [
+    "nuitProfonde",
+    "acier"
+   ]
+  },
+  "jauge:deblocage:plein": {
+   "fichier": "jauge-deblocage-plein.png",
+   "w": 120,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "remplissage ambre de la barre de déblocage, rogné par le code",
+   "encres": [
+    "jaune",
+    "ambre",
+    "brasier"
+   ]
+  },
+  "jauge:progression:plein": {
+   "fichier": "jauge-progression-plein.png",
+   "w": 120,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "remplissage de la barre SECTEUR n % ou CYCLOPE À n % (écran de fin), dans le cadre de déblocage",
+   "encres": [
+    "os",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "jauge:vide": {
+   "fichier": "jauge-vide.png",
+   "w": 120,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "fond tramé d'une barre neutre",
+   "encres": [
+    "ardoise",
+    "nuitProfonde"
+   ]
+  },
+  "jauge:secteur:cadre": {
+   "fichier": "jauge-secteur-cadre.png",
+   "w": 50,
+   "h": 5,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "barre de secteur sous le radar : 6 cases (V1 à V5, la 6e en sang pour le CYCLOPE) ; case k en (2 + 8k, 1)",
+   "encres": [
+    "nuitProfonde",
+    "ardoise",
+    "sang"
+   ]
+  },
+  "jauge:secteur:faite": {
+   "fichier": "jauge-secteur-faite.png",
+   "w": 6,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "case de la barre de secteur : faite",
+   "encres": [
+    "jaune",
+    "ambre"
+   ]
+  },
+  "jauge:secteur:encours": {
+   "fichier": "jauge-secteur-encours.png",
+   "w": 6,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "case de la barre de secteur : encours",
+   "encres": [
+    "jaune",
+    "ardoise"
+   ]
+  },
+  "jauge:secteur:avenir": {
+   "fichier": "jauge-secteur-avenir.png",
+   "w": 6,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "case de la barre de secteur : avenir",
+   "encres": [
+    "nuit"
+   ]
+  },
+  "jauge:secteur:colosse": {
+   "fichier": "jauge-secteur-colosse.png",
+   "w": 7,
+   "h": 3,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "case de la barre de secteur : colosse",
+   "encres": [
+    "rosePale",
+    "magenta",
+    "sang"
+   ]
+  },
+  "radar": {
+   "fichier": "radar.png",
+   "w": 52,
+   "h": 28,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    26,
+    0
+   ],
+   "role": "plaque du radar 52 × 28, centrée en haut de la zone sûre ; intérieur utile 48 × 24 en (2, 2), monde 1 024 × 512 réduit au 1/21,3 ; ligne médiane en indigo",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "indigo"
+   ]
+  },
+  "portail": {
+   "fichier": "portail.png",
+   "w": 9,
+   "h": 9,
+   "images": 1,
+   "directions": 8,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "chevron de portail (apparition dans 600 ms), 8 directions (0 = droite, sens horaire, k = round(angle / 45°) & 7) ; la pointe regarde le point d'apparition",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "portail:elite": {
+   "fichier": "portail-elite.png",
+   "w": 12,
+   "h": 12,
+   "images": 1,
+   "directions": 8,
+   "ancre": [
+    6,
+    6
+   ],
+   "role": "chevron double d'une élite ou du RIVAL, 8 directions",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "portail:colosse": {
+   "fichier": "portail-colosse.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 8,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "chevron triple du CYCLOPE (annoncé 1,4 s avant), 8 directions",
+   "encres": [
+    "nuitProfonde",
+    "sang",
+    "magenta"
+   ]
+  },
+  "marque:simple:7": {
+   "fichier": "marque-simple-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « simple » à 7 px (proche), gaine comprise 9 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:simple:5": {
+   "fichier": "marque-simple-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « simple » à 5 px (moyen), gaine comprise 7 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:simple:3": {
+   "fichier": "marque-simple-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « simple » à 3 px (loin), gaine comprise 5 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:double:7": {
+   "fichier": "marque-double-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « double » à 7 px (proche), gaine comprise 9 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:double:5": {
+   "fichier": "marque-double-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « double » à 5 px (moyen), gaine comprise 7 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:double:3": {
+   "fichier": "marque-double-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « double » à 3 px (loin), gaine comprise 5 px",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:triple:7": {
+   "fichier": "marque-triple-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « triple » à 7 px (proche), gaine comprise 9 px",
+   "encres": [
+    "nuitProfonde",
+    "sang",
+    "magenta",
+    "rosePale",
+    "brasier"
+   ]
+  },
+  "marque:triple:5": {
+   "fichier": "marque-triple-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « triple » à 5 px (moyen), gaine comprise 7 px",
+   "encres": [
+    "nuitProfonde",
+    "sang",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "marque:triple:3": {
+   "fichier": "marque-triple-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « triple » à 3 px (loin), gaine comprise 5 px",
+   "encres": [
+    "nuitProfonde",
+    "sang",
+    "magenta"
+   ]
+  },
+  "marque:mine:7": {
+   "fichier": "marque-mine-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « mine » à 7 px (proche), gaine comprise 9 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale",
+    "sang"
+   ]
+  },
+  "marque:mine:5": {
+   "fichier": "marque-mine-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « mine » à 5 px (moyen), gaine comprise 7 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale",
+    "sang"
+   ]
+  },
+  "marque:mine:3": {
+   "fichier": "marque-mine-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « mine » à 3 px (loin), gaine comprise 5 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale",
+    "sang"
+   ]
+  },
+  "marque:pastille:7": {
+   "fichier": "marque-pastille-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « pastille » à 7 px (proche), gaine comprise 9 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre"
+   ]
+  },
+  "marque:pastille:5": {
+   "fichier": "marque-pastille-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « pastille » à 5 px (moyen), gaine comprise 7 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre"
+   ]
+  },
+  "marque:pastille:3": {
+   "fichier": "marque-pastille-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « pastille » à 3 px (loin), gaine comprise 5 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "os",
+    "ambre"
+   ]
+  },
+  "marque:traqueur:7": {
+   "fichier": "marque-traqueur-7.png",
+   "w": 9,
+   "h": 9,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "marqueur hors champ « traqueur » à 7 px (proche), gaine comprise 9 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "sang",
+    "os"
+   ]
+  },
+  "marque:traqueur:5": {
+   "fichier": "marque-traqueur-5.png",
+   "w": 7,
+   "h": 7,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "marqueur hors champ « traqueur » à 5 px (moyen), gaine comprise 7 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "sang",
+    "os"
+   ]
+  },
+  "marque:traqueur:3": {
+   "fichier": "marque-traqueur-3.png",
+   "w": 5,
+   "h": 5,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    2,
+    2
+   ],
+   "role": "marqueur hors champ « traqueur » à 3 px (loin), gaine comprise 5 px ; 2 images : allumé, éteint (2 Hz)",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "sang"
+   ]
+  },
+  "mini:fleche": {
+   "fichier": "mini-fleche.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette fleche (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:dard": {
+   "fichier": "mini-dard.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette dard (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:larve": {
+   "fichier": "mini-larve.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette larve (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:mine": {
+   "fichier": "mini-mine.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette mine (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:tourelle": {
+   "fichier": "mini-tourelle.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette tourelle (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:lame": {
+   "fichier": "mini-lame.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette lame (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:ruche": {
+   "fichier": "mini-ruche.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette ruche (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:sentinelle": {
+   "fichier": "mini-sentinelle.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette sentinelle (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:rival": {
+   "fichier": "mini-rival.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette rival (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:planeur": {
+   "fichier": "mini-planeur.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette planeur (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:traqueur": {
+   "fichier": "mini-traqueur.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette traqueur (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:cyclope": {
+   "fichier": "mini-cyclope.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette cyclope (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "mini:convoi": {
+   "fichier": "mini-convoi.png",
+   "w": 7,
+   "h": 7,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "mini-silhouette convoi (5 × 5 gainée) : à côté du chevron de portail, dans le codex, sur l'écran de fin",
+   "encres": [
+    "nuitProfonde",
+    "rosePale"
+   ]
+  },
+  "banniere:danger:36:gauche": {
+   "fichier": "banniere-danger-36-gauche.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière danger, hauteur 36 (texte à l'échelle 4)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang",
+    "rosePale"
+   ]
+  },
+  "banniere:danger:36:milieu": {
+   "fichier": "banniere-danger-36-milieu.png",
+   "w": 4,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière danger à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang"
+   ]
+  },
+  "banniere:danger:36:droite": {
+   "fichier": "banniere-danger-36-droite.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière danger, hauteur 36",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang",
+    "rosePale"
+   ]
+  },
+  "banniere:danger:29:gauche": {
+   "fichier": "banniere-danger-29-gauche.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière danger, hauteur 29 (texte à l'échelle 3)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang",
+    "rosePale"
+   ]
+  },
+  "banniere:danger:29:milieu": {
+   "fichier": "banniere-danger-29-milieu.png",
+   "w": 4,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière danger à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang"
+   ]
+  },
+  "banniere:danger:29:droite": {
+   "fichier": "banniere-danger-29-droite.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière danger, hauteur 29",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "sang",
+    "rosePale"
+   ]
+  },
+  "banniere:gloire:36:gauche": {
+   "fichier": "banniere-gloire-36-gauche.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière gloire, hauteur 36 (texte à l'échelle 4)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os"
+   ]
+  },
+  "banniere:gloire:36:milieu": {
+   "fichier": "banniere-gloire-36-milieu.png",
+   "w": 4,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière gloire à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "banniere:gloire:36:droite": {
+   "fichier": "banniere-gloire-36-droite.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière gloire, hauteur 36",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os"
+   ]
+  },
+  "banniere:gloire:29:gauche": {
+   "fichier": "banniere-gloire-29-gauche.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière gloire, hauteur 29 (texte à l'échelle 3)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os"
+   ]
+  },
+  "banniere:gloire:29:milieu": {
+   "fichier": "banniere-gloire-29-milieu.png",
+   "w": 4,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière gloire à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "banniere:gloire:29:droite": {
+   "fichier": "banniere-gloire-29-droite.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière gloire, hauteur 29",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os"
+   ]
+  },
+  "banniere:info:36:gauche": {
+   "fichier": "banniere-info-36-gauche.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière info, hauteur 36 (texte à l'échelle 4)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "os"
+   ]
+  },
+  "banniere:info:36:milieu": {
+   "fichier": "banniere-info-36-milieu.png",
+   "w": 4,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière info à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "banniere:info:36:droite": {
+   "fichier": "banniere-info-36-droite.png",
+   "w": 14,
+   "h": 36,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière info, hauteur 36",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "os"
+   ]
+  },
+  "banniere:info:29:gauche": {
+   "fichier": "banniere-info-29-gauche.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de bannière info, hauteur 29 (texte à l'échelle 3)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "os"
+   ]
+  },
+  "banniere:info:29:milieu": {
+   "fichier": "banniere-info-29-milieu.png",
+   "w": 4,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bande de bannière info à répéter tous les 4 px (motif tramé de période 4)",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "banniere:info:29:droite": {
+   "fichier": "banniere-info-29-droite.png",
+   "w": 14,
+   "h": 29,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de bannière info, hauteur 29",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise",
+    "os"
+   ]
+  },
+  "toast:danger:gauche": {
+   "fichier": "toast-danger-gauche.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de toast danger (plaque d'une ligne, hauteur 11, texte en (x + 5, 2))",
+   "encres": [
+    "nuitProfonde",
+    "magenta"
+   ]
+  },
+  "toast:danger:milieu": {
+   "fichier": "toast-danger-milieu.png",
+   "w": 1,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "colonne de toast danger à répéter",
+   "encres": [
+    "nuitProfonde",
+    "sang"
+   ]
+  },
+  "toast:danger:droite": {
+   "fichier": "toast-danger-droite.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de toast danger",
+   "encres": [
+    "nuitProfonde",
+    "magenta"
+   ]
+  },
+  "toast:gloire:gauche": {
+   "fichier": "toast-gloire-gauche.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de toast gloire (plaque d'une ligne, hauteur 11, texte en (x + 5, 2))",
+   "encres": [
+    "nuitProfonde",
+    "jaune"
+   ]
+  },
+  "toast:gloire:milieu": {
+   "fichier": "toast-gloire-milieu.png",
+   "w": 1,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "colonne de toast gloire à répéter",
+   "encres": [
+    "nuitProfonde",
+    "ambre"
+   ]
+  },
+  "toast:gloire:droite": {
+   "fichier": "toast-gloire-droite.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de toast gloire",
+   "encres": [
+    "nuitProfonde",
+    "jaune"
+   ]
+  },
+  "toast:info:gauche": {
+   "fichier": "toast-info-gauche.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon gauche de toast info (plaque d'une ligne, hauteur 11, texte en (x + 5, 2))",
+   "encres": [
+    "nuitProfonde",
+    "acier"
+   ]
+  },
+  "toast:info:milieu": {
+   "fichier": "toast-info-milieu.png",
+   "w": 1,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "colonne de toast info à répéter",
+   "encres": [
+    "nuitProfonde",
+    "ardoise"
+   ]
+  },
+  "toast:info:droite": {
+   "fichier": "toast-info-droite.png",
+   "w": 4,
+   "h": 11,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "capuchon droit de toast info",
+   "encres": [
+    "nuitProfonde",
+    "acier"
+   ]
+  },
+  "chiffres": {
+   "fichier": "chiffres.png",
+   "w": 10,
+   "h": 14,
+   "images": 14,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "gros chiffres de score 7 × 11 (gainés 10 × 14) ; image n = « 0123456789x+-% »[n] ; avance conseillée 9 px",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "ambre",
+    "jaune"
+   ]
+  },
+  "chiffres:danger": {
+   "fichier": "chiffres-danger.png",
+   "w": 10,
+   "h": 14,
+   "images": 14,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "les mêmes chiffres en magenta : compte à rebours de CONTINUER ?, dégâts du CYCLOPE",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "sang",
+    "magenta"
+   ]
+  },
+  "note:S": {
+   "fichier": "note-S.png",
+   "w": 17,
+   "h": 25,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    12
+   ],
+   "role": "la note S de l'écran de fin (lettre 14 × 22), qui tombe avec une secousse",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "note:A": {
+   "fichier": "note-A.png",
+   "w": 17,
+   "h": 25,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    12
+   ],
+   "role": "la note A de l'écran de fin (lettre 14 × 22), qui tombe avec une secousse",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "note:B": {
+   "fichier": "note-B.png",
+   "w": 17,
+   "h": 25,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    12
+   ],
+   "role": "la note B de l'écran de fin (lettre 14 × 22), qui tombe avec une secousse",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os",
+    "brasier"
+   ]
+  },
+  "note:C": {
+   "fichier": "note-C.png",
+   "w": 17,
+   "h": 25,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    12
+   ],
+   "role": "la note C de l'écran de fin (lettre 14 × 22), qui tombe avec une secousse",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "note:D": {
+   "fichier": "note-D.png",
+   "w": 17,
+   "h": 25,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    8,
+    12
+   ],
+   "role": "la note D de l'écran de fin (lettre 14 × 22), qui tombe avec une secousse",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "bouton:pause": {
+   "fichier": "bouton-pause.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton pause 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "bouton:son": {
+   "fichier": "bouton-son.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton son 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "bouton:muet": {
+   "fichier": "bouton-muet.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton muet 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "bouton:reglages": {
+   "fichier": "bouton-reglages.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton reglages 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "bouton:records": {
+   "fichier": "bouton-records.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton records 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "bouton:galerie": {
+   "fichier": "bouton-galerie.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton galerie 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise",
+    "jaune",
+    "ambre"
+   ]
+  },
+  "bouton:retour": {
+   "fichier": "bouton-retour.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton retour 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "bouton:lecture": {
+   "fichier": "bouton-lecture.png",
+   "w": 22,
+   "h": 22,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    11,
+    11
+   ],
+   "role": "bouton lecture 22 × 22 (44 pt à px = 2) ; 2 images : repos, enfoncé",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:principal:gauche": {
+   "fichier": "boutonTexte-principal-gauche.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte principal (hauteur 22) : capuchon gauche ; texte centré en y = 8",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "nuit",
+    "ambre"
+   ]
+  },
+  "boutonTexte:principal:milieu": {
+   "fichier": "boutonTexte-principal-milieu.png",
+   "w": 1,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte principal : colonne à répéter",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "nuit",
+    "ambre"
+   ]
+  },
+  "boutonTexte:principal:droite": {
+   "fichier": "boutonTexte-principal-droite.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte principal : capuchon droit",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "nuit",
+    "ambre"
+   ]
+  },
+  "boutonTexte:secondaire:gauche": {
+   "fichier": "boutonTexte-secondaire-gauche.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte secondaire (hauteur 22) : capuchon gauche ; texte centré en y = 8",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:secondaire:milieu": {
+   "fichier": "boutonTexte-secondaire-milieu.png",
+   "w": 1,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte secondaire : colonne à répéter",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:secondaire:droite": {
+   "fichier": "boutonTexte-secondaire-droite.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte secondaire : capuchon droit",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:danger:gauche": {
+   "fichier": "boutonTexte-danger-gauche.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte danger (hauteur 22) : capuchon gauche ; texte centré en y = 8",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:danger:milieu": {
+   "fichier": "boutonTexte-danger-milieu.png",
+   "w": 1,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte danger : colonne à répéter",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "ardoise"
+   ]
+  },
+  "boutonTexte:danger:droite": {
+   "fichier": "boutonTexte-danger-droite.png",
+   "w": 5,
+   "h": 22,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    0,
+    0
+   ],
+   "role": "bouton de texte danger : capuchon droit",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "ardoise"
+   ]
+  },
+  "etoile": {
+   "fichier": "etoile.png",
+   "w": 9,
+   "h": 9,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    4,
+    4
+   ],
+   "role": "étoile de défi 7 × 7 gainée ; 2 images : réussi (ambre et jaune), à faire (acier)",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "acier",
+    "os",
+    "ambre"
+   ]
+  },
+  "energie": {
+   "fichier": "energie.png",
+   "w": 7,
+   "h": 8,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    3,
+    4
+   ],
+   "role": "le losange d'énergie (5 × 6 gainé), à poser après « 412 » dans PROCHAIN DÉBLOCAGE",
+   "encres": [
+    "nuitProfonde",
+    "jaune",
+    "ambre",
+    "os",
+    "brasier"
+   ]
+  },
+  "vie": {
+   "fichier": "vie.png",
+   "w": 7,
+   "h": 7,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    3,
+    3
+   ],
+   "role": "pastille de vie 5 × 5 gainée (tête de la joueuse) ; 2 images : vie, vie perdue ; code de masque 4",
+   "encres": [
+    "nuitProfonde",
+    "cyanPale",
+    "acier",
+    "cyan"
+   ]
+  },
+  "cause:mur": {
+   "fichier": "cause-mur.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « mur » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale",
+    "sang",
+    "nuit"
+   ]
+  },
+  "cause:morsure": {
+   "fichier": "cause-morsure.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « morsure » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "cyan",
+    "cyanPale",
+    "os"
+   ]
+  },
+  "cause:convoi": {
+   "fichier": "cause-convoi.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « convoi » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "magenta",
+    "sang"
+   ]
+  },
+  "cause:traine": {
+   "fichier": "cause-traine.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « traine » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale"
+   ]
+  },
+  "cause:laser": {
+   "fichier": "cause-laser.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « laser » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "rosePale",
+    "magenta",
+    "sang",
+    "os"
+   ]
+  },
+  "cause:souffle": {
+   "fichier": "cause-souffle.png",
+   "w": 15,
+   "h": 15,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    7,
+    7
+   ],
+   "role": "silhouette de la cause « souffle » sur l'écran de fin (15 × 15) ; pour un ennemi ou son tir, poser le sprite de l'ennemi",
+   "encres": [
+    "nuitProfonde",
+    "magenta",
+    "rosePale",
+    "brasier",
+    "jaune",
+    "os"
+   ]
+  },
+  "pouce": {
+   "fichier": "pouce.png",
+   "w": 13,
+   "h": 18,
+   "images": 2,
+   "directions": 1,
+   "ancre": [
+    6,
+    1
+   ],
+   "role": "pouce fantôme de la première partie (13 × 18) ; 2 images : posé, levé ; ancre = bout du pouce",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  },
+  "geste:touche": {
+   "fichier": "geste-touche.png",
+   "w": 13,
+   "h": 13,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    6,
+    6
+   ],
+   "role": "pictogramme du geste « touche » du second doigt (13 × 13), devant « 2ᵉ DOIGT : TOUCHE » ou « GLISSE = APOGÉE »",
+   "encres": [
+    "nuitProfonde",
+    "acier",
+    "os"
+   ]
+  },
+  "geste:glisse": {
+   "fichier": "geste-glisse.png",
+   "w": 13,
+   "h": 13,
+   "images": 1,
+   "directions": 1,
+   "ancre": [
+    6,
+    6
+   ],
+   "role": "pictogramme du geste « glisse » du second doigt (13 × 13), devant « 2ᵉ DOIGT : TOUCHE » ou « GLISSE = APOGÉE »",
+   "encres": [
+    "nuitProfonde",
+    "os",
+    "acier"
+   ]
+  }
+ }
+}
