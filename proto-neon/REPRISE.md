@@ -1,5 +1,24 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
+## État au 17/10/2026 · 23 h 30 (le projet vit désormais sur l'ordinateur)
+
+- Dossier de travail : `~/Projets/SNAKE 2975` (clone du dépôt, branche `claude/snake-game-mobile-17dqpi`).
+  Playwright et Chromium sont installés hors dépôt dans `.outils/` (lien `node_modules` à la racine) ;
+  les scripts de `tools/` importent `'playwright'`.
+- **Refonte intégrée et publiée** : https://manonwwk-kasiope.github.io/proto-neon/ (branche `gh-pages`,
+  dossier `proto-neon/` : `index.html`, `musique/`, `cine/`). Sept lots faits en parallèle puis fusionnés :
+  structure (79-jeu.js, machine d'états), monde 1 024 × 512 en parallaxe et LE VOL, piste Neon Velocity
+  en 21 blocs (143,76 BPM mesurés), vraie mort et coupe, LASSO, INVERSION, six armes, 19 cartes, écran de
+  fin, cinq vagues avec TRAVELLING et CONVOIS, LE CYCLOPE en trois phases, sprites et mise en scène.
+- **Vérifié** : partie complète au doigt sur iPhone 13 paysage, portrait et bureau (`tools/F/captures.mjs`),
+  partie au pilote de 150 s (`tools/A/verifier.mjs`) : zéro erreur ; en ligne aussi.
+- **Reste à faire** (voir `refonte/lots/demandes.md`) : équilibrage par les pilotes (§ 4.10), LE DÉFILÉ et
+  LE RIVAL orchestrés, records avec initiales et défis du jour, branchement des intermèdes
+  (`refonte/INTERMEDES.md`), deux tests de contrat (champ `player.pouvoir`, noms du catalogue de sprites),
+  jury indépendant (§ 8.3, lot 10), essai sur le vrai iPhone.
+- **Musiques Suno** : 7 morceaux de `SUNO.md` + 3 variantes « électro française » (demande du 17/10) dans
+  `musique/brut/` ; pas encore branchées dans le jeu (la piste de jeu reste Neon Velocity, § 5.7).
+
 Tout le travail est sur GitHub, branche `claude/snake-game-mobile-17dqpi` (pull request n° 8). Rien
 n'est resté dans le cloud.
 
