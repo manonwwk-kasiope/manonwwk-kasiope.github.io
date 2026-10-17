@@ -21,7 +21,7 @@
      N.music.resume()          retour au premier plan, et chaque geste : relance un contexte 'suspended'
                                ou 'interrupted' (iPhone apres un appel, Siri, un verrouillage), fondu
                                d'entree, reprise sur une mesure neuve. Sans effet si tout joue deja.
-     N.music.rms(), rmsSfx(), rmsOut(), info(), journal(), renderOffline(...)   mesures et preuve
+     N.music.rms(), rmsSfx(), rmsOut(), info(), journal(), context(), renderOffline(...)   tests et preuve
 
    LES SONS D'INFORMATION — ce que chaque nom joue. Tous tombent dans la tonalite courante (G-33) :
      tir      souffle feutre qui retombe (triangle filtre a 1,7 kHz), une note de la pentatonique choisie par
@@ -497,7 +497,7 @@ if (typeof window !== 'undefined') window.__N = N;
         return d + 0.03;
       },
       kill: function (t, o, g) {
-        var c = clamp(o.pitch | 0, 0, 9), f = hz(keyNote(57, 4 + c)) * vary(0.01);
+        var c = clamp(o.pitch | 0, 0, 9), f = hz(keyNote(57, 5 + c)) * vary(0.01);   /* la4 puis la gamme monte */
         var body = voice(t, 'triangle', f * 0.7, f, 0.03, 0.002, 0.18, 0.17 * g, 0);
         /* l'octave carree, filtree sous 1,8 kHz : la presence dans les mediums, ou le telephone porte */
         voice(t, 'square', f * 2, f * 2, 0, 0.002, 0.08, 0.06 * g, 1800);
@@ -927,6 +927,8 @@ if (typeof window !== 'undefined') window.__N = N;
       var r = E.info(); r.state = E.ctx.state; r.muted = wantMute; r.sleeping = sleeping; r.running = E.isRunning();
       return r;
     },
+    /* pour les tests seulement : le contexte, pour simuler une interruption du systeme */
+    context: function () { return E ? E.ctx : null; },
     /* pour la preuve : appels par nom (connus ou non), sons joues, fusionnes, plafonnes, ignores */
     journal: function () {
       var j = E ? E.journal() : { joues: {}, fusionnes: 0, plafonnes: 0 };

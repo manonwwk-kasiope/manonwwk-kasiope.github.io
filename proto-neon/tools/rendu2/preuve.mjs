@@ -1,5 +1,6 @@
 /* tools/rendu2/preuve.mjs — preuves de l'ingénieur du rendu (10-gfx.js, 20-crt.js).
-   Usage : cd proto-neon && AB=http://127.0.0.1:8113 /opt/node22/bin/node tools/rendu2/preuve.mjs [ecrans|fantome|trace|cout]...
+   Usage : cd proto-neon && /opt/node22/bin/node tools/rendu2/preuve.mjs [ecrans|fantome|trace|cout]...
+   (serveur http sur 8112 à la racine du dépôt ; les bundles de comparaison sont construits en mémoire)
 
    ecrans   taille du pixel et du tampon sur quatre écrans, ma copie construite depuis src/ (serveur 8112),
             zone sûre nulle (Chromium) puis zone sûre réelle de l'iPhone imposée par CDP
@@ -9,9 +10,10 @@
    cout     coût d'image (rappel rAF complet + vidage du canvas) et coût du seul 20-crt.js, p50/p95,
             sur un scénario identique, profil iPhone 13 paysage, CPU x1 et x4
 
-   fantome, trace et cout tournent sur deux bundles construits depuis le MÊME instantané de src/
-   (AB/avant : 10-gfx.js et 20-crt.js d'origine ; AB/apres : les miens), pour ne mesurer que ma
-   modification pendant que d'autres modules s'écrivent. */
+   fantome et trace comparent deux bundles construits par build.mjs dans un dossier temporaire, au même
+   instant, depuis le MÊME src/ : « avant » y remet 10-gfx.js et 20-crt.js du commit ORIGINE, « après » le
+   prend tel quel. Seule ma modification diffère, même pendant que d'autres modules s'écrivent. Les pages
+   sont servies par interception à côté de ma copie : aucun fichier écrit dans le dépôt. */
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -24,10 +26,29 @@ const ROOT = path.resolve(HERE, '..', '..');
 const OUT = path.join(HERE, 'out');
 fs.mkdirSync(OUT, { recursive: true });
 const COPIE = 'http://127.0.0.1:8112/proto-neon/tools/rendu2/index.html';
-const AB = process.env.AB || 'http://127.0.0.1:8113';
 /* le dernier commit qui porte 10-gfx.js et 20-crt.js d'AVANT ma modification (HEAD les contient désormais) */
 const ORIGINE = 'f84a072';
 const QUOI = process.argv.slice(2).length ? process.argv.slice(2) : ['ecrans', 'fantome', 'trace', 'cout'];
+
+const ORIG = f => execFileSync('git', ['-C', ROOT, 'show', ORIGINE + ':proto-neon/src/' + f], { encoding: 'utf8' });
+/* un bundle construit par build.mjs depuis src/, avec des modules remplacés ou ajoutés ; rend le HTML */
+function bundle(remplace) {
+  const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'rendu2-'));
+  try {
+    fs.mkdirSync(path.join(TMP, 'src'));
+    for (const f of fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js'))) fs.copyFileSync(path.join(ROOT, 'src', f), path.join(TMP, 'src', f));
+    for (const [f, src] of Object.entries(remplace)) fs.writeFileSync(path.join(TMP, 'src', f), src);
+    fs.copyFileSync(path.join(ROOT, 'build.mjs'), path.join(TMP, 'build.mjs'));
+    fs.symlinkSync(path.join(ROOT, 'art'), path.join(TMP, 'art'));
+    execFileSync('/opt/node22/bin/node', [path.join(TMP, 'build.mjs'), path.join(TMP, 'b.html')], { cwd: TMP, stdio: 'pipe' });
+    return fs.readFileSync(path.join(TMP, 'b.html'), 'utf8');
+  } finally { fs.rmSync(TMP, { recursive: true, force: true }); }
+}
+const AB = {};
+function ab(v) {
+  if (!AB[v]) AB[v] = { url: COPIE.replace('index.html', v + '.html'), html: v === 'avant' ? bundle({ '10-gfx.js': ORIG('10-gfx.js'), '20-crt.js': ORIG('20-crt.js') }) : bundle({}) };
+  return AB[v];
+}
 
 const IPH = devices['iPhone 13'];
 const PAYSAGE = { ...IPH, viewport: { width: 844, height: 390 } };
@@ -195,7 +216,7 @@ if (QUOI.includes('ecrans')) {
 if (QUOI.includes('fantome')) {
   RES.fantome = {};
   for (const v of ['avant', 'apres']) {
-    const { ctx, page, errs } = await ouvrir(browser, `${AB}/${v}/index.html`, PAYSAGE);
+    const { ctx, page, errs } = await ouvrir(browser, ab(v).url, PAYSAGE, 1, ab(v).html);
     await enJeu(page);
     await page.evaluate(g => { const R = window.__R; R.ev[150] = () => { (0, eval)('(' + g + ')')([1, 0]); R.arm = 6; }; }, GROS.toString());
     try { await page.waitForFunction(() => !!window.__R.ghost, null, { timeout: 20000, polling: 50 }); }
@@ -219,7 +240,7 @@ if (QUOI.includes('fantome')) {
 if (QUOI.includes('trace')) {
   RES.trace = {};
   for (const v of ['avant', 'apres']) {
-    const { ctx, page, errs } = await ouvrir(browser, `${AB}/${v}/index.html`, PAYSAGE);
+    const { ctx, page, errs } = await ouvrir(browser, ab(v).url, PAYSAGE, 1, ab(v).html);
     await enJeu(page);
     await page.evaluate(g => {
       const R = window.__R, G = (0, eval)('(' + g + ')');
@@ -233,7 +254,7 @@ if (QUOI.includes('trace')) {
   }
   {
     /* mouvement réduit : 50-fx.js écrit N.S.shake = 0, la caméra ne doit pas bouger d'un pixel */
-    const { ctx, page, errs } = await ouvrir(browser, `${AB}/apres/index.html`, { ...PAYSAGE, reducedMotion: 'reduce' });
+    const { ctx, page, errs } = await ouvrir(browser, ab('apres').url, { ...PAYSAGE, reducedMotion: 'reduce' }, 1, ab('apres').html);
     await enJeu(page);
     await page.evaluate(g => {
       const R = window.__R, S = window.__S; R.ev[30] = () => (0, eval)('(' + g + ')')([1, 0]);
@@ -288,15 +309,7 @@ if (QUOI.includes('cout')) {
   const VIEUX = process.env.VIEUX ? fs.readFileSync(process.env.VIEUX, 'utf8')
     : execFileSync('git', ['-C', ROOT, 'show', ORIGINE + ':proto-neon/src/20-crt.js'], { encoding: 'utf8' });
   if ((VIEUX.match(/N\.crt = CRT;/g) || []).length !== 1) throw new Error('ancien 20-crt.js : publication introuvable');
-  const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'rendu2-paire-'));
-  fs.mkdirSync(path.join(TMP, 'src'));
-  for (const f of fs.readdirSync(path.join(ROOT, 'src')).filter(f => f.endsWith('.js'))) fs.copyFileSync(path.join(ROOT, 'src', f), path.join(TMP, 'src', f));
-  fs.writeFileSync(path.join(TMP, 'src', '21-crt-vieux.js'), VIEUX.replace('N.crt = CRT;', 'N.crtVieux = CRT;'));
-  fs.copyFileSync(path.join(ROOT, 'build.mjs'), path.join(TMP, 'build.mjs'));
-  fs.symlinkSync(path.join(ROOT, 'art'), path.join(TMP, 'art'));
-  execFileSync('/opt/node22/bin/node', [path.join(TMP, 'build.mjs'), path.join(TMP, 'paire.html')], { cwd: TMP, stdio: 'pipe' });
-  const HTML = fs.readFileSync(path.join(TMP, 'paire.html'), 'utf8');
-  fs.rmSync(TMP, { recursive: true, force: true });
+  const HTML = bundle({ '21-crt-vieux.js': VIEUX.replace('N.crt = CRT;', 'N.crtVieux = CRT;') });
   const URLP = COPIE.replace('index.html', 'paire.html');
   const PAIRE = () => {
     const N = window.__N, R = window.__R, o = document.getElementById('out'), cx = o.getContext('2d');
