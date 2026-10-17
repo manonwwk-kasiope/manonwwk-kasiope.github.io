@@ -20,6 +20,9 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
    chacune écrit sa position en trois lignes dans « Désaccords » ; la propriétaire tranche, ou à défaut la
    session qui a réservé le fichier le premier.
 
+Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
+Dernière médiation : aucune.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
