@@ -797,6 +797,15 @@
       cyclope: { jauge: [120, 3] },
       bouton: { px: 22, pt: 44 },
       banniere: { echellePaysage: 4, echellePortrait: 3, entreeImages: 2, fantomes: 2, sortie: 0.25 },
+      // codex-07 : paramètres de composition, en pixels du tampon et secondes de jeu.
+      tempsForts: {
+        banniere: { echelleMin: 2, duree: 2, fileMax: 3, attenteMax: 10, marge: 6, hautReserve: 56,
+          interligne: 3, padding: 6, fantomePx: 2, fantomeImages: 6, balayage: 0.20, clignoteHz: 1.5 },
+        palier: { duree: 0.65, coup: 0.14, echelle: 2, echelleCoup: 3, marge: 4, accent: 0.35 },
+        derniereVie: { vies: 1, hz: 1.2, bord: 4, trameMin: 0.25, trameAmplitude: 0.50, seuilCoeur: 0.68 },
+        protection: { segments: 2, rayonTete: 9, rayonCorps: 6 },
+        texte: { ptMin: 11, ligne: 11 }
+      },
       toast: { echelle: 1 }
     },
 
@@ -951,6 +960,21 @@
         jointureMs: 1, calageMs: 10, memoireMo: 25, nonRegressionMinutes: 10
       }
     }
+  };
+
+  /* codex-p6 — fixtures de test, REFONTE § 7.12 ; jamais lues en partie normale. */
+  R.tests = {
+    scenes: {
+      charge: { ennemis: 30, tirs: 60 },
+      boss: { phase: 3, preparationMax: 120 },
+      lasso6: { cibles: 6, longueur: 20, colonnes: 3, ecart: 12 },
+      inversion: { proies: 12, vague: 2 },
+      convoi: { cibles: 6, voie: 2, sens: 1, avance: 0.25 },
+      travelling: { vague: 3, queueMur: 40, depuis: 128, sens: 1 },
+      groupe: { colonnes: 8, marge: 24, ecart: 20, devant: 64 }
+    },
+    masque: { radar: { retraitBouton: 4, bord: 1 } }, // géométrie du marqueur de tête de 78-hud
+    mesureVM: { chauffe: 5, images: 30 } // coût du dessin instrumenté, hors qualification navigateur
   };
 
   /* ---- les formules : une seule écriture pour tous les lots ---- */

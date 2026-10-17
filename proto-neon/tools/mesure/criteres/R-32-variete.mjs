@@ -1,20 +1,19 @@
 /* R-32 — Variété : 7 quartiers distincts (masques de cité deux à deux d'intersection sur union < 0,5) ; avant
    le CYCLOPE, aucune fenêtre de 60 s de jeu sans une première fois (nouvel ennemi, nouvelle mécanique ou
    nouveau quartier) dans la partie du pilote bon.
-   Le masque de cité d'un quartier : le décor lointain seul (N.decor.drawFar) dessiné à une caméra fixe, puis
-   les pixels au-dessus de l'horizon (N.decor.horizon()) dans les encres de silhouette (nuit, ardoise, violet,
-   indigo, sang, nuit profonde). C'est une approximation documentée ; les captures sont jointes. */
+   Le masque de cité vient de N.decor.masqueCite : support binaire de la vraie image P3 avant ses
+   tables de couleurs. Le rendu complet est joint, quartier fixé sans transition par N.decor.fixer.
+   Le ciel, les montagnes et P5 ne sont pas pris pour des bâtiments. Aucune cible d'IoU n'est changée. */
 import { executer, principal, seuils, exiger } from '../commun.mjs';
 import { lot, bilanLot } from '../parties.mjs';
 
 export const meta = { id: 'R-32', titre: 'Variété', seuil: '7 quartiers d’IoU < 0,5 deux à deux ; une première fois au moins toutes les 60 s avant le CYCLOPE', bloquant: true };
-const SILHOUETTE = new Set([1, 2, 3, 4, 14, 15]);
 const MECANIQUES = ['vol', 'inversion', 'arene', 'phase', 'lasso', 'pouvoir', 'apogee', 'coupe', 'ramassage', 'carte', 'defi'];
 
 export async function mesurer(banc, res) {
   const s = await banc.ouvrir('paysage', { dt: 1 / 60 });
   const { s: S } = await seuils(s, 'R32');
-  if (await exiger(s, res, 'quartiers', ['N.decor.quartier', 'N.decor.drawFar', 'N.decor.horizon', 'N.ids.quartiers', 'N.gfx.clear'])) {
+  if (await exiger(s, res, 'quartiers', ['N.decor.fixer', 'N.decor.masqueCite', 'N.decor.drawFar', 'N.decor.horizon', 'N.ids.quartiers', 'N.gfx.clear'])) {
     const sc = await s.scene('calme');
     if (!sc.ok) res.nonMesurable('quartiers', sc.raison);
     else {
@@ -25,29 +24,30 @@ export async function mesurer(banc, res) {
         await s.images(40);
         const r = await s.eval(n => {
           const N = window.__N, D = N.decor, g = N.gfx;
-          try { D.quartier(n); } catch (e) { return { erreur: String(e) }; }
-          if (D.etat) try { D.etat('calme'); } catch (e) { }
+          try { D.fixer(n, 'calme'); } catch (e) { return { erreur: String(e) }; }
           const cam = { x: 300, y: 158, w: N.cam.w, h: N.cam.h };
           g.clear(0); if (g.origin) g.origin(0, 0); D.drawFar(cam);
           const h = D.horizon(), b = g.buf(), W = g.W;
-          return { W, H: g.H, h, b: window.__MESURE.b64(b) };
+          return { W, H: g.H, h, b: window.__MESURE.b64(b), cite: window.__MESURE.b64(D.masqueCite(n)), quartier: D.quartier(), transition: D.transition ? D.transition() : null };
         }, q);
         if (r.erreur) { res.nonMesurable(`quartier ${q}`, r.erreur); continue; }
-        const b = Buffer.from(r.b, 'base64'), m = new Uint8Array(r.W * r.H);
-        for (let y = 0; y < Math.min(r.h, r.H); y++) for (let x = 0; x < r.W; x++) if (SILHOUETTE.has(b[y * r.W + x])) m[y * r.W + x] = 1;
+        const b = Buffer.from(r.b, 'base64'), m = Buffer.from(r.cite, 'base64');
+        if (r.quartier !== q || r.transition !== 1) { res.nonMesurable(`quartier ${q}`, 'quartier non fixé ou transition en cours'); continue; }
+        if (!m.length || m.some(v => v !== 0 && v !== 1)) { res.nonMesurable(`quartier ${q}`, 'masque de cité absent ou non binaire'); continue; }
         const n = m.reduce((a, v) => a + v, 0);
-        if (!n) { res.nonMesurable(`quartier ${q}`, 'masque de cité vide (aucun pixel de silhouette au-dessus de l’horizon ' + r.h + ')'); continue; }
+        if (!n) { res.nonMesurable(`quartier ${q}`, 'masque de cité vide'); continue; }
+        res.note(`${q} : support P3 ${n}/${m.length} pixels, transition=${r.transition}`);
         masques[q] = m;
         res.capture(await s.captureTampon('R-32-' + q, 2, { W: r.W, H: r.H, buf: b }));
       }
       const noms = Object.keys(masques), paires = [];
       for (let i = 0; i < noms.length; i++) for (let j = i + 1; j < noms.length; j++) {
-        const a = masques[noms[i]], c = masques[noms[j]]; let inter = 0, uni = 0;
+        const a = masques[noms[i]], c = masques[noms[j]]; if (a.length !== c.length) { res.nonMesurable('masques comparables', 'tailles P3 différentes'); continue; } let inter = 0, uni = 0;
         for (let k = 0; k < a.length; k++) { if (a[k] && c[k]) inter++; if (a[k] || c[k]) uni++; }
         paires.push({ a: noms[i], b: noms[j], iou: inter / uni });
       }
       const ok = paires.filter(p => p.iou < S.iou);
-      res.verifie('quartiers distincts (paires d’IoU < ' + S.iou + ')', ok.length, `${paires.length} paires sur ${S.quartiers} quartiers`, noms.length >= S.quartiers && ok.length === paires.length, { quartiers: noms, pires: paires.sort((x, y) => y.iou - x.iou).slice(0, 4).map(p => ({ ...p, iou: +p.iou.toFixed(3) })) });
+      res.verifie('quartiers distincts (paires d’IoU < ' + S.iou + ')', ok.length, `${paires.length} paires sur ${S.quartiers} quartiers`, noms.length === S.quartiers && paires.length === S.quartiers * (S.quartiers - 1) / 2 && ok.length === paires.length, { quartiers: noms, paires: paires.map(p => ({ ...p })), pires: paires.sort((x, y) => y.iou - x.iou).slice(0, 4).map(p => ({ ...p, iou: +p.iou.toFixed(3) })) });
     }
   }
   await s.fermer();

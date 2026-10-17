@@ -182,3 +182,38 @@ les films par personnage, les fins, les retrouvailles et le teaser.**
    — aujourd'hui seul `'fin'` sert : à la victoire, après « apotheose », à la place de `terminer(true)` ;
 5. `finAventure(bilan)` mène à l'écran de fin ou au titre ; une défaite ne concerne pas l'aventure ; quitter vers le
    titre appelle `N.aventure.stop()`.
+6. (ajout du 18 octobre) **90-boot.js dessine lui-même `N.ui`, `N.hud` et `N.intro` par-dessus le jeu** : dans l'état
+   `aventure`, il faut les taire, sinon le titre « SNAKE 2975 » de l'écran de démarrage couvre 1976 et 1982 (vu en
+   portrait). Modèle qui marche : `demo/panneau.html` (la démo du voyage entier, `demo/index.html`, testée de bout en
+   bout : choix → 1976 → 1982 → néon → profondeur à la vague 3 → fin, zéro erreur).
+
+## codex-p6 — API de test (18/10/2026 · 00 h 51, Paris ; mis à jour à 00 h 52)
+
+| lot | fichier | besoin / changement | raison / preuve |
+|---|---|---|---|
+| codex-p6 | `src/79-jeu.js` | `reset(graine,{depart})` accepte `demarrage`, `ouverture`, `titre`, `briefing`, `plongee`, `jeu` ; faute de nom = `false` sans mutation ; sans options et `direct` inchangés | CONTRAT publie la signature sans énumérer `depart`. Départ plongée demandé par codex-08 ; entrées directes vérifiées dans `tools/codex-p6/statique.json`. |
+| codex-p6 | `src/02-regles.js` (`R.tests.scenes`) | ajout uniquement : `charge` 30 ennemis/60 tirs ; boss phase 3 et préparation bornée à 120 s ; `lasso6` 6 cibles/20 segments, grille de 3 colonnes espacées de 12 px ; inversion 12 proies en V2 ; convoi 6 cibles, voie 2, sens +1, avance 0,25 s après annonce ; travelling V3, queue à 40 px, départ x=128, sens +1 ; groupes 8 colonnes au plus, marge 24 px, espacement 20 px, centre 64 px devant | Effectifs/phase/longueurs/distances imposés par REFONTE § 7.12 ; les autres valeurs rendent les fixtures déterministes, visibles et bornées, sans réglage de la partie normale. |
+| codex-p6 | `src/02-regles.js` (`R.tests.masque`, `R.tests.mesureVM`) | radar : retrait du bouton de 4 px et bord de 1 px ; mesure VM : 5 dessins de chauffe, puis 30 dessins mesurés | Géométrie existante de `78-hud` pour identifier le vrai marqueur de tête par position/dimensions, sans classifier par couleur ; coût local du masque publié séparément du budget navigateur. |
+| codex-p6 | `src/12-cam.js:83,294,160` | renommer les deux fonctions `reset` et raccorder chaque interface à la bonne | `Wd.reset = reset` désigne la fonction caméra à cause des deux déclarations dans la même fermeture. Preuve VM : après charge, reset conserve le rectangle du boss et V5 portrait perdait 23 segments (40 → 17, CANON IV → II). Contournement limité aux nouvelles fixtures : arène complète via `world.arena`, achevée par `cam.update`, avant préparation. Aucun changement dans ce fichier. |
+| codex-p6 | `tools/mesure/sonde.js`, contrat du masque | armer `N.game.dbg.masque(true)` AVANT le dessin à mesurer ; lire `dbg.masque()` après ce dessin dans la même image ; `dbg.masque(false)` libère le masque et restaure les fonctions | Activation paresseuse nécessaire : aucune propriété historique n'est inventée au premier appel, qui arme la prochaine image. Le masque n'est pas reconstruit depuis les couleurs. Script prêt : `tools/codex-p6/verifier.mjs`. |
+| codex-p6 | `tools/mesure/criteres/R-37-lisibilite-arsenal.mjs` | distinguer dans l'analyse du sprite de tête le marqueur de tête du radar (zone HUD) | Le vrai marqueur appartient à la tête (code 1) et porte du cyan pâle ; l'inclure dans une comparaison au seul sprite du monde gonfle sa boîte et son nombre de pixels. Aucun seuil abaissé, aucun résultat R-37 revendiqué. |
+| codex-p6 | exécution hors bac | lancer `cd proto-neon && node tools/codex-p6/verifier.mjs` | HTTP et Chromium interdits dans ce bac selon le cadre commun ; script complet, trois profils en série et navigateur muet, jamais exécuté ici. Les mesures VM ne qualifient ni Safari ni les performances du navigateur. |
+
+## codex-07 — HUD des temps forts (18/10/2026 · 00 h 40, Paris)
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-07 | `30-music.js` / `79-scene.js` | jouer `palier` une fois lors du changement de l'objet public `N.score.palier = {mult,t}` ; initialisé à `null` au reset ; n'annonce que les hausses après un kill hors purge | le score ne déclenche pas d'effet ; le HUD montre déjà le chiffre et son accent. Le son reste réservé au lot audio |
+| codex-07 | `79-scene.js` | respecter le budget dans `N.hud.banniere` aussi pour les priorités 1 ; le HUD centralise désormais l'espacement de 10 s entre débuts réellement dessinés, et reconnaît le CYCLOPE par son texte ou `opts.cyclope` | les appels directs de 77-score contournaient le budget de scène ; les compteurs de requêtes de scène ne prouvent pas le nombre de bannières affichées |
+| codex-07 | `10-gfx.js` / producteurs de dessin | conserver le masque existant et attribuer les propriétaires lors du dessin de la joueuse et de l'arsenal ; `dbg.masque()` rend actuellement un tableau vide de propriétaires et le masque graphique réel attribue les pixels cyan au décor (code 8) | le masque est alloué mais la joueuse et l'arsenal ne posent pas leur propriétaire après celui du décor ; le comptage cyan est donc publié brut et avec un masque géométrique complémentaire, pas présenté comme une mesure fiable par propriétaire |
+| codex-07 | environnement de vérification | exécuter `node proto-neon/tools/codex-07/verifier.mjs avant` sur la version d'origine puis `apres` sur ce lot, avec serveur HTTP et Chromium autorisés | ce bac à sable refuse `listen` avec EPERM et Chromium avec `MachPortRendezvousServer: Permission denied` ; les exports Node ne valident pas Safari |
+
+| codex-07 | `79-jeu.js` / pilote (lot codex-02) | terminer le raccordement du pilote à l'écran de cartes avant la recette complète R-14 | sur les 120 s de pas demandées au banc Node, le pilote bon reste en cartes après 36,53 s de jeu en paysage et bureau ; en portrait, il atteint la fin à 20,53 s. Aucun choix ni invulnérabilité ajouté par le banc |
+
+Ajouts uniquement dans `N.R.hud.tempsForts` ; les valeurs préexistantes de `N.R.hud.banniere`, `N.R.temps.imageRef` et du budget de scène restent lues telles quelles :
+
+- `banniere` : échelle minimale **2**, durée de repli **2 s**, file bornée à **3**, attente maximale **10 s** (éviter les annonces périmées) ; marge **6 px**, réservation supérieure **56 px** (HUD et radar), interligne **3 px**, padding **6 px**, base du décalage des fantômes **2 px** (déplacements entiers dérivés de ce pas et du nombre de fantômes), durée des fantômes **6 images**, balayage **0,20 s**, clignotement optionnel des deux filets à **1,5 Hz** (texte fixe). Ces valeurs composent une entrée en pixels entiers et évitent les débordements en portrait.
+- `palier` : durée **0,65 s**, coup **0,14 s**, échelles tenue **2** et coup **3**, marge **4 px**, accent local **0,35 s**. Un retour bref sans occuper le budget de bannières.
+- `derniereVie` : seuil **1 vie**, battement **1,2 Hz** (G-04), bord **4 px**, densité de Bayer minimale **0,25** et amplitude **0,50**, seuil du cœur rose **0,68**. Bord sombre et local, sans éclair plein écran ; état fixe sous mouvement réduit.
+- `protection` : **2 segments**, rayon tête **9 px** et corps **6 px**. Sauvegarde puis restitution des pixels et de leur propriétaire au-dessus du HUD, via les seules interfaces publiques.
+- `texte` : ligne de **11 px** (interligne existant du HUD, utilisé pour placer le pop sous le défi et le nom de vague en portrait) ; `ptMin` **11 pt équivalent**, seuil demandé par la mission pour la vérification de lisibilité ; les nouveaux textes sont au moins à l'échelle **2**. Le rendu réel Safari reste à vérifier.

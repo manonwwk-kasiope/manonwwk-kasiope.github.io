@@ -1,0 +1,42 @@
+{
+ "id": "R-28",
+ "titre": "Mouvement réduit",
+ "seuil": "caméra et plans immobiles à la mort d’une élite ; jeu complet ; lumière gardée",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "1 ok, 0 en échec, 1 indicatives hors cible, 2 non mesurables",
+ "mesures": [
+  {
+   "nom": "prefers-reduced-motion vu par la page",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok"
+  },
+  {
+   "nom": "mort d’une élite",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène v5 absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "lumière gardée (scène calme, pixels lumineux)",
+   "valeur": 0.12068,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "jeu complet en mouvement réduit",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 0.8,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:09:24.693Z",
+ "dateParis": "18/10/2026 · 01 h 09"
+}

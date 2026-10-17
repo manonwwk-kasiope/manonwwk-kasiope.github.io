@@ -72,6 +72,7 @@ N.score = (function () {
     m.score = 0; m.chaine = 0; m.dernier = -99; m.vies = (R && R.vies && R.vies.depart) || 3; m.bonus = false; m.newRecord = false; m.gain = null;
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
+    API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
@@ -156,7 +157,7 @@ N.score = (function () {
   if (N.ev) {
     N.ev.on('kill', 20, function (c) {
       if (estPurge(c.src)) return;
-      var t = O.T.t, st = m.stats;
+      var t = O.T.t, st = m.stats, avant = mult();
       if (t - m.dernier <= fenetre()) m.chaine++; else m.chaine = 1;
       m.dernier = t;
       if (m.chaine > st.maxChaine) st.maxChaine = m.chaine;
@@ -164,6 +165,9 @@ N.score = (function () {
       var pts = c.base * mult();
       if (c.boss) pts += (R && R.score && R.score.primes && R.score.primes.cyclope && R.score.primes.cyclope.mort) || 25000;
       ajouter(pts, c.x, c.y);
+      // État de présentation public : même si plusieurs kills arrivent avant le prochain dessin,
+      // le HUD peut reconnaître le palier effectivement franchi, sans effet émis par le score.
+      if (mult() > avant) API.palier = { mult: mult(), t: t };
     }, '77-score');
     N.ev.on('kill', 80, function (c) {
       if (estPurge(c.src)) return;
@@ -278,7 +282,7 @@ N.score = (function () {
 
   API = {
     reset: reset, update: update,
-    score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
+    palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
     defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },

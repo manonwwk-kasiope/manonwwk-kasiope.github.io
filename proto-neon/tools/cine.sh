@@ -61,5 +61,11 @@ amiral-elle hf_20261017_225314_45fd6300-0d20-46da-99a7-0cc36e2e5909.mp4
 amiral-lui hf_20261017_225314_99744508-f2c5-440f-9f7f-c92c07fd8837.mp4
 defaite-elle hf_20261017_225314_74c40fd0-e78d-4128-b138-d592ebe27965.mp4
 defaite-lui hf_20261017_225314_d29506cc-e4aa-4d5b-95b1-d49b0ac3b398.mp4
+affiche-duo hf_20261017_230552_36f51035-6ac0-4c4f-a2d5-157268eb10f1.mp4
 LISTE
+# l'affiche des deux pilotes boucle sur l'écran titre : le film finit dos tourné, il est donc joué en aller-retour
+ffmpeg -nostdin -y -v error -i "$T/affiche-duo.mp4" -filter_complex \
+  "[0]scale=384:216:flags=lanczos,fps=12,split[a][b];[b]reverse,trim=start_frame=1,setpts=PTS-STARTPTS[r];[a][r]concat=n=2:v=1[v]" \
+  -map "[v]" -c:v libx264 -profile:v main -level 3.0 -pix_fmt yuv420p -crf 25 -preset veryslow -tune animation -an \
+  -movflags +faststart cine/affiche-duo.mp4
 rm -rf "$T"

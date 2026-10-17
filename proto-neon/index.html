@@ -71,7 +71,7 @@ var ART_SRC = {
   "warp-elle": "art/warp-elle.png",
   "warp-lui": "art/warp-lui.png"
 };
-var CINE_DISPO = ["affiche","alerte","amiral-elle","amiral-lui","apotheose-elle","apotheose-lui","apotheose","boss","briefing","chasse-elle","chasse-lui","chasse","connexion-elle","connexion-lui","connexion","defaite-elle","defaite-lui","defaite","espace-elle","espace-lui","eveil","exterieur","fin-elle","fin-lui","fissure-elle","fissure-lui","pilote-elle","pilote-lui","plongee-elle","plongee-lui","plongee","profondeur-elle","profondeur-lui","retournement-elle","retournement-lui","retournement","retrouvailles","reveil-elle","reveil-lui","reveil","rival-elle","rival-lui","rival","teaser-3019","victoire","warp-elle","warp-lui"];
+var CINE_DISPO = ["affiche-duo","affiche","alerte","amiral-elle","amiral-lui","apotheose-elle","apotheose-lui","apotheose","boss","briefing","chasse-elle","chasse-lui","chasse","connexion-elle","connexion-lui","connexion","defaite-elle","defaite-lui","defaite","espace-elle","espace-lui","eveil","exterieur","fin-elle","fin-lui","fissure-elle","fissure-lui","pilote-elle","pilote-lui","plongee-elle","plongee-lui","plongee","profondeur-elle","profondeur-lui","retournement-elle","retournement-lui","retournement","retrouvailles","reveil-elle","reveil-lui","reveil","rival-elle","rival-lui","rival","teaser-3019","victoire","warp-elle","warp-lui"];
 var CINE_BASE = "cine/";
 var MUSIQUE_BASE = "musique/";
 var MUSIQUE_EMBED = null;
@@ -1053,6 +1053,15 @@ var MUSIQUE_EMBED = null;
       cyclope: { jauge: [120, 3] },
       bouton: { px: 22, pt: 44 },
       banniere: { echellePaysage: 4, echellePortrait: 3, entreeImages: 2, fantomes: 2, sortie: 0.25 },
+      // codex-07 : paramètres de composition, en pixels du tampon et secondes de jeu.
+      tempsForts: {
+        banniere: { echelleMin: 2, duree: 2, fileMax: 3, attenteMax: 10, marge: 6, hautReserve: 56,
+          interligne: 3, padding: 6, fantomePx: 2, fantomeImages: 6, balayage: 0.20, clignoteHz: 1.5 },
+        palier: { duree: 0.65, coup: 0.14, echelle: 2, echelleCoup: 3, marge: 4, accent: 0.35 },
+        derniereVie: { vies: 1, hz: 1.2, bord: 4, trameMin: 0.25, trameAmplitude: 0.50, seuilCoeur: 0.68 },
+        protection: { segments: 2, rayonTete: 9, rayonCorps: 6 },
+        texte: { ptMin: 11, ligne: 11 }
+      },
       toast: { echelle: 1 }
     },
 
@@ -1207,6 +1216,21 @@ var MUSIQUE_EMBED = null;
         jointureMs: 1, calageMs: 10, memoireMo: 25, nonRegressionMinutes: 10
       }
     }
+  };
+
+  /* codex-p6 — fixtures de test, REFONTE § 7.12 ; jamais lues en partie normale. */
+  R.tests = {
+    scenes: {
+      charge: { ennemis: 30, tirs: 60 },
+      boss: { phase: 3, preparationMax: 120 },
+      lasso6: { cibles: 6, longueur: 20, colonnes: 3, ecart: 12 },
+      inversion: { proies: 12, vague: 2 },
+      convoi: { cibles: 6, voie: 2, sens: 1, avance: 0.25 },
+      travelling: { vague: 3, queueMur: 40, depuis: 128, sens: 1 },
+      groupe: { colonnes: 8, marge: 24, ecart: 20, devant: 64 }
+    },
+    masque: { radar: { retraitBouton: 4, bord: 1 } }, // géométrie du marqueur de tête de 78-hud
+    mesureVM: { chauffe: 5, images: 30 } // coût du dessin instrumenté, hors qualification navigateur
   };
 
   /* ---- les formules : une seule écriture pour tous les lots ---- */
@@ -2506,6 +2530,7 @@ N.art = (function () {
   var smoothOK = false;                 /* le lissage a-t-il été désarmé depuis le dernier resize */
   var OX = 0, OY = 0;                   /* origine de dessin : un point (x,y) du monde se pose en (x-OX, y-OY) */
   var MK = null, OWN = 0, maskOn = false;   /* masque de propriété : un octet par pixel, seulement s'il est armé */
+  var traceDepth = 0, traced = null, copies = null;
 
   var RND = Math.round;
 
@@ -2537,6 +2562,7 @@ N.art = (function () {
     if (w === W && h === H && p === PX && buf) { smoothOK = false; return { w: W, h: H, px: PX }; }
     W = w; H = h; PX = p;
     buf = new Uint8Array(W * H);
+    traced = null;
     MK = maskOn ? new Uint8Array(W * H) : null;
     ic = mkCanvas(W, H);
     ictx = ic ? ic.getContext('2d', { alpha: false }) : null;
@@ -2562,7 +2588,10 @@ N.art = (function () {
   }
 
   /* ---- primitives ---- */
-  function clear(ci) { if (buf) buf.fill((ci | 0) & 15); }
+  function clear(ci) {
+    if (buf) buf.fill((ci | 0) & 15);
+    if (MK) MK.fill(0);                 // aucune propriété héritée de l'image précédente
+  }
 
   function origin(ox, oy) { OX = RND(+ox || 0); OY = RND(+oy || 0); }
 
@@ -2769,8 +2798,9 @@ N.art = (function () {
             var v = d[so + s0 + k];
             if (!v && !opaque) continue;
             buf[to + tx + k] = lut ? lut[v] : v;
+            if (MK) MK[to + tx + k] = OWN;
           }
-          if (MK) MK.fill(OWN, to + tx, to + tx + run);
+          if (MK && fast) MK.fill(OWN, to + tx, to + tx + run);
           tx += run; s0 = 0;
         }
       } else {
@@ -2782,8 +2812,9 @@ N.art = (function () {
           var v2 = d[so + k2];
           if (!v2 && !opaque) continue;
           buf[to + x0 + k2] = lut ? lut[v2] : v2;
+          if (MK) MK[to + x0 + k2] = OWN;
         }
-        if (MK) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
+        if (MK && fast) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
       }
     }
   }
@@ -2803,12 +2834,56 @@ N.art = (function () {
   }
 
   /* masque de propriété (§ 7.12) : owner(code) fixe qui dessine ; masque(true) l'arme (un octet par pixel) */
-  function owner(code) { OWN = code & 255; }
+  function owner(code) { if (code !== undefined) OWN = code & 255; return OWN; }
   function masque(on) {
     maskOn = !!on;
     if (maskOn) { if (!MK || MK.length !== W * H) MK = new Uint8Array(W * H); }
-    else MK = null;
+    else { MK = null; traced = null; copies = null; }
     return MK;
+  }
+
+  /* Les modules historiques dessinent aussi directement dans buf(). Le Proxy ne leur est fourni
+     QUE dans un dessin instrumenté ; en dehors, buf() reste le véritable Uint8Array. Chaque écriture
+     est suivie, même si elle repose la même encre. Aucune déduction du propriétaire par la couleur. */
+  function traceBuffer(a, offset) {
+    var methods = {};
+    return new Proxy(a, {
+      get: function (target, key) {
+        if (key === 'set') return methods.set || (methods.set = function (src, at) {
+          at = at === undefined ? 0 : at;
+          target.set(src, at);
+          if (MK) MK.fill(OWN, offset + at, offset + at + src.length);
+        });
+        if (key === 'fill') return methods.fill || (methods.fill = function (value, start, end) {
+          target.fill(value, start, end);
+          if (MK) MK.subarray(offset, offset + target.length).fill(OWN, start, end);
+          return this;
+        });
+        if (key === 'subarray') return methods.subarray || (methods.subarray = function (start, end) {
+          var sub = target.subarray(start, end);
+          return traceBuffer(sub, offset + sub.byteOffset - target.byteOffset);
+        });
+        var v = Reflect.get(target, key, target);
+        if (typeof v !== 'function' || key === 'constructor') return v;
+        return methods[key] || (methods[key] = v.bind(target));
+      },
+      set: function (target, key, value) {
+        var ok = Reflect.set(target, key, value, target), i = +key;
+        if (ok && MK && Number.isInteger(i) && i >= 0 && i < target.length) MK[offset + i] = OWN;
+        return ok;
+      }
+    });
+  }
+  function suivre(code, fn, ctx, args) {
+    if (!MK) return fn.apply(ctx, args);
+    var prev = OWN; OWN = code; traceDepth++;
+    try { return fn.apply(ctx, args); }
+    finally { traceDepth--; OWN = prev; }
+  }
+  function buffer() {
+    if (!MK || !traceDepth || !buf) return buf;
+    if (!traced) traced = traceBuffer(buf, 0);
+    return traced;
   }
 
   /* copie du tampon d'index dans dst (alloué ici s'il manque ou s'il n'a pas la taille) */
@@ -2816,6 +2891,7 @@ N.art = (function () {
     if (!buf) return dst || null;
     if (!dst || dst.length !== buf.length) dst = new Uint8Array(buf.length);
     dst.set(buf);
+    if (MK) { if (!copies) copies = new WeakMap(); copies.set(dst, new Uint8Array(MK)); }
     return dst;
   }
 
@@ -2823,11 +2899,12 @@ N.art = (function () {
   function mixBayer(src, p) {
     if (!buf || !src || src.length !== buf.length) return;
     if (!(p > 0)) return;
-    if (p >= 1) { buf.set(src); return; }
+    var sm = MK && copies && copies.get(src);
+    if (p >= 1) { buf.set(src); if (MK) { if (sm) MK.set(sm); else MK.fill(0); } return; }
     var B = N.pal.BAYER, lim = p * 16;
     for (var y = 0; y < H; y++) {
       var o = y * W, br = (y & 3) << 2;
-      for (var x = 0; x < W; x++) if (lim > B[br | (x & 3)]) buf[o + x] = src[o + x];
+      for (var x = 0; x < W; x++) if (lim > B[br | (x & 3)]) { buf[o + x] = src[o + x]; if (MK) MK[o + x] = sm ? sm[o + x] : 0; }
     }
   }
 
@@ -2870,10 +2947,10 @@ N.art = (function () {
     clear: clear, px: px, rect: rect, line: line, circ: circ, ring: ring, blit: blit,
     ditherRect: ditherRect, ditherCirc: ditherCirc, disc: disc,
     at: at,
-    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque, copyTo: copyTo, mixBayer: mixBayer,
+    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque, suivre: suivre, copyTo: copyTo, mixBayer: mixBayer,
     ox: function () { return OX; }, oy: function () { return OY; },
     mask: function () { return MK; },
-    buf: function () { return buf; },
+    buf: buffer,
     canvas: function () { return out; },
     context: function () { return octx; },
     inner: function () { return ic; }
@@ -14925,9 +15002,11 @@ if (typeof window !== 'undefined') window.__N = N;
     /* le message, sous le jeu : le serpent et les menaces passent devant */
     if (T.msg && T.msgT < T.msgDuree) {
       var gros = T.msg === '1982', kk = gros ? 2 : 1, mw = largeur(T.msg, kk), mx = Math.round((T.X0 + T.X1 + 1 - mw) / 2);
-      var my = Math.round(T.Y0 + (T.Y1 - T.Y0) * (gros ? 0.36 : 0.56));
-      if (!(T.phase === 'jeu' && ((T.msgT * 5) | 0) % 4 === 3)) {
-        lrect(mx - 2, my + 1, mw + 4, 7 * kk + 3, P.vide);
+      /* en jeu, le message se pose dans la moitié où le serpent n'est pas, sans bandeau noir qui masquerait le terrain */
+      var enJeu = T.phase === 'jeu', haut = T.hy > (T.Y0 + T.Y1) / 2;
+      var my = Math.round(T.Y0 + (T.Y1 - T.Y0) * (gros ? 0.36 : enJeu ? (haut ? 0.22 : 0.72) : 0.56));
+      if (!(enJeu && ((T.msgT * 5) | 0) % 4 === 3)) {
+        if (!enJeu) lrect(mx - 2, my + 1, mw + 4, 7 * kk + 3, P.vide);
         ltexte(T.msg, mx, my, P.jaune, kk);
       }
     }
@@ -20492,6 +20571,7 @@ N.score = (function () {
     m.score = 0; m.chaine = 0; m.dernier = -99; m.vies = (R && R.vies && R.vies.depart) || 3; m.bonus = false; m.newRecord = false; m.gain = null;
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
+    API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
     API.defis = { finir: m.defi }; API.defiVague = null;
@@ -20576,7 +20656,7 @@ N.score = (function () {
   if (N.ev) {
     N.ev.on('kill', 20, function (c) {
       if (estPurge(c.src)) return;
-      var t = O.T.t, st = m.stats;
+      var t = O.T.t, st = m.stats, avant = mult();
       if (t - m.dernier <= fenetre()) m.chaine++; else m.chaine = 1;
       m.dernier = t;
       if (m.chaine > st.maxChaine) st.maxChaine = m.chaine;
@@ -20584,6 +20664,9 @@ N.score = (function () {
       var pts = c.base * mult();
       if (c.boss) pts += (R && R.score && R.score.primes && R.score.primes.cyclope && R.score.primes.cyclope.mort) || 25000;
       ajouter(pts, c.x, c.y);
+      // État de présentation public : même si plusieurs kills arrivent avant le prochain dessin,
+      // le HUD peut reconnaître le palier effectivement franchi, sans effet émis par le score.
+      if (mult() > avant) API.palier = { mult: mult(), t: t };
     }, '77-score');
     N.ev.on('kill', 80, function (c) {
       if (estPurge(c.src)) return;
@@ -20698,7 +20781,7 @@ N.score = (function () {
 
   API = {
     reset: reset, update: update,
-    score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
+    palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
     defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
@@ -20733,11 +20816,16 @@ N.hud = (function () {
   var O = N.outils, R = N.R;
   var BTN = (R && R.hud && R.hud.bouton && R.hud.bouton.px) || 22;     // 22 px de jeu = 44 pt
   var S = null;
+  var H = R.hud.tempsForts, B = R.hud.banniere;
+  var temps = 0, derniereBan = -Infinity, palierVu = null, palier = null;
+  var mediaReduit = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  var sauvegardes = [];
   var ban = null, file = [], toasts = [], tags = [], muteFlash = 0, tuto = { on: false, fade: 0, done: false, a0: 0 };
   var gains = O.pops;                                                  // la réserve de gains flottants de N.outils
 
   function reset() {
     S = N.S;
+    temps = 0; derniereBan = -Infinity; palierVu = null; palier = null;
     ban = null; file.length = 0; toasts.length = 0; tags.length = 0; muteFlash = 0;
     var P = N.joueuse && N.joueuse.tete;
     var premiere = !(N.score && N.score.records && N.score.records.length);
@@ -20747,10 +20835,31 @@ N.hud = (function () {
   /* ============================ ce qu'on affiche ============================ */
   var COUL = { jaune: 'JAUNE', rose: 'ROSE', magenta: 'MAGENTA', os: 'OS', acier: 'ACIER' };
   function couleur(c) { return typeof c === 'number' ? c : O[COUL[c] || 'OS']; }
+  function reduit() { return !!(mediaReduit && mediaReduit.matches); }
+  function cyclope(lines, opts) {
+    return !!opts.cyclope || lines.some(function (s) { return /CYCLOPE/i.test(s); }) ||
+      (lines.some(function (s) { return /^PHASE /.test(s); }) && N.colosse && N.colosse.actif && N.colosse.actif());
+  }
+  function demarrer(b) {
+    ban = b; b.t = 0;
+  }
+  function suivant() {
+    if (ban) return;
+    while (file.length && temps - file[0].attente > H.banniere.attenteMax) file.shift();
+    if (file.length && (file[0].cyclope || temps - derniereBan >= R.scene.budgets.banniereIntervalle)) demarrer(file.shift());
+  }
   function banniere(texte, opts) {
     opts = opts || {};
-    var b = { lines: Array.isArray(texte) ? texte : [String(texte)], c: couleur(opts.c || 'os'), icon: opts.icone || null, t: 0, d: opts.duree || 2, blink: !!opts.clignote };
-    if (!ban) ban = b; else if (file.length < 3) file.push(b);
+    var lines = (Array.isArray(texte) ? texte : [String(texte)]).map(String);
+    var b = { lines: lines, c: couleur(opts.c || 'os'), icon: opts.icone || null, t: 0,
+      d: opts.duree || H.banniere.duree, blink: !!opts.clignote, cyclope: cyclope(lines, opts), attente: temps, rendu: false };
+    // Le CYCLOPE passe devant les annonces ordinaires ; aucune ancienne vague ne le suit.
+    if (b.cyclope) { file.length = 0; demarrer(b); }
+    else if (!ban && temps - derniereBan >= R.scene.budgets.banniereIntervalle) demarrer(b);
+    else {
+      if (file.length >= H.banniere.fileMax) file.shift();
+      file.push(b);
+    }
     return b;
   }
   function toast(texte) { toasts.length = 0; toasts.push({ s: String(texte), t: 0, d: 2.2 }); }
@@ -20772,7 +20881,12 @@ N.hud = (function () {
 
   function update(dt) {
     if (!S) S = N.S;
-    if (ban) { ban.t += dt; if (ban.t >= ban.d) ban = file.length ? file.shift() : null; }
+    temps += dt;
+    if (ban) { ban.t += dt; if (ban.t >= ban.d) ban = null; }
+    suivant();
+    var p = N.score && N.score.palier;
+    if (p && p !== palierVu) { palierVu = p; if (N.score.mult() === p.mult) palier = { mult: p.mult, t: 0 }; }
+    if (palier) { palier.t += dt; if (palier.t >= H.palier.duree) palier = null; }
     var i;
     for (i = toasts.length - 1; i >= 0; i--) { toasts[i].t += dt; if (toasts[i].t >= toasts[i].d) toasts.splice(i, 1); }
     for (i = tags.length - 1; i >= 0; i--) { tags[i].t += dt; if (tags[i].t >= tags[i].d) tags.splice(i, 1); }
@@ -20818,7 +20932,7 @@ N.hud = (function () {
     plate(l - 3, y - 2, sw0 + 6 + nh * hw + 4, 11);
     var sw = O.text(O.pad(score, 7), l, y, O.JAUNE, true, 1);
     var lx = l + sw + 6;
-    for (var i = 0; i < nh; i++) O.text('♥', lx + i * hw, y, i < vies ? (i >= VIES ? O.JAUNE : O.OS) : O.ARDOISE, true, 1);
+    for (var i = 0; i < nh; i++) O.text('♥', lx + i * hw, y, i < vies ? (derniereVie() ? (battement() > H.derniereVie.seuilCoeur ? O.ROSE : O.OS) : (i >= VIES ? O.JAUNE : O.OS)) : O.ARDOISE, true, 1);
     var ligne = 1;                                   // les lignes sous le score : défi (portrait), vague, multiplicateur
     /* le défi : nom, progrès, et l'issue — à droite du radar quand il y tient, sinon sous le score */
     var d = sc ? sc.defi : null, rd = radarRect(), yb = rd.y + rd.h + 4;       // yb : la première ligne libre sous le radar (portrait)
@@ -20849,6 +20963,7 @@ N.hud = (function () {
       plate(l - 3, yy - 2, O.textW(txt, 1) + 6, 11);
       O.text(txt, l, yy, O.AMBRE, true, 1);
     }
+    drawPalier(l, portrait ? yb + H.texte.ligne : y + H.texte.ligne * ligne);
   }
 
   function drawGains() {
@@ -20859,21 +20974,171 @@ N.hud = (function () {
     }
   }
 
+  // Les bannières sont des bitmaps en palette, jamais une surface DOM ni un agrandissement fractionnaire.
+  function composer(b, coup, plafond) {
+    var cfg = H.banniere, sf = O.geo.safe, marge = cfg.marge + cfg.fantomePx * B.fantomes;
+    var disponible = O.geo.W - sf.l - sf.r - marge * 2;
+    var lines = b.lines.slice();
+    if (b.icon) lines[0] = b.icon + ' ' + lines[0];
+    function largeur(l) { return O.textW(l, 1); }
+    var k = Math.min(plafond || Infinity, O.geo.portrait ? B.echellePortrait : B.echellePaysage);
+    while (k > cfg.echelleMin && lines.some(function (l) { return largeur(l) * k > disponible - cfg.padding * 2; })) k--;
+    // À ×2, on revient à la ligne par mots ; même un identifiant sans espace est conservé en entier.
+    var wrapped = [];
+    for (var i = 0; i < lines.length; i++) {
+      var mots = lines[i].split(' '), ligne = '';
+      for (var j = 0; j < mots.length; j++) {
+        var essai = ligne ? ligne + ' ' + mots[j] : mots[j];
+        if (largeur(essai) * k > disponible - cfg.padding * 2 && ligne) { wrapped.push(ligne); ligne = ''; }
+        var mot = mots[j];
+        while (largeur(mot) * k > disponible - cfg.padding * 2) {
+          var n = mot.length;
+          while (n > 1 && largeur(mot.slice(0, n)) * k > disponible - cfg.padding * 2) n--;
+          if (ligne) { wrapped.push(ligne); ligne = ''; }
+          wrapped.push(mot.slice(0, n)); mot = mot.slice(n);
+        }
+        ligne = ligne ? ligne + ' ' + mot : mot;
+      }
+      wrapped.push(ligne);
+    }
+    lines = wrapped;
+    var max = lines.reduce(function (m, l) { return Math.max(m, largeur(l)); }, 0);
+    var kCoup = k + 1;
+    if (coup && max * kCoup <= disponible - cfg.padding * 2) k = kCoup;
+    var sprites = lines.map(function (l) { return N.spr.text(l, { ci: b.c, echelle: 1 }); });
+    var w = max * k + cfg.padding * 2, h = cfg.padding * 2;
+    for (i = 0; i < sprites.length; i++) h += sprites[i].h * k + (i ? cfg.interligne : 0);
+    // Une entrée plus grande ne doit pas sortir de la zone sûre, même en paysage court.
+    if (coup && h > O.geo.H - sf.t - sf.b - cfg.hautReserve - cfg.marge) return composer(b, false);
+    var data = new Uint8Array(w * h); data.fill(O.NUIT);
+    var glyph = new Uint8Array(w * h), yy = cfg.padding;
+    for (i = 0; i < sprites.length; i++) {
+      var sp = sprites[i], xx = Math.round((w - sp.w * k) / 2);
+      for (var sy = 0; sy < sp.h; sy++) for (var sx = 0; sx < sp.w; sx++) if (sp.data[sy * sp.w + sx]) {
+        for (var dy = 0; dy < k; dy++) for (var dx = 0; dx < k; dx++) glyph[(yy + sy * k + dy) * w + xx + sx * k + dx] = 1;
+      }
+      yy += sp.h * k + cfg.interligne;
+    }
+    var fantomes = !reduit() && b.t < cfg.fantomeImages * R.temps.imageRef ? B.fantomes : 0;
+    var decalage = cfg.fantomePx * B.fantomes - Math.floor(b.t / (B.entreeImages * R.temps.imageRef));
+    for (var f = fantomes; f > 0; f--) for (i = 0; i < glyph.length; i++) if (glyph[i]) {
+      var x = i % w + (f % 2 ? -1 : 1) * decalage * f, y = (i / w) | 0;
+      if (x >= 0 && x < w) data[y * w + x] = f % 2 ? O.MAGENTA : O.VIOLET;
+    }
+    for (i = 0; i < glyph.length; i++) if (glyph[i]) data[i] = b.c;
+    for (i = 0; i < w; i++) { data[i] = b.c; data[(h - 1) * w + i] = b.c; }
+    return { w: w, h: h, data: data, k: k, lines: lines };
+  }
   function drawBanner() {
     if (!ban) return;
-    if (ban.blink && (Math.floor(ban.t * 3) & 1)) return;          // bat à 1,5 Hz (G-29)
-    var wmax = 0, i, n = ban.lines.length, W = O.geo.W, A = O.A, P = N.joueuse.tete, g = N.gfx;
-    for (i = 0; i < n; i++) wmax = Math.max(wmax, O.textW(ban.lines[i], 1));
-    var iw = ban.icon ? 12 : 0, w = wmax + 16 + iw, h = n * 11 + 7;
-    /* dans le tiers opposé à la tête */
-    var pe = ecran(P.x, P.y), ay0 = A.y0 - O.VUE.y, ay1 = A.y1 - O.VUE.y;
-    var y = pe.y > (ay0 + ay1) / 2 ? ay0 + 2 : ay1 - h - 2, k = O.clamp(ban.t / 0.12, 0, 1), ww = Math.round(w * k), x = Math.round(W / 2 - ww / 2);
-    g.rect(x - 1, y - 1, ww + 2, h + 2, O.NP);
-    g.rect(x, y, ww, h, O.NUIT);
-    g.rect(x, y, ww, 1, ban.c); g.rect(x, y + h - 1, ww, 1, ban.c);
-    if (k < 1) return;
-    if (ban.icon) O.text(ban.icon, x + 7, y + Math.round(h / 2) - 3, ban.c, false, 1);
-    for (i = 0; i < n; i++) O.textC(ban.lines[i], W / 2 + iw / 2, y + 5 + i * 11, i === 0 ? ban.c : (ban.c === O.JAUNE ? O.OS : O.ACIER), false, 1);
+    var b = ban, sf = O.geo.safe, cfg = H.banniere, g = N.gfx;
+    var coup = !reduit() && b.t < B.entreeImages * R.temps.imageRef;
+    var fantome = !reduit() && b.t < cfg.fantomeImages * R.temps.imageRef;
+    var cle = [O.geo.W, O.geo.H, sf.l, sf.r, sf.t, sf.b, coup, fantome, fantome ? Math.floor(b.t / (B.entreeImages * R.temps.imageRef)) : 0, reduit()].join(':');
+    if (b.cle !== cle) {
+      b.sprite = composer(b, coup); b.cle = cle;
+    }
+    var s = b.sprite, P = N.joueuse && N.joueuse.tete, pe = P ? ecran(P.x, P.y) : { y: O.geo.H / 2 };
+    var place = Math.max(pe.y - H.protection.rayonTete - cfg.marge - sf.t - cfg.hautReserve,
+      O.geo.H - sf.b - cfg.marge - pe.y - H.protection.rayonTete - cfg.marge);
+    while (s.h > place && s.k > cfg.echelleMin) { s = b.sprite = composer(b, false, s.k - 1); }
+    var top = sf.t + cfg.hautReserve, bottom = O.geo.H - sf.b - cfg.marge - s.h;
+    top = Math.min(top, bottom);
+    var y = Math.round(pe.y > (sf.t + O.geo.H - sf.b) / 2 ? top : bottom);
+    // Essayer les deux bords avant de protéger les pixels : le texte reste entier quand
+    // une place existe de l'autre côté, même pour un défi à plusieurs lignes.
+    var candidats = [y, y === Math.round(top) ? bottom : top,
+      pe.y + H.protection.rayonTete + cfg.marge, pe.y - H.protection.rayonTete - cfg.marge - s.h];
+    var cout = Infinity;
+    for (var q = 0; q < candidats.length; q++) {
+      var cy = Math.round(O.clamp(candidats[q], top, bottom)), chevauche = 0;
+      for (var z = 0; P && z <= H.protection.segments; z++) {
+        var pos = z ? N.joueuse.segPos(z) : P, ep = ecran(pos.x, pos.y), r = z ? H.protection.rayonCorps : H.protection.rayonTete;
+        chevauche += Math.max(0, Math.min(cy + s.h, ep.y + r) - Math.max(cy, ep.y - r));
+      }
+      if (chevauche < cout) { cout = chevauche; y = cy; }
+    }
+    var x = Math.round((sf.l + O.geo.W - sf.r - s.w) / 2);
+    if (!b.rendu) {
+      b.lumiere = N.fx && N.fx.flashGate ? (N.fx.flashGate(s.data.reduce(function (n, c) { return n + (c !== O.NUIT); }, 0)) ? 1 : 0) : 1;
+      b.rendu = true;
+      if (!b.cyclope) derniereBan = temps;
+      if (N.journal) N.journal('hudBanniere', { texte: b.lines.join(' / '), cyclope: b.cyclope, temps: temps,
+        x: x, y: y, w: s.w, h: s.h, echelle: s.k, lignes: s.lines });
+    }
+    var vie = O.clamp((b.d - b.t) / B.sortie, 0, 1);
+    var scan = !reduit() && b.lumiere === 1 && b.t < cfg.balayage;
+    var sy = Math.floor(b.t / cfg.balayage * s.h);
+    for (var yy = 0; yy < s.h; yy++) for (var xx = 0; xx < s.w; xx++) {
+      if (vie < 1 && !N.pal.dither(x + xx, y + yy, vie)) continue;
+      var c = s.data[yy * s.w + xx];
+      if (b.lumiere < 1 && (c === b.c || c === O.MAGENTA)) c = O.ACIER;
+      if (scan && yy === sy) c = O.OS;
+      // L'option d'alarme ne fait battre que les deux filets, jamais tout le texte.
+      if (b.blink && !reduit() && (yy === 0 || yy === s.h - 1) && (Math.floor(b.t * cfg.clignoteHz * 2) & 1)) c = O.SANG;
+      g.px(x + xx, y + yy, c);
+    }
+  }
+
+  function battement() {
+    return reduit() ? H.derniereVie.trameMin : (1 - Math.cos(temps * H.derniereVie.hz * O.TAU)) / 2;
+  }
+  function derniereVie() { return N.score && N.score.vies === H.derniereVie.vies; }
+  function drawDanger() {
+    if (!derniereVie()) return;
+    var g = N.gfx, sf = O.geo.safe, c = H.derniereVie, v = battement();
+    var x0 = sf.l | 0, y0 = sf.t | 0, x1 = g.W - (sf.r | 0), y1 = g.H - (sf.b | 0);
+    var intensite = c.trameMin + c.trameAmplitude * v;
+    // Bords fins, jamais de nappe lumineuse : sang sombre et Bayer à 1,2 Hz, zéro déplacement en mouvement réduit.
+    function pixel(x, y, d) {
+      if (N.pal.dither(x, y, intensite * (1 - d / c.bord))) g.px(x, y, O.SANG);
+    }
+    for (var d = 0; d < c.bord; d++) {
+      for (var x = x0 + d; x < x1 - d; x++) { pixel(x, y0 + d, d); pixel(x, y1 - 1 - d, d); }
+      for (var y = y0 + d + 1; y < y1 - d - 1; y++) { pixel(x0 + d, y, d); pixel(x1 - 1 - d, y, d); }
+    }
+  }
+  function drawPalier(l, y) {
+    if (!palier) return;
+    var c = H.palier, k = !reduit() && palier.t < c.coup ? c.echelleCoup : c.echelle;
+    var sf = O.geo.safe, texte = '×' + palier.mult, w = O.textW(texte, k), h = R.hud.police[1] * k;
+    var x = O.clamp(l, sf.l + c.marge, O.geo.W - sf.r - w - c.marge);
+    // Le chiffre s'ouvre sous la chaîne, dans la zone sûre ; le jaune reste un accent local.
+    y += c.marge;
+    plate(x - c.marge, y - c.marge, w + c.marge * 2, h + c.marge * 2);
+    O.text(texte, x, y, O.JAUNE, true, k);
+    if (palier.t < c.accent) {
+      N.gfx.rect(x, y + h + 1, w, 1, O.AMBRE);
+      N.gfx.rect(x - c.marge, y, 1, h, O.AMBRE);
+    }
+  }
+
+  // G-11 / R-09 : conserver le rendu déjà posé par joueuse.drawTop, sans le redessiner
+  // (ce qui avancerait ses effets ou changerait ses encres) ni lire un état privé.
+  function garderJoueuse(restaurer) {
+    var g = N.gfx, buf = g.buf(), masque = g.mask && g.mask(), cfg = H.protection;
+    if (!restaurer) {
+      if (!N.joueuse || N.joueuse.etat === 'absent') { sauvegardes.length = 0; return; }
+      for (var k = 0; k <= cfg.segments; k++) {
+        var p = k ? N.joueuse.segPos(k) : N.joueuse.tete, e = ecran(p.x, p.y), r = k ? cfg.rayonCorps : cfg.rayonTete;
+        var x0 = Math.max(0, Math.round(e.x) - r), y0 = Math.max(0, Math.round(e.y) - r);
+        var x1 = Math.min(g.W, Math.round(e.x) + r + 1), y1 = Math.min(g.H, Math.round(e.y) + r + 1);
+        var n = Math.max(0, x1 - x0) * Math.max(0, y1 - y0), s = sauvegardes[k];
+        if (!s || s.data.length !== n) s = sauvegardes[k] = { data: new Uint8Array(n), mask: new Uint8Array(n) };
+        s.x = x0; s.y = y0; s.w = Math.max(0, x1 - x0); s.h = Math.max(0, y1 - y0);
+        var i = 0;
+        for (var y = y0; y < y1; y++) for (var x = x0; x < x1; x++) { s.data[i] = buf[y * g.W + x]; s.mask[i++] = masque ? masque[y * g.W + x] : 0; }
+      }
+    } else {
+      for (var j = 0; j < sauvegardes.length; j++) {
+        var a = sauvegardes[j], z = 0;
+        for (var yy = 0; yy < a.h; yy++) for (var xx = 0; xx < a.w; xx++) {
+          if (masque && g.owner) g.owner(a.mask[z]);
+          g.px(a.x + xx, a.y + yy, a.data[z++]);
+        }
+      }
+      if (g.owner) g.owner(0);
+    }
   }
 
   function drawToasts() {
@@ -21002,6 +21267,8 @@ N.hud = (function () {
     var jeu = et === 'jeu' || et === 'nettoyage' || et === 'defile' || et === 'alerte' || et === 'boss' || et === 'reapparition' || et === 'mort' || et === 'vol' || et === 'victoire' || et === 'cartes' || et === 'pause' || et === 'attraction' || et === 'plongee';
     if (!jeu) return;
     boutons();
+    garderJoueuse(false);
+    drawDanger();
     drawMarqueurs();
     drawRadar();
     drawGains();
@@ -21010,6 +21277,7 @@ N.hud = (function () {
     drawToasts();
     drawScore();
     drawBoutons();
+    garderJoueuse(true);
   }
 
   /* ---- les consommateurs de repli (79-scene.js les remplace : il demande ses bannières à ce module) ---- */
@@ -21810,7 +22078,7 @@ N.game = (function () {
   var muted = false, muteTick = 0, pauseAuto = false;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
-  var god = false, simulant = false;
+  var god = false, simulant = false, departExplicite = false;
   var timers = [];
   var QT = [];
   var BG = null, bgKey = '';
@@ -21932,8 +22200,12 @@ N.game = (function () {
     if (s) { s.enemies = N.ennemis.list; s.shots = N.ennemis.tirs; }
   }
   function reset(graine, opts) {
+    /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
+    var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
+    if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
     S = N.S;
     opts = opts || {};
+    departExplicite = opts.depart !== undefined;
     listen();
     var s = (graine === undefined || graine === null) ? (S.seed | 0) : (graine | 0);
     muted = false;
@@ -21941,7 +22213,16 @@ N.game = (function () {
     muted = reglagesSon(); S.muted = muted; applyMute();
     fin.victoire = false; partieN = 0;
     aller('demarrage');
-    if (opts.direct) lancer(false);
+    if (opts.depart !== undefined) {
+      if (opts.depart === 'ouverture') { if (modOk(N.intro, 'reset')) N.intro.reset(); aller('ouverture'); }
+      else if (opts.depart !== 'demarrage') {
+        /* skip() termine aussi l'ouverture (stop() ne termine que les interludes). */
+        if (modOk(N.intro, 'skip')) N.intro.skip();
+        if (modOk(N.intro, 'stop')) N.intro.stop();
+        if (opts.depart === 'jeu') lancerVague(R.secteurs[0].vagues[0].n);
+        else aller(opts.depart);
+      }
+    } else if (opts.direct) lancer(false);
     return true;
   }
   /* lancer() : la plongée dans la partie ; `nouvelle` remet tout à zéro (sauf au premier lancement du reset) */
@@ -22118,7 +22399,7 @@ N.game = (function () {
     /* l'ancienne boucle ne remet pas le compteur d'événements par pas à zéro : on le fait à sa place */
     if (!nouveau && N.ev && N.ev.nouveauPas) N.ev.nouveauPas();
     /* l'ancienne boucle n'appelle ce module qu'une fois l'ouverture passée : la partie démarre alors */
-    if (!nouveau && s.phase !== undefined && s.phase !== 'intro' && (et === 'demarrage' || et === 'ouverture' || et === 'titre')) lancer(false);
+    if (!nouveau && !departExplicite && s.phase !== undefined && s.phase !== 'intro' && (et === 'demarrage' || et === 'ouverture' || et === 'titre')) lancer(false);
     /* un interlude en cours (panneau du CYCLOPE) : le monde est gelé, c'est lui qui avance */
     if (O.busy() && (et === 'panneau' || JOUE[et])) {
       if (et !== 'panneau') aller('panneau');
@@ -22459,6 +22740,7 @@ N.game = (function () {
   };
   /* les scènes de référence (§ 7.12) : celles que les replis savent figer */
   dbg.scene = function (nom) {
+    if (nom === 'charge' || nom === 'v5' || nom === 'lasso6' || nom === 'inversion' || nom === 'convoi' || nom === 'travelling' || nom === 'boss3') return sceneReference(nom);
     var P = N.joueuse.tete;
     function jeuNeuf() { if (!JOUE[et] || et === 'reapparition') { lancer(false); } O.geom(); lancerVague(1); N.ennemis.reset(); }
     if (nom === 'mur') { jeuNeuf(); N.joueuse.force({ x: O.A.x0 + 30, y: (O.A.y0 + O.A.y1) / 2, ang: Math.PI, trace: true }); return true; }
@@ -22474,12 +22756,172 @@ N.game = (function () {
     if (nom === 'vol') { if (!JOUE[et]) lancer(false); demarrerVol(); return true; }
     if (nom === 'calme' || nom === 'montee' || nom === 'chaos') { jeuNeuf(); N.dir.demarrer(nom === 'calme' ? 1 : nom === 'montee' ? 3 : 5); aller('jeu'); return true; }
     if (nom === 'colosse' || nom === 'boss3') { dbg.boss(); return true; }
-    return false;        // charge, v5, lasso6, inversion, convoi, travelling : les modules qui les jouent n'existent pas encore
+    return false;
   };
-  dbg.masque = function () {
-    /* le masque de propriété n'existe qu'avec N.gfx.owner (lot 1) : sans lui, un masque vide de la taille du tampon */
-    var b = N.gfx.buf && N.gfx.buf();
-    return new Uint8Array(b ? b.length : 0);
+  /* Fixtures construites par les interfaces des vraies mécaniques, sans champ privé ni faux événement. */
+  function sceneReference(nom) {
+    var C = R.tests.scenes, E = N.ennemis, J = N.joueuse, A = N.arene, W = N.world;
+    if (!(modOk(W, 'arena') && modOk(N.cam, 'update') && modOk(N.cam, 'reset') && modOk(N.decor, 'reset'))) return false;
+    if ((nom === 'charge' || nom === 'boss3') && !(modOk(N.colosse, 'start') && modOk(N.colosse, 'touche'))) return false;
+    if ((nom === 'v5' || nom === 'convoi') && !modOk(A, 'convois')) return false;
+    if ((nom === 'v5' || nom === 'travelling') && !(modOk(A, 'travelling') && modOk(W, 'travelling'))) return false;
+    if (nom === 'inversion' && !modOk(J, 'inversionDebut')) return false;
+    if (modOk(N.pilote, 'arreter')) N.pilote.arreter();
+    /* partie() garde la compatibilité du jeu normal ; une fixture neutralise d'abord l'ancien
+       cadrage, y compris après une autre fixture de boss ou de travelling. */
+    if (modOk(N.colosse, 'reset')) N.colosse.reset();
+    /* 12-cam déclare deux fonctions reset : world.reset est actuellement le reset caméra.
+       Rétablir réellement le monde par son interface d'arène, sans corriger ce module ici. */
+    W.arena({ x: 0, y: 0, w: W.W, h: W.H }, R.monde.mobile.glissementMin);
+    N.cam.update(R.monde.mobile.glissementMin); N.cam.reset(); N.decor.reset(); O.geom();
+    reset(seed, { depart: 'jeu' });
+    dbg.input({ x: 0, y: 0, mag: 0, fire: false, boost: false, pouvoir: false, apogee: false });
+    N.horloge.avancer();                 // même amorçage que le protocole officiel des parties
+    var v = R.secteurs[0].vagues, last = v[v.length - 1], i;
+    if (nom === 'v5' || nom === 'charge' || nom === 'boss3') N.dir.demarrer(last.n);
+    if (nom === 'travelling') N.dir.demarrer(C.travelling.vague);
+    if (nom === 'inversion') N.dir.demarrer(C.inversion.vague);
+    E.reset();
+
+    if (nom === 'charge' || nom === 'boss3') {
+      lancerBoss();
+      /* Passer les phases par les dégâts et leurs fenêtres, avec les vrais répits. La joueuse est
+         tenue au centre pendant la préparation uniquement ; aucune vulnérabilité n'est falsifiée. */
+      var ancienGod = J.god(), h = R.temps.h, src = { genre: 'arme', type: 'canon', id: 0 };
+      J.god(true);
+      for (i = 0; i < C.boss.preparationMax / h && N.colosse.phase() < C.boss.phase; i++) {
+        var centre = W.rect();
+        J.force({ x: centre.x + centre.w / 2, y: centre.y + centre.h / 2, trace: true });
+        dbg.simuler(h);
+        if (N.colosse.phase() >= C.boss.phase) break;
+        E.list.slice().forEach(function (e) { if (e.boss && e.etat !== 'mort') E.hit(e, R.colosse.pvPhase, src); });
+      }
+      J.god(ancienGod);
+      if (N.colosse.phase() !== C.boss.phase) return false;
+      /* Purger les renforts de préparation via la vraie source décor (sans score/butin). */
+      E.list.slice().forEach(function (e) { if (!e.boss) E.hit(e, e.pv, { genre: 'decor', type: 'purge', id: 0 }); });
+      E.effacerTirs(W.W / 2, W.H / 2, W.W + W.H); E.update(0);
+      N.butin.reset(); N.fx.reset(); N.hud.reset();
+      if (nom === 'boss3') { N.cam.reset(); publier(); return true; }
+      buildMax();
+      groupe(C.charge.ennemis);
+      for (i = 0; i < C.charge.tirs; i++) {
+        var a = i / C.charge.tirs * O.TAU;
+        E.tir(J.tete.x + Math.cos(a) * C.groupe.devant, J.tete.y + Math.sin(a) * C.groupe.devant,
+          Math.cos(a) * R.ennemis.tourelle.balle, Math.sin(a) * R.ennemis.tourelle.balle);
+      }
+      N.decor.fixer(last.quartier, last.etat);
+    } else if (nom === 'v5' || nom === 'travelling') {
+      if (nom === 'v5') buildMax();
+      var depuis = C.travelling.depuis;
+      J.reset({ x: depuis + C.travelling.queueMur + J.len() * R.longueur.espacement,
+        y: W.H / 2, ang: 0, len: J.len() });
+      if (!A.travelling(R.arene.travelling.vitesses[N.dir.vague()] * C.travelling.sens, depuis)) return false;
+      /* Mise en place et annonce réelles ; avancer l'arène et la caméra, pas une partie pilotée. */
+      for (i = 0; i <= (R.arene.travelling.miseEnPlace + R.arene.travelling.annonce) / R.temps.h && A.etat().tv !== 'marche'; i++) {
+        N.horloge.avancer(); A.update(R.temps.h); N.cam.update(R.temps.h);
+      }
+      if (A.etat().tv !== 'marche') return false;
+      J.reset({ x: W.x0 + C.travelling.queueMur + J.len() * R.longueur.espacement,
+        y: W.H / 2, ang: 0, len: J.len() });
+      O.geom();
+      if (nom === 'v5') { groupe(last.plafond); if (!A.convois({ voie: C.convoi.voie, sens: C.convoi.sens })) return false; }
+    } else if (nom === 'lasso6') {
+      J.reset({ x: J.tete.x, y: J.tete.y, ang: J.tete.ang, len: C.lasso6.longueur });
+      groupe(C.lasso6.cibles, true);
+    } else if (nom === 'inversion') {
+      groupe(C.inversion.proies, false, true); J.inversionDebut();
+    } else if (nom === 'convoi') {
+      var voie = R.arene.convois.voies[C.convoi.voie];
+      J.reset({ x: W.W / 2, y: voie + R.arene.convois.hauteurVoie + C.groupe.marge, len: J.len() });
+      if (!A.convois({ voie: C.convoi.voie, sens: C.convoi.sens })) return false;
+      for (i = 0; i < (R.arene.convois.annonce + C.convoi.avance) / R.temps.h; i++) {
+        N.horloge.avancer(); A.update(R.temps.h); N.cam.update(R.temps.h);
+      }
+      for (i = 0; i < C.convoi.cibles; i++) E.spawn('mine', W.W / 2 + i * C.groupe.ecart, voie, { st: 'pose' });
+    }
+    N.cam.reset(); O.geom(); publier();
+    return true;
+
+    function buildMax() {
+      O.geom();
+      J.reset({ x: O.A.x0 + R.longueur.max * R.longueur.espacement + C.groupe.marge,
+        y: (O.A.y0 + O.A.y1) / 2, ang: 0, len: R.longueur.max });
+      N.ids.armes.forEach(function (arme) {
+        for (var k = N.arsenal.niveau(arme); k < R.armes.paliers; k++) N.arsenal.monter(arme);
+      });
+    }
+    function groupe(n, fixe, proies) {
+      N.cam.reset(); O.geom();
+      var V = O.VUE, m = C.groupe.marge, c = fixe ? C.lasso6 : C.groupe;
+      var cols = Math.max(1, Math.min(c.colonnes, n, Math.floor((V.w - m * 2) / c.ecart))), rows = Math.ceil(n / cols);
+      var cx = J.tete.x + C.groupe.devant, cy = J.tete.y;
+      cx = O.clamp(cx, V.x + m + cols * c.ecart / 2, V.x + V.w - m - cols * c.ecart / 2);
+      cy = O.clamp(cy, V.y + m + rows * c.ecart / 2, V.y + V.h - m - rows * c.ecart / 2);
+      var types = proies ? N.ids.ennemis.filter(function (t) { return t !== 'traqueur' && t !== 'planeur' && t !== 'rival'; }) : N.ids.ennemis;
+      for (var k = 0; k < n; k++) E.spawn(fixe ? 'tourelle' : types[k % types.length],
+        O.clamp(cx + ((k % cols) - (cols - 1) / 2) * c.ecart, O.A.x0 + m, O.A.x1 - m),
+        O.clamp(cy + (Math.floor(k / cols) - (rows - 1) / 2) * c.ecart, O.A.y0 + m, O.A.y1 - m), fixe ? { st: 'pose' } : {});
+    }
+  }
+
+  /* Instrumentation installée au premier appel seulement : zéro emballage de dessin en jeu normal.
+     Les portées de dessin disent QUI écrit ; les sprites distinguent tête/corps, le glyphe ♥ les vies.
+     Les écritures directes au tampon passent par gfx.suivre, sans estimation géométrique ni chromatique. */
+  var masqueInstalle = false, masqueRestaurations = [];
+  function instrumenterMasque() {
+    if (masqueInstalle) return;
+    masqueInstalle = true;
+    var g = N.gfx, ids = N.ids.proprietaires, sprites = new WeakMap();
+    function remplacer(obj, nom, fn) {
+      var original = obj[nom]; obj[nom] = fn;
+      masqueRestaurations.push(function () { if (obj[nom] === fn) obj[nom] = original; });
+    }
+    function envelopper(obj, nom, code) {
+      if (!modOk(obj, nom)) return;
+      var original = obj[nom];
+      remplacer(obj, nom, function () { return g.suivre(code, original, this, arguments); });
+    }
+    [['decor', ids.decor], ['ennemis', ids.ennemi], ['colosse', ids.ennemi], ['arene', ids.ennemi],
+      ['butin', ids.butin], ['arsenal', ids.arsenal], ['joueuse', ids.corps], ['fx', ids.effet],
+      ['hud', ids.hud], ['ui', ids.hud], ['intro', ids.decor], ['vol', ids.effet], ['warp', ids.arsenal]].forEach(function (a) {
+      ['draw', 'drawTop', 'drawFar', 'drawPlateau', 'drawFront', 'drawTele', 'drawEnemies', 'drawEcran'].forEach(function (f) { envelopper(N[a[0]], f, a[1]); });
+    });
+    var sp = O.sp, blit = g.blit, text = O.text, rect = g.rect;
+    remplacer(O, 'sp', function (nom) {
+      var s = sp.apply(this, arguments);
+      if (s && (nom === 'tete' || nom.indexOf('tete:') === 0)) sprites.set(s, ids.tete);
+      return s;
+    });
+    remplacer(g, 'blit', function (s) {
+      var code = g.owner();
+      return g.suivre(code === ids.corps && sprites.has(s) ? sprites.get(s) : code, blit, this, arguments);
+    });
+    remplacer(O, 'text', function (str) { return g.suivre(g.owner() === ids.hud && str === '♥' ? ids.vies : g.owner(), text, this, arguments); });
+    /* Le radar dessine une représentation de la tête. Identifier sa primitive par sa position
+       projetée et ses dimensions contractuelles, jamais par son encre (un cyan de décor reste décor). */
+    remplacer(g, 'rect', function (x, y, w, h) {
+      var code = g.owner(), r = R.radar, b = R.tests.masque.radar, V = O.geo;
+      if (code === ids.hud && w === r.tete[0] && h === r.tete[1] && g.ox() === 0 && g.oy() === 0 && N.world && N.hud.boutons) {
+        var rx = V.portrait ? N.hud.boutons().pause.x - r.w - b.retraitBouton : Math.round(V.W / 2 - r.w / 2);
+        var iw = r.w - b.bord * 2, ih = r.h - b.bord * 2, P = N.joueuse.tete;
+        var mx = rx + b.bord + O.clamp(Math.round(P.x / N.world.W * (iw - b.bord)), 0, iw - b.bord);
+        var my = (V.safe.t | 0) + b.bord + O.clamp(Math.round(P.y / N.world.H * (ih - b.bord)), 0, ih - b.bord);
+        if (x === mx && y === my) code = ids.tete;
+      }
+      return g.suivre(code, rect, this, arguments);
+    });
+  }
+  dbg.masque = function (actif) {
+    if (actif === false) {
+      while (masqueRestaurations.length) masqueRestaurations.pop()();
+      masqueInstalle = false;
+      return N.gfx.masque(false);
+    }
+    instrumenterMasque();
+    /* Le premier appel arme la PROCHAINE image. Les lectures suivantes rendent le masque de
+       la dernière image dessinée, sans dessiner, avancer l'état ou déduire les codes après coup. */
+    return N.gfx.masque(true);
   };
 
   function etatCourant() { return et; }
@@ -23587,13 +24029,13 @@ var S = {
   view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } },
   /* le coût de l'image sur les 120 dernières (ms) et le préréglage courant du tube (repris du lot L1) */
   perf: { p50: 0, p90: 0, p95: 0, p99: 0, niveau: 'riche' },
-  /* REFONTE § 7.8 : boost, pouvoir, apogee (vrais pendant un pas, vidés après la mise à jour), gestes et taps (vidés après la mise à jour) */
+  /* REFONTE § 7.8 : boost (tenu), pouvoir et apogee (impulsions vidées après un pas), gestes et taps (vidés après la mise à jour) */
   input: {
     x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [],
     /* § 7.8 : vrais pendant UN pas (vidés après la mise à jour) ; chiffre 1..4 ou 0 ; car = lettres tapées pendant l'image */
     pause: false, valider: false, retour: false, chiffre: 0, car: '',
     pointer: { x: 0, y: 0, actif: false, boutons: 0 },                 // souris, en px ÉCRAN
-    manette: { connectee: false, x: 0, y: 0, boutons: 0 }              // → demandes.md : lecture de navigator.getGamepads pas encore faite
+    manette: { connectee: false, x: 0, y: 0, boutons: 0 }              // lecture une fois par image, même pendant un arrêt du monde
   },
 };
 N.S = S;
@@ -23671,18 +24113,21 @@ function mire() {
 }
 
 /* ---- entrées : un seul point d'entrée, clavier et doigt ---- */
-var keys = {};
+var keys = {}, clavierActif = false, sourisActive = false, sourceBureau = null;
+var sourisDernier = 0, curseurCache = false, padAvant = 0;
 function onKey(e, down) {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (down && (e.ctrlKey || e.metaKey || e.altKey)) return;
   if (e.repeat) return;
   keys[e.code] = down;
-  if (down) S.input.any = true;
-  var l = keys.ArrowLeft || keys.KeyA || keys.KeyQ, r = keys.ArrowRight || keys.KeyD;
-  var u = keys.ArrowUp || keys.KeyW || keys.KeyZ, d = keys.ArrowDown || keys.KeyS;
-  S.input.x = (r ? 1 : 0) - (l ? 1 : 0); S.input.y = (d ? 1 : 0) - (u ? 1 : 0);
-  S.input.mag = (S.input.x || S.input.y) ? 1 : 0;
-  S.input.fire = !!(keys.Space || keys.KeyK);
-  if (down) clavierMenus(e);
+  if (down) {
+    clavierActif = true; S.input.any = true;
+    if (/^(Arrow(?:Left|Right|Up|Down)|Key[AWZQSD])$/.test(e.code) || sourceBureau === null) sourceBureau = 'clavier';
+    if (!doigts.length) {
+      clavierMenus(e);
+      if (e.code === 'KeyE') S.input.pouvoir = true;
+      if (e.code === 'KeyR') S.input.apogee = true;
+    }
+  }
   if (down && (e.code === 'Space' || e.code === 'Enter')) gesture();
   if (down) e.preventDefault();
 }
@@ -23696,23 +24141,77 @@ function clavierMenus(e) {
   if (m) S.input.chiffre = +m[1];
   if (e.key && e.key.length === 1 && /[A-Za-z0-9]/.test(e.key) && S.input.car.length < 8) S.input.car += e.key.toUpperCase();
 }
-/* souris (§ 2.15) : le curseur en px ÉCRAN ; un clic gauche relâché est un tap (les écrans et les boutons du HUD le lisent) */
+/* Souris : pointeur en px ÉCRAN ; tap au relâchement pour les menus, actions au début. */
 function sourisMaj(e, actif) {
   var p = S.input.pointer;
   pxEcran(e.clientX, e.clientY, p);
   if (actif !== undefined) p.actif = actif;
   p.boutons = e.buttons | 0;
+  sourisActive = true; sourisDernier = performance.now();
+  if (!doigts.length) sourceBureau = 'souris';
+  if (out && curseurCache) { out.style.cursor = ''; curseurCache = false; }
 }
 function onPointer(e) {
-  if (e.pointerType !== 'mouse') return;                 // le doigt passe par les événements tactiles (§ 2.16)
-  if (e.type === 'pointerdown') { sourisMaj(e, true); S.input.any = true; }
-  else if (e.type === 'pointermove') sourisMaj(e);
+  if (e.pointerType !== 'mouse') return;
+  if (e.type === 'pointerdown') {
+    sourisMaj(e, true); S.input.any = true;
+    if (!doigts.length && e.button === 2) S.input.pouvoir = true;
+  } else if (e.type === 'pointermove') sourisMaj(e, true);
   else if (e.type === 'pointerup' || e.type === 'pointercancel') {
-    sourisMaj(e, false);
-    if (e.type === 'pointerup' && e.button === 0) {
+    sourisMaj(e, e.type !== 'pointercancel');
+    if (!doigts.length && e.type === 'pointerup' && e.button === 0) {
       var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
       pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
     }
+  }
+}
+function onWheel(e) {
+  if (doigts.length) return;
+  S.input.any = true; S.input.apogee = true;
+  if (e.cancelable) e.preventDefault();
+}
+/* Une lecture de manette par IMAGE, aucune par pas. Boutons X/Y/Start sur front montant :
+   maintenir un bouton ne redéclenche pas un pouvoir après recharge ni une pause à chaque pas. */
+function bureauUpdate() {
+  var M = S.input.manette, pads = navigator.getGamepads ? navigator.getGamepads() : null, pad = null;
+  if (pads) for (var i = 0; i < pads.length; i++) if (pads[i] && pads[i].connected !== false) { pad = pads[i]; break; }
+  var bits = 0, x = 0, y = 0;
+  if (pad) {
+    x = +(pad.axes && pad.axes[0]) || 0; y = +(pad.axes && pad.axes[1]) || 0;
+    for (var b = 0; pad.buttons && b < pad.buttons.length && b < 16; b++)
+      if (pad.buttons[b] && (pad.buttons[b].pressed || pad.buttons[b].value > 0.5)) bits |= 1 << b;
+  }
+  M.connectee = !!pad; M.x = x; M.y = y; M.boutons = bits;
+  var fronts = bits & ~padAvant; padAvant = bits;
+  var mag = Math.hypot(x, y), directionPad = mag > 0.2;   // zone morte du stick, pas un réglage du jeu
+  if (!doigts.length) {
+    if (directionPad || fronts) sourceBureau = 'manette';
+    if (fronts & (1 << 2)) S.input.pouvoir = true;
+    if (fronts & (1 << 3)) S.input.apogee = true;
+    if (fronts & (1 << 9)) S.input.pause = true;
+    if (fronts) S.input.any = true;
+    var I = S.input;
+    if (sourceBureau === 'clavier' && clavierActif) {
+      var l = keys.ArrowLeft || keys.KeyA || keys.KeyQ, r = keys.ArrowRight || keys.KeyD;
+      var u = keys.ArrowUp || keys.KeyW || keys.KeyZ, d = keys.ArrowDown || keys.KeyS;
+      I.x = (r ? 1 : 0) - (l ? 1 : 0); I.y = (d ? 1 : 0) - (u ? 1 : 0); I.mag = (I.x || I.y) ? 1 : 0;
+    } else if (sourceBureau === 'souris' && sourisActive && I.pointer.actif && S.player) {
+      var px = (N.gfx && N.gfx.PX) || 1, p = I.pointer;
+      var wx = p.x + (N.cam ? N.cam.x : 0), wy = p.y + (N.cam ? N.cam.y : 0);
+      var dx = wx - S.player.x, dy = wy - S.player.y, m = Math.hypot(dx, dy);
+      I.mag = m * px > 24 ? 1 : 0;
+      if (I.mag) { I.x = dx / m; I.y = dy / m; }
+    } else if (sourceBureau === 'manette') {
+      I.mag = directionPad ? Math.min(1, mag) : 0;
+      if (directionPad) { I.x = x / mag; I.y = y / mag; }
+    }
+    I.boost = !!((clavierActif && (keys.Space || keys.ShiftLeft || keys.ShiftRight))
+      || (sourisActive && I.pointer.actif && (I.pointer.boutons & 1)) || (bits & 1));
+    I.fire = !!(clavierActif && keys.KeyK);              // Espace n'accélère plus le tir
+  }
+  if (out && sourisActive) {
+    var cache = performance.now() - sourisDernier >= 1500;
+    if (cache !== curseurCache) { curseurCache = cache; out.style.cursor = cache ? 'none' : ''; }
   }
 }
 /* Au doigt : manche virtuel flottant, le standard des jeux d'action sur téléphone (recherche/
@@ -23770,7 +24269,9 @@ function prendreManche(d, now) {
 }
 /* à chaque image, avant la mise à jour : les doigts qui attendent, et le TENU */
 function entreeUpdate() {
+  bureauUpdate();
   if (!doigts.length) return;
+  S.input.fire = false;
   var now = performance.now(), boost = false;
   for (var i = 0; i < doigts.length; i++) {
     var d = doigts[i];
@@ -23792,6 +24293,7 @@ function entreeRaz() {
   doigts.length = 0; S.input.boost = false; S.input.pouvoir = false; S.input.apogee = false; S.input.gestes.length = 0; S.input.taps.length = 0;
   S.input.pause = false; S.input.valider = false; S.input.retour = false; S.input.chiffre = 0; S.input.car = '';
   S.input.pointer.actif = false; S.input.pointer.boutons = 0;
+  sourceBureau = null; padAvant = 0; S.input.fire = false;
 }
 function onTouchStart(e) {
   S.input.any = true; gesture();
@@ -24034,6 +24536,8 @@ function boot() {
   app.addEventListener('pointermove', onPointer);
   app.addEventListener('pointerup', onPointer);
   app.addEventListener('pointercancel', onPointer);
+  app.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  app.addEventListener('wheel', onWheel, { passive: false });
   app.addEventListener('pointerdown', gesture);
   app.addEventListener('pointerup', gesture);
   app.addEventListener('click', gesture);

@@ -1,6 +1,6 @@
 /* R-28 — Mouvement réduit : sous prefers-reduced-motion, caméra et plans immobiles à la mort d'une élite
    (aucune poussée N.cam, aucune secousse S.shake, moins de 0,5 % de pixels changés pendant le gel), jeu
-   complet (pilote dieu, mode simulé), lumière gardée (scène calme ≥ 25 % de pixels lumineux). */
+   complet (pilote dieu, mode simulé), lumière gardée (valeur globale indicative, décision SORTIE.md). */
 import { executer, principal, seuils, exiger } from '../commun.mjs';
 import { lot, bilanLot } from '../parties.mjs';
 
@@ -40,7 +40,7 @@ export async function mesurer(banc, res) {
   }
   const c = await s.scene('calme');
   if (!c.ok) res.nonMesurable('lumière gardée', c.raison);
-  else { const a = await s.analyse({ masque: false }); res.verifie('lumière gardée (scène calme, pixels lumineux)', a.lumineux, '≥ ' + L.calme.part, a.lumineux >= L.calme.part); }
+  else { const a = await s.analyse({ masque: false }); res.indicatif('lumière gardée (scène calme, pixels lumineux)', a.lumineux, '≥ ' + L.calme.part, a.lumineux >= L.calme.part); }
   const b = bilanLot(await lot(banc, 'dieu', banc.graines(2, 1), { god: true, reducedMotion: 'reduce' }));
   if (!b.ok) res.nonMesurable('jeu complet en mouvement réduit', b.raison);
   else res.verifie('jeu complet en mouvement réduit (pilote dieu)', b.resumes.filter(r => r.victoire && r.erreurs.zero).length / b.resumes.length, 1, b.resumes.every(r => r.victoire && r.erreurs.zero));

@@ -1,0 +1,522 @@
+{
+  "phase": "apres",
+  "dateParis": "18/10/2026 01:07:00",
+  "bundleSha256": "8a5100a23fe4f67c0fae13cea8ff1eebc75508e08f2270a2d8d63e71b4dabfac",
+  "protocoleSha256": "6d847fd3be69b098389962777cd80f6dbf7ff7a515331ab10b5b0e0527c1ebf9",
+  "navigateur": "140.0.7339.16",
+  "cas": [
+    {
+      "nom": "iphone-gestes-seuls",
+      "horodatages": [
+        {
+          "type": "touchstart",
+          "t": 1,
+          "changed": [
+            [
+              1,
+              220,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchmove",
+          "t": 1,
+          "changed": [
+            [
+              1,
+              242,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchstart",
+          "t": 161,
+          "changed": [
+            [
+              2,
+              650,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchend",
+          "t": 342,
+          "changed": [
+            [
+              2,
+              650,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchstart",
+          "t": 342,
+          "changed": [
+            [
+              3,
+              650,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchend",
+          "t": 392,
+          "changed": [
+            [
+              3,
+              650,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchstart",
+          "t": 392,
+          "changed": [
+            [
+              4,
+              650,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchmove",
+          "t": 432,
+          "changed": [
+            [
+              4,
+              685,
+              230
+            ]
+          ]
+        },
+        {
+          "type": "touchend",
+          "t": 432,
+          "changed": [
+            [
+              1,
+              242,
+              230
+            ],
+            [
+              4,
+              685,
+              230
+            ]
+          ]
+        }
+      ],
+      "manche": {
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": false,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [],
+        "err": 0
+      },
+      "tenu": {
+        "boost": true,
+        "reserve": 92.99999999999989,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": true,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [
+          {
+            "pas": 9,
+            "t": 0.075,
+            "image": 7,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          }
+        ],
+        "err": 0
+      },
+      "priorite": {
+        "boost": true,
+        "reserve": 91.8333333333332,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": true,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [
+          {
+            "pas": 9,
+            "t": 0.075,
+            "image": 7,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          }
+        ],
+        "err": 0
+      },
+      "finBoost": {
+        "boost": false,
+        "reserve": 91.8333333333332,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": false,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [
+          {
+            "pas": 9,
+            "t": 0.075,
+            "image": 7,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 37,
+            "t": 0.30833333333333346,
+            "image": 21,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "off"
+            }
+          }
+        ],
+        "err": 0
+      },
+      "toucher": {
+        "boost": false,
+        "reserve": 91.8333333333332,
+        "pouvoir": {
+          "id": "repli",
+          "etat": "actif",
+          "reste": 6.966666666666665,
+          "dur": 7,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": false,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [
+          {
+            "pas": 9,
+            "t": 0.075,
+            "image": 7,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 37,
+            "t": 0.30833333333333346,
+            "image": 21,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "off"
+            }
+          },
+          {
+            "pas": 41,
+            "t": 0.3416666666666669,
+            "image": 23,
+            "type": "pouvoir",
+            "d": {
+              "id": "repli",
+              "evt": "debut"
+            }
+          }
+        ],
+        "err": 0
+      },
+      "glisse": {
+        "boost": false,
+        "reserve": 91.8333333333332,
+        "pouvoir": {
+          "id": "repli",
+          "etat": "actif",
+          "reste": 6.958333333333331,
+          "dur": 7,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "etat": "jeu",
+        "cible": 0,
+        "ang": 0,
+        "input": {
+          "x": 1,
+          "y": 0,
+          "mag": 0.5,
+          "fire": false,
+          "boost": false,
+          "pouvoir": false,
+          "apogee": false,
+          "stick": {
+            "active": true,
+            "ox": 220,
+            "oy": 230,
+            "x": 242,
+            "y": 230,
+            "r": 44
+          },
+          "pointer": {
+            "x": 0,
+            "y": 0,
+            "actif": false,
+            "boutons": 0
+          },
+          "manette": {
+            "connectee": false,
+            "x": 0,
+            "y": 0,
+            "boutons": 0
+          }
+        },
+        "journal": [
+          {
+            "pas": 9,
+            "t": 0.075,
+            "image": 7,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 37,
+            "t": 0.30833333333333346,
+            "image": 21,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "off"
+            }
+          },
+          {
+            "pas": 41,
+            "t": 0.3416666666666669,
+            "image": 23,
+            "type": "pouvoir",
+            "d": {
+              "id": "repli",
+              "evt": "debut"
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.366666666666667,
+            "image": 24,
+            "type": "apogee",
+            "d": {
+              "id": "apogee",
+              "evt": "pleine"
+            }
+          },
+          {
+            "pas": 45,
+            "t": 0.37500000000000033,
+            "image": 25,
+            "type": "apogee",
+            "d": {
+              "id": "apogee",
+              "evt": "debut"
+            }
+          }
+        ],
+        "err": 0
+      },
+      "conforme": true
+    }
+  ],
+  "erreurs": [],
+  "conforme": true
+}

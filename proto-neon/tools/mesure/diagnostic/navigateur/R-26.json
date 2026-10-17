@@ -1,0 +1,199 @@
+{
+ "id": "R-26",
+ "titre": "Mixage",
+ "seuil": "calme ≥ −20 dBFS ; écart ≥ 6 dB ; corrélation ≥ 0,5 ; crête ≤ −1 dBFS ; sons 3-6 dB au-dessus ; ≥ 25 % au-dessus de 400 Hz",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "23 ok, 4 en échec, 0 indicatives hors cible, 1 non mesurables",
+ "mesures": [
+  {
+   "nom": "mixage de la piste principale",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : renderOffline sans piste ni buffers ne rend que le repli génératif ; fournir piste.json et les blocs décodés pour qualifier Neon Velocity"
+  },
+  {
+   "nom": "musique au calme, passe-haut 350 Hz (dBFS RMS)",
+   "valeur": -20.64082,
+   "seuil": "≥ -20",
+   "statut": "echec"
+  },
+  {
+   "nom": "musique au chaos, passe-haut 350 Hz (dBFS RMS)",
+   "valeur": -12.4237,
+   "seuil": "-14 ± 2",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "écart calme → chaos (dB)",
+   "valeur": 8.21712,
+   "seuil": "≥ 6",
+   "statut": "ok"
+  },
+  {
+   "nom": "corrélation tension ↔ niveau (fenêtres de 1 s)",
+   "valeur": 0.86736,
+   "seuil": "≥ 0.5",
+   "statut": "ok"
+  },
+  {
+   "nom": "crête au chaos, kills compris (dBFS)",
+   "valeur": -1.11113,
+   "seuil": "≤ -1",
+   "statut": "ok"
+  },
+  {
+   "nom": "kill au-dessus de la musique (dB)",
+   "valeur": 0.37899,
+   "seuil": [
+    3,
+    6
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "coupe au-dessus de la musique (dB)",
+   "valeur": 4.14683,
+   "seuil": [
+    3,
+    6
+   ],
+   "statut": "ok"
+  },
+  {
+   "nom": "mort au-dessus de la musique (dB)",
+   "valeur": 8.74953,
+   "seuil": [
+    3,
+    6
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "tir sous le kill (dB)",
+   "valeur": 15.42924,
+   "seuil": "≥ 6",
+   "statut": "ok"
+  },
+  {
+   "nom": "tir : énergie au-dessus de 400 Hz",
+   "valeur": 0.99655,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "salve : énergie au-dessus de 400 Hz",
+   "valeur": 0.99819,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "kill : énergie au-dessus de 400 Hz",
+   "valeur": 0.27345,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "bigkill : énergie au-dessus de 400 Hz",
+   "valeur": 0.23538,
+   "seuil": "≥ 0.25",
+   "statut": "echec"
+  },
+  {
+   "nom": "coupe : énergie au-dessus de 400 Hz",
+   "valeur": 0.40556,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "mort : énergie au-dessus de 400 Hz",
+   "valeur": 0.28927,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "impact : énergie au-dessus de 400 Hz",
+   "valeur": 0.77021,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "butin : énergie au-dessus de 400 Hz",
+   "valeur": 0.99909,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "noyau : énergie au-dessus de 400 Hz",
+   "valeur": 0.99975,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "pastille : énergie au-dessus de 400 Hz",
+   "valeur": 1,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "lasso : énergie au-dessus de 400 Hz",
+   "valeur": 0.99968,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "portail : énergie au-dessus de 400 Hz",
+   "valeur": 0.98799,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "arme : énergie au-dessus de 400 Hz",
+   "valeur": 0.99244,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "convoi : énergie au-dessus de 400 Hz",
+   "valeur": 0.69328,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "warning : énergie au-dessus de 400 Hz",
+   "valeur": 0.99952,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "carte : énergie au-dessus de 400 Hz",
+   "valeur": 0.99687,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "defi : énergie au-dessus de 400 Hz",
+   "valeur": 0.99971,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  },
+  {
+   "nom": "bip : énergie au-dessus de 400 Hz",
+   "valeur": 0.99993,
+   "seuil": "≥ 0.25",
+   "statut": "ok"
+  }
+ ],
+ "notes": [
+  "Repli génératif en section jeu explicite, même graine remise avant chaque rendu ; la piste MP3 non fournie à renderOffline reste non mesurée. Les anciens reçus rendaient la section titre (tension effective 0,12).",
+  "Sortie audio brute, section jeu : {\"calme\":-20.64081888011453,\"chaos\":-12.423696391043089,\"niveaux\":[-22.425283972939845,-20.972991992480768,-18.589470970400797,-20.95911375332832,-19.252732753970246,-21.810886903374865,-21.385533946468193,-17.94090724763851,-18.370483819325493,-18.718234728341013,-17.889344004113415,-17.505068756355435,-15.770719815316127,-15.391333569613243,-16.01570924623401,-12.977502402859532,-14.586265406938477,-11.739352126985585,-11.158717583877726,-11.443602435927913,-11.39241943684092,-14.812919491378837,-11.336698036049555,-14.015364045636362,-10.538184177350502,-12.128781916281762,-14.837722871667934,-11.334535808073538,-14.015437919657948,-12.300566912068083,-12.44140545974074,-11.68555515250404,-12.820021241997694,-14.161167658077009,-13.574585500292176,-13.016473280645362,-15.173222882995514,-14.755401675682249,-15.127361236565777,-23.719099938353803,-15.246975669883941,-18.61302614437049,-16.132071322908214,-21.275278795577076,-19.146406557477707,-20.16694610654064,-20.045866753854476,-18.48597752585681],\"tensions\":[0.0010705383806982605,0.009607359798384785,0.026534935252447156,0.05156362923365582,0.08426519384872738,0.12408009626051131,0.17032709244996558,0.2222148834901988,0.27885565489049935,0.33928026734841915,0.40245483899193585,0.4672984353849284,0.5327015646150716,0.5975451610080641,0.6607197326515808,0.7211443451095005,0.7777851165098011,0.8296729075500344,0.8759199037394887,0.9157348061512725,0.9484363707663441,0.9734650647475528,0.9903926402016152,0.9989294616193017,0.9989294616193017,0.9903926402016152,0.9734650647475529,0.9484363707663441,0.9157348061512727,0.8759199037394887,0.8296729075500345,0.7777851165098011,0.7211443451095007,0.6607197326515809,0.5975451610080643,0.5327015646150713,0.4672984353849288,0.40245483899193585,0.33928026734841926,0.27885565489049946,0.22221488349019908,0.17032709244996547,0.12408009626051125,0.0842651938487276,0.05156362923365587,0.02653493525244721,0.00960735979838484,0.0010705383806982605],\"crete\":-1.111126159684589,\"musique\":-21.483220309646292,\"sons\":{\"tir\":{\"db\":-36.533465421016516,\"aigus\":0.9965513489662814},\"salve\":{\"db\":-35.06653012011809,\"aigus\":0.9981850351830748},\"kill\":{\"db\":-21.104230290160743,\"aigus\":0.2734497729792284},\"bigkill\":{\"db\":-13.133192176308272,\"aigus\":0.2353767847032171},\"coupe\":{\"db\":-17.33638659440554,\"aigus\":0.40555926921365615},\"mort\":{\"db\":-12.733691159943403,\"aigus\":0.2892724645028009},\"impact\":{\"db\":-36.73284664169749,\"aigus\":0.7702144374166888},\"butin\":{\"db\":-30.431449261204907,\"aigus\":0.9990858877305921},\"noyau\":{\"db\":-23.867183403033113,\"aigus\":0.9997506580736142},\"pastille\":{\"db\":-20.32300669993821,\"aigus\":0.9999988020532362},\"lasso\":{\"db\":-23.998675448539537,\"aigus\":0.9996767986902151},\"portail\":{\"db\":-37.8890588624644,\"aigus\":0.9879864728405742},\"arme\":{\"db\":-37.458935344115496,\"aigus\":0.9924409447994873},\"convoi\":{\"db\":-27.232638566111724,\"aigus\":0.6932834495490448},\"warning\":{\"db\":-29.054199646891334,\"aigus\":0.9995152367804014},\"carte\":{\"db\":-25.46289493028917,\"aigus\":0.9968694507426357},\"defi\":{\"db\":-18.516222723916222,\"aigus\":0.999707090542497},\"bip\":{\"db\":-49.78864452273599,\"aigus\":0.999928589071168}}}"
+ ],
+ "captures": [],
+ "duree": 9.4,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:09:23.868Z",
+ "dateParis": "18/10/2026 · 01 h 09"
+}

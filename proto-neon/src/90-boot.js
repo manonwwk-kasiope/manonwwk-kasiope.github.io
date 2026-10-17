@@ -14,13 +14,13 @@ var S = {
   view: { w: 0, h: 0, safe: { l: 0, t: 0, r: 0, b: 0 } },
   /* le coût de l'image sur les 120 dernières (ms) et le préréglage courant du tube (repris du lot L1) */
   perf: { p50: 0, p90: 0, p95: 0, p99: 0, niveau: 'riche' },
-  /* REFONTE § 7.8 : boost, pouvoir, apogee (vrais pendant un pas, vidés après la mise à jour), gestes et taps (vidés après la mise à jour) */
+  /* REFONTE § 7.8 : boost (tenu), pouvoir et apogee (impulsions vidées après un pas), gestes et taps (vidés après la mise à jour) */
   input: {
     x: 0, y: 0, mag: 0, fire: false, any: false, boost: false, pouvoir: false, apogee: false, gestes: [], taps: [],
     /* § 7.8 : vrais pendant UN pas (vidés après la mise à jour) ; chiffre 1..4 ou 0 ; car = lettres tapées pendant l'image */
     pause: false, valider: false, retour: false, chiffre: 0, car: '',
     pointer: { x: 0, y: 0, actif: false, boutons: 0 },                 // souris, en px ÉCRAN
-    manette: { connectee: false, x: 0, y: 0, boutons: 0 }              // → demandes.md : lecture de navigator.getGamepads pas encore faite
+    manette: { connectee: false, x: 0, y: 0, boutons: 0 }              // lecture une fois par image, même pendant un arrêt du monde
   },
 };
 N.S = S;
@@ -98,18 +98,21 @@ function mire() {
 }
 
 /* ---- entrées : un seul point d'entrée, clavier et doigt ---- */
-var keys = {};
+var keys = {}, clavierActif = false, sourisActive = false, sourceBureau = null;
+var sourisDernier = 0, curseurCache = false, padAvant = 0;
 function onKey(e, down) {
-  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (down && (e.ctrlKey || e.metaKey || e.altKey)) return;
   if (e.repeat) return;
   keys[e.code] = down;
-  if (down) S.input.any = true;
-  var l = keys.ArrowLeft || keys.KeyA || keys.KeyQ, r = keys.ArrowRight || keys.KeyD;
-  var u = keys.ArrowUp || keys.KeyW || keys.KeyZ, d = keys.ArrowDown || keys.KeyS;
-  S.input.x = (r ? 1 : 0) - (l ? 1 : 0); S.input.y = (d ? 1 : 0) - (u ? 1 : 0);
-  S.input.mag = (S.input.x || S.input.y) ? 1 : 0;
-  S.input.fire = !!(keys.Space || keys.KeyK);
-  if (down) clavierMenus(e);
+  if (down) {
+    clavierActif = true; S.input.any = true;
+    if (/^(Arrow(?:Left|Right|Up|Down)|Key[AWZQSD])$/.test(e.code) || sourceBureau === null) sourceBureau = 'clavier';
+    if (!doigts.length) {
+      clavierMenus(e);
+      if (e.code === 'KeyE') S.input.pouvoir = true;
+      if (e.code === 'KeyR') S.input.apogee = true;
+    }
+  }
   if (down && (e.code === 'Space' || e.code === 'Enter')) gesture();
   if (down) e.preventDefault();
 }
@@ -123,23 +126,77 @@ function clavierMenus(e) {
   if (m) S.input.chiffre = +m[1];
   if (e.key && e.key.length === 1 && /[A-Za-z0-9]/.test(e.key) && S.input.car.length < 8) S.input.car += e.key.toUpperCase();
 }
-/* souris (§ 2.15) : le curseur en px ÉCRAN ; un clic gauche relâché est un tap (les écrans et les boutons du HUD le lisent) */
+/* Souris : pointeur en px ÉCRAN ; tap au relâchement pour les menus, actions au début. */
 function sourisMaj(e, actif) {
   var p = S.input.pointer;
   pxEcran(e.clientX, e.clientY, p);
   if (actif !== undefined) p.actif = actif;
   p.boutons = e.buttons | 0;
+  sourisActive = true; sourisDernier = performance.now();
+  if (!doigts.length) sourceBureau = 'souris';
+  if (out && curseurCache) { out.style.cursor = ''; curseurCache = false; }
 }
 function onPointer(e) {
-  if (e.pointerType !== 'mouse') return;                 // le doigt passe par les événements tactiles (§ 2.16)
-  if (e.type === 'pointerdown') { sourisMaj(e, true); S.input.any = true; }
-  else if (e.type === 'pointermove') sourisMaj(e);
+  if (e.pointerType !== 'mouse') return;
+  if (e.type === 'pointerdown') {
+    sourisMaj(e, true); S.input.any = true;
+    if (!doigts.length && e.button === 2) S.input.pouvoir = true;
+  } else if (e.type === 'pointermove') sourisMaj(e, true);
   else if (e.type === 'pointerup' || e.type === 'pointercancel') {
-    sourisMaj(e, false);
-    if (e.type === 'pointerup' && e.button === 0) {
+    sourisMaj(e, e.type !== 'pointercancel');
+    if (!doigts.length && e.type === 'pointerup' && e.button === 0) {
       var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
       pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
     }
+  }
+}
+function onWheel(e) {
+  if (doigts.length) return;
+  S.input.any = true; S.input.apogee = true;
+  if (e.cancelable) e.preventDefault();
+}
+/* Une lecture de manette par IMAGE, aucune par pas. Boutons X/Y/Start sur front montant :
+   maintenir un bouton ne redéclenche pas un pouvoir après recharge ni une pause à chaque pas. */
+function bureauUpdate() {
+  var M = S.input.manette, pads = navigator.getGamepads ? navigator.getGamepads() : null, pad = null;
+  if (pads) for (var i = 0; i < pads.length; i++) if (pads[i] && pads[i].connected !== false) { pad = pads[i]; break; }
+  var bits = 0, x = 0, y = 0;
+  if (pad) {
+    x = +(pad.axes && pad.axes[0]) || 0; y = +(pad.axes && pad.axes[1]) || 0;
+    for (var b = 0; pad.buttons && b < pad.buttons.length && b < 16; b++)
+      if (pad.buttons[b] && (pad.buttons[b].pressed || pad.buttons[b].value > 0.5)) bits |= 1 << b;
+  }
+  M.connectee = !!pad; M.x = x; M.y = y; M.boutons = bits;
+  var fronts = bits & ~padAvant; padAvant = bits;
+  var mag = Math.hypot(x, y), directionPad = mag > 0.2;   // zone morte du stick, pas un réglage du jeu
+  if (!doigts.length) {
+    if (directionPad || fronts) sourceBureau = 'manette';
+    if (fronts & (1 << 2)) S.input.pouvoir = true;
+    if (fronts & (1 << 3)) S.input.apogee = true;
+    if (fronts & (1 << 9)) S.input.pause = true;
+    if (fronts) S.input.any = true;
+    var I = S.input;
+    if (sourceBureau === 'clavier' && clavierActif) {
+      var l = keys.ArrowLeft || keys.KeyA || keys.KeyQ, r = keys.ArrowRight || keys.KeyD;
+      var u = keys.ArrowUp || keys.KeyW || keys.KeyZ, d = keys.ArrowDown || keys.KeyS;
+      I.x = (r ? 1 : 0) - (l ? 1 : 0); I.y = (d ? 1 : 0) - (u ? 1 : 0); I.mag = (I.x || I.y) ? 1 : 0;
+    } else if (sourceBureau === 'souris' && sourisActive && I.pointer.actif && S.player) {
+      var px = (N.gfx && N.gfx.PX) || 1, p = I.pointer;
+      var wx = p.x + (N.cam ? N.cam.x : 0), wy = p.y + (N.cam ? N.cam.y : 0);
+      var dx = wx - S.player.x, dy = wy - S.player.y, m = Math.hypot(dx, dy);
+      I.mag = m * px > 24 ? 1 : 0;
+      if (I.mag) { I.x = dx / m; I.y = dy / m; }
+    } else if (sourceBureau === 'manette') {
+      I.mag = directionPad ? Math.min(1, mag) : 0;
+      if (directionPad) { I.x = x / mag; I.y = y / mag; }
+    }
+    I.boost = !!((clavierActif && (keys.Space || keys.ShiftLeft || keys.ShiftRight))
+      || (sourisActive && I.pointer.actif && (I.pointer.boutons & 1)) || (bits & 1));
+    I.fire = !!(clavierActif && keys.KeyK);              // Espace n'accélère plus le tir
+  }
+  if (out && sourisActive) {
+    var cache = performance.now() - sourisDernier >= 1500;
+    if (cache !== curseurCache) { curseurCache = cache; out.style.cursor = cache ? 'none' : ''; }
   }
 }
 /* Au doigt : manche virtuel flottant, le standard des jeux d'action sur téléphone (recherche/
@@ -197,7 +254,9 @@ function prendreManche(d, now) {
 }
 /* à chaque image, avant la mise à jour : les doigts qui attendent, et le TENU */
 function entreeUpdate() {
+  bureauUpdate();
   if (!doigts.length) return;
+  S.input.fire = false;
   var now = performance.now(), boost = false;
   for (var i = 0; i < doigts.length; i++) {
     var d = doigts[i];
@@ -219,6 +278,7 @@ function entreeRaz() {
   doigts.length = 0; S.input.boost = false; S.input.pouvoir = false; S.input.apogee = false; S.input.gestes.length = 0; S.input.taps.length = 0;
   S.input.pause = false; S.input.valider = false; S.input.retour = false; S.input.chiffre = 0; S.input.car = '';
   S.input.pointer.actif = false; S.input.pointer.boutons = 0;
+  sourceBureau = null; padAvant = 0; S.input.fire = false;
 }
 function onTouchStart(e) {
   S.input.any = true; gesture();
@@ -461,6 +521,8 @@ function boot() {
   app.addEventListener('pointermove', onPointer);
   app.addEventListener('pointerup', onPointer);
   app.addEventListener('pointercancel', onPointer);
+  app.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  app.addEventListener('wheel', onWheel, { passive: false });
   app.addEventListener('pointerdown', gesture);
   app.addEventListener('pointerup', gesture);
   app.addEventListener('click', gesture);

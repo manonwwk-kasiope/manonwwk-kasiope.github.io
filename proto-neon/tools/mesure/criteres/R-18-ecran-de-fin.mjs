@@ -19,7 +19,7 @@ export async function mesurer(banc, res) {
   if (!sc.ok) return res.nonMesurable('écran de fin', sc.raison);
   await s.images(60);
   const T = [...new Set(((await s.eval(() => window.__MESURE.arreter('r18'))) || []).map(x => String(x.args[0])))];
-  const info = await s.eval(() => { const N = window.__N, d = window.__S.death; let attendu = null; try { attendu = d && N.ids.texte ? N.ids.texte(d.cause, d.auteur) : null; } catch (e) { } return { etat: window.__MESURE.etat(), death: d, attendu, quartier: d && d.quartier, noms: N.ids && N.ids.noms ? N.ids.noms : null }; });
+  const info = await s.eval(() => { const N = window.__N, d = window.__S.death, bilan = N.score && N.score.resume ? N.score.resume() : null; let attendu = null; try { attendu = d && N.ids.texte ? N.ids.texte(d.cause, d.auteur) : null; } catch (e) { } return { etat: window.__MESURE.etat(), death: d, attendu, quartier: d && d.quartier, build: bilan && bilan.build && bilan.build.nom, conseil: bilan && bilan.conseil, noms: N.ids && N.ids.noms ? N.ids.noms : null }; });
   res.capture(await s.capture('R-18-fin'));
   res.verifie('état de l’écran', info.etat, 'fin', info.etat === 'fin');
   const tout = T.join(' | ').toUpperCase();
@@ -29,7 +29,11 @@ export async function mesurer(banc, res) {
   if (nomQ) res.verifie('quartier : ' + nomQ, tout.includes(String(nomQ).toUpperCase()), 'présent', tout.includes(String(nomQ).toUpperCase()));
   else res.nonMesurable('quartier', 'S.death.quartier absent');
   res.verifie('CONTINUER ? proposé', /CONTINUER/.test(tout), 'présent', /CONTINUER/.test(tout));
-  for (const [k, re] of Object.entries(RUBRIQUES)) res.indicatif(`${k} (mots-clés)`, re.test(tout), 'présent', re.test(tout));
+  for (const [k, re] of Object.entries(RUBRIQUES)) {
+    const attendu = (k === 'build' || k === 'conseil') ? info[k] : null;
+    const present = attendu ? tout.includes(String(attendu).toUpperCase()) : re.test(tout);
+    res.indicatif(`${k} (${attendu ? 'texte du bilan : ' + attendu : 'mots-clés'})`, present, 'présent', present);
+  }
   res.note('textes vus : ' + T.slice(0, 40).join(' | '));
 }
 if (principal(import.meta.url)) executer({ meta, mesurer });

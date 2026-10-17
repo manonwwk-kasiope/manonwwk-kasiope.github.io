@@ -40,7 +40,7 @@ N.game = (function () {
   var muted = false, muteTick = 0, pauseAuto = false;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
-  var god = false, simulant = false;
+  var god = false, simulant = false, departExplicite = false;
   var timers = [];
   var QT = [];
   var BG = null, bgKey = '';
@@ -162,8 +162,12 @@ N.game = (function () {
     if (s) { s.enemies = N.ennemis.list; s.shots = N.ennemis.tirs; }
   }
   function reset(graine, opts) {
+    /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
+    var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
+    if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
     S = N.S;
     opts = opts || {};
+    departExplicite = opts.depart !== undefined;
     listen();
     var s = (graine === undefined || graine === null) ? (S.seed | 0) : (graine | 0);
     muted = false;
@@ -171,7 +175,16 @@ N.game = (function () {
     muted = reglagesSon(); S.muted = muted; applyMute();
     fin.victoire = false; partieN = 0;
     aller('demarrage');
-    if (opts.direct) lancer(false);
+    if (opts.depart !== undefined) {
+      if (opts.depart === 'ouverture') { if (modOk(N.intro, 'reset')) N.intro.reset(); aller('ouverture'); }
+      else if (opts.depart !== 'demarrage') {
+        /* skip() termine aussi l'ouverture (stop() ne termine que les interludes). */
+        if (modOk(N.intro, 'skip')) N.intro.skip();
+        if (modOk(N.intro, 'stop')) N.intro.stop();
+        if (opts.depart === 'jeu') lancerVague(R.secteurs[0].vagues[0].n);
+        else aller(opts.depart);
+      }
+    } else if (opts.direct) lancer(false);
     return true;
   }
   /* lancer() : la plongée dans la partie ; `nouvelle` remet tout à zéro (sauf au premier lancement du reset) */
@@ -348,7 +361,7 @@ N.game = (function () {
     /* l'ancienne boucle ne remet pas le compteur d'événements par pas à zéro : on le fait à sa place */
     if (!nouveau && N.ev && N.ev.nouveauPas) N.ev.nouveauPas();
     /* l'ancienne boucle n'appelle ce module qu'une fois l'ouverture passée : la partie démarre alors */
-    if (!nouveau && s.phase !== undefined && s.phase !== 'intro' && (et === 'demarrage' || et === 'ouverture' || et === 'titre')) lancer(false);
+    if (!nouveau && !departExplicite && s.phase !== undefined && s.phase !== 'intro' && (et === 'demarrage' || et === 'ouverture' || et === 'titre')) lancer(false);
     /* un interlude en cours (panneau du CYCLOPE) : le monde est gelé, c'est lui qui avance */
     if (O.busy() && (et === 'panneau' || JOUE[et])) {
       if (et !== 'panneau') aller('panneau');
@@ -689,6 +702,7 @@ N.game = (function () {
   };
   /* les scènes de référence (§ 7.12) : celles que les replis savent figer */
   dbg.scene = function (nom) {
+    if (nom === 'charge' || nom === 'v5' || nom === 'lasso6' || nom === 'inversion' || nom === 'convoi' || nom === 'travelling' || nom === 'boss3') return sceneReference(nom);
     var P = N.joueuse.tete;
     function jeuNeuf() { if (!JOUE[et] || et === 'reapparition') { lancer(false); } O.geom(); lancerVague(1); N.ennemis.reset(); }
     if (nom === 'mur') { jeuNeuf(); N.joueuse.force({ x: O.A.x0 + 30, y: (O.A.y0 + O.A.y1) / 2, ang: Math.PI, trace: true }); return true; }
@@ -704,12 +718,172 @@ N.game = (function () {
     if (nom === 'vol') { if (!JOUE[et]) lancer(false); demarrerVol(); return true; }
     if (nom === 'calme' || nom === 'montee' || nom === 'chaos') { jeuNeuf(); N.dir.demarrer(nom === 'calme' ? 1 : nom === 'montee' ? 3 : 5); aller('jeu'); return true; }
     if (nom === 'colosse' || nom === 'boss3') { dbg.boss(); return true; }
-    return false;        // charge, v5, lasso6, inversion, convoi, travelling : les modules qui les jouent n'existent pas encore
+    return false;
   };
-  dbg.masque = function () {
-    /* le masque de propriété n'existe qu'avec N.gfx.owner (lot 1) : sans lui, un masque vide de la taille du tampon */
-    var b = N.gfx.buf && N.gfx.buf();
-    return new Uint8Array(b ? b.length : 0);
+  /* Fixtures construites par les interfaces des vraies mécaniques, sans champ privé ni faux événement. */
+  function sceneReference(nom) {
+    var C = R.tests.scenes, E = N.ennemis, J = N.joueuse, A = N.arene, W = N.world;
+    if (!(modOk(W, 'arena') && modOk(N.cam, 'update') && modOk(N.cam, 'reset') && modOk(N.decor, 'reset'))) return false;
+    if ((nom === 'charge' || nom === 'boss3') && !(modOk(N.colosse, 'start') && modOk(N.colosse, 'touche'))) return false;
+    if ((nom === 'v5' || nom === 'convoi') && !modOk(A, 'convois')) return false;
+    if ((nom === 'v5' || nom === 'travelling') && !(modOk(A, 'travelling') && modOk(W, 'travelling'))) return false;
+    if (nom === 'inversion' && !modOk(J, 'inversionDebut')) return false;
+    if (modOk(N.pilote, 'arreter')) N.pilote.arreter();
+    /* partie() garde la compatibilité du jeu normal ; une fixture neutralise d'abord l'ancien
+       cadrage, y compris après une autre fixture de boss ou de travelling. */
+    if (modOk(N.colosse, 'reset')) N.colosse.reset();
+    /* 12-cam déclare deux fonctions reset : world.reset est actuellement le reset caméra.
+       Rétablir réellement le monde par son interface d'arène, sans corriger ce module ici. */
+    W.arena({ x: 0, y: 0, w: W.W, h: W.H }, R.monde.mobile.glissementMin);
+    N.cam.update(R.monde.mobile.glissementMin); N.cam.reset(); N.decor.reset(); O.geom();
+    reset(seed, { depart: 'jeu' });
+    dbg.input({ x: 0, y: 0, mag: 0, fire: false, boost: false, pouvoir: false, apogee: false });
+    N.horloge.avancer();                 // même amorçage que le protocole officiel des parties
+    var v = R.secteurs[0].vagues, last = v[v.length - 1], i;
+    if (nom === 'v5' || nom === 'charge' || nom === 'boss3') N.dir.demarrer(last.n);
+    if (nom === 'travelling') N.dir.demarrer(C.travelling.vague);
+    if (nom === 'inversion') N.dir.demarrer(C.inversion.vague);
+    E.reset();
+
+    if (nom === 'charge' || nom === 'boss3') {
+      lancerBoss();
+      /* Passer les phases par les dégâts et leurs fenêtres, avec les vrais répits. La joueuse est
+         tenue au centre pendant la préparation uniquement ; aucune vulnérabilité n'est falsifiée. */
+      var ancienGod = J.god(), h = R.temps.h, src = { genre: 'arme', type: 'canon', id: 0 };
+      J.god(true);
+      for (i = 0; i < C.boss.preparationMax / h && N.colosse.phase() < C.boss.phase; i++) {
+        var centre = W.rect();
+        J.force({ x: centre.x + centre.w / 2, y: centre.y + centre.h / 2, trace: true });
+        dbg.simuler(h);
+        if (N.colosse.phase() >= C.boss.phase) break;
+        E.list.slice().forEach(function (e) { if (e.boss && e.etat !== 'mort') E.hit(e, R.colosse.pvPhase, src); });
+      }
+      J.god(ancienGod);
+      if (N.colosse.phase() !== C.boss.phase) return false;
+      /* Purger les renforts de préparation via la vraie source décor (sans score/butin). */
+      E.list.slice().forEach(function (e) { if (!e.boss) E.hit(e, e.pv, { genre: 'decor', type: 'purge', id: 0 }); });
+      E.effacerTirs(W.W / 2, W.H / 2, W.W + W.H); E.update(0);
+      N.butin.reset(); N.fx.reset(); N.hud.reset();
+      if (nom === 'boss3') { N.cam.reset(); publier(); return true; }
+      buildMax();
+      groupe(C.charge.ennemis);
+      for (i = 0; i < C.charge.tirs; i++) {
+        var a = i / C.charge.tirs * O.TAU;
+        E.tir(J.tete.x + Math.cos(a) * C.groupe.devant, J.tete.y + Math.sin(a) * C.groupe.devant,
+          Math.cos(a) * R.ennemis.tourelle.balle, Math.sin(a) * R.ennemis.tourelle.balle);
+      }
+      N.decor.fixer(last.quartier, last.etat);
+    } else if (nom === 'v5' || nom === 'travelling') {
+      if (nom === 'v5') buildMax();
+      var depuis = C.travelling.depuis;
+      J.reset({ x: depuis + C.travelling.queueMur + J.len() * R.longueur.espacement,
+        y: W.H / 2, ang: 0, len: J.len() });
+      if (!A.travelling(R.arene.travelling.vitesses[N.dir.vague()] * C.travelling.sens, depuis)) return false;
+      /* Mise en place et annonce réelles ; avancer l'arène et la caméra, pas une partie pilotée. */
+      for (i = 0; i <= (R.arene.travelling.miseEnPlace + R.arene.travelling.annonce) / R.temps.h && A.etat().tv !== 'marche'; i++) {
+        N.horloge.avancer(); A.update(R.temps.h); N.cam.update(R.temps.h);
+      }
+      if (A.etat().tv !== 'marche') return false;
+      J.reset({ x: W.x0 + C.travelling.queueMur + J.len() * R.longueur.espacement,
+        y: W.H / 2, ang: 0, len: J.len() });
+      O.geom();
+      if (nom === 'v5') { groupe(last.plafond); if (!A.convois({ voie: C.convoi.voie, sens: C.convoi.sens })) return false; }
+    } else if (nom === 'lasso6') {
+      J.reset({ x: J.tete.x, y: J.tete.y, ang: J.tete.ang, len: C.lasso6.longueur });
+      groupe(C.lasso6.cibles, true);
+    } else if (nom === 'inversion') {
+      groupe(C.inversion.proies, false, true); J.inversionDebut();
+    } else if (nom === 'convoi') {
+      var voie = R.arene.convois.voies[C.convoi.voie];
+      J.reset({ x: W.W / 2, y: voie + R.arene.convois.hauteurVoie + C.groupe.marge, len: J.len() });
+      if (!A.convois({ voie: C.convoi.voie, sens: C.convoi.sens })) return false;
+      for (i = 0; i < (R.arene.convois.annonce + C.convoi.avance) / R.temps.h; i++) {
+        N.horloge.avancer(); A.update(R.temps.h); N.cam.update(R.temps.h);
+      }
+      for (i = 0; i < C.convoi.cibles; i++) E.spawn('mine', W.W / 2 + i * C.groupe.ecart, voie, { st: 'pose' });
+    }
+    N.cam.reset(); O.geom(); publier();
+    return true;
+
+    function buildMax() {
+      O.geom();
+      J.reset({ x: O.A.x0 + R.longueur.max * R.longueur.espacement + C.groupe.marge,
+        y: (O.A.y0 + O.A.y1) / 2, ang: 0, len: R.longueur.max });
+      N.ids.armes.forEach(function (arme) {
+        for (var k = N.arsenal.niveau(arme); k < R.armes.paliers; k++) N.arsenal.monter(arme);
+      });
+    }
+    function groupe(n, fixe, proies) {
+      N.cam.reset(); O.geom();
+      var V = O.VUE, m = C.groupe.marge, c = fixe ? C.lasso6 : C.groupe;
+      var cols = Math.max(1, Math.min(c.colonnes, n, Math.floor((V.w - m * 2) / c.ecart))), rows = Math.ceil(n / cols);
+      var cx = J.tete.x + C.groupe.devant, cy = J.tete.y;
+      cx = O.clamp(cx, V.x + m + cols * c.ecart / 2, V.x + V.w - m - cols * c.ecart / 2);
+      cy = O.clamp(cy, V.y + m + rows * c.ecart / 2, V.y + V.h - m - rows * c.ecart / 2);
+      var types = proies ? N.ids.ennemis.filter(function (t) { return t !== 'traqueur' && t !== 'planeur' && t !== 'rival'; }) : N.ids.ennemis;
+      for (var k = 0; k < n; k++) E.spawn(fixe ? 'tourelle' : types[k % types.length],
+        O.clamp(cx + ((k % cols) - (cols - 1) / 2) * c.ecart, O.A.x0 + m, O.A.x1 - m),
+        O.clamp(cy + (Math.floor(k / cols) - (rows - 1) / 2) * c.ecart, O.A.y0 + m, O.A.y1 - m), fixe ? { st: 'pose' } : {});
+    }
+  }
+
+  /* Instrumentation installée au premier appel seulement : zéro emballage de dessin en jeu normal.
+     Les portées de dessin disent QUI écrit ; les sprites distinguent tête/corps, le glyphe ♥ les vies.
+     Les écritures directes au tampon passent par gfx.suivre, sans estimation géométrique ni chromatique. */
+  var masqueInstalle = false, masqueRestaurations = [];
+  function instrumenterMasque() {
+    if (masqueInstalle) return;
+    masqueInstalle = true;
+    var g = N.gfx, ids = N.ids.proprietaires, sprites = new WeakMap();
+    function remplacer(obj, nom, fn) {
+      var original = obj[nom]; obj[nom] = fn;
+      masqueRestaurations.push(function () { if (obj[nom] === fn) obj[nom] = original; });
+    }
+    function envelopper(obj, nom, code) {
+      if (!modOk(obj, nom)) return;
+      var original = obj[nom];
+      remplacer(obj, nom, function () { return g.suivre(code, original, this, arguments); });
+    }
+    [['decor', ids.decor], ['ennemis', ids.ennemi], ['colosse', ids.ennemi], ['arene', ids.ennemi],
+      ['butin', ids.butin], ['arsenal', ids.arsenal], ['joueuse', ids.corps], ['fx', ids.effet],
+      ['hud', ids.hud], ['ui', ids.hud], ['intro', ids.decor], ['vol', ids.effet], ['warp', ids.arsenal]].forEach(function (a) {
+      ['draw', 'drawTop', 'drawFar', 'drawPlateau', 'drawFront', 'drawTele', 'drawEnemies', 'drawEcran'].forEach(function (f) { envelopper(N[a[0]], f, a[1]); });
+    });
+    var sp = O.sp, blit = g.blit, text = O.text, rect = g.rect;
+    remplacer(O, 'sp', function (nom) {
+      var s = sp.apply(this, arguments);
+      if (s && (nom === 'tete' || nom.indexOf('tete:') === 0)) sprites.set(s, ids.tete);
+      return s;
+    });
+    remplacer(g, 'blit', function (s) {
+      var code = g.owner();
+      return g.suivre(code === ids.corps && sprites.has(s) ? sprites.get(s) : code, blit, this, arguments);
+    });
+    remplacer(O, 'text', function (str) { return g.suivre(g.owner() === ids.hud && str === '♥' ? ids.vies : g.owner(), text, this, arguments); });
+    /* Le radar dessine une représentation de la tête. Identifier sa primitive par sa position
+       projetée et ses dimensions contractuelles, jamais par son encre (un cyan de décor reste décor). */
+    remplacer(g, 'rect', function (x, y, w, h) {
+      var code = g.owner(), r = R.radar, b = R.tests.masque.radar, V = O.geo;
+      if (code === ids.hud && w === r.tete[0] && h === r.tete[1] && g.ox() === 0 && g.oy() === 0 && N.world && N.hud.boutons) {
+        var rx = V.portrait ? N.hud.boutons().pause.x - r.w - b.retraitBouton : Math.round(V.W / 2 - r.w / 2);
+        var iw = r.w - b.bord * 2, ih = r.h - b.bord * 2, P = N.joueuse.tete;
+        var mx = rx + b.bord + O.clamp(Math.round(P.x / N.world.W * (iw - b.bord)), 0, iw - b.bord);
+        var my = (V.safe.t | 0) + b.bord + O.clamp(Math.round(P.y / N.world.H * (ih - b.bord)), 0, ih - b.bord);
+        if (x === mx && y === my) code = ids.tete;
+      }
+      return g.suivre(code, rect, this, arguments);
+    });
+  }
+  dbg.masque = function (actif) {
+    if (actif === false) {
+      while (masqueRestaurations.length) masqueRestaurations.pop()();
+      masqueInstalle = false;
+      return N.gfx.masque(false);
+    }
+    instrumenterMasque();
+    /* Le premier appel arme la PROCHAINE image. Les lectures suivantes rendent le masque de
+       la dernière image dessinée, sans dessiner, avancer l'état ou déduire les codes après coup. */
+    return N.gfx.masque(true);
   };
 
   function etatCourant() { return et; }

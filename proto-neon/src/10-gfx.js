@@ -52,6 +52,7 @@
   var smoothOK = false;                 /* le lissage a-t-il été désarmé depuis le dernier resize */
   var OX = 0, OY = 0;                   /* origine de dessin : un point (x,y) du monde se pose en (x-OX, y-OY) */
   var MK = null, OWN = 0, maskOn = false;   /* masque de propriété : un octet par pixel, seulement s'il est armé */
+  var traceDepth = 0, traced = null, copies = null;
 
   var RND = Math.round;
 
@@ -83,6 +84,7 @@
     if (w === W && h === H && p === PX && buf) { smoothOK = false; return { w: W, h: H, px: PX }; }
     W = w; H = h; PX = p;
     buf = new Uint8Array(W * H);
+    traced = null;
     MK = maskOn ? new Uint8Array(W * H) : null;
     ic = mkCanvas(W, H);
     ictx = ic ? ic.getContext('2d', { alpha: false }) : null;
@@ -108,7 +110,10 @@
   }
 
   /* ---- primitives ---- */
-  function clear(ci) { if (buf) buf.fill((ci | 0) & 15); }
+  function clear(ci) {
+    if (buf) buf.fill((ci | 0) & 15);
+    if (MK) MK.fill(0);                 // aucune propriété héritée de l'image précédente
+  }
 
   function origin(ox, oy) { OX = RND(+ox || 0); OY = RND(+oy || 0); }
 
@@ -315,8 +320,9 @@
             var v = d[so + s0 + k];
             if (!v && !opaque) continue;
             buf[to + tx + k] = lut ? lut[v] : v;
+            if (MK) MK[to + tx + k] = OWN;
           }
-          if (MK) MK.fill(OWN, to + tx, to + tx + run);
+          if (MK && fast) MK.fill(OWN, to + tx, to + tx + run);
           tx += run; s0 = 0;
         }
       } else {
@@ -328,8 +334,9 @@
           var v2 = d[so + k2];
           if (!v2 && !opaque) continue;
           buf[to + x0 + k2] = lut ? lut[v2] : v2;
+          if (MK) MK[to + x0 + k2] = OWN;
         }
-        if (MK) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
+        if (MK && fast) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
       }
     }
   }
@@ -349,12 +356,56 @@
   }
 
   /* masque de propriété (§ 7.12) : owner(code) fixe qui dessine ; masque(true) l'arme (un octet par pixel) */
-  function owner(code) { OWN = code & 255; }
+  function owner(code) { if (code !== undefined) OWN = code & 255; return OWN; }
   function masque(on) {
     maskOn = !!on;
     if (maskOn) { if (!MK || MK.length !== W * H) MK = new Uint8Array(W * H); }
-    else MK = null;
+    else { MK = null; traced = null; copies = null; }
     return MK;
+  }
+
+  /* Les modules historiques dessinent aussi directement dans buf(). Le Proxy ne leur est fourni
+     QUE dans un dessin instrumenté ; en dehors, buf() reste le véritable Uint8Array. Chaque écriture
+     est suivie, même si elle repose la même encre. Aucune déduction du propriétaire par la couleur. */
+  function traceBuffer(a, offset) {
+    var methods = {};
+    return new Proxy(a, {
+      get: function (target, key) {
+        if (key === 'set') return methods.set || (methods.set = function (src, at) {
+          at = at === undefined ? 0 : at;
+          target.set(src, at);
+          if (MK) MK.fill(OWN, offset + at, offset + at + src.length);
+        });
+        if (key === 'fill') return methods.fill || (methods.fill = function (value, start, end) {
+          target.fill(value, start, end);
+          if (MK) MK.subarray(offset, offset + target.length).fill(OWN, start, end);
+          return this;
+        });
+        if (key === 'subarray') return methods.subarray || (methods.subarray = function (start, end) {
+          var sub = target.subarray(start, end);
+          return traceBuffer(sub, offset + sub.byteOffset - target.byteOffset);
+        });
+        var v = Reflect.get(target, key, target);
+        if (typeof v !== 'function' || key === 'constructor') return v;
+        return methods[key] || (methods[key] = v.bind(target));
+      },
+      set: function (target, key, value) {
+        var ok = Reflect.set(target, key, value, target), i = +key;
+        if (ok && MK && Number.isInteger(i) && i >= 0 && i < target.length) MK[offset + i] = OWN;
+        return ok;
+      }
+    });
+  }
+  function suivre(code, fn, ctx, args) {
+    if (!MK) return fn.apply(ctx, args);
+    var prev = OWN; OWN = code; traceDepth++;
+    try { return fn.apply(ctx, args); }
+    finally { traceDepth--; OWN = prev; }
+  }
+  function buffer() {
+    if (!MK || !traceDepth || !buf) return buf;
+    if (!traced) traced = traceBuffer(buf, 0);
+    return traced;
   }
 
   /* copie du tampon d'index dans dst (alloué ici s'il manque ou s'il n'a pas la taille) */
@@ -362,6 +413,7 @@
     if (!buf) return dst || null;
     if (!dst || dst.length !== buf.length) dst = new Uint8Array(buf.length);
     dst.set(buf);
+    if (MK) { if (!copies) copies = new WeakMap(); copies.set(dst, new Uint8Array(MK)); }
     return dst;
   }
 
@@ -369,11 +421,12 @@
   function mixBayer(src, p) {
     if (!buf || !src || src.length !== buf.length) return;
     if (!(p > 0)) return;
-    if (p >= 1) { buf.set(src); return; }
+    var sm = MK && copies && copies.get(src);
+    if (p >= 1) { buf.set(src); if (MK) { if (sm) MK.set(sm); else MK.fill(0); } return; }
     var B = N.pal.BAYER, lim = p * 16;
     for (var y = 0; y < H; y++) {
       var o = y * W, br = (y & 3) << 2;
-      for (var x = 0; x < W; x++) if (lim > B[br | (x & 3)]) buf[o + x] = src[o + x];
+      for (var x = 0; x < W; x++) if (lim > B[br | (x & 3)]) { buf[o + x] = src[o + x]; if (MK) MK[o + x] = sm ? sm[o + x] : 0; }
     }
   }
 
@@ -416,10 +469,10 @@
     clear: clear, px: px, rect: rect, line: line, circ: circ, ring: ring, blit: blit,
     ditherRect: ditherRect, ditherCirc: ditherCirc, disc: disc,
     at: at,
-    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque, copyTo: copyTo, mixBayer: mixBayer,
+    origin: origin, layer: layer, remap: remap, owner: owner, masque: masque, suivre: suivre, copyTo: copyTo, mixBayer: mixBayer,
     ox: function () { return OX; }, oy: function () { return OY; },
     mask: function () { return MK; },
-    buf: function () { return buf; },
+    buf: buffer,
     canvas: function () { return out; },
     context: function () { return octx; },
     inner: function () { return ic; }

@@ -1,0 +1,139 @@
+{
+ "id": "R-11",
+ "titre": "Lumière, et décor qui se tait par la forme",
+ "seuil": "lumière globale indicative (SORTIE.md) ; décor 18-28 % ; vide < 30 % ; cyan décor 0 ; magenta décor < 0,5 % ; gaine 100 %",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "4 ok, 0 en échec, 8 indicatives hors cible, 7 non mesurables",
+ "mesures": [
+  {
+   "nom": "partie à t = 1 s",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  },
+  {
+   "nom": "scène calme : pixels lumineux",
+   "valeur": 0.11653,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène calme : luminance moyenne",
+   "valeur": 0.05176,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène calme : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène calme : décor seul, cyan et magenta du décor, gaine",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+  },
+  {
+   "nom": "scène montee : pixels lumineux",
+   "valeur": 0.11531,
+   "seuil": "≥ 0.28",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène montee : luminance moyenne",
+   "valeur": 0.05172,
+   "seuil": "≥ 0.085",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène montee : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène montee : décor seul, cyan et magenta du décor, gaine",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+  },
+  {
+   "nom": "scène chaos : pixels lumineux",
+   "valeur": 0.10761,
+   "seuil": "≥ 0.32",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène chaos : luminance moyenne",
+   "valeur": 0.04949,
+   "seuil": "≥ 0.095",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène chaos : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène chaos : décor seul, cyan et magenta du décor, gaine",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+  },
+  {
+   "nom": "scène colosse : pixels lumineux",
+   "valeur": 0.14969,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène colosse : luminance moyenne",
+   "valeur": 0.06331,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène colosse : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène colosse : décor seul, cyan et magenta du décor, gaine",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+  },
+  {
+   "nom": "part lumineuse à t = 30 s ≥ SNAKE 2030",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : partie de SNAKE 2975 non lancée"
+  },
+  {
+   "nom": "captures par état d’une partie du pilote bon",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  }
+ ],
+ "notes": [],
+ "captures": [
+  "tools/mesure/diagnostic/navigateur/captures/R-11-calme-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-11-montee-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-11-chaos-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-11-colosse-paysage-tampon.png"
+ ],
+ "duree": 1.7,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:08:50.270Z",
+ "dateParis": "18/10/2026 · 01 h 08"
+}

@@ -76,6 +76,11 @@
     g.update = function (dt) { if (N.arcade.actif()) { if (PILOTE) pilote(); N.arcade.update(dt); } else u0.call(g, dt); };
     g.draw = function () { if (N.arcade.actif() || N.arcade.phase() === 'fini' && !window.__ARCADE_RENDU) { N.arcade.draw(); mesurer(); } else d0.call(g); };
     g.drawTop = function () { if (!N.arcade.actif()) t0.call(g); };
+    /* 90-boot.js dessine l'interface lui-même (le titre « SNAKE 2975 » de l'écran de démarrage) : tue pendant 1982 */
+    ['ui', 'hud', 'intro'].forEach(function (k) {
+      var m = N[k]; if (!m || !m.draw) return;
+      var d = m.draw; m.draw = function () { if (N.arcade.actif()) return; return d.apply(m, arguments); };
+    });
     window.addEventListener('keydown', function (e) { if (e.code === 'KeyN') N.arcade.skip(); });
   }
   if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
