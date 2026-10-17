@@ -35,7 +35,8 @@ N.dir = (function () {
     queue: [], spawned: 0, freeCd: 2, pic: null, picFait: false, pastilleFaite: false, derniereAction: 0, traqueurs: 0, traqueurT: -99,
     melangeT: 0, lastBeat: -1, beat: false, gate: 0, turn: 0, angPrec: null, vus: {}, alive: 0, elroy: false, premiere: true
   };
-  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9 };
+  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9, respirations: [] };
+  var repos = { demande: false, fini: false, pic: 0, duree: 0, debut: null };
   var VAGUES = null;
 
   function vagues() { return VAGUES || (VAGUES = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues) || []); }
@@ -52,8 +53,10 @@ N.dir = (function () {
     st.n = 0; st.tw = 0; st.phase = 'attente'; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
     st.queue.length = 0; st.spawned = 0; st.freeCd = 2; st.pic = null; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99;
     st.melangeT = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
+    repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
     st.secteur = secteur | 0; st.tuto = !(opts && opts.sansTuto);
     stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0; stats.maxAlive = 0; stats.minDistTele = 1e9;
+    stats.respirations.length = 0;
     if (opts && opts.vague) demarrer(opts.vague);
   }
 
@@ -64,6 +67,7 @@ N.dir = (function () {
     var w = vs[n - 1] || {};
     st.n = n; st.tw = 0; st.phase = 'vague'; st.fini = false; st.nettoye = false; st.entrees++;
     st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.melangeT = 0; st.elroy = false;
+    repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
     st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
     st.queue.length = 0;
     var fs = w.formations || [];
@@ -296,14 +300,42 @@ N.dir = (function () {
 
   /* ============================ la vague ============================ */
   function vivants() { var c = N.ennemis.counts(); return c.regular; }
+  /* Une vraie baisse de densité, avant le nettoyage et le pic suivant. La vague
+     cesse d'alimenter le terrain à sa durée nominale (ou dès son objectif atteint).
+     La purge publique retire les attaques sans score de combat ; le chronomètre
+     ne compte que les pas effectivement sous le seuil strict de N.R. */
+  function respirer(w, c, dt) {
+    if (!repos.demande || repos.fini) return;
+    var r = R.secteurs[st.secteur].respiration;
+    if (c.regular < r.part * Math.max(1, repos.pic)) {
+      if (repos.debut === null) repos.debut = st.tw;
+      repos.duree = st.tw - repos.debut;
+    } else { repos.duree = 0; repos.debut = null; }
+    if (repos.duree + 1e-9 >= r.duree) {
+      repos.fini = true;
+      var recu = { n: st.n, pic: repos.pic, debut: repos.debut, fin: st.tw, duree: repos.duree, part: r.part };
+      stats.respirations.push(recu);
+      if (N.journal) N.journal('respiration', recu);
+    }
+  }
+  function demanderRespiration(w) {
+    if (repos.demande) return;
+    repos.demande = true;
+    N.ennemis.purge('indifferent');
+    if (N.arene && N.arene.nettoyee) N.arene.nettoyee();
+    if (N.decor && N.decor.etat) N.decor.etat('calme');
+    etiquette('RESPIRATION');
+  }
   function update(dt) {
     if (st.phase !== 'vague') return;
     var w = info(); if (!w) return;
     var P = tete(), c = N.ennemis.counts(), i;
     st.tw += dt;
     st.alive = c.regular;
+    if (c.regular > repos.pic) repos.pic = c.regular;
+    respirer(w, c, dt);
     if (c.regular > stats.maxAlive) stats.maxAlive = c.regular;
-    var chassePause = N.ennemis.inversion && N.ennemis.inversion() > 0;
+    var chassePause = repos.demande || (N.ennemis.inversion && N.ennemis.inversion() > 0);
     /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard) */
     var b = Math.floor(O.T.t / CFG.temps); st.beat = b !== st.lastBeat; st.lastBeat = b;
     /* le virage de plus de 45° du premier ennemi de la première partie */
@@ -350,8 +382,8 @@ N.dir = (function () {
       if (rem && rem !== 'champMines' && rem !== 'duoMines') formation(rem, { sansEtiquette: true });
     }
     /* le pic, entre 55 et 75 % de la durée */
-    if (!st.picFait && w.pic && st.tw >= w.pic.t) { if (lancerPic()) st.picFait = true; }
-    if (!st.pastilleFaite && w.pastille && st.tw >= w.pastille) { st.pastilleFaite = poserPastille(); if (!st.pastilleFaite && st.tw > w.pastille + 6) st.pastilleFaite = true; }
+    if (!repos.demande && !st.picFait && w.pic && st.tw >= w.pic.t) { if (lancerPic()) st.picFait = true; }
+    if (!repos.demande && !st.pastilleFaite && w.pastille && st.tw >= w.pastille) { st.pastilleFaite = poserPastille(); if (!st.pastilleFaite && st.tw > w.pastille + 6) st.pastilleFaite = true; }
     if (!chassePause) traqueur();
     /* la traque de fin de vague (Cruise Elroy) : moins de 20 % du quota à venir, les dernières flèches accélèrent de 30 % */
     if (!st.elroy && st.spawned >= (w.quota || 20) * (1 - CFG.elroyReste)) st.elroy = true;
@@ -367,9 +399,11 @@ N.dir = (function () {
     for (i = 0; i < st.queue.length; i++) if (!st.queue[i].fait) tousLances = false;
     var quotaFait = st.spawned >= (w.quota || 20) * 0.9 || (st.tw > (w.duree || 30) + 4 && st.spawned >= (w.quota || 20) * 0.6);
     var reste = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].finVague && R.secteurs[0].finVague.vivantsMax) || 2;
+    var objectif = tousLances && quotaFait && c.regular <= reste && st.tw > 5;
+    if ((!w.pic || st.picFait) && (objectif || st.tw >= w.duree)) demanderRespiration(w);
     if (!st.fini) {
-      if (tousLances && quotaFait && c.regular <= reste && st.tw > 5) terminerVague('nettoyee', w);
-      else if (st.tw >= (w.duree || 30) + CFG.soupape) {
+      if (repos.fini && objectif) terminerVague('nettoyee', w);
+      else if (repos.fini && st.tw >= (w.duree || 30) + CFG.soupape) {
         if (N.ennemis.fuir) N.ennemis.fuir();
         if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'soupape', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
         terminerVague('nettoyee', w);
@@ -403,6 +437,7 @@ N.dir = (function () {
   function tension() {
     if (st.phase === 'attente') return 0.06;
     if (st.phase === 'boss') return 1;
+    if (repos.demande) return R.secteurs[st.secteur].respiration.part * 0.06;
     var w = info(), dens = w && w.plafond ? O.clamp(st.alive / w.plafond, 0, 1) : 0;
     return O.clamp(0.06 + 0.62 * progression() + 0.3 * dens, 0, 1);
   }
@@ -426,6 +461,7 @@ N.dir = (function () {
     tension: tension, progression: progression, entrees: function () { return st.entrees; },
     demarrer: demarrer, info: info, lancerBoss: lancerBoss, fini: function () { return st.fini; }, stats: stats,
     tempsVague: function () { return st.tw; }, nombreVagues: function () { return vagues().length; },
-    fin: function () { st.phase = 'attente'; }, formation: formation
+    fin: function () { st.phase = 'attente'; }, formation: formation,
+    respiration: function () { return { active: repos.demande, finie: repos.fini, pic: repos.pic, duree: repos.duree, debut: repos.debut }; }
   };
 })();
