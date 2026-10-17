@@ -6,7 +6,9 @@
      - le mur TUE (mur courant, grâce de 60 ms, REFONTE.md § 2.3) au lieu de laisser glisser ;
      - le corps ne tue pas et n'absorbe plus : un tir, un souffle ou la traînée COUPE le serpent au segment
        touché (`couper`) ; seule la tête tue ;
-     - la tête a un rayon qui tue de 3 px (N.R.mort.rayonTete) ; la morsure compte à partir du segment 6.
+     - la tête a un rayon qui tue de 3 px (N.R.mort.rayonTete) ; la morsure compte à partir du segment 6 ;
+     - se mordre COUPE le serpent au segment mordu (la queue tombe en cellules), sans tuer : la règle du snake
+       (N.R.mort.morsure.effet = 'coupe' ; 'mort' rend l'ancienne règle).
 
    INTERFACE (§ 7.8) : reset(cfg), update(dt), draw(), drawTop(), tete {x,y,ang,vit}, segs(), len(), etat,
    hitTest(x,y,r), tuer(cause, src), couper(k, src), grandir(n), invul(), pouvoir, apogee, boost, traine().
@@ -95,7 +97,7 @@ N.joueuse = (function () {
     P.y = at ? cfg.y : (portrait ? A.y0 + (A.y1 - A.y0) * 0.62 : cy);
     P.ang = at && typeof cfg.ang === 'number' ? cfg.ang : a0;
     P.vit = vitesse();
-    st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1;
+    st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
     clk = 0; trailReset(P.x, P.y, P.ang, 40);
     st.res = 100; st.bOn = false; st.bk = 0; st.geste = false; st.pousseT = 0; st.veutPrev = false; st.susp = false; st.panne = false; st.bas = 0;
@@ -297,12 +299,18 @@ N.joueuse = (function () {
         if (st.grace <= 0) { st.grace = -1; tuer('mur', { genre: m.mobile ? 'arene' : 'decor', type: m.mobile ? 'murMobile' : 'mur', id: -1 }); return; }
       }
     } else st.grace = -1;
-    /* 2. la morsure : un segment d'indice 6 ou plus qui n'est pas l'un des trois derniers */
-    var ms = mort.morsure || { segMin: 6, derniersFermant: 3, rayon: 5.5 };
+    /* 2. la morsure : un segment d'indice 6 ou plus qui n'est pas l'un des trois derniers. Elle coupe la queue à
+       partir du segment mordu ; puis 0,4 s sans nouvelle morsure, le temps que la tête sorte du corps. */
+    var ms = mort.morsure || { segMin: 6, derniersFermant: 3, rayon: 5.5, effet: 'coupe', recharge: 0.4 };
     var kmax = st.len - ms.derniersFermant;
-    for (k = ms.segMin; k < kmax; k++) {
+    if (st.mordT > 0) st.mordT -= dt;
+    else for (k = ms.segMin; k < kmax; k++) {
       segAt(k);
-      if (O.d2(P.x, P.y, SPX, SPY) < ms.rayon * ms.rayon) { tuer('morsure', { genre: 'joueuse', type: 'devore', id: -1 }); return; }
+      if (O.d2(P.x, P.y, SPX, SPY) < ms.rayon * ms.rayon) {
+        if (ms.effet === 'mort') { tuer('morsure', { genre: 'joueuse', type: 'devore', id: -1 }); return; }
+        if (couper(k, { genre: 'joueuse', type: 'devore', id: -1 }, 'morsure') > 0) st.mordT = ms.recharge || 0.4;
+        break;
+      }
     }
     var L = N.ennemis, protege = st.invul > 0 || st.trav > 0;
     if (!L) return;

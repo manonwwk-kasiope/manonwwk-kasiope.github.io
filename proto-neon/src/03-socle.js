@@ -86,7 +86,7 @@
     cartes: null,                                               /* armes + passifs + pouvoirs, voir plus bas */
     causes: ['mur', 'morsure', 'ennemi', 'tir', 'laser', 'souffle', 'convoi', 'traine'],
     /* une coupe du corps a la cause de ce qui l'a faite ; 'vol' = mine du VOL */
-    causesCoupe: ['mur', 'ennemi', 'tir', 'souffle', 'convoi', 'traine', 'vol'],
+    causesCoupe: ['mur', 'ennemi', 'tir', 'souffle', 'convoi', 'traine', 'vol', 'morsure'],
     auteurs: null,                                              /* ennemis + auteursAutres */
     auteursAutres: ['mur', 'murMobile', 'corps', 'convoi', 'cyclope', 'cyclope:main', 'vol'],
     etats: ['demarrage', 'ouverture', 'titre', 'attraction', 'briefing', 'plongee', 'jeu', 'nettoyage', 'cartes', 'vol',
@@ -208,7 +208,7 @@
     phase: { emetteur: '73-colosse', conso: [[10, '79-jeu'], [20, '77-score'], [40, '15-decor'], [60, '79-scene'],
       [70, '78-hud'], [90, '03-socle']] },
     apparition: { emetteur: '72-ennemis', conso: [[70, '78-hud'], [90, '03-socle']] },
-    portail: { emetteur: '76-directeur', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
+    portail: { emetteur: '76-directeur', conso: [[10, '79-jeu'], [60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
     arme: { emetteur: '72-ennemis|73-colosse|73-arene', conso: [[60, '79-scene'], [90, '03-socle']] },
     pouvoir: { emetteur: '70-joueuse', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
     apogee: { emetteur: '70-joueuse', conso: [[60, '79-scene'], [70, '78-hud'], [90, '03-socle']] },
