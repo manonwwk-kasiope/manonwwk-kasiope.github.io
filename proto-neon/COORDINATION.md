@@ -92,6 +92,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/90-boot.js`, `tools/commandes/` | Codex | 18/10 à 01 h 02 | codex-06 : clavier, souris, manette ; priorité tactile |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/79-jeu.js`, `src/10-gfx.js` | Codex (session parallèle codex-p6) | 18/10 à 00 h 41 | API de test du contrat : `reset(graine,{depart})`, six scènes, vrai masque (`demandes.md` § codex-08) |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |
