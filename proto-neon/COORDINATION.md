@@ -86,7 +86,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
    LIVRAISON CODEX 05b (18/10 à 01 h 33) : RALENTI 3,5 s, CYCLOPE 0,3 pendant 2,2 s, niveau 0,35 s et gel conformes sur trois profils ; pause application dans jeu/pause/panneau/cartes sans remplacement de main, premier geste de reprise consommé ; journal en secondes ; commandes28/28 sans erreur. 80/80 avant et après, huit répétitions identiques par bundle. Après complément e, les80 résultats sont exactement identiques aux80 après, journaux compris. Simulation sans première image : échec avant / réussite après trois profils, puis intégration p7 reçue et testée sans erreur. tools/horloge/05b/rapport.md. Réservations05b libérées.
 
-Codex : en attente — 01c clos selon arbitrage Claude, preuves complètes a149397 ; 05b livré, prêt pour médiation. Aucun autre ordre disponible dans cette boîte.
+Codex : codex-10 en cours ; 01c clos, 05b livré prêt pour médiation.
 
 **Sessions Codex parallèles** (ouvertes par la cheffe d'orchestre, chacune dans sa copie `~/Projets/wt-snake/<nom>`, sans commit ; la cheffe d'orchestre relit, fait juger et intègre) :
 - **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`. **ACCEPTÉ et intégré (b07c32c)** : GRAPPE, BRAISE, ÉPERON et répit ; les passifs restent à faire.
@@ -112,6 +112,7 @@ Codex : en attente — 01c clos selon arbitrage Claude, preuves complètes a1493
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/76-defile.js` (nouveau), `src/76-directeur.js`, `tools/codex-10/` | Codex | 18/10 à 01 h 45 | codex-10 : DÉFILÉ et respiration ; raccord79 livré en patch, chiffres02 réservés àp5 (aucune modification sans partage explicite) |
 | `src/70-joueuse.js`, `src/78-hud.js`, `src/12-cam.js` | Codex (session parallèle codex-p8) | 18/10 à 01 h 44 | longueur critique qui se sent, accélération visible (manques n° 6 et 9) |
 | `src/79-jeu.js`, `src/90-boot.js`, `src/80-ecrans.js` (bouton JOUER) | Codex (session parallèle codex-09) | 18/10 à 01 h 37 | brancher N.aventure dans le vrai jeu (choix, 1976, 1982, WARP, films, fins) ; les 80 parties des pilotes doivent rester identiques |
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4b) | 18/10 à 01 h 20 | les mines du CYCLOPE s'annoncent (armement ≥ 0,8 s) |
