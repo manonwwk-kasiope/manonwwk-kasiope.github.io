@@ -42,8 +42,8 @@
 
    L'OUVERTURE (≈ 11,5 s, puis l'invite attend) : exterieur 2 s → connexion 1,5 s → eveil 2 s →
    titre 3 s (horizon, grille qui défile vers l'horizon, logo construit par vagues de pixels) →
-   briefing 3 s (trois lignes tapées lettre à lettre) → invite « TOUCHE POUR JOUER » / « ESPACE POUR
-   JOUER ». Au premier toucher ou à la première touche, S.phase passe de 'intro' à 'play'.
+   briefing 3 s (AN 2975 / TU ES EN LIGNE / TIENS 2 MINUTES, tapées lettre à lettre) → invite « TOUCHE
+   POUR JOUER » / « ESPACE POUR JOUER ». Au premier toucher ou à la première touche, S.phase passe de 'intro' à 'play'.
 
    LES PANNEAUX. Fixes (N.art.get), ou l'image courante de leur clip si la vidéo joue (N.art.play / get /
    stop) : la vidéo est un bonus, tout est cadencé sur l'horloge de ce module. Jamais redessinés ni
@@ -72,7 +72,7 @@
   /* ================================ réglages ================================ */
   var GARDE = 0.3;                         // s : un toucher plus tôt est ignoré (G-37)
   var NOM_COLOSSE = 'LE CYCLOPE';
-  var BRIEF = ['AN 2975', 'SERPENT EN LIGNE', 'TIENS 2 MINUTES'];
+  var BRIEF = ['AN 2975', 'TU ES EN LIGNE', 'TIENS 2 MINUTES'];
   var LETTRE = 0.045, PAUSE_LIGNE = 0.18; // cadence de frappe du briefing
   var ETAPES = [
     { nom: 'exterieur', d: 2.0 },
@@ -195,7 +195,7 @@
        map  : réindexation (null = identité) ; dk : assombri d'un cran (tables DARK)
        shim : phase du scintillement cyan, -1 = aucun ; scan : rangée écran de la ligne de balayage (-1)
        fade : nombre de rangées fondues au tramage en haut et en bas de l'image (portrait) */
-  function poser(img, ox, oy, rv, p, map, dk, shim, scan, fade) {
+  function poser(img, ox, oy, rv, p, map, dk, shim, scan, fade, sansMiroirY) {
     var g = G(); if (!img || !img.data || !g || !g.buf) return;
     var B = g.buf(); if (!B) return;
     var W = g.W, H = g.H, iw = img.w, ih = img.h, d = img.data;
@@ -204,7 +204,7 @@
        laissée sur des bandes vides (iPhone en paysage : 422 colonnes pour un panneau de 384). Chaque
        pixel prolongé est un pixel de l'image, à sa taille : rien n'est agrandi. Le bandeau du portrait
        (fade > 0) n'est prolongé que sur les côtés : le texte vit au-dessous. */
-    var exX = iw < W, exY = !(fade > 0) && ih < H;
+    var exX = iw < W, exY = !(fade > 0) && !sansMiroirY && ih < H;
     var x0 = exX ? 0 : (ox < 0 ? 0 : ox), x1 = exX ? W : (ox + iw > W ? W : ox + iw);
     var y0 = exY ? 0 : (oy < 0 ? 0 : oy), y1 = exY ? H : (oy + ih > H ? H : oy + ih);
     if (x1 <= x0 || y1 <= y0) return;
@@ -479,7 +479,7 @@
   }
 
   /* ================================ état ================================ */
-  var O = { on: false, t: 0, k: 0, u: 0, prev: -1, clip: null, boom: false, flash: false, shook: false, typed: 0, bip: 0, eclat: false, eclatT: -1, attente: 0 };
+  var O = { on: false, t: 0, k: 0, u: 0, clip: null, boom: false, flash: false, shook: false, typed: 0, bip: 0, eclat: false, eclatT: -1, attente: 0 };
   var I = { nom: null, t: 0, blk: false, label: NOM_COLOSSE, clip: null, phase2: false, typed: 0, bip: -1, prev: null, vu: false };
   var G_ = { t: 0, armed: false };         // garde de l'entrée
   var tick = { frame: -1 };
@@ -508,7 +508,7 @@
   function reset() {
     pal();
     stopInterlude(true);
-    O.on = true; O.t = 0; O.k = 0; O.u = 0; O.prev = -1; O.boom = false; O.flash = false; O.shook = false;
+    O.on = true; O.t = 0; O.k = 0; O.u = 0; O.boom = false; O.flash = false; O.shook = false;
     O.typed = 0; O.bip = 0; O.eclat = false; O.eclatT = -1; O.attente = 0;
     LOG.length = 0;
     var s = S(); s.phase = 'intro';
@@ -593,17 +593,16 @@
     var n = Math.floor(u / pas), s = b >= a ? 1 : -1, m = Math.abs(b - a);
     return a + s * Math.min(m, n);
   }
-  /* pose un panneau d'ouverture, recadré pour l'écran ; renvoie la position */
+  /* pose un panneau d'ouverture, recadré pour l'écran */
   function panneau(nom, u, dxp, dyp, rv, p, shim, scan) {
     var img = art(nom);
-    if (!img) { decor(O.t + I.t, null); return null; }
+    if (!img) { decor(O.t + I.t, null); return; }
     var f = FOCAL[nom] || [img.w / 2, img.h / 2];
     var by = L.portrait ? bandeauY(img.h) : null;
     var pos = cadre(img.w, img.h, f, L.portrait ? dxp : 0, L.portrait ? 0 : dyp, by);
     var px = pos.x, py = pos.y;
     if (rv === 1 || rv === 3) p = py + p;           // le front est donné en rangées de l'image
     poser(img, px, py, rv, p, null, false, shim, scan, L.portrait ? 8 : 0);
-    return { x: px, y: py, w: img.w, h: img.h };
   }
 
   function scExterieur(u) {
@@ -673,7 +672,7 @@
     var open = u < 0.22 ? Math.floor(clamp01(u / 0.22) * (ih / 2 + 2)) : -1;      // le tube s'allume
     if (sol) {
       if (oy > 0) ciel(oy, u);
-      poser(sol.img, ox, oy, open >= 0 ? 4 : 0, open, null, false, -1, -1, 0);
+      poser(sol.img, ox, oy, open >= 0 ? 4 : 0, open, null, false, -1, -1, 0, true);   // ciel et sol prolongés à part
       grille(ox, oy, iw, ih, u);
       if (oy + ih < L.H) g.rect(0, oy + ih, L.W, L.H - oy - ih, P.np);
     } else decor(u, hzy);

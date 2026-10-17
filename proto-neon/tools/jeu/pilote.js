@@ -17,14 +17,34 @@
   window.__PILOT = function (d) {
     var S = window.__S, P = d.P, inp = S.input, N = window.__N, L = window.__LOG;
     L.frames++;
-    if (BR < 0) BR = N.pal.i('brasier');
+    if (BR < 0) {
+      BR = N.pal.i('brasier');
+      /* mesure avant la couche du dessus du jeu : ce que 50-fx.js a posé seul */
+      var g0 = N.game, dt0 = g0.drawTop;
+      g0.drawTop = function () {
+        if (window.__MESURE) { var bb = N.gfx.buf(), m = 0; for (var q = 0; q < bb.length; q++) if (bb[q] === BR) m++; window.__PRE = m / bb.length; }
+        dt0();
+      };
+    }
     /* relevé de l'explosion du colosse : tampon de l'image précédente */
     if (d.stats.bossDeathT > 0) {
       if (deathF < 0) deathF = L.frames;
-      if (L.frames - deathF <= 45) {
+      window.__MESURE = true;
+      if (L.frames - deathF <= 70) {
         var b = N.gfx.buf(), n = 0; for (var i = 0; i < b.length; i++) if (b[i] === BR) n++;
-        L.boom.push({ f: L.frames - deathF, brasier: +(n / b.length).toFixed(4), shake: +(S.shake || 0).toFixed(2), frozen: N.fx && N.fx.frozen ? N.fx.frozen() : null });
+        L.boom.push({ f: L.frames - deathF, brasier: +(n / b.length).toFixed(4), fxSeul: +(window.__PRE || 0).toFixed(4), shake: +(S.shake || 0).toFixed(2), frozen: N.fx && N.fx.frozen ? N.fx.frozen() : null });
       }
+    }
+    /* critère 3 : part de cyan hors du masque de la joueuse (tête, corps, et à part ses tirs), toutes les 30 images */
+    if (L.frames % 30 === 0 && d.st === 'jeu') {
+      var CY = N.pal.i('cyan'), CP = N.pal.i('cyanPale'), bf = N.gfx.buf(), Wb = N.gfx.W, Hb = N.gfx.H, sg = d.segs(), nc = 0, out1 = 0, out2 = 0;
+      var mask = new Uint8Array(Wb * Hb);
+      function disk(cx, cy, r, v) { for (var yy = Math.floor(cy - r); yy <= cy + r; yy++) for (var xx = Math.floor(cx - r); xx <= cx + r; xx++) if (xx >= 0 && yy >= 0 && xx < Wb && yy < Hb && (xx - cx) * (xx - cx) + (yy - cy) * (yy - cy) <= r * r) mask[yy * Wb + xx] |= v; }
+      disk(P.x, P.y, 8, 1); for (var si = 0; si < sg.length; si++) disk(sg[si][0], sg[si][1], 6, 1);
+      for (var pi = 0; pi < d.PB.length; pi++) disk(d.PB[pi].x, d.PB[pi].y, 5, 2);
+      for (var q = 0; q < bf.length; q++) if (bf[q] === CY || bf[q] === CP) { nc++; if (!(mask[q] & 1)) { out1++; if (!(mask[q] & 2)) out2++; } }
+      L.cyan = L.cyan || { n: 0, max1: 0, max2: 0, sum1: 0, sum2: 0 };
+      var f1 = out1 / bf.length, f2 = out2 / bf.length; L.cyan.n++; L.cyan.sum1 += f1; L.cyan.sum2 += f2; if (f1 > L.cyan.max1) L.cyan.max1 = f1; if (f2 > L.cyan.max2) L.cyan.max2 = f2;
     }
     /* points de capture */
     if (cps.length && !window.__HOLD) {

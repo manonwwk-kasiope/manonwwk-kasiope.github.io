@@ -47,8 +47,8 @@ const r = await page.evaluate(() => {
   return { W: d.W, H: d.H, px: window.__N.gfx.PX, issue: s.victoire ? 'victoire' : 'defaite', tFin: +s.endT.toFixed(2), mortT: s.deathT, score: d.score, kills: s.kills, killsBy: s.killsBy,
     touches: s.hits, degats: s.hitLog, defi: d.defi.etat, defiT: s.defiT, meilleureChaine: d.defi.meilleur, premierEnnemi: s.firstEnemyT, virage: s.turnT,
     colosse: { annonce: s.bossAnnonceT, arrivee: s.bossT, mort: s.bossDeathT }, slices, apparitions: sp.length, horsChamp, dansLeChampTelegraphiees: tele,
-    dansLeChampSansTelegraphe: s.inView, distMinTete: s.minDistSpawn, maxVivants: s.maxAlive, longueur: d.P.len,
-    explosion: window.__LOG.boom, err: window.__ERR.count, sigs: Object.keys(window.__ERR.sigs) };
+    dansLeChampSansTelegraphe: s.inView, distMinTete: s.minDistSpawn, distMinTeteTelegraphe: s.minDistTele, maxVivants: s.maxAlive, longueur: d.P.len,
+    explosion: window.__LOG.boom, cyan: window.__LOG.cyan ? { horsSerpentMoyen: +(window.__LOG.cyan.sum1 / window.__LOG.cyan.n * 100).toFixed(3) + ' %', horsSerpentMax: +(window.__LOG.cyan.max1 * 100).toFixed(3) + ' %', horsSerpentEtTirsMoyen: +(window.__LOG.cyan.sum2 / window.__LOG.cyan.n * 100).toFixed(3) + ' %', horsSerpentEtTirsMax: +(window.__LOG.cyan.max2 * 100).toFixed(3) + ' %', mesures: window.__LOG.cyan.n } : null, err: window.__ERR.count, sigs: Object.keys(window.__ERR.sigs) };
 });
 r.reel = ((Date.now() - t0) / 1000).toFixed(1) + ' s'; r.consoleErr = errs.slice(0, 5); r.captures = shots;
 console.log(JSON.stringify(r, null, 1));

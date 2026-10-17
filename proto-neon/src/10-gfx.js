@@ -14,7 +14,7 @@
      - rien ici ne lit l'horloge et rien n'écrit de couleur : la table vient de N.pal.
 
    Interface imposée par CONTRAT.md :
-     N.gfx.init(canvasSortie) / resize(cssW,cssH) -> {w,h,px} / W,H,PX
+     N.gfx.init(canvasSortie) / resize(cssW,cssH[,sûreW,sûreH]) -> {w,h,px} / W,H,PX
      clear(ci) / px(x,y,ci) / rect(x,y,w,h,ci) / line(x0,y0,x1,y1,ci) / circ(x,y,r,ci)
      ring(x,y,r,ci,t) / blit(sprite,x,y,opts) / present()
 
@@ -49,12 +49,21 @@
     return c;
   }
 
-  /* ---- taille : px = clamp(round(cssW/340), 2, 6), tampon = ceil(cssW/px) x ceil(cssH/px) ----
-     Pas de letterbox : le tampon couvre tout l'écran, quitte à dépasser de moins d'un gros pixel. */
-  function resize(cssW, cssH) {
+  /* ---- taille (DIRECTION.md) : px = max(2, ⌊min(largeur sûre / 360, hauteur sûre / 180)⌋) ----
+     Le plus gros pixel tel que la zone sûre (hors encoche, îlot et barre d'accueil, passée par 90-boot.js)
+     garde au moins 360 x 180 pixels de jeu ; sans zone sûre, l'écran entier. Pas de plafond : un grand
+     écran de bureau reçoit de plus gros pixels, jamais plus de monde. La taille ne dépend plus d'un
+     arrondi de la seule largeur : iPhone 13 (844 x 390, sûre 750 x 369) et iPhone 16 (852 x 393, sûre
+     734 x 372) tombent tous deux à px = 2, là où round(cssW / 340) donnait 2 et 3.
+     Tampon = ceil(cssW/px) x ceil(cssH/px) : pas de letterbox, le décor couvre tout l'écran, quitte à
+     dépasser de moins d'un gros pixel. */
+  function resize(cssW, cssH, safeW, safeH) {
     cssW = Math.max(1, cssW | 0); cssH = Math.max(1, cssH | 0);
-    var p = RND(cssW / 340);
-    if (!(p >= 2)) p = 2; if (p > 6) p = 6;
+    var sw = +safeW, sh = +safeH;
+    if (!(sw > 0) || sw > cssW) sw = cssW;
+    if (!(sh > 0) || sh > cssH) sh = cssH;
+    var p = Math.floor(Math.min(sw / 360, sh / 180));
+    if (!(p >= 2)) p = 2;
     var w = Math.ceil(cssW / p), h = Math.ceil(cssH / p);
     if (w === W && h === H && p === PX && buf) { smoothOK = false; return { w: W, h: H, px: PX }; }
     W = w; H = h; PX = p;

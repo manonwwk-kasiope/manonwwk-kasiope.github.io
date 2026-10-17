@@ -34,6 +34,23 @@
    Réglages de 0 à 1 : scan, grille, vig, ab, bloom.  N.crt.preset('riche'|'sobre'|'pur'|'coupe').
    N.crt.stats décrit la dernière image, pour les mesures.
 
+   LA SECOUSSE EST UNE CAMÉRA, PAS UN TIRAGE. N.S.shake (pixels de jeu, écrit par 50-fx.js) en donne
+   l'amplitude, inchangée ici. La caméra est une masse sur un ressort amorti (5,2 Hz, amortissement 0,32)
+   qui suit une cible lisse : un bruit de valeur à deux octaves, mis à l'échelle de l'amplitude. Un coup,
+   c'est-à-dire une montée de N.S.shake d'une image à l'autre, LANCE la caméra de la hauteur de la montée ;
+   le ressort la ramène en un rebond franc, puis presque rien. Elle ne sort jamais du disque de rayon
+   N.S.shake : quand l'amplitude retombe à zéro, la caméra est exactement au repos. Le décalage est arrondi
+   au pixel de jeu, et il décale le halo comme l'image : aucun fantôme.
+   Le temps de la caméra est le temps réel, gel d'image compris, comme le trauma de 50-fx.js.
+
+   DIRECTION FACULTATIVE : N.S.shakeX, N.S.shakeY, vecteur unitaire écrit par qui secoue (le jeu, les
+   explosions) au moment du coup, juste avant ou après N.fx.shake : la direction d'un tir, ou celle qui va
+   de la joueuse vers un impact. La caméra part À L'OPPOSÉ (recul), l'image glisse donc dans le sens du
+   vecteur. C'est un ÉVÉNEMENT : 20-crt.js le remet à zéro dès qu'un coup l'a employé, ou au bout de
+   0,12 s s'il n'a servi à aucun coup. Sans direction, chaque coup part à plus de 90° du précédent.
+   N.crt.stats.ox, .oy : le décalage de la caméra appliqué à la dernière image, en pixels de jeu
+   (x positif : la caméra est partie à droite, l'image à gauche).
+
    Rien ici ne lit l'horloge (le temps arrive par dt), rien n'écrit de couleur (tout vient de N.pal),
    et le générateur partagé N.rnd n'est jamais consommé : la secousse a son propre bruit local, pour
    ne pas perturber la reproductibilité du jeu à graine fixe.
@@ -57,6 +74,7 @@
   var DRt = null, DBt = null;    /* décalage en colonnes de jeu, par (décalage, sous-colonne) */
   var KM = null, KL = null, KR = null;   /* une rangée échantillonnée, amortie sur les sous-rangs */
   var glow = null, gctx = null, gimg = null, g32 = null, gw = 0, gh = 0;
+  var HCA = null, HCB = null;    /* colonnes du tampon lues par chaque texel de halo, décalage compris (-1 : dehors) */
   var GL = null, GWT = null;     /* couleur et poids de halo par index de palette */
   var VIDEI = 15;                /* « nuitProfonde » : ce que la secousse découvre */
   var key = '';
@@ -64,6 +82,86 @@
   /* bruit local déterministe : surtout pas N.rnd, qui appartient au jeu */
   var nseed = 2084 >>> 0;
   function nrnd() { nseed = (nseed * 1664525 + 1013904223) >>> 0; return nseed / 4294967296; }
+
+  /* ================= la caméra de la secousse ================= */
+  var CAM_F = 5.2;               /* fréquence propre du ressort, Hz : un rebond lisible, pas un frisson */
+  var CAM_Z = 0.32;              /* amortissement (1 = critique) : un retour franc, un rebond à 35 %, puis rien */
+  var CAM_N = 0.3;               /* la cible lisse, en fraction de l'amplitude : un grondement sous les coups, pas plus */
+  var CAM_NF = 3.6;              /* nœuds du bruit lisse par seconde ; une octave à x2,3 */
+  var CAM_HIT = 0.3;             /* une montée de N.S.shake de plus que ça d'une image à l'autre est un coup */
+  var DIR_TTL = 0.12;            /* une direction qu'aucun coup n'a employée s'efface après ce délai, s */
+  var HS_SLOW = 0.08;            /* 90-boot.js multiplie dt par 0,08 pendant un gel : on retrouve le temps réel */
+  var cam = { x: 0, y: 0, vx: 0, vy: 0, a: 0, t: 0, ka: 0, dx: 0, dy: 0, dAge: 0, ox: 0, oy: 0 };
+
+  /* bruit de valeur 1D, raccord quintique (dérivées première et seconde continues), dans [-1, 1] */
+  function hash1(i, s) {
+    var v = Math.imul(i | 0, 0x27d4eb2d) ^ Math.imul(s + 1, 0x9e3779b1);
+    v ^= v >>> 15; v = Math.imul(v, 0x85ebca6b); v ^= v >>> 13; v = Math.imul(v, 0xc2b2ae35); v ^= v >>> 16;
+    return (v >>> 0) / 4294967296;
+  }
+  function vnoise(t, s) {
+    var i = Math.floor(t), f = t - i, a = hash1(i, s), b = hash1(i + 1, s);
+    f = f * f * f * (f * (f * 6 - 15) + 10);
+    return (a + (b - a) * f) * 2 - 1;
+  }
+  function lisse(t, s) { return 0.7 * vnoise(t * CAM_NF, s) + 0.3 * vnoise(t * CAM_NF * 2.3, s + 7); }
+
+  /* avance la caméra de dt et range dans cam.ox, cam.oy le décalage entier de cette image */
+  function camera(dt, S) {
+    var rdt = +dt || 0;
+    if (rdt < 0) rdt = 0;
+    if (rdt > 0 && N.fx && N.fx.frozen) { try { if (N.fx.frozen()) rdt /= HS_SLOW; } catch (e) { /* 50-fx absent */ } }
+    if (rdt > 0.05) rdt = 0.05;
+    var A = +S.shake || 0;
+    if (!(A > 0)) A = 0;
+    if (A > 64) A = 64;
+
+    /* la direction facultative : on note quand elle change, pour effacer celle qu'aucun coup n'emploie */
+    var sx = +S.shakeX || 0, sy = +S.shakeY || 0, sl = Math.sqrt(sx * sx + sy * sy), used = false;
+    if (!(sl > 0.01 && sl < 1e6)) sl = 0;
+    if (sl === 0) { cam.dx = 0; cam.dy = 0; cam.dAge = 0; }
+    else if (sx !== cam.dx || sy !== cam.dy) { cam.dx = sx; cam.dy = sy; cam.dAge = 0; }
+    else cam.dAge += rdt;
+
+    /* le ressort, vers une cible lisse ; pas de 1/240 s au plus, intégration semi-implicite */
+    cam.t += rdt;
+    var tx = A * CAM_N * lisse(cam.t, 1), ty = A * CAM_N * lisse(cam.t, 2);
+    var w = 6.2831853 * CAM_F, w2 = w * w, z2 = 2 * CAM_Z * w;
+    var n = Math.ceil(rdt * 240), h = n ? rdt / n : 0;
+    for (var i = 0; i < n; i++) {
+      cam.vx += (w2 * (tx - cam.x) - z2 * cam.vx) * h;
+      cam.vy += (w2 * (ty - cam.y) - z2 * cam.vy) * h;
+      cam.x += cam.vx * h; cam.y += cam.vy * h;
+    }
+
+    /* un coup : la caméra est lancée de la hauteur de la montée, dans la direction du coup, en partant
+       au moins du centre ; la vitesse qu'elle avait le long de cet axe est oubliée. Posé APRÈS le pas de
+       ressort : l'image de l'impact montre la poussée entière, le retour commence à la suivante. */
+    if (A > cam.a + CAM_HIT) {
+      var kx, ky;
+      if (sl > 0) { kx = -sx / sl; ky = -sy / sl; cam.ka = Math.atan2(ky, kx); used = true; }
+      else { cam.ka += 1.5707963 + nrnd() * 3.1415927; kx = Math.cos(cam.ka); ky = Math.sin(cam.ka); }
+      var along = cam.x * kx + cam.y * ky, push = (along > 0 ? along : 0) + (A - cam.a);
+      cam.x += (push - along) * kx; cam.y += (push - along) * ky;
+      var va = cam.vx * kx + cam.vy * ky;
+      cam.vx -= va * kx; cam.vy -= va * ky;
+    }
+    if (sl > 0 && (used || cam.dAge > DIR_TTL)) { S.shakeX = 0; S.shakeY = 0; cam.dx = 0; cam.dy = 0; cam.dAge = 0; }
+
+    /* jamais plus loin que l'amplitude écrite par 50-fx.js : la paroi absorbe la vitesse sortante */
+    var r = Math.sqrt(cam.x * cam.x + cam.y * cam.y);
+    if (r > A) {
+      if (A <= 0) { cam.x = 0; cam.y = 0; cam.vx = 0; cam.vy = 0; }
+      else {
+        var ux = cam.x / r, uy = cam.y / r, vr = cam.vx * ux + cam.vy * uy;
+        cam.x = ux * A; cam.y = uy * A;
+        if (vr > 0) { cam.vx -= vr * ux; cam.vy -= vr * uy; }
+      }
+    }
+    if (cam.x !== cam.x || cam.y !== cam.y || cam.vx !== cam.vx || cam.vy !== cam.vy) { cam.x = 0; cam.y = 0; cam.vx = 0; cam.vy = 0; }
+    cam.a = A;
+    cam.ox = Math.round(cam.x); cam.oy = Math.round(cam.y);
+  }
 
   function mk(w, h) {
     if (typeof document !== 'undefined' && document.createElement) {
@@ -208,6 +306,7 @@
     gw = Math.max(2, Math.ceil(GW / 2)); gh = Math.max(2, Math.ceil(GH / 2));
     glow = mk(gw, gh); gctx = glow ? glow.getContext('2d') : null;
     if (gctx) { gimg = gctx.createImageData(gw, gh); g32 = new Uint32Array(gimg.data.buffer); }
+    HCA = new Int32Array(gw); HCB = new Int32Array(gw);
 
     buildTables();
     return !!(u32 && TA && VGg);
@@ -296,17 +395,32 @@
   }
 
   /* ---- halo : construit depuis le TAMPON, donc on choisit qui rayonne, et agrandi en lissé pour
-          obtenir un vrai étalement. Une seule opération de composition par image. ---- */
-  function halo(buf, heat, k) {
-    if (!g32) return 0;
-    var W = GW, H = GH, G = GL, GWt = GWT;
+          obtenir un vrai étalement. Une seule opération de composition par image.
+          Il lit le tampon AVEC LE DÉCALAGE DE LA CAMÉRA, exactement comme pass() : un texel de halo
+          couvre les pixels d'écran (2x..2x+1, 2y..2y+1), qui montrent le tampon en (+ox, +oy). Construit
+          sur le tampon non décalé, il laissait pendant une secousse un fantôme lumineux de l'interface et
+          du serpent à leur place d'origine. Hors du tampon, c'est la bordure, qui ne rayonne pas.
+          Il est posé à l'échelle exacte 2·px (le surplus d'un texel tombe hors du canvas) : un
+          agrandissement à OW x OH le comprimait d'une fraction de pixel quand W ou H est impair. ---- */
+  function halo(buf, ox, oy, heat, k) {
+    if (!g32 || !HCA) return 0;
+    var W = GW, H = GH, G = GL, GWt = GWT, V = VIDEI, CA = HCA, CB = HCB, x;
+    for (x = 0; x < gw; x++) {
+      var xa = x * 2, xb = xa + 1 < W ? xa + 1 : xa;
+      xa += ox; xb += ox;
+      CA[x] = (xa >= 0 && xa < W) ? xa : -1;
+      CB[x] = (xb >= 0 && xb < W) ? xb : -1;
+    }
     for (var y = 0; y < gh; y++) {
-      var by = y * 2, by1 = by + 1 < H ? by + 1 : by;
-      var r0 = by * W, r1 = by1 * W, o = y * gw;
-      for (var x = 0; x < gw; x++) {
-        var bx = x * 2, bx1 = bx + 1 < W ? bx + 1 : bx;
+      var ya = y * 2, yb = ya + 1 < H ? ya + 1 : ya;
+      ya += oy; yb += oy;
+      var r0 = (ya >= 0 && ya < H) ? ya * W : -1, r1 = (yb >= 0 && yb < H) ? yb * W : -1, o = y * gw;
+      if (r0 < 0 && r1 < 0) { for (x = 0; x < gw; x++) g32[o + x] = AOP; continue; }
+      for (x = 0; x < gw; x++) {
+        var ca = CA[x], cb = CB[x];
         /* le plus rayonnant des quatre : une ligne d'un seul pixel de jeu ne doit pas clignoter */
-        var i1 = buf[r0 + bx], i2 = buf[r0 + bx1], i3 = buf[r1 + bx], i4 = buf[r1 + bx1];
+        var i1 = (r0 >= 0 && ca >= 0) ? buf[r0 + ca] : V, i2 = (r0 >= 0 && cb >= 0) ? buf[r0 + cb] : V;
+        var i3 = (r1 >= 0 && ca >= 0) ? buf[r1 + ca] : V, i4 = (r1 >= 0 && cb >= 0) ? buf[r1 + cb] : V;
         var best = i1, bw = GWt[i1];
         if (GWt[i2] > bw) { best = i2; bw = GWt[i2]; }
         if (GWt[i3] > bw) { best = i3; bw = GWt[i3]; }
@@ -318,14 +432,14 @@
     octx.globalCompositeOperation = 'lighter';
     octx.globalAlpha = (0.17 + 0.15 * heat) * k;
     octx.imageSmoothingEnabled = true;
-    octx.drawImage(glow, 0, 0, gw, gh, 0, 0, OW, OH);
+    octx.drawImage(glow, 0, 0, gw, gh, 0, 0, gw * 2 * PX, gh * 2 * PX);
     octx.imageSmoothingEnabled = false;
     octx.globalAlpha = 1;
     octx.globalCompositeOperation = 'source-over';
     return 1;
   }
 
-  var ST = { ops: 0, ox: 0, oy: 0, d: 0, mode: 'riche' };
+  var ST = { ops: 0, ox: 0, oy: 0, a: 0, d: 0, mode: 'riche' };
 
   function apply(dt) {
     if (CRT.off) { ST.ops = 0; ST.mode = 'coupe'; return; }
@@ -335,16 +449,12 @@
     if (!buf) return;
     var pure = !!CRT.pure, ops = 0;
 
-    /* ---- secousse : N.S.shake est en pixels de JEU. On décale l'ÉCHANTILLONNAGE du tampon d'un
-            nombre entier de pixels de jeu, ce qui vaut shake*px pixels d'écran et garde les blocs
-            exactement sur la grille au lieu de les décaler d'un demi gros pixel. ---- */
-    var sh = +S.shake || 0, ox = 0, oy = 0;
-    if (sh > 0.4) {
-      var a = nrnd() * 6.28318530718;
-      ox = Math.round(Math.cos(a) * sh);
-      oy = Math.round(Math.sin(a) * sh);
-    }
-    ST.ox = ox; ST.oy = oy;
+    /* ---- secousse : N.S.shake est en pixels de JEU. La caméra (plus haut) donne un décalage ENTIER
+            de l'ÉCHANTILLONNAGE du tampon, ce qui vaut ox*px pixels d'écran et garde les blocs exactement
+            sur la grille ; l'image et son halo le reçoivent tous deux. ---- */
+    camera(dt, S);
+    var ox = cam.ox, oy = cam.oy;
+    ST.ox = ox; ST.oy = oy; ST.a = cam.a;
 
     var heat = c01(+S.heat || 0);
     var d = 0;
@@ -359,7 +469,7 @@
     octx.putImageData(img, 0, 0); ops++;
 
     var bl = pure ? 0 : c01(CRT.bloom);
-    if (bl > 0) ops += halo(buf, heat, bl);
+    if (bl > 0) ops += halo(buf, ox, oy, heat, bl);
 
     ST.ops = ops; ST.mode = pure ? 'pur' : 'riche';
   }

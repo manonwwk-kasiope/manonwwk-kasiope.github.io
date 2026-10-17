@@ -757,13 +757,29 @@ if (typeof window !== 'undefined') window.__N = N;
       var e = build(ctx, true, mute);
       e.startAt(0);
       var slice = 0.25;                     /* la tension est relue comme en jeu, par tranches */
-      for (var t = 0; t < dur; t += slice) {
+      var evs = (events || []).slice().sort(function (a, c) { return a.t - c.t; }), ei = 0;
+      function feed(t) {                    /* comme en jeu : on ne cree que ce qui va sonner bientot */
         if (tensionFn) e.setTension(tensionFn(t));
-        e.schedUntil(Math.min(dur, t + slice));
+        e.schedUntil(Math.min(dur, t + slice + LOOKAHEAD));
+        while (ei < evs.length && evs[ei].t < t + slice + LOOKAHEAD) { e.sfxAt(evs[ei].name, evs[ei].t, evs[ei].opts); ei++; }
       }
-      if (events) for (var i = 0; i < events.length; i++) e.sfxAt(events[i].name, events[i].t, events[i].opts);
-      N.music.lastBars = e.barSigs();      /* aide aux tests : empreinte de chaque mesure rendue */
-      return ctx.startRendering();
+      if (typeof ctx.suspend === 'function') {
+        /* rendu par tranches : des milliers de sons crees d'un coup resteraient tous branches des
+           l'instant zero et ecraseraient le rendu ; suspendre le contexte hors ligne a chaque tranche
+           reproduit l'ordonnancement en direct, noeuds crees juste a temps et liberes apres usage */
+        feed(0);
+        for (var t = slice; t < dur; t += slice) {
+          (function (tt) { ctx.suspend(tt).then(function () { feed(tt); ctx.resume(); }); })(t);
+        }
+      } else {
+        for (var t2 = 0; t2 < dur; t2 += slice) feed(t2);
+        while (ei < evs.length) { e.sfxAt(evs[ei].name, evs[ei].t, evs[ei].opts); ei++; }
+      }
+      var done = ctx.startRendering();
+      return done.then(function (buf) {
+        N.music.lastBars = e.barSigs();    /* aide aux tests : empreinte de chaque mesure rendue */
+        return buf;
+      });
     }
   };
 

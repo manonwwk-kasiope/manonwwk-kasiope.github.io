@@ -11,7 +11,7 @@ async function essai(mode, T, prof) {
     window.addEventListener('touchstart', mark, { capture: true }); window.addEventListener('keydown', mark, { capture: true }); });
   await page.goto(PAGE);
   await page.waitForFunction(() => window.__N && window.__N.intro && window.__N.art && window.__N.art.ready());
-  await page.waitForFunction((T) => { const s = window.__N.intro.state(); if (s.t >= T) { window.__DT = 1e-9; return true; } return false; }, T, { polling: 'raf' });
+  await page.waitForFunction((T) => { const s = window.__N.intro.state(); if (s.t >= T) { window.__DT = 1e-9; return true; } return false; }, T, { polling: 'raf', timeout: 120000 });
   const avant = await page.evaluate(() => ({ ...window.__N.intro.state(), f: window.__FRAME }));
   const cdp = mode === 'doigt' ? await ctx.newCDPSession(page) : null;
   await page.evaluate(() => { window.__DT = 1 / 60; });
@@ -25,5 +25,7 @@ async function essai(mode, T, prof) {
   console.log(`${mode.padEnd(6)} à ${T.toFixed(2)} s (${avant.etape.padEnd(9)}) -> phase ${r.phase}, latence ${lat} image(s) après l'événement ; journal ${JSON.stringify(log)}`, errs.length ? errs : '');
   await ctx.close();
 }
-for (const [m, T] of [['doigt', 0.1], ['doigt', 0.35], ['doigt', 1.0], ['doigt', 2.6], ['doigt', 4.4], ['doigt', 6.7], ['doigt', 9.9], ['doigt', 12.5], ['Space', 0.5], ['Enter', 5.0], ['ArrowLeft', 7.5], ['KeyA', 11.0]]) await essai(m, T, m === 'doigt' ? 'paysage' : 'bureau');
+const CAS = [['doigt', 0.1], ['doigt', 0.35], ['doigt', 1.0], ['doigt', 2.6], ['doigt', 4.4], ['doigt', 6.7], ['doigt', 9.9], ['doigt', 12.5], ['Space', 0.5], ['Enter', 5.0], ['ArrowLeft', 7.5], ['KeyA', 11.0]];
+const choix = process.argv.slice(2).map(a => a.split(':')).map(([m, t]) => [m, +t]);   // ex. ArrowLeft:7.5
+for (const [m, T] of (choix.length ? choix : CAS)) await essai(m, T, m === 'doigt' ? 'paysage' : 'bureau');
 await browser.close();

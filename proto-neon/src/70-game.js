@@ -162,16 +162,16 @@ N.game = (function () {
     if (N.fx && N.fx.shake) { safe('fx.shake', function () { N.fx.shake(a); }); return; }
     if (S && a > S.shake) S.shake = a;
   }
-  function flash(e) { if (N.fx && N.fx.hit) safe('fx.hit', function () { N.fx.hit(e); }); else e.flash = 0.06; }
+  /* repli sans 50-fx.js : un flash d'une image au plus tous les 0,34 s par objet (WCAG 2.3.1) */
+  function flash(e) { if (N.fx && N.fx.hit) safe('fx.hit', function () { N.fx.hit(e); }); else if (!(e.flashT > ak - 0.34)) { e.flash = 0.03; e.flashT = ak; } }
   function isFlash(e) { return (N.fx && N.fx.isHit) ? !!safe('fx.isHit', function () { return N.fx.isHit(e); }) : e.flash > 0; }
   function ringFx(x, y, r, c, d) { FXL.push({ x: x, y: y, t: 0, d: d || 0.4, r: r, c: c, ring: true }); }
 
   /* ============================ sprites : N.spr, sinon un repli procédural ============================
      Les vrais viennent de 40-sprites.js (centre cx, cy ; ennemis déjà bordés de nuit profonde ; têtes,
      flèches et tirs orientés en seize directions). Le repli est minimal, pointé vers la droite. */
-  var hasSpr = !!(N.spr && N.spr.make);
   function sp(name, f) {
-    if (hasSpr) {
+    if (N.spr && N.spr.make) {
       var s = safe('spr.make', function () { return N.spr.make(name, f | 0); });
       if (s && s.data && s.w > 0) return s;
     }
@@ -436,7 +436,7 @@ N.game = (function () {
     stats = {
       seed: seed, W: W, H: H, slices: [], spawns: [], inView: 0, kills: 0, killsBy: { fleche: 0, mine: 0, tourelle: 0, sentinelle: 0, colosse: 0 },
       hits: 0, firstEnemyT: -1, bossAnnonceT: -1, bossT: -1, bossDeathT: -1, deathT: -1, endT: -1, victoire: null,
-      rotations: 0, defiT: -1, maxAlive: 0, minDistSpawn: 1e9, turnT: -1, hitLog: []
+      rotations: 0, defiT: -1, maxAlive: 0, minDistSpawn: 1e9, minDistTele: 1e9, turnT: -1, hitLog: []
     };
     for (var k = 0; k < 6; k++) stats.slices.push({ alive: 0, tension: 0, n: 0, kills: 0 });
     /* l'énergie de départ : une ligne devant la tête (on comprend où aller), quelques cellules ailleurs */
@@ -450,6 +450,7 @@ N.game = (function () {
   function publish() {
     if (!S || !P) return;
     S.score = score; S.lives = P.lives; S.enemies = E; S.player = P; S.challenge = DEFI;
+    S.muted = muted;                            // la coupure du son, lisible par les autres modules qui jouent des sons
   }
 
   /* ============================ énergie ============================ */
@@ -584,7 +585,7 @@ N.game = (function () {
 
   /* ============================ ennemis : naissance hors champ ============================ */
   function spawnPoint(r) {
-    var m = r + 8, best = null, bd = -1;
+    var m = r + 8;
     for (var k = 0; k < 14; k++) {
       var side = ri(0, 3), x, y;
       if (portrait && side === 2 && rnd() < 0.5) side = ri(0, 1);        // portrait : moins souvent par le bas
@@ -592,18 +593,17 @@ N.game = (function () {
       else if (side === 1) { x = W + m; y = rr(AT - 4, Math.min(H - 8, AB + 20)); }
       else if (side === 2) { x = rr(8, W - 8); y = H + m; }
       else { x = rr(8, W - 8); y = -m; }
-      var dd = d2(x, y, P.x, P.y);
-      if (dd >= 80 * 80) return { x: x, y: y, side: side };
-      if (dd > bd) { bd = dd; best = { x: x, y: y, side: side }; }
+      if (d2(x, y, P.x, P.y) >= 80 * 80) return { x: x, y: y, side: side };
     }
-    return best;
+    return null;                                       // pas de place sûre : on réessaiera
   }
   function logSpawn(e, tele) {
     var inView = e.x > -e.r && e.x < W + e.r && e.y > -e.r && e.y < H + e.r;
     var dist = Math.sqrt(d2(e.x, e.y, P.x, P.y));
     stats.spawns.push({ t: Math.round(t * 100) / 100, k: e.k, x: Math.round(e.x), y: Math.round(e.y), inView: inView, tele: tele || 0, dist: Math.round(dist), W: W, H: H });
     if (inView && !(tele >= 0.6)) stats.inView++;
-    if (dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist);
+    if (!inView && dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist);
+    if (inView && dist < stats.minDistTele) stats.minDistTele = Math.round(dist);
     if (stats.firstEnemyT < 0) stats.firstEnemyT = t;
   }
   var uid = 0;
@@ -628,6 +628,7 @@ N.game = (function () {
     for (var i = 0; i < n; i++) {
       var off = (i - (n - 1) / 2) * 13, x = sp0.x, y = sp0.y, back = (i % 2) * 9;
       if (sp0.side < 2) { y += off; x += sp0.side === 0 ? -back : back; } else { x += off; y += sp0.side === 2 ? back : -back; }
+      if (d2(x, y, P.x, P.y) < 70 * 70) continue;       // G-14 : jamais près de la tête, même hors champ
       var e = newEnemy(k, x, y);
       if (k === 'fleche') e.st = 'chasse';
       if (k === 'mine') { e.st = 'derive'; station(e, 16); }
@@ -705,7 +706,8 @@ N.game = (function () {
   var CYCLE = ['radial', 'laser', 'radial', 'appel', 'laser', 'radial'];
   function updBoss(e, dt) {
     e.age += dt;
-    if (e.st === 'naissance') { e.stT -= dt; if (e.stT <= 0) e.st = 'actif'; return; }
+    /* il apparaît sans blesser pendant 0,6 s, et tant que la tête est sur lui (2 s au plus) : G-14 */
+    if (e.st === 'naissance') { e.stT -= dt; if (e.stT <= 0 && (d2(e.x, e.y, P.x, P.y) > 34 * 34 || e.age > 2)) e.st = 'actif'; return; }
     var cx = (AL + AR) / 2, cy = (AT + AB) / 2;
     var ax = clamp(cx + (cx - P.x) * 0.45, AL + 26, AR - 26), ay = clamp(cy + (cy - P.y) * 0.45, AT + 24, AB - 24);
     var sp0 = e.atk ? 7 : 17, dx = ax - e.x, dy = ay - e.y, d = Math.sqrt(dx * dx + dy * dy), k;
@@ -738,6 +740,7 @@ N.game = (function () {
           shake(3);
         } else if (e.atk === 'appel') {
           for (k = 0; k < e.pts.length; k++) {
+            if (d2(e.pts[k].x, e.pts[k].y, P.x, P.y) < 55 * 55) continue;    // la tête est venue sur la marque : on n'y naît pas
             var m = newEnemy(t >= 60 && k === 1 ? 'fleche' : 'mine', e.pts[k].x, e.pts[k].y);
             if (m.k === 'mine') { m.st = 'pose'; m.life = 14; } else m.st = 'chasse';
             E.push(m); logSpawn(m, 0.9);
@@ -767,7 +770,7 @@ N.game = (function () {
     for (i = 0; i < BEAMS.length; i++) BEAMS[i].dead = true;
     stats.bossDeathT = t;
     bossPhase = 'mort'; boss = null;
-    banner = { lines: ['COLOSSE DÉTRUIT'], c: JAUNE, icon: null, t: 0, d: 2.0 };
+    TIMERS.push({ left: 0.7, fn: function () { if (st === 'jeu') banner = { lines: ['COLOSSE DÉTRUIT'], c: JAUNE, icon: null, t: 0, d: 2.0 }; } });
   }
 
   /* ============================ ennemis ordinaires ============================ */
@@ -979,7 +982,7 @@ N.game = (function () {
         }
       }
       c.x += c.vx * dt; c.y += c.vy * dt;
-      c.x = clamp(c.x, 4, W - 4); c.y = clamp(c.y, 4, H - 4);
+      c.x = clamp(c.x, AL - 4, AR + 4); c.y = clamp(c.y, AT - 4, AB + 4);
     }
   }
   function debris(x, y, c, n) {
@@ -1143,6 +1146,7 @@ N.game = (function () {
       else if (N.music.start && N.music.info && N.music.info()) safe('music.start', function () { N.music.start(); });
     }
     muteFlash = 0.35;
+    if (S) S.muted = muted;
   }
   muted = load(K_SON) === '0';
 
@@ -1411,18 +1415,19 @@ N.game = (function () {
     for (i = 0; i < n; i++) textC(banner.lines[i], W / 2 + iw / 2, y + 5 + i * 11, i === 0 ? banner.c : (banner.c === JAUNE ? OS : ACIER), false, 1);
   }
 
+  function plate(x, y, w, h) { G.rect(x, y, w, h, NP); G.rect(x + 1, y + h, w - 2, 1, NP); }
   function drawSound() {
     var y = (S.view.safe.t | 0) + 1, cx = SB.x + SB.w - 8;
+    plate(cx - 7, y - 1, 15, 13);
     if (muteFlash > 0) G.rect(cx - 7, y - 1, 15, 13, ARDOISE);
     put(sp(muted ? 'muet:acier' : 'son', 0), cx, y + 5);
   }
   function drawHUD() {
     var sf = S.view.safe, l = (sf.l | 0) + 3, y = (sf.t | 0) + 2;
-    G.rect(0, 0, W, (sf.t | 0) + hudH, NP);
-    G.rect(0, (sf.t | 0) + hudH, W, 1, INDIGO);
+    var lives = Math.max(0, P.lives), hw = textW('♥', 1) + 2, nh = Math.max(VIES, lives), sw0 = textW(pad(score, 7), 1);
+    plate(l - 3, y - 2, sw0 + 6 + nh * hw + 4, 11);
     var sw = text(pad(score, 7), l, y, JAUNE, true, 1);
-    var lx = l + sw + 6, lives = Math.max(0, P.lives), hw = textW('♥', 1) + 2;
-    var nh = Math.max(VIES, lives);
+    var lx = l + sw + 6;
     for (var i = 0; i < nh; i++) text('♥', lx + i * hw, y, i < lives ? (i >= VIES ? JAUNE : OS) : ARDOISE, true, 1);
     /* le défi : nom, progrès, et l'issue */
     var d = DEFI, cy = portrait ? y + 10 : y, left = portrait ? l : lx + (VIES + 1) * hw + 8, right = SB.x - 4;
@@ -1430,6 +1435,7 @@ N.game = (function () {
     var tail = d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : (d.etat === 'reussi' ? ' ✓' : ' ✗');
     var nw = textW(d.nom, 1), tw = nw + textW(tail, 1);
     var tx = Math.round(clamp(W / 2 - tw / 2, left, Math.max(left, right - tw)));
+    plate(tx - 3, cy - 2, tw + 6, 11);
     text(d.nom, tx, cy, col, true, 1);
     text(tail, tx + nw, cy, d.etat === 'actif' ? (chain > 0 ? JAUNE : ACIER) : (d.etat === 'reussi' ? JAUNE : ROSE), true, 1);
     if (d.etat === 'actif' && chain > 0) {                   // la fenêtre de chaîne qui se vide
@@ -1439,8 +1445,8 @@ N.game = (function () {
     drawSound();
   }
 
+  function veil() { G.ditherRect(0, 0, W, H, NP, 0.5); }
   function drawPause() {
-    G.ditherRect(0, 0, W, H, NP, 0.5);
     var bw = Math.min(W - 8, 160), bh = 42, x = Math.round((W - bw) / 2), y = Math.round(H / 2 - bh / 2);
     G.rect(x - 1, y - 1, bw + 2, bh + 2, NP); G.rect(x, y, bw, bh, NUIT); G.rect(x, y, bw, 1, ACIER);
     textC('PAUSE', W / 2, y + 7, OS, false, 2);
@@ -1474,7 +1480,9 @@ N.game = (function () {
     var ok = DEFI.etat === 'reussi';
     textC(ok ? '✓ DÉFI RÉUSSI' : '✗ DÉFI RATÉ', cx, y + 51, ok ? JAUNE : ROSE, false, 1);
     textC(DEFI.nom + (ok ? '' : '  ' + DEFI.meilleur + '/' + DEFI.but), cx, y + 62, ACIER, false, 1);
-    if (finT >= GARDE && (Math.floor(finT * 2) & 1) === 0) textC(hasTouch() ? 'TOUCHE POUR REJOUER' : 'ESPACE POUR REJOUER', cx, y + 79, OS, false, 1);
+    /* estompé pendant la garde (le doigt posé à la mort ne relance pas), franc ensuite, avec un battement lent */
+    var rj = hasTouch() ? 'TOUCHE POUR REJOUER' : 'ESPACE POUR REJOUER';
+    textC(rj, cx, y + 79, finT < GARDE ? ARDOISE : ((finT * 1.25) % 1 < 0.8 ? OS : ACIER), false, 1);
   }
 
   function drawTop() {
@@ -1485,7 +1493,7 @@ N.game = (function () {
       safe('intro.draw', function () { N.intro.draw(); });
       if (busy()) return;
     }
-    if (st === 'fin') { drawFinTop(); drawSound(); if (S.paused) drawPause(); return; }
+    if (st === 'fin') { if (S.paused) veil(); drawFinTop(); drawSound(); if (S.paused) drawPause(); return; }
     drawTelegraphs();
     for (var i = 0; i < E.length; i++) if (!E[i].dead) drawEnemy(E[i]);
     drawShots();
@@ -1497,6 +1505,7 @@ N.game = (function () {
     drawPops();
     drawGhost();
     drawBanner();
+    if (S.paused) veil();                          // le monde s'efface, le score et le défi restent nets
     drawHUD();
     if (S.paused) drawPause();
   }
