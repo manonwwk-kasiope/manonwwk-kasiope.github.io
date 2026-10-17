@@ -96,6 +96,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | `src/73-colosse.js`, `src/72-ennemis.js` | Codex (session parallèle codex-p4) | 18/10 à 00 h 37 | télégraphes du CYCLOPE, de la RUCHE et de la SENTINELLE dans `S.tele` |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
 | `src/77-score.js`, `src/78-hud.js` | Codex (session parallèle codex-p2) | 18/10 à 00 h 25 | bannières, palier, dernière vie |
+| `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `src/64-aventure.js`, `tools/aventure/` (nouveaux) | Claude cloud | 18/10 à 01 h 05 | N.aventure (le déroulé : choix, connexion, 1976, fissure, 1982, néon, films d'époque, fins, retrouvailles, teaser) et N.film (lecteur de film plein écran) |
 | `refonte/prototypes/plans.html` (nouveau), `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | prototype des plans parallèles ; films et portraits des deux pilotes (Higgsfield) |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
