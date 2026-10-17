@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { executer, principal, PROTO } from '../commun.mjs';
 
-export const meta = { id: 'R-38', titre: 'Verdict de la propriétaire', seuil: 'réponses recopiées aux jalons A et B ; chaque « non » suivi d’une correction ou d’une raison', bloquant: true };
+export const meta = { id: 'R-38', sansNavigateur: true, titre: 'Verdict de la propriétaire', seuil: 'réponses recopiées aux jalons A et B ; chaque « non » suivi d’une correction ou d’une raison', bloquant: true };
 
 export async function mesurer(banc, res) {
   const f = path.join(PROTO, 'refonte', 'RETOURS-PROPRIETAIRE.md');
@@ -14,7 +14,7 @@ export async function mesurer(banc, res) {
   const t = fs.readFileSync(f, 'utf8');
   for (const j of ['A', 'B']) {
     const m = t.match(new RegExp('^#+\\s*Jalon\\s+' + j + '\\b[^\\n]*\\n([\\s\\S]*?)(?=^#+\\s|$(?![\\s\\S]))', 'mi'));
-    if (!m) { res.horsBanc(`jalon ${j}`, `section « Jalon ${j} » absente : le jalon n’a pas encore eu lieu (REFONTE.md § 8.4)`); continue; }
+    if (!m) { res.horsBanc(`jalon ${j}`, `section « Jalon ${j} » absente : statut du jalon non établi (REFONTE.md § 8.4)`); continue; }
     const items = (m[1].match(/^\s*(\d+[.)]|[-*])\s+/gm) || []).length;
     res.verifie(`jalon ${j} : réponses recopiées (items)`, items, '≥ 6 (les six questions)', items >= 6);
     const nons = (m[1].match(/\bnon\b/gi) || []).length;

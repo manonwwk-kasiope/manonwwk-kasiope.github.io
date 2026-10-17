@@ -12,12 +12,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import zlib from 'node:zlib';
 
-export const INTERFACES_PARTIE = ['N.game.reset', 'N.game.etat', 'N.game.dbg.simuler', 'N.journal.dump', 'N.pilote.niveau', 'N.pilote.activer'];
+export const INTERFACES_PARTIE = ['N.game.reset', 'N.game.etat', 'N.game.dbg.simuler', 'N.journal.dump', 'N.pilote.lancer'];
 export const PILOTES = ['inerte', 'tourneur', 'maladroit', 'kamikaze', 'humain', 'bon', 'expert', 'dieu'];
 export const JOUR = 20261017;
 
 function cle(banc, o) {
-  return [banc.empreinte, o.profil || 'paysage', o.pilote, o.variante || '-', o.graine, o.actions || '-', o.god ? 'god' : '-', o.maxT || 540, o.jour || JOUR, o.reducedMotion ? 'reduit' : '-'].join('_');
+  return [banc.empreinte, banc.instrument, o.profil || 'paysage', o.pilote, o.variante || '-', o.graine, o.actions || '-', o.god ? 'god' : '-', o.maxT || 540, o.jour || JOUR, o.reducedMotion ? 'reduit' : '-'].join('_');
 }
 function fichierCache(banc, o) { return path.join(banc.sortie, 'parties', cle(banc, o) + '.json.gz'); }
 

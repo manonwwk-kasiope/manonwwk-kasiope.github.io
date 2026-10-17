@@ -9,7 +9,7 @@ import path from 'node:path';
 import http from 'node:http';
 import crypto from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
 import { encodeIndex } from './png.mjs';
 
 export const ICI = path.dirname(fileURLToPath(import.meta.url));
@@ -29,7 +29,7 @@ export function options(argv = process.argv.slice(2)) {
   };
   const rapide = has('--rapide');
   return {
-    url: a('--url', 'http://127.0.0.1:8112/proto-neon/index.html'),
+    url: a('--url', 'http://127.0.0.1:0/proto-neon/index.html'),
     snake2030: a('--snake2030', null),
     profils: a('--profil', null) ? a('--profil').split(',') : null,
     graines: plage(a('--graines', null), null),
@@ -47,8 +47,8 @@ export function options(argv = process.argv.slice(2)) {
 /* ---------------------------------------------------------------- profils */
 const UA_IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1';
 export const PROFILS = {
-  paysage: { viewport: { width: 844, height: 390 }, screen: { width: 844, height: 390 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: UA_IPHONE },
-  portrait: { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: UA_IPHONE },
+  paysage: { ...devices['iPhone 13 landscape'], viewport: { width: 844, height: 390 }, screen: { width: 844, height: 390 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: UA_IPHONE },
+  portrait: { ...devices['iPhone 13'], viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: UA_IPHONE },
   bureau: { viewport: { width: 1440, height: 900 }, screen: { width: 1440, height: 900 }, deviceScaleFactor: 1, isMobile: false, hasTouch: false }
 };
 export const TOUS_PROFILS = ['paysage', 'portrait', 'bureau'];
@@ -87,13 +87,13 @@ async function joignable(url) {
 }
 export async function assurerServeur(url) {
   if (!/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?\//.test(url)) return { url, propre: false };
-  if (await joignable(url)) return { url, propre: false };
+  if (new URL(url).port !== '0' && await joignable(url)) return { url, propre: false };
   const u = new URL(url);
-  const port = +u.port || 80;
+  const port = u.port === '0' ? 0 : (+u.port || 80);
   SERVEUR = http.createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     let f = path.join(DEPOT, p);
-    if (!f.startsWith(DEPOT)) { res.writeHead(403); return res.end(); }
+    if (f !== DEPOT && !f.startsWith(DEPOT + path.sep)) { res.writeHead(403); return res.end(); }
     if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
     if (!fs.existsSync(f)) { res.writeHead(404); return res.end('absent'); }
     const st = fs.statSync(f), type = TYPES[path.extname(f).toLowerCase()] || 'application/octet-stream';
@@ -107,19 +107,22 @@ export async function assurerServeur(url) {
     fs.createReadStream(f).pipe(res);
   });
   await new Promise((ok, ko) => { SERVEUR.once('error', ko); SERVEUR.listen(port, '127.0.0.1', ok); });
-  return { url, propre: true };
+  u.port = String(SERVEUR.address().port);
+  return { url: u.href, propre: true };
 }
 
 /* ---------------------------------------------------------------- le banc */
 export class Banc {
   constructor(opts) {
-    this.o = opts; this.url = opts.url; this.sortie = opts.sortie; this.nav = null; this.sessions = new Set();
+    this.o = opts; this.url = opts.url; this.sortie = opts.sortie; this.nav = null; this.sessions = new Set(); this.empreinte = 'non-lue';
     fs.mkdirSync(path.join(this.sortie, 'captures'), { recursive: true });
   }
   async demarrer() {
-    await assurerServeur(this.url);
-    this.nav = await chromium.launch({ headless: !this.o.visible, args: ['--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
+    const serveur = await assurerServeur(this.url);
+    this.url = serveur.url;
+    this.nav = await chromium.launch({ headless: !this.o.visible, args: ['--mute-audio', '--autoplay-policy=no-user-gesture-required', '--enable-precise-memory-info'] });
     this.empreinte = await empreinteBundle(this.url);
+    this.instrument = crypto.createHash('sha256').update(fs.readFileSync(fileURLToPath(import.meta.url))).update(SONDE).update(fs.readFileSync(path.join(ICI, 'parties.mjs'))).digest('hex').slice(0, 12);
     return this;
   }
   /* une vue du banc pour un critère : mêmes options et même navigateur, mais ses propres sessions, que
@@ -178,7 +181,7 @@ export class Session {
     this.urlOuverte = u.href;
     await this.page.goto(u.href, { waitUntil: 'load', timeout: 30000 });
     if (!o.url) {
-      try { await this.page.waitForFunction(() => window.__N && window.__S && window.__MESURE, null, { timeout: 15000 }); this.pret = true; }
+      try { await this.page.waitForFunction(() => window.__N && window.__N.game && window.__N.gfx && window.__N.gfx.W > 0 && window.__S && window.__MESURE, null, { timeout: 15000 }); this.pret = true; }
       catch (e) { this.pret = false; }
     } else this.pret = true;
     return this;
@@ -186,7 +189,7 @@ export class Session {
   /* recharge la page (retour à l'état de démarrage, mêmes crochets) */
   async recharger() {
     await this.page.goto(this.urlOuverte, { waitUntil: 'load', timeout: 30000 });
-    try { await this.page.waitForFunction(() => window.__N && window.__S && window.__MESURE, null, { timeout: 15000 }); this.pret = true; } catch (e) { this.pret = false; }
+    try { await this.page.waitForFunction(() => window.__N && window.__N.game && window.__N.gfx && window.__N.gfx.W > 0 && window.__S && window.__MESURE, null, { timeout: 15000 }); this.pret = true; } catch (e) { this.pret = false; }
   }
   async cdpSession() { if (!this.cdp) this.cdp = await this.ctx.newCDPSession(this.page); return this.cdp; }
   eval(fn, arg) { return this.page.evaluate(fn, arg); }
@@ -216,27 +219,29 @@ export class Session {
     const abs = await this.absents(['N.game.dbg.scene']);
     if (abs.length) return { ok: false, raison: 'interface N.game.dbg.scene absente' };
     const r = await this.page.evaluate(n => {
-      try { const v = window.__MESURE.dbg().scene(n); return { ok: v !== false, v: v === undefined ? null : (typeof v === 'object' ? null : v), etat: window.__MESURE.etat() }; }
+      try {
+        // Préparation d’une scène de debug uniquement : quitter l’ouverture par son interface publique.
+        // demarrer() n’appelle jamais skip et conserve l’écart reset/depart.
+        const intro = window.__N.intro;
+        if (intro && intro.state && intro.state().mode === 'ouverture' && intro.skip) intro.skip();
+        const v = window.__MESURE.dbg().scene(n); return { ok: v !== false, v: v === undefined ? null : (typeof v === 'object' ? null : v), etat: window.__MESURE.etat() }; }
       catch (e) { return { ok: false, raison: 'scène ' + n + ' : ' + (e && e.message || e) }; }
     }, nom);
     if (!r.ok) return { ok: false, raison: r.raison || ('scène ' + nom + ' absente (dbg.scene a rendu false)') };
-    if (images) await this.images(images);
-    return r;
+    if (nom === 'vol' && r.etat === 'panneau') {
+      const atteint = await this.attendre(() => window.__MESURE.etat() === 'vol');
+      if (!atteint) return { ok: false, raison: 'scène vol : interlude non terminé, état ' + await this.etat() };
+    }
+    if (images && !await this.images(images)) return { ok: false, raison: 'scène ' + nom + ' : compteur __FRAME immobile' };
+    const rendu = await this.eval(() => ({ phase: window.__S.phase, etat: window.__MESURE.etat() }));
+    if (rendu.phase === 'intro') return { ok: false, raison: 'scène ' + nom + ' : état ' + rendu.etat + ' mais S.phase=intro ; 90-boot dessine encore la cinématique' };
+    return { ...r, etat: rendu.etat };
   }
   /* démarre une partie (§ 4.10 : reset(graine) puis départ direct en plongee) */
   async demarrer(o = {}) {
-    const abs = await this.absents(['N.game.reset', 'N.game.etat'].concat(o.pilote ? ['N.pilote.niveau', 'N.pilote.activer'] : []).concat(o.god ? ['N.game.dbg.god'] : []));
+    const abs = await this.absents(['N.game.reset', 'N.game.etat'].concat(o.pilote ? ['N.pilote.lancer'] : []).concat(o.god ? ['N.game.dbg.god'] : []));
     if (abs.length) return { ok: false, raison: (abs.length > 1 ? 'interfaces ' : 'interface ') + abs.join(', ') + (abs.length > 1 ? ' absentes' : ' absente') };
     const r = await this.page.evaluate(x => { try { return window.__MESURE.demarrer(x); } catch (e) { return { ok: false, raison: String(e && e.message || e) }; } }, o);
-    if (!r.ok && !r.raison) {
-      /* en mode dessiné : quelques touchers simulés pour passer les écrans */
-      for (let i = 0; i < 10 && !r.ok; i++) {
-        await this.page.evaluate(() => { const d = window.__MESURE.dbg(); if (d && d.input) d.input({ any: true, valider: true }); });
-        await this.images(10, 5);
-        r.etat = await this.etat(); r.ok = (await this.page.evaluate(() => window.__MESURE.ETATS_JEU)).includes(r.etat);
-      }
-      if (!r.ok) r.raison = 'départ impossible : état « ' + r.etat + ' » après N.game.reset(graine, {depart:\'plongee\'})';
-    }
     return r;
   }
   async tampon(avecMasque = false) {
@@ -350,11 +355,15 @@ export function principal(urlModule) { return process.argv[1] && pathToFileURL(p
 
 export async function mesurerCritere(banc, mod) {
   const res = new Resultat(mod.meta), b0 = banc.enfant();
-  try { await mod.mesurer(b0, res); } catch (e) { res.erreur(e); }
+  try {
+    if (banc.indisponible && !mod.meta.sansNavigateur) res.nonMesurable('environnement Playwright', banc.indisponible);
+    else await mod.mesurer(b0, res);
+  } catch (e) { res.erreur(e); }
   for (const s of [...b0.sessions]) { try { await s.fermer(); } catch (e) { } }
   const b = res.bilan();
   b.bundle = { url: banc.url, empreinte: banc.empreinte };
   b.date = new Date().toISOString();
+  b.dateParis = dateParis();
   fs.writeFileSync(path.join(banc.sortie, `${mod.meta.id}.json`), JSON.stringify(b, null, 1));
   return b;
 }
@@ -367,7 +376,8 @@ export function ligneBilan(b) {
 /* lancement d'un critère seul : node tools/mesure/criteres/R-xx-….mjs [options] */
 export async function executer(mod) {
   const o = options();
-  const banc = await new Banc(o).demarrer();
+  const banc = new Banc(o);
+  try { await banc.demarrer(); } catch (e) { banc.indisponible = String(e.message || e); }
   let b;
   try { b = await mesurerCritere(banc, mod); } finally { await banc.fermer(); }
   console.log(ligneBilan(b));
@@ -375,7 +385,7 @@ export async function executer(mod) {
   for (const n of b.notes) console.log('   note : ' + n);
   if (b.exception) console.log(b.exception);
   console.log('   → ' + path.relative(process.cwd(), path.join(o.sortie, b.id + '.json')));
-  process.exit(b.statut === 'echec' || b.statut === 'erreur' ? 1 : 0);
+  process.exit(banc.indisponible || b.statut === 'echec' || b.statut === 'erreur' ? 1 : 0);
 }
 
 /* ---------------------------------------------------------------- aides communes aux critères */
@@ -396,3 +406,8 @@ export async function exiger(session, res, nom, chemins) {
 /* les scènes de jeu de référence pour les dix captures de jeu (R-02, R-03) */
 export const SCENES_JEU = ['calme', 'montee', 'chaos', 'colosse', 'charge', 'v5', 'boss3', 'travelling', 'convoi', 'lasso6'];
 export const SCENES_SPECIALES = ['vol', 'inversion', 'cartes', 'fin', 'mortTir'];
+
+export function dateParis() {
+  const date = new Date(), zone = { timeZone: 'Europe/Paris' };
+  return new Intl.DateTimeFormat('fr-FR', { ...zone, dateStyle: 'short' }).format(date) + ' · ' + new Intl.DateTimeFormat('fr-FR', { ...zone, hour: '2-digit', minute: '2-digit' }).format(date).replace(':', ' h ');
+}

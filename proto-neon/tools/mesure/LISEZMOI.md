@@ -15,7 +15,7 @@ se faire). Le jour où le lot qui possède l'interface la livre, la mesure se fa
 
 ```
 node tools/mesure/lancer.mjs                         # les 38 critères, aux valeurs du plan (long : 1 h et plus)
-node tools/mesure/lancer.mjs --rapide --parallele 3  # graines et durées réduites, environ 6 min
+node tools/mesure/lancer.mjs --rapide --parallele 1  # graines et durées réduites, durée variable selon les interfaces disponibles
 node tools/mesure/criteres/R-02-palette.mjs          # un seul critère
 node tools/mesure/lancer.mjs --seulement R-01,R-02,R-03,R-21 --rapide   # la part des critères du banc de non-régression
 node tools/mesure/criteres/R-09-tete-visible.mjs --url http://127.0.0.1:8112/proto-neon/tools/L1/index.html
@@ -23,7 +23,7 @@ node tools/mesure/criteres/R-09-tete-visible.mjs --url http://127.0.0.1:8112/pro
 
 | Option | Effet |
 |---|---|
-| `--url URL` | le bundle mesuré (défaut `http://127.0.0.1:8112/proto-neon/index.html`) ; si l'adresse locale ne répond pas, un serveur statique de secours est ouvert sur ce port, à la racine du dépôt |
+| `--url URL` | le bundle mesuré (défaut `http://127.0.0.1:0/proto-neon/index.html`) ; si l'adresse locale ne répond pas, un serveur statique de secours est ouvert sur ce port (0 : port libre attribué par le système), à la racine du dépôt |
 | `--rapide` | moins de graines (3 à 5 au lieu de 50), parties dessinées et fenêtres plus courtes ; les proportions deviennent indicatives |
 | `--long` | fenêtres plus longues que le plan (R-09 : 180 s, R-11 : partie entière) |
 | `--graines 1-50` ou `--graines 3,7,9` | impose les graines des pilotes |
@@ -39,7 +39,7 @@ node tools/mesure/criteres/R-09-tete-visible.mjs --url http://127.0.0.1:8112/pro
 Codes de sortie : un critère seul sort en 1 s'il est en échec ou en erreur ; le lanceur sort en 1 si un
 critère **bloquant** est en échec ou en erreur (et, avec `--strict`, non mesurable ou partiel).
 
-Outils : `/opt/node22/bin/node` et Playwright (`/opt/node22/lib/node_modules/playwright/index.mjs`) ; aucune
+Outils : `node` et Playwright (`import { chromium, devices } from 'playwright'`, résolu par le lien `node_modules` à la racine) ; aucune
 autre dépendance (le PNG est décodé et encodé par `png.mjs`, avec le zlib de Node).
 
 ## Les profils
@@ -130,7 +130,7 @@ contient :
 `apogees`, `vols`, `arene`, `pilote` (journal du pilote), `piloteConforme` (le pilote journalise ses
 décisions `cap` : c'est le pilote gelé, pas le repli du squelette), `transitions`, `appels`.
 
-Le cache est indexé par l'empreinte du bundle : un nouveau bundle rejoue tout. R-04 passe en premier dans
+Le cache est indexé par les empreintes du bundle et de l’instrument : un nouveau bundle rejoue tout. R-04 passe en premier dans
 le lanceur et remplit le cache des 8 pilotes ; R-05 à R-08, R-14 à R-16, R-21, R-23, R-27, R-31, R-32,
 R-34, R-35 relisent les mêmes parties.
 
@@ -188,7 +188,7 @@ Le contrat 1.0 ne fixe pas tout ce qu'un banc doit lire. Les bancs supposent les
 changent, seule la ligne concernée est à reprendre ici :
 
 1. **Le départ direct** : `N.game.reset(graine, {depart:'plongee'})` met la partie en `plongee` (c'est ce que
-   fait le squelette du lot 0b). Sinon `__MESURE.allerEnJeu` pousse par `dbg.input({any, valider})`.
+   fait le squelette du lot 0b). Sinon le banc conserve « non mesurable » : aucun toucher ni autre départ ne contourne cet écart.
 2. **`dbg.simuler(sec)`** fait avancer le temps de jeu de `sec`, borné en pas quand l'horloge est arrêtée.
 3. **`N.dir.vague()`** rend un objet `{n, nom, quartier, etape, evt}` (ou un nombre : les deux sont lus).
 4. **`N.decor.etat()`** sans argument rend le nom de l'état courant.
@@ -235,3 +235,13 @@ if (principal(import.meta.url)) executer({ meta, mesurer });
 
 `res.verifie(nom, valeur, seuil, ok, détails)`, `res.indicatif(…)`, `res.nonMesurable(nom, raison)`,
 `res.absent(nom, interfaces)`, `res.horsBanc(nom, raison)`, `res.note(texte)`, `res.capture(fichier)`.
+
+## Remise en état codex-08
+
+`node tools/mesure/verifier.mjs` contrôle les vrais critères R-02/R-03/R-21/R-30 sur le jeu puis sur des copies fautives dans un dossier temporaire. Les copies sont supprimées en fin de contrôle. Un seul Chromium, muet, à la fois. `--statique` effectue seulement les contrôles Node/VM sans DOM ; il ne valide ni les captures ni Safari.
+
+Un masque entièrement nul est indisponible ; il ne peut ni autoriser le cyan ni prouver un défaut de couleur. Les scènes de debug quittent uniquement l’ouverture par N.intro.skip avant leur installation ; cela n’est jamais appliqué au départ des parties. Une scène qui renvoie false reste absente ; aucun alias (v5 → chaos, etc.) n’est créé. Si S.phase reste intro, le banc refuse de prendre la cinématique pour une scène de jeu. Le VOL est attendu après son interlude. Une simulation figée n’est pas comptée comme partie valide.
+
+R-21 observe aussi les erreurs avant le départ. R-30 compare séparément les journaux initiaux de reset ; cette sous-mesure ne valide jamais les parties dessinées et simulées. Un journal vide ne constitue pas une preuve de déterminisme.
+
+En cas d’interdiction locale du serveur ou de Chromium, le lanceur écrit les critères non mesurables avec la cause d’environnement, puis sort en 1. R-38 reste lisible sans navigateur. Voir REMISE-EN-ETAT.md pour les preuves et les dépendances du jeu.

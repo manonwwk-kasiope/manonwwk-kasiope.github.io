@@ -103,3 +103,14 @@ Livré : `N.warp` (vision § 2), autonome, essayé par `tools/warp/` (banc : fac
 5. `N.warp.reset()` à chaque partie et à chaque vague forcée ; 6. musique en demi-temps pendant `N.warp.actif()` ;
 7. dans 90-boot : publier `S.input.action = { actif, x, y }` (le second doigt), pour guider la lunette au doigt.
 Dépend de l'horloge à pas fixe (codex-05) pour un vrai ralenti du monde.
+
+## codex-08 — remise en état du banc (18/10/2026 · 00 h 36, Paris)
+
+| lot | fichier | besoin | raison / preuve |
+|---|---|---|---|
+| codex-08 | `src/79-jeu.js:162` / contrat de départ | prendre en charge `reset(graine, {depart:'plongee'})` ou faire préciser officiellement le départ public prévu | `reset` fait `aller('demarrage')` et ne lit que `opts.direct` à la ligne 172 ; `tools/mesure/verification/statique.json` reproduit `demarrage` en VM avec les sources réelles. Le banc garde « non mesurable », sans appeler lancer, changer direct ni simuler des validations. |
+| codex-08 | `src/79-jeu.js:690` | livrer les scènes contractuelles `charge`, `v5`, `lasso6`, `inversion`, `convoi`, `travelling` | les six appels publics rendent false (preuve VM dans `verification/statique.json`) ; aucun alias vers une autre scène dans le banc. Dépendances notamment R-02/03/12/13/20/28/37. |
+| codex-08 | `src/79-jeu.js:692` | publier le vrai masque de propriété de la dernière image par `dbg.masque()` | le code rend systématiquement un `new Uint8Array` vide ; en paysage VM : 82 290 codes tous à zéro. Le banc déclare le masque indisponible, sans inventer les propriétaires ni conclure sur le cyan. |
+| codex-08 | `src/79-jeu.js:661` / `src/90-boot.js:339` | brancher le pas fixe et les horodatages réels dans la simulation et la boucle, sans correction du temps par le banc | après `dbg.scene('calme')` et `dbg.simuler(N.R.temps.imageRef)` : état jeu mais `N.horloge.t()` et `pas()` restent à zéro en VM ; `N.journal` lit cette horloge (`03-socle.js:658`). Le test navigateur des horloges reste à vérifier. |
+| codex-08 | `REFONTE.md:2893` (R-05) / `src/02-regles.js:100` | arbitrer la référence « huit causes de mort » face à la morsure qui coupe ; conserver l’invariant propriétaire | `70-joueuse.js:354` ne tue naturellement par morsure que si effet='mort', tandis que N.R impose 'coupe'. Les pilotes ne peuvent satisfaire naturellement la huitième cause ; le seuil du banc n’est pas abaissé et aucune mort artificielle n’est fabriquée. |
+| codex-08 | environnement d’exécution Playwright | relancer le banc et ses mutations dans une session autorisée à écouter sur localhost et à lancer Chromium | serveur : `listen EPERM` sur port libre ; Chromium : `bootstrap_check_in … Permission denied (1100)`. Commandes prêtes : `node tools/mesure/verifier.mjs`, puis `node tools/mesure/lancer.mjs --rapide --parallele 1`. Aucun résultat navigateur revendiqué. |

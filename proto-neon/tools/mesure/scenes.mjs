@@ -13,7 +13,10 @@ export async function allerTitre(session, maxSec = 20) {
   if (!['demarrage', 'ouverture', 'titre', 'attraction', 'briefing'].includes(await session.etat())) await session.recharger();
   /* d'abord le crochet dbg.etat(nom) du squelette (79-jeu), s'il accepte un état à atteindre */
   const direct = await session.eval(() => { try { const d = window.__MESURE.dbg(); if (d.etat.length >= 1) d.etat('titre'); } catch (e) { } return window.__MESURE.etat(); });
-  if (direct === 'titre') return { ok: true, etat: 'titre', par: 'dbg.etat' };
+  if (direct === 'titre') {
+    if (await session.eval(() => window.__S.phase === 'intro')) return { ok: false, raison: 'état titre atteint mais S.phase=intro ; le titre du jeu n’est pas dessiné par 90-boot' };
+    return { ok: true, etat: 'titre', par: 'dbg.etat' };
+  }
   const t0 = Date.now();
   while (Date.now() - t0 < maxSec * 1000) {
     const e = await session.etat();

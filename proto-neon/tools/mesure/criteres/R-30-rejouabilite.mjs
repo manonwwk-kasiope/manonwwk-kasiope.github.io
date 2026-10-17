@@ -7,8 +7,8 @@ import { partie } from '../parties.mjs';
 export const meta = { id: 'R-30', titre: 'Rejouabilité', seuil: 'même graine et mêmes entrées → même journal (dessiné et simulé) ; graine différente → vagues différentes', bloquant: true };
 /* types qui dépendent de l'image ou de l'audio, et non de la simulation */
 const HORS_JEU = ['perf', 'vue', 'sfx', 'bloc', 'section', 'geste'];
-const cle = (J, T) => J.filter(x => !HORS_JEU.includes(x.type) && x.t <= T).map(x => JSON.stringify([x.pas, x.type, x.d]));
-function comparer(a, b) {
+export const cle = (J, T) => J.filter(x => !HORS_JEU.includes(x.type) && x.t <= T).map(x => JSON.stringify([x.pas, x.type, x.d]));
+export function comparer(a, b) {
   const n = Math.min(a.length, b.length);
   for (let i = 0; i < n; i++) if (a[i] !== b[i]) return { egaux: false, premier: i, a: a[i].slice(0, 160), b: b[i].slice(0, 160) };
   return { egaux: a.length === b.length, premier: a.length === b.length ? -1 : n, longueurs: [a.length, b.length] };
@@ -20,8 +20,21 @@ async function dessinee(banc, graine, T) {
     const d = await s.demarrer({ graine, pilote: 'bon' });
     if (!d.ok) return { ok: false, raison: d.raison };
     const J = [];
-    while (true) { await s.page.waitForTimeout(1000); J.push(...(await s.journal(true) || [])); const t = await s.t(), e = await s.etat(); if (t >= T + 0.5 || e === 'fin' || e === 'initiales') break; }
+    const limite = Date.now() + Math.max(30000, (T + 1) * 3000);
+    while (true) { if (Date.now() > limite) return { ok: false, raison: 'horloge de jeu bloquée pendant le rejeu dessiné ; état ' + await s.etat() + ', t=' + await s.t() };  await s.page.waitForTimeout(1000); J.push(...(await s.journal(true) || [])); const t = await s.t(), e = await s.etat(); if (t >= T + 0.5 || e === 'fin' || e === 'initiales') break; }
     return { ok: true, journal: J };
+  } finally { await s.fermer(); }
+}
+
+export async function journalInitial(banc, graine) {
+  const s = await banc.ouvrir('paysage', { dt: 1 / 60, graine });
+  try {
+    return await s.eval(g => {
+      const N = window.__N;
+      N.journal.actif(true);
+      N.game.reset(g, { depart: 'plongee', mode: 'banc' });
+      return N.journal.dump();
+    }, graine);
   } finally { await s.fermer(); }
 }
 
@@ -30,10 +43,17 @@ export async function mesurer(banc, res) {
   const p = await banc.ouvrir('paysage', {});
   if (!await exiger(p, res, 'journal', ['N.journal.dump', 'N.game.dbg.simuler'])) return;
   await p.fermer();
+  // Contrôle indépendant : le reset et le journal sont publics même quand le départ ne fonctionne pas.
+  // Ce contrôle ne valide jamais les parties dessinées/simulées exigées ci-dessous.
+  const ia = cle(await journalInitial(banc, 7), 0), ib = cle(await journalInitial(banc, 7), 0);
+  if (!ia.length || !ib.length) res.nonMesurable('réinitialisation reproductible', 'journal initial de jeu vide');
+  else { const r = comparer(ia, ib); res.verifie('réinitialisation : même graine → même journal initial', r.egaux, true, r.egaux, r); }
+
   /* simulé : deux fois la même graine (sans cache), puis une autre graine */
   const o = { pilote: 'bon', graine: 7, maxT: T, echantillon: 'return 0' };
   const a = await partie(banc, o), b = await partie(banc, o), c = await partie(banc, { ...o, graine: 8 });
-  if (!a.ok) return res.nonMesurable('mode simulé', a.raison);
+  for (const [nom, p] of [['a', a], ['b', b], ['c', c]]) if (!p.ok) return res.nonMesurable('mode simulé (' + nom + ')', p.raison);
+  if (!cle(a.journal, T).length || !cle(b.journal, T).length) return res.nonMesurable('mode simulé', 'journal de jeu vide : égalité non probante');
   const ka = cle(a.journal, T), kb = cle(b.journal, T);
   const r1 = comparer(ka, kb);
   res.verifie('simulé : même graine → même journal', r1.egaux, true, r1.egaux, { entrees: ka.length, ...r1 });
@@ -45,6 +65,7 @@ export async function mesurer(banc, res) {
   const da = await dessinee(banc, 7, T), db = await dessinee(banc, 7, T);
   if (!da.ok || !db.ok) return res.nonMesurable('mode dessiné', da.raison || db.raison);
   const kda = cle(da.journal, T), kdb = cle(db.journal, T);
+  if (!kda.length || !kdb.length) return res.nonMesurable('mode dessiné', 'journal de jeu vide : égalité non probante');
   const r2 = comparer(kda, kdb);
   res.verifie('dessiné : même graine → même journal', r2.egaux, true, r2.egaux, { entrees: kda.length, ...r2 });
   const sansPas = l => l.map(s => s.replace(/^\[\d+,/, '['));

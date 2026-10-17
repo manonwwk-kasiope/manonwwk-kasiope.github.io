@@ -1,0 +1,298 @@
+{
+  "dateParis": "18/10/2026 · 00 h 38",
+  "limite": "Node/VM sans DOM : états et sonde seulement, aucune qualification Safari ni capture navigateur.",
+  "controles": [
+    {
+      "nom": "Playwright résolu via node_modules et profils iPhone/bureau",
+      "ok": true
+    },
+    {
+      "nom": "dbg fonction portant des méthodes, sans appel à son instantané",
+      "ok": true
+    },
+    {
+      "nom": "aucun contournement si reset reste en demarrage",
+      "ok": true
+    },
+    {
+      "nom": "masque sans propriétaires refusé, aucune réussite par masque nul",
+      "ok": true
+    },
+    {
+      "nom": "pilote public lancer",
+      "ok": true
+    },
+    {
+      "nom": "R-02 : analyse réelle du tampon, index fautif détecté",
+      "ok": true
+    },
+    {
+      "nom": "R-03 : cyan appartenant au décor refusé",
+      "ok": true
+    },
+    {
+      "nom": "R-21 : défaut dans __ERR détecté par la sonde",
+      "ok": true
+    },
+    {
+      "nom": "R-30 : même journal accepté, journal altéré et troncature refusés",
+      "ok": true
+    }
+  ],
+  "depart": {
+    "ok": false,
+    "etapes": [
+      "reset:demarrage"
+    ],
+    "etat": "demarrage",
+    "raison": "départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  },
+  "avantApres": {
+    "resolutionDbg": {
+      "avant": null,
+      "apres": "function"
+    },
+    "depart": {
+      "avant": "demarrage (constat fourni)",
+      "apres": "demarrage",
+      "contournement": false
+    }
+  },
+  "scenes": {
+    "charge": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "v5": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "boss3": {
+      "ok": true,
+      "etat": "boss"
+    },
+    "mur": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "morsure": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "lasso6": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "mortTir": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "cartes": {
+      "ok": true,
+      "etat": "cartes"
+    },
+    "fin": {
+      "ok": true,
+      "etat": "fin"
+    },
+    "vol": {
+      "ok": true,
+      "etat": "panneau"
+    },
+    "inversion": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "convoi": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "travelling": {
+      "ok": false,
+      "etat": "demarrage"
+    },
+    "calme": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "montee": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "chaos": {
+      "ok": true,
+      "etat": "jeu"
+    },
+    "colosse": {
+      "ok": true,
+      "etat": "boss"
+    }
+  },
+  "simulation": {
+    "avant": 0,
+    "apres": 0,
+    "etat": "jeu",
+    "pas": 0
+  },
+  "masque": {
+    "taille": 82290,
+    "proprietaires": [
+      0
+    ]
+  },
+  "criteres": [
+    {
+      "id": "R-01",
+      "titre": "Pixels carrés"
+    },
+    {
+      "id": "R-02",
+      "titre": "Palette fermée"
+    },
+    {
+      "id": "R-03",
+      "titre": "Cyan réservé"
+    },
+    {
+      "id": "R-04",
+      "titre": "Difficulté"
+    },
+    {
+      "id": "R-05",
+      "titre": "On peut mourir"
+    },
+    {
+      "id": "R-06",
+      "titre": "Aucune apparition dans la vue"
+    },
+    {
+      "id": "R-07",
+      "titre": "Télégraphes"
+    },
+    {
+      "id": "R-08",
+      "titre": "Mort juste"
+    },
+    {
+      "id": "R-09",
+      "titre": "Tête visible"
+    },
+    {
+      "id": "R-10",
+      "titre": "Monde et parallaxe"
+    },
+    {
+      "id": "R-11",
+      "titre": "Lumière, et décor qui se tait par la forme"
+    },
+    {
+      "id": "R-12",
+      "titre": "Explosion"
+    },
+    {
+      "id": "R-13",
+      "titre": "Photosensibilité"
+    },
+    {
+      "id": "R-14",
+      "titre": "Budgets d’effets"
+    },
+    {
+      "id": "R-15",
+      "titre": "Rythme"
+    },
+    {
+      "id": "R-16",
+      "titre": "Progression dans la partie"
+    },
+    {
+      "id": "R-17",
+      "titre": "Mort mise en scène"
+    },
+    {
+      "id": "R-18",
+      "titre": "Écran de fin"
+    },
+    {
+      "id": "R-19",
+      "titre": "Attraction (P3)"
+    },
+    {
+      "id": "R-20",
+      "titre": "Performance"
+    },
+    {
+      "id": "R-21",
+      "titre": "Zéro erreur"
+    },
+    {
+      "id": "R-22",
+      "titre": "Commandes"
+    },
+    {
+      "id": "R-23",
+      "titre": "Un pouce"
+    },
+    {
+      "id": "R-24",
+      "titre": "Portrait et paysage"
+    },
+    {
+      "id": "R-25",
+      "titre": "Musique de la propriétaire"
+    },
+    {
+      "id": "R-26",
+      "titre": "Mixage"
+    },
+    {
+      "id": "R-27",
+      "titre": "Jouable sans le son"
+    },
+    {
+      "id": "R-28",
+      "titre": "Mouvement réduit"
+    },
+    {
+      "id": "R-29",
+      "titre": "Pause"
+    },
+    {
+      "id": "R-30",
+      "titre": "Rejouabilité"
+    },
+    {
+      "id": "R-31",
+      "titre": "Le plateau se déplace"
+    },
+    {
+      "id": "R-32",
+      "titre": "Variété"
+    },
+    {
+      "id": "R-33",
+      "titre": "Gestes sûrs"
+    },
+    {
+      "id": "R-34",
+      "titre": "LASSO jouable"
+    },
+    {
+      "id": "R-35",
+      "titre": "Relance"
+    },
+    {
+      "id": "R-36",
+      "titre": "Raison de revenir"
+    },
+    {
+      "id": "R-37",
+      "titre": "Lisibilité de l’arsenal"
+    },
+    {
+      "id": "R-38",
+      "titre": "Verdict de la propriétaire"
+    }
+  ],
+  "consoleVM": []
+}

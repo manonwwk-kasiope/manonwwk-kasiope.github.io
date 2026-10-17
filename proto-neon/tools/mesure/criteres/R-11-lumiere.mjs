@@ -17,7 +17,7 @@ function juger(res, nom, a, C, etat) {
   res.verifie(`${nom} : pixels lumineux`, a.lumineux, '≥ ' + c.part, a.lumineux >= c.part);
   res.verifie(`${nom} : luminance moyenne`, a.moyenneL, '≥ ' + c.moyenne, a.moyenneL >= c.moyenne);
   res.verifie(`${nom} : vide`, a.vide, '< ' + C.videMax, a.vide < C.videMax);
-  if (!a.masque) { res.absent(`${nom} : décor seul, cyan et magenta du décor, gaine`, 'N.game.dbg.masque'); return; }
+  if (!a.masque) { res.nonMesurable(`${nom} : décor seul, cyan et magenta du décor, gaine`, a.raisonMasque || 'masque de propriété indisponible'); return; }
   res.verifie(`${nom} : décor seul lumineux (code 8)`, a.decorLumineux, C.decorSeul, a.decorLumineux >= C.decorSeul[0] && a.decorLumineux <= C.decorSeul[1]);
   res.verifie(`${nom} : cyan dans le décor (pixels)`, a.decorCyan, 0, a.decorCyan === 0);
   res.verifie(`${nom} : magenta et rose pâle du décor`, a.decorMagenta, '< 0.005', a.decorMagenta < 0.005);

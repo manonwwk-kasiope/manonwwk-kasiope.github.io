@@ -1,0 +1,87 @@
+{
+ "id": "R-21",
+ "titre": "Zéro erreur",
+ "seuil": "__ERR.count = 0 et console vide partout",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "3 ok, 0 en échec, 0 indicatives hors cible, 7 non mesurables",
+ "mesures": [
+  {
+   "nom": "paysage : chargement, avant départ",
+   "valeur": 0,
+   "seuil": "0, console vide",
+   "statut": "ok",
+   "err": 0,
+   "sigs": [],
+   "console": [],
+   "pageErreurs": [],
+   "zero": true
+  },
+  {
+   "nom": "portrait : chargement, avant départ",
+   "valeur": 0,
+   "seuil": "0, console vide",
+   "statut": "ok",
+   "err": 0,
+   "sigs": [],
+   "console": [],
+   "pageErreurs": [],
+   "zero": true
+  },
+  {
+   "nom": "bureau : chargement, avant départ",
+   "valeur": 0,
+   "seuil": "0, console vide",
+   "statut": "ok",
+   "err": 0,
+   "sigs": [],
+   "console": [],
+   "pageErreurs": [],
+   "zero": true
+  },
+  {
+   "nom": "paysage : 8 pilotes × 2 graines (simulé)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  },
+  {
+   "nom": "portrait : 8 pilotes × 2 graines (simulé)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  },
+  {
+   "nom": "bureau : 8 pilotes × 2 graines (simulé)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  },
+  {
+   "nom": "paysage : 50 graines (pilote bon)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  },
+  {
+   "nom": "paysage : partie dessinée",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  },
+  {
+   "nom": "portrait : partie dessinée",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  },
+  {
+   "nom": "bureau : partie dessinée",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 7.2,
+ "bundle": {
+  "url": "http://127.0.0.1:64041/jeu/index.html",
+  "empreinte": "fede91f55af7"
+ },
+ "date": "2026-10-17T22:39:04.267Z",
+ "dateParis": "18/10/2026 · 00 h 39"
+}

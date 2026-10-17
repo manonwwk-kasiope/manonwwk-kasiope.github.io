@@ -16,7 +16,7 @@ export async function mesurer(banc, res) {
     const r = await atteindre(s, m);
     if (!r.ok) { res.nonMesurable(m, r.raison); continue; }
     const a = await s.analyse();
-    if (!a.masque) { res.nonMesurable(m, 'N.game.dbg.masque() a rendu null'); continue; }
+    if (!a.masque) { res.nonMesurable(m, await s.eval(() => window.__MESURE.raisonMasque)); continue; }
     pire = Math.max(pire, a.cyanHorsMasque);
     res.capture(await s.captureTampon('R-03-' + m));
     res.verifie(m, a.cyanHorsMasque, S.cyanHorsMasque, a.cyanHorsMasque < S.cyanHorsMasque, { cyanTotal: a.cyan, etat: a.etat });

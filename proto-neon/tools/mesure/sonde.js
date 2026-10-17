@@ -50,7 +50,7 @@
   /* ---- état ---- */
   M.vagueN = function () { var N = window.__N; try { var v = N.dir && N.dir.vague ? N.dir.vague() : 0; return v && typeof v === 'object' ? (v.n | 0) : (v | 0); } catch (e) { return 0; } };
   M.etat = function () { var g = window.__N && window.__N.game; try { return g && typeof g.etat === 'function' ? g.etat() : null; } catch (e) { return null; } };
-  M.dbg = function () { var g = window.__N && window.__N.game; return g && g.dbg && typeof g.dbg === 'object' ? g.dbg : null; };
+  M.dbg = function () { var g = window.__N && window.__N.game; return g && g.dbg && (typeof g.dbg === 'object' || typeof g.dbg === 'function') ? g.dbg : null; };
   M.t = function () { var N = window.__N; try { return N && N.horloge ? N.horloge.t() : (window.__S ? window.__S.t : 0); } catch (e) { return 0; } };
   M.erreurs = function () { var E = window.__ERR; return E ? { count: E.count, sigs: Object.keys(E.sigs || {}).slice(0, 12) } : { count: -1, sigs: [] }; };
 
@@ -59,7 +59,14 @@
     var g = window.__N.gfx, b = g.buf();
     return { W: g.W, H: g.H, PX: g.PX, buf: b };
   };
-  M.masque = function () { var d = M.dbg(); return d && d.masque ? d.masque() : null; };
+  M.masque = function () {
+    var d = M.dbg(), m = d && d.masque ? d.masque() : null;
+    M.raisonMasque = null;
+    if (!m) M.raisonMasque = 'N.game.dbg.masque() a rendu null';
+    else if (m.length !== window.__N.gfx.W * window.__N.gfx.H) M.raisonMasque = 'masque de propriété de taille différente du tampon';
+    else if (!m.some(function (v) { return v !== 0; })) M.raisonMasque = 'N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)';
+    return M.raisonMasque ? null : m;
+  };
   M.b64 = function (u8) {
     var s = '', CH = 0x8000;
     for (var i = 0; i < u8.length; i += CH) s += String.fromCharCode.apply(null, u8.subarray(i, i + CH));
@@ -116,7 +123,7 @@
   M.analyseCourante = function (o) {
     var t = M.tampon(), m = (o && o.masque === false) ? null : M.masque();
     var r = M.analyse(t.buf, t.W, t.H, m, o);
-    r.W = t.W; r.H = t.H; r.PX = t.PX; r.etat = M.etat(); r.t = M.t(); r.image = window.__FRAME;
+    r.raisonMasque = M.raisonMasque; r.W = t.W; r.H = t.H; r.PX = t.PX; r.etat = M.etat(); r.t = M.t(); r.image = window.__FRAME;
     if (m && o && o.gaine) r.gaine = M.gaine(t.buf, t.W, t.H, m);
     return r;
   };
@@ -177,20 +184,11 @@
     r.etapes.push('reset:' + M.etat());
     if (o.actions && S && S.reglages) S.reglages.actions = o.actions;
     if (o.god && d && d.god) d.god(true);
-    if (o.pilote && N.pilote) { N.pilote.niveau(o.pilote, o.variante ? { variante: o.variante } : undefined); N.pilote.activer(true); }
+    if (o.pilote && N.pilote) { N.pilote.lancer(o.pilote, o.variante ? { variante: o.variante } : undefined); }
     r.etat = M.etat(); r.ok = JEU.indexOf(r.etat) >= 0;
+    if (!r.ok) r.raison = 'départ impossible : état ' + r.etat + ' après N.game.reset(graine, {depart:\'plongee\'}) ; aucun écran contourné';
     return r;
   };
-  /* pousse le jeu jusqu'à un état de jeu en mode simulé, par des touchers simulés (dbg.input) si besoin */
-  M.allerEnJeu = function (maxPas) {
-    var d = M.dbg(), n = 0;
-    while (JEU.indexOf(M.etat()) < 0 && n++ < (maxPas || 60)) {
-      if (d && d.input) d.input({ any: true, valider: true });
-      if (d && d.simuler) d.simuler(0.1);
-    }
-    return M.etat();
-  };
-
   /* ---- une partie complète en mode simulé, échantillonnée, dans la page (aucun aller-retour) ---- */
   M.simulerPartie = function (o) {
     o = o || {};
@@ -201,8 +199,7 @@
     var OBS = o.observer || ['N.hud.banniere', 'N.hud.toast', 'N.music.cue', 'N.music.section', 'N.music.sfx'], obsOk = [];
     for (var q = 0; q < OBS.length; q++) if (M.appels('obs:' + OBS[q], OBS[q], 30000)) obsOk.push(OBS[q]);
     var dem = M.demarrer(o);
-    if (!dem.ok) { M.allerEnJeu(80); dem.etat = M.etat(); dem.ok = JEU.indexOf(dem.etat) >= 0; }
-    if (!dem.ok) { for (var q3 = 0; q3 < obsOk.length; q3++) M.arreter('obs:' + obsOk[q3]); return { ok: false, raison: 'départ impossible : état ' + dem.etat + ' après N.game.reset(graine, {depart:\'plongee\'})', demarrage: dem }; }
+    if (!dem.ok) { for (var q3 = 0; q3 < obsOk.length; q3++) M.arreter('obs:' + obsOk[q3]); return { ok: false, raison: 'départ impossible : état ' + dem.etat + ' après N.game.reset(graine, {depart:\'plongee\'})', demarrage: dem, erreurs: M.erreurs() }; }
     /* le crochet par pas, sur N.cam.update : secousse et arène en mouvement, pas à pas */
     var crochet = false;
     if (N.cam && typeof N.cam.update === 'function') {
@@ -210,7 +207,7 @@
          une nouvelle partie dans la même tranche */
       crochet = M.parPas('__partie', 'var o = M.__pp, e = M.etat(), v = M.vagueN(); o.pas++; o.pasVague[v] = (o.pasVague[v] || 0) + 1;' +
         'if (e !== o.etat) { o.transitions.push({ t: M.t(), etat: e, vague: v }); o.etat = e; }' +
-        'if ((e === "fin" || e === "initiales") && !o.fini) { o.fini = true; if (N.pilote && N.pilote.activer) N.pilote.activer(false); }' +
+        'if ((e === "fin" || e === "initiales") && !o.fini) { o.fini = true; if (N.pilote && N.pilote.arreter) N.pilote.arreter(); }' +
         'if (o.fini) return;' +
         'if ((+S.shake || 0) > 0) o.secoues++; if (N.world && N.world.enMouvement && N.world.enMouvement()) o.mouvement[v] = (o.mouvement[v] || 0) + 1;');
       M.__pp = parPas;
@@ -243,6 +240,6 @@
     var fin = { etat: M.etat(), t: M.t(), err: M.erreurs() };
     try { fin.score = N.score ? N.score.score : null; fin.vies = N.score ? N.score.vies : null; fin.cartes = N.cartes && N.cartes.prises ? N.cartes.prises() : null; } catch (x) { }
     try { fin.prochain = N.score && N.score.prochain ? N.score.prochain() : null; fin.energie = N.score ? N.score.energie : null; } catch (x) { }
-    return { ok: true, raison: raison, demarrage: dem, journal: J, echantillons: E, parPas: crochet ? parPas : null, fin: fin, appels: appels };
+    return { ok: raison.indexOf('figee:') !== 0, raison: raison.indexOf('figee:') === 0 ? 'horloge de jeu figée dans ' + M.etat() + ' : N.horloge.t()=' + M.t() + ', N.horloge.pas()=' + N.horloge.pas() : raison, demarrage: dem, journal: J, echantillons: E, parPas: crochet ? parPas : null, fin: fin, appels: appels };
   };
 })();

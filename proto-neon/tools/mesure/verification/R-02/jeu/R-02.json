@@ -1,0 +1,138 @@
+{
+ "id": "R-02",
+ "titre": "Palette fermée",
+ "seuil": "100 % des pixels du tampon dans les seize",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "9 ok, 0 en échec, 0 indicatives hors cible, 7 non mesurables",
+ "mesures": [
+  {
+   "nom": "calme",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "jeu"
+  },
+  {
+   "nom": "montee",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "jeu"
+  },
+  {
+   "nom": "chaos",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "jeu"
+  },
+  {
+   "nom": "colosse",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "boss"
+  },
+  {
+   "nom": "charge",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène charge absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "v5",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène v5 absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "boss3",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "boss"
+  },
+  {
+   "nom": "travelling",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène travelling absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "convoi",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène convoi absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "lasso6",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène lasso6 absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "attraction",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : état titre atteint mais S.phase=intro ; le titre du jeu n’est pas dessiné par 90-boot"
+  },
+  {
+   "nom": "mort",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "mort"
+  },
+  {
+   "nom": "vol",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "vol"
+  },
+  {
+   "nom": "inversion",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène inversion absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "cartes",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "cartes"
+  },
+  {
+   "nom": "fin",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "horsPalette": 0,
+   "etat": "fin"
+  }
+ ],
+ "notes": [
+  "part dans la palette, image par image : calme 100.00 %, montee 100.00 %, chaos 100.00 %, colosse 100.00 %, boss3 100.00 %, mort 100.00 %, vol 100.00 %, cartes 100.00 %, fin 100.00 %"
+ ],
+ "captures": [
+  "tools/mesure/verification/R-02/jeu/captures/R-02-calme-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-montee-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-chaos-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-colosse-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-boss3-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-mort-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-vol-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-cartes-paysage-tampon.png",
+  "tools/mesure/verification/R-02/jeu/captures/R-02-fin-paysage-tampon.png"
+ ],
+ "duree": 3.6,
+ "bundle": {
+  "url": "http://127.0.0.1:64041/jeu/index.html",
+  "empreinte": "fede91f55af7"
+ },
+ "date": "2026-10-17T22:38:46.150Z",
+ "dateParis": "18/10/2026 · 00 h 38"
+}

@@ -1,0 +1,36 @@
+{
+ "id": "R-30",
+ "titre": "Rejouabilité",
+ "seuil": "même graine et mêmes entrées → même journal (dessiné et simulé) ; graine différente → vagues différentes",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "1 ok, 0 en échec, 0 indicatives hors cible, 1 non mesurables",
+ "mesures": [
+  {
+   "nom": "réinitialisation : même graine → même journal initial",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "egaux": true,
+   "premier": -1,
+   "longueurs": [
+    2,
+    2
+   ]
+  },
+  {
+   "nom": "mode simulé (a)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 0.7,
+ "bundle": {
+  "url": "http://127.0.0.1:64041/jeu/index.html",
+  "empreinte": "fede91f55af7"
+ },
+ "date": "2026-10-17T22:39:12.280Z",
+ "dateParis": "18/10/2026 · 00 h 39"
+}

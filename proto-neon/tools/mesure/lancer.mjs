@@ -12,7 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { options, Banc, mesurerCritere, ligneBilan, ICI } from './commun.mjs';
+import { options, Banc, mesurerCritere, ligneBilan, ICI, dateParis } from './commun.mjs';
 
 const o = options();
 const n = (() => { const i = process.argv.indexOf('--parallele'); return i > 0 ? Math.max(1, +process.argv[i + 1] || 1) : 1; })();
@@ -26,7 +26,8 @@ for (const f of fichiers) {
   if (o.sans.map(s => s.toUpperCase()).includes(m.meta.id)) continue;
   mods.push({ f, ...m });
 }
-const banc = await new Banc(o).demarrer();
+const banc = new Banc(o);
+try { await banc.demarrer(); } catch (e) { banc.indisponible = String(e.message || e); console.error('Banc indisponible : ' + banc.indisponible); }
 const t0 = Date.now(), bilans = [];
 const passer = async m => { const b = await mesurerCritere(banc, m); b.fichier = 'tools/mesure/criteres/' + m.f; bilans.push(b); console.log(ligneBilan(b)); };
 try {
@@ -39,7 +40,7 @@ try {
 bilans.sort((a, b) => a.id.localeCompare(b.id));
 const compte = k => bilans.filter(b => b.statut === k).length;
 const rapport = {
-  date: new Date().toISOString(), url: o.url, empreinte: banc.empreinte, options: { rapide: o.rapide, long: o.long, graines: o.graines, profils: o.profils, parallele: n },
+  date: new Date().toISOString(), dateParis: dateParis(), environnement: banc.indisponible || null, url: banc.url, empreinte: banc.empreinte, options: { rapide: o.rapide, long: o.long, graines: o.graines, profils: o.profils, parallele: n },
   duree: +((Date.now() - t0) / 1000).toFixed(1),
   totaux: { ok: compte('ok'), echec: compte('echec'), partiel: compte('partiel'), nonMesurable: compte('non-mesurable'), horsBanc: compte('hors-banc'), erreur: compte('erreur') },
   criteres: bilans
@@ -48,7 +49,7 @@ fs.writeFileSync(path.join(o.sortie, 'rapport.json'), JSON.stringify(rapport, nu
 const STAT = { ok: 'OK', echec: 'ÉCHEC', partiel: 'partiel', 'non-mesurable': 'non mesurable', 'hors-banc': 'hors banc', erreur: 'ERREUR' };
 const md = [
   `# Rapport des critères R-01 à R-38`, '',
-  `Bundle : \`${o.url}\` (empreinte ${banc.empreinte}) — ${rapport.date} — ${rapport.duree} s${o.rapide ? ' — **mode rapide** (graines et durées réduites : proportions indicatives)' : ''}.`, '',
+  `Bundle : \`${banc.url}\` (empreinte ${banc.empreinte}) — ${rapport.dateParis} (Paris) — ${rapport.duree} s${o.rapide ? ' — **mode rapide** (graines et durées réduites : proportions indicatives)' : ''}.`, '',
   `**${rapport.totaux.ok} ok, ${rapport.totaux.echec} en échec, ${rapport.totaux.partiel} partiels, ${rapport.totaux.nonMesurable} non mesurables, ${rapport.totaux.horsBanc} hors banc, ${rapport.totaux.erreur} en erreur.**`, '',
   '| Critère | Statut | Bloquant | Résumé |', '|---|---|---|---|',
   ...bilans.map(b => `| ${b.id} ${b.titre} | ${STAT[b.statut]} | ${b.bloquant ? 'oui' : 'non (P3)'} | ${String(b.resume).replace(/\|/g, '\\|')} |`), ''
@@ -65,4 +66,4 @@ fs.writeFileSync(path.join(o.sortie, 'rapport.md'), md.join('\n'));
 console.log(`\n${rapport.totaux.ok} ok, ${rapport.totaux.echec} en échec, ${rapport.totaux.partiel} partiels, ${rapport.totaux.nonMesurable} non mesurables, ${rapport.totaux.horsBanc} hors banc, ${rapport.totaux.erreur} en erreur — ${rapport.duree} s`);
 console.log('→ ' + path.relative(process.cwd(), path.join(o.sortie, 'rapport.md')));
 const bloque = bilans.some(b => b.bloquant && (b.statut === 'echec' || b.statut === 'erreur' || (strict && (b.statut === 'non-mesurable' || b.statut === 'partiel'))));
-process.exit(bloque ? 1 : 0);
+process.exit(banc.indisponible || bloque ? 1 : 0);

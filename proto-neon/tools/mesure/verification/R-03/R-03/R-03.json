@@ -1,0 +1,124 @@
+{
+ "id": "R-03",
+ "titre": "Cyan réservé",
+ "seuil": "cyan hors codes 1-4 du masque < 0,5 %",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "0 ok, 8 en échec, 0 indicatives hors cible, 6 non mesurables",
+ "mesures": [
+  {
+   "nom": "calme",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "jeu"
+  },
+  {
+   "nom": "montee",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "jeu"
+  },
+  {
+   "nom": "chaos",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "jeu"
+  },
+  {
+   "nom": "colosse",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "boss"
+  },
+  {
+   "nom": "charge",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène charge absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "v5",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène v5 absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "boss3",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "boss"
+  },
+  {
+   "nom": "travelling",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène travelling absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "convoi",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène convoi absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "lasso6",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène lasso6 absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "mort",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "mort"
+  },
+  {
+   "nom": "vol",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "vol"
+  },
+  {
+   "nom": "inversion",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : scène inversion absente (dbg.scene a rendu false)"
+  },
+  {
+   "nom": "cartes",
+   "valeur": 1,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 1,
+   "etat": "cartes"
+  }
+ ],
+ "notes": [
+  "pire image : 100.00 %"
+ ],
+ "captures": [
+  "tools/mesure/verification/R-03/R-03/captures/R-03-calme-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-montee-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-chaos-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-colosse-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-boss3-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-mort-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-vol-paysage-tampon.png",
+  "tools/mesure/verification/R-03/R-03/captures/R-03-cartes-paysage-tampon.png"
+ ],
+ "duree": 3.5,
+ "bundle": {
+  "url": "http://127.0.0.1:64041/R-03/index.html",
+  "empreinte": "b760dacce853"
+ },
+ "date": "2026-10-17T22:38:57.000Z",
+ "dateParis": "18/10/2026 · 00 h 38"
+}
