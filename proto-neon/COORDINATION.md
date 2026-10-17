@@ -65,6 +65,10 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/78-warp.js`, `tools/warp/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le WARP et le curseur cible (vision § 2), module autonome |
+| `src/69-arcade.js`, `tools/arcade/` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | l'époque 1982, la grille brisée (vision § 1), module autonome |
+| `src/62-choix.js`, `tools/choix/`, `art/pilote-*.png` (nouveaux) | Claude cloud | 18/10 à 00 h 50 | le choix LA PILOTE / LE PILOTE (vision § 6) |
+| `refonte/prototypes/plans.html` (nouveau), `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | prototype des plans parallèles ; films et portraits des deux pilotes (Higgsfield) |
 | `src/15-decor.js`, `tools/lisibilite/` | Codex | 18/10 à 00 h 17 | codex-01b, sol plein écran et defile ; ciel inchangé |
 | `src/30-music.js`, `musique/morceaux/`, `tools/H/` | Claude Mac (lot H) | 18/10 à 00 h 10 | brancher les morceaux Suno retenus (chantier 2) |
 | `src/79-jeu.js`, `03-socle.js`, `12-cam.js`, `17-vol.js`, `50-fx.js`, `70-joueuse.js`, `71-butin.js`, `72-ennemis.js`, `73-arene.js`, `80-ecrans.js`, `tools/I/` | Claude Mac (cheffe d'orchestre, lot I) | 18/10 à 00 h 26 | dépendances de codex-02 (`refonte/lots/demandes.md` § codex-02) : vues S, crochet du pilote dans tous les états, `pouvoir` et `niveaux`, pas réel des écrans en simulation |
