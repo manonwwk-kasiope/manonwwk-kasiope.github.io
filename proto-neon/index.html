@@ -12821,96 +12821,137 @@ N.butin = (function () {
 })();
 
 /* ===== 72-ennemis.js ===== */
-/* ===== 72-ennemis.js — N.ennemis : le bestiaire (flèche, mine, tourelle, sentinelle, CYCLOPE de repli) =====
+/* ===== 72-ennemis.js — N.ennemis : le bestiaire du secteur 1 (REFONTE.md § 4.4, § 4.5, § 3.8, § 2.17) =====
 
-   Tiré de 70-game.js (lot 0b) : newEnemy, spawnPoint, updFleche, updMine, updTourelle, updSentinelle, updBoss,
-   ebullet, beam, kill (interne : seuls hit, zone, devorer et purge l'appellent), drawEnemy, drawTelegraphs. Chaque ennemi est un objet au schéma `ennemi` (§ 7.5) ; ce
-   qui est propre à l'IA est préfixé « _ » (état fin `_st`, minuteurs `_stT`, `_cd`, cible `_aim`…). Le champ
-   public `etat` ('portail' | 'approche' | 'arme' | 'attaque' | 'recup' | 'fuite' | 'proie' | 'mort') se déduit
-   de l'état fin. Le gros ennemi de la démo vit ici sous le type `cyclope` (boss: true, partie: 'oeil') ; le lot 5b
-   le remplace par N.colosse.
+   FLÈCHE, DARD, LARVE, MINE, TOURELLE, LAME, RUCHE, SENTINELLE, TRAQUEUR, RIVAL (et PLANEUR, prêt pour LE DÉFILÉ),
+   élites (FLÈCHE BLINDÉE, RUCHE INSTABLE, LE RIVAL) et modificateurs (BLINDÉ, RAPIDE, INSTABLE). Chaque ennemi est un
+   objet au schéma `ennemi` (§ 7.5) ; ce qui est propre à l'IA est préfixé « _ » (état fin `_st`, minuteurs `_stT`, `_cd`…).
+   Le champ public `etat` ('portail'|'approche'|'arme'|'attaque'|'recup'|'fuite'|'proie'|'mort') se déduit de l'état fin.
 
-   ÉMET `kill` (seul émetteur : dans hit, zone, devorer, purge), `apparition` (fin du portail). N'applique JAMAIS
-   les effets d'un kill (points, butin, explosion, gel) : ils arrivent par N.ev. Les appelants (arsenal, lasso,
-   mine) ne font que demander l'action : hit(e, dmg, src).
-   DEMANDE à N.joueuse : tuer('souffle', src) quand une mine explose sur la tête. Les contacts, les tirs et les
-   lasers qui touchent la joueuse sont testés par N.joueuse (elle lit tirs et lasers ici).
+   LE CYCLOPE n'est plus ici : il vit dans 73-colosse.js. Ses objets (œil, mains) sont créés par spawn(…, { ext: true }) :
+   ils sont dans `list` (la joueuse les touche, les armes les visent), mais 72-ennemis ne les déplace pas, ne les dessine
+   pas ; hit() demande à N.colosse.touche(e, dmg, src) les dégâts effectifs.
 
-   Interface (§ 7.8) : reset(), update(dt), draw(), spawn(type, x, y, opts), list, count(), hit(e, dmg, src),
-   zone(x, y, r, dmg, src), devorer(e), dans(poly), pres(x, y, r), tir(x, y, vx, vy, opts), tirs,
-   effacerTirs(x, y, r), inverser(dur), fuir(), purge(ordre). Ajouts : lasers, drawTele(), drawEnemies().
-   Chiffres : N.R.ennemis (pv, rayon) ; la cadence de l'IA de la démo est dans CFG, marquée « → N.R ». */
+   ÉMET `kill` (seul émetteur : hit, zone, devorer, purge), `apparition` (fin du portail), `inversion` (debut / fin),
+   `arme` (une attaque s'arme : forme, durée, cible, vue). N'applique JAMAIS les effets d'un kill (points, butin,
+   explosion, gel) : ils arrivent par N.ev. CONSOMME `ramassage` (10) : la PASTILLE lance l'INVERSION.
+   DEMANDE à N.joueuse : tuer('souffle'|'traine', src) et couper(k, src, cause) ; elle lit ici `list`, `tirs`, `lasers`.
+   DEMANDE à N.arene / N.colosse (s'ils existent) : draw() de l'un et de l'autre, appelés dans draw().
+
+   Interface (§ 7.8) : reset(), update(dt), draw(), spawn(type, x, y, opts), list, count(), hit(e, dmg, src), zone(x, y, r, dmg, src),
+   devorer(e), dans(poly), pres(x, y, r), tir(x, y, vx, vy, opts), tirs, effacerTirs(x, y, r), inverser(dur), fuir(), purge(ordre).
+   Ajouts : lasers, counts(), drawTele(), drawEnemies(), purgeEnCours(), rayon(x0, y0, x1, y1, dur, w, src), teleLigne, marque,
+   inversion() -> secondes restantes, charges().
+   Chiffres : N.R.ennemis, N.R.elites, N.R.modificateurs, N.R.inversion ; les valeurs de la démo qui manquent : CFG (→ N.R). */
 N.ennemis = (function () {
   'use strict';
   var O = N.outils, R = N.R;
-  var CFG = {                                    // → N.R : valeurs de la démo, la refonte (lots 4a et 5b) les remplace
-    pvBoss: 1200, rBoss: 20, bossNaissance: 0.6, bossTele: 2.4,
-    vFleche: 32, vFlecheRampe: 14, tirTourelle: 74, tirBossRadial: 42, tirBossRadialDur: 46,
-    plafondTirs: 140, vieTir: 9
+  var CFG = {                                    // → N.R
+    plafondTirs: 80, vieTir: 9, tirTaille: 2,
+    nuee: 55, larveRecup: 1.2, larveCd: [1.6, 3.2],
+    flecheBonds: 160, mineSouffle: 30, mineDegats: 40, fuseSouffle: 34, fuseDegats: 60,
+    tourelleTourne: 1.2, tourelleVie: 1.7
   };
   var TAU = O.TAU;
   var S = null;
-  var list = [], tirs = [], lasers = [];
-  var charges = 0, inv = { t: 0 }, purgeFile = null, purgeI = 0, purgeNext = 0, purgeT = 0;
+  var list = [], tirs = [], lasers = [], fuses = [];
+  var charges = 0, inv = { t: 0, total: 0 }, purgeFile = null, purgeI = 0, purgeNext = 0, purgeT = 0;
   var AL = 0, AR = 0, AT = 0, AB = 0;
 
   function conf(t) { return (R && R.ennemis && R.ennemis[t]) || {}; }
   function arena() { var A = O.A; AL = A.x0 + 7; AR = A.x1 - 7; AT = A.y0 + 7; AB = A.y1 - 7; }
   function tete() { return N.joueuse && N.joueuse.tete; }
-  function tvit() { var P = tete(); return P ? P.vit : 68; }
-  function prog() { return N.dir && N.dir.progression ? O.clamp(+N.dir.progression() || 0, 0, 1) : O.clamp(O.T.t / 120, 0, 1); }
+  function vague() { return (N.dir && N.dir.vague && N.dir.vague()) || 1; }
+  function wave() { return (N.dir && N.dir.info && N.dir.info()) || null; }
   function rr(a, b) { return O.rr('ennemis', a, b); }
   function ri(a, b) { return O.ri('ennemis', a, b); }
   function rnd() { return O.rf('ennemis'); }
   function srcDe(e) { return { genre: 'ennemi', type: e.type, id: e.id }; }
+  function vitesseTete() { var P = tete(); return P ? P.vit : 68; }
+  function maxCharges() { var w = wave(); return (w && w.chargesFleches) || 1; }
+  function allure(e) {
+    var m = 1, M = (R && R.modificateurs) || {};
+    if (e.mods.rapide) m *= (M.rapide && M.rapide.allure) || 1.5;
+    if (e.mods.blinde && !e._plaques) m *= (M.blinde && M.blinde.allure) || 1.4;
+    return m;
+  }
+  function recharge(e, v) { return v * (e.mods.rapide ? ((R && R.modificateurs && R.modificateurs.rapide.recharges) || 0.7) : 1); }
+  function vu6(e) { return N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 6) : O.visible(e.x, e.y, -(e.r + 6)); }
+  function segsJ() { return N.joueuse && N.joueuse.segs ? N.joueuse.segs() : []; }
 
   /* état fin -> état public */
-  var ETAT = { entre: 'approche', chasse: 'approche', derive: 'approche', orbite: 'approche', pose: 'approche', actif: 'approche',
-    vise: 'arme', arme: 'arme', fonce: 'attaque', tire: 'attaque', naissance: 'portail', portail: 'portail', mort: 'mort', fuite: 'fuite' };
+  var ETAT = { entre: 'approche', chasse: 'approche', croise: 'approche', zig: 'approche', orbite: 'approche', garde: 'approche',
+    derive: 'approche', pose: 'approche', actif: 'approche', esquive: 'approche',
+    vise: 'arme', arme: 'arme', verrou: 'arme', mord: 'arme', recule: 'arme', couve: 'arme',
+    fonce: 'attaque', tire: 'attaque', traverse: 'attaque',
+    recup: 'recup', proie: 'proie', mort: 'mort', fuite: 'fuite', naissance: 'portail', portail: 'portail' };
+  var BASE = { fleche: 'chasse', dard: 'croise', larve: 'zig', mine: 'pose', tourelle: 'pose', lame: 'chasse', ruche: 'garde',
+    sentinelle: 'orbite', traqueur: 'chasse', planeur: 'actif', rival: 'actif' };
 
   function reset() {
     S = N.S;
-    list.length = 0; tirs.length = 0; lasers.length = 0;
-    charges = 0; purgeFile = null; purgeI = 0; inv.t = 0;
+    list.length = 0; tirs.length = 0; lasers.length = 0; fuses.length = 0;
+    charges = 0; purgeFile = null; purgeI = 0;
+    if (inv.t > 0 && N.ev) N.ev.emit('inversion', { evt: 'fin', dur: 0 });
+    inv.t = 0; inv.total = 0;
     if (S) { S.enemies = list; S.shots = tirs; if (!S.tele) S.tele = []; }
   }
 
   /* ============================ naissance ============================ */
   function newEnemy(type, x, y, opts) {
-    var c = conf(type), P = tete();
+    var c = conf(type), P = tete(), E = (R && R.elites) || {}, M = (R && R.modificateurs) || {};
     var boss = type === 'cyclope';
-    var pv = boss ? CFG.pvBoss : (c.pv || 20);
+    var pv = boss ? ((R && R.colosse && R.colosse.pvTotal) || 4500) : (c.pv || c.pvTete || 20);
+    var elite = !!(opts && opts.elite), mods = { blinde: false, rapide: false, instable: false };
+    if (opts && opts.mods) for (var k in opts.mods) mods[k] = !!opts.mods[k];
+    if (elite && type !== 'rival') pv *= E.pv || 3;
+    if (mods.blinde) pv *= (M.blinde && M.blinde.pv) || 2;
+    var r = boss ? 14 : (c.r || 5);
+    if (elite && type !== 'rival') r += 2;
     var e = {
-      id: N.ids.suivant(), type: type, x: x, y: y, vx: 0, vy: 0, r: boss ? CFG.rBoss : (c.r || 5), ang: P ? Math.atan2(P.y - y, P.x - x) : 0,
+      id: N.ids.suivant(), type: type, x: x, y: y, vx: 0, vy: 0, r: r, ang: P ? Math.atan2(P.y - y, P.x - x) : 0,
       pv: pv, pvMax: pv, etat: 'approche', etatT: 0, vuDepuis: -1,
-      elite: !!(opts && opts.elite), mods: { blinde: false, rapide: false, instable: false },
-      boss: boss, partie: boss ? 'oeil' : null, tele: -1, img: 0, dir: 0,
-      _st: 'entre', _stT: 0, _age: 0, _flash: 0, _aim: 0, _cd: rr(0.6, 1.6), _shots: 0, _tx: x, _ty: y, _kx: 0, _ky: 0, _stun: 0,
-      _dead: false, _orb: 0, _sens: rnd() < 0.5 ? -1 : 1, _spin: rr(0, TAU), _life: 0, _teleTotal: 0, _portail: 0, _flashT: -9
+      elite: elite, mods: mods,
+      boss: boss, partie: boss ? ((opts && opts.partie) || 'oeil') : null, tele: -1, img: 0, dir: 0,
+      _st: BASE[type] || 'chasse', _stT: 0, _age: 0, _flash: 0, _aim: 0, _cd: rr(0.6, 1.6), _shots: 0, _tx: x, _ty: y, _kx: 0, _ky: 0, _stun: 0,
+      _dead: false, _orb: 0, _sens: rnd() < 0.5 ? -1 : 1, _spin: rr(0, TAU), _life: 0, _teleTotal: 0, _portail: 0, _flashT: -9,
+      _plaques: !!mods.blinde, _ext: !!(opts && opts.ext), _mere: -1, _ext300: false, _esqCd: 0, _traque: false
     };
-    if (opts && opts.mods) for (var k in opts.mods) e.mods[k] = !!opts.mods[k];
     return e;
   }
+  /* station d'une tourelle : une bande de 120 ± 25 px autour de la tête */
   function station(e, margin) {
-    var P = tete();
+    var P = tete(), b = conf('tourelle');
     for (var k = 0; k < 12; k++) {
-      var x = rr(AL + margin, AR - margin), y = rr(AT + margin, AB - margin);
+      var a = rr(0, TAU), d = (b.bande || 120) + rr(-(b.bandeAlea || 25), (b.bandeAlea || 25));
+      var x = P ? P.x + Math.cos(a) * d : rr(AL, AR), y = P ? P.y + Math.sin(a) * d : rr(AT, AB);
+      x = O.clamp(x, AL + margin, AR - margin); y = O.clamp(y, AT + margin, AB - margin);
       if (!P || O.d2(x, y, P.x, P.y) > 70 * 70) { e._tx = x; e._ty = y; return; }
     }
     e._tx = (AL + AR) / 2; e._ty = (AT + AB) / 2;
   }
-  /* spawn(type, x, y, opts) : opts { portail: s, elite, mods, st }. Un ennemi avec portail existe, ne touche
+  function stationMine(e) {
+    var P = tete();
+    for (var k = 0; k < 12; k++) {
+      var x = rr(AL + 16, AR - 16), y = rr(AT + 16, AB - 16);
+      if (!P || O.d2(x, y, P.x, P.y) > 90 * 90) { e._tx = x; e._ty = y; return; }
+    }
+    e._tx = (AL + AR) / 2; e._ty = (AT + AB) / 2;
+  }
+  /* spawn(type, x, y, opts) : opts { portail: s, elite, mods, st, stT, ext }. Un ennemi avec portail existe, ne touche
      pas et n'agit pas pendant ce délai (§ 2.3 : 600 ms d'apparition) ; `apparition` part à la fin du portail. */
   function spawn(type, x, y, opts) {
     arena();
     opts = opts || {};
     var e = newEnemy(type, x, y, opts), P = tete();
-    if (type === 'fleche') e._st = 'chasse';
-    else if (type === 'mine') { e._st = 'derive'; station(e, 16); }
+    if (type === 'mine') { e._st = 'derive'; stationMine(e); }
     else if (type === 'tourelle') { e._st = 'entre'; station(e, 24); }
-    else if (type === 'sentinelle') { e._st = 'orbite'; e._orb = P ? Math.atan2(y - P.y, x - P.x) : 0; e._cd = rr(2.5, 3.5); }
-    else if (type === 'cyclope') { e._st = 'naissance'; e._stT = CFG.bossNaissance; e._cd = 1.4; e._atk = null; e._atkT = 0; e._atkD = 1; e._cyc = 0; e._pts = []; }
+    else if (type === 'sentinelle') { e._orb = P ? Math.atan2(y - P.y, x - P.x) : 0; e._cd = rr(2.5, 3.5); }
+    else if (type === 'ruche') { e._cd = rr(1.2, 2.2); e._petales = 0; }
+    else if (type === 'cyclope') { e._st = 'actif'; e._cd = 1.4; }
     if (opts.st) e._st = opts.st;
+    if (opts.stT !== undefined) e._stT = opts.stT;
+    if (inv.t > 0 && !e.boss && type !== 'traqueur' && type !== 'planeur') { e._stAvant = e._st; e._st = 'proie'; }
     if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
     else apparu(e);
     list.push(e);
@@ -12920,20 +12961,31 @@ N.ennemis = (function () {
     e.etat = ETAT[e._st] || 'approche';
     if (N.ev) N.ev.emit('apparition', { id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite });
   }
+  /* une attaque s'arme : événement `arme` (armement du journal, § 3.8 règle 3) */
+  function armer(e, forme, total, cible) {
+    e._teleTotal = total; e._ext300 = false;
+    if (N.ev) N.ev.emit('arme', { id: e.id, type: e.type, forme: forme, total: total, cible: cible || 'tete', shown: vu6(e), rallonge: false });
+  }
 
   /* ============================ les tirs et les lasers ============================ */
   function tir(x, y, vx, vy, opts) {
     opts = opts || {};
     if (tirs.length >= CFG.plafondTirs) return null;
-    var b = { id: N.ids.suivant(), x: x, y: y, vx: vx, vy: vy, r: opts.r || (opts.big ? 2 : 1.5), vie: opts.vie || CFG.vieTir,
+    var b = { id: N.ids.suivant(), x: x, y: y, vx: vx, vy: vy, r: opts.r || (opts.big ? CFG.tirTaille + 1 : CFG.tirTaille), vie: opts.vie || CFG.vieTir,
       src: opts.src || { genre: 'ennemi', type: 'tourelle', id: -1 }, _big: !!opts.big, _dead: false };
     tirs.push(b);
     return b;
   }
-  function ebullet(e, x, y, a, v, big) { return tir(x, y, Math.cos(a) * v, Math.sin(a) * v, { big: big, src: srcDe(e) }); }
-  function beam(e, x, y, a, d, w) {
-    var c = Math.cos(a), s = Math.sin(a), Ln = (O.VUE.w + O.VUE.h) * 1.2 + 200;
-    lasers.push({ x0: x + c * 9, y0: y + s * 9, x1: x + c * Ln, y1: y + s * Ln, t: 0, d: d, w: w, src: srcDe(e), _dead: false });
+  function ebullet(e, x, y, a, v, big, vie) { return tir(x, y, Math.cos(a) * v, Math.sin(a) * v, { big: big, src: srcDe(e), vie: vie }); }
+  /* rayon(x0, y0, x1, y1, dur, w, src) : un laser que 72 dessine et fait expirer ; l'appelant peut muter x1, y1 à chaque pas */
+  function rayon(x0, y0, x1, y1, dur, w, src) {
+    var z = { x0: x0, y0: y0, x1: x1, y1: y1, t: 0, d: dur, w: w, src: src || { genre: 'ennemi', type: 'sentinelle', id: -1 }, _dead: false };
+    lasers.push(z);
+    return z;
+  }
+  function beam(e, x, y, a, d, w, len) {
+    var c = Math.cos(a), s = Math.sin(a), Ln = len || (conf('sentinelle').longueur || 300);
+    return rayon(x + c * 9, y + s * 9, x + c * Ln, y + s * Ln, d, w, srcDe(e));
   }
   function effacerTirs(x, y, r) {
     for (var i = 0; i < tirs.length; i++) {
@@ -12942,23 +12994,77 @@ N.ennemis = (function () {
     }
   }
 
+  /* ============================ souffles : mines et INSTABLE ============================
+     Le disque montré est exactement le disque qui tue : la tête dans le rayon meurt, le corps est coupé au premier
+     segment touché, les ennemis du disque sont blessés (réaction en chaîne). `epargne` : une mine abattue ne blesse
+     pas la joueuse. */
+  function souffle(x, y, r, dmgEnnemis, e, epargne) {
+    var P = tete(), rs = r + ((R && R.mort && R.mort.rayonTete) || 3);
+    O.boom(x, y, r > 32 ? 0.6 : 0.5, O.MAGENTA); O.sfx('kill', { pitch: 0 });
+    if (!epargne && P && N.joueuse && N.joueuse.etat !== 'mort' && !N.joueuse.invul()) {
+      var src = e ? srcDe(e) : { genre: 'ennemi', type: 'mine', id: -1 };
+      if (O.d2(x, y, P.x, P.y) < rs * rs) { N.joueuse.tuer('souffle', src); }
+      else {
+        var q = segsJ(), k, rc = r + 3.5;
+        for (k = 2; k * 2 + 1 < q.length; k++) {
+          if (O.d2(x, y, q[k * 2], q[k * 2 + 1]) < rc * rc) { N.joueuse.couper(k, src, 'souffle'); break; }
+        }
+      }
+    }
+    var snap = list.slice();
+    for (var i = 0; i < snap.length; i++) {
+      var t = snap[i];
+      if (t._dead || t === e || t.boss || t.etat === 'portail') continue;
+      var rq = r + t.r;
+      if (O.d2(x, y, t.x, t.y) < rq * rq) hit(t, dmgEnnemis, { genre: 'ennemi', type: 'mine', id: -1 });
+    }
+  }
+  function nouvelleFuse(x, y) {
+    var I = (R && R.modificateurs && R.modificateurs.instable) || {};
+    fuses.push({ x: x, y: y, t: I.meche || 0.8, d: I.meche || 0.8, r: I.souffle || CFG.fuseSouffle });
+  }
+
   /* ============================ la mort d'un ennemi ============================ */
   var SRC_PAR_DEFAUT = { genre: 'arme', type: 'canon', id: -1 };
   function kill(e, src) {
     if (e._dead) return false;
     e._dead = true; e.etat = 'mort'; e.pv = Math.min(e.pv, 0);
     var P = tete(), base = (R && R.score && R.score.base && R.score.base[e.type]) || 0;
+    src = src || SRC_PAR_DEFAUT;
     if (N.ev) N.ev.emit('kill', {
-      id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite, boss: !!e.boss, base: base, src: src || SRC_PAR_DEFAUT,
+      id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite, boss: !!e.boss, base: base, src: src,
       distTete: P ? Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) : 0, gen: 0
     });
+    if (src.genre !== 'decor') {
+      if (e.mods.instable) nouvelleFuse(e.x, e.y);
+      if (e.type === 'mine') souffle(e.x, e.y, CFG.mineSouffle, CFG.mineDegats, e, true);     // abattue : n'explose pas sur la joueuse
+    }
     return true;
+  }
+  /* la tourelle est blindée de face : un tir d'arme reçu dans ± 45° de sa face ricoche */
+  function ricoche(e, src) {
+    if (!src || src.genre !== 'arme' || src.type === 'lasso' || src.type === 'minesQ' || src.type === 'missiles') return false;
+    var P = tete(); if (!P) return false;
+    var ox = src.x !== undefined ? src.x : P.x, oy = src.y !== undefined ? src.y : P.y;
+    var a = Math.atan2(oy - e.y, ox - e.x), d = Math.abs(O.wrapA(a - e._aim));
+    return d < (((conf('tourelle').blindageDeg) || 45) * Math.PI / 180);
   }
   /* hit(e, dmg, src) : les PV tombent ; à zéro, `kill` part une seule fois. -> true si l'ennemi est mort. */
   function hit(e, dmg, src) {
     if (!e || e._dead || e.etat === 'mort') return false;
     if (e._st === 'naissance' || e.etat === 'portail') return false;      // rien ne blesse avant son apparition
+    if (e.type === 'traqueur') return (src && src.type === 'lasso') ? kill(e, src) : false;     // seul un LASSO le tue
+    if (e._ext && e.boss) {
+      if (N.colosse && N.colosse.touche) dmg = N.colosse.touche(e, dmg, src);
+      if (!(dmg > 0)) return false;
+    } else if (e.type === 'tourelle' && e._st !== 'proie' && ricoche(e, src)) {
+      O.spark(e.x + Math.cos(e._aim) * e.r, e.y + Math.sin(e._aim) * e.r, O.OS, 3); O.sfx('ricochet'); return false;
+    }
+    if (e._st === 'recup' && e.type === 'lame') dmg *= conf('lame').degatsRecup || 2;
     e.pv -= dmg; O.flash(e);
+    if (e.mods.blinde && e._plaques && e.pv <= e.pvMax * ((R && R.modificateurs && R.modificateurs.blinde.eclatent) || 0.5)) {
+      e._plaques = false; O.debris(e.x, e.y, O.SANG, 8); O.sfx('impact');
+    }
     if (e.pv <= 0) return kill(e, src);
     return false;
   }
@@ -12995,12 +13101,63 @@ N.ennemis = (function () {
   }
   function count() { var n = 0; for (var i = 0; i < list.length; i++) if (!list[i]._dead && !list[i].boss) n++; return n; }
   function counts() {
-    var c = { fleche: 0, mine: 0, tourelle: 0, sentinelle: 0, cyclope: 0, regular: 0 };
-    for (var i = 0; i < list.length; i++) { var e = list[i]; if (e._dead) continue; c[e.type] = (c[e.type] || 0) + 1; if (!e.boss) c.regular++; }
+    var c = { fleche: 0, dard: 0, larve: 0, mine: 0, tourelle: 0, lame: 0, ruche: 0, sentinelle: 0, rival: 0, planeur: 0, traqueur: 0, cyclope: 0, regular: 0 };
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i]; if (e._dead) continue;
+      c[e.type] = (c[e.type] || 0) + 1;
+      if (!e.boss && e.type !== 'traqueur' && e.type !== 'planeur') c.regular++;
+    }
     return c;
   }
-  function inverser(dur) { inv.t = Math.max(inv.t, dur || 0); }
-  function fuir() { for (var i = 0; i < list.length; i++) if (!list[i].boss) list[i]._st = 'fuite'; }
+
+  /* ============================ l'INVERSION : la chasse retournée (§ 2.17) ============================ */
+  function inverser(dur) {
+    dur = +dur || 0;
+    if (dur <= 0) return;
+    var debut = inv.t <= 0;
+    inv.t = Math.max(inv.t, dur); inv.total = Math.max(inv.total, inv.t);
+    if (!debut) return;
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e._dead || e.boss || e.type === 'traqueur' || e.type === 'planeur') continue;
+      e._stAvant = BASE[e.type]; e._st = 'proie';
+    }
+    for (i = 0; i < tirs.length; i++) tirs[i]._dead = true;
+    for (i = 0; i < lasers.length; i++) lasers[i]._dead = true;
+    if (N.ev) N.ev.emit('inversion', { evt: 'debut', dur: dur });
+  }
+  function finInversion() {
+    inv.t = 0; inv.total = 0;
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e._dead || e._st !== 'proie') continue;
+      e._st = e._stAvant || BASE[e.type] || 'chasse'; e._cd = rr(1.0, 2.0);
+    }
+    if (N.ev) N.ev.emit('inversion', { evt: 'fin', dur: 0 });
+  }
+  /* la proie fuit à 0,8 × la vitesse de la tête, longe les murs ; la tête qui la rejoint la dévore (rayon un peu plus
+     grand que celui du contact mortel : on la mange avant qu'elle ne tue) */
+  function updProie(e, dt, P) {
+    var vf = ((R && R.inversion && R.inversion.fuite) || 0.8) * Math.max(40, vitesseTete()) * (e.type === 'mine' ? 0.15 : 1);
+    var dx = e.x - P.x, dy = e.y - P.y, d = Math.sqrt(dx * dx + dy * dy) || 1, ux = dx / d, uy = dy / d;
+    if (e.type === 'tourelle' || e.type === 'ruche') vf *= 0.5;
+    var nx = e.x + ux * vf * dt, ny = e.y + uy * vf * dt, mar = e.r + 2;
+    if (nx < AL + mar || nx > AR - mar) { nx = e.x; ny = e.y + (uy >= 0 ? 1 : -1) * vf * dt; if (ny < AT + mar || ny > AB - mar) ny = e.y + (e.y < (AT + AB) / 2 ? 1 : -1) * vf * dt; }
+    if (ny < AT + mar || ny > AB - mar) { ny = e.y; nx = e.x + (ux >= 0 ? 1 : -1) * vf * dt; }
+    e.x = O.clamp(nx, AL, AR); e.y = O.clamp(ny, AT, AB);
+    e.ang = Math.atan2(uy, ux);
+    var rq = 3 + e.r + 4;
+    if (d < rq && N.joueuse && N.joueuse.etat === 'vivant') devorer(e);
+  }
+
+  function inverserSurPastille(c) {
+    if (!c || c.type !== 'pastille') return;
+    var n = vague(), D = (R && R.inversion && R.inversion.duree) || {};
+    inverser(D[n] || 4);
+  }
+  if (N.ev) N.ev.on('ramassage', 10, inverserSurPastille, '72-ennemis');
+
+  function fuir() { for (var i = 0; i < list.length; i++) if (!list[i].boss && !list[i]._ext) list[i]._st = 'fuite'; }
   /* purge(ordre) : tous les ennemis meurent l'un après l'autre (les plus proches de la tête d'abord, un toutes
      les 45 ms), tirs et lasers effacés. Chaque mort émet `kill` avec src decor/purge : pas de points ni de butin. */
   function purge(ordre) {
@@ -13010,145 +13167,361 @@ N.ennemis = (function () {
     purgeI = 0; purgeT = 0; purgeNext = 0.25;
     for (var i = 0; i < tirs.length; i++) { O.spark(tirs[i].x, tirs[i].y, O.ROSE, 1); tirs[i]._dead = true; }
     for (i = 0; i < lasers.length; i++) lasers[i]._dead = true;
+    fuses.length = 0;
     return purgeFile.length;
   }
   function purgeEnCours() { return !!purgeFile && purgeI < purgeFile.length; }
 
   /* ============================ l'IA ============================ */
   function canAct(e) { return e._stun <= 0 && O.visible(e.x, e.y, -e.r + 2) && e.etat !== 'portail'; }
+  /* on n'arme que sous les yeux de la joueuse : entièrement dans la vue, à 6 px du bord (§ 3.8 règle 3) */
+  function peutArmer(e) { return canAct(e) && vu6(e); }
+  /* sorti du cadre pendant l'armement : une seule rallonge de 300 ms ; encore dehors au tir : annule et recharge */
+  function verifTir(e) {
+    if (vu6(e)) return true;
+    if (!e._ext300) { e._ext300 = true; e._stT += 0.3; return null; }
+    return false;
+  }
+  function avance(e, a, v, dt) { e.x += Math.cos(a) * v * dt; e.y += Math.sin(a) * v * dt; }
+  function bornes(e) {
+    var m = e.r + 1, rb = '';
+    if (e.x < AL - 7 + m) { e.x = AL - 7 + m; rb += 'x'; } else if (e.x > AR + 7 - m) { e.x = AR + 7 - m; rb += 'x'; }
+    if (e.y < AT - 7 + m) { e.y = AT - 7 + m; rb += 'y'; } else if (e.y > AB + 7 - m) { e.y = AB + 7 - m; rb += 'y'; }
+    return rb;
+  }
 
+  /* ---- FLÈCHE : le chasseur, qui vise la tête ---- */
   function updFleche(e, dt, P) {
-    var sp0 = CFG.vFleche + CFG.vFlecheRampe * prog();
-    var t = O.T.t;
+    var c = conf('fleche'), a0 = (c.approche || [50, 70]), n = vague();
+    var sp0 = (a0[0] + (a0[1] - a0[0]) * O.clamp((n - 1) / 4, 0, 1)) * allure(e);
+    if (e._traque) sp0 *= 1.3;                                        // la traque de fin de vague (Cruise Elroy)
+    var dd = O.d2(e.x, e.y, P.x, P.y), bond = c.bond || { vitesse: 160, duree: 0.42, longueur: 67 };
+    if (e._esqCd > 0) e._esqCd -= dt;
     if (e._st === 'chasse') {
       var lx = P.x + Math.cos(P.ang) * P.vit * 0.25, ly = P.y + Math.sin(P.ang) * P.vit * 0.25;
       e.ang = O.turnTo(e.ang, Math.atan2(ly - e.y, lx - e.x), 2.6 * dt);
-      e.x += Math.cos(e.ang) * sp0 * dt; e.y += Math.sin(e.ang) * sp0 * dt;
+      avance(e, e.ang, sp0, dt);
       e._cd -= dt;
-      var dd = O.d2(e.x, e.y, P.x, P.y);
-      if (t > 25 && e._cd <= 0 && canAct(e) && dd < 80 * 80 && dd > 26 * 26 && charges < 2) {
+      var dm = c.distance || [40, 110];
+      if (e._cd <= 0 && peutArmer(e) && dd < dm[1] * dm[1] && dd > dm[0] * dm[0] && charges < maxCharges()) {
         charges++;
-        e._st = 'vise'; e._stT = 0.6; e._teleTotal = 0.6; e._aim = Math.atan2(P.y - e.y, P.x - e.x);           // télégraphe : 0,6 s
+        e._st = 'vise'; e._stT = c.fige || 0.6; e._aim = Math.atan2(P.y - e.y, P.x - e.x); armer(e, 'ligne', e._stT, 'tete');
+      } else if (c.esquive && e._esqCd <= 0 && dd < (c.esquive.distance || 60) * (c.esquive.distance || 60)) {
+        /* esquive latérale : dans l'axe de la tête (moins de 12°) à moins de 60 px, sans charger */
+        var ah = Math.abs(O.wrapA(P.ang - Math.atan2(e.y - P.y, e.x - P.x)));
+        if (ah < (c.esquive.angleDeg || 12) * Math.PI / 180) {
+          e._st = 'esquive'; e._stT = c.esquive.duree || 0.25; e._esqCd = recharge(e, c.esquive.recharge || 1.2);
+          e._esqDir = O.wrapA(P.ang + (rnd() < 0.5 ? 1 : -1) * Math.PI / 2);
+        }
       }
+    } else if (e._st === 'esquive') {
+      avance(e, e._esqDir, (c.esquive && c.esquive.vitesse) || 70, dt);
+      e._stT -= dt; if (e._stT <= 0) e._st = 'chasse';
     } else if (e._st === 'vise') {
-      e._stT -= dt; if (e._stT <= 0) { e._st = 'fonce'; e._stT = 0.42; }
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        var v = verifTir(e);
+        if (v === null) return;
+        if (v === false) { e._st = 'chasse'; e._cd = recharge(e, c.recharge || 1.6); return; }
+        e._st = 'fonce'; e._stT = (bond.duree || 0.42);
+      }
     } else if (e._st === 'fonce') {
-      var ox = e.x, oy = e.y;
-      e.x += Math.cos(e._aim) * 155 * dt; e.y += Math.sin(e._aim) * 155 * dt;
+      var ox = e.x, oy = e.y, bv = bond.vitesse || CFG.flecheBonds;
+      e.x += Math.cos(e._aim) * bv * dt; e.y += Math.sin(e._aim) * bv * dt;
       if (N.fx && N.fx.trail) O.safe('fx.trail', function () { N.fx.trail(ox, oy, e.x, e.y, O.ROSE); });
-      e._stT -= dt; if (e._stT <= 0) { e._st = 'chasse'; e._cd = rr(3.5, 6); e.ang = e._aim; }
+      e._stT -= dt; if (e._stT <= 0) { e._st = 'chasse'; e._cd = recharge(e, c.recharge || 1.6) + rr(0, 0.8); e.ang = e._aim; }
     }
   }
+
+  /* ---- DARD : le coupeur, qui vise où l'on va ---- */
+  function updDard(e, dt, P) {
+    var c = conf('dard'), d2 = O.d2(e.x, e.y, P.x, P.y), fz = c.fuseau || { vitesse: 165, duree: 0.5, longueur: 82 };
+    if (e._st === 'croise') {
+      e.ang = O.turnTo(e.ang, Math.atan2(P.y - e.y, P.x - e.x), 2.2 * dt);
+      avance(e, e.ang, (c.croisiere || 60) * allure(e), dt);
+      e._cd -= dt;
+      if (e._cd <= 0 && peutArmer(e) && d2 < 200 * 200 && d2 > 40 * 40 && charges < maxCharges() + 1) {
+        var d = Math.sqrt(d2), tl = Math.min(d / (c.avance || 165), 1.0);
+        e._tx = P.x + Math.cos(P.ang) * P.vit * tl; e._ty = P.y + Math.sin(P.ang) * P.vit * tl;           // cible GELÉE
+        e._aim = Math.atan2(e._ty - e.y, e._tx - e.x); e._st = 'verrou'; e._stT = c.verrou || 0.6; armer(e, 'losange', e._stT, 'tete');
+      }
+    } else if (e._st === 'verrou') {
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        var v = verifTir(e);
+        if (v === null) return;
+        if (v === false) { e._st = 'croise'; e._cd = recharge(e, c.recharge || 2.0); return; }
+        e._st = 'fonce'; e._stT = fz.duree || 0.5;
+      }
+    } else if (e._st === 'fonce') {
+      e.x += Math.cos(e._aim) * (fz.vitesse || 165) * dt; e.y += Math.sin(e._aim) * (fz.vitesse || 165) * dt;
+      var rb = bornes(e);                                                  // rebondit sur les murs
+      if (rb.indexOf('x') >= 0) e._aim = Math.PI - e._aim;
+      if (rb.indexOf('y') >= 0) e._aim = -e._aim;
+      e.ang = e._aim;
+      e._stT -= dt; if (e._stT <= 0) { e._st = 'croise'; e._cd = recharge(e, c.recharge || 2.0); }
+    }
+  }
+
+  /* ---- LARVE : la nuée, qui mord la queue ---- */
+  function queueJ(P) {
+    var q = segsJ(), n = q.length;
+    if (n >= 4) return { x: q[n - 2], y: q[n - 1] };
+    return { x: P.x, y: P.y };
+  }
+  function updLarve(e, dt, P) {
+    var c = conf('larve'), q = queueJ(P), v = (c.zigzag || CFG.nuee) * allure(e), orb = c.orbite || 30;
+    if (e._st === 'zig') {
+      var a = Math.atan2(q.y - e.y, q.x - e.x) + Math.sin(e._age * 7 + e.id) * 0.9;
+      e.ang = a; avance(e, a, v, dt);
+      if (O.d2(e.x, e.y, q.x, q.y) < (orb + 6) * (orb + 6)) { e._st = 'orbite'; e._orb = Math.atan2(e.y - q.y, e.x - q.x); e._cd = rr(CFG.larveCd[0], CFG.larveCd[1]); }
+    } else if (e._st === 'orbite') {
+      e._orb += 1.8 * dt * e._sens;
+      var tx = q.x + Math.cos(e._orb) * orb, ty = q.y + Math.sin(e._orb) * orb;
+      var dx = tx - e.x, dy = ty - e.y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d > 0.5) { e.x += dx / d * Math.min(d, v * 1.2 * dt); e.y += dy / d * Math.min(d, v * 1.2 * dt); }
+      e.ang = Math.atan2(q.y - e.y, q.x - e.x);
+      if (O.d2(e.x, e.y, q.x, q.y) > 80 * 80) e._st = 'zig';
+      e._cd -= dt;
+      if (e._cd <= 0 && peutArmer(e)) { e._st = 'mord'; e._stT = c.annonce || 0.5; e._tx = q.x; e._ty = q.y; armer(e, 'disque', e._stT, 'corps'); }
+    } else if (e._st === 'mord') {
+      e._stT -= dt;
+      e._tx = q.x; e._ty = q.y;
+      if (e._stT <= 0) {
+        var J = N.joueuse;
+        if (J && J.etat === 'vivant' && !J.invul() && O.d2(e.x, e.y, q.x, q.y) < 40 * 40 && J.len() > 4) {
+          J.couper(Math.max(1, J.len() - (c.coupe || 1)), srcDe(e), 'ennemi');
+          O.spark(q.x, q.y, O.ROSE, 4);
+        }
+        e._st = 'recup'; e._stT = CFG.larveRecup; e._cd = rr(CFG.larveCd[0], CFG.larveCd[1]);
+      }
+    } else if (e._st === 'recup') {
+      e._stT -= dt;
+      avance(e, e.ang + Math.PI, v * 0.9, dt);
+      if (e._stT <= 0) e._st = 'zig';
+    }
+  }
+
+  /* ---- MINE : le contrôle de zone ---- */
+  function segDansCercle(x, y, r) {
+    var P = tete();
+    if (P && O.d2(x, y, P.x, P.y) < r * r) return true;
+    var q = segsJ();
+    for (var k = 1; k * 2 + 1 < q.length; k++) if (O.d2(x, y, q[k * 2], q[k * 2 + 1]) < r * r) return true;
+    return false;
+  }
   function updMine(e, dt, P) {
+    var c = conf('mine'), cercle = c.cercle || 34, meche = c.meche || 0.8;
     e._spin += dt * (e._st === 'arme' ? 9 : 1.6);
     if (e._st === 'derive') {
       var dx = e._tx - e.x, dy = e._ty - e.y, d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 2) { e._st = 'pose'; e._life = 15; } else { e.x += dx / d * 16 * dt; e.y += dy / d * 16 * dt; }
-    } else if (e._st === 'pose') {
-      e._life -= dt;
-      if (e._life <= 0 && canAct(e)) { e._st = 'arme'; e._stT = 0.75; e._teleTotal = 0.75; }
+      if (d < 2) { e._st = 'pose'; } else { e.x += dx / d * 16 * dt; e.y += dy / d * 16 * dt; }
     } else if (e._st === 'arme') {
       e._stT -= dt;
       if (e._stT <= 0) {
-        /* le disque montré est exactement le disque qui tue */
-        O.boom(e.x, e.y, 0.5, O.MAGENTA); O.sfx('kill', { pitch: 0 });
-        var rs = 26 + ((R && R.mort && R.mort.rayonTete) || 3);
-        if (O.d2(e.x, e.y, P.x, P.y) < rs * rs && N.joueuse.etat !== 'mort' && !N.joueuse.invul()) N.joueuse.tuer('souffle', srcDe(e));
-        e._dead = true; e.etat = 'mort'; return;
+        e._dead = true; e.etat = 'mort';
+        souffle(e.x, e.y, c.souffle || CFG.mineSouffle, CFG.mineDegats, e, false);
+        return;
       }
     }
-    if (e._st !== 'arme' && canAct(e) && O.d2(e.x, e.y, P.x, P.y) < 34 * 34) { e._st = 'arme'; e._stT = 0.75; e._teleTotal = 0.75; }   // télégraphe : 0,75 s
+    /* elle s'amorce quand la tête ou un segment entre dans le cercle d'armement (34 px, toujours affiché) */
+    if (e._st !== 'arme' && canAct(e) && segDansCercle(e.x, e.y, cercle)) { e._st = 'arme'; e._stT = meche; armer(e, 'disque', meche, 'tout'); }
   }
+
+  /* ---- TOURELLE : le tireur, blindée de face ---- */
   function updTourelle(e, dt, P) {
-    var want = Math.atan2(P.y - e.y, P.x - e.x), t = O.T.t;
+    var c = conf('tourelle'), want = Math.atan2(P.y - e.y, P.x - e.x);
     if (e._st === 'entre') {
-      var dx = e._tx - e.x, dy = e._ty - e.y, d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 2) { e._st = 'pose'; e._cd = 0.9; } else { e.x += dx / d * 30 * dt; e.y += dy / d * 30 * dt; }
-      e._aim = O.turnTo(e._aim, want, 3 * dt);
+      var dx = e._tx - e.x, dy = e._ty - e.y, d = Math.sqrt(dx * dx + dy * dy), sp0 = (c.vitesse || 35) * allure(e);
+      if (d < 2) { e._st = 'pose'; e._cd = e._cd0 !== undefined ? e._cd0 : 0.9; e._cd0 = undefined; } else { e.x += dx / d * sp0 * dt; e.y += dy / d * sp0 * dt; }
+      e._aim = O.turnTo(e._aim, want, CFG.tourelleTourne * dt);
     } else if (e._st === 'pose') {
-      e._aim = O.turnTo(e._aim, want, 3 * dt);
+      e._aim = O.turnTo(e._aim, want, CFG.tourelleTourne * dt);
       e._cd -= dt;
-      if (e._cd <= 0 && canAct(e)) { e._st = 'vise'; e._stT = 0.65; e._teleTotal = 0.65; e._aim = want; }              // télégraphe : 0,65 s
+      if (e._cd <= 0 && peutArmer(e) && O.d2(e.x, e.y, P.x, P.y) < (c.portee || 160) * (c.portee || 160)) {
+        e._st = 'vise'; e._stT = c.vise || 0.75; e._aim = want; armer(e, 'ligne', e._stT, 'tete');
+      }
     } else if (e._st === 'vise') {
       e._stT -= dt;
       if (e._stT <= 0) {
-        ebullet(e, e.x + Math.cos(e._aim) * 7, e.y + Math.sin(e._aim) * 7, e._aim, CFG.tirTourelle, false);
+        var v = verifTir(e);
+        if (v === null) return;
+        if (v === false) { e._st = 'pose'; e._cd = recharge(e, 1.5); return; }
+        ebullet(e, e.x + Math.cos(e._aim) * 7, e.y + Math.sin(e._aim) * 7, e._aim, c.balle || 95, false, CFG.tourelleVie);
+        O.sfx('tirEnnemi');
         e._shots++;
-        if (e._shots >= 3) { e._shots = 0; e._st = 'entre'; station(e, 24); }
-        else { e._st = 'pose'; e._cd = rr(2.2, 3.2) - 0.6 * O.clamp((t - 60) / 60, 0, 1); }
+        if (e._shots >= (c.tirs || 3)) { e._shots = 0; e._st = 'entre'; station(e, 24); e._cd0 = recharge(e, 1.2); }
+        else { e._st = 'pose'; e._cd = recharge(e, 1.6 + rr(0, 0.8)); }
       }
     }
   }
+
+  /* ---- LAME : la trancheuse ---- */
+  function updLame(e, dt, P) {
+    var c = conf('lame'), tv = c.traverse || { vitesse: 230, duree: 0.82, longueur: 190 };
+    if (e._st === 'chasse') {
+      e.ang = O.turnTo(e.ang, Math.atan2(P.y - e.y, P.x - e.x), 2.0 * dt);
+      avance(e, e.ang, (c.approche || 45) * allure(e), dt);
+      e._cd -= dt;
+      if (e._cd <= 0 && peutArmer(e) && O.d2(e.x, e.y, P.x, P.y) < (c.declenche || 150) * (c.declenche || 150) && charges < maxCharges() + 1) {
+        e._aim = Math.atan2(P.y - e.y, P.x - e.x);
+        e._st = 'recule'; e._stT = c.recul || 0.6; armer(e, 'ligne', e._stT + 0.2, 'tout');
+        e._tx = e.x - Math.cos(e._aim) * (c.approche || 45) * e._stT * 0.6; e._ty = e.y - Math.sin(e._aim) * (c.approche || 45) * e._stT * 0.6;
+        e._cut = {};
+      }
+    } else if (e._st === 'recule') {
+      var k = Math.min(1, dt * 4);
+      e.x += (e._tx - e.x) * k; e.y += (e._ty - e.y) * k;
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        var v = verifTir(e);
+        if (v === null) return;
+        if (v === false) { e._st = 'chasse'; e._cd = recharge(e, 1.6); return; }
+        e._st = 'fonce'; e._stT = tv.duree || 0.82; e._cut = {};
+      }
+    } else if (e._st === 'fonce') {
+      e.x += Math.cos(e._aim) * (tv.vitesse || 230) * dt; e.y += Math.sin(e._aim) * (tv.vitesse || 230) * dt;
+      bornes(e);
+      /* elle coupe le corps (une fois par passage) ; la tête qui la touche meurt par le contact de 70-joueuse */
+      var q = segsJ(), kk, rc = e.r + 3.5;
+      for (kk = 2; kk * 2 + 1 < q.length; kk++) {
+        if (O.d2(e.x, e.y, q[kk * 2], q[kk * 2 + 1]) < rc * rc) {
+          if (!e._cut.fait && N.joueuse && N.joueuse.etat === 'vivant' && !N.joueuse.invul()) { e._cut.fait = true; N.joueuse.couper(kk, srcDe(e), 'ennemi'); }
+          break;
+        }
+      }
+      e._stT -= dt; if (e._stT <= 0) { e._st = 'recup'; e._stT = c.recup || 0.8; e.ang = e._aim; }
+    } else if (e._st === 'recup') {
+      e._stT -= dt; if (e._stT <= 0) { e._st = 'chasse'; e._cd = recharge(e, 1.6 + rr(0, 1.0)); }
+    }
+  }
+
+  /* ---- RUCHE : la source, cible prioritaire ---- */
+  function larvesDe(e) { var n = 0; for (var i = 0; i < list.length; i++) if (!list[i]._dead && list[i]._mere === e.id) n++; return n; }
+  function updRuche(e, dt, P) {
+    var c = conf('ruche'), d = Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) || 1, g = c.garde || 90, v = (c.vitesse || 25) * allure(e);
+    if (e._st === 'garde') {
+      var s = d > g + 10 ? 1 : d < g - 10 ? -1 : 0;
+      if (s) { e.x += (P.x - e.x) / d * v * s * dt; e.y += (P.y - e.y) / d * v * s * dt; }
+      e._cd -= dt;
+      if (e._cd <= 0) {
+        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && canAct(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
+        else e._cd = 0.5;
+      }
+    } else if (e._st === 'couve') {
+      e._stT -= dt;
+      e._petales = O.clamp(1 - (e._stT - (c.couvee || 0.6)) / (c.petales || 0.7), 0, 1);
+      if (e._stT <= 0) {
+        for (var k = 0; k < (c.larves || 3); k++) {
+          var a = (k / (c.larves || 3)) * TAU + e._age, l = spawn('larve', e.x + Math.cos(a) * (e.r + 3), e.y + Math.sin(a) * (e.r + 3), { portail: 0.4 });
+          l._mere = e.id;
+        }
+        O.ringFx(e.x, e.y, 22, O.MAGENTA, 0.3);
+        e._st = 'garde'; e._cd = recharge(e, c.periode || 3.5); e._petales = 0;
+      }
+    }
+  }
+
+  /* ---- SENTINELLE : le tireur d'élite ---- */
+  function lasersSentinelles() { var n = 0; for (var i = 0; i < lasers.length; i++) if (!lasers[i]._dead && lasers[i].src && lasers[i].src.type === 'sentinelle') n++; return n; }
+  function chargesSentinelles() { var n = 0; for (var i = 0; i < list.length; i++) if (!list[i]._dead && list[i].type === 'sentinelle' && list[i]._st === 'vise') n++; return n; }
   function updSentinelle(e, dt, P) {
-    var t = O.T.t;
+    var c = conf('sentinelle');
     if (e._st === 'orbite') {
-      e._orb += 0.45 * dt * e._sens;
-      var V = O.VUE;
-      var tx = O.clamp(P.x + Math.cos(e._orb) * 78, V.x + 10, V.x + V.w - 10), ty = O.clamp(P.y + Math.sin(e._orb) * 78, AT - 6, V.y + V.h - 10);
+      e._orb += 0.45 * dt * e._sens * allure(e);
+      var V = O.VUE, orb = c.orbite || 80;
+      var tx = O.clamp(P.x + Math.cos(e._orb) * orb, Math.max(V.x, AL) + 10, Math.min(V.x + V.w, AR) - 10), ty = O.clamp(P.y + Math.sin(e._orb) * orb, Math.max(V.y, AT) + 6, Math.min(V.y + V.h, AB) - 10);
       var dx = tx - e.x, dy = ty - e.y, d = Math.sqrt(dx * dx + dy * dy);
       if (d > 1) { e.x += dx / d * Math.min(d, 36 * dt); e.y += dy / d * Math.min(d, 36 * dt); }
       e.ang = Math.atan2(P.y - e.y, P.x - e.x);
       e._cd -= dt;
-      if (e._cd <= 0 && canAct(e)) { e._st = 'vise'; e._stT = 0.85; e._teleTotal = 0.85; e._aim = Math.atan2(P.y - e.y, P.x - e.x); }   // télégraphe : 0,85 s
+      if (e._cd <= 0 && peutArmer(e) && lasersSentinelles() + chargesSentinelles() < (c.lasersMax || 2)) {
+        e._st = 'vise'; e._stT = c.vise || 0.85; e._aim = Math.atan2(P.y - e.y, P.x - e.x); armer(e, 'ligne', e._stT, 'tete');
+      }
     } else if (e._st === 'vise') {
-      e._stT -= dt; if (e._stT <= 0) { e._st = 'tire'; e._stT = 0.35; beam(e, e.x, e.y, e._aim, 0.35, 3); }
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        var v = verifTir(e);
+        if (v === null) return;
+        if (v === false) { e._st = 'orbite'; e._cd = recharge(e, c.recharge || 3); return; }
+        e._st = 'tire'; e._stT = c.laser || 0.35; beam(e, e.x, e.y, e._aim, c.laser || 0.35, 3, c.longueur || 300);
+      }
     } else if (e._st === 'tire') {
-      e._stT -= dt; if (e._stT <= 0) { e._st = 'orbite'; e._cd = rr(4.5, 6.5) - 1.2 * O.clamp((t - 60) / 60, 0, 1); }
+      e._stT -= dt; if (e._stT <= 0) { e._st = 'orbite'; e._cd = recharge(e, (c.recharge || 3) + rr(0, 0.8)); }
     }
   }
 
-  /* ---- le CYCLOPE de la démo (repli de N.colosse) : radial, laser, appel ---- */
-  var CYCLE = ['radial', 'laser', 'radial', 'appel', 'laser', 'radial'];
-  function updBoss(e, dt, P) {
-    e._age += dt;
-    /* il apparaît sans blesser pendant 0,6 s, et tant que la tête est sur lui (2 s au plus) : G-14 */
-    if (e._st === 'naissance') { e._stT -= dt; if (e._stT <= 0 && (O.d2(e.x, e.y, P.x, P.y) > 34 * 34 || e._age > 2)) { e._st = 'actif'; e.etat = 'approche'; } return; }
-    var cx = (AL + AR) / 2, cy = (AT + AB) / 2, t = O.T.t;
-    var ax = O.clamp(cx + (cx - P.x) * 0.45, AL + 26, AR - 26), ay = O.clamp(cy + (cy - P.y) * 0.45, AT + 24, AB - 24);
-    var sp0 = e._atk ? 7 : 17, dx = ax - e.x, dy = ay - e.y, d = Math.sqrt(dx * dx + dy * dy), k;
-    if (d > 1) { e.x += dx / d * Math.min(d, sp0 * dt); e.y += dy / d * Math.min(d, sp0 * dt); }
-    var hard = e.pv < e.pvMax / 2;
-    if (!e._atk) {
-      e._cd -= dt;
-      if (e._cd <= 0) {
-        e._atk = CYCLE[e._cyc % CYCLE.length]; e._cyc++;
-        e._atkT = e._atk === 'laser' ? 1.15 : 0.9; e._atkD = e._atkT; e._teleTotal = e._atkT;               // télégraphes de 0,9 à 1,15 s (G-13 : 0,8 s)
-        if (e._atk === 'laser') e._aim = Math.atan2(P.y - e.y, P.x - e.x);
-        if (e._atk === 'appel') {
-          e._pts = [];
-          for (k = 0; k < 3; k++) {
-            var a = (k / 3) * TAU + e._age, px = O.clamp(e.x + Math.cos(a) * 40, AL + 8, AR - 8), py = O.clamp(e.y + Math.sin(a) * 40, AT + 8, AB - 8);
-            if (O.d2(px, py, P.x, P.y) > 50 * 50) e._pts.push({ x: px, y: py });
-          }
+  /* ---- TRAQUEUR : contre l'attente ---- */
+  function updTraqueur(e, dt, P) {
+    var c = conf('traqueur'), a = Math.atan2(P.y - e.y, P.x - e.x);
+    e.ang = a; avance(e, a, (c.vitesse || 0.95) * Math.max(32, vitesseTete()), dt);
+    e._spin += dt * 2;
+  }
+
+  /* ---- PLANEUR : la cible bonus du DÉFILÉ (courbe de Galaga, ne tire pas) ---- */
+  function updPlaneur(e, dt, P) {
+    e._life += dt;
+    var c = e._courbe;
+    if (!c) { e._dead = true; e.etat = 'mort'; return; }
+    var u = e._life / (conf('planeur').sortie || 8) + (e._decal || 0);
+    if (u < 0) { e.x = c.x0; e.y = c.y0; return; }
+    var ang = c.sens * u * TAU * 0.9;
+    e.x = c.cx + Math.cos(c.a0 + ang) * c.r * (1 - 0.35 * u) + c.vx * u * 140;
+    e.y = c.cy + Math.sin(c.a0 + ang) * c.r * (1 - 0.35 * u) + c.vy * u * 140;
+    e.ang = c.a0 + ang + (c.sens > 0 ? Math.PI / 2 : -Math.PI / 2);
+    if (u > 1.05) { e._dead = true; e.etat = 'mort'; }
+  }
+
+  /* ---- RIVAL : l'autre serpent (traînée mortelle, coupe-route) ---- */
+  function updRival(e, dt, P) {
+    var c = conf('rival'), v = (c.vitesse || 0.9) * Math.max(50, vitesseTete()) * allure(e);
+    var A = O.A, mar = c.evitementMurs || 24;
+    var vis = c.visee || 40, tx = P.x + Math.cos(P.ang) * vis, ty = P.y + Math.sin(P.ang) * vis;
+    var dP = Math.sqrt(O.d2(e.x, e.y, P.x, P.y));
+    var devant = Math.cos(P.ang) * (e.x - P.x) + Math.sin(P.ang) * (e.y - P.y);
+    var cr = c.coupeRoute || { distance: 60, annonce: 0.5 };
+    if (e._st === 'actif' && e._cd <= 0 && devant > 0 && dP < cr.distance + 20 && dP > 20) {
+      e._st = 'arme'; e._stT = cr.annonce; e._tx = tx + Math.cos(P.ang) * 30; e._ty = ty + Math.sin(P.ang) * 30; armer(e, 'losange', e._stT, 'tete');
+    }
+    if (e._st === 'arme') { e._stT -= dt; tx = e._tx; ty = e._ty; if (e._stT <= 0) { e._st = 'actif'; e._cd = 4.0; } }
+    else e._cd -= dt;
+    var want = Math.atan2(ty - e.y, tx - e.x);
+    if (e.x < A.x0 + mar) want = O.turnTo(want, 0, 1.4); else if (e.x > A.x1 - mar) want = O.turnTo(want, Math.PI, 1.4);
+    if (e.y < A.y0 + mar) want = O.turnTo(want, Math.PI / 2, 1.4); else if (e.y > A.y1 - mar) want = O.turnTo(want, -Math.PI / 2, 1.4);
+    e.ang = O.turnTo(e.ang, want, v / (c.rayonVirage || 14) * dt);
+    avance(e, e.ang, v, dt);
+    /* la traînée : un pixel, 1,5 s ; le corps suit la tête à 5 px d'écart */
+    var T = e._trail || (e._trail = []), t = O.T.t, last = T.length ? T[T.length - 1] : null, i;
+    if (!last || O.d2(last.x, last.y, e.x, e.y) >= 1.2) T.push({ x: e.x, y: e.y, t: t });
+    while (T.length && t - T[0].t > (c.traine || 1.5)) T.shift();
+    var seg = e._segs || (e._segs = []), esp = c.espacement || 5, acc = 0, ns = 0;
+    for (i = T.length - 2; i >= 0 && ns < (c.segments || 10); i--) {
+      acc += Math.sqrt(O.d2(T[i].x, T[i].y, T[i + 1].x, T[i + 1].y));
+      if (acc >= esp * (ns + 1)) { seg[ns] = seg[ns] || { x: 0, y: 0 }; seg[ns].x = T[i].x; seg[ns].y = T[i].y; ns++; }
+    }
+    seg.length = ns;
+    /* la traînée tue la tête (cause traine) et coupe le corps de la joueuse */
+    var J = N.joueuse;
+    if (J && J.etat === 'vivant' && !J.invul()) {
+      var amin = c.traineAgeMin || 0.15, rt = 3 + (c.traineLargeur || 1) * 0.5;
+      for (i = 0; i < T.length; i++) {
+        if (t - T[i].t < amin) break;
+        if (O.d2(T[i].x, T[i].y, P.x, P.y) < rt * rt) { J.tuer('traine', srcDe(e)); return; }
+      }
+      var q = segsJ(), k, fini = false;
+      for (k = 2; k * 2 + 1 < q.length && !fini; k++) {
+        for (i = 0; i < T.length; i += 2) {
+          if (t - T[i].t < amin) break;
+          if (O.d2(T[i].x, T[i].y, q[k * 2], q[k * 2 + 1]) < 4.5 * 4.5) { J.couper(k, srcDe(e), 'traine'); fini = true; break; }
         }
       }
-    } else {
-      e._atkT -= dt;
-      if (e._atkT <= 0) {
-        if (e._atk === 'radial') {
-          var nb = hard ? 12 : 10, off = e._cyc * 0.21;
-          for (k = 0; k < nb; k++) { var aa = off + k / nb * TAU; ebullet(e, e.x + Math.cos(aa) * 12, e.y + Math.sin(aa) * 12, aa, hard ? CFG.tirBossRadialDur : CFG.tirBossRadial, true); }
-          if (hard) e._renfort = 0.4;
-          e._off = off;
-          O.shake(2);
-        } else if (e._atk === 'laser') {
-          beam(e, e.x, e.y, e._aim, 0.4, 5);
-          O.shake(3);
-        } else if (e._atk === 'appel') {
-          for (k = 0; k < e._pts.length; k++) {
-            if (O.d2(e._pts[k].x, e._pts[k].y, P.x, P.y) < 55 * 55) continue;    // la tête est venue sur la marque : on n'y naît pas
-            var m = spawn(t >= 60 && k === 1 ? 'fleche' : 'mine', e._pts[k].x, e._pts[k].y, { portail: 0 });
-            if (m.type === 'mine') { m._st = 'pose'; m._life = 14; m.etat = 'approche'; }
-            O.ringFx(m.x, m.y, 12, O.MAGENTA, 0.25);
-          }
-        }
-        e._atk = null; e._cd = hard ? 1.0 : 1.5; e._teleTotal = 0;
-      }
     }
-    if (e._renfort > 0) {                                  // la seconde ronde de la phase dure
-      e._renfort -= dt;
-      if (e._renfort <= 0) for (var q = 0; q < 8; q++) { var b = e._off + (q + 0.5) / 8 * TAU; ebullet(e, e.x + Math.cos(b) * 12, e.y + Math.sin(b) * 12, b, 38, true); }
-    }
+    /* il meurt en s'écrasant : mur, son corps, le corps de la joueuse (prime CRASH) */
+    var crash = false;
+    if (e.x < A.x0 + 3 || e.x > A.x1 - 3 || e.y < A.y0 + 3 || e.y > A.y1 - 3) crash = true;
+    if (!crash && J && J.hitTest && J.etat === 'vivant') { var h = J.hitTest(e.x, e.y, 2); if (h.part === 'corps' || h.part === 'queue') crash = true; }
+    if (!crash && ns > 3) for (i = 3; i < ns; i++) if (O.d2(e.x, e.y, seg[i].x, seg[i].y) < 2.5 * 2.5) { crash = true; break; }
+    if (crash) kill(e, { genre: 'joueuse', type: 'devore', id: -1 });
   }
 
   /* ============================ mise à jour ============================ */
@@ -13157,12 +13530,14 @@ N.ennemis = (function () {
     arena();
     var P = tete(), i, e;
     if (!P) return;
-    charges = 0;
-    for (i = 0; i < list.length; i++) if (!list[i]._dead && list[i].type === 'fleche' && (list[i]._st === 'vise' || list[i]._st === 'fonce')) charges++;
+    var recompte = 0;
+    for (i = 0; i < list.length; i++) if (!list[i]._dead && list[i].type === 'fleche' && (list[i]._st === 'vise' || list[i]._st === 'fonce')) recompte++;
+    charges = recompte;
+    if (inv.t > 0) { inv.t -= dt; if (inv.t <= 0) finInversion(); }
     for (i = 0; i < list.length; i++) {
       e = list[i];
       if (e._dead) continue;
-      e._age += 0; e.etatT += dt; e.img = (e.img + 1) | 0;
+      e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
       if (e._flash > 0) e._flash -= dt;
       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
         e._portail -= dt;
@@ -13172,23 +13547,32 @@ N.ennemis = (function () {
       /* vue : depuis combien de temps l'ennemi est entièrement visible */
       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
-      if (e.boss) { updBoss(e, dt, P); e.etat = ETAT[e._st] || 'approche'; if (e._atk) e.etat = 'arme'; continue; }
+      if (e._ext) { if (e.etat !== 'mort') e.etat = 'approche'; continue; }       // le CYCLOPE (73-colosse) se pilote seul
       if (e._stun > 0) e._stun -= dt;
       if (e._kx || e._ky) { e.x += e._kx * dt; e.y += e._ky * dt; var f = Math.pow(0.02, dt); e._kx *= f; e._ky *= f; if (Math.abs(e._kx) + Math.abs(e._ky) < 2) { e._kx = 0; e._ky = 0; } }
-      if (e._st === 'fuite') {                            // fuir() : il s'éloigne de la tête
+      if (e._st === 'proie') updProie(e, dt, P);
+      else if (e._st === 'fuite') {                       // fuir() : il s'éloigne de la tête
         var dd0 = Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) || 1; e.x += (e.x - P.x) / dd0 * 60 * dt; e.y += (e.y - P.y) / dd0 * 60 * dt;
       } else if (e.type === 'fleche') updFleche(e, dt, P);
+      else if (e.type === 'dard') updDard(e, dt, P);
+      else if (e.type === 'larve') updLarve(e, dt, P);
       else if (e.type === 'mine') updMine(e, dt, P);
       else if (e.type === 'tourelle') updTourelle(e, dt, P);
-      else updSentinelle(e, dt, P);
+      else if (e.type === 'lame') updLame(e, dt, P);
+      else if (e.type === 'ruche') updRuche(e, dt, P);
+      else if (e.type === 'sentinelle') updSentinelle(e, dt, P);
+      else if (e.type === 'traqueur') updTraqueur(e, dt, P);
+      else if (e.type === 'planeur') updPlaneur(e, dt, P);
+      else if (e.type === 'rival') updRival(e, dt, P);
       if (e._dead) continue;
       e.etat = ETAT[e._st] || 'approche';
-      e.dir = O.dir16(e.type === 'fleche' && (e._st === 'vise' || e._st === 'fonce') ? e._aim : e.ang);
+      var dirA = (e._st === 'vise' || e._st === 'fonce' || e._st === 'verrou' || e._st === 'recule') ? e._aim : e.ang;
+      e.dir = O.dir16(dirA);
       /* trop loin hors de la vue : on le rappelle (une flèche qui a dépassé sa cible) */
       var V = O.VUE;
-      if (e.x < V.x - 60 || e.x > V.x + V.w + 60 || e.y < V.y - 60 || e.y > V.y + V.h + 60) {
-        e.x = O.clamp(e.x, V.x - 40, V.x + V.w + 40); e.y = O.clamp(e.y, V.y - 40, V.y + V.h + 40);
-        if (e.type === 'fleche') e._st = 'chasse';
+      if (e.type !== 'planeur' && e.type !== 'rival' && (e.x < V.x - 60 || e.x > V.x + V.w + 60 || e.y < V.y - 60 || e.y > V.y + V.h + 60)) {
+        e.x = O.clamp(e.x, Math.max(V.x - 40, AL), Math.min(V.x + V.w + 40, AR)); e.y = O.clamp(e.y, Math.max(V.y - 40, AT), Math.min(V.y + V.h + 40, AB));
+        if (e.type === 'fleche' && e._st !== 'proie' && e._st !== 'fuite') e._st = 'chasse';
       }
     }
     /* les flèches ne s'empilent pas */
@@ -13200,13 +13584,18 @@ N.ennemis = (function () {
         if (dd < 81 && dd > 0.01) { var dn = Math.sqrt(dd), push = (9 - dn) * 0.5 / dn, px = (a.x - b.x) * push, py = (a.y - b.y) * push; a.x += px; a.y += py; b.x -= px; b.y -= py; }
       }
     }
+    /* les mèches des INSTABLES */
+    for (i = fuses.length - 1; i >= 0; i--) {
+      var fu = fuses[i]; fu.t -= dt;
+      if (fu.t <= 0) { fuses.splice(i, 1); souffle(fu.x, fu.y, fu.r, CFG.fuseDegats, null, false); }
+    }
     /* tirs ennemis : ils avancent ; N.joueuse teste ce qu'ils touchent */
+    var VU = O.VUE, A = O.A;
     for (i = 0; i < tirs.length; i++) {
       var s = tirs[i];
       if (s._dead) continue;
       s.x += s.vx * dt; s.y += s.vy * dt; s.vie -= dt;
-      var VU = O.VUE;
-      if (s.vie <= 0 || s.x < VU.x - 8 || s.x > VU.x + VU.w + 8 || s.y < VU.y - 8 || s.y > VU.y + VU.h + 8) s._dead = true;
+      if (s.vie <= 0 || s.x < VU.x - 8 || s.x > VU.x + VU.w + 8 || s.y < VU.y - 8 || s.y > VU.y + VU.h + 8 || s.x < A.x0 - 8 || s.x > A.x1 + 8 || s.y < A.y0 - 8 || s.y > A.y1 + 8) s._dead = true;
     }
     for (i = 0; i < lasers.length; i++) {
       var z = lasers[i];
@@ -13228,27 +13617,133 @@ N.ennemis = (function () {
   }
   function compact(L) { var j = 0; for (var i = 0; i < L.length; i++) if (!L[i]._dead) L[j++] = L[i]; L.length = j; }
 
-  /* ============================ dessin ============================ */
+  /* ============================ sprites : ceux de 40-sprites.js, sinon des replis dessinés ici ============================ */
+  var NOMS = null;
+  function connu(base) {
+    if (NOMS === null) {
+      NOMS = {};
+      try { var l = N.spr && N.spr.names ? N.spr.names() : []; for (var i = 0; i < l.length; i++) NOMS[String(l[i]).split(':')[0]] = 1; } catch (x) { /* liste absente */ }
+    }
+    return !!NOMS[base];
+  }
+  var COL = null;
+  function col() {
+    if (!COL) COL = { m: O.MAGENTA, s: O.SANG, r: O.ROSE, o: O.OS, a: O.AMBRE, j: O.JAUNE, n: O.NP, b: O.BRASIER, d: O.ARDOISE, k: O.ACIER };
+    return COL;
+  }
+  function rows(RW, outline) {
+    var h = RW.length, w = RW[0].length, s = O.mk(w, h), C = col(), x, y;
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) { var c = C[RW[y].charAt(x)]; if (c) s.data[y * w + x] = c; }
+    if (outline) s = bordure(s);
+    s.cx = (s.w - 1) >> 1; s.cy = (s.h - 1) >> 1;
+    return s;
+  }
+  function bordure(s) {
+    var w = s.w + 2, h = s.h + 2, o = O.mk(w, h), od = o.data, sd = s.data, x, y;
+    for (y = 0; y < s.h; y++) for (x = 0; x < s.w; x++) if (sd[y * s.w + x]) od[(y + 1) * w + x + 1] = sd[y * s.w + x];
+    function opq(px, py) { px -= 1; py -= 1; return px >= 0 && py >= 0 && px < s.w && py < s.h && sd[py * s.w + px] !== 0; }
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (!od[y * w + x] && (opq(x - 1, y) || opq(x + 1, y) || opq(x, y - 1) || opq(x, y + 1))) od[y * w + x] = O.NP;
+    return o;
+  }
+  function tourne(s, a) {
+    var sz = Math.ceil(Math.sqrt(s.w * s.w + s.h * s.h)) | 1, o = O.mk(sz, sz), c = Math.cos(a), si = Math.sin(a), cx = (s.w - 1) / 2, cy = (s.h - 1) / 2, oc = (sz - 1) / 2;
+    for (var y = 0; y < sz; y++) for (var x = 0; x < sz; x++) {
+      var dx = x - oc, dy = y - oc, sx = Math.round(cx + dx * c + dy * si), sy = Math.round(cy - dx * si + dy * c);
+      if (sx >= 0 && sy >= 0 && sx < s.w && sy < s.h) { var v = s.data[sy * s.w + sx]; if (v) o.data[y * sz + x] = v; }
+    }
+    o.cx = (sz - 1) >> 1; o.cy = (sz - 1) >> 1;
+    return o;
+  }
+  var FB = {};
+  var ART = {
+    dard: ['m....m.', 'sm..ms.', '.smmms.', '..mrm..', '.smmms.', 'sm.o.ms', 'm.....m'],
+    larve: ['.m.m.m.', '..sms..', 'msmrmsm', '..sms..', '.m.m.m.'],
+    lame: ['..sss..', '.smmms.', 'smmrmms', 'smrrrms', 'smmrmms', '.smmms.', '..sss..'],
+    lameD: ['m.......m', '.m.....m.', '..s...s..', '..smmms..', '.smmrmms.', '.smrrrms.', '.smmrmms.', '..smmms..', '..s...s..', '.m.....m.', 'm.......m'],
+    ruche: ['...sss.sss...', '..smmmsmmms..', '.smmmmmmmmms.', 'smmmrrrrrmmms', 'smmrrooorrmms', 'smmrroooorrms', 'smmrrooorrmms', 'smmmrrrrrmmms', '.smmmmmmmmms.', '..smmmsmmms..', '...sss.sss...'],
+    traqueur: ['..ddddd..', '.dkkkkkd.', 'dkkddkkkd', 'dkdrrdkkd', 'dkdrrdkkd', 'dkkddkkkd', '.dkkkkkd.', '..ddddd..'],
+    planeur: ['r..r..r', '.rsmsr.', '..rmr..', '...r...'],
+    perle: ['.sss.', 'smrms', 'smmms', '.sss.'],
+    rivalT: ['..sssss..', '.smmmmms.', 'smrrmrrms', 'smrrmrrms', 'smmmmmmms', '.smssssm.', '..m.m.m..']
+  };
+  function fbSpr(nom, f) {
+    var k = nom + '|' + f;
+    if (FB[k]) return FB[k];
+    var p = nom.split(':'), b = p[0], s = null;
+    if (b === 'dard') s = tourne(rows(ART.dard, true), (parseInt(p[1], 10) || 0) * Math.PI / 8);
+    else if (b === 'lame') s = rows(p[1] === 'deploye' ? ART.lameD : ART.lame, true);
+    else if (ART[b]) s = rows(ART[b], true);
+    else s = rows(['.k.', 'kkk', '.k.'], false);
+    FB[k] = s;
+    return s;
+  }
+  function spr(nom, f) {
+    var b = nom.split(':')[0];
+    if (connu(b)) return O.sp(nom, f);
+    return fbSpr(nom, f & 1);
+  }
+
   function enemySprite(e, f) {
-    var sp = O.sp;
-    if (e.type === 'fleche') return sp('fleche:' + O.dir16(e._st === 'vise' || e._st === 'fonce' ? e._aim : e.ang), f);
-    if (e.type === 'tourelle') return sp(e._st === 'vise' ? 'tourelle:charge' : 'tourelle', f);
-    if (e.type === 'mine') return sp(e._st === 'arme' ? 'mine:alerte' : 'mine', f);
-    if (e.type === 'cyclope') return sp(e._atk ? 'colosse:oeil' : 'colosse', f);
-    return sp(e.type, f);
+    var t = e.type;
+    if (t === 'fleche') return O.sp('fleche:' + O.dir16((e._st === 'vise' || e._st === 'fonce') ? e._aim : e.ang), f);
+    if (t === 'tourelle') return O.sp(e._st === 'vise' ? 'tourelle:charge' : 'tourelle', f);
+    if (t === 'mine') return O.sp(e._st === 'arme' ? 'mine:alerte' : 'mine', f);
+    if (t === 'dard') return spr('dard:' + O.dir16(e._st === 'fonce' || e._st === 'verrou' ? e._aim : e.ang), f);
+    if (t === 'lame') return spr((e._st === 'recule' || e._st === 'fonce') ? 'lame:deploye' : 'lame', f);
+    if (t === 'rival') return spr('rivalT', f);
+    return spr(t, f);
+  }
+  function encre(e) {
+    if (e._st === 'proie') return (inv.t < 1 && (Math.floor(O.T.ak * 8) & 1)) ? -1 : O.ARDOISE;
+    if (e._st === 'recup' && e.type === 'lame') return O.ROSE;
+    return -1;
+  }
+  function ringTrame(x, y, r, c, t) {
+    var g = N.gfx, n = Math.max(24, Math.floor(r * 2.6));
+    for (var j = 0; j < n; j++) {
+      var a = j / n * TAU, px = Math.round(x + Math.cos(a) * r), py = Math.round(y + Math.sin(a) * r);
+      if (N.pal.dither(px, py, t)) g.px(px, py, c);
+    }
   }
   function drawEnemy(e) {
-    var ak = O.T.ak, f = Math.floor(ak * 6) + (e.id & 3), s = enemySprite(e, f), x = e.x, y = e.y;
+    var ak = O.T.ak, f = Math.floor(ak * 6) + (e.id & 3), s = enemySprite(e, f), x = e.x, y = e.y, ink;
     if (!s) return;
-    if (e.boss && e._st === 'naissance') { if ((Math.floor(ak * 8) & 1)) { O.putInk(s, x, y, O.MAGENTA); return; } }
-    if (e.type === 'fleche' && e._st === 'vise') x += (Math.floor(ak * 20) & 1) ? 1 : 0;      // elle tremble avant de foncer
-    O.put(s, x, y);
+    if (e.type === 'fleche' && e._st === 'vise') x += (Math.floor(ak * 20) & 1) ? 1 : 0;      // elle tremble avant de se jeter
+    if (e.mods.rapide && e._st !== 'proie') { O.blitDither(s, x - Math.cos(e.ang) * 5, y - Math.sin(e.ang) * 5, O.SANG, 0.5); O.blitDither(s, x - Math.cos(e.ang) * 9, y - Math.sin(e.ang) * 9, O.SANG, 0.25); }
+    ink = encre(e);
+    if (ink >= 0) O.putInk(s, x, y, ink); else O.put(s, x, y);
     if (O.isFlash(e)) O.putInk(O.inner(s), x, y, O.OS);
-    if (e.boss) {
-      /* sa vie se lit sur lui-même : un arc qui se vide autour de la carcasse */
-      var fr = e.pv / e.pvMax, n = Math.ceil(fr * 72);
-      for (var j = 0; j < n; j++) { var b = -Math.PI / 2 + j / 72 * TAU; N.gfx.px(x + Math.cos(b) * 29, y + Math.sin(b) * 29, j % 9 === 8 ? O.NP : O.ROSE); }
+    var g = N.gfx, j;
+    if (e.mods.blinde && e._plaques) {                       // plaques de sang à rivets rose pâle
+      for (j = 0; j < 8; j++) { var ba = j * TAU / 8 + 0.4; g.px(x + Math.cos(ba) * (e.r + 1.5), y + Math.sin(ba) * (e.r + 1.5), (j & 1) ? O.ROSE : O.SANG); }
     }
+    if (e.mods.instable && e._st !== 'proie') {              // cœur en brasier qui bat plus vite quand les PV baissent
+      var bat = 3 + 6 * (1 - e.pv / e.pvMax);
+      if (Math.floor(ak * bat * 2) & 1) g.px(x, y, O.BRASIER);
+    }
+    if (e.elite) {                                           // la couronne : pointillés rose pâle qui tournent
+      var n = 12, ra = e.r + 5;
+      for (j = 0; j < n; j += 2) { var ca = ak * 1.4 + j * TAU / n; g.px(x + Math.cos(ca) * ra, y + Math.sin(ca) * ra, O.ROSE); }
+    }
+    if (e.type === 'ruche') {                                // l'arc de PV d'un pixel
+      var nn = Math.ceil(e.pv / e.pvMax * 40);
+      for (j = 0; j < nn; j++) g.px(x + Math.cos(-Math.PI / 2 + j / 40 * TAU) * (e.r + 3), y + Math.sin(-Math.PI / 2 + j / 40 * TAU) * (e.r + 3), O.ROSE);
+      if (e._petales > 0) for (j = 0; j < 6; j++) { var pa = j * TAU / 6 + e._spin; g.px(x + Math.cos(pa) * (e.r + 1 + 4 * e._petales), y + Math.sin(pa) * (e.r + 1 + 4 * e._petales), O.ROSE); }
+    }
+    if (e.type === 'traqueur') {                             // halo de pointillés qui tourne (ne se confond pas avec le RIVAL)
+      for (j = 1; j < 10; j += 2) { var ha = e._spin + j * TAU / 10; g.px(x + Math.cos(ha) * (e.r + 3), y + Math.sin(ha) * (e.r + 3), O.ROSE); }
+    }
+    if (e.type === 'rival') drawRival(e);
+    if (e.type === 'mine' && e._st !== 'arme') ringTrame(x, y, conf('mine').cercle || 34, e._st === 'proie' ? O.ARDOISE : O.VIOLET, 0.35);   // le cercle d'armement est toujours affiché
+  }
+  function drawRival(e) {
+    var g = N.gfx, T = e._trail, t = O.T.t, i, C = conf('rival');
+    if (T) for (i = 0; i < T.length; i++) {                  // la traînée : 1 px magenta ; plus vive dès qu'elle tue
+      var age = t - T[i].t;
+      if (age > 0.1 || (i & 1)) g.px(T[i].x, T[i].y, age > (C.traineAgeMin || 0.15) ? O.MAGENTA : O.SANG);
+    }
+    var sg = e._segs;
+    if (sg) for (i = sg.length - 1; i >= 0; i--) O.put(fbSpr('perle', 0), sg[i].x, sg[i].y);
   }
   function drawEnemyShots() {
     var f = Math.floor(O.T.ak * 8);
@@ -13257,20 +13752,29 @@ N.ennemis = (function () {
   function drawEnemies() {
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
-      if (e._dead || e.etat === 'portail') continue;
+      if (e._dead || e.etat === 'portail' || e._ext) continue;
       drawEnemy(e);
     }
   }
-  function draw() { drawEnemies(); drawEnemyShots(); }
+  /* le plateau en mouvement (N.arene) et le corps du CYCLOPE (N.colosse) se dessinent d'ici : 79-jeu n'appelle que N.ennemis.draw() */
+  function draw() {
+    O.origineMonde();                                  // tout ce qui suit est en coordonnées MONDE
+    if (N.arene && N.arene.draw) O.safe('arene.draw', function () { N.arene.draw(); });
+    drawEnemies();
+    if (N.colosse && N.colosse.draw && N.colosse.actif && N.colosse.actif()) O.safe('colosse.draw', function () { N.colosse.draw(); });
+    drawEnemyShots();
+  }
 
-  /* ---- les télégraphes : le repli de N.fx.tele / N.fx.drawTele (lot 6a). Chaque attaque est annoncée à
-     l'endroit exact de ses dégâts (G-13). ---- */
-  function teleLine(x0, y0, a, len, k) {
+  /* ---- les télégraphes : le repli de N.fx.tele / N.fx.drawTele. Deux temps : magenta en pointillés qui courent
+     (QUI et OÙ), puis rose pâle plein pendant les 300 dernières ms (QUAND). Toujours gainés de nuit profonde, dessinés
+     à l'endroit exact des dégâts (G-13). ---- */
+  function teleLine(x0, y0, a, len, k, rest) {
     var g = N.gfx, c = Math.cos(a), s = Math.sin(a), nx = -s, ny = c, i, x, y, V = O.VUE;
     function dehors(xx, yy) { return xx < V.x - 2 || yy < V.y - 2 || xx > V.x + V.w + 2 || yy > V.y + V.h + 2; }
+    var fin = rest !== undefined ? rest <= ((R && R.ennemis && R.ennemis.tele && R.ennemis.tele.finRosePale) || 0.3) : k > 0.75;
     for (i = 6; i < len; i++) { x = x0 + c * i; y = y0 + s * i; if (dehors(x, y)) break; g.px(x + nx, y + ny, O.NP); g.px(x - nx, y - ny, O.NP); }
-    var ph = Math.floor(O.T.ak * 30), on = k > 0.66 ? 5 : 3, col = k > 0.75 ? O.ROSE : O.MAGENTA;
-    for (i = 6; i < len; i++) { x = x0 + c * i; y = y0 + s * i; if (dehors(x, y)) break; if (((i + 6000 - ph) % 6) < on) g.px(x, y, col); }
+    var ph = Math.floor(O.T.ak * 30), col2 = fin ? O.ROSE : O.MAGENTA;
+    for (i = 6; i < len; i++) { x = x0 + c * i; y = y0 + s * i; if (dehors(x, y)) break; if (fin || ((i + 6000 - ph) % 6) < 3) g.px(x, y, col2); }
   }
   function beamDraw(b) {
     var g = N.gfx, dx = b.x1 - b.x0, dy = b.y1 - b.y0, Ln = Math.sqrt(dx * dx + dy * dy), c = dx / Ln, s = dy / Ln, nx = -s, ny = c, V = O.VUE;
@@ -13290,36 +13794,48 @@ N.ennemis = (function () {
     }
     g.line(x - 3, y, x + 3, y, O.MAGENTA); g.line(x, y - 3, x, y + 3, O.MAGENTA);
   }
+  function losange(x, y, r, c) {
+    var g = N.gfx;
+    g.line(x - r, y, x, y - r, c); g.line(x, y - r, x + r, y, c); g.line(x + r, y, x, y + r, c); g.line(x, y + r, x - r, y, c);
+  }
   function drawTele() {
-    var g = N.gfx, V = O.VUE, i, e, j, ak = O.T.ak;
+    var g = N.gfx, i, e;
     for (i = 0; i < list.length; i++) {
       e = list[i];
       if (e._dead) continue;
-      if (e.etat === 'portail') {                       // le portail du gros ennemi : croix de visée et silhouette qui se précise
+      if (e.etat === 'portail') {                       // le portail : croix de visée et anneaux qui se resserrent
         var kb = e._portailTotal > 0 ? 1 - e._portail / e._portailTotal : 1;
-        spawnMark(e.x, e.y, kb, e.boss ? 30 : 12);
-        if (e.boss) {
-          if ((Math.floor(ak * 4) & 1) === 0) {          // la croix de visée bat à 2 Hz (G-29)
-            teleLine(e.x, e.y, Math.PI, V.w, 0.5); teleLine(e.x, e.y, 0, V.w, 0.5);
-            teleLine(e.x, e.y, -Math.PI / 2, V.h, 0.5); teleLine(e.x, e.y, Math.PI / 2, V.h, 0.5);
-          }
-          if (kb > 0.55) O.blitDither(O.sp('colosse', 0), e.x, e.y, O.SANG, (kb - 0.55) / 0.45);
-        }
+        spawnMark(e.x, e.y, kb, e.elite ? 24 : (e.type === 'ruche' ? 22 : 12));
         continue;
       }
-      if (e.type === 'fleche' && e._st === 'vise') teleLine(e.x, e.y, e._aim, 72, 1 - e._stT / 0.6);
-      else if (e.type === 'tourelle' && e._st === 'vise') teleLine(e.x, e.y, e._aim, 66, 1 - e._stT / 0.65);
-      else if (e.type === 'sentinelle' && e._st === 'vise') teleLine(e.x, e.y, e._aim, V.w + V.h, 1 - e._stT / 0.85);
-      else if (e.type === 'mine' && e._st === 'arme') {
-        var k = 1 - e._stT / 0.75;
-        g.ditherCirc(e.x, e.y, 26, O.MAGENTA, 0.08 + 0.3 * k);
-        g.ring(e.x, e.y, 27, O.NP, 1); g.ring(e.x, e.y, 26, k > 0.7 ? O.ROSE : O.MAGENTA, 1);
-      } else if (e.boss && e._atk) {
-        var kk = 1 - e._atkT / e._atkD;
-        if (e._atk === 'radial') { for (j = 0; j < 3; j++) { var r = 34 * (1 - kk) + 14 + j * 5; g.ring(e.x, e.y, r + 1, O.NP, 1); g.ring(e.x, e.y, r, O.MAGENTA, 0.5 + 0.5 * kk); } }
-        else if (e._atk === 'laser') teleLine(e.x, e.y, e._aim, V.w + V.h, kk);
-        else if (e._atk === 'appel') for (j = 0; j < e._pts.length; j++) spawnMark(e._pts[j].x, e._pts[j].y, kk, 10);
+      if (e._ext || e._st === 'proie') continue;
+      var rest = e._stT, tot = e._teleTotal || 0.6, kk = tot > 0 ? 1 - rest / tot : 1;
+      if (e.type === 'fleche' && e._st === 'vise') teleLine(e.x, e.y, e._aim, (conf('fleche').bond && conf('fleche').bond.longueur) || 67, kk, rest);
+      else if (e.type === 'dard' && e._st === 'verrou') {
+        teleLine(e.x, e.y, e._aim, (conf('dard').fuseau && conf('dard').fuseau.longueur) || 82, kk, rest);
+        var lr = 9 - 4 * kk; losange(e._tx, e._ty, lr + 1, O.NP); losange(e._tx, e._ty, lr, kk > 0.6 ? O.ROSE : O.MAGENTA);
+      } else if (e.type === 'tourelle' && e._st === 'vise') {
+        var po = conf('tourelle').portee || 160;
+        teleLine(e.x, e.y, e._aim, po, kk, rest);
+        var ix = e.x + Math.cos(e._aim) * po, iy = e.y + Math.sin(e._aim) * po; losange(ix, iy, 3, O.NP); losange(ix, iy, 2, kk > 0.7 ? O.ROSE : O.MAGENTA);
+      } else if (e.type === 'sentinelle' && e._st === 'vise') teleLine(e.x, e.y, e._aim, (conf('sentinelle').longueur || 300), kk, rest);
+      else if (e.type === 'lame' && e._st === 'recule') teleLine(e._tx, e._ty, e._aim, (conf('lame').traverse && conf('lame').traverse.longueur) || 190, kk, rest + 0.2);
+      else if (e.type === 'larve' && e._st === 'mord') {
+        var rr0 = 12 * (1 - kk) + 3; g.ring(e._tx, e._ty, rr0 + 1, O.NP, 1); g.ring(e._tx, e._ty, rr0, kk > 0.6 ? O.ROSE : O.MAGENTA, 1);
+      } else if (e.type === 'mine' && e._st === 'arme') {
+        var mk = 1 - e._stT / ((conf('mine').meche) || 0.8), sr = conf('mine').souffle || CFG.mineSouffle;
+        g.ditherCirc(e.x, e.y, sr, O.MAGENTA, 0.08 + 0.3 * mk);
+        g.ring(e.x, e.y, sr + 1, O.NP, 1); g.ring(e.x, e.y, sr, mk > 0.7 ? O.ROSE : O.MAGENTA, 1);
+      } else if (e.type === 'ruche' && e._st === 'couve') {
+        g.ring(e.x, e.y, e.r + 4 + 6 * (1 - kk), O.MAGENTA, 0.5 + 0.5 * kk);
+      } else if (e.type === 'rival' && e._st === 'arme') {
+        losange(e._tx, e._ty, 5, O.NP); losange(e._tx, e._ty, 4, O.ROSE);
       }
+    }
+    for (i = 0; i < fuses.length; i++) {                // la mèche d'un INSTABLE : le disque de souffle qui se remplit
+      var fu = fuses[i], fk = 1 - fu.t / fu.d;
+      g.ditherCirc(fu.x, fu.y, fu.r, O.MAGENTA, 0.08 + 0.3 * fk);
+      g.ring(fu.x, fu.y, fu.r + 1, O.NP, 1); g.ring(fu.x, fu.y, fu.r, fk > 0.7 ? O.ROSE : O.MAGENTA, 1);
     }
     for (i = 0; i < lasers.length; i++) if (!lasers[i]._dead) beamDraw(lasers[i]);
   }
@@ -13327,7 +13843,1436 @@ N.ennemis = (function () {
   return {
     reset: reset, update: update, draw: draw, drawEnemies: drawEnemies, drawTele: drawTele,
     spawn: spawn, list: list, count: count, counts: counts, hit: hit, zone: zone, devorer: devorer, dans: dans, pres: pres,
-    tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours
+    tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours,
+    rayon: rayon, teleLigne: teleLine, marque: spawnMark, inversion: function () { return Math.max(0, inv.t); }, charges: function () { return charges; }
+  };
+})();
+
+/* ===== 73-arene.js ===== */
+/* ===== 73-arene.js — N.arene : le plateau qui voyage, les convois, le sillage (lot D-vagues) =====
+
+   REFONTE.md § 4.6 (le texte fait loi), § 3.8 (apparitions justes), § 7.8 (interface), § 2.3 (mort).
+
+   LE TRAVELLING (V2, V3, V5). L'arène devient une fenêtre de 576 × 512 px qui traverse le monde. Ce module CHOISIT la place
+   (la tête reste à 80 px au moins des murs, la fenêtre part du côté où il reste le plus de monde), ANNONCE (2 s avant le
+   départ : chevrons qui battent sur le mur arrière, son `travelling`, bannière « LE PLATEAU AVANCE »), puis pilote N.world
+   (travelling, stop, arena). Le monde fait la mise en place (3 s) et l'avance ; les murs courants sont lus dans N.world.
+   Le mur arrière : la tête qu'il touche est tuée par la joueuse (distMur) ; ICI on coupe le corps qui traîne derrière lui
+   (`couper`, cause `mur`), on tue sans score ni butin les ennemis qu'il dépasse (source decor/mur), on expire le butin et on
+   efface les tirs ennemis qui passent derrière. Son pan s'allume quand la tête ou un segment est à moins de 24 px.
+   Les murs qui glissent pendant la mise en place (3 s) et le retour (2 s) suivent les mêmes règles tant qu'ils avancent.
+
+   LES CONVOIS (V4, V5). Cinq voies horizontales (ordonnées de N.R.arene.convois.voies), jamais deux fois de suite la même,
+   jamais deux convois à la fois, aucune annonce dans les 3 s qui suivent la bannière d'une élite (`pic`, retenu à l'instant
+   où le directeur nous prévient). Annonce 1,5 s avant : voie hachurée de magenta tramé à 25 %, cône de phares tramé qui
+   avance depuis le bord d'arrivée, chevron au bord de la vue, klaxon `convoi` panoramisé, événements `arene` (convoiAnnonce)
+   et `arme` (forme voie). Le convoi : 6 wagons de 18 × 14 px à 240 px/s. Il tue la tête (`tuer('convoi')`, sauf
+   invulnérabilité de réapparition), coupe le corps (`couper(k, …, 'convoi')`, au plus près de la tête, ce qui rend la
+   coupe idempotente) et broie les ennemis (jamais un boss) : « BROYÉ ×n ».
+   CHOIX DE LA SOURCE DU BROYAGE : {genre:'arene', type:'convoi', id:-1}. 77-score ne retient hors score que la purge
+   (decor/purge) et 71-butin que le genre `decor` : la chaîne, le score et le butin comptent donc comme une destruction de la
+   joueuse, et l'attribution reste lisible dans les statistiques (une source joueuse/devore ferait croire à une morsure).
+
+   LE SILLAGE. sillage(x, y) : vrai si le point est dans la voie d'un convoi en passage, derrière le dernier wagon, à moins
+   de 40 px. Tant que la tête y est : × 1,4 gratuit, sans toucher à la réserve, et les ennemis broyés comptent double.
+   N.joueuse n'offre AUCUN point d'accroche (pas de multiplicateur de vitesse) : demande écrite dans demandes.md ; en
+   attendant, on pousse la tête de (facteur − 1) × vitesse × dt le long de son cap quand c'est sûr (l'arrivée reste à plus
+   de 8 px des murs), la trace de la joueuse rattrape le déplacement au pas suivant. Le « compte double » est servi par
+   N.score.ajouter(base × mult) en plus de l'écriture normale du `kill` (si N.score.ajouter n'existe pas : laissé simple).
+
+   INTERFACE (§ 7.8) : reset(), update(dt), draw(), travelling(vx, depuis), convois(cfg), voies() -> [], sillage(x, y) -> bool,
+   actif().  Ajouts : entree(vague) / pic() / nettoyee() (le directeur 76-directeur les APPELLE : aucun écouteur `vague`
+   ici, le contrat n'en prévoit pas pour ce module), murArriere() -> {x, sens, actif} | null (pour les apparitions, § 3.8),
+   etat() (instantané pour les tests).
+     travelling(vx, depuis) : vx signé (le signe choisit le sens), absent -> sens et vitesse automatiques ; depuis = abscisse
+        du bord gauche de départ. Même séquence que dans une vague (mise en place, annonce, départ).
+     convois(cfg) : { voie: 0..4, sens: ±1 } lance un convoi tout de suite avec son annonce ; { t, periode, alea } programme
+        la suite (chronomètre de vague). -> true si lancé.
+
+   ÉMET (seul émetteur) `arene` { evt: travellingAnnonce | travelling | convoiAnnonce | convoiPasse | fin, voie, vx }
+   (voie 0..4 pour un convoi, −1 pour le plateau ; vx signé) et `arme` { id, type:'convoi', forme:'voie', total:1.5,
+   cible:'tout', shown:true, rallonge:false } à l'annonce d'un convoi.
+   CONSOMME : aucun événement. Il est appelé par 76-directeur (entree, pic, nettoyee) et par 79-jeu (reset, update).
+   Il LIT : N.world (travelling, arena, stop, enMouvement, mursAnnonces, x0…y1), N.outils (A, VUE, T, sp, put, mk, hasard
+   du flux 'arene'), N.joueuse (tete, segs, etat, couper, tuer, invul, distMur), N.ennemis (list, tirs, hit), N.butin.list,
+   N.score (ajouter, mult), N.hud (banniere, tag, pop), N.cam.jolt, N.dir.info (repli de entree()).
+   IL ÉCRIT : N.S.monde (schéma `monde`), créé s'il manque.
+   IL DEMANDE aux autres (demandes.md) : 70-joueuse.js, un multiplicateur de vitesse externe (le sillage) ;
+   76-directeur / 72-ennemis, de naître devant le mur arrière en lisant murArriere() (§ 3.8).
+   REPLIS : sans N.world, le travelling est ignoré (les convois fonctionnent sur O.A) ; sans N.dir.info ni argument,
+   entree() ne programme rien ; sans N.hud.banniere, la bannière devient un tag, puis rien ; sans N.score.ajouter, le
+   sillage ne double pas le score ; sans N.spr, les chevrons et la bannière passent par les replis de N.outils.
+   Chiffres : N.R.arene ; ce qui manque est dans CFG, marqué « → N.R ». Zéro Math.random (flux 'arene'), zéro Date.now,
+   aucune couleur littérale (palette par N.outils), aucune allocation par image dans les boucles chaudes. */
+N.arene = (function () {
+  'use strict';
+  var O = N.outils, R = N.R;
+  var RA = (R && R.arene) || {}, RT = RA.travelling || {}, RC = RA.convois || {}, RS = RC.sillage || {};
+  var CFG = {
+    largeur: RT.largeur || 576, miseEnPlace: RT.miseEnPlace || 3, marge: RT.marge || 80, annonceTrav: RT.annonce || 2,
+    vitesses: RT.vitesses || { 2: 8, 3: 12, 5: 14 }, alerte: RT.alerte || 24, retour: RT.retour || 2,
+    voies: RC.voies || [64, 160, 256, 352, 448], hauteurVoie: RC.hauteurVoie || 20, annonceConvoi: RC.annonce || 1.5,
+    hachure: RC.hachure || 0.25, silenceElite: RC.silenceApresElite || 3, wagons: RC.wagons || 6,
+    wagon: RC.wagon || [18, 14], vitesse: RC.vitesse || 240, museauHz: Math.min(RC.museauHzMax || 3, 2.5),
+    sillageDistance: RS.distance || 40, sillageFacteur: RS.facteur || 1.4,
+    jolt: RC.joltPassage || 2,
+    ecartWagons: 2,                     // → N.R : espace entre deux wagons, en px
+    margeFin: 4,                        // → N.R : le convoi est fini quand son dernier wagon a quitté l'arène de 4 px
+    coupeSegMin: 2,                     // → N.R : un segment collé à la tête (k < 2) est l'affaire de la tête
+    murSur: 8,                          // → N.R : le sillage ne pousse jamais la tête à moins de 8 px d'un mur
+    avantFin: 4,                        // → N.R : plus d'annonce de convoi dans les 4 dernières secondes d'une vague
+    v4: RC.v4 || { debut: 8, periode: 9, alea: 2 }, v5: RC.v5 || { debut: 12, periode: 14, alea: 0 }
+  };
+  var SRC_CV = { genre: 'arene', type: 'convoi', id: -1 };
+  var SRC_MUR = { genre: 'arene', type: 'murMobile', id: -1 };
+  var SRC_DEC = { genre: 'decor', type: 'mur', id: -1 };
+
+  /* ---- l'état ---- */
+  var vagueOn = false, tw = 0, duree = 45, nVague = 0, tvAt = -1, tvVx = 0, tvDone = false, eliteT = -99;
+  var touche = false;          // ce module a déplacé les murs : il doit les rendre
+  var tv = { ph: 'off', t: 0, vx: 0, depuis: 0, ann: false, appele: false, annAt: 0, callAt: 0, departAt: 0 };   // ph : off | mise | marche | arret
+  var CV = { ph: 'off', voie: 0, cy: 0, sens: 1, t: 0, xf: 0, bx0: 0, bx1: 0, broyes: 0, tag: false };           // ph : off | annonce | passage
+  var cv = { next: -1, periode: 9, alea: 2, derniere: -1 };
+  var dtc = 0, frame = 0, inWake = false, panD = 99;
+  var QS = null, QN = -1;
+  var OUT_MUR = { x: 0, y0: 0, y1: 0, sens: 0, actif: false };
+
+  /* ---- petits outils gardés ---- */
+  function mondeW() { var w = N.world; return (w && w.W) || 1024; }
+  function mondeH() { var w = N.world; return (w && w.H) || 512; }
+  function monde() { var w = N.world; return (w && typeof w.arena === 'function' && typeof w.travelling === 'function') ? w : null; }
+  function vivante() { var J = N.joueuse, e = J && J.etat; return e === 'vivant' || e === 'reapparition'; }
+  function qsegs() { if (QN !== frame) { QS = N.joueuse.segs(); QN = frame; } return QS; }
+  function emitArene(evt, voie, vx) { if (N.ev) N.ev.emit('arene', { evt: evt, voie: voie | 0, vx: +vx || 0 }); }
+  function vitesseVague(n) { return (CFG.vitesses && CFG.vitesses[n]) || 12; }
+
+  /* ============================ le TRAVELLING ============================ */
+  /* place la fenêtre : contient la tête (et sa position dans 1,5 s) avec la marge, part du côté qui a le plus de monde */
+  function choisirPlace(vxAbs, sensForce) {
+    var Wd = mondeW(), L = CFG.largeur, P = N.joueuse && N.joueuse.tete, x = P ? P.x : Wd / 2;
+    var sens = sensForce || ((Wd - x) > x ? 1 : -1);
+    var xp = P ? x + Math.cos(P.ang) * (P.vit || 68) * (CFG.miseEnPlace / 2) : x;
+    var lo = Math.max(x, xp) + CFG.marge - L, hi = Math.min(x, xp) - CFG.marge;
+    var d = sens > 0 ? x - 200 : x - L + 200;
+    if (lo <= hi) d = O.clamp(d, lo, hi); else d = (x + xp) / 2 - L / 2;
+    tv.depuis = O.clamp(d, 0, Wd - L);
+    tv.vx = sens * vxAbs;
+  }
+  function lancerTrav(vxAbs, depuis, sensForce) {
+    var w = monde();
+    if (!w || (tv.ph !== 'off' && tv.ph !== 'arret')) return false;
+    choisirPlace(vxAbs || 12, sensForce);
+    if (typeof depuis === 'number') tv.depuis = O.clamp(depuis, 0, mondeW() - CFG.largeur);
+    tv.ph = 'mise'; tv.t = 0; tv.ann = false; tv.appele = false;
+    var deja = Math.abs((w.x1 - w.x0) - CFG.largeur) < 1 && Math.abs(w.x0 - tv.depuis) < 1 && w.y0 <= 0.5 && w.y1 >= mondeH() - 0.5;
+    if (deja) { tv.annAt = 0; tv.callAt = CFG.annonceTrav; tv.departAt = CFG.annonceTrav; }
+    else { tv.callAt = 0; tv.annAt = Math.max(0, CFG.miseEnPlace - CFG.annonceTrav); tv.departAt = CFG.miseEnPlace; }
+    return true;
+  }
+  function annoncerTrav() {
+    tv.ann = true;
+    O.sfx('travelling', { pan: 0 });
+    var H = N.hud;
+    if (H && typeof H.banniere === 'function') H.banniere('LE PLATEAU AVANCE', { c: 'magenta', duree: CFG.annonceTrav });
+    else if (H && typeof H.tag === 'function') H.tag('LE PLATEAU AVANCE');
+    emitArene('travellingAnnonce', -1, tv.vx);
+  }
+  function majTrav(dt) {
+    if (vagueOn && tvAt >= 0 && !tvDone && tw >= tvAt) { tvDone = true; lancerTrav(tvVx); }
+    if (tv.ph === 'off' || tv.ph === 'arret') return;
+    var w = monde();
+    if (!w) { tv.ph = 'off'; return; }
+    tv.t += dt;
+    if (!tv.ann && tv.t >= tv.annAt) annoncerTrav();
+    if (!tv.appele && tv.t >= tv.callAt) {
+      tv.appele = true; touche = true;
+      w.travelling({ largeur: CFG.largeur, vx: tv.vx, depuis: tv.depuis });
+    }
+    if (tv.ph === 'mise' && tv.t >= tv.departAt) { tv.ph = 'marche'; emitArene('travelling', -1, tv.vx); }
+    if (tv.ph === 'marche' && tv.t > tv.departAt + 0.25 && !w.enMouvement()) { tv.ph = 'arret'; emitArene('fin', -1, 0); }
+  }
+
+  /* le mur arrière : celui d'où l'arène s'éloigne. Avant le départ, la position FINALE (celle que le décor hachure). */
+  function murArriere() {
+    var w = monde();
+    if (!w || (tv.ph !== 'mise' && tv.ph !== 'marche')) return null;
+    var s = tv.vx > 0 ? 1 : -1, avant = tv.ph === 'mise' && tv.t < tv.departAt;
+    OUT_MUR.sens = s; OUT_MUR.actif = tv.ph === 'marche';
+    OUT_MUR.x = avant ? (s > 0 ? tv.depuis : tv.depuis + CFG.largeur) : (s > 0 ? w.x0 : w.x1);
+    OUT_MUR.y0 = w.y0; OUT_MUR.y1 = w.y1;
+    return OUT_MUR;
+  }
+
+  /* ce que les murs en marche dépassent : corps coupé, ennemis et butin perdus, tirs effacés, pan allumé */
+  function effetsMurs() {
+    panD = 99;
+    var w = monde();
+    if (!w || (tv.ph !== 'mise' && tv.ph !== 'marche') || !w.enMouvement()) return;
+    var x0 = w.x0, x1 = w.x1, y0 = w.y0, y1 = w.y1, i, e, L, c, k;
+    L = N.ennemis && N.ennemis.list;
+    if (L && N.ennemis.hit) for (i = 0; i < L.length; i++) {
+      e = L[i];
+      if (!e || e._dead || e.boss || e.etat === 'mort' || e.etat === 'portail' || e._st === 'naissance') continue;
+      if (e.x >= x0 && e.x <= x1 && e.y >= y0 && e.y <= y1) { e._arDedans = true; continue; }
+      if (e._arDedans && (e.x < x0 - 2 || e.x > x1 + 2)) N.ennemis.hit(e, 9999, SRC_DEC);     // sans score ni butin
+    }
+    L = N.butin && N.butin.list;
+    if (L) for (i = 0; i < L.length; i++) { c = L[i]; if (c && (c.x < x0 - 2 || c.x > x1 + 2)) c.vie = 0; }
+    L = N.ennemis && N.ennemis.tirs;
+    if (L) for (i = 0; i < L.length; i++) { c = L[i]; if (c && !c._dead && (c.x < x0 - 4 || c.x > x1 + 4)) c._dead = true; }
+    if (!vivante()) return;
+    var q = qsegs(), n = q.length >> 1, kCut = -1, sx, sy, d, s = tv.vx > 0 ? 1 : -1;
+    for (k = 0; k < n; k++) {
+      sx = q[k * 2]; sy = q[k * 2 + 1];
+      if (tv.ph === 'marche') { d = s > 0 ? sx - x0 : x1 - sx; if (d < panD) panD = d; }
+      if (kCut < 0 && k >= 1 && (sx < x0 - 0.5 || sx > x1 + 0.5 || sy < y0 - 0.5 || sy > y1 + 0.5)) kCut = k;
+    }
+    if (kCut > 0) N.joueuse.couper(kCut, SRC_MUR, 'mur');           // la longueur minimale de N.R est appliquée par couper()
+  }
+
+  /* ============================ les CONVOIS ============================ */
+  function tirerVoie() {
+    var n = CFG.voies.length, i;
+    if (cv.derniere < 0) i = O.ri('arene', 0, n - 1);
+    else { i = O.ri('arene', 0, n - 2); if (i >= cv.derniere) i++; }
+    return i;
+  }
+  function longueur() { return CFG.wagons * CFG.wagon[0] + (CFG.wagons - 1) * CFG.ecartWagons; }
+  function majBloc() {
+    var Ln = longueur();
+    if (CV.sens > 0) { CV.bx1 = CV.xf; CV.bx0 = CV.xf - Ln; } else { CV.bx0 = CV.xf; CV.bx1 = CV.xf + Ln; }
+  }
+  function lancerConvoi(voie, sens) {
+    if (CV.ph !== 'off') return false;
+    voie = O.clamp(voie | 0, 0, CFG.voies.length - 1);
+    CV.ph = 'annonce'; CV.t = 0; CV.voie = voie; CV.cy = CFG.voies[voie]; CV.sens = sens > 0 ? 1 : -1; CV.broyes = 0; CV.tag = false;
+    cv.derniere = voie;
+    O.sfx('convoi', { pan: CV.sens > 0 ? -0.8 : 0.8 });                    // le klaxon vient du côté d'arrivée
+    emitArene('convoiAnnonce', voie, CV.sens * CFG.vitesse);
+    if (N.ev && N.ids) N.ev.emit('arme', { id: N.ids.suivant(), type: 'convoi', forme: 'voie', total: CFG.annonceConvoi, cible: 'tout', shown: true, rallonge: false });
+    return true;
+  }
+  function stopConvoi() {
+    if (CV.ph === 'off') return;
+    var v = CV.voie, s = CV.sens;
+    CV.ph = 'off'; inWake = false;
+    emitArene('convoiPasse', v, s * CFG.vitesse);
+  }
+  /* quand lancer le prochain : après son heure, sans convoi en cours, hors du silence d'une élite, assez tôt dans la vague */
+  function majPlan() {
+    if (!vagueOn || cv.next < 0 || tw < cv.next || CV.ph !== 'off' || !vivante()) return;
+    if (tw > duree - CFG.avantFin) { cv.next = -1; return; }
+    if (tw < eliteT + CFG.silenceElite) return;
+    lancerConvoi(tirerVoie(), O.rf('arene') < 0.5 ? 1 : -1);
+    cv.next = tw + cv.periode + (cv.alea ? O.rr('arene', -cv.alea, cv.alea) : 0);
+  }
+
+  function sillage(x, y) {
+    if (CV.ph !== 'passage') return false;
+    if (Math.abs(y - CV.cy) > CFG.hauteurVoie / 2) return false;
+    var D = CFG.sillageDistance;
+    return CV.sens > 0 ? (x <= CV.bx0 && x >= CV.bx0 - D) : (x >= CV.bx1 && x <= CV.bx1 + D);
+  }
+
+  function broyer(e) {
+    var x = e.x, y = e.y, base = (R && R.score && R.score.base && R.score.base[e.type]) || 0;
+    if (!N.ennemis.hit(e, 9999, SRC_CV)) return;
+    CV.broyes++;
+    O.spark(x, y, O.ROSE, 6); O.debris(x, y, O.SANG, 3);
+    if (inWake && base > 0 && N.score && typeof N.score.ajouter === 'function') N.score.ajouter(base * (typeof N.score.mult === 'function' ? N.score.mult() : 1), x, y);
+    var t = 'BROYÉ ×' + CV.broyes;
+    if (N.hud && typeof N.hud.pop === 'function') N.hud.pop(x, y - 6, t, { c: 'rose' }); else O.pop(x, y - 6, t, O.ROSE);
+  }
+
+  function majConvoi(dt) {
+    if (CV.ph === 'off') return;
+    var A = O.A;
+    if (CV.ph === 'annonce') {
+      CV.t += dt;
+      if (CV.t < CFG.annonceConvoi) return;
+      CV.ph = 'passage'; CV.t = 0; CV.xf = CV.sens > 0 ? A.x0 : A.x1; CV.tag = false;
+      majBloc();
+      if (N.cam && typeof N.cam.jolt === 'function') N.cam.jolt(CV.sens * CFG.jolt, 0);
+      return;
+    }
+    CV.t += dt;
+    CV.xf += CV.sens * CFG.vitesse * dt;
+    majBloc();
+    var hy = CFG.wagon[1] / 2, P = N.joueuse && N.joueuse.tete, rt = (R && R.mort && R.mort.rayonTete) || 3, i, e, m, L;
+    if (P && vivante() && !N.joueuse.invul()) {
+      if (P.x > CV.bx0 - rt && P.x < CV.bx1 + rt && Math.abs(P.y - CV.cy) < hy + rt) N.joueuse.tuer('convoi', SRC_CV);
+      if (vivante()) {                                           // le corps : le segment touché le plus proche de la tête
+        var rc = (R && R.mort && R.mort.coupe && R.mort.coupe.rayonSegment) || 3.5, q = qsegs(), n = q.length >> 1, k, sx, sy;
+        for (k = CFG.coupeSegMin; k < n; k++) {
+          sx = q[k * 2]; sy = q[k * 2 + 1];
+          if (sx > CV.bx0 - rc && sx < CV.bx1 + rc && Math.abs(sy - CV.cy) < hy + rc) { N.joueuse.couper(k, SRC_CV, 'convoi'); break; }
+        }
+      }
+    }
+    L = N.ennemis && N.ennemis.list;
+    if (L && N.ennemis.hit) for (i = 0; i < L.length; i++) {
+      e = L[i];
+      if (!e || e._dead || e.boss || e.etat === 'mort' || e.etat === 'portail' || e._st === 'naissance') continue;
+      m = e.r * 0.8;
+      if (e.x > CV.bx0 - m && e.x < CV.bx1 + m && Math.abs(e.y - CV.cy) < hy + m) broyer(e);
+    }
+    var rear = CV.sens > 0 ? CV.bx0 : CV.bx1;
+    if ((CV.sens > 0 && rear > A.x1 + CFG.margeFin) || (CV.sens < 0 && rear < A.x0 - CFG.margeFin) || CV.t > 14) stopConvoi();
+  }
+
+  /* le sillage : × 1,4 sans vider la réserve (poussée le long du cap, voir l'en-tête) */
+  function majSillage(dt) {
+    if (!inWake) { CV.tag = CV.tag && CV.ph === 'passage'; return; }
+    var P = N.joueuse.tete;
+    if (!CV.tag) { CV.tag = true; if (N.hud && typeof N.hud.tag === 'function') N.hud.tag('SILLAGE'); }
+    var d = (P.vit || 68) * (CFG.sillageFacteur - 1) * Math.min(0.05, O.dtJ(dt)), nx = P.x + Math.cos(P.ang) * d, ny = P.y + Math.sin(P.ang) * d;
+    var m = N.joueuse.distMur ? N.joueuse.distMur(nx, ny) : null;
+    if (m && m.d < CFG.murSur) return;
+    P.x = nx; P.y = ny;
+  }
+
+  /* ============================ S.monde ============================ */
+  var ANNP = [[0, 0, 0, 0], [0, 0, 0, 0]];
+  function majMonde() {
+    var S = N.S, w = N.world;
+    if (!S || !w) return;
+    var M = S.monde;
+    if (!M || typeof M !== 'object') M = S.monde = { x0: 0, y0: 0, x1: 0, y1: 0, vx: 0, vy: 0, mobile: false, annonce: [] };
+    M.x0 = w.x0; M.y0 = w.y0; M.x1 = w.x1; M.y1 = w.y1;
+    M.vx = tv.ph === 'marche' ? tv.vx : 0; M.vy = 0;
+    M.mobile = !!(w.enMouvement && w.enMouvement());
+    if (!M.annonce) M.annonce = [];
+    M.annonce.length = 0;
+    var an = w.mursAnnonces ? w.mursAnnonces() : null;
+    if (an) for (var i = 0; i < an.length && i < ANNP.length; i++) {
+      var a = ANNP[i], r = an[i];
+      a[0] = r.x; a[1] = r.y; a[2] = r.x + r.w; a[3] = r.y + r.h;
+      M.annonce.push(a);
+    }
+  }
+
+  /* ============================ pas de jeu ============================ */
+  function pas() {
+    var dt = dtc, P = N.joueuse && N.joueuse.tete;
+    if (vagueOn) tw += dt;
+    inWake = !!(P && CV.ph === 'passage' && vivante() && sillage(P.x, P.y));
+    majTrav(dt);
+    majPlan();
+    majConvoi(dt);
+    effetsMurs();
+    majSillage(dt);
+    majMonde();
+  }
+  function update(dt) {
+    if (!(dt > 0)) return;
+    dtc = dt; frame++;
+    O.safe('arene.update', pas);
+  }
+
+  /* ============================ entrées du directeur ============================ */
+  /* la vague commence (n'importe quand : dbg.vague(n) relance à tout instant) */
+  function restaurer(duree_) {
+    var w = monde();
+    if (w && touche) w.arena({ x: 0, y: 0, w: mondeW(), h: mondeH() }, duree_ || CFG.retour);
+    touche = false;
+  }
+  function entree(info) {
+    if (!info && N.dir && typeof N.dir.info === 'function') info = N.dir.info();
+    stopConvoi();
+    if (tv.ph !== 'off') { tv.ph = 'off'; }
+    restaurer(CFG.retour);
+    vagueOn = true; tw = 0; eliteT = -99; cv.derniere = -1; cv.next = -1; tvAt = -1; tvDone = false; panD = 99;
+    nVague = info ? (info.n | 0) : 0;
+    duree = (info && info.duree) || 45;
+    if (info && info.travelling) {
+      tvAt = +info.travelling.t >= 0 ? +info.travelling.t : 0;
+      tvVx = Math.abs(+info.travelling.vx) || vitesseVague(nVague);
+    }
+    if (info && info.convois) {
+      var c = info.convois, d = nVague >= 5 ? CFG.v5 : CFG.v4;
+      cv.periode = +c.periode > 0 ? +c.periode : d.periode;
+      cv.alea = +c.alea >= 0 ? +c.alea : d.alea;
+      cv.next = +c.t >= 0 ? +c.t : d.debut;
+    }
+  }
+  function pic() { eliteT = tw; }
+  function nettoyee() {
+    vagueOn = false; tvAt = -1; cv.next = -1;
+    stopConvoi();
+    var fin = tv.ph === 'mise' || tv.ph === 'marche';
+    if (fin) emitArene('fin', -1, 0);
+    tv.ph = 'off';
+    restaurer(CFG.retour);                    // les murs reviennent aux bords du monde en 2 s
+  }
+  function reset() {
+    var w = monde();
+    if (w && (tv.ph === 'mise' || tv.ph === 'marche') && typeof w.stop === 'function') w.stop();
+    tv.ph = 'off'; tv.t = 0; tv.ann = false; tv.appele = false;
+    CV.ph = 'off'; CV.broyes = 0; CV.tag = false;
+    cv.next = -1; cv.derniere = -1; cv.periode = 9; cv.alea = 2;
+    vagueOn = false; tw = 0; tvAt = -1; tvDone = false; eliteT = -99; touche = false; inWake = false; panD = 99; frame = 0; QN = -1;
+  }
+
+  /* ============================ appels à la main (débogage) ============================ */
+  function travelling(vx, depuis) {
+    var s = vx ? (vx > 0 ? 1 : -1) : 0;
+    return lancerTrav(Math.abs(+vx) || vitesseVague(nVague) || 12, depuis, s || undefined);
+  }
+  function convois(c) {
+    c = c || {};
+    if (+c.periode > 0) { cv.periode = +c.periode; cv.alea = +c.alea || 0; cv.next = typeof c.t === 'number' ? tw + c.t : tw + cv.periode; return true; }
+    if (CV.ph !== 'off') return false;
+    var v = typeof c.voie === 'number' ? c.voie : tirerVoie();
+    var s = c.sens ? (c.sens > 0 ? 1 : -1) : (O.rf('arene') < 0.5 ? 1 : -1);
+    return lancerConvoi(v, s);
+  }
+  var VO = { id: 0, y0: 0, y1: 0, etat: 'annonce', sens: 1, x: 0, reste: 0 }, VOL = [];
+  function voies() {
+    VOL.length = 0;
+    if (CV.ph === 'off') return VOL;
+    var A = O.A, h = CFG.hauteurVoie / 2;
+    VO.id = CV.voie; VO.y0 = CV.cy - h; VO.y1 = CV.cy + h; VO.etat = CV.ph; VO.sens = CV.sens;
+    if (CV.ph === 'annonce') { VO.x = CV.sens > 0 ? A.x0 : A.x1; VO.reste = Math.max(0, CFG.annonceConvoi - CV.t); }
+    else {
+      VO.x = CV.xf;
+      var rear = CV.sens > 0 ? CV.bx0 : CV.bx1;
+      VO.reste = Math.max(0, (CV.sens > 0 ? A.x1 + CFG.margeFin - rear : rear - (A.x0 - CFG.margeFin)) / CFG.vitesse);
+    }
+    VOL.push(VO);
+    return VOL;
+  }
+  function actif() { return tv.ph === 'mise' || tv.ph === 'marche' || CV.ph !== 'off'; }
+  function etat() {
+    return { tw: tw, vague: nVague, vagueOn: vagueOn, tv: tv.ph, tvT: tv.t, vx: tv.vx, depuis: tv.depuis, cv: CV.ph, voie: CV.voie, sens: CV.sens,
+      xf: CV.xf, broyes: CV.broyes, prochain: cv.next, derniere: cv.derniere, eliteT: eliteT, sillage: inWake, panD: panD };
+  }
+
+  /* ============================ dessin (coordonnées MONDE, l'origine est posée) ============================ */
+  var WAG = {};
+  function wagonSpr(sens, museau) {          // museau : 0 aucun, 1 sombre, 2 allumé
+    var key = (sens > 0 ? 'd' : 'g') + museau, sp = WAG[key];
+    if (sp) return sp;
+    var w = CFG.wagon[0], h = CFG.wagon[1], m = O.mk(w, h), d = m.data, x, y, c;
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
+      if (x === 0 || x === w - 1 || y === 0 || y === h - 1) c = O.NP;                 // la gaine de nuit profonde
+      else if (x === 1 || x === w - 2 || y === 1 || y === h - 2) c = O.MAGENTA;      // les arêtes
+      else {
+        c = O.SANG;                                                                   // la caisse
+        if (x === 6 || x === 11) c = O.NP;
+        else if ((x === 3 || x === 8 || x === 14) && (y === 3 || y === h - 4)) c = O.MAGENTA;
+      }
+      if (museau && x >= w - 5 && x <= w - 3 && y >= 3 && y <= h - 4) c = museau === 2 ? O.ROSE : O.MAGENTA;
+      d[y * w + x] = c;
+    }
+    if (sens < 0) for (y = 0; y < h; y++) for (x = 0; x < (w >> 1); x++) { var a = y * w + x, b = y * w + (w - 1 - x), t = d[a]; d[a] = d[b]; d[b] = t; }
+    m.cx = w >> 1; m.cy = h >> 1;
+    WAG[key] = m;
+    return m;
+  }
+
+  function drawVoie() {
+    var G = N.gfx, A = O.A, V = O.VUE, s = CV.sens, hh = CFG.hauteurVoie, y0 = CV.cy - hh / 2;
+    var x0 = Math.max(A.x0, V.x - 2), x1 = Math.min(A.x1, V.x + V.w + 2), x, k;
+    if (x1 <= x0) return;
+    if (CV.ph === 'annonce') {
+      k = CV.t / CFG.annonceConvoi;
+      G.ditherRect(x0, y0, x1 - x0, hh, O.MAGENTA, CFG.hachure);                    // la voie hachurée, magenta tramé à 25 %
+      var off = ((O.T.ak * 30 * s) % 8 + 8) % 8;
+      for (x = x0 - 8 + off; x < x1; x += 8) {                                       // les tirets des bords
+        var xa = Math.max(x, x0), xb = Math.min(x + 4, x1);
+        if (xb > xa) { G.rect(xa, y0, xb - xa, 1, O.MAGENTA); G.rect(xa, y0 + hh - 1, xb - xa, 1, O.MAGENTA); }
+      }
+      /* le cône de phares : il avance depuis le bord d'arrivée */
+      var front = s > 0 ? A.x0 + k * (A.x1 - A.x0) * 0.6 : A.x1 - k * (A.x1 - A.x0) * 0.6, j, cx2;
+      for (j = 0; j < 26; j++) {
+        cx2 = front + s * j * 2;
+        if (cx2 < V.x - 2 || cx2 > V.x + V.w + 2 || cx2 < A.x0 || cx2 > A.x1) continue;
+        var hj = Math.min(hh / 2, 2 + j * 0.3);
+        G.ditherRect(cx2, CV.cy - hj, 2, hj * 2, O.ROSE, 0.5 * (1 - j / 26));
+      }
+      chevronBord();
+    } else G.ditherRect(x0, y0, x1 - x0, hh, O.MAGENTA, CFG.hachure * 0.5);        // la voie reste marquée pendant le passage
+  }
+  function chevronBord() {
+    if (!((Math.floor(O.T.ak * 6) & 1) === 0 || CV.t > CFG.annonceConvoi - 0.35)) return;
+    var A = O.A, V = O.VUE, s = CV.sens, y = CV.cy, vert = 0, bx;
+    bx = s > 0 ? Math.max(A.x0, V.x) + 7 : Math.min(A.x1, V.x + V.w) - 7;
+    bx += s * ((Math.floor(O.T.ak * 8) & 3) * 2);
+    bx = O.clamp(bx, V.x + 7, V.x + V.w - 7);
+    if (y < V.y + 6) { y = V.y + 7; vert = -1; } else if (y > V.y + V.h - 6) { y = V.y + V.h - 7; vert = 1; }
+    O.putInk(O.sp('chevron:' + (vert ? (vert > 0 ? 4 : 12) : (s > 0 ? 0 : 8)), 0), bx, y, O.ROSE);
+  }
+  function drawConvoi() {
+    var G = N.gfx, V = O.VUE, s = CV.sens, w = CFG.wagon[0], gap = CFG.ecartWagons, k, cx;
+    if (CV.bx1 < V.x - 50 || CV.bx0 > V.x + V.w + 50) return;
+    var pulse = Math.sin(O.T.ak * Math.PI * 2 * CFG.museauHz) > 0;                   // le museau pulse sous 3 Hz
+    /* les phares devant, le sillage derrière */
+    var fr = s > 0 ? CV.bx1 : CV.bx0, rear = s > 0 ? CV.bx0 : CV.bx1;
+    G.ditherRect(s > 0 ? fr : fr - 36, CV.cy - 6, 36, 12, O.ROSE, 0.22);
+    G.ditherRect(s > 0 ? fr : fr - 18, CV.cy - 3, 18, 6, O.ROSE, 0.3);
+    var D = CFG.sillageDistance, seg = D / 5, j;
+    for (j = 0; j < 5; j++) G.ditherRect(s > 0 ? rear - (j + 1) * seg : rear + j * seg, CV.cy - 9, seg, 18, inWake ? O.CYANP : O.CYAN, (inWake ? 0.4 : 0.26) * (1 - j / 5));
+    for (k = 0; k < CFG.wagons; k++) {
+      cx = s > 0 ? CV.xf - w / 2 - k * (w + gap) : CV.xf + w / 2 + k * (w + gap);
+      if (cx < V.x - w || cx > V.x + V.w + w) continue;
+      O.put(wagonSpr(s, k === 0 ? (pulse ? 2 : 1) : 0), cx, CV.cy);
+    }
+  }
+  function drawTrav() {
+    var G = N.gfx, A = O.A, V = O.VUE, mur = murArriere();
+    if (!mur) return;
+    var s = mur.sens, y, j, f = Math.floor(O.T.ak * 8);
+    if (tv.ann && tv.t < tv.departAt + 0.4) {                                        // les chevrons qui battent sur le mur arrière
+      var sp = O.sp('chevron:' + (s > 0 ? 0 : 8), 0), ya = Math.max(mur.y0 + 12, Math.floor((V.y - 8) / 20) * 20 + 12), yb = Math.min(mur.y1 - 8, V.y + V.h + 8);
+      for (y = ya; y < yb; y += 20) for (j = 0; j < 4; j++) {
+        if (j > (f & 3)) continue;
+        O.putInk(sp, mur.x + s * (7 + j * 6), y, j === (f & 3) ? O.ROSE : O.MAGENTA);
+      }
+    }
+    if (mur.actif && panD < CFG.alerte) {                                             // le pan s'allume
+      var a = O.clamp(1 - panD / CFG.alerte, 0.25, 1) * ((f & 1) ? 0.9 : 0.6);
+      G.ditherRect(s > 0 ? mur.x : mur.x - 5, mur.y0, 5, mur.y1 - mur.y0, O.ROSE, a);
+    }
+  }
+  function drawIn() {
+    if (CV.ph !== 'off') { drawVoie(); if (CV.ph === 'passage') drawConvoi(); }
+    if (tv.ph === 'mise' || tv.ph === 'marche') drawTrav();
+  }
+  function draw() { if (CV.ph !== 'off' || tv.ph === 'mise' || tv.ph === 'marche') O.safe('arene.draw', drawIn); }
+
+  return {
+    reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif,
+    entree: entree, pic: pic, nettoyee: nettoyee, murArriere: murArriere, etat: etat
+  };
+})();
+
+/* ===== 73-colosse.js ===== */
+/* ===== 73-colosse.js — N.colosse : LE CYCLOPE, boss en trois phases (REFONTE § 4.8, lot 5b) =====
+
+   Remplace le cyclope de repli de 72-ennemis.js (updBoss). Le corps (96 × 128) est assemblé ici de pièces
+   dessinées avec N.outils.mk : tronc 96 × 96, tête 40 × 32 à œil unique, deux mains 24 × 24 (en lames),
+   six plaques 12 × 12, carcasse. L'ŒIL et les MAINS sont des objets du schéma `ennemi` (type 'cyclope',
+   boss:true, partie 'oeil' | 'main') posés dans N.ennemis.list avec ext:true : 72-ennemis ne les déplace pas,
+   ne les dessine pas, ne leur donne aucune IA ; les armes les visent, la joueuse les touche (contact : rayon
+   3 + r × 0,8). Les dégâts passent par N.colosse.touche(e, dmg, src) -> dégâts EFFECTIFS (0 = ricochet).
+
+   INTERFACE : start(), reset(), update(dt), draw() (corps, sous la joueuse), drawTop() (télégraphes, jauge,
+   éclat de brasier), actif(), phase() 0..3, pv() 0..1, mort(), oeil() -> {x,y}|null (la caméra la lit),
+   estOeil(id), touche(e, dmg, src), surKill(c) (appelé par 76-directeur, rang 10 de `kill`, pour TOUT kill).
+
+   ÉMET : `phase` {n, evt: arrivee | entree | repit | enrage | mort} ; `arme` {id, type:'cyclope', forme, total,
+   cible, shown, rallonge} au début de chaque télégraphe. N'ÉCOUTE AUCUN événement (aucun N.ev.on : la mort de
+   l'œil et des mains arrive par surKill).
+   DEMANDE à 72-ennemis : spawn(type, x, y, {portail, ext:true, st, stT}) ; hit(e, dmg, src) doit appeler
+   N.colosse.touche(e, dmg, src) pour e.boss && e._ext ; tir(), rayon(x0,y0,x1,y1,dur,w,src) (sinon repli :
+   le laser est poussé dans N.ennemis.lasers à la main), effacerTirs(), purge('proche'), fuir(), lasers, list.
+   À 76-directeur : formation('file' | 'meute') ; à 71-butin : pluie(8) ; à 78-hud : banniere(lignes, opts) ;
+   à 12-cam : world.arena(rect, dur), cam.shown, cam.secousse, cam.focus ; à 15-decor : ondule (facultatif).
+
+   REPLIS (tout appel externe est gardé par typeof) :
+   - ralenti du monde à 0,3 pendant l'arrivée : PAS fait ici (c'est 79-scene qui ralentit) ; l'arrivée est
+     comptée en temps RÉEL (N.horloge.reel()) pour durer 2,2 s à l'écran, sinon en temps de jeu.
+   - silhouette de décor (N.decor.silhouette) : non utilisée ; l'arrivée fait venir le corps du fond par un
+     fondu tramé en sang, puis en magenta.
+   - le tronc n'est pas un objet de N.ennemis.list : les tirs de la joueuse le traversent ; seule la zone de
+     l'œil (r 14) rebondit quand l'œil est fermé (ricochet + étincelle).
+   - si 72-ennemis n'a pas encore la version ext, spawn() rend quand même un objet ; ses champs sont forcés
+     (_ext, partie, boss) mais le vieux updBoss de 72 le déplacerait : la version ext de 72 est requise.
+   Aucun Math.random (flux 'ennemis' via O.rr/ri/rf), aucune couleur littérale (palette via O.*), aucun Date.now. */
+N.colosse = (function () {
+  'use strict';
+  var O = N.outils, R = N.R, TAU = O.TAU, PI = Math.PI;
+  var NP = O.NP, MAG = O.MAGENTA, SANG = O.SANG, ROSE = O.ROSE, OS = O.OS, BRA = O.BRASIER, ARD = O.ARDOISE;
+
+  /* ------------------------------------------------------------------------------------------------
+     Les chiffres : N.R.colosse (lus à start()), sinon les valeurs par défaut de § 4.8.
+     CFG : ce que N.R ne porte pas encore.                                                    → N.R */
+  var CFG = {
+    dTete: 48,                 // l'œil est 48 px au-dessus du centre du corps (tête en haut du tronc)
+    rOeil: 14, rMain: 10,      // rayons des objets (contact tête : 3 + r × 0,8)
+    epaule: 66, flotte: 2, deriveVit: 14, mainAncre: 170,
+    rayonLong: 560, rayonDepart: 25,           // le secteur démarre 25° avant la tête
+    gap: 0.6,                                  // pause entre la fin de l'œil ouvert et l'attaque suivante
+    ligneDemi: 11, mainVit: 240, mainLigneMax: 330, mainCut: 0.5,
+    bondHaut: 70, bondMonte: 0.5, bondChute: 0.12, bondApres: 0.4, mineRayon: 58, minesMax: 12,
+    spiralePas: 0.45, spiraleDt: 0.03,
+    arriveeZ: 150, purgeInt: 0.045, formMax: 9,
+    mortCascade: [[-30, -24], [26, 6], [-14, 34], [36, -34], [0, -48]],
+    noms: [null, 'LE REGARD', 'LES MAINS', 'LA COLÈRE']
+  };
+  var K = {};
+  function lire() {
+    var r = (R && R.colosse) || {}, en = r.entree || {}, p1 = r.phase1 || {}, ra = p1.rayon || {}, sa = p1.salve || {};
+    var p2 = r.phase2 || {}, p3 = r.phase3 || {}, rp = r.repit || {}, eg = r.enrage || {}, mo = r.mort || {};
+    var mn = (R && R.monde) || {}, am = mn.arenaCyclope || {};
+    K.pvPhase = r.pvPhase || 1500; K.pvTotal = r.pvTotal || 4500; K.pvMain = r.pvMain || 300;
+    K.teleMin = r.teleMin || 0.8;
+    K.arrivee = en.arrivee || 2.2; K.jauge = en.jauge || 0.9;
+    K.rayonVise = ra.vise || 0.9; K.rayonW = ra.largeur || 5; K.rayonDeg = ra.balayageDeg || 100; K.rayonDur = ra.duree || 1.2;
+    K.charge = sa.charge || 0.8; K.balles = sa.balles || 14; K.salveVit = sa.vitesse || 70; K.salves = sa.salves || 2; K.ecart = sa.ecart || 0.5;
+    K.appelCycles = (p1.appel && p1.appel.cycles) || 3; K.appelForm = (p1.appel && p1.appel.formation) || 'file';
+    K.oeil1 = p1.oeil || 1.4;
+    K.ciseaux = p2.annonceCiseaux || 0.8; K.oeilMain = p2.oeilMain || 3; K.oeilSalve = p2.oeilSalve || 1.4; K.entree2 = p2.entree || 'meute';
+    K.salveDouble = p3.salveDouble || 2; K.ombre = p3.ombre || 40; K.annonceBond = p3.annonceBond || 1.0; K.mines = p3.mines || 6; K.armMines = p3.armementMines || 0.6;
+    K.balles3 = p3.balles || 14; K.resserre = p3.resserre || 0.15; K.oeil3 = p3.oeil || 1.4;
+    K.repit = rp.duree || 7; K.cellules = rp.cellules || 8;
+    K.enrApres = eg.apres || 100; K.enrAllure = eg.allure || 1.3; K.enrInt = eg.intervalle || 0.75;
+    K.mArret = mo.arretImages || 24; K.mExpl = mo.explosions || 5; K.mCascade = mo.cascade || 0.66;
+    K.mBrasierImg = mo.brasierImages || 4; K.mCam = mo.camera || 6; K.mCarcasse = mo.carcasse || 3;
+    K.purgeInt = mo.purge || CFG.purgeInt;
+    K.aw = am.w || 448; K.ah = am.h || 256; K.aDur = am.duree || 3; K.aMarge = am.marge || 80;
+    K.aRes = am.resserre || K.resserre; K.aResDur = am.resserreDuree || 2;
+    K.mondeW = mn.W || 1024; K.mondeH = mn.H || 512;
+    K.rTete = (R && R.mort && R.mort.rayonTete) || 3;
+  }
+  lire();
+
+  /* ============================ les pièces : dessinées ici, jamais de couleur littérale ============================ */
+  var SPR = null, HANDS = [];
+  function mkS(w, h) { var s = O.mk(w, h); s.cx = (w - 1) >> 1; s.cy = (h - 1) >> 1; return s; }
+  function dotS(s, x, y, c) { if (x >= 0 && y >= 0 && x < s.w && y < s.h) s.data[y * s.w + x] = c; }
+  function outlineS(s, c) {
+    var w = s.w + 2, h = s.h + 2, o = mkS(w, h), od = o.data, sd = s.data, x, y;
+    for (y = 0; y < s.h; y++) for (x = 0; x < s.w; x++) if (sd[y * s.w + x]) od[(y + 1) * w + x + 1] = sd[y * s.w + x];
+    function opq(px, py) { px -= 1; py -= 1; return px >= 0 && py >= 0 && px < s.w && py < s.h && sd[py * s.w + px] !== 0; }
+    for (y = 0; y < h; y++) for (x = 0; x < w; x++) if (!od[y * w + x] && (opq(x - 1, y) || opq(x + 1, y) || opq(x, y - 1) || opq(x, y + 1))) od[y * w + x] = c;
+    return o;
+  }
+  function rotS(s, a) {
+    var sz = Math.ceil(Math.sqrt(s.w * s.w + s.h * s.h)) | 1, o = mkS(sz, sz);
+    var c = Math.cos(a), si = Math.sin(a), cx = (s.w - 1) / 2, cy = (s.h - 1) / 2, oc = (sz - 1) / 2;
+    for (var y = 0; y < sz; y++) for (var x = 0; x < sz; x++) {
+      var dx = x - oc, dy = y - oc, sx = Math.round(cx + dx * c + dy * si), sy = Math.round(cy - dx * si + dy * c);
+      if (sx >= 0 && sy >= 0 && sx < s.w && sy < s.h) { var v = s.data[sy * s.w + sx]; if (v) o.data[y * sz + x] = v; }
+    }
+    return o;
+  }
+  function bTronc() {
+    var w = 96, h = 96, s = mkS(w, h), x, y;
+    for (y = 0; y < h; y++) {
+      var hw = y < 24 ? 34 + y * 0.58 : y < 70 ? 48 : 48 - (y - 70) * 0.85;
+      for (x = 0; x < w; x++) {
+        var dx = Math.abs(x - 47.5);
+        if (dx > hw) continue;
+        var ed = hw - dx, c = MAG;
+        if (ed < 2.5 || y > h - 3) c = SANG;
+        else if (y % 12 === 5 && dx < hw - 5) c = SANG;
+        else if (ed < 7 && ((x + y) & 3) === 0) c = SANG;
+        else if (dx < 1.6 && y > 10 && (y < 38 || y > 62)) c = SANG;
+        dotS(s, x, y, c);
+      }
+    }
+    for (y = -9; y <= 9; y++) for (x = -9; x <= 9; x++) {            // le cœur de brasier du colosse
+      var q = x * x + y * y;
+      if (q <= 81) dotS(s, 48 + x, 50 + y, q > 64 ? NP : q > 30 ? SANG : q > 5 ? BRA : OS);
+    }
+    return s;
+  }
+  function bTete() {
+    var w = 40, h = 32, s = mkS(w, h), x, y;
+    for (y = 0; y < h; y++) {
+      var u = (y - 17) / 16, hw = 19.5 * Math.sqrt(Math.max(0, 1 - u * u * 0.9));
+      for (x = 0; x < w; x++) {
+        var dx = Math.abs(x - 19.5);
+        if (dx > hw) continue;
+        var ed = hw - dx, c = MAG;
+        if (ed < 2.2 || y > h - 3) c = SANG;
+        else if (y < 7 && dx < 2.5) c = ROSE;
+        else if (ed < 5 && ((x + y) % 3) === 0) c = SANG;
+        dotS(s, x, y, c);
+      }
+    }
+    for (y = 8; y <= 26; y++) for (x = 6; x <= 33; x++) {            // l'orbite : le trou de nuit où l'œil s'ouvre
+      var v = ((x - 19.5) / 12.5) * ((x - 19.5) / 12.5) + ((y - 17) / 9) * ((y - 17) / 9);
+      if (v <= 1) dotS(s, x, y, v > 0.8 ? SANG : NP);
+    }
+    return s;
+  }
+  function bMain() {
+    var s = mkS(24, 24), x, y;                                       // une lame qui pointe vers la droite
+    for (x = 0; x < 24; x++) {
+      var ht = x < 5 ? 2.5 + x * 0.5 : x < 15 ? 5 + (x - 5) * 0.35 : Math.max(0.6, 8.5 - (x - 15) * 1.0);
+      for (y = 0; y < 24; y++) {
+        var dy = y - 11.5;
+        if (Math.abs(dy) > ht) continue;
+        var c = MAG;
+        if (x < 5) c = SANG;
+        else if (Math.abs(dy) > ht - 1.4) c = dy < 0 ? ROSE : SANG;
+        else if (x > 8 && x < 20 && Math.abs(dy) < 0.8) c = SANG;
+        dotS(s, x, y, c);
+      }
+    }
+    return s;
+  }
+  function bPlaque() {
+    var s = mkS(12, 12), x, y;
+    for (y = 0; y < 12; y++) for (x = 0; x < 12; x++) {
+      var b = x === 0 || y === 0 || x === 11 || y === 11, c = b ? SANG : MAG;
+      if ((x === 2 || x === 9) && (y === 2 || y === 9)) c = ROSE;
+      dotS(s, x, y, c);
+    }
+    return s;
+  }
+  function bCarcasse(tr) {
+    var s = mkS(96, 64), x, y;
+    for (y = 0; y < 64; y++) for (x = 0; x < 96; x++) {
+      var v = tr.data[(y + 32) * 96 + x];
+      if (!v) continue;
+      if (y < 4 + ((x * 7) % 5)) continue;                           // le haut déchiqueté
+      dotS(s, x, y, v === MAG || v === ROSE || v === BRA || v === OS ? SANG : NP);
+    }
+    return s;
+  }
+  function bati() {
+    if (SPR) return SPR;
+    var tr = bTronc();
+    SPR = { tronc: outlineS(tr, NP), tete: outlineS(bTete(), NP), plaque: outlineS(bPlaque(), NP), main0: bMain(), carcasse: outlineS(bCarcasse(tr), NP) };
+    return SPR;
+  }
+  function main16(k) {
+    k = ((k % 16) + 16) % 16;
+    if (!HANDS[k]) HANDS[k] = outlineS(rotS(bati().main0, k * PI / 8), NP);
+    return HANDS[k];
+  }
+  /* une pièce à la densité k (1 = pleine), en gardant ses couleurs ; le flash de frappe la blanchit */
+  function dp(s, x, y, k, flash) {
+    if (flash) { O.putInk(O.inner(s), x, y, OS); return; }
+    if (k >= 1) { O.put(s, x, y); return; }
+    if (!(k > 0)) return;
+    var x0 = Math.round(x) - s.cx, y0 = Math.round(y) - s.cy, D = N.pal.dither, g = N.gfx, d = s.data, w = s.w;
+    for (var j = 0; j < s.h; j++) for (var i = 0; i < w; i++) {
+      var v = d[j * w + i];
+      if (v && D(x0 + i, y0 + j, k)) g.px(x0 + i, y0 + j, v);
+    }
+  }
+
+  /* ============================ l'état ============================ */
+  var st = neuf();
+  var POS = { x: 0, y: 0 };
+  function neuf() {
+    return {
+      on: false, fini: false, mort: false, mode: '', t: 0, ph: 0, tComb: 0, enrage: false,
+      oeil: null, mains: [null, null], mflash: [0, 0],
+      cx: 0, cy: 0, bx: 0, by: 0, z: 0, fl: 0, sol: false,
+      atk: null, cd: 0, oeilT: 0, cyc: 0,
+      arrT: 0, jaugeT: 0, lastReel: 0, repT: 0, repBan: false,
+      mortT: 0, nExpl: 0, carcasse: false, purge: false, purgeT: 0, nPurge: 0, clr: 0, poussiere: 0,
+      flashO: 0, ricT: -9, brasierT: 0, vue: false,
+      plaques: [], arene: null, aleaDx: 0, aleaDy: 0
+    };
+  }
+  function reset() {
+    st = neuf();
+  }
+  function al() { return st.enrage ? K.enrAllure : 1; }
+  function ivl() { return st.enrage ? K.enrInt : 1; }
+  function srcOeil() { return { genre: 'ennemi', type: 'cyclope', id: st.oeil ? st.oeil.id : -1 }; }
+  function emitPhase(n, evt) {
+    if (N.ev && N.ev.emit) O.safe('colosse.phase', function () { N.ev.emit('phase', { n: n, evt: evt }); });
+  }
+  function emitArme(forme, total, cible) {
+    if (N.ev && N.ev.emit && st.oeil) O.safe('colosse.arme', function () {
+      N.ev.emit('arme', { id: st.oeil.id, type: 'cyclope', forme: forme, total: total, cible: cible, shown: visible(), rallonge: false });
+    });
+  }
+  function ban(lignes, c, d) { if (N.hud && typeof N.hud.banniere === 'function') O.safe('hud.banniere', function () { N.hud.banniere(lignes, { c: c || 'rose', duree: d || 2.2 }); }); }
+  function visible() {
+    var e = st.oeil;
+    if (!e) return false;
+    if (N.cam && typeof N.cam.shown === 'function') return !!N.cam.shown(e.x, e.y, 6);
+    return O.visible(e.x, e.y, -6);
+  }
+  function dtReel(dt) {
+    var h = N.horloge;
+    if (h && typeof h.reel === 'function') {
+      var r = h.reel(), d = r - st.lastReel;
+      st.lastReel = r;
+      if (d > 0 && d < 1) return d;
+    }
+    return dt;
+  }
+  function nbMains() { var n = 0; for (var i = 0; i < 2; i++) if (st.mains[i] && !st.mains[i]._dead) n++; return n; }
+  function pvFloor() { return st.ph >= 3 ? 0 : (3 - st.ph) * K.pvPhase; }
+
+  /* ============================ la naissance des objets ============================ */
+  function creer(partie, x, y, pv, r) {
+    var o = null;
+    if (N.ennemis && typeof N.ennemis.spawn === 'function') o = O.safe('ennemis.spawn', function () { return N.ennemis.spawn('cyclope', x, y, { portail: 0, ext: true }); });
+    if (!o) return null;
+    o._ext = true; o.boss = true; o.type = 'cyclope'; o.partie = partie; o.r = r; o.pv = pv; o.pvMax = pv;
+    o._dead = false; o._st = 'naissance'; o.etat = 'approche'; o._atk = null; o._portail = 0;
+    o._m = 'idle'; o._u = 0; o._cutT = 0; o._lx0 = 0; o._ly0 = 0; o._lx1 = 0; o._ly1 = 0; o._len = 1; o._fin = false;
+    return o;
+  }
+  function retirer(o) { if (o) { o._dead = true; o.etat = 'mort'; o.x = -9999; o.y = -9999; } }
+
+  /* ============================ start / entrée de phase ============================ */
+  function start() {
+    lire();
+    reset();
+    bati();
+    var P = N.joueuse && N.joueuse.tete, A = O.A;
+    st.on = true; st.mode = 'arrivee'; st.t = 0; st.ph = 0;
+    st.lastReel = (N.horloge && typeof N.horloge.reel === 'function') ? N.horloge.reel() : 0;
+    /* l'arène du combat : 448 × 256 centrée sur la tête, à 80 px au moins du bord du monde */
+    var w = K.aw, h = K.ah, mx = P ? P.x : (A.x0 + A.x1) / 2, my = P ? P.y : (A.y0 + A.y1) / 2;
+    var xlo = K.aMarge, xhi = K.mondeW - K.aMarge - w, ylo = K.aMarge, yhi = K.mondeH - K.aMarge - h;
+    var ax = xhi >= xlo ? O.clamp(mx - w / 2, xlo, xhi) : (K.mondeW - w) / 2;
+    var ay = yhi >= ylo ? O.clamp(my - h / 2, ylo, yhi) : (K.mondeH - h) / 2;
+    if (!(N.world && typeof N.world.arena === 'function')) { ax = A.x0; ay = A.y0; w = A.x1 - A.x0; h = A.y1 - A.y0; }
+    st.arene = { x: ax, y: ay, w: w, h: h };
+    if (N.world && typeof N.world.arena === 'function') O.safe('world.arena', function () { N.world.arena({ x: ax, y: ay, w: w, h: h }, K.aDur); });
+    st.cx = ax + w / 2; st.cy = ay + h / 2;
+    st.bx = st.cx; st.by = st.cy; st.z = CFG.arriveeZ; st.sol = false;
+    st.oeil = creer('oeil', st.cx, st.cy - CFG.dTete, K.pvTotal, CFG.rOeil);
+    for (var i = 0; i < 6; i++) st.plaques.push({ ox: PLQ[i][0], oy: PLQ[i][1], s: 0, t: 0, gx: 0, gy: 0, sx: 0, sy: 0 });
+    emitPhase(1, 'arrivee');
+    O.sfx('impactBoss');
+    return st.oeil;
+  }
+  var PLQ = [[-30, -20], [30, -20], [-34, 6], [34, 6], [-26, 32], [26, 32]];
+
+  function finArrivee() {
+    st.mode = 'combat'; st.z = 0; st.sol = true;
+    O.boom(st.bx, st.by + 40, 0.7, MAG); O.shake(6); O.sfx('impactBoss');
+    if (N.cam && typeof N.cam.secousse === 'function') O.safe('cam.secousse', function () { N.cam.secousse(5, 0, 1); });
+    entreePhase(1);
+  }
+  function entreePhase(n) {
+    var i, A = O.A;
+    st.ph = n; st.mode = 'combat'; st.cyc = 0; st.atk = null; st.cd = 1.2; st.oeilT = 0; st.sol = true; st.z = 0;
+    emitPhase(n, 'entree');
+    if (n === 1) ban(['PHASE 1', CFG.noms[1]], 'rose', 2.2);
+    if (n === 2) {
+      var mi = [CFG.rMain, CFG.rMain];
+      for (i = 0; i < 2; i++) {
+        var m = creer('main', st.bx + (i ? 1 : -1) * CFG.epaule, st.by - 4, K.pvMain, mi[i]);
+        if (m) { m._m = 'idle'; m.ang = PI / 2; }
+        st.mains[i] = m;
+      }
+      for (i = 0; i < 6; i++) {                                      // les plaques tombent et restent au sol
+        var p = st.plaques[i], a = O.rr('ennemis', 0, TAU), d = O.rr('ennemis', 50, 92);
+        p.s = 1; p.t = 0; p.sx = st.bx + p.ox; p.sy = st.by + p.oy;
+        p.gx = O.clamp(st.bx + Math.cos(a) * d, A.x0 + 10, A.x1 - 10); p.gy = O.clamp(st.by + 30 + Math.sin(a) * d * 0.55, A.y0 + 10, A.y1 - 10);
+      }
+      if (N.dir && typeof N.dir.formation === 'function') O.safe('dir.formation', function () { N.dir.formation(K.entree2, {}); });
+    }
+    if (n === 3) {
+      var ar = st.arene;
+      if (ar) {
+        var nw = ar.w * (1 - K.aRes), nh = ar.h * (1 - K.aRes), nx = ar.x + (ar.w - nw) / 2, ny = ar.y + (ar.h - nh) / 2;
+        st.arene = { x: nx, y: ny, w: nw, h: nh };
+        if (N.world && typeof N.world.arena === 'function') O.safe('world.arena', function () { N.world.arena({ x: nx, y: ny, w: nw, h: nh }, K.aResDur); });
+      }
+    }
+  }
+
+  /* ============================ l'ouverture de l'œil et les dégâts ============================ */
+  function oeilVulnerable() { return st.on && st.mode === 'combat' && st.sol && st.oeilT > 0; }
+  function ricochet(e) {
+    if (O.T.ak - st.ricT < 0.06) return;
+    st.ricT = O.T.ak;
+    O.sfx('ricochet');
+    O.spark(e.x + O.rr('fx', -4, 4), e.y + O.rr('fx', -4, 4), ROSE, 2);
+  }
+  function indexMain(e) { return st.mains[0] === e ? 0 : st.mains[1] === e ? 1 : -1; }
+  function touche(e, dmg, src) {
+    if (!st.on || !e) return 0;
+    if (e === st.oeil) {
+      if (!oeilVulnerable()) { ricochet(e); return 0; }
+      var eff = Math.min(dmg, Math.max(0, e.pv - pvFloor()));
+      if (eff > 0) { st.flashO = 0.07; O.spark(e.x, e.y, ROSE, 2); }
+      return eff;
+    }
+    var i = indexMain(e);
+    if (i >= 0 && st.mode === 'combat' && st.ph === 2 && st.sol) { st.mflash[i] = 0.07; O.spark(e.x, e.y, ROSE, 2); return dmg; }
+    ricochet(e);
+    return 0;
+  }
+  function estOeil(id) { return !!st.oeil && st.oeil.id === id; }
+  function surKill(c) {
+    if (!st.on || !c) return;
+    if (st.oeil && c.id === st.oeil.id) { if (st.mode !== 'mort') debutMort(); return; }
+    for (var i = 0; i < 2; i++) if (st.mains[i] && c.id === st.mains[i].id) { mainDetruite(i); return; }
+  }
+  function mainDetruite(i) {
+    var m = st.mains[i];
+    O.boom(m.x, m.y, 0.5, MAG); O.debris(m.x, m.y, MAG, 8); O.sfx('explosion');
+    st.mains[i] = null;
+    st.oeilT = Math.max(st.oeilT, K.oeilMain);
+    st.cd = Math.max(st.cd, st.oeilT + CFG.gap * ivl());
+    if (st.atk && st.atk.k !== 'ciseaux') st.cd = Math.max(st.cd, 0);
+    if (st.atk && st.atk.k === 'ciseaux' && !nbMains()) finAtk();
+  }
+
+  /* ============================ la dérive du corps ============================ */
+  function derive(dt, P, v) {
+    var A = O.A, mx = (A.x0 + A.x1) / 2, my = (A.y0 + A.y1) / 2;
+    var tx = mx + (P ? O.clamp((P.x - mx) * 0.3, -60, 60) : 0), ty = my, lo, hi;
+    lo = A.x0 + 52; hi = A.x1 - 52; tx = lo <= hi ? O.clamp(tx, lo, hi) : mx;
+    lo = A.y0 + 56; hi = A.y1 - 56; ty = lo <= hi ? O.clamp(ty, lo, hi) : my;
+    var dx = tx - st.cx, dy = ty - st.cy, d = Math.sqrt(dx * dx + dy * dy), s = v * dt;
+    if (d > 0.01) { var m = Math.min(d, s); st.cx += dx / d * m; st.cy += dy / d * m; }
+  }
+
+  /* ============================ les tirs et le rayon ============================ */
+  function tirer(a, v, big) {
+    if (!N.ennemis || typeof N.ennemis.tir !== 'function') return;
+    N.ennemis.tir(st.bx + Math.cos(a) * 12, st.oeil.y + Math.sin(a) * 12, Math.cos(a) * v, Math.sin(a) * v, { r: 2, big: true, src: srcOeil() });
+  }
+  function laser(x0, y0, x1, y1, dur, w) {
+    var src = srcOeil(), z = null;
+    if (N.ennemis && typeof N.ennemis.rayon === 'function') z = O.safe('ennemis.rayon', function () { return N.ennemis.rayon(x0, y0, x1, y1, dur, w, src); });
+    if (!z && N.ennemis && N.ennemis.lasers) { z = { x0: x0, y0: y0, x1: x1, y1: y1, t: 0, d: dur, w: w, src: src, _dead: false }; N.ennemis.lasers.push(z); }
+    return z;
+  }
+  function viderLasers() {
+    var L = N.ennemis && N.ennemis.lasers;
+    if (!L) return;
+    for (var i = 0; i < L.length; i++) if (L[i].src && L[i].src.type === 'cyclope') L[i]._dead = true;
+  }
+  function effacer(r) { if (N.ennemis && typeof N.ennemis.effacerTirs === 'function') O.safe('ennemis.effacerTirs', function () { N.ennemis.effacerTirs(st.bx, st.by, r); }); }
+
+  /* ============================ les attaques ============================ */
+  function choix() {
+    var n = st.cyc++;
+    if (st.ph === 1) return (n % 2 === 0) ? 'rayon' : 'salve';
+    if (st.ph === 2) return (nbMains() && n % 2 === 0) ? 'ciseaux' : 'salve';
+    return (n % 2 === 0) ? 'bond' : 'salve2';
+  }
+  function clip(x, y, ux, uy) {                                      // la droite (x,y,u) découpée à l'arène, marge 8
+    var A = O.A, t0 = -CFG.mainLigneMax, t1 = CFG.mainLigneMax, m = 8;
+    function bord(p, u, lo, hi) {
+      if (Math.abs(u) < 1e-6) return;
+      var a = (lo - p) / u, b = (hi - p) / u;
+      if (a > b) { var s = a; a = b; b = s; }
+      if (a > t0) t0 = a;
+      if (b < t1) t1 = b;
+    }
+    bord(x, ux, A.x0 + m, A.x1 - m); bord(y, uy, A.y0 + m, A.y1 - m);
+    if (t1 < t0) { t0 = -20; t1 = 20; }
+    return { x0: x + ux * t0, y0: y + uy * t0, x1: x + ux * t1, y1: y + uy * t1 };
+  }
+  function lancer(P) {
+    var k = choix(), a = { k: k, t: 0, phase: 0, tele: K.teleMin }, A = O.A, i;
+    st.atk = a; st.oeilT = 0;
+    O.sfx('arme');
+    if (k === 'rayon') {
+      var ang = P ? Math.atan2(P.y - st.oeil.y, P.x - st.bx) : 0;
+      a.dir = O.rf('ennemis') < 0.5 ? -1 : 1;
+      a.a0 = ang - a.dir * CFG.rayonDepart * PI / 180; a.sweep = K.rayonDeg * PI / 180;
+      a.tele = Math.max(K.teleMin, K.rayonVise); a.dur = K.rayonDur / al(); a.las = null;
+      emitArme('secteur', a.tele, 'tout');
+    } else if (k === 'salve') {
+      a.tele = Math.max(K.teleMin, K.charge); a.fired = 0; a.base = O.rr('ennemis', 0, TAU / K.balles);
+      emitArme('disque', a.tele, 'tout');
+    } else if (k === 'salve2') {
+      a.tele = Math.max(K.teleMin, K.charge); a.n = K.salveDouble * K.balles3; a.fired = 0; a.base = O.rr('ennemis', 0, TAU);
+      emitArme('disque', a.tele, 'tout');
+    } else if (k === 'ciseaux') {
+      a.tele = Math.max(K.teleMin, K.ciseaux, 0.9); a.lignes = [];
+      var X = P ? P.x : st.cx, Y = P ? P.y : st.cy;
+      X = O.clamp(X, A.x0 + 20, A.x1 - 20); Y = O.clamp(Y, A.y0 + 20, A.y1 - 20);
+      var al0 = O.rr('ennemis', 0, PI), al1 = al0 + PI / 2 + O.rr('ennemis', -0.35, 0.35), n = 0;
+      for (i = 0; i < 2; i++) {
+        var m = st.mains[i];
+        if (!m || m._dead) { a.lignes.push(null); continue; }
+        var ag = (n === 0) ? al0 : al1, L = clip(X, Y, Math.cos(ag), Math.sin(ag));
+        var d0 = O.d2(m.x, m.y, L.x0, L.y0), d1 = O.d2(m.x, m.y, L.x1, L.y1);
+        if (d1 < d0) { var tx = L.x0, ty = L.y0; L.x0 = L.x1; L.y0 = L.y1; L.x1 = tx; L.y1 = ty; }
+        m._lx0 = L.x0; m._ly0 = L.y0; m._lx1 = L.x1; m._ly1 = L.y1;
+        m._len = Math.max(1, Math.sqrt(O.d2(L.x0, L.y0, L.x1, L.y1))); m._u = 0; m._m = 'va'; m._cutT = 0; m._fin = false;
+        a.lignes.push(L); n++;
+      }
+      emitArme('ligne', a.tele, 'tout');
+    } else if (k === 'bond') {
+      a.tele = Math.max(K.teleMin, K.annonceBond);
+      var lx = P ? P.x : st.cx, ly = P ? P.y : st.cy;
+      a.lx = O.clamp(lx, A.x0 + 52, Math.max(A.x0 + 52, A.x1 - 52)); a.ly = O.clamp(ly, A.y0 + 56, Math.max(A.y0 + 56, A.y1 - 56));
+      a.sx = st.cx; a.sy = st.cy; a.apres = 0;
+      emitArme('disque', a.tele, 'tout');
+    }
+  }
+  function finAtk() {
+    var a = st.atk, win = 0;
+    st.atk = null;
+    if (!a) return;
+    if (st.ph === 1) win = K.oeil1;
+    else if (st.ph === 2 && a.k === 'salve') win = K.oeilSalve;
+    if (win > 0) st.oeilT = Math.max(st.oeilT, win);
+    st.cd = Math.max(st.oeilT, 0) + CFG.gap * ivl();
+    if (st.ph === 1 && st.cyc % K.appelCycles === 0 && N.dir && typeof N.dir.formation === 'function'
+        && (!N.ennemis || typeof N.ennemis.count !== 'function' || N.ennemis.count() < CFG.formMax)) {
+      O.safe('dir.formation', function () { N.dir.formation(K.appelForm, {}); });
+    }
+  }
+  function ease(u) { u = O.clamp(u, 0, 1); return u * u * (3 - 2 * u); }
+
+  function salvo(a, idx) {                                           // une salve radiale
+    var n = K.balles, off = a.base + idx * PI / n;
+    for (var j = 0; j < n; j++) tirer(off + j * TAU / n, K.salveVit);
+    O.sfx('explosion'); O.shake(2);
+  }
+  function majAtk(dt, P) {
+    var a = st.atk, i, e = st.oeil;
+    a.t += dt;
+    if (a.phase === 0 && a.t >= a.tele && (a.k === 'salve' || a.k === 'salve2')) a.phase = 1;
+    if (a.k === 'rayon') {
+      if (a.phase === 0 && a.t >= a.tele) {
+        a.phase = 1; a.t = 0;
+        var c0 = Math.cos(a.a0), s0 = Math.sin(a.a0);
+        a.las = laser(st.bx + c0 * 9, e.y + s0 * 9, st.bx + c0 * CFG.rayonLong, e.y + s0 * CFG.rayonLong, a.dur + 0.3, K.rayonW);
+        O.sfx('explosion'); O.shake(3);
+      } else if (a.phase === 1) {
+        var an = a.a0 + a.dir * a.sweep * O.clamp(a.t / a.dur, 0, 1), c = Math.cos(an), s = Math.sin(an), z = a.las;
+        if (z) { z.x0 = st.bx + c * 9; z.y0 = e.y + s * 9; z.x1 = st.bx + c * CFG.rayonLong; z.y1 = e.y + s * CFG.rayonLong; z.t = Math.min(z.t, z.d - 0.05); }
+        if (a.t >= a.dur) { if (z) z._dead = true; finAtk(); }
+      }
+    } else if (a.k === 'salve') {
+      while (a.fired < K.salves && a.t >= a.tele + a.fired * K.ecart) { salvo(a, a.fired); a.fired++; }
+      if (a.fired >= K.salves && a.t >= a.tele + (K.salves - 1) * K.ecart + 0.25) finAtk();
+    } else if (a.k === 'salve2') {
+      var per = K.balles3;
+      while (a.fired < a.n) {
+        var s2 = (a.fired / per) | 0, i2 = a.fired % per, tt = a.tele + s2 * K.ecart + i2 * CFG.spiraleDt;
+        if (a.t < tt) break;
+        tirer(a.base + (s2 ? -1 : 1) * i2 * CFG.spiralePas + s2 * 0.5, K.salveVit);
+        a.fired++;
+      }
+      if (a.fired >= a.n && a.t >= a.tele + (K.salveDouble - 1) * K.ecart + per * CFG.spiraleDt + 0.2) finAtk();
+    } else if (a.k === 'ciseaux') majCiseaux(a, dt);
+    else if (a.k === 'bond') majBond(a, dt, P);
+  }
+
+  /* ---- les ciseaux ---- */
+  function majCiseaux(a, dt) {
+    var i, m, vivants = 0, vit = CFG.mainVit * al();
+    if (!nbMains()) { finAtk(); return; }
+    if (a.phase === 0) {
+      for (i = 0; i < 2; i++) {
+        m = st.mains[i];
+        if (!m || m._dead || m._m !== 'va') continue;
+        var dx = m._lx0 - m.x, dy = m._ly0 - m.y, d = Math.sqrt(dx * dx + dy * dy), rest = Math.max(0.12, a.tele - a.t);
+        var sp = Math.min(420, d / rest) * dt;
+        if (d > 0.5) { var mv = Math.min(d, sp); m.x += dx / d * mv; m.y += dy / d * mv; }
+        m.ang = Math.atan2(m._ly1 - m._ly0, m._lx1 - m._lx0);
+      }
+      if (a.t >= a.tele) {
+        a.phase = 1; a.t = 0;
+        for (i = 0; i < 2; i++) { m = st.mains[i]; if (m && !m._dead && m._m === 'va') { m._m = 'charge'; m.x = m._lx0; m.y = m._ly0; m._u = 0; } }
+        O.sfx('explosion'); O.shake(2);
+      }
+    } else if (a.phase === 1) {
+      var P = N.joueuse && N.joueuse.tete;
+      for (i = 0; i < 2; i++) {
+        m = st.mains[i];
+        if (!m || m._dead || m._m !== 'charge') continue;
+        vivants++;
+        var ox = m.x, oy = m.y;
+        m._u += vit * dt / m._len;
+        if (m._u >= 1) { m._u = 1; m._m = 'idle'; }
+        m.x = m._lx0 + (m._lx1 - m._lx0) * m._u; m.y = m._ly0 + (m._ly1 - m._ly0) * m._u;
+        m.ang = Math.atan2(m._ly1 - m._ly0, m._lx1 - m._lx0);
+        if (m._cutT > 0) m._cutT -= dt;
+        else couperLame(m, ox, oy);
+        if (N.fx && typeof N.fx.trail === 'function') N.fx.trail(ox, oy, m.x, m.y, ROSE);
+      }
+      if (!vivants) { a.phase = 2; a.t = 0; }
+    } else if (a.t > 0.9 || mainsRentrees()) finAtk();
+  }
+  function ancre(i) { return i ? st.bx + CFG.epaule : st.bx - CFG.epaule; }
+  function mainsRentrees() {
+    for (var i = 0; i < 2; i++) { var m = st.mains[i]; if (m && !m._dead && O.d2(m.x, m.y, ancre(i), st.by - 4) > 36) return false; }
+    return true;
+  }
+  /* la lame coupe le corps : les segments de la joueuse contre la ligne balayée (ce qui est annoncé est ce qui coupe) */
+  function couperLame(m, ox, oy) {
+    var J = N.joueuse;
+    if (!J || typeof J.segs !== 'function' || typeof J.couper !== 'function' || J.etat === 'mort') return;
+    if (typeof J.invul === 'function' && J.invul()) return;
+    var sg = J.segs(), n = typeof J.len === 'function' ? J.len() : 0, hw2 = CFG.ligneDemi * CFG.ligneDemi;
+    for (var k = 2; k < n; k++) {
+      if (O.segDist2(sg[2 * k], sg[2 * k + 1], ox, oy, m.x, m.y) < hw2) {
+        if (J.couper(k, { genre: 'ennemi', type: 'cyclope', id: m.id }, 'ennemi')) { m._cutT = CFG.mainCut; O.sfx('explosion'); O.spark(sg[2 * k], sg[2 * k + 1], ROSE, 4); }
+        return;
+      }
+    }
+  }
+  /* ---- le bond ---- */
+  function majBond(a, dt, P) {
+    if (a.phase === 0) {
+      var u = a.t / a.tele, up = O.clamp(a.t / CFG.bondMonte, 0, 1), dn = O.clamp((a.t - (a.tele - CFG.bondChute)) / CFG.bondChute, 0, 1);
+      st.sol = false;
+      st.z = CFG.bondHaut * ease(up) * (1 - ease(dn));
+      var mv = ease(O.clamp((a.t - 0.1) / (a.tele - CFG.bondChute - 0.1), 0, 1));
+      st.cx = a.sx + (a.lx - a.sx) * mv; st.cy = a.sy + (a.ly - a.sy) * mv;
+      if (a.t >= a.tele) {                                           // il retombe en écrasant
+        a.phase = 1; a.t = 0; st.z = 0; st.cx = a.lx; st.cy = a.ly; st.sol = true;
+        impact(a);
+      }
+    } else {
+      a.apres += dt;
+      if (a.apres >= CFG.bondApres) finAtk();
+    }
+  }
+  function impact(a) {
+    var J = N.joueuse, P = J && J.tete, rs = K.ombre + K.rTete, i;
+    O.boom(a.lx, a.ly, 0.9, BRA); O.shake(9); O.hitstop(3); O.sfx('impactBoss'); O.ringFx(a.lx, a.ly, K.ombre + 8, MAG, 0.4);
+    if (N.cam && typeof N.cam.secousse === 'function') O.safe('cam.secousse', function () { N.cam.secousse(8, 0, 1); });
+    if (N.decor && typeof N.decor.ondule === 'function') O.safe('decor.ondule', function () { N.decor.ondule(a.lx, a.ly, 1); });
+    if (P && J.etat !== 'mort' && !(typeof J.invul === 'function' && J.invul())) {
+      if (O.d2(P.x, P.y, a.lx, a.ly) < rs * rs) { J.tuer('ennemi', srcOeil()); }
+      else if (typeof J.segs === 'function' && typeof J.couper === 'function') {
+        var sg = J.segs(), n = typeof J.len === 'function' ? J.len() : 0, r2 = (K.ombre + 3.5) * (K.ombre + 3.5);
+        for (i = 2; i < n; i++) if (O.d2(sg[2 * i], sg[2 * i + 1], a.lx, a.ly) < r2) { J.couper(i, srcOeil(), 'ennemi'); break; }
+      }
+    }
+    st.oeilT = K.oeil3;
+    if (!N.ennemis || typeof N.ennemis.spawn !== 'function') return;
+    var vivantes = 0, L = N.ennemis.list;
+    for (i = 0; i < L.length; i++) if (L[i].type === 'mine' && !L[i]._dead) vivantes++;
+    var A = O.A, a0 = O.rr('ennemis', 0, TAU);
+    for (i = 0; i < K.mines && vivantes < CFG.minesMax; i++, vivantes++) {
+      var ag = a0 + i * TAU / K.mines, mx = O.clamp(a.lx + Math.cos(ag) * CFG.mineRayon, A.x0 + 10, A.x1 - 10), my = O.clamp(a.ly + Math.sin(ag) * CFG.mineRayon, A.y0 + 10, A.y1 - 10);
+      O.safe('ennemis.spawn', function () { N.ennemis.spawn('mine', mx, my, { portail: 0.6, st: 'arme', stT: K.armMines }); });
+    }
+  }
+
+  /* ============================ les mains au repos ============================ */
+  function updMains(dt) {
+    for (var i = 0; i < 2; i++) {
+      var m = st.mains[i];
+      if (!m || m._dead) continue;
+      if (st.mflash[i] > 0) st.mflash[i] -= dt;
+      if (m._m !== 'idle') continue;
+      var tx = ancre(i), ty = st.by - 4 + Math.sin(st.fl * 2 + i * 2) * 3, dx = tx - m.x, dy = ty - m.y, d = Math.sqrt(dx * dx + dy * dy);
+      if (d > 0.3) { var mv = Math.min(d, CFG.mainAncre * al() * dt); m.x += dx / d * mv; m.y += dy / d * mv; }
+      m.ang = O.turnTo(m.ang, PI / 2 + (i ? -0.35 : 0.35), 6 * dt);
+    }
+  }
+
+  /* ============================ le combat, le répit, l'enragement ============================ */
+  function majCombat(dt, P) {
+    st.tComb += dt;
+    if (!st.enrage && st.tComb >= K.enrApres) mettreEnrage();
+    var e = st.oeil;
+    if (st.ph < 3 && e.pv <= pvFloor() + 0.5) { debutRepit(); return; }
+    if (!(st.atk && st.atk.k === 'bond')) derive(dt, P, CFG.deriveVit * al());
+    if (st.oeilT > 0) st.oeilT -= dt;
+    majPlaques(dt);
+    updMains(dt);
+    if (st.atk) majAtk(dt, P);
+    else if (st.cd > 0) st.cd -= dt;
+    else if (st.oeilT <= 0 && P && visible()) lancer(P);
+    if (!st.atk) st.sol = true;
+  }
+  function mettreEnrage() {
+    st.enrage = true;
+    ban(["LE CYCLOPE S'EMBALLE"], 'magenta', 2.4);
+    emitPhase(st.ph, 'enrage');
+    O.sfx('warning');
+  }
+  function majPlaques(dt) {
+    for (var i = 0; i < 6; i++) {
+      var p = st.plaques[i];
+      if (p.s === 1) {
+        p.t += dt;
+        if (p.t >= 0.7) { p.s = 2; O.debris(p.gx, p.gy, MAG, 3); }
+      }
+    }
+  }
+  function debutRepit() {
+    var n = st.ph;
+    st.mode = 'repit'; st.repT = 0; st.repBan = false; st.atk = null; st.oeilT = 0; st.z = 0; st.sol = false;
+    viderLasers(); effacer(900);
+    for (var i = 0; i < 2; i++) if (st.mains[i]) { O.boom(st.mains[i].x, st.mains[i].y, 0.4, MAG); retirer(st.mains[i]); st.mains[i] = null; }
+    emitPhase(n, 'repit');
+    O.boom(st.bx, st.by - CFG.dTete, 0.6, MAG); O.shake(6); O.sfx('impactBoss');
+    if (N.cam && typeof N.cam.secousse === 'function') O.safe('cam.secousse', function () { N.cam.secousse(6, 0, 1); });
+    if (N.butin && typeof N.butin.pluie === 'function') O.safe('butin.pluie', function () { N.butin.pluie(K.cellules); });
+    ban(['PHASE ' + (n + 1), CFG.noms[n + 1]], n + 1 === 3 ? 'magenta' : 'rose', 2.4);
+  }
+  function majRepit(dt, P) {
+    st.repT += dt;
+    derive(dt, P, 40);
+    majPlaques(dt);
+    if (st.repT >= K.repit) entreePhase(st.ph + 1);
+  }
+
+  /* ============================ sa mort ============================ */
+  function debutMort() {
+    var e = st.oeil, i, L = N.ennemis && N.ennemis.list;
+    st.mode = 'mort'; st.mortT = 0; st.atk = null; st.oeilT = 0; st.sol = false; st.nExpl = 0; st.carcasse = false; st.purge = false; st.z = 0;
+    viderLasers(); effacer(2000);
+    for (i = 0; i < 2; i++) if (st.mains[i]) { retirer(st.mains[i]); st.mains[i] = null; }
+    if (L) for (i = 0; i < L.length; i++) if (L[i].type === 'mine' && !L[i]._dead) { O.boom(L[i].x, L[i].y, 0.3, MAG); L[i]._dead = true; L[i].etat = 'mort'; }
+    if (N.ennemis && typeof N.ennemis.fuir === 'function') O.safe('ennemis.fuir', function () { N.ennemis.fuir(); });
+    O.hitstop(K.mArret); O.shake(12); O.sfx('colosseMort');
+    if (N.cam && typeof N.cam.focus === 'function') O.safe('cam.focus', function () { N.cam.focus(st.bx, st.by - 20, K.mCarcasse + 2); });
+    st.deadX = e ? e.x : st.bx; st.deadY = e ? e.y : st.by - CFG.dTete;
+  }
+  function majMort(dt) {
+    st.mortT += dt;
+    var t = st.mortT, T = K.mCascade, pas = T / Math.max(1, K.mExpl - 1);
+    st.clr -= dt;
+    if (st.clr <= 0) { st.clr = 0.25; effacer(2000); viderLasers(); }
+    while (st.nExpl < K.mExpl && t >= st.nExpl * pas) {
+      var c = CFG.mortCascade[st.nExpl % CFG.mortCascade.length], x = st.bx + c[0], y = st.by + c[1], f = st.nExpl === K.mExpl - 1 ? 1 : 0.7 + 0.05 * st.nExpl;
+      O.boom(x, y, f, st.nExpl % 2 ? BRA : MAG); O.debris(x, y, OS, 8); O.ringFx(x, y, 30 + st.nExpl * 6, BRA, 0.4); O.sfx(st.nExpl === K.mExpl - 1 ? 'bigkill' : 'explosion');
+      O.shake(8 + st.nExpl * 1.2);
+      if (N.cam && typeof N.cam.secousse === 'function') O.safe('cam.secousse', function () { N.cam.secousse(K.mCam + 2, st.nExpl % 2 ? 1 : -1, 0.5); });
+      if (st.nExpl === 2 || st.nExpl === K.mExpl - 1) st.brasierT = (K.mBrasierImg + 1) / 60;
+      st.nExpl++;
+    }
+    if (t >= T + 0.15) {
+      if (!st.carcasse) { st.carcasse = true; st.poussiere = 0; }
+      st.poussiere -= dt;
+      if (st.poussiere <= 0 && t < T + 0.15 + K.mCarcasse) {
+        st.poussiere = 0.1;
+        O.debris(st.bx + O.rr('fx', -42, 42), st.by + 52 + O.rr('fx', 0, 10), O.rf('fx') < 0.5 ? ARD : OS, 2);
+      }
+    }
+    if (!st.purge && t >= T + 0.15 + K.mCarcasse) {
+      st.purge = true; st.purgeT = 0; st.nPurge = 0;
+      if (N.ennemis && typeof N.ennemis.purge === 'function') st.nPurge = O.safe('ennemis.purge', function () { return N.ennemis.purge('proche'); }) | 0;
+    }
+    if (st.purge) {
+      st.purgeT += dt;
+      if (st.purgeT >= 0.25 + st.nPurge * K.purgeInt + 0.5) finMort();
+    }
+  }
+  function finMort() {
+    if (st.oeil) { st.oeil._dead = true; st.oeil.etat = 'mort'; }
+    var n = st.ph || 3;
+    st.on = false; st.mort = true; st.fini = true; st.mode = 'fini';
+    emitPhase(n, 'mort');
+  }
+
+  /* ============================ mise à jour ============================ */
+  function arrivee(dt) {
+    var d = dtReel(dt);
+    st.arrT += d; st.jaugeT += d;
+    var u = O.clamp(st.arrT / K.arrivee, 0, 1);
+    st.z = (1 - ease(u)) * CFG.arriveeZ; st.sol = false;
+    if (st.arrT >= K.arrivee) finArrivee();
+  }
+  function update(dt) {
+    if (!st.on || !(dt > 0)) return;
+    var P = N.joueuse && N.joueuse.tete;
+    st.t += dt; st.fl += dt;
+    if (st.flashO > 0) st.flashO -= dt;
+    if (st.brasierT > 0) st.brasierT -= dt;
+    if (st.mode === 'arrivee') arrivee(dt);
+    else if (st.mode === 'combat') majCombat(dt, P);
+    else if (st.mode === 'repit') majRepit(dt, P);
+    else if (st.mode === 'mort') majMort(dt);
+    if (st.on) place(dt, P);
+  }
+  /* pose les objets du schéma sur le corps : positions, états, lisibilité (-1 ou durée de visibilité) */
+  function place(dt, P) {
+    var bobx = Math.round(Math.sin(st.fl * 0.9 + 1.2) * 1.5), boby = Math.round(Math.sin(st.fl * 1.6) * CFG.flotte);
+    st.bx = st.cx + bobx; st.by = st.cy + boby;
+    var e = st.oeil, letal = st.mode === 'combat' && st.sol, i, m;
+    if (e && !e._dead) {
+      e.x = st.bx; e.y = st.by - CFG.dTete - st.z; e.r = CFG.rOeil;
+      e._st = letal ? 'actif' : 'naissance';
+      e.etat = st.mode === 'repit' ? 'fuite' : st.atk ? (st.atk.phase === 0 ? 'arme' : 'attaque') : 'approche';
+      if (P) e.ang = Math.atan2(P.y - e.y, P.x - e.x);
+      e.dir = O.dir16(e.ang); e.img = (e.img + 1) | 0;
+      var vis = visible();
+      e.vuDepuis = vis ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+      if (st.atk && st.atk.phase === 0) e.tele = st.oeil.id; else e.tele = -1;
+    }
+    for (i = 0; i < 2; i++) {
+      m = st.mains[i];
+      if (!m || m._dead) continue;
+      m._fant = m._m === 'va' || (m._m === 'idle' && O.d2(m.x, m.y, ancre(i), st.by - 4) > 900);   // en route vers sa ligne ou de retour : ni létale ni visable
+      m._st = (letal && st.ph === 2 && !m._fant) ? 'actif' : 'naissance';
+      m.etat = m._m === 'charge' ? 'attaque' : m._m === 'va' ? 'arme' : 'approche';
+      m.dir = O.dir16(m.ang); m.img = (m.img + 1) | 0;
+      m.vuDepuis = O.visible(m.x, m.y, -m.r) ? (m.vuDepuis < 0 ? 0 : m.vuDepuis + dt) : -1;
+    }
+  }
+
+  /* ============================ le dessin du corps (sous la joueuse) ============================ */
+  function oeilDessin(x, y, mode) {
+    var g = N.gfx, P = N.joueuse && N.joueuse.tete;
+    if (mode === 'ferme') { g.rect(x - 6, y, 13, 1, SANG); g.rect(x - 5, y + 1, 11, 1, NP); return; }
+    if (mode === 'vise') {                                           // fente : il charge
+      var on = (Math.floor(O.T.ak * 14) & 1) === 0;
+      g.rect(x - 7, y - 1, 15, 3, NP); g.rect(x - 6, y, 13, 1, on ? ROSE : MAG); g.rect(x - 1, y, 3, 1, OS);
+      return;
+    }
+    var ox = 0, oy = 0;
+    if (P) { var a = Math.atan2(P.y - y, P.x - x); ox = Math.round(Math.cos(a) * 2); oy = Math.round(Math.sin(a) * 2); }
+    g.circ(x, y, 9, SANG); g.circ(x, y, 8, NP); g.circ(x + ox, y + oy, 5, st.enrage ? BRA : ROSE); g.circ(x + ox, y + oy, 2, OS);
+    g.px(x + ox - 1, y + oy - 1, OS);
+  }
+  function vkArrivee() {                                             // le fondu d'arrivée : sang tramé, puis magenta
+    return O.clamp(st.arrT / K.arrivee, 0, 1);
+  }
+  function corps() {
+    var S = bati(), bx = st.bx, by = st.by - st.z, e = st.oeil, k = 1, sil = false, i, p;
+    if (st.mode === 'arrivee') { var u = vkArrivee(); if (u < 0.45) { sil = true; k = 0.3 + u; } else k = O.clamp((u - 0.45) / 0.4, 0, 1); }
+    else if (st.mode === 'repit') {
+      var r = st.repT, rr = K.repit;
+      k = r < 0.8 ? 1 - 0.82 * (r / 0.8) : r > rr - 0.8 ? 0.18 + 0.82 * ((r - (rr - 0.8)) / 0.8) : 0.18;
+      by -= 14 * (1 - (k - 0.18) / 0.82);
+    }
+    var tremble = st.mode === 'mort' ? ((Math.floor(O.T.ak * 30) & 1) ? 1 : -1) : 0;
+    bx += tremble;
+    if (st.mode === 'mort' && st.carcasse) {                         // la carcasse tombe dans la poussière
+      var uc = O.clamp((st.mortT - K.mCascade - 0.15) / K.mCarcasse, 0, 1);
+      dp(S.carcasse, bx, by + 32 + uc * uc * 66, 1 - uc * 0.95, false);
+      return;
+    }
+    /* les plaques tombées restent au sol, sous le corps */
+    for (i = 0; i < 6; i++) {
+      p = st.plaques[i];
+      if (p.s === 1) { var f = O.clamp(p.t / 0.7, 0, 1); dp(S.plaque, p.sx + (p.gx - p.sx) * f, p.sy + (p.gy - p.sy) * f * f + (1 - f) * -6, 1, false); }
+      else if (p.s === 2) dp(S.plaque, p.gx, p.gy, 1, false);
+    }
+    var fl = st.flashO > 0 && (st.mode === 'combat');
+    var hy = by - CFG.dTete, ty = by + 16;
+    if (sil) {
+      O.blitDither(S.tronc, bx, ty, SANG, k); O.blitDither(S.tete, bx, hy, SANG, k);
+      return;
+    }
+    if (st.ph === 1 || st.mode === 'arrivee') {                      // les mains encore au corps
+      dp(main16(4), bx - CFG.epaule, by - 4, k, false); dp(main16(4), bx + CFG.epaule, by - 4, k, false);
+    }
+    dp(S.tronc, bx, ty, k, false);
+    if (st.ph < 2 && st.mode !== 'mort') for (i = 0; i < 6; i++) dp(S.plaque, bx + st.plaques[i].ox, by + st.plaques[i].oy, k, false);
+    dp(S.tete, bx, hy, k, fl);
+    if (k >= 0.5 && st.mode !== 'mort') {
+      var eo = (st.mode === 'combat' && oeilVulnerable()) ? 'ouvert' : (st.atk && st.atk.phase === 0) ? 'vise' : (st.atk && st.atk.k === 'rayon') ? 'vise' : 'ferme';
+      if (eo === 'ouvert' && st.oeilT < 0.4 && (Math.floor(O.T.ak * 16) & 1)) eo = 'ferme';
+      if (fl && eo === 'ouvert') { N.gfx.circ(bx, hy + 1, 8, OS); } else oeilDessin(bx, hy + 1, eo);
+    } else if (st.mode === 'mort') oeilDessin(bx, hy + 1, 'vise');
+  }
+  function draw() {
+    if (!st.on) return;
+    O.safe('colosse.corps', corps);
+    /* les mains détachées (phase 2) : lames orientées dans le sens de leur course */
+    if (st.ph === 2 && st.mode === 'combat') {
+      for (var i = 0; i < 2; i++) {
+        var m = st.mains[i];
+        if (!m || m._dead) continue;
+        dp(main16(O.dir16(m.ang)), m.x, m.y, m._fant ? 0.6 : 1, st.mflash[i] > 0);
+      }
+    }
+  }
+
+  /* ============================ les télégraphes (monde) et la jauge (écran) ============================ */
+  function trait(x0, y0, x1, y1, plein) {                           // pointillés qui courent, gainés de nuit profonde ; plein et rose sur la fin
+    var g = N.gfx, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, x, y;
+    if (L < 1) return;
+    var c = dx / L, s = dy / L, nx = -s, ny = c, ph = (O.T.ak * 30) | 0, V = O.VUE;
+    for (i = 0; i < L; i++) {
+      x = x0 + c * i; y = y0 + s * i;
+      if (x < V.x - 2 || y < V.y - 2 || x > V.x + V.w + 2 || y > V.y + V.h + 2) continue;
+      g.px(x + nx, y + ny, NP); g.px(x - nx, y - ny, NP);
+      if (plein) g.px(x, y, ROSE); else if (((i + 6000 - ph) % 6) < 3) g.px(x, y, MAG);
+    }
+  }
+  function bande(x0, y0, x1, y1, hw, plein) {                       // la bande exacte de la lame : bords en pointillés, fond tramé
+    var g = N.gfx, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, j;
+    if (L < 1) return;
+    var c = dx / L, s = dy / L, nx = -s, ny = c, D = N.pal.dither, V = O.VUE;
+    for (i = 0; i < L; i += 1) {
+      var x = x0 + c * i, y = y0 + s * i;
+      if (x < V.x - 14 || y < V.y - 14 || x > V.x + V.w + 14 || y > V.y + V.h + 14) continue;
+      for (j = -hw + 1; j < hw; j += 2) {
+        var px = Math.round(x + nx * j), py = Math.round(y + ny * j);
+        if (D(px, py, plein ? 0.4 : 0.16)) g.px(px, py, plein ? ROSE : MAG);
+      }
+    }
+    trait(x0 + nx * hw, y0 + ny * hw, x1 + nx * hw, y1 + ny * hw, plein);
+    trait(x0 - nx * hw, y0 - ny * hw, x1 - nx * hw, y1 - ny * hw, plein);
+  }
+  function anneaux(x, y, k, r0, plein) {
+    var g = N.gfx;
+    for (var j = 0; j < 3; j++) {
+      var r = r0 * (1 - k) + 12 + j * 5;
+      g.ring(x, y, r + 1, NP, 1); g.ring(x, y, r, plein ? ROSE : MAG, 0.5 + 0.5 * k);
+    }
+  }
+  function teles() {
+    var a = st.atk, e = st.oeil, g = N.gfx, i, plein;
+    if (!a || a.phase !== 0 || !e) return;
+    plein = a.tele - a.t <= 0.3;
+    var k = O.clamp(a.t / a.tele, 0, 1), ex = e.x, ey = e.y;
+    if (a.k === 'rayon') {
+      var an1 = a.a0 + a.dir * a.sweep, Lr = Math.min(CFG.rayonLong, (O.VUE.w + O.VUE.h) * 0.6);
+      trait(ex, ey, ex + Math.cos(a.a0) * Lr, ey + Math.sin(a.a0) * Lr, plein);
+      trait(ex, ey, ex + Math.cos(an1) * Lr, ey + Math.sin(an1) * Lr, plein);
+      for (i = 1; i < 25; i++) {                                    // l'arc tramé sur tout le secteur balayé
+        var ai = a.a0 + a.dir * a.sweep * i / 25, ca = Math.cos(ai), sa = Math.sin(ai);
+        for (var r = 12; r < Lr; r += 3) {
+          var px = Math.round(ex + ca * r), py = Math.round(ey + sa * r);
+          if (px < O.VUE.x || py < O.VUE.y || px > O.VUE.x + O.VUE.w || py > O.VUE.y + O.VUE.h) break;
+          if (((px + py) & 1) === 0 && N.pal.dither(px, py, plein ? 0.5 : 0.28)) g.px(px, py, plein ? ROSE : MAG);
+        }
+      }
+      anneaux(ex, ey, k, 24, plein);
+    } else if (a.k === 'salve' || a.k === 'salve2') {
+      anneaux(ex, ey, k, 40, plein);
+      var n = a.k === 'salve' ? K.balles : K.balles3, off = a.base;
+      for (i = 0; i < n; i++) {                                     // les directions exactes de la première salve
+        var ag = off + i * TAU / n, c = Math.cos(ag), s = Math.sin(ag);
+        g.line(ex + c * 14, ey + s * 14, ex + c * 26, ey + s * 26, NP);
+        g.line(ex + c * 15, ey + s * 15, ex + c * 25, ey + s * 25, plein ? ROSE : MAG);
+      }
+    } else if (a.k === 'ciseaux') {
+      for (i = 0; i < a.lignes.length; i++) { var L = a.lignes[i]; if (L) bande(L.x0, L.y0, L.x1, L.y1, CFG.ligneDemi, plein); }
+    } else if (a.k === 'bond') {
+      var rr0 = K.ombre;
+      g.ditherCirc(a.lx, a.ly, rr0, MAG, 0.08 + 0.3 * k);
+      g.ring(a.lx, a.ly, rr0 + 1, NP, 1); g.ring(a.lx, a.ly, rr0, plein ? ROSE : MAG, 1);
+      g.ring(a.lx, a.ly, rr0 * (1 + 1.2 * (1 - k)) + 2, MAG, 0.5);
+      g.line(a.lx - 4, a.ly, a.lx + 4, a.ly, plein ? ROSE : MAG); g.line(a.lx, a.ly - 4, a.lx, a.ly + 4, plein ? ROSE : MAG);
+    }
+  }
+  var SEUILS = [0.66, 0.33];
+  function jauge() {
+    var g = N.gfx, geo = O.geo, W = geo.W, sf = geo.safe || { l: 0, t: 0 };
+    var w = Math.max(60, Math.min(W - 2 * (sf.l | 0) - 40, 240)) | 0, x = ((W - w) / 2) | 0, y = (sf.t | 0) + geo.hudH + 3, h = 5;
+    var fill = st.mode === 'arrivee' ? O.clamp(st.jaugeT / K.jauge, 0, 1) : 1;
+    var fr = O.clamp(pv(), 0, 1) * fill, fw = Math.round(w * fr);
+    g.rect(x - 1, y - 1, w + 2, h + 2, NP);
+    g.rect(x, y, w, h, SANG);
+    if (fw > 0) g.rect(x, y, fw, h, st.flashO > 0 ? OS : st.enrage ? BRA : MAG);
+    if (fw > 0) g.rect(x, y, fw, 1, ROSE);
+    for (var i = 0; i < SEUILS.length; i++) g.rect(x + Math.round(w * SEUILS[i]), y - 2, 1, h + 4, OS);
+    var nom = CFG.noms[st.ph] || 'LE CYCLOPE';
+    O.textC(nom, W / 2, y + h + 3, OS, true, 1);
+  }
+  function drawTop() {
+    if (!st.on) return;
+    var g = N.gfx;
+    O.safe('colosse.teles', teles);
+    if (st.mode === 'mort' && st.brasierT > 0 && (!N.fx || typeof N.fx.flashGate !== 'function' || N.fx.flashGate(15000))) {
+      g.ditherCirc(st.bx, st.by - 20, 74, BRA, 0.75);
+    }
+    O.origine(0, 0);
+    O.safe('colosse.jauge', jauge);
+    O.origineMonde();
+  }
+
+  /* ============================ l'interface publiée ============================ */
+  function pv() { return st.oeil ? O.clamp(st.oeil.pv / K.pvTotal, 0, 1) : 0; }
+  return {
+    start: start, reset: reset, update: update, draw: draw, drawTop: drawTop,
+    actif: function () { return !!st.on; },
+    phase: function () { return st.on || st.mort ? st.ph : 0; },
+    pv: pv,
+    mort: function () { return !!st.mort; },
+    oeil: function () {
+      if (!st.on || !st.oeil || st.mode === 'repit') return null;
+      POS.x = st.oeil.x; POS.y = st.oeil.y;
+      return POS;
+    },
+    estOeil: estOeil, touche: touche, surKill: surKill
   };
 })();
 
@@ -14057,31 +16002,44 @@ N.cartes = (function () {
 })();
 
 /* ===== 76-directeur.js ===== */
-/* ===== 76-directeur.js — N.dir : les vagues, les apparitions, l'énergie libre, la tension =====
+/* ===== 76-directeur.js — N.dir : les cinq vagues du secteur 1, leurs formations, la pastille, le traqueur, la tension =====
 
-   Tiré de 70-game.js (lot 0b) : spawnPoint, spawnGroup, counts, cible, director, la cadence de l'énergie libre.
-   REPLI du lot 5a : la démo menait deux minutes d'un seul tenant ; ici le même directeur mène les cinq vagues
-   de N.R.secteurs[0].vagues (durée, plafond, vitesse, quartier lus dans N.R), dans l'ordre. Les formations
-   nommées, le TRAQUEUR, la PASTILLE, le DÉFILÉ et les portails arrivent avec le lot 5a.
+   REFONTE.md § 4.1 (structure), § 4.2 (vagues chiffrées), § 4.3 (formations annoncées 1 s avant), § 4.5 (élites), § 3.8
+   (apparitions justes). Les cinq vagues nommées (ÉVEIL, MEUTE, BATTERIE, ESSAIM, DÉFERLANTE) sont lues dans
+   N.R.secteurs[0].vagues : durée nominale, quota, plafond d'ennemis vivants, charges de flèches, formations datées (« instant
+   après l'entrée »), TRAVELLING, CONVOIS, PASTILLE, PIC (élite avec bannière). À chaque vague, le quartier et l'état du décor
+   sont posés (N.decor.quartier / N.decor.etat) puis `vague` est émis.
 
-   RIEN NE NAÎT DANS LE CHAMP : les ennemis ordinaires naissent hors de la vue (N.cam / N.outils.VUE), à plus de
-   80 px de la tête, et entrent. Chaque apparition est comptée (stats.spawns) pour la preuve.
+   RIEN NE NAÎT DANS LE CHAMP (§ 3.8) : un ennemi naît hors de la vue courante ET de la vue anticipée (la tête avancée de 1,15 s),
+   avec 24 px de marge, à 70 px au moins de la tête, à 16 px au moins à l'intérieur des murs courants (donc devant le mur arrière
+   pendant un TRAVELLING). Faute de point valide, la formation attend. Tout passe par un portail de 600 ms ; les deux seules
+   exceptions annoncées par leur propre marqueur de 1,5 s sont le DUO et le CHAMP DE MINES (sur la trajectoire anticipée). Les
+   formations tombent sur la grille des temps de jeu (144,6 BPM) : au plus tard au temps suivant.
 
-   ÉMET `vague` (seul émetteur) : { n, etape: 'vague', evt: 'entree'|'pic'|'nettoyee'|'soupape', nom, quartier }.
-   C'est 79-jeu.js (rang 10) qui en déduit NETTOYAGE, CARTES, VOL ; ce module ne change jamais d'état de jeu.
-   Il DEMANDE : N.ennemis.spawn, N.butin.libre, N.ennemis.purge (fin de vague).
+   ÉMET `vague` (seul émetteur) : { n, etape: 'vague', evt: 'entree'|'pic'|'nettoyee'|'soupape', nom, quartier } et `portail`
+   (élites, traqueur). C'est 79-jeu.js (rang 10) qui en déduit NETTOYAGE, CARTES, VOL ; ce module ne change jamais d'état de jeu.
+   DEMANDE : N.ennemis.spawn / fuir / counts, N.butin.libre / lacher (PASTILLE), N.arene.entree(w) / pic() / nettoyee() (73-arene
+   n'écoute pas `vague` : le contrat n'en prévoit pas), N.colosse.start() / surKill(c) / estOeil(id), N.hud.banniere / tag.
+   CONSOMME `kill` (10) : mort de l'œil du CYCLOPE, dernière action de la joueuse (TRAQUEUR) ; `ramassage` (10) : idem ;
+   `inversion` (10) : les apparitions s'arrêtent pendant la chasse retournée.
 
    Interface (§ 7.8) : reset(secteur, opts), update(dt), vague(), phase(), tension(), progression(), entrees().
-   Ajouts : demarrer(n), info(), lancerBoss(), fini(). */
+   Ajouts : demarrer(n), info(), lancerBoss(), fini(), bossMort(), stats, nombreVagues(), tempsVague(), fin(), formation(nom, opts). */
 N.dir = (function () {
   'use strict';
   var O = N.outils, R = N.R;
   var CFG = {                                    // → N.R
-    premierEnnemi: 4.5, cadence: [0.55, 0.45, 0.4, 0.34, 0.28], energieLibre: 2.6, energieMin: 3, bossTele: 2.4,
-    maxMines: [4, 4, 6, 7, 7], maxTourelles: 6, maxSentinelles: 4
+    energieLibre: 2.6, energieMin: 3, maxMines: 12, plafondDur: 40,
+    inactionTraqueur: 7, secondTraqueur: 6, soupape: 12, elroyReste: 0.20, elroyAcc: 1.3,
+    margeVue: 24, anticipee: 1.15, distTete: 70, murs: 16, entree: 6, rapide: 0.10, temps: 60 / 144.6,
+    premierGate: 3, premierGateSuivantes: 1
   };
-  var st = { n: 0, tw: 0, phase: 'attente', spawnCd: 0, freeCd: 2, entrees: 0, fini: false, secteur: 0, tuto: true, nettoye: false, bossMort: false };
-  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [] };
+  var st = {
+    n: 0, tw: 0, phase: 'attente', entrees: 0, fini: false, secteur: 0, tuto: true, nettoye: false, bossMort: false,
+    queue: [], spawned: 0, freeCd: 2, pic: null, picFait: false, pastilleFaite: false, derniereAction: 0, traqueurs: 0, traqueurT: -99,
+    melangeT: 0, lastBeat: -1, beat: false, gate: 0, turn: 0, angPrec: null, vus: {}, alive: 0, elroy: false, premiere: true
+  };
+  var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9 };
   var VAGUES = null;
 
   function vagues() { return VAGUES || (VAGUES = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues) || []); }
@@ -14089,12 +16047,17 @@ N.dir = (function () {
   function rr(a, b) { return O.rr('dir', a, b); }
   function ri(a, b) { return O.ri('dir', a, b); }
   function rnd() { return O.rf('dir'); }
+  function tete() { return N.joueuse && N.joueuse.tete; }
+  function banniere(t, o) { if (N.hud && N.hud.banniere) O.safe('hud.banniere', function () { N.hud.banniere(t, o); }); }
+  function etiquette(t) { if (N.hud && N.hud.tag) O.safe('hud.tag', function () { N.hud.tag(t); }); }
 
   function reset(secteur, opts) {
     VAGUES = null;
-    st.n = 0; st.tw = 0; st.phase = 'attente'; st.spawnCd = 0; st.freeCd = 2; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
+    st.n = 0; st.tw = 0; st.phase = 'attente'; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
+    st.queue.length = 0; st.spawned = 0; st.freeCd = 2; st.pic = null; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99;
+    st.melangeT = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
     st.secteur = secteur | 0; st.tuto = !(opts && opts.sansTuto);
-    stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0;
+    stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0; stats.maxAlive = 0; stats.minDistTele = 1e9;
     if (opts && opts.vague) demarrer(opts.vague);
   }
 
@@ -14102,98 +16065,336 @@ N.dir = (function () {
   function demarrer(n) {
     var vs = vagues();
     n = O.clamp(n | 0, 1, vs.length || 1);
-    st.n = n; st.tw = 0; st.phase = 'vague'; st.spawnCd = 0; st.fini = false; st.nettoye = false; st.entrees++;
     var w = vs[n - 1] || {};
+    st.n = n; st.tw = 0; st.phase = 'vague'; st.fini = false; st.nettoye = false; st.entrees++;
+    st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.melangeT = 0; st.elroy = false;
+    st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
+    st.queue.length = 0;
+    var fs = w.formations || [];
+    for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false, annonce: 0 });
+    st.queue.sort(function (a, b) { return a.t - b.t; });
+    if (n === 1 && st.premiere) {                      // le premier ennemi de la première partie : 3 s après un virage de plus de 45°, 6 s au plus tard
+      st.gate = st.tuto ? CFG.premierGate : CFG.premierGateSuivantes; st.turn = 0; st.angPrec = null;
+    } else st.gate = 0;
+    if (N.decor) {                                     // le quartier et l'état de la vague (le décor le déduit aussi de `vague`)
+      if (N.decor.quartier) O.safe('decor.quartier', function () { N.decor.quartier(w.quartier || 'docks'); });
+      if (N.decor.etat) O.safe('decor.etat', function () { N.decor.etat(w.etat || 'montee'); });
+    }
     if (N.ev) N.ev.emit('vague', { n: n, etape: 'vague', evt: 'entree', nom: w.nom || ('VAGUE ' + n), quartier: w.quartier || 'docks' });
+    if (N.arene && N.arene.entree) O.safe('arene.entree', function () { N.arene.entree(w); });
   }
 
-  /* ---- un point de naissance hors de la vue, à 80 px au moins de la tête ---- */
-  function spawnPoint(r) {
-    var m = r + 8, V = O.VUE, P = N.joueuse.tete, portrait = O.geo.portrait, A = O.A;
-    for (var k = 0; k < 14; k++) {
-      var side = ri(0, 3), x, y;
-      if (portrait && side === 2 && rnd() < 0.5) side = ri(0, 1);        // portrait : moins souvent par le bas
-      if (side === 0) { x = V.x - m; y = rr(A.y0 - 4, Math.min(V.y + V.h - 8, A.y1 + 20)); }
-      else if (side === 1) { x = V.x + V.w + m; y = rr(A.y0 - 4, Math.min(V.y + V.h - 8, A.y1 + 20)); }
-      else if (side === 2) { x = rr(V.x + 8, V.x + V.w - 8); y = V.y + V.h + m; }
-      else { x = rr(V.x + 8, V.x + V.w - 8); y = V.y - m; }
-      if (O.d2(x, y, P.x, P.y) >= 80 * 80) return { x: x, y: y, side: side };
+  /* ============================ les points de naissance (§ 3.8) ============================ */
+  var QV = { x: 0, y: 0, w: 0, h: 0 };
+  function validePt(x, y, vue) {
+    var V = O.VUE, a = CFG.margeVue, A = O.A, P = tete();
+    if (x > V.x - a && x < V.x + V.w + a && y > V.y - a && y < V.y + V.h + a) return false;
+    if (vue && x > vue.x - a && x < vue.x + vue.w + a && y > vue.y - a && y < vue.y + vue.h + a) return false;
+    if (x < A.x0 + CFG.murs || x > A.x1 - CFG.murs || y < A.y0 + CFG.murs || y > A.y1 - CFG.murs) return false;
+    if (P && O.d2(x, y, P.x, P.y) < CFG.distTete * CFG.distTete) return false;
+    if (O.geo.portrait && y > V.y + V.h && rnd() < (((R && R.apparitions && R.apparitions.portraitBas) !== undefined ? R.apparitions.portraitBas : 0.5))) return false;
+    var m = N.arene && N.arene.murArriere ? N.arene.murArriere() : null;
+    if (m && m.actif) { if ((m.sens > 0 && x < m.x + 24) || (m.sens < 0 && x > m.x - 24)) return false; }          // devant le mur arrière, jamais derrière
+    return true;
+  }
+  function vueAnt() {
+    if (!N.cam || !N.cam.anticipee) return null;
+    var q = N.cam.anticipee(CFG.anticipee, QV);
+    return q;
+  }
+  /* un point hors de la vue, au plus à 110 px de son bord, sinon n'importe où dans l'arène */
+  function pointHors() {
+    var V = O.VUE, A = O.A, vue = vueAnt(), k, x, y;
+    for (k = 0; k < 36; k++) {
+      x = rr(V.x - 110, V.x + V.w + 110); y = rr(V.y - 110, V.y + V.h + 110);
+      if (validePt(x, y, vue)) return { x: x, y: y };
     }
-    return null;                                       // pas de place sûre : on réessaiera
+    for (k = 0; k < 40; k++) {
+      x = rr(A.x0 + CFG.murs, A.x1 - CFG.murs); y = rr(A.y0 + CFG.murs, A.y1 - CFG.murs);
+      if (validePt(x, y, vue)) return { x: x, y: y };
+    }
+    return null;
   }
-  function logSpawn(e) {
-    var V = O.VUE, P = N.joueuse.tete;
+  function cote() {
+    var P = tete();
+    return P ? Math.atan2(P.y, P.x) : 0;
+  }
+  function logSpawn(e, tele) {
+    var V = O.VUE, P = tete();
     var inView = e.x > V.x - e.r && e.x < V.x + V.w + e.r && e.y > V.y - e.r && e.y < V.y + V.h + e.r;
-    var dist = Math.sqrt(O.d2(e.x, e.y, P.x, P.y));
-    stats.spawns.push({ t: Math.round(O.T.t * 100) / 100, k: e.type, x: Math.round(e.x), y: Math.round(e.y), inView: inView, tele: 0, dist: Math.round(dist), vague: st.n });
-    if (inView) stats.inView++;
-    else if (dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist);
+    var dist = P ? Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) : 0;
+    stats.spawns.push({ t: Math.round(O.T.t * 100) / 100, k: e.type, x: Math.round(e.x), y: Math.round(e.y), inView: inView, tele: tele || 0, dist: Math.round(dist), vague: st.n });
+    if (inView && !(tele >= 0.6)) stats.inView++;
+    if (!inView) { if (dist < stats.minDistSpawn) stats.minDistSpawn = Math.round(dist); }
+    else if (tele >= 0.6 && dist < stats.minDistTele) stats.minDistTele = Math.round(dist);
   }
-  function spawnGroup(type) {
-    var r = (R && R.ennemis && R.ennemis[type] && R.ennemis[type].r) || 5, sp0 = spawnPoint(r), P = N.joueuse.tete;
-    if (!sp0) return 0;
-    var n = 1;
-    if (type === 'fleche') n = st.n <= 1 ? ri(1, 2) : st.n <= 3 ? ri(2, 3) : ri(2, 4);
-    var made = 0;
+  /* créer un ennemi : portail de 600 ms (le double pour une élite), modificateur RAPIDE de la vague 5, compte du quota */
+  function mk(type, x, y, o) {
+    o = o || {};
+    var w = info(), por = o.portail !== undefined ? o.portail : ((R && R.apparitions && R.apparitions.portail) || 0.6) * (o.elite ? 2 : 1);
+    var mods = o.mods || {};
+    if (w && w.rapide && !o.elite && type !== 'mine' && type !== 'ruche' && rnd() < w.rapide) { mods = { rapide: true }; }
+    var e = N.ennemis.spawn(type, x, y, { portail: por, elite: !!o.elite, mods: mods, st: o.st });
+    if (o.cd0 !== undefined) e._cd0 = o.cd0;
+    if (o.mere) e._mere = o.mere;
+    if (o.tx !== undefined) { e._tx = o.tx; e._ty = o.ty; }
+    if (!o.sansCompte) st.spawned++;
+    logSpawn(e, por);
+    if (N.ev && (o.elite || type === 'traqueur')) N.ev.emit('portail', { type: type, x: x, y: y, dur: por, elite: !!o.elite });
+    return e;
+  }
+  /* membre d'une formation à (x, y) : s'il est dans le champ, on le recule le long de l'axe depuis la tête, sinon on l'abandonne */
+  function membre(type, x, y, a, o) {
+    var vue = vueAnt(), P = tete(), k;
+    for (k = 0; k < 4; k++) {
+      if (validePt(x, y, vue)) return mk(type, x, y, o);
+      if (!P) break;
+      var d = Math.sqrt(O.d2(x, y, P.x, P.y)) || 1; x += (x - P.x) / d * 10; y += (y - P.y) / d * 10;
+    }
+    return null;
+  }
+  function dirTete(p) { var P = tete(); return P ? Math.atan2(P.y - p.y, P.x - p.x) : 0; }
+
+  /* ============================ les formations (§ 4.3) ============================ */
+  var TAILLE = { file: 3, meute: 6, nuee: 7, duoMines: 2, champMines: 9, pince: 2, batterie: 3, essaim: 7, duel: 2, garde: 5 };
+  var NOMS = { file: 'FILE', meute: 'MEUTE', nuee: 'NUÉE', duoMines: 'DUO DE MINES', champMines: 'CHAMP DE MINES', pince: 'PINCE',
+    batterie: 'BATTERIE', essaim: 'ESSAIM', duel: 'DUEL', garde: 'GARDE' };
+  function ligne(type, p, n, esp, o) {
+    var a = dirTete(p), c = Math.cos(a + Math.PI / 2), s = Math.sin(a + Math.PI / 2), made = 0;
     for (var i = 0; i < n; i++) {
-      var off = (i - (n - 1) / 2) * 13, x = sp0.x, y = sp0.y, back = (i % 2) * 9;
-      if (sp0.side < 2) { y += off; x += sp0.side === 0 ? -back : back; } else { x += off; y += sp0.side === 2 ? back : -back; }
-      if (O.d2(x, y, P.x, P.y) < 70 * 70) continue;       // G-14 : jamais près de la tête, même hors champ
-      var e = N.ennemis.spawn(type, x, y);
-      logSpawn(e); made++;
+      var off = (i - (n - 1) / 2) * esp;
+      if (membre(type, p.x + c * off, p.y + s * off, a, o)) made++;
     }
     return made;
   }
-  function plafond() { var w = info(); return (w && w.plafond) || 10; }
-  /* la montée : le nombre d'ennemis visé croît dans la vague jusqu'au plafond de N.R */
-  function cible() {
-    var w = info(); if (!w) return 0;
-    var dep = st.tuto && st.n === 1 ? CFG.premierEnnemi : 1;
-    if (st.tw < dep) return 0;
-    return 2 + (plafond() - 2) * O.clamp((st.tw - dep) / Math.max(1, w.duree * 0.7 - dep), 0, 1);
+  function deuxCotes() {
+    var P = tete(), vue = vueAnt(), k, a, b;
+    for (k = 0; k < 24; k++) {
+      a = pointHors(); b = pointHors();
+      if (!a || !b) break;
+      if (P) {
+        var dx1 = a.x - P.x, dy1 = a.y - P.y, dx2 = b.x - P.x, dy2 = b.y - P.y;
+        var cs = (dx1 * dx2 + dy1 * dy2) / ((Math.sqrt(dx1 * dx1 + dy1 * dy1) * Math.sqrt(dx2 * dx2 + dy2 * dy2)) || 1);
+        if (cs > -0.2) continue;
+      }
+      return [a, b];
+    }
+    a = pointHors(); b = pointHors();
+    return a && b ? [a, b] : null;
   }
+  function devantTete(d) {
+    var P = tete(), A = O.A;
+    if (!P) return { x: (A.x0 + A.x1) / 2, y: (A.y0 + A.y1) / 2 };
+    return { x: O.clamp(P.x + Math.cos(P.ang) * d, A.x0 + 24, A.x1 - 24), y: O.clamp(P.y + Math.sin(P.ang) * d, A.y0 + 24, A.y1 - 24) };
+  }
+  function nbMines() { var c = N.ennemis.counts(); return c.mine || 0; }
+  /* formation(nom, opts) -> nombre d'ennemis créés (0 : pas de place, on réessaie) */
+  function formation(nom, opts) {
+    var made = 0, p, i, e, n, P = tete(), o = opts || {};
+    if (!P) return 0;
+    if (nom === 'file') { p = pointHors(); if (!p) return 0; made = ligne('fleche', p, 3, 14); }
+    else if (nom === 'meute') {
+      p = pointHors(); if (!p) return 0;
+      var a = dirTete(p), c = Math.cos(a + Math.PI / 2), s = Math.sin(a + Math.PI / 2), cx = Math.cos(a), cy = Math.sin(a);
+      for (i = 0; i < 6; i++) {                                    // un V dont la pointe regarde la tête
+        var lat = (i - 2.5) * 13, back = Math.abs(lat) * 0.8;
+        if (membre('fleche', p.x + c * lat - cx * back, p.y + s * lat - cy * back, a, null)) made++;
+      }
+    } else if (nom === 'nuee') {
+      p = pointHors(); if (!p) return 0;
+      n = ri(6, 8);
+      for (i = 0; i < n; i++) { var ra = 5 + i * 3, an = i * 0.95; if (membre('larve', p.x + Math.cos(an) * ra, p.y + Math.sin(an) * ra, an, null)) made++; }
+    } else if (nom === 'duoMines' || nom === 'champMines') {
+      var f = (R && R.formations && R.formations[nom]) || {}, mar = f.marqueurs || 1.5, A = O.A, spots = [];
+      if (nbMines() > CFG.maxMines - (nom === 'champMines' ? 9 : 2)) return 0;
+      if (nom === 'duoMines') {
+        var d0 = Math.max(90, f.distanceMin || 90), lat0 = rr(0, 1) < 0.5 ? 1 : -1;
+        for (i = 0; i < 2; i++) { var pp = devantTete(d0 + 14 + i * 26); spots.push({ x: pp.x + Math.cos(P.ang + Math.PI / 2) * lat0 * (10 + i * 22), y: pp.y + Math.sin(P.ang + Math.PI / 2) * lat0 * (10 + i * 22) }); }
+      } else {
+        var cc = devantTete(Math.max(100, f.distanceMin || 100) + 40);
+        for (i = 0; i < 9; i++) spots.push({ x: cc.x + ((i % 3) - 1) * 30, y: cc.y + (((i / 3) | 0) - 1) * 30 });
+      }
+      for (i = 0; i < spots.length; i++) {
+        var sx = O.clamp(spots[i].x, A.x0 + 18, A.x1 - 18), sy = O.clamp(spots[i].y, A.y0 + 18, A.y1 - 18);
+        if (O.d2(sx, sy, P.x, P.y) < (nom === 'champMines' ? 100 : 90) * (nom === 'champMines' ? 100 : 90)) continue;
+        mk('mine', sx, sy, { portail: mar, st: 'pose' }); made++;
+      }
+    } else if (nom === 'pince') {
+      var cs2 = deuxCotes(); if (!cs2) return 0;
+      for (i = 0; i < 2; i++) if (membre('dard', cs2[i].x, cs2[i].y, 0, null)) made++;
+    } else if (nom === 'duel') {
+      var ds = deuxCotes(); if (!ds) return 0;
+      for (i = 0; i < 2; i++) if (membre('lame', ds[i].x, ds[i].y, 0, null)) made++;
+    } else if (nom === 'batterie') {
+      p = pointHors(); if (!p) return 0;
+      var ab = dirTete(p), cb = Math.cos(ab + Math.PI / 2), sb = Math.sin(ab + Math.PI / 2);
+      for (i = 0; i < 3; i++) {
+        var lb = (i - 1) * 24;
+        if (membre('tourelle', p.x + cb * lb, p.y + sb * lb, ab, { cd0: 0.9 + i * ((R && R.formations && R.formations.batterie && R.formations.batterie.ecartTirs) || 0.4) })) made++;
+      }
+    } else if (nom === 'essaim') {
+      p = pointHors(); if (!p) return 0;
+      var hive = membre('ruche', p.x, p.y, 0, null);
+      if (!hive) return 0;
+      made++;
+      for (i = 0; i < 6; i++) { var ar = i / 6 * O.TAU; var l = mk('larve', hive.x + Math.cos(ar) * (hive.r + 6), hive.y + Math.sin(ar) * (hive.r + 6), { mere: hive.id }); if (l) made++; }
+    } else if (nom === 'garde') {
+      p = pointHors(); if (!p) return 0;
+      if (membre('sentinelle', p.x, p.y, 0, null)) made++;
+      var ag = dirTete(p), cg = Math.cos(ag + Math.PI / 2), sg = Math.sin(ag + Math.PI / 2);
+      for (i = 0; i < 4; i++) { var lg = (i - 1.5) * 14; if (membre('fleche', p.x + cg * lg - Math.cos(ag) * 16, p.y + sg * lg - Math.sin(ag) * 16, ag, null)) made++; }
+    } else return 0;
+    if (made > 0 && !o.sansEtiquette) {
+      var nm = NOMS[nom] || nom.toUpperCase();
+      if (!st.vus[nom]) { st.vus[nom] = true; banniere(nm, { c: 'magenta', duree: 1.2 }); } else etiquette(nm);
+    }
+    return made;
+  }
+
+  /* ============================ le pic de la vague : une élite avec bannière (§ 4.5) ============================ */
+  function lancerPic() {
+    var w = info(), pc = w && w.pic;
+    if (!pc) return true;
+    var E = (R && R.elites && R.elites[pc.elite]) || {}, p = pointHors();
+    if (!p) return false;
+    var e;
+    if (pc.elite === 'rival') e = mk('rival', p.x, p.y, { elite: true });
+    else e = mk(E.type || 'fleche', p.x, p.y, { elite: true, mods: (E.mods || []).reduce(function (m, k) { m[k] = true; return m; }, {}) });
+    if (pc.avec) formation(pc.avec, { sansEtiquette: true });
+    if (pc.banniere) banniere(E.nom || pc.elite.toUpperCase(), { c: 'magenta', duree: 2.2, clignote: true });
+    if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'pic', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+    if (N.arene && N.arene.pic) O.safe('arene.pic', function () { N.arene.pic(); });
+    O.sfx('portail');
+    return !!e;
+  }
+  /* la PASTILLE : un seul objet par vague, devant la tête, qui lance l'INVERSION quand on la prend (72-ennemis) */
+  function poserPastille() {
+    var P = tete(), A = O.A;
+    if (!P) return false;
+    var d = [70, 90, 55, 110], i;
+    for (i = 0; i < d.length; i++) {
+      var q = devantTete(d[i]);
+      if (O.d2(q.x, q.y, P.x, P.y) > 45 * 45 && q.x > A.x0 + 20 && q.x < A.x1 - 20) {
+        if (N.butin && N.butin.lacher) N.butin.lacher(q.x, q.y, 1, { type: 'pastille', vie: (R && R.butin && R.butin.pastille && R.butin.pastille.expire) || 12 });
+        O.sfx('pastille');
+        return true;
+      }
+    }
+    return false;
+  }
+  /* le TRAQUEUR, de la vague 2 à la vague 5 : il entre si la joueuse n'a ni détruit ni ramassé quoi que ce soit pendant 7 s */
+  function traqueur() {
+    var T = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].traqueur) || { vagues: [2, 3, 4, 5], inaction: 7, annonce: 1.5, second: 6 };
+    if (T.vagues.indexOf(st.n) < 0 || st.tw < 6) return;
+    var now = O.T.t, inaction = now - st.derniereAction;
+    if (st.traqueurs >= 2) return;
+    if (st.traqueurs === 0 && inaction < (T.inaction || 7)) return;
+    if (st.traqueurs === 1 && (inaction < (T.inaction || 7) || now - st.traqueurT < (T.second || 6))) return;
+    var p = pointHors();
+    if (!p) return;
+    mk('traqueur', p.x, p.y, { portail: T.annonce || 1.5, sansCompte: true });
+    st.traqueurs++; st.traqueurT = now;
+    banniere('TRAQUEUR', { c: 'magenta', duree: T.annonce || 1.5, clignote: true });
+    O.sfx('traqueur');
+  }
+
+  /* ============================ la vague ============================ */
+  function vivants() { var c = N.ennemis.counts(); return c.regular; }
   function update(dt) {
     if (st.phase !== 'vague') return;
     var w = info(); if (!w) return;
-    st.tw += dt; st.spawnCd -= dt;
-    var c = N.ennemis.counts(), i = st.n - 1;
-    if (!st.fini && c.regular < cible() && st.spawnCd <= 0) {
-      var pick = 'fleche', wt;
-      if (st.n === 1) wt = st.tw < 12 ? { fleche: 1 } : { fleche: 0.7, mine: 0.3 };
-      else if (st.n === 2) wt = { fleche: 0.55, mine: 0.25, tourelle: 0.2 };
-      else wt = { fleche: 0.34, mine: 0.16, tourelle: 0.28, sentinelle: 0.22 };
-      if (c.mine >= CFG.maxMines[Math.min(4, i)]) wt.mine = 0;
-      if (c.tourelle >= CFG.maxTourelles) wt.tourelle = 0;
-      if (c.sentinelle >= CFG.maxSentinelles) wt.sentinelle = 0;
-      var sum = 0, k; for (k in wt) sum += wt[k];
-      var r = rnd() * sum; for (k in wt) { r -= wt[k]; if (r <= 0) { pick = k; break; } }
-      spawnGroup(pick);
-      st.spawnCd = CFG.cadence[Math.min(4, i)];
+    var P = tete(), c = N.ennemis.counts(), i;
+    st.tw += dt;
+    st.alive = c.regular;
+    if (c.regular > stats.maxAlive) stats.maxAlive = c.regular;
+    var chassePause = N.ennemis.inversion && N.ennemis.inversion() > 0;
+    /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard) */
+    var b = Math.floor(O.T.t / CFG.temps); st.beat = b !== st.lastBeat; st.lastBeat = b;
+    /* le virage de plus de 45° du premier ennemi de la première partie */
+    if (st.gate > 0 && P) {
+      if (st.angPrec !== null) st.turn += Math.abs(O.wrapA(P.ang - st.angPrec));
+      st.angPrec = P.ang;
+      if (st.turn > Math.PI / 4 && st.tw < st.gate) st.gate = st.tw;
     }
+    var plafond = Math.min(w.plafond || 10, CFG.plafondDur);
+    /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
+    if (!chassePause && st.beat) {
+      for (i = 0; i < st.queue.length; i++) {
+        var q = st.queue[i];
+        if (q.fait) continue;
+        if (q.t > st.tw) break;
+        if (i > 0 && st.tw < CFG.entree) break;                            // entrée calme de 6 s : seule la première formation
+        if (i === 0 && st.gate > st.tw) break;
+        if (c.regular + (TAILLE[q.f] || 3) > plafond && q.t + 20 > st.tw) break;   // au plafond : on attend (au plus 20 s)
+        if (!q.annonce) {                                                   // annoncée 1 s avant (§ 4.3) : son nom d'abord, ses ennemis ensuite
+          q.annonce = st.tw;
+          var nm = NOMS[q.f] || q.f.toUpperCase();
+          if (!st.vus[q.f]) { st.vus[q.f] = true; banniere(nm, { c: 'magenta', duree: 1.4 }); } else etiquette(nm);
+          break;
+        }
+        if (st.tw - q.annonce < ((R && R.formations && R.formations.annonce) || 1)) break;
+        var made = formation(q.f, { sansEtiquette: true });
+        if (made > 0) { q.fait = true; break; }
+        q.essais++;
+        if (q.essais > 60) { q.fait = true; }
+        break;
+      }
+    }
+    /* V5 : toutes les formations, deux à la fois, toutes les 5 s */
+    if (!chassePause && w.melange && st.tw >= (w.melange.demarre !== undefined ? w.melange.demarre : (w.travelling ? w.travelling.t : 6)) && st.tw >= st.melangeT && st.beat && c.regular + 8 <= plafond) {
+      var toutes = ['file', 'meute', 'nuee', 'duoMines', 'champMines', 'pince', 'batterie', 'essaim', 'duel', 'garde'];
+      for (i = 0; i < (w.melange.parSalve || 2); i++) formation(toutes[ri(0, toutes.length - 1)]);
+      st.melangeT = st.tw + (w.melange.intervalle || 5);
+    }
+    /* le remplissage : tant que le quota n'est pas atteint et que la vague manque d'ennemis, une FILE (ou une formation de la vague) */
+    var attendu = (w.quota || 20) * O.clamp(st.tw / Math.max(10, (w.duree || 30) * 0.85), 0, 1);
+    if (!chassePause && st.beat && st.tw > 2 && st.spawned < (w.quota || 20) && st.spawned < attendu && c.regular + 3 <= plafond && !(st.gate > st.tw)) {
+      var rem = w.remplissage;
+      if (!rem && w.formations && w.formations.length) rem = w.formations[ri(0, w.formations.length - 1)].f;
+      if (rem && rem !== 'champMines' && rem !== 'duoMines') formation(rem, { sansEtiquette: true });
+    }
+    /* le pic, entre 55 et 75 % de la durée */
+    if (!st.picFait && w.pic && st.tw >= w.pic.t) { if (lancerPic()) st.picFait = true; }
+    if (!st.pastilleFaite && w.pastille && st.tw >= w.pastille) { st.pastilleFaite = poserPastille(); if (!st.pastilleFaite && st.tw > w.pastille + 6) st.pastilleFaite = true; }
+    if (!chassePause) traqueur();
+    /* la traque de fin de vague (Cruise Elroy) : moins de 20 % du quota à venir, les dernières flèches accélèrent de 30 % */
+    if (!st.elroy && st.spawned >= (w.quota || 20) * (1 - CFG.elroyReste)) st.elroy = true;
+    if (st.elroy) for (i = 0; i < N.ennemis.list.length; i++) { var en = N.ennemis.list[i]; if (en.type === 'fleche') en._traque = true; }
     /* énergie libre : toujours un peu à prendre */
     st.freeCd -= dt;
     if (st.freeCd <= 0) {
       st.freeCd = CFG.energieLibre;
       if (N.butin.nbLibres() < CFG.energieMin) N.butin.libre(0.5);
     }
-    /* la fin de la vague : plus d'apparition ; le nettoyage purge ce qui reste (79-jeu le déclenche) */
-    if (st.tw >= w.duree && !st.fini) {
-      st.fini = true; st.phase = 'nettoyage'; st.nettoye = true;
-      stats.parVague.push({ n: st.n, duree: st.tw });
-      if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'nettoyee', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+    /* la fin de la vague : tout le quota est apparu et il reste au plus 2 ennemis ; sinon la soupape (durée nominale + 12 s) */
+    var tousLances = true;
+    for (i = 0; i < st.queue.length; i++) if (!st.queue[i].fait) tousLances = false;
+    var quotaFait = st.spawned >= (w.quota || 20) * 0.9 || (st.tw > (w.duree || 30) + 4 && st.spawned >= (w.quota || 20) * 0.6);
+    var reste = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].finVague && R.secteurs[0].finVague.vivantsMax) || 2;
+    if (!st.fini) {
+      if (tousLances && quotaFait && c.regular <= reste && st.tw > 5) terminerVague('nettoyee', w);
+      else if (st.tw >= (w.duree || 30) + CFG.soupape) {
+        if (N.ennemis.fuir) N.ennemis.fuir();
+        if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: 'soupape', nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+        terminerVague('nettoyee', w);
+      }
     }
   }
+  function terminerVague(evt, w) {
+    st.fini = true; st.phase = 'nettoyage'; st.nettoye = true;
+    stats.parVague.push({ n: st.n, duree: st.tw, spawns: st.spawned });
+    if (st.n === 1) st.premiere = false;
+    if (N.ennemis.fuir) N.ennemis.fuir();
+    if (N.arene && N.arene.nettoyee) O.safe('arene.nettoyee', function () { N.arene.nettoyee(); });
+    if (N.ev) N.ev.emit('vague', { n: st.n, etape: 'vague', evt: evt, nom: w.nom || ('VAGUE ' + st.n), quartier: w.quartier || 'docks' });
+  }
 
-  /* le gros ennemi : naît en face de la tête, après un portail de 2,4 s (G-14) */
+  /* le gros ennemi : N.colosse (73-colosse.js) mène le combat ; 79-jeu a déjà passé WARNING et le panneau */
   function lancerBoss() {
-    var A = O.A, P = N.joueuse.tete, cx = (A.x0 + A.x1) / 2, cy = (A.y0 + A.y1) / 2, x, y;
-    if (O.geo.portrait) { x = cx; y = P.y > cy ? A.y0 + (A.y1 - A.y0) * 0.3 : A.y0 + (A.y1 - A.y0) * 0.7; }
-    else { y = cy; x = P.x > cx ? A.x0 + (A.x1 - A.x0) * 0.25 : A.x0 + (A.x1 - A.x0) * 0.75; }
     st.phase = 'boss';
-    var e = N.ennemis.spawn('cyclope', x, y, { portail: CFG.bossTele });
-    logSpawn(e);
-    if (N.ev) N.ev.emit('portail', { type: 'cyclope', x: x, y: y, dur: CFG.bossTele, elite: false });
-    return e;
+    if (N.arene && N.arene.nettoyee) O.safe('arene.nettoyee', function () { N.arene.nettoyee(); });      // plus de TRAVELLING ni de CONVOIS pendant le combat
+    if (N.colosse && N.colosse.start) { O.safe('colosse.start', function () { N.colosse.start(); }); return null; }
+    return null;
   }
 
   function progression() {
@@ -14202,15 +16403,26 @@ N.dir = (function () {
     if (st.phase === 'boss' || st.n > vs.length) return 1;
     return tot > 0 ? O.clamp(fait / tot, 0, 1) : 0;
   }
-  /* croissante vague après vague (critère 6 de DIRECTION.md) : 0,06 au départ, 1 au colosse */
+  /* croissante vague après vague (critère 6 de DIRECTION.md) : 0,06 au départ, 1 au colosse ; la densité du moment s'y ajoute */
   function tension() {
     if (st.phase === 'attente') return 0.06;
     if (st.phase === 'boss') return 1;
-    return O.clamp(0.06 + 0.9 * progression(), 0, 1);
+    var w = info(), dens = w && w.plafond ? O.clamp(st.alive / w.plafond, 0, 1) : 0;
+    return O.clamp(0.06 + 0.62 * progression() + 0.3 * dens, 0, 1);
   }
 
-  /* `kill` rang 10 : la mort du gros ennemi ferme le secteur (79-jeu lit bossMort(), puis passe en VICTOIRE) */
-  if (N.ev) N.ev.on('kill', 10, function (c) { if (c.boss && !(c.src && c.src.genre === 'decor')) st.bossMort = true; }, '76-directeur');
+  /* `kill` rang 10 : la mort de l'œil du gros ennemi ferme le secteur (79-jeu lit bossMort(), puis passe en VICTOIRE) ;
+     la dernière action de la joueuse repousse le TRAQUEUR ; N.colosse est prévenu de chaque kill (il n'a pas d'écouteur) */
+  if (N.ev) {
+    N.ev.on('kill', 10, function (c) {
+      var decor = c.src && c.src.genre === 'decor';
+      if (!decor) st.derniereAction = O.T.t;
+      if (N.colosse && N.colosse.surKill) O.safe('colosse.surKill', function () { N.colosse.surKill(c); });
+      if (c.boss && !decor && !(N.colosse && N.colosse.estOeil && !N.colosse.estOeil(c.id))) st.bossMort = true;
+    }, '76-directeur');
+    N.ev.on('ramassage', 10, function () { st.derniereAction = O.T.t; }, '76-directeur');
+    N.ev.on('inversion', 10, function (c) { if (c.evt === 'fin') st.derniereAction = O.T.t; }, '76-directeur');
+  }
 
   return {
     bossMort: function () { return st.bossMort; },
@@ -14218,7 +16430,7 @@ N.dir = (function () {
     tension: tension, progression: progression, entrees: function () { return st.entrees; },
     demarrer: demarrer, info: info, lancerBoss: lancerBoss, fini: function () { return st.fini; }, stats: stats,
     tempsVague: function () { return st.tw; }, nombreVagues: function () { return vagues().length; },
-    fin: function () { st.phase = 'attente'; }
+    fin: function () { st.phase = 'attente'; }, formation: formation
   };
 })();
 
@@ -15193,6 +17405,8 @@ N.game = (function () {
     if (typeof window !== 'undefined' && typeof window.__PILOT === 'function' && JOUE[et]) { try { window.__PILOT(dbg()); } catch (x) { /* pilote de test */ } }
     if (hsCd > 0) hsCd -= dt;
     etT += dt;
+    /* la caméra suit la tête à chaque pas de jeu (le mode simulé l'avance lui-même) */
+    if (!simulant && N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
 
     if (JOUE[et]) {
       O.T.t += dt; O.T.ak += dt;
@@ -15349,7 +17563,12 @@ N.game = (function () {
     O.geom();
     if (fondEcran() || et === 'titre') return;
     if (et === 'vol' && N.vol && N.vol.actif && N.vol.actif()) return;                 // le VOL dessine à la place (§ 7.7)
+    /* § 7.7 : le lointain en espace écran, puis le plateau et tout ce qui vit dans le monde sous l'origine de la caméra */
+    O.origine(0, 0);
+    if (N.decor && N.decor.drawFar && O.geo.cam) appel('decor.drawFar', function () { N.decor.drawFar(N.cam); });
+    O.origineMonde();
     if (N.decor && N.decor.drawPlateau) appel('decor.drawPlateau', function () { N.decor.drawPlateau(N.cam); }); else drawBG();
+    if (N.decor && N.decor.drawFront && O.geo.cam) appel('decor.drawFront', function () { N.decor.drawFront(N.cam); });
     drawMurs();
     appel('butin.draw', function () { N.butin.draw(); });
     appel('ennemis.draw', function () { N.ennemis.draw(); });
@@ -15399,6 +17618,7 @@ N.game = (function () {
     if (et === 'fin') { ecranVieux(); return; }
     if (et === 'titre') { ecranVieux(); return; }
     if (et === 'vol' && N.vol && N.vol.actif && N.vol.actif()) { ecranVieux(); return; }
+    O.origineMonde();
     if (N.fx && N.fx.drawTele) appel('fx.drawTele', function () { N.fx.drawTele(); }); else appel('ennemis.drawTele', function () { N.ennemis.drawTele(); });
     if (N.colosse && N.colosse.drawTop && N.colosse.actif && N.colosse.actif()) appel('colosse.drawTop', function () { N.colosse.drawTop(); });
     if (et === 'mort') {
@@ -15413,8 +17633,8 @@ N.game = (function () {
   /* l'interface : dessinée ici tant que 90-boot.js n'appelle pas N.hud.draw / N.ui.draw / N.intro.draw lui-même */
   function ecranVieux() {
     var s = S_();
-    if (O.bootNouveau()) return;
     O.origine(0, 0);
+    if (O.bootNouveau()) return;
     var intro = O.current();
     if (intro && N.intro && N.intro.draw) { appel('intro.draw', function () { N.intro.draw(); }); if (O.busy()) return; }
     if (JOUE_OU_PAUSE() && et !== 'mort') appel('hud.draw', function () { N.hud.draw(); });

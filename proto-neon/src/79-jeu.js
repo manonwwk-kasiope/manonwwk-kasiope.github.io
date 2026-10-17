@@ -352,6 +352,8 @@ N.game = (function () {
     if (typeof window !== 'undefined' && typeof window.__PILOT === 'function' && JOUE[et]) { try { window.__PILOT(dbg()); } catch (x) { /* pilote de test */ } }
     if (hsCd > 0) hsCd -= dt;
     etT += dt;
+    /* la caméra suit la tête à chaque pas de jeu (le mode simulé l'avance lui-même) */
+    if (!simulant && N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
 
     if (JOUE[et]) {
       O.T.t += dt; O.T.ak += dt;
