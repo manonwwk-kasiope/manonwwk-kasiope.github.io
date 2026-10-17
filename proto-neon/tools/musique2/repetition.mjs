@@ -64,7 +64,7 @@ for (const [label, src] of [['tension 0 constante (2 couches)', '0'], ['tension 
 console.log('(6) RMS de la musique par tranches de 20 s, courbe de tension reelle de la partie enregistree');
 const f0 = F.gameF0, ten = F.log.tension.filter(x => x.f >= f0).map(x => [(x.f - f0) / 60, x.v]);
 const dur = Math.min(120, Math.floor((F.frame - f0) / 60));
-for (const seed of [2084, 7, 31337]) {
+for (const seed of [2084, 7, 31337, 1, 975]) {
   const r = await p.evaluate(async ([ten, dur, seed, hop]) => {
     const tf = t => { let v = ten[0][1]; for (const [a, x] of ten) { if (a > t) break; v = x; } return v; };
     return window.__env(dur, tf, seed, hop);
@@ -82,14 +82,16 @@ for (const seed of [2084, 7, 31337]) {
 }
 
 console.log('(r) reproductibilite a graine fixe');
+/* le rendu par tranches laisse l'ordre de sommation des noeuds au ramasse-miettes : quelques 1e-6 d'ecart
+   flottant ; la partition, elle, doit etre identique mesure par mesure */
 const rep = await p.evaluate(async () => {
-  const one = async (s) => { window.__N.reseed(s); const b = await window.__N.music.renderOffline(12, () => 0.8, [{ t: 2, name: 'kill', opts: { pitch: 2 } }, { t: 3, name: 'tir', opts: {} }], 44100, null); return b.getChannelData(0); };
+  const one = async (s) => { window.__N.reseed(s); const b = await window.__N.music.renderOffline(30, (t) => Math.min(1, t / 20), [{ t: 2, name: 'kill', opts: { pitch: 2 } }, { t: 3, name: 'tir', opts: {} }], 44100, null); return { d: b.getChannelData(0), bars: window.__N.music.lastBars.join('|') }; };
   const a = await one(2084), c = await one(2084), d = await one(7);
-  let m = 0, m2 = 0; for (let i = 0; i < a.length; i++) { m = Math.max(m, Math.abs(a[i] - c[i])); m2 = Math.max(m2, Math.abs(a[i] - d[i])); }
-  return { memeGraine: m, autreGraine: m2 };
+  let m = 0, m2 = 0; for (let i = 0; i < a.d.length; i++) { m = Math.max(m, Math.abs(a.d[i] - c.d[i])); m2 = Math.max(m2, Math.abs(a.d[i] - d.d[i])); }
+  return { memeGraine: m, autreGraine: m2, memePartition: a.bars === c.bars, autrePartition: a.bars !== d.bars };
 });
-ok = ok && rep.memeGraine === 0 && rep.autreGraine > 0;
-console.log('  meme graine : ecart max ' + rep.memeGraine + ' ; graine 7 contre 2084 : ecart max ' + rep.autreGraine.toFixed(4));
+ok = ok && rep.memeGraine < 1e-5 && rep.memePartition && rep.autreGraine > 0.01 && rep.autrePartition;
+console.log('  meme graine : meme partition ' + (rep.memePartition ? 'OUI' : 'NON') + ', ecart max ' + rep.memeGraine.toExponential(2) + ' (' + (20 * Math.log10(rep.memeGraine + 1e-30)).toFixed(0) + ' dB) ; graine 7 contre 2084 : autre partition ' + (rep.autrePartition ? 'OUI' : 'NON') + ', ecart max ' + rep.autreGraine.toFixed(4));
 console.log('erreurs de console : ' + (errs.length ? JSON.stringify(errs.slice(0, 3)) : '0'));
 console.log(ok && !errs.length ? 'BILAN OK' : 'BILAN ECHEC');
 await b.close();

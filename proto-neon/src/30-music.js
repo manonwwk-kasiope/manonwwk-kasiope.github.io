@@ -141,6 +141,13 @@ if (typeof window !== 'undefined') window.__N = N;
     '1.1.1.1.1.1.1.1.',
     '1..31..21..31.2.'
   ];
+  /* energie de chaque motif de basse (somme des durees de note) : une basse plus dense joue chaque note
+     un peu plus doucement, pour que la variete reste dans le rythme et non dans le niveau (critere 6) */
+  var BASS_NORM = BASS.map(function (m) {
+    var e = 0;
+    for (var i = 0; i < m.length; i++) { var c = m.charCodeAt(i) - 48; if (c === 1) e += 2.6; else if (c >= 2 && c <= 4) e += 1.5; }
+    return Math.sqrt(15 / e);
+  });
   var KICK = [
     '1.......1.......',
     '1.....1...1.....',
@@ -635,6 +642,7 @@ if (typeof window !== 'undefined') window.__N = N;
         grid: pick('grid', GRIDS),
         rate: pick('rate', HARM_RATE),
         bass: pick('bass', BASS),
+        bassNorm: 1,
         kick: pick('kick', KICK),
         snare: pick('snare', SNARE),
         hat: pick('hat', HAT),
@@ -644,6 +652,7 @@ if (typeof window !== 'undefined') window.__N = N;
         fill: pick('fill', FILLS),
         brk: pick('brk', BREAKS)
       };
+      ph.bassNorm = BASS_NORM[BASS.indexOf(ph.bass)];
     }
     function newBar() {
       var inPhrase = bar % 4;
@@ -703,7 +712,7 @@ if (typeof window !== 'undefined') window.__N = N;
         var c = ph.bass.charCodeAt(s) - 48;
         if (c >= 1 && c <= 4) {
           var add = c === 2 ? 12 : c === 3 ? 7 : c === 4 ? 10 : 0;
-          bassNote(t, root + add, stepDur * (c === 1 ? 2.6 : 1.5), 0.85 + 0.15 * tSmooth);
+          bassNote(t, root + add, stepDur * (c === 1 ? 2.6 : 1.5), (0.85 + 0.15 * tSmooth) * ph.bassNorm);
         } else if (bp.ghost === 'off8' && (s === 6 || s === 14)) {
           bassNote(t, root + 12, stepDur * 0.8, 0.4);
         } else if (bp.ghost === 'slide' && s === 15) {
