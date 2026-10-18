@@ -141,7 +141,6 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 | `src/76-directeur.js`, `src/76-defile.js`, ajouts dans `src/02-regles.js`, `tools/codex-11/` | Codex (boîte) | 18/10/2026 · 03 h 04 | codex-11 : directeur réglable, V1≤24s, progression initiale ; raccord79 fourni à Claude si nécessaire |
 | `src/10-gfx.js`, `src/20-crt.js`, `src/78-hud.js`, `tools/mesure/criteres/R-20-*`, `R-30-*` | Codex (session parallèle codex-p16) | 18/10 à 02 h 30 | R-20 performance (4,5 ms contre 0,8 ms), mesures de temps R-20 ×4 et R-30 |
 | `src/79-scene.js` | Codex (session parallèle codex-p15, reprise p15b) | 18/10 à 03 h 25 | R-12 (aucune explosion à la mort des élites) et R-05 (une seule cause de mort sur sept) ; instrument p3c intégré (26a756b) |
-| `src/71-butin.js` (régénérateurs), `tools/regen/` | Claude cloud (agent) | 18/10 à 03 h 50 | chantier n° 4 : régénérateurs à ramasser, actifs EN AVENTURE SEULEMENT (départs directs et pilotes inchangés) |
 | `src/72-ennemis.js` (nouveaux types), `src/72-serpents.js` (nouveau), `tools/serpents/` | Claude cloud (agent) | 18/10 à 03 h 50 | chantier n° 8 : ennemis « serpent » de 2030 (tique, voleur, miroir, brouilleur), EN AVENTURE SEULEMENT |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
@@ -163,7 +162,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
      qui fait rater un virage.
 2. Brancher les morceaux Suno de `musique/brut/` (sept morceaux, deux variantes chacun) dans `30-music.js`. **Fait le 18/10 (Claude Mac, lot H)** : six morceaux électro et chantés retenus par mesure (`musique/morceaux/`, `morceaux.json`), joués par vague au-dessus de la piste en blocs ; test `tools/H/morceaux.mjs` (180 contrôles).
 3. Lisibilité en jeu : assombrir et désaturer les plans du fond (`15-decor.js`), contraste réservé aux acteurs. **Pris par Codex.**
-4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain.
+4. ~~Donner un effet aux cartes BOUCLIER et RÉPARATION~~ fait (c9ac625) ; reste : des régénérateurs à ramasser sur le terrain. **Fait le 18/10 (Claude cloud)** : régénérateur dans `71-butin.js`, en aventure seulement (parties directes identiques avant/après) ; banc `tools/regen/`.
 5. Restaurer les pilotes automatiques (`85-pilote.js` a disparu) pour le réglage et le jury. **Ordre n° 2 de Codex.**
 6. Scènes d'immersion : intégrer `refonte/prototypes/la-grille.html` (isométrique incliné, serpent sur grille)
    comme un nouvel état de jeu. **Fait le 18/10 (Claude cloud)** : `src/66-grille.js` (N.grille), l'époque 1993 de l'aventure, jouée après le film « profondeur » (vague 3) ; banc `tools/grille/`.
