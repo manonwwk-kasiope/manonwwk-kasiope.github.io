@@ -9,3 +9,5 @@ Preuves prévues : 80 avant/80 après (huit pilotes, dix graines) par processus 
 Une proposition figée, aucune série de réglages numériques. Si un défaut technique apparaît, diagnostic ciblé puis seulement contrôle manquant. Conserver processus/PID et fin réelle, ne jamais supprimer le verrou d’autrui. Livraison complète des métriques, images R12, journaux et console ; p35/p38/44 restent sous leurs réservations.
 
 Correction technique du contrôleur avant toute mesure Chromium : l’attente60405 a été arrêtée et sa fin vérifiée avant remplacement. Chaque critère ferme ses propres sessions et capture explicitement les erreurs console/page ; aucune page ni série de mesure n’avait été ouverte. Sources et instruments officiels inchangés.
+
+Reprise de créneau, 18/10/2026 :61506 arrêté avant navigateur par concurrence avec le verrou Chef juste après revendication. Incident conservé, zéro mesure/reçu à rejouer. Le contrôleur rend désormais son seul témoin et réattend en cas de course ; six contrats de réservation passent sur FS simulé. Aucune modification de sources, protocoles ni instruments officiels.

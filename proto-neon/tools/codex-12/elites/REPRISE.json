@@ -1,13 +1,13 @@
 {
   "objectif": "Ordre13 R12 mortsélites / R13 préservé",
-  "dateParis": "18/10/2026 · 06 h 56",
+  "dateParis": "18/10/2026 · 07 h 47",
   "base": "45ef605b9dd0fb8f64a172f08ba540c3f196f06b",
-  "phase": "80avant/après terminés : 80/80 métriques identiques,0JS,79fins chacun ; Chromium attendChef",
+  "phase": "80appariésclos ; reprise de l’attente Chromium après course de créneau, aucune mesure démarrée",
   "processus": [
     {
-      "pid": 61506,
-      "session": 14062,
-      "tache": "criteres.mjs : seule filecourante, attenteChef puisR12/R13avant/après"
+      "pid": 86009,
+      "session": 56740,
+      "tache": "Seule filecourante criteres.mjs ; attenteChef et R12/R13avant/après avec rendu propre du témoin si course"
     }
   ],
   "arreteAvantMesure": {
@@ -21,9 +21,8 @@
     "80": "ecarts.json,80/80toutesmétriquesidentiques,79finsavant/après,même dieu2borne540,0JSconsole"
   },
   "restant": [
-    "80avant/après puis ecarts",
-    "R12 troisprofils etR13 troisprofils+réduitpaysage avant/après",
-    "Rapport, réserveséventuellesR13, livraison/mediation puisboîte"
+    "R12troisprofils etR13troisprofils+réduitpaysage avant/après surpairefigée",
+    "Rapport etlivraisonmédiation,puisboîte"
   ],
   "interdits": [
     "doublon59841/60764/61506 ouChromium",
@@ -31,11 +30,13 @@
     "modifier50/72réservés oucritères",
     "réglageB/regroupement"
   ],
-  "prochaineAction": "Vérifier61506/14062 etcriteres-execution.json. Aucun nouveauChrome/VM. Master60764 terminé, session32316fermée, phases80closes. Attendre phasefini etPID61506 mort puisrapport.mjs (lectureseule), livrerlescritèresavecréserves réelles, libérer79 ettools puispull/relireboîte.",
+  "prochaineAction": "Vérifier PID86009/session56740 etcriteres-execution.json. Ne jamais relancer les80 ou61506. Siattente, laisserfileunique. QuandphasefiniETpidmort, rapport.mjs parlectureseule, examineréchecsréels, livrerpuislibérer79 ettools. Sources/instruments inchangés, aucune nouvellevaleur.",
   "processusTermines": [
     59841,
     60764,
     61531,
-    60405
-  ]
+    60405,
+    61506
+  ],
+  "incidentCreneau": "incident-creneau-61506.json ; phasearrêt avant navigateur, résultatsempty,0rejeu ; sixcontratscreneauconformes"
 }

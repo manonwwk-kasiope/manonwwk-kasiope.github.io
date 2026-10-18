@@ -170,6 +170,8 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
    COMPLÉMENT ORDRE13 (18/10/2026 · 06 h 56) :80avant et80après réellement terminés, **80/80 métriques strictement identiques**,0JS/console,79fins de chaque côté et même dieu/2 borné540s (reçus/écarts conservés). Sessions17589/32316 fermées, PIDs59841/60764/61531 morts ; ne les relance pas. Seule file61506/session14062 attend encoreChef pourR12/R13avant/après. Pas encore de verdict de pixels ni de conformitéR13. Candidatgéométrique etinstruments toujoursfigés, aucun autre réglage.
 
+   INCIDENT DE CRÉNEAU ORDRE13 (18/10/2026 · 07 h 47) :61506/session14062 terminé code1 **avant navigateur, zéro mesure**, le garde-fou a détecté Chef pris entre lectureduverrou etrevendication (incident-creneau-61506.json). Témoinpropre retiré parfinally, aucunverrouétranger touché. Contrôleur seulement corrigé : rend son témoin etréattend en casdecourse, sixcontreépreuves passent (Chef occupé/course, témoinétranger, propriétairechangé,Chromiumactif,EEXIST), aucunseuil/source/instrumentmodifié. Repriseunique86009/session56740 attendChef etreprendra la paireChromiumnoncommencée. **80comparaisonsdéjàcloses, aucunrejeu**, aucuneautrefile. REPRISE.json àjour.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |

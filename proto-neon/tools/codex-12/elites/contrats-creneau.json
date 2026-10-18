@@ -1,0 +1,30 @@
+{
+  "dateParis": "18/10/2026 07:47:02",
+  "portee": "Six contre-épreuves sur FS simulé, aucun vrai témoin ou navigateur créé",
+  "controles": [
+    {
+      "nom": "Chef occupé : aucune revendication avant sa libération",
+      "ok": true
+    },
+    {
+      "nom": "Chef prend le créneau après notre revendication : rendre seulement notre témoin puis réattendre",
+      "ok": true
+    },
+    {
+      "nom": "Témoin étranger : jamais retiré par notre file",
+      "ok": true
+    },
+    {
+      "nom": "Après acquisition, libération refuse un propriétaire différent",
+      "ok": true
+    },
+    {
+      "nom": "Chromium existant : attendre avant de revendiquer",
+      "ok": true
+    },
+    {
+      "nom": "EEXIST simultané : réattendre sans supprimer le témoin étranger",
+      "ok": true
+    }
+  ]
+}
