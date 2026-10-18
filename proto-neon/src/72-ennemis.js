@@ -77,6 +77,40 @@ N.ennemis = (function () {
   }
 
   /* ============================ naissance ============================ */
+  /* Point hors du cadre réel, sprite compris. Les coordonnées du directeur et des
+     couvées ne sont pas des autorisations de naître sous les yeux de la joueuse. */
+  function horsVue(e) {
+    var V = O.VUE, m = Math.max(e.r, (conf(e.type).sprite || 0) / 2) + R.apparitions.marge;
+    return e.x < V.x - m || e.x > V.x + V.w + m || e.y < V.y - m || e.y > V.y + V.h + m;
+  }
+  function placerNaissance(e) {
+    if (horsVue(e)) return true;
+    var V = O.VUE, A = O.A, m = Math.max(e.r, (conf(e.type).sprite || 0) / 2) + R.apparitions.marge;
+    var bord = e.r + R.apparitions.interieurMurs, pas = R.apparitions.interieurMurs;
+    var x0 = A.x0 + bord, x1 = A.x1 - bord, y0 = A.y0 + bord, y1 = A.y1 - bord;
+    var bx = e.x, by = e.y, meilleur = Infinity;
+    function essayer(x, y) {
+      if (x < x0 || x > x1 || y < y0 || y > y1) return;
+      if (x >= V.x - m && x <= V.x + V.w + m && y >= V.y - m && y <= V.y + V.h + m) return;
+      var mur = N.arene && N.arene.murArriere ? N.arene.murArriere() : null;
+      if (mur && ((mur.sens > 0 && x < mur.x + bord) || (mur.sens < 0 && x > mur.x - bord))) return;
+      var dist = O.d2(x, y, e.x, e.y);
+      for (var i = 0; i < list.length; i++) {
+        var autre = list[i], ecart = e.r + autre.r + R.apparitions.shownMarge;
+        if (autre !== e && autre.etat !== 'mort' && O.d2(x, y, autre.x, autre.y) < ecart * ecart) return;
+      }
+      if (dist < meilleur) { meilleur = dist; bx = x; by = y; }
+    }
+    var g = V.x - m - R.apparitions.naissance.bord, d = V.x + V.w + m + R.apparitions.naissance.bord;
+    var h = V.y - m - R.apparitions.naissance.bord, b = V.y + V.h + m + R.apparitions.naissance.bord;
+    essayer(g, O.clamp(e.y, y0, y1)); essayer(d, O.clamp(e.y, y0, y1));
+    essayer(O.clamp(e.x, x0, x1), h); essayer(O.clamp(e.x, x0, x1), b);
+    for (var y = y0; y <= y1; y += pas) { essayer(g, y); essayer(d, y); }
+    for (var x = x0; x <= x1; x += pas) { essayer(x, h); essayer(x, b); }
+    if (meilleur === Infinity) return false;
+    e.x = bx; e.y = by; e._tx = bx; e._ty = by;
+    return true;
+  }
   function newEnemy(type, x, y, opts) {
     var c = conf(type), P = tete(), E = (R && R.elites) || {}, M = (R && R.modificateurs) || {};
     var boss = type === 'cyclope';
@@ -123,6 +157,8 @@ N.ennemis = (function () {
     arena();
     opts = opts || {};
     var e = newEnemy(type, x, y, opts), P = tete();
+    // 73-colosse pilote ses objets externes : leur raccord est demandé séparément.
+    if (!e._ext && !placerNaissance(e)) e._attenteNaissance = true;
     if (type === 'mine') { e._st = 'derive'; stationMine(e); }
     else if (type === 'tourelle') { e._st = 'entre'; station(e, 24); }
     else if (type === 'sentinelle') { e._orb = P ? Math.atan2(y - P.y, x - P.x) : 0; e._cd = rr(2.5, 3.5); }
@@ -132,13 +168,14 @@ N.ennemis = (function () {
     if (opts.stT !== undefined) e._stT = opts.stT;
     if (inv.t > 0 && !e.boss && type !== 'traqueur' && type !== 'planeur') { e._stAvant = e._st; e._st = 'proie'; }
     if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
-    else apparu(e);
+    else if (!e._attenteNaissance) apparu(e);
+    if (e._attenteNaissance) e.etat = 'portail';
     list.push(e);
     if (type === 'mine' && opts.annoncePose && e.etat === 'portail') {
       // Interface publique de pose du CYCLOPE : contact ET mèche attendent le portail.
       e._minePosee = true;
       e.vuDepuis = vu6(e) ? 0 : -1;
-      armer(e, 'disque', e._portailTotal, 'tout');
+      e._poseAttente = true; e._poseAnnonce = false; e._poseT = 0; e._inoff = 1;
       publierTele(); // dès spawn(), sans attendre l'update suivant de 72 ou 73
     }
     return e;
@@ -511,7 +548,7 @@ N.ennemis = (function () {
       }
     }
     /* elle s'amorce quand la tête ou un segment entre dans le cercle d'armement (34 px, toujours affiché) */
-    if (e._st !== 'arme' && canAct(e) && segDansCercle(e.x, e.y, cercle)) { e._st = 'arme'; e._stT = meche; armer(e, 'disque', meche, 'tout'); }
+    if (e._st !== 'arme' && peutArmer(e) && segDansCercle(e.x, e.y, cercle)) { e._st = 'arme'; e._stT = meche; armer(e, 'disque', meche, 'tout'); }
   }
 
   /* ---- TOURELLE : le tireur, blindée de face ---- */
@@ -591,7 +628,7 @@ N.ennemis = (function () {
       if (s) { e.x += (P.x - e.x) / d * v * s * dt; e.y += (P.y - e.y) / d * v * s * dt; }
       e._cd -= dt;
       if (e._cd <= 0) {
-        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && canAct(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
+        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && peutArmer(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
         else e._cd = 0.5;
       }
     } else if (e._st === 'couve') {
@@ -723,21 +760,33 @@ N.ennemis = (function () {
     for (i = 0; i < list.length; i++) {
       e = list[i];
       if (e._dead) continue;
+      if (e._attenteNaissance) {
+        if (!placerNaissance(e)) continue;
+        e._attenteNaissance = false;
+        if (!(e._portail > 0)) apparu(e);
+      }
       e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
       if (e._flash > 0) e._flash -= dt;
-      if (e._minePosee && e.etat === 'portail') {
-        // Une mine hors champ attend aussi les 600 ms de visibilité continue de R-08.
-        e.vuDepuis = vu6(e) ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
-      }
       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
         e._portail -= dt;
-        if (e._minePosee && e._portail <= 0 && e.vuDepuis < R.criteres.R08.visible) e._portail = R.temps.h;
+        // Si la caméra a rejoint le portail, ne pas matérialiser ni téléporter son marqueur visible.
+        if (e._portail <= 0 && !e._ext && !horsVue(e)) e._portail = R.temps.h;
         if (e._portail <= 0) { e._portail = 0; apparu(e); }
         continue;
       }
       /* vue : depuis combien de temps l'ennemi est entièrement visible */
       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+      if (e._poseAttente) {
+        // Contact neutralisé et mèche arrêtée jusqu'à une annonce intégralement vue.
+        if (!vu6(e)) { e._poseAnnonce = false; e._poseT = 0; }
+        else {
+          if (!e._poseAnnonce) { e._poseAnnonce = true; armer(e, 'disque', e._portailTotal, 'tout'); }
+          e._poseT += dt;
+        }
+        if (e._poseT < e._portailTotal || e.vuDepuis < R.criteres.R08.visible) continue;
+        e._poseAttente = false; e._inoff = 0;
+      }
       if (e._ext) { if (e.etat !== 'mort') e.etat = 'approche'; continue; }       // le CYCLOPE (73-colosse) se pilote seul
       if (e._stun > 0) e._stun -= dt;
       if (e._kx || e._ky) { e.x += e._kx * dt; e.y += e._ky * dt; var f = Math.pow(0.02, dt); e._kx *= f; e._ky *= f; if (Math.abs(e._kx) + Math.abs(e._ky) < 2) { e._kx = 0; e._ky = 0; } }
@@ -849,6 +898,12 @@ N.ennemis = (function () {
     TVN = 0;
     for (i = 0; i < list.length; i++) {
       e = list[i];
+      if (e._attenteNaissance) { e.tele = -1; continue; }
+      if (!e._dead && e._poseAttente && e.etat !== 'portail') {
+        e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
+          conf('mine').souffle || CFG.mineSouffle, Math.max(0, e._portailTotal - e._poseT), e._portailTotal, 'tout', e.type);
+        continue;
+      }
       if (!e._dead && e._minePosee && e.etat === 'portail') {
         e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
           conf('mine').souffle || CFG.mineSouffle, e._portail, e._portailTotal, 'tout', e.type);
@@ -911,6 +966,7 @@ N.ennemis = (function () {
         u.x + u.vx * u.vie, u.y + u.vy * u.vie, u.r, 0, TP.tirVie, 'tout', 'cyclope', 0, 0, u.src.id);
     }
     if (N.colosse && N.colosse.publierTele) N.colosse.publierTele(teleAjouter);
+    if (N.arene && N.arene.publierTele) N.arene.publierTele(teleAjouter);
     TV.length = TVN;
     if (s.tele !== TV) s.tele = TV;
   }
@@ -1051,7 +1107,7 @@ N.ennemis = (function () {
   function drawEnemies() {
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
-      if (e._dead || e.etat === 'portail' || e._ext) continue;
+      if (e._dead || e.etat === 'portail' || e._ext || e._attenteNaissance) continue;
       drawEnemy(e);
     }
   }
@@ -1101,8 +1157,8 @@ N.ennemis = (function () {
     var g = N.gfx, i, e;
     for (i = 0; i < list.length; i++) {
       e = list[i];
-      if (e._dead) continue;
-      if (e.etat === 'portail') {                       // le portail : croix de visée et anneaux qui se resserrent
+      if (e._dead || e._attenteNaissance) continue;
+      if (e.etat === 'portail' || e._poseAttente) {      // portail ou protection visible après naissance
         if (e._minePosee) {
           // Anneau stable du vrai souffle : aucune alternance lumineuse ni flash ajouté.
           var mp = R.colosse.minesPosees, mr = conf('mine').souffle || CFG.mineSouffle;

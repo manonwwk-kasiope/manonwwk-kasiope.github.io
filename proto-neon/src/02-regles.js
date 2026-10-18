@@ -1074,6 +1074,10 @@
     fondu: 1.2, cycle: 4.8, cameraVitesse: 60, eclairDuree: 1.2, eclairRepos: 2.4,
     trame: 4, rangsFondu: 64, seuilLumineuxSol: 0.25, solChaudMax: 0.03, solLumineuxMax: 0.08
   };
+  /* codex-p4c : inégalité stricte hors champ, en pixels de jeu ; autres marges réemployées. */
+  R.apparitions.naissance = { bord: 1 };
+  // Identités stables distinctes des ennemis et des mèches instables de 72.
+  R.arene.teleMurs = { ids: [-10001, -10002, -10003, -10004] };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

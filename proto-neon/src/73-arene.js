@@ -32,7 +32,7 @@
    INTERFACE (§ 7.8) : reset(), update(dt), draw(), travelling(vx, depuis), convois(cfg), voies() -> [], sillage(x, y) -> bool,
    actif().  Ajouts : entree(vague) / pic() / nettoyee() (le directeur 76-directeur les APPELLE : aucun écouteur `vague`
    ici, le contrat n'en prévoit pas pour ce module), murArriere() -> {x, sens, actif} | null (pour les apparitions, § 3.8),
-   etat() (instantané pour les tests).
+   etat() (instantané pour les tests), publierTele(ajouter) (zones des murs, agrégées par 72).
      travelling(vx, depuis) : vx signé (le signe choisit le sens), absent -> sens et vitesse automatiques ; depuis = abscisse
         du bord gauche de départ. Même séquence que dans une vague (mise en place, annonce, départ).
      convois(cfg) : { voie: 0..4, sens: ±1 } lance un convoi tout de suite avec son annonce ; { t, periode, alea } programme
@@ -115,7 +115,9 @@ N.arene = (function () {
     tv.ph = 'mise'; tv.t = 0; tv.ann = false; tv.appele = false;
     var deja = Math.abs((w.x1 - w.x0) - CFG.largeur) < 1 && Math.abs(w.x0 - tv.depuis) < 1 && w.y0 <= 0.5 && w.y1 >= mondeH() - 0.5;
     if (deja) { tv.annAt = 0; tv.callAt = CFG.annonceTrav; tv.departAt = CFG.annonceTrav; }
-    else { tv.callAt = 0; tv.annAt = Math.max(0, CFG.miseEnPlace - CFG.annonceTrav); tv.departAt = CFG.miseEnPlace; }
+    else { tv.annAt = 0; tv.callAt = CFG.annonceTrav; tv.departAt = CFG.annonceTrav + CFG.miseEnPlace; }
+    annoncerTrav();
+    if (N.ennemis && N.ennemis.publierTele) N.ennemis.publierTele();
     return true;
   }
   function annoncerTrav() {
@@ -300,6 +302,33 @@ N.arene = (function () {
     }
   }
 
+  /* Zones mortelles : les quatre frontières courantes et les lignes finales datées.
+     Avant le premier mouvement, elles sont publiées pendant les deux secondes de garde.
+     Après, reste=0 désigne un danger réel, y compris pendant le retour ou une arène externe.
+     Aucun grand rectangle rempli au milieu de la zone jouable. */
+  function publierTele(ajouter) {
+    var w = monde();
+    if (!w || typeof ajouter !== 'function') return;
+    var attente = tv.ph === 'mise' && !tv.appele;
+    var mobile = w.enMouvement();
+    if (!attente && !mobile) return;
+    var rest = attente ? Math.max(0, tv.callAt - tv.t) : 0;
+    var an = w.mursAnnonces ? w.mursAnnonces() : null;
+    var cible = attente ? { x: tv.depuis, y: 0, w: CFG.largeur, h: mondeH() } : (an && an[0]);
+    var x0 = w.x0, x1 = w.x1, y0 = w.y0, y1 = w.y1;
+    if (cible && (tv.ph === 'mise' || tv.ph === 'marche')) {
+      var voyage = w.voyage && w.voyage();
+      var fin = attente || tv.ph === 'mise' ? Math.max(0, tv.departAt - tv.t)
+        : (voyage && tv.vx ? voyage.restant / Math.abs(tv.vx) : 0);
+      ajouter(RA.teleMurs.ids[0], 'ligne', cible.x, cible.y, cible.x, cible.y + cible.h, 0, fin, CFG.annonceTrav, 'tout', 'murMobile');
+      ajouter(RA.teleMurs.ids[1], 'ligne', cible.x + cible.w, cible.y, cible.x + cible.w, cible.y + cible.h, 0, fin, CFG.annonceTrav, 'tout', 'murMobile');
+    }
+    ajouter(RA.teleMurs.ids[0], 'ligne', x0, y0, x0, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[1], 'ligne', x1, y0, x1, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[2], 'ligne', x0, y0, x1, y0, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[3], 'ligne', x0, y1, x1, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+  }
+
   /* ============================ pas de jeu ============================ */
   function pas() {
     var dt = dtc, P = N.joueuse && N.joueuse.tete;
@@ -312,6 +341,8 @@ N.arene = (function () {
     majSillage(dt);
     majMonde();
     publierVoies();
+    // Avant la collision joueuse du même pas ; 72 réagrège après ses propres changements.
+    if (N.ennemis && N.ennemis.publierTele) N.ennemis.publierTele();
   }
   function update(dt) {
     if (!(dt > 0)) return;
@@ -491,11 +522,27 @@ N.arene = (function () {
   function drawIn() {
     if (CV.ph !== 'off') { drawVoie(); if (CV.ph === 'passage') drawConvoi(); }
     if (tv.ph === 'mise' || tv.ph === 'marche') drawTrav();
+    drawMurs();
   }
-  function draw() { if (CV.ph !== 'off' || tv.ph === 'mise' || tv.ph === 'marche') O.safe('arene.draw', drawIn); }
+  function drawMurs() {
+    var w = monde();
+    if (!w) return;
+    var attente = tv.ph === 'mise' && !tv.appele, an = w.mursAnnonces && w.mursAnnonces();
+    var a = attente ? { x: tv.depuis, y: 0, w: CFG.largeur, h: mondeH() } : (an && an[0]);
+    if (!a) return;
+    var G = N.gfx, ep = R.monde.mur.epaisseur;
+    // Positions finales stables, dans la même palette que les chevrons ; aucune pulsation ajoutée.
+    G.rect(a.x - R.apparitions.naissance.bord, a.y, ep, a.h, O.NP);
+    G.rect(a.x + a.w - R.apparitions.naissance.bord, a.y, ep, a.h, O.NP);
+    G.line(a.x, a.y, a.x, a.y + a.h, O.MAGENTA);
+    G.line(a.x + a.w, a.y, a.x + a.w, a.y + a.h, O.MAGENTA);
+    G.line(a.x, a.y, a.x + a.w, a.y, O.MAGENTA);
+    G.line(a.x, a.y + a.h, a.x + a.w, a.y + a.h, O.MAGENTA);
+  }
+  function draw() { if (CV.ph !== 'off' || tv.ph === 'mise' || tv.ph === 'marche' || (N.world && N.world.enMouvement())) O.safe('arene.draw', drawIn); }
 
   return {
-    reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif,
+    reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif, publierTele: publierTele,
     entree: entree, pic: pic, nettoyee: nettoyee, murArriere: murArriere, etat: etat
   };
 })();

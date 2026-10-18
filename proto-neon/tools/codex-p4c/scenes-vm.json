@@ -1,0 +1,6566 @@
+[
+  {
+    "mode": "avant",
+    "profil": "paysage",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 518.005035878114,
+          "y": 242.74635532720075,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512.0713401341495,
+          "y": 256.61264263419025,
+          "etat": "arme",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 498.9946903868361,
+          "y": 269.0479265559014,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 264.20833333333263,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 504.13790058860405,
+          "y": 249.10760781006658,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 511.1670005772263,
+          "y": 267.5582359492998,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 506.73438691292307,
+          "y": 239.12723140818238,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 515.8239872293154,
+          "y": 243.3880888623904,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 523.1521250200469,
+          "y": 243.04660474102684,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 256.5,
+          "etat": "mort",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 255.96166666666667,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 0.008333333333333333,
+          "tele": [],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 0.008333333333333333,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 0.008333333333333333,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": []
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 422,
+        "h": 195,
+        "nonVide": 1030,
+        "horsPalette": 0,
+        "sha256": "d05ddec63eaafb3493d3aa23ddee08a02d70a1f9ed5cfac15d359d3d11fa02ea",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 422,
+        "h": 195,
+        "nonVide": 0,
+        "horsPalette": 0,
+        "sha256": "45deec59c3b7afa3f843b025a1f1645e2040b3c7ce08fdb0f0665d5b36e3c90b",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 422,
+        "h": 195,
+        "nonVide": 1291,
+        "horsPalette": 0,
+        "sha256": "269a2116e68dbf83d6e56961dc2dabf2e88a236387dd6d75ca9b6e6fdd033972",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 422,
+        "h": 195,
+        "nonVide": 1291,
+        "horsPalette": 0,
+        "sha256": "269a2116e68dbf83d6e56961dc2dabf2e88a236387dd6d75ca9b6e6fdd033972",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 512,
+        "y": 256.5
+      },
+      "fin": {
+        "x": 512.0713401341495,
+        "y": 256.61264263419025,
+        "etat": "arme"
+      },
+      "dansVue": true,
+      "apparitions": [
+        {
+          "pas": 73,
+          "t": 0.6083333333333336,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "mine",
+            "x": 512,
+            "y": 256.5,
+            "elite": false,
+            "vue": {
+              "x": 301,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "anticipee": {
+              "x": 379,
+              "y": 159,
+              "w": 422,
+              "h": 195
+            },
+            "distTete": 0.5
+          }
+        }
+      ]
+    },
+    "collision": {
+      "depart": 0.016666666666666666,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 11,
+          "t": 0.09166666666666666,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [],
+      "tele": []
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 512,
+          "y": 256.5,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 256.5,
+            "x1": 512,
+            "y1": 256.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 135,
+          "t": 1.1249999999999984,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.1083333333333318,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.1166666666666651,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 512,
+          "y": 256.5,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 256.5,
+            "x1": 512,
+            "y1": 256.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 170,
+          "t": 1.416666666666664,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 527.5666666666667,
+            "y": 256.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.4083333333333308,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.4083333333333308,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 301,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "anticipee": {
+            "x": 379,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 301,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "anticipee": {
+            "x": 379,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  },
+  {
+    "mode": "avant",
+    "profil": "portrait",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 510.00889118411044,
+          "y": 238.10593870626573,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512.5709847925334,
+          "y": 256.11286689951777,
+          "etat": "arme",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 499.3605454110408,
+          "y": 268.260966870829,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 520.2083333333347,
+          "y": 256,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 504.6007473772403,
+          "y": 248.6473217501199,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 523.5582359492998,
+          "y": 256.83299942277375,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 495.3316016077156,
+          "y": 261.8806033850202,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 499.3880888623902,
+          "y": 259.8239872293159,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 507.0597383603261,
+          "y": 257.20839032496013,
+          "etat": "mort",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512.5,
+          "y": 256,
+          "etat": "mort",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 512.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 511.96166666666664,
+          "y": 256,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 0.008333333333333333,
+          "tele": [],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 0.008333333333333333,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 0.008333333333333333,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": []
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 195,
+        "h": 422,
+        "nonVide": 1030,
+        "horsPalette": 0,
+        "sha256": "ddbd0a71b29c14559d6f6fcb3825ef943dd07359c0416a80ebe4776ad494d96d",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 195,
+        "h": 422,
+        "nonVide": 0,
+        "horsPalette": 0,
+        "sha256": "45deec59c3b7afa3f843b025a1f1645e2040b3c7ce08fdb0f0665d5b36e3c90b",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 195,
+        "h": 422,
+        "nonVide": 1291,
+        "horsPalette": 0,
+        "sha256": "b03068fda4d669a4a178fe039bcca8287ced9b4d420bbcd741b5bbf99fe3bff9",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 195,
+        "h": 422,
+        "nonVide": 1291,
+        "horsPalette": 0,
+        "sha256": "b03068fda4d669a4a178fe039bcca8287ced9b4d420bbcd741b5bbf99fe3bff9",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 512.5,
+        "y": 256
+      },
+      "fin": {
+        "x": 512.5709847925334,
+        "y": 256.11286689951777,
+        "etat": "arme"
+      },
+      "dansVue": true,
+      "apparitions": [
+        {
+          "pas": 73,
+          "t": 0.6083333333333336,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "mine",
+            "x": 512.5,
+            "y": 256,
+            "elite": false,
+            "vue": {
+              "x": 415,
+              "y": 45,
+              "w": 195,
+              "h": 422
+            },
+            "anticipee": {
+              "x": 493,
+              "y": 45,
+              "w": 195,
+              "h": 422
+            },
+            "distTete": 0.5
+          }
+        }
+      ]
+    },
+    "collision": {
+      "depart": 0.016666666666666666,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 11,
+          "t": 0.09166666666666666,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [],
+      "tele": []
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 512.5,
+          "y": 256,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512.5,
+            "y0": 256,
+            "x1": 512.5,
+            "y1": 256,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 135,
+          "t": 1.1249999999999984,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 513.0666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.1083333333333318,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.1166666666666651,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 512.5,
+          "y": 256,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512.5,
+            "y0": 256,
+            "x1": 512.5,
+            "y1": 256,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 170,
+          "t": 1.416666666666664,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 528.0666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.4083333333333308,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.4083333333333308,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 415,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "anticipee": {
+            "x": 493,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 415,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "anticipee": {
+            "x": 493,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  },
+  {
+    "mode": "avant",
+    "profil": "bureau",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 518.005035878114,
+          "y": 242.74635532720075,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512.0713401341495,
+          "y": 256.61264263419025,
+          "etat": "arme",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 498.9946903868361,
+          "y": 269.0479265559014,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 264.20833333333263,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 504.13790058860405,
+          "y": 249.10760781006658,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 511.1670005772263,
+          "y": 267.5582359492998,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 506.73438691292307,
+          "y": 239.12723140818238,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 515.8239872293154,
+          "y": 243.3880888623904,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 523.1521250200469,
+          "y": 243.04660474102684,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 256.5,
+          "etat": "mort",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 512,
+          "y": 256.5,
+          "etat": "portail",
+          "dansVue": true
+        },
+        "fin": {
+          "x": 512,
+          "y": 255.96166666666667,
+          "etat": "approche",
+          "dansVue": true
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 0.008333333333333333,
+          "tele": [],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 0.008333333333333333,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 0.008333333333333333,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": []
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 360,
+        "h": 225,
+        "nonVide": 1030,
+        "horsPalette": 0,
+        "sha256": "159d60aa2d236fffd4f9eb4d9e2abdff1b74f53148f9eae39419d308cda4783a",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 360,
+        "h": 225,
+        "nonVide": 0,
+        "horsPalette": 0,
+        "sha256": "a2cad969affd6c3b85af7a3d7878aeacec8e5d768440c8f68ad0e759257c36c1",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 360,
+        "h": 225,
+        "nonVide": 1293,
+        "horsPalette": 0,
+        "sha256": "e0416badf88b1666c8cf8b9a60f5cd140e20e56eff53e27c3b467a9d98cf4d46",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 360,
+        "h": 225,
+        "nonVide": 1293,
+        "horsPalette": 0,
+        "sha256": "e0416badf88b1666c8cf8b9a60f5cd140e20e56eff53e27c3b467a9d98cf4d46",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 512,
+        "y": 256.5
+      },
+      "fin": {
+        "x": 512.0713401341495,
+        "y": 256.61264263419025,
+        "etat": "arme"
+      },
+      "dansVue": true,
+      "apparitions": [
+        {
+          "pas": 73,
+          "t": 0.6083333333333336,
+          "image": 0,
+          "type": "apparition",
+          "d": {
+            "id": 1,
+            "type": "mine",
+            "x": 512,
+            "y": 256.5,
+            "elite": false,
+            "vue": {
+              "x": 332,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "anticipee": {
+              "x": 410,
+              "y": 144,
+              "w": 360,
+              "h": 225
+            },
+            "distTete": 0.5
+          }
+        }
+      ]
+    },
+    "collision": {
+      "depart": 0.016666666666666666,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 11,
+          "t": 0.09166666666666666,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [],
+      "tele": []
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 512,
+          "y": 256.5,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 256.5,
+            "x1": 512,
+            "y1": 256.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 135,
+          "t": 1.1249999999999984,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.1083333333333318,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.1166666666666651,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 512,
+          "y": 256.5,
+          "dansVue": true
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 256.5,
+            "x1": 512,
+            "y1": 256.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 0.008333333333333333,
+        "mort": {
+          "pas": 170,
+          "t": 1.416666666666664,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 527.5666666666667,
+            "y": 256.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.4083333333333308,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.4083333333333308,
+        "armements": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 256.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 0.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 332,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "anticipee": {
+            "x": 410,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 332,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "anticipee": {
+            "x": 410,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  },
+  {
+    "mode": "apres",
+    "profil": "paysage",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 518.005035878114,
+          "y": 112.74635532720067,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 512,
+          "y": 127.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 513.7240745161051,
+          "y": 132.12226620184222,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 127.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 512,
+          "y": 129.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 506.9943940764571,
+          "y": 143.55808198570261,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 512,
+              "y": 129.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 126.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 512,
+          "y": 122.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 130.20833333333331,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 512,
+              "y": 122.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 133.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 501.7588355747689,
+          "y": 129.90273723049918,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 511.69280901753064,
+          "y": 137.5943796349138,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 518.1943514834022,
+          "y": 109.44229179437696,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 516.2525977853644,
+          "y": 113.52265898852363,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 512,
+          "y": 128.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 523.1521250200469,
+          "y": 115.04660474102685,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 512,
+              "y": 128.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 127.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 512,
+          "y": 129.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 129.5,
+          "etat": "mort",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 512,
+              "y": 129.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 126.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 512,
+          "y": 126.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 146.4183333333331,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 512,
+              "y": 126.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 2.008333333333329,
+          "tele": [
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 128,
+              "y0": 0,
+              "x1": 128,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 704,
+              "y0": 0,
+              "x1": 704,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 0.0029574759945130316,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 1023.9926063100137,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10003,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 0,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10003
+              }
+            },
+            {
+              "id": -10004,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 512,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10004
+              }
+            }
+          ],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 2.008333333333329,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 2.008333333333329,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": [
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 128,
+            "y0": 0,
+            "x1": 128,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 704,
+            "y0": 0,
+            "x1": 704,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 0.0029574759945130316,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 1023.9926063100137,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10003,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 0,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10003
+            }
+          },
+          {
+            "id": -10004,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 512,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10004
+            }
+          }
+        ]
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 422,
+        "h": 195,
+        "nonVide": 233,
+        "horsPalette": 0,
+        "sha256": "f5552208fa26dbd4666e23994470bc1d624dc1cf8e8a52e4e1251d92649e0fdd",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 422,
+        "h": 195,
+        "nonVide": 634,
+        "horsPalette": 0,
+        "sha256": "1452c7127095c4ebd3d7bc0a0d176d3e00586a0421435d64e434c947e0127f87",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 422,
+        "h": 195,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "1a4d2e53ac85371108b5636cc912c683f0b44a9c7dc65cd38c2d0076cef69f78",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 422,
+        "h": 195,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "1a4d2e53ac85371108b5636cc912c683f0b44a9c7dc65cd38c2d0076cef69f78",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 512,
+        "y": 127.5
+      },
+      "fin": {
+        "x": 512,
+        "y": 127.5,
+        "etat": "portail"
+      },
+      "dansVue": true,
+      "apparitions": []
+    },
+    "collision": {
+      "depart": 2.016666666666662,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 251,
+          "t": 2.091666666666662,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "arene",
+          "d": {
+            "evt": "travellingAnnonce",
+            "voie": -1,
+            "vx": 12
+          }
+        }
+      ],
+      "tele": [
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 128,
+          "y0": 0,
+          "x1": 128,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 704,
+          "y0": 0,
+          "x1": 704,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 0.2908093278463649,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 1023.2729766803841,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10003,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 0,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10003
+          }
+        },
+        {
+          "id": -10004,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 512,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10004
+          }
+        }
+      ]
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 512,
+          "y": 127.5,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 127.5,
+            "x1": 512,
+            "y1": 127.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 232,
+          "t": 1.933333333333329,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 127.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0.7999999999999996,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 0.8166666666666638,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 127.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 512,
+          "y": 127.5,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 127.5,
+            "x1": 512,
+            "y1": 127.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 302,
+          "t": 2.5166666666666604,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 527.5666666666667,
+            "y": 127.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.3916666666666642,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.3999999999999952,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 127.5,
+              "elite": false,
+              "vue": {
+                "x": 301,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 379,
+                "y": 159,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 301,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "anticipee": {
+            "x": 379,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 301,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "anticipee": {
+            "x": 379,
+            "y": 159,
+            "w": 422,
+            "h": 195
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  },
+  {
+    "mode": "apres",
+    "profil": "portrait",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 368.74635532720066,
+          "y": 262.0050358781138,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 383.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 387.4377458625592,
+          "y": 258.9718572138755,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 383.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 385.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 400.4109861100985,
+          "y": 256.66838543966884,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 385.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 126.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 378.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 386.20833333333263,
+          "y": 256,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 378.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 133.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 385.46856304253873,
+          "y": 245.6246589016595,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 393.5943796349137,
+          "y": 256.30719098246936,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 365.44229179437696,
+          "y": 262.1943514834021,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 369.52265898852346,
+          "y": 260.25259778536486,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 384.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 371.04660474102684,
+          "y": 267.15212502004704,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 384.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 127.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 385.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 385.5,
+          "y": 256,
+          "etat": "mort",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 385.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 126.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 382.5,
+          "y": 256,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 402.41833333333415,
+          "y": 256,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 382.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 129.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 2.008333333333329,
+          "tele": [
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 128,
+              "y0": 0,
+              "x1": 128,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 704,
+              "y0": 0,
+              "x1": 704,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 0.0029574759945130316,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 1023.9926063100137,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10003,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 0,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10003
+              }
+            },
+            {
+              "id": -10004,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 512,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10004
+              }
+            }
+          ],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 2.008333333333329,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 2.008333333333329,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": [
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 128,
+            "y0": 0,
+            "x1": 128,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 704,
+            "y0": 0,
+            "x1": 704,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 0.0029574759945130316,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 1023.9926063100137,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10003,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 0,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10003
+            }
+          },
+          {
+            "id": -10004,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 512,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10004
+            }
+          }
+        ]
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 195,
+        "h": 422,
+        "nonVide": 233,
+        "horsPalette": 0,
+        "sha256": "3640ffff3506e2b49214f6deffd8d53ad90b9f72325e55496b2bf9bd2d8ea9f9",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 195,
+        "h": 422,
+        "nonVide": 1371,
+        "horsPalette": 0,
+        "sha256": "e3cfc6dbacad497d1317a5948db2ed0492e307720387927230737fde4a966bdf",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 195,
+        "h": 422,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "b7f63489b86c8afec7bddf4f10b0183d40c9ede78cf3f478bcb13feb22849882",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 195,
+        "h": 422,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "b7f63489b86c8afec7bddf4f10b0183d40c9ede78cf3f478bcb13feb22849882",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 383.5,
+        "y": 256
+      },
+      "fin": {
+        "x": 383.5,
+        "y": 256,
+        "etat": "portail"
+      },
+      "dansVue": true,
+      "apparitions": []
+    },
+    "collision": {
+      "depart": 2.016666666666662,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 251,
+          "t": 2.091666666666662,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "arene",
+          "d": {
+            "evt": "travellingAnnonce",
+            "voie": -1,
+            "vx": 12
+          }
+        }
+      ],
+      "tele": [
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 128,
+          "y0": 0,
+          "x1": 128,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 704,
+          "y0": 0,
+          "x1": 704,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 0.2908093278463649,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 1023.2729766803841,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10003,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 0,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10003
+          }
+        },
+        {
+          "id": -10004,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 512,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10004
+          }
+        }
+      ]
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 383.5,
+          "y": 256,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 383.5,
+            "y0": 256,
+            "x1": 383.5,
+            "y1": 256,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 232,
+          "t": 1.933333333333329,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 384.06666666666666,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0.7999999999999996,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 0.8166666666666638,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 383.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 383.5,
+          "y": 256,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 383.5,
+            "y0": 256,
+            "x1": 383.5,
+            "y1": 256,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 302,
+          "t": 2.5166666666666604,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 399.06666666666666,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.3916666666666642,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.3999999999999952,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 383.5,
+              "y": 256,
+              "elite": false,
+              "vue": {
+                "x": 415,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "anticipee": {
+                "x": 493,
+                "y": 45,
+                "w": 195,
+                "h": 422
+              },
+              "distTete": 128.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 415,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "anticipee": {
+            "x": 493,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 415,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "anticipee": {
+            "x": 493,
+            "y": 45,
+            "w": 195,
+            "h": 422
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  },
+  {
+    "mode": "apres",
+    "profil": "bureau",
+    "ennemis": [
+      {
+        "type": "fleche",
+        "debut": {
+          "id": 1,
+          "type": "fleche",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 518.005035878114,
+          "y": 97.74635532720067,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "mine",
+        "debut": {
+          "id": 1,
+          "type": "mine",
+          "x": 512,
+          "y": 112.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 513.6544586767498,
+          "y": 117.14763856863867,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 112.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 143.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "larve",
+        "debut": {
+          "id": 1,
+          "type": "larve",
+          "x": 512,
+          "y": 114.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 507.45269747300597,
+          "y": 128.71253622720695,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "larve",
+              "x": 512,
+              "y": 114.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 141.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "ruche",
+        "debut": {
+          "id": 1,
+          "type": "ruche",
+          "x": 512,
+          "y": 107.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 115.20833333333316,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 512,
+              "y": 107.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 148.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "tourelle",
+        "debut": {
+          "id": 1,
+          "type": "tourelle",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 502.26761022087095,
+          "y": 116.1626879191659,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "tourelle",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "sentinelle",
+        "debut": {
+          "id": 1,
+          "type": "sentinelle",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 511.7136844032993,
+          "y": 122.59511945469475,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "sentinelle",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "dard",
+        "debut": {
+          "id": 1,
+          "type": "dard",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 518.1943514834022,
+          "y": 94.44229179437696,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "dard",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "lame",
+        "debut": {
+          "id": 1,
+          "type": "lame",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 516.2525977853644,
+          "y": 98.52265898852363,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "lame",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "rival",
+        "debut": {
+          "id": 1,
+          "type": "rival",
+          "x": 512,
+          "y": 113.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 523.1521250200469,
+          "y": 100.04660474102685,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "rival",
+              "x": 512,
+              "y": 113.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 142.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "planeur",
+        "debut": {
+          "id": 1,
+          "type": "planeur",
+          "x": 512,
+          "y": 114.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 114.5,
+          "etat": "mort",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "x": 512,
+              "y": 114.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 141.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "traqueur",
+        "debut": {
+          "id": 1,
+          "type": "traqueur",
+          "x": 512,
+          "y": 111.5,
+          "etat": "portail",
+          "dansVue": false
+        },
+        "fin": {
+          "x": 512,
+          "y": 131.4183333333331,
+          "etat": "approche",
+          "dansVue": false
+        },
+        "apparitions": [
+          {
+            "pas": 73,
+            "t": 0.6083333333333336,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "traqueur",
+              "x": 512,
+              "y": 111.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 144.5
+            }
+          }
+        ]
+      }
+    ],
+    "murs": [
+      {
+        "avant": {
+          "x0": 0,
+          "x1": 1024
+        },
+        "premier": {
+          "delai": 2.008333333333329,
+          "tele": [
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 128,
+              "y0": 0,
+              "x1": 128,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 704,
+              "y0": 0,
+              "x1": 704,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 2.991666666666671,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10001,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 0.0029574759945130316,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10001
+              }
+            },
+            {
+              "id": -10002,
+              "forme": "ligne",
+              "x0": 1023.9926063100137,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10002
+              }
+            },
+            {
+              "id": -10003,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 0,
+              "x1": 1023.9926063100137,
+              "y1": 0,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10003
+              }
+            },
+            {
+              "id": -10004,
+              "forme": "ligne",
+              "x0": 0.0029574759945130316,
+              "y0": 512,
+              "x1": 1023.9926063100137,
+              "y1": 512,
+              "r": 0,
+              "a0": 0,
+              "a1": 0,
+              "reste": 0,
+              "total": 2,
+              "cible": "tout",
+              "par": {
+                "type": "murMobile",
+                "id": -10004
+              }
+            }
+          ],
+          "etat": {
+            "tw": 0,
+            "vague": 0,
+            "vagueOn": false,
+            "tv": "mise",
+            "tvT": 2.008333333333329,
+            "vx": 12,
+            "depuis": 128,
+            "cv": "off",
+            "voie": 0,
+            "sens": 1,
+            "xf": 0,
+            "broyes": 0,
+            "prochain": -1,
+            "derniere": -1,
+            "eliteT": -99,
+            "sillage": false,
+            "panD": 99
+          }
+        },
+        "etat": {
+          "tw": 0,
+          "vague": 0,
+          "vagueOn": false,
+          "tv": "mise",
+          "tvT": 2.008333333333329,
+          "vx": 12,
+          "depuis": 128,
+          "cv": "off",
+          "voie": 0,
+          "sens": 1,
+          "xf": 0,
+          "broyes": 0,
+          "prochain": -1,
+          "derniere": -1,
+          "eliteT": -99,
+          "sillage": false,
+          "panD": 99
+        },
+        "tele": [
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 128,
+            "y0": 0,
+            "x1": 128,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 704,
+            "y0": 0,
+            "x1": 704,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 2.991666666666671,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10001,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 0.0029574759945130316,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10001
+            }
+          },
+          {
+            "id": -10002,
+            "forme": "ligne",
+            "x0": 1023.9926063100137,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10002
+            }
+          },
+          {
+            "id": -10003,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 0,
+            "x1": 1023.9926063100137,
+            "y1": 0,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10003
+            }
+          },
+          {
+            "id": -10004,
+            "forme": "ligne",
+            "x0": 0.0029574759945130316,
+            "y0": 512,
+            "x1": 1023.9926063100137,
+            "y1": 512,
+            "r": 0,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0,
+            "total": 2,
+            "cible": "tout",
+            "par": {
+              "type": "murMobile",
+              "id": -10004
+            }
+          }
+        ]
+      }
+    ],
+    "captures": [
+      {
+        "nom": "portail-visible",
+        "w": 360,
+        "h": 225,
+        "nonVide": 233,
+        "horsPalette": 0,
+        "sha256": "313c7f8a07be53cc6fe27f08f14f6208e82f3adc52ca136b4f0f06fdc6753684",
+        "cyan": 0
+      },
+      {
+        "nom": "annonce-murs",
+        "w": 360,
+        "h": 225,
+        "nonVide": 730,
+        "horsPalette": 0,
+        "sha256": "d2c8a08a88e4a6de6eb0f1e5fd5f17a53602d44d5105306d9062763faa311d15",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-contact",
+        "w": 360,
+        "h": 225,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "838289d71cb66aa2b328644551f5a4cb8de5073deb6369885f877f0027f5e5d3",
+        "cyan": 0
+      },
+      {
+        "nom": "mine-protegee-souffle",
+        "w": 360,
+        "h": 225,
+        "nonVide": 617,
+        "horsPalette": 0,
+        "sha256": "838289d71cb66aa2b328644551f5a4cb8de5073deb6369885f877f0027f5e5d3",
+        "cyan": 0
+      }
+    ],
+    "erreurs": [],
+    "cameraPortail": {
+      "pos": {
+        "x": 512,
+        "y": 112.5
+      },
+      "fin": {
+        "x": 512,
+        "y": 112.5,
+        "etat": "portail"
+      },
+      "dansVue": true,
+      "apparitions": []
+    },
+    "collision": {
+      "depart": 2.016666666666662,
+      "etat": "mort",
+      "morts": [
+        {
+          "pas": 251,
+          "t": 2.091666666666662,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "murMobile",
+            "auteurId": null,
+            "x": 511.9977818930041,
+            "y": 509,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        }
+      ],
+      "annonces": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 0,
+          "type": "arene",
+          "d": {
+            "evt": "travellingAnnonce",
+            "voie": -1,
+            "vx": 12
+          }
+        }
+      ],
+      "tele": [
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 128,
+          "y0": 0,
+          "x1": 128,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 704,
+          "y0": 0,
+          "x1": 704,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 2.9166666666666714,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10001,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 0.2908093278463649,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10001
+          }
+        },
+        {
+          "id": -10002,
+          "forme": "ligne",
+          "x0": 1023.2729766803841,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10002
+          }
+        },
+        {
+          "id": -10003,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 0,
+          "x1": 1023.2729766803841,
+          "y1": 0,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10003
+          }
+        },
+        {
+          "id": -10004,
+          "forme": "ligne",
+          "x0": 0.2908093278463649,
+          "y0": 512,
+          "x1": 1023.2729766803841,
+          "y1": 512,
+          "r": 0,
+          "a0": 0,
+          "a1": 0,
+          "reste": 0,
+          "total": 2,
+          "cible": "tout",
+          "par": {
+            "type": "murMobile",
+            "id": -10004
+          }
+        }
+      ]
+    },
+    "minesPosees": [
+      {
+        "cas": "contact",
+        "naissance": {
+          "x": 512,
+          "y": 112.5,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 112.5,
+            "x1": 512,
+            "y1": 112.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 232,
+          "t": 1.933333333333329,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "ennemi",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 112.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0.7999999999999996,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 0.8166666666666638,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 112.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 143.5
+            }
+          }
+        ]
+      },
+      {
+        "cas": "souffle",
+        "naissance": {
+          "x": 512,
+          "y": 112.5,
+          "dansVue": false
+        },
+        "zonePose": [
+          {
+            "id": 1,
+            "forme": "disque",
+            "x0": 512,
+            "y0": 112.5,
+            "x1": 512,
+            "y1": 112.5,
+            "r": 30,
+            "a0": 0,
+            "a1": 0,
+            "reste": 0.8,
+            "total": 0.8,
+            "cible": "tout",
+            "par": {
+              "type": "mine",
+              "id": 1
+            }
+          }
+        ],
+        "visibleAt": 1.1166666666666651,
+        "mort": {
+          "pas": 302,
+          "t": 2.5166666666666604,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 527.5666666666667,
+            "y": 112.5,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 1.3916666666666642,
+            "teleDuree": 0.8
+          }
+        },
+        "delaiVisible": 1.3999999999999952,
+        "armements": [
+          {
+            "pas": 135,
+            "t": 1.1249999999999984,
+            "image": 0,
+            "type": "armement",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "forme": "disque",
+              "total": 0.8,
+              "cible": "tout",
+              "shown": true,
+              "rallonge": false
+            }
+          }
+        ],
+        "apparitions": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "mine",
+              "x": 512,
+              "y": 112.5,
+              "elite": false,
+              "vue": {
+                "x": 332,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "anticipee": {
+                "x": 410,
+                "y": 144,
+                "w": 360,
+                "h": 225
+              },
+              "distTete": 143.5
+            }
+          }
+        ]
+      }
+    ],
+    "cyclope": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 332,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "anticipee": {
+            "x": 410,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "distTete": 48
+        }
+      }
+    ],
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 5,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "DÉFERLANTE",
+          "quartier": "coeur"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "boss"
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "apparition",
+        "d": {
+          "id": 1,
+          "type": "cyclope",
+          "x": 512,
+          "y": 208,
+          "elite": false,
+          "vue": {
+            "x": 332,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "anticipee": {
+            "x": 410,
+            "y": 144,
+            "w": 360,
+            "h": 225
+          },
+          "distTete": 48
+        }
+      },
+      {
+        "pas": 1,
+        "t": 0.008333333333333333,
+        "image": 0,
+        "type": "phase",
+        "d": {
+          "n": 1,
+          "evt": "arrivee"
+        }
+      }
+    ],
+    "console": []
+  }
+]
