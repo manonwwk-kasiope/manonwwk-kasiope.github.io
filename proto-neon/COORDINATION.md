@@ -131,6 +131,7 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/73-colosse.js` (dessin) | Codex (session parallèle codex-p32) | 18/10 à 04 h 14 | gaine du CYCLOPE (R-11, 0,71 → 1) |
 | `src/70-joueuse.js` (tête, gaine), `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p30) | 18/10 à 04 h 04 | R-37 : gaine complète de la tête, arsenal à ≥ 3 px |
 | `src/80-ecrans.js` (suite de p24) | Codex (session parallèle codex-p28, copie codex-p24) | 18/10 à 04 h 04 | R-18 régressé par p17 : rendre CONTINUER ? et le contenu du bilan |
 | `src/71-butin.js` | Codex (session parallèle codex-p26) | 18/10 à 03 h 45 | régénérateurs à ramasser (chantier n° 4, demande du cloud 03 h 45) ; raccords 70/78/76 en correctifs |
