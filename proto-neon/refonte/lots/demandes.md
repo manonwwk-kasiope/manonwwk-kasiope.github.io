@@ -305,3 +305,31 @@ Ordre de la cheffe dans COORDINATION.md. Modules76-defile/76-directeur ;79-jeu a
 La respiration se place encore dans la vague, avant le nettoyage : une fois l’objectif atteint ou la durée nominale écoulée (pic annoncé réalisé), suspension des producteurs, purge publique sans score de combat, puis compteur uniquement sous40% du maximum réel observé dans cette vague. Fin de vague toujours conditionnée par les objectifs/soupape existants, et par les8s complètes de respiration. Rien n’est ajouté au pilote pour améliorer artificiellement ses résultats.
 
 Le DÉFILÉ suit VOL3→DÉFILÉ→VOL4 ; les vrais planeurs de72 sont des cibles de tir et deLASSO, inoffensives au contact ; mur et règle de morsure deN.R inchangés. Le parfait compte40kills valides, prime une seule fois et rare garantie consommée par la prochaine main. Dernier départ à18s : la fenêtre globale de24s laisse6s àla dernière escadrille ; aucune valeur de règle modifiée pour masquer cette limite. ContrôlesVM préparatoires seulement ; parcours3profils,20défilés bon/humain et80avant/après attendent un créneau Chromium libre.
+
+## codex-p5 — lot 9, réglage par les pilotes
+
+18/10/2026 · 00 h 48 (Paris), mis à jour à 02 h 25. Mesures sur la tête `85b389d`, avant intégration des autres chantiers ; voir `tools/reglage/rapport.md` et `methode.md`. Les essais numériques sont confinés au banc, aucun pilote ni fichier de jeu tiers modifié.
+
+| lot | fichier | besoin | raison |
+|---|---|---|---|
+| codex-p5 | `76-directeur.js:324` | appliquer le plafond de vague aussi aux formations qui attendent depuis vingt secondes, ou expliciter cette exception au contrat | le code cesse de tester le plafond après `q.t + 20` ; un plafond N.R réduit ne borne donc pas réellement le pic (départ sur vingt graines : V1 médiane 19 vivants pour plafond 10) ; impossible de promettre des pics contrôlés par le seul chiffre |
+| codex-p5 | `76-directeur.js`, `79-jeu.js`, `03-socle.js` | garantir la respiration existante de huit secondes et préciser le référentiel pendant les cartes/panneaux | le banc publie séparément temps de jeu et temps simulé ; les écrans arrêtent l'horloge. `N.R.secteurs[0].respiration` n'est pas lu par le directeur ; un chiffre sans consommateur ne peut imposer l'intervalle |
+| codex-p5 | `70-joueuse.js:83` | aiguiller les vitesses déjà définies pour DÉFILÉ, CYCLOPE et CYCLOPE enragé sur leurs états | `vitesse()` ne sélectionne que v1 à v5 à partir du numéro de vague ; modifier `N.R.joueuse.vitesse.cyclope` ne règle pas le combat. Le lot 9 n'ajoute aucune règle de sélection |
+| codex-p5 | `76-directeur.js:156,196-208` | lire les effectifs déjà définis dans `N.R.formations` et en déduire `TAILLE` | FILE = 3, MEUTE = 6 et NUÉE = 6–8 sont des littéraux dans `formation()` ; changer leurs nombres dans N.R n'a aucun effet. La passe 5 règle les plafonds/dates réellement lus au lieu d'annoncer un faux réglage de ces effectifs |
+
+Nombres retenus appliqués le 18/10/2026, mis à jour à 02 h 05 (Paris), candidate 2. Les cinq passes sont closes ; les essais rejetés restent documentés dans `tools/reglage/passes.md` et les JSON. Contrôle final sur 50 graines terminé : 400 parties finies, zéro erreur VM/console, 8/20 B tenues. Lot arrêté au plafond de cinq passes, R-04 et R-15 non validés ; aucune retouche après ce contrôle. Voir `tools/reglage/rapport.md`.
+
+
+| lot | fichier / nombre | ancien → nouveau | raison |
+|---|---|---|---|
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vitessesFleches.0` | 50 → 40 | Garder la table de vitesses par vague cohérente avec les deux bornes effectivement lues par 72-ennemis. |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vitessesFleches.1` | 55 → 44 | Garder la table de vitesses par vague cohérente avec les deux bornes effectivement lues par 72-ennemis. |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vitessesFleches.2` | 60 → 48 | Garder la table de vitesses par vague cohérente avec les deux bornes effectivement lues par 72-ennemis. |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vitessesFleches.3` | 65 → 52 | Garder la table de vitesses par vague cohérente avec les deux bornes effectivement lues par 72-ennemis. |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vitessesFleches.4` | 70 → 56 | Garder la table de vitesses par vague cohérente avec les deux bornes effectivement lues par 72-ennemis. |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vagues.0.plafond` | 10 → 12 | Plafond V1 à 12 : combinaison candidate 2 mesurée, bon atteint le CYCLOPE dans 35 % sur vingt graines ; ne prétend pas garantir le pic (exception après vingt secondes dans le directeur). |
+| codex-p5 | `02-regles.js` · `N.R.secteurs.0.vagues.1.chargesFleches` | 2 → 1 | Une seule charge simultanée en V2 pour les morts de contact concentrées dans cette vague ; combinaison mesurée avec les autres paramètres, sans attribution isolée. |
+| codex-p5 | `02-regles.js` · `N.R.ennemis.fleche.approche.0` | 50 → 40 | Réduire la pression d’approche ; variante isolée et candidate 2 font entrer la durée humaine dans sa cible sur vingt graines. |
+| codex-p5 | `02-regles.js` · `N.R.ennemis.fleche.approche.1` | 70 → 56 | Réduire la pression d’approche ; variante isolée et candidate 2 font entrer la durée humaine dans sa cible sur vingt graines. |
+| codex-p5 | `02-regles.js` · `N.R.colosse.pvPhase` | 1500 → 1200 | Réduire la difficulté du CYCLOPE : 1 200 PV par phase, combinaison candidate 2 donne 10 % de victoires bon sur vingt graines. |
+| codex-p5 | `02-regles.js` · `N.R.colosse.pvTotal` | 4500 → 3600 | Total cohérent avec les trois phases de 1 200 PV ; pas de modification du nombre de phases ni des répits. |

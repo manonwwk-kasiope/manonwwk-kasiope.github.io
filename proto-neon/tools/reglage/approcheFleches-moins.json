@@ -1,0 +1,6793 @@
+{
+  "dateParis": "18/10/2026 01:04:56",
+  "sourceHead": "85b389d301f12a1524b9112a3536d7785818f69c",
+  "sourceSha256": "bd008b86821b90b63bf8b25d26e49d595ca1187c2f0b73a6dc2ace7493788e6b",
+  "analyseSha256": "88cf98d92948ccaae691c27bb0a3a0b969af1258aa7155c553a7764c427e3fd3",
+  "sourcesIdentiquesReference": true,
+  "instrumentSha256": "3241e40bd304349fd2fcb0cc27dc0c85e357f32e605b910ad6c6b816027eb047",
+  "graines": 20,
+  "spec": {
+    "nom": "approcheFleches-moins",
+    "base": {
+      "ennemis.fleche.approche.0": 50,
+      "ennemis.fleche.approche.1": 70,
+      "secteurs.0.vitessesFleches.0": 50,
+      "secteurs.0.vitessesFleches.1": 55,
+      "secteurs.0.vitessesFleches.2": 60,
+      "secteurs.0.vitessesFleches.3": 65,
+      "secteurs.0.vitessesFleches.4": 70
+    },
+    "facteur": 0.8,
+    "overrides": {
+      "ennemis.fleche.approche.0": 40,
+      "ennemis.fleche.approche.1": 56,
+      "secteurs.0.vitessesFleches.0": 40,
+      "secteurs.0.vitessesFleches.1": 44,
+      "secteurs.0.vitessesFleches.2": 48,
+      "secteurs.0.vitessesFleches.3": 52,
+      "secteurs.0.vitessesFleches.4": 56
+    }
+  },
+  "cas": [
+    {
+      "pilote": "inerte",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.758333333332626,
+      "score": 0,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-1.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 24.974999999999223,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-2.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.47499999999931,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-3.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.68333333333263,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-4.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 27.03333333333244,
+      "score": 70,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-5.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.97499999999911,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-6.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.99999999999911,
+      "score": 50,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-7.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 24.96666666666589,
+      "score": 50,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-8.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 27.7583333333324,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-9.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.71666666666579,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-10.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.699999999999125,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-11.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.36666666666598,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-12.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.749999999999122,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-13.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 19.974999999999508,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-14.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.36666666666598,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-15.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 24.983333333332556,
+      "score": 10,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-16.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.016666666666172,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-17.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.691666666665792,
+      "score": 0,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-18.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.283333333332653,
+      "score": 70,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-19.json.gz"
+    },
+    {
+      "pilote": "inerte",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 29.62499999999896,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.183333333333396,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 10.183333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-inerte-20.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.691666666666134,
+      "score": 340,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.383333333333441,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.383333333333441,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-1.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.841666666666352,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.391666666666774,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.391666666666774,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-2.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.816666666666126,
+      "score": 380,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.35000000000011,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.35000000000011,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-3.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.349999999999714,
+      "score": 160,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.558333333333449,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.558333333333449,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-4.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.358333333332933,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.175000000000097,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.175000000000097,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-5.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.566666666666254,
+      "score": 110,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.933333333333517,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.933333333333517,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-6.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 14.991666666666456,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 5.216666666666716,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 5.216666666666716,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-7.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.924999999999454,
+      "score": 200,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.608333333333485,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.608333333333485,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-8.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 21.99166666666606,
+      "score": 530,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.891666666666849,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.891666666666849,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-9.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.316666666666382,
+      "score": 60,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.616666666666785,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.616666666666785,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-10.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.474999999999593,
+      "score": 110,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.8750000000001315,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.8750000000001315,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-11.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 22.091666666666054,
+      "score": 350,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.550000000000098,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.550000000000098,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-12.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.69999999999958,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.18333333333351,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.18333333333351,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-13.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 17.38333333333299,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.725000000000145,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.725000000000145,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-14.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 21.99166666666606,
+      "score": 300,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.116666666666733,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 10.116666666666733,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-15.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.26666666666627,
+      "score": 100,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.175000000000146,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.175000000000146,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-16.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 22.42499999999937,
+      "score": 360,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.658333333333426,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.658333333333426,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-17.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.25833333333294,
+      "score": 250,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.366666666666773,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.366666666666773,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-18.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.841666666666125,
+      "score": 380,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.28333333333339,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 10.28333333333339,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-19.json.gz"
+    },
+    {
+      "pilote": "tourneur",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 19.950833335021603,
+      "score": 410,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 5.925000000000084,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 5.925000000000084,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-tourneur-20.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 23.40333333512081,
+      "score": 920,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 11.411666668454822,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 11.411666668454822,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-1.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.449999999999594,
+      "score": 450,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.6416666666667865,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.6416666666667865,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-2.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 21.578333335120913,
+      "score": 650,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 13.961666668454678,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 13.961666668454678,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-3.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.849999999999685,
+      "score": 230,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.750000000000144,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.750000000000144,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-4.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 14.358333333333158,
+      "score": 170,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.566666666666783,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.566666666666783,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-5.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 76.70833334029432,
+      "score": 14350,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.383333333333441,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.383333333333441,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 3,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-6.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.20916666835492,
+      "score": 530,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 5.483333333333396,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 5.483333333333396,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-7.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.5999999999997,
+      "score": 70,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.908333333333516,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.908333333333516,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-8.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 16.216666666666388,
+      "score": 270,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.6333333333335025,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.6333333333335025,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-9.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 14.874999999999796,
+      "score": 220,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.058333333333424,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.058333333333424,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-10.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 107.71000001036303,
+      "score": 20890,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 44.590000003574374,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 32.123333336908416,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 4,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-11.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 15.174999999999779,
+      "score": 160,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 5.958333333333419,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 5.958333333333419,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-12.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 88.97000000875892,
+      "score": 18690,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 48.15166667202913,
+        "cause": "mur"
+      },
+      "coupV1": false,
+      "premierCoup": 43.323333336907844,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 3,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-13.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 17.53333333333298,
+      "score": 220,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.216666666666815,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.216666666666815,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-14.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 12.84999999999991,
+      "score": 120,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 5.7166666666667405,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 5.7166666666667405,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-15.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 101.04000001055633,
+      "score": 23390,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 4.900000000000033,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 4.900000000000033,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-16.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 20.40916666835491,
+      "score": 410,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 12.074999999999955,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 12.074999999999955,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-17.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 46.10666667024108,
+      "score": 9130,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 17.63666666845447,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 17.63666666845447,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-18.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 25.103333335120713,
+      "score": 850,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 13.628333335121363,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 13.628333335121363,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-19.json.gz"
+    },
+    {
+      "pilote": "maladroit",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 28.96250000347592,
+      "score": 2790,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 17.011666668454506,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 17.011666668454506,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-maladroit-20.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 85.20583334020168,
+      "score": 17520,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 28.045000001787212,
+        "cause": "mur"
+      },
+      "coupV1": false,
+      "premierCoup": 28.045000001787212,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-1.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 53.66916667371744,
+      "score": 12790,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 17.678333335121135,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 17.678333335121135,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-2.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 14.166666666666503,
+      "score": 370,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.858333333333464,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.858333333333464,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-3.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 15.983333333333066,
+      "score": 460,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.275000000000151,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.275000000000151,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-4.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 92.65458334040602,
+      "score": 24520,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 17.68333333333297,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 17.68333333333297,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 2,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-5.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 15.433333333333097,
+      "score": 470,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 7.8333333333335124,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 7.8333333333335124,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-6.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 79.05708333850784,
+      "score": 17370,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.05000000000009,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.05000000000009,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-7.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 116.88250001027066,
+      "score": 32730,
+      "vague": 4,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.7083333333334565,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.7083333333334565,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 3,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-8.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 33.06750000168753,
+      "score": 9000,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.31666666666677,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.31666666666677,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-9.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 75.92250000686077,
+      "score": 19240,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.45000000000011,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.45000000000011,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-10.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 18.891666666666236,
+      "score": 640,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.458333333333437,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.458333333333437,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-11.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 51.096666671830086,
+      "score": 13890,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.700000000000123,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.700000000000123,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-12.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 64.50583334018536,
+      "score": 13560,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 9.900000000000079,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 9.900000000000079,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-13.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 39.89250000168714,
+      "score": 11570,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.7083333333334565,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.7083333333334565,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-14.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 87.22208334209066,
+      "score": 16200,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.016666666666852,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.016666666666852,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-15.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 83.17833334208738,
+      "score": 16040,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 26.185000005363516,
+        "cause": "mur"
+      },
+      "coupV1": false,
+      "premierCoup": 26.185000005363516,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-16.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 13.291666666666552,
+      "score": 200,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.766666666666793,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.766666666666793,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-17.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 43.44333333670921,
+      "score": 9850,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.333333333333438,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.333333333333438,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-18.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 41.14916667193012,
+      "score": 10460,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.6083333333334515,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.6083333333334515,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-19.json.gz"
+    },
+    {
+      "pilote": "kamikaze",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 59.71000000337489,
+      "score": 12390,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 6.083333333333425,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 6.083333333333425,
+      "lassoCourt": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-kamikaze-20.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 147.88333334031742,
+      "score": 22430,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 77.84000000358448,
+        "cause": "mur"
+      },
+      "coupV1": false,
+      "premierCoup": 77.84000000358448,
+      "lassoCourt": {
+        "tentatives": 25,
+        "reussis": 1
+      },
+      "lassoLong": {
+        "tentatives": 4,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-1.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 318.90208335108963,
+      "score": 106800,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 34.791666666665336,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 34.791666666665336,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-2.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 50.17000000178602,
+      "score": 1220,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 27.683333333332403,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 27.683333333332403,
+      "lassoCourt": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-3.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 246.46916668210557,
+      "score": 66330,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 29.466666666665635,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 29.466666666665635,
+      "lassoCourt": {
+        "tentatives": 26,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-4.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 173.51083334536057,
+      "score": 27930,
+      "vague": 4,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 24.49999999999925,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 24.49999999999925,
+      "lassoCourt": {
+        "tentatives": 17,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 2,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 2,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-5.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 54.590000003574,
+      "score": 1260,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 24.05833333333261,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 24.05833333333261,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 1
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-6.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 37.68333333333184,
+      "score": 170,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 22.616666666666024,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 22.616666666666024,
+      "lassoCourt": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-7.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 72.34833333691344,
+      "score": 1430,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 29.10833333333232,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 29.10833333333232,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-8.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 62.886666668451966,
+      "score": 1170,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 54.6783333351191,
+        "cause": "mur"
+      },
+      "coupV1": false,
+      "premierCoup": 54.6783333351191,
+      "lassoCourt": {
+        "tentatives": 18,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-9.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 321.10833335108816,
+      "score": 113800,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 26.066666666665828,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 26.066666666665828,
+      "lassoCourt": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 5,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-10.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 67.18666666845444,
+      "score": 1180,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 23.558333333332637,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 23.558333333332637,
+      "lassoCourt": {
+        "tentatives": 18,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-11.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 218.35500001606025,
+      "score": 57830,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.108333333333514,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.108333333333514,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-12.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 247.400416682104,
+      "score": 57820,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 27.64166666666574,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 27.64166666666574,
+      "lassoCourt": {
+        "tentatives": 20,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-13.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 61.09000000357363,
+      "score": 1780,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 20.583333333332806,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 20.583333333332806,
+      "lassoCourt": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-14.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 225.6208333491878,
+      "score": 61070,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 22.416666666666035,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 22.416666666666035,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-15.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 80.76833333870795,
+      "score": 17310,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 30.47499999999891,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 30.47499999999891,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 1,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 1,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-16.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 310.48333335060033,
+      "score": 121940,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 74.86333334049161,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 54.02333333690736,
+      "lassoCourt": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-17.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 214.22458334909894,
+      "score": 55620,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 20.166666666666163,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 20.166666666666163,
+      "lassoCourt": {
+        "tentatives": 14,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 3,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-18.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 228.4112500155548,
+      "score": 47550,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 48.89000000357432,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 48.89000000357432,
+      "lassoCourt": {
+        "tentatives": 31,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 2,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-19.json.gz"
+    },
+    {
+      "pilote": "humain",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 28.241666666665704,
+      "score": 90,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.558333333333488,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.558333333333488,
+      "lassoCourt": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-humain-20.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 57.786666668452256,
+      "score": 1100,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 23.97499999999928,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 23.97499999999928,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 18,
+        "2": 20
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 18,
+          "jeu": 9.128333335121042,
+          "reel": 16.95833333333237,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 20,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-1.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 55.2366666684524,
+      "score": 1870,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.891666666666689,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 10.891666666666689,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 20,
+        "2": 12
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 20,
+          "jeu": 9.045000001787713,
+          "reel": 16.87499999999904,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 12,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-2.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 93.21250000349708,
+      "score": 2290,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 20.774999999999462,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 20.774999999999462,
+      "lassoCourt": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 18,
+        "2": 30
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 18,
+          "jeu": 9.178333335121039,
+          "reel": 17.008333333332367,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 30,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-3.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 383.47750001730066,
+      "score": 143590,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 79.50500000716197,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 56.8350000053621,
+      "lassoCourt": {
+        "tentatives": 28,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 4,
+      "apogees": 4,
+      "longueurMaxDepuis": 51.79333333869572,
+      "pics": {
+        "1": 20,
+        "2": 43,
+        "3": 17,
+        "4": 19,
+        "5": 18
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 20,
+          "jeu": 8.215000003575987,
+          "reel": 16.299999999999073,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 43,
+          "jeu": 35.13500000339462,
+          "reel": 37.91666666666529,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 3,
+          "pic": 17,
+          "jeu": 24.6591666683334,
+          "reel": 26.491666666642573,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 4,
+          "pic": 19,
+          "jeu": 12.32499999998879,
+          "reel": 13.666666666654237,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 5,
+          "pic": 18,
+          "jeu": 4.133333333329574,
+          "reel": 11.333333333323026,
+          "complete": true,
+          "tenu": false
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-4.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 55.12833333511907,
+      "score": 1330,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 16.816666666666354,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 16.816666666666354,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 15,
+        "2": 19
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 15,
+          "jeu": 7.92833333512111,
+          "reel": 15.758333333332438,
+          "complete": true,
+          "tenu": false
+        },
+        {
+          "n": 2,
+          "pic": 19,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-5.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 247.74458334390266,
+      "score": 54190,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 10.266666666666724,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 10.266666666666724,
+      "lassoCourt": {
+        "tentatives": 35,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 3,
+      "longueurMaxDepuis": 119.69333333873875,
+      "pics": {
+        "1": 19,
+        "2": 55,
+        "3": 16,
+        "4": 23,
+        "5": 10
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 19,
+          "jeu": 9.086666668454377,
+          "reel": 16.916666666665705,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 55,
+          "jeu": 32.17333333693162,
+          "reel": 34.0250000000068,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 3,
+          "pic": 16,
+          "jeu": 24.599999999977626,
+          "reel": 26.391666666642664,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 4,
+          "pic": 23,
+          "jeu": 20.42000000176995,
+          "reel": 22.31666666664637,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 5,
+          "pic": 10,
+          "jeu": 2.5916666666643096,
+          "reel": 2.6249999999976126,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-6.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 54.06166666845247,
+      "score": 1390,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 22.066666666666055,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 22.066666666666055,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 20,
+        "2": 16
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 20,
+          "jeu": 9.045000001787713,
+          "reel": 16.87499999999904,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 16,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-7.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 26.608333333332464,
+      "score": 20,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 14.474999999999818,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 14.474999999999818,
+      "lassoCourt": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 9
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 9,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-8.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 56.74500000178565,
+      "score": 1170,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 20.866666666666124,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 20.866666666666124,
+      "lassoCourt": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 17,
+        "2": 15
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 17,
+          "jeu": 9.128333335121042,
+          "reel": 16.95833333333237,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 15,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-9.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 154.7254166772201,
+      "score": 31050,
+      "vague": 4,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 23.524999999999306,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 23.524999999999306,
+      "lassoCourt": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 2,
+      "longueurMaxDepuis": 105.47458334220411,
+      "pics": {
+        "1": 19,
+        "2": 15,
+        "3": 21,
+        "4": 21
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 19,
+          "jeu": 9.090000003575938,
+          "reel": 17.174999999999024,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 15,
+          "jeu": 9.150833335029219,
+          "reel": 10.766666666675235,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 3,
+          "pic": 21,
+          "jeu": 17.317500001673494,
+          "reel": 19.21666666664919,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 4,
+          "pic": 21,
+          "jeu": 1.4666666666653327,
+          "reel": 1.6666666666651508,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-10.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 56.46166666845233,
+      "score": 1130,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 13.816666666666523,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 13.816666666666523,
+      "lassoCourt": {
+        "tentatives": 14,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 20,
+        "2": 15
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 20,
+          "jeu": 8.211666668454427,
+          "reel": 16.041666666665755,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 15,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-11.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 304.18083335100425,
+      "score": 138720,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 17.133333333333002,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 17.133333333333002,
+      "lassoCourt": {
+        "tentatives": 17,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 6,
+        "reussis": 1
+      },
+      "lassos": 2,
+      "apogees": 5,
+      "longueurMaxDepuis": 87.89541667204692,
+      "pics": {
+        "1": 19,
+        "2": 17,
+        "3": 19,
+        "4": 19,
+        "5": 20
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 19,
+          "jeu": 8.253333335121091,
+          "reel": 16.08333333333242,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 17,
+          "jeu": 11.8533333351307,
+          "reel": 13.583333333344143,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 3,
+          "pic": 19,
+          "jeu": 17.67000000177245,
+          "reel": 19.583333333315522,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 4,
+          "pic": 19,
+          "jeu": 19.070000001771177,
+          "reel": 20.833333333314386,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 5,
+          "pic": 20,
+          "jeu": 7.3749999999932925,
+          "reel": 15.483333333319251,
+          "complete": true,
+          "tenu": false
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-12.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 29.874999999998945,
+      "score": 50,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 15.466666666666429,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 15.466666666666429,
+      "lassoCourt": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 9
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 9,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-13.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 56.87000000178564,
+      "score": 1210,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 20.516666666666143,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 20.516666666666143,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 17,
+        "2": 16
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 17,
+          "jeu": 9.128333335121042,
+          "reel": 16.95833333333237,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 16,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-14.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 86.88750000349205,
+      "score": 9130,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 21.458333333332757,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 21.458333333332757,
+      "lassoCourt": {
+        "tentatives": 27,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 18,
+        "2": 29
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 18,
+          "jeu": 9.178333335121039,
+          "reel": 17.008333333332367,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 29,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-15.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 63.62000000178526,
+      "score": 1550,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 30.858333333332222,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 30.858333333332222,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 19,
+        "2": 18
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 19,
+          "jeu": 9.086666668454377,
+          "reel": 16.966666666665702,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 18,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-16.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 98.93750000350164,
+      "score": 8000,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 65.49500000178642,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 53.936666668452474,
+      "lassoCourt": {
+        "tentatives": 28,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 19,
+        "2": 44
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 19,
+          "jeu": 7.836666668454448,
+          "reel": 15.666666666665776,
+          "complete": true,
+          "tenu": false
+        },
+        {
+          "n": 2,
+          "pic": 44,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-17.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 30.274999999998922,
+      "score": 110,
+      "vague": 1,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 11.56666666666665,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 11.56666666666665,
+      "lassoCourt": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 13
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 13,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-18.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 55.32333333690729,
+      "score": 3410,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 19.19999999999955,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 19.19999999999955,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 1
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {
+        "1": 18,
+        "2": 14
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 18,
+          "jeu": 9.128333335121042,
+          "reel": 16.95833333333237,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 14,
+          "jeu": 0,
+          "reel": 0,
+          "complete": false,
+          "tenu": null
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-19.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 313.7987500179605,
+      "score": 75270,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.233333333333507,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.233333333333507,
+      "lassoCourt": {
+        "tentatives": 12,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 5,
+      "longueurMaxDepuis": 84.12333333890959,
+      "pics": {
+        "1": 16,
+        "2": 20,
+        "3": 20,
+        "4": 22,
+        "5": 27
+      },
+      "respirations": [
+        {
+          "n": 1,
+          "pic": 16,
+          "jeu": 8.578333335121073,
+          "reel": 16.808333333332378,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 2,
+          "pic": 20,
+          "jeu": 11.81666666667573,
+          "reel": 12.525000000009967,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 3,
+          "pic": 20,
+          "jeu": 21.336666668435782,
+          "reel": 23.116666666645642,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 4,
+          "pic": 22,
+          "jeu": 12.811666668443536,
+          "reel": 15.62499999998579,
+          "complete": true,
+          "tenu": true
+        },
+        {
+          "n": 5,
+          "pic": 27,
+          "jeu": 8.927083333325214,
+          "reel": 12.38333333332207,
+          "complete": true,
+          "tenu": true
+        }
+      ],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-bon-20.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 74.70333333512708,
+      "score": 3970,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 58.28666666845223,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 50.71166666845266,
+      "lassoCourt": {
+        "tentatives": 7,
+        "reussis": 2
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-1.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 181.1625000104305,
+      "score": 38660,
+      "vague": 4,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 89.0100000053816,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 61.36833333869517,
+      "lassoCourt": {
+        "tentatives": 12,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 3,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-2.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 64.6783333351191,
+      "score": 1610,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 56.75333333511898,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 56.75333333511898,
+      "lassoCourt": {
+        "tentatives": 6,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-3.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 69.08166667024418,
+      "score": 1530,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 58.665000003573766,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 58.665000003573766,
+      "lassoCourt": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-4.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 65.89500000178674,
+      "score": 1070,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 8.82500000000014,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 8.82500000000014,
+      "lassoCourt": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-5.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 79.14000000358509,
+      "score": 1690,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 71.27333333691216,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 70.66500000357834,
+      "lassoCourt": {
+        "tentatives": 12,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-6.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 340.79500001753786,
+      "score": 118950,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 29.91666666666561,
+        "cause": "mur"
+      },
+      "coupV1": true,
+      "premierCoup": 29.91666666666561,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-7.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 80.94500000179872,
+      "score": 2160,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 71.48666666845786,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 71.08666666845754,
+      "lassoCourt": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-8.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 92.1900000035959,
+      "score": 6780,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 72.24833333691336,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 64.02333333690682,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 1,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-9.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 350.84291668369855,
+      "score": 134250,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 28.23333333333237,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 28.23333333333237,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 4,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-10.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 83.32833333513395,
+      "score": 7240,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 52.21166666845257,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 51.72833333511927,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-11.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 257.27541668209545,
+      "score": 75050,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 72.31166666845851,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 72.31166666845851,
+      "lassoCourt": {
+        "tentatives": 9,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 1,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-12.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 134.49125000888282,
+      "score": 23440,
+      "vague": 3,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 23.85833333333262,
+        "cause": "ennemi"
+      },
+      "coupV1": true,
+      "premierCoup": 23.85833333333262,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 1,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 2,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-13.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 98.82333333693421,
+      "score": 11610,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 66.80666667024207,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 54.33666666845245,
+      "lassoCourt": {
+        "tentatives": 3,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-14.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 221.45500001556027,
+      "score": 49490,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 81.01708333692018,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 81.01708333692018,
+      "lassoCourt": {
+        "tentatives": 6,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 3,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-15.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 224.21583334750022,
+      "score": 49800,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 210.0650000124906,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 84.31166666846806,
+      "lassoCourt": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 4,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-16.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 201.6354166805554,
+      "score": 48220,
+      "vague": 5,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 54.65666667024066,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 54.65666667024066,
+      "lassoCourt": {
+        "tentatives": 5,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 3,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-17.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 276.48458335092965,
+      "score": 61300,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 4,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 173.59958334764488,
+        "cause": "convoi"
+      },
+      "coupV1": false,
+      "premierCoup": 77.88500000537262,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 6,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-18.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 358.0354166843891,
+      "score": 118090,
+      "vague": 5,
+      "atteint": true,
+      "battu": false,
+      "combat": null,
+      "morts": 5,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 186.60083334942186,
+        "cause": "laser"
+      },
+      "coupV1": false,
+      "premierCoup": 65.97666667202994,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 11,
+        "reussis": 2
+      },
+      "lassos": 2,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-19.json.gz"
+    },
+    {
+      "pilote": "expert",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 62.72000000178531,
+      "score": 1140,
+      "vague": 2,
+      "atteint": false,
+      "battu": false,
+      "combat": null,
+      "morts": 3,
+      "mortAvant": true,
+      "premiereMort": {
+        "t": 56.02000000178569,
+        "cause": "ennemi"
+      },
+      "coupV1": false,
+      "premierCoup": 52.8533333351192,
+      "lassoCourt": {
+        "tentatives": 4,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 0,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 0,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-expert-20.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 1,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 466.2354166842882,
+      "score": 180790,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 197.728333334941,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": true,
+      "premierCoup": 26.899999999999114,
+      "lassoCourt": {
+        "tentatives": 26,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 3,
+        "reussis": 1
+      },
+      "lassos": 5,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-1.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 2,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 326.7083333510827,
+      "score": 140250,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 82.18333333325859,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 66.54833333690883,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 15,
+        "reussis": 1
+      },
+      "lassos": 2,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-2.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 3,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 333.10000001774415,
+      "score": 140620,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 65.80333333506098,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 71.32000000179106,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 10,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-3.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 4,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 342.143750017735,
+      "score": 158460,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 93.9666666665812,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 56.8350000053621,
+      "lassoCourt": {
+        "tentatives": 29,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 8,
+        "reussis": 0
+      },
+      "lassos": 5,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-4.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 5,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 334.8283333516226,
+      "score": 169790,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 81.25833333325943,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 62.770000001785306,
+      "lassoCourt": {
+        "tentatives": 20,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 3,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-5.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 6,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 357.36666668140737,
+      "score": 160760,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 74.97333333386098,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 78.49500000179677,
+      "lassoCourt": {
+        "tentatives": 30,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 12,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-6.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 7,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 313.6854166844277,
+      "score": 176570,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 59.066666666612974,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 60.056666670240354,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-7.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 8,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 335.6500000177421,
+      "score": 159690,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 85.81666666658865,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 56.54000000357389,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 22,
+        "reussis": 0
+      },
+      "lassos": 4,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-8.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 9,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 320.7437500177546,
+      "score": 191310,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 75.42499999993143,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 66.30666667024197,
+      "lassoCourt": {
+        "tentatives": 17,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 5,
+        "reussis": 0
+      },
+      "lassos": 2,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-9.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 10,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 329.86666668441353,
+      "score": 192520,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 87.49999999992042,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 74.70875000358183,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 0
+      },
+      "lassos": 3,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-10.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 11,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 346.94375001773096,
+      "score": 168810,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 93.18333333324861,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 74.3400000035817,
+      "lassoCourt": {
+        "tentatives": 21,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 6,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-11.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 12,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 320.59166668442157,
+      "score": 151000,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 50.37833333507501,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 97.27875000538772,
+      "lassoCourt": {
+        "tentatives": 16,
+        "reussis": 1
+      },
+      "lassoLong": {
+        "tentatives": 4,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-12.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 13,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 270.79166668446686,
+      "score": 158960,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 38.79999999996471,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 78.08166667025134,
+      "lassoCourt": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 15,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-13.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 14,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 375.1520833510393,
+      "score": 160810,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 89.1749999999189,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 111.97333333694468,
+      "lassoCourt": {
+        "tentatives": 31,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 10,
+        "reussis": 1
+      },
+      "lassos": 1,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-14.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 15,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 369.59166668437723,
+      "score": 185820,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 111.04166666656567,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 56.445000001785665,
+      "lassoCourt": {
+        "tentatives": 24,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 14,
+        "reussis": 1
+      },
+      "lassos": 4,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-15.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 16,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 355.78750001623115,
+      "score": 164020,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 103.46416667044551,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": true,
+      "premierCoup": 40.40333333511991,
+      "lassoCourt": {
+        "tentatives": 31,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 6,
+        "reussis": 0
+      },
+      "lassos": 1,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-16.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 17,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 428.4354166843226,
+      "score": 161240,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 153.54166666652702,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 53.936666668452474,
+      "lassoCourt": {
+        "tentatives": 20,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 2,
+        "reussis": 0
+      },
+      "lassos": 5,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-17.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 18,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 308.83125001776574,
+      "score": 118400,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 61.895000001731205,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 64.03166667024016,
+      "lassoCourt": {
+        "tentatives": 13,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 5,
+        "reussis": 0
+      },
+      "lassos": 0,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-18.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 19,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 356.2604166843896,
+      "score": 170680,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 95.54166666657977,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 60.66041667560492,
+      "lassoCourt": {
+        "tentatives": 11,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 7,
+        "reussis": 1
+      },
+      "lassos": 6,
+      "apogees": 5,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-19.json.gz"
+    },
+    {
+      "pilote": "dieu",
+      "graine": 20,
+      "fin": true,
+      "raison": "fin",
+      "err": 0,
+      "erreursConsole": [],
+      "temps": 362.16250001771954,
+      "score": 188880,
+      "vague": 5,
+      "atteint": true,
+      "battu": true,
+      "combat": 87.89999999992006,
+      "morts": 0,
+      "mortAvant": false,
+      "premiereMort": null,
+      "coupV1": false,
+      "premierCoup": 56.87000000178564,
+      "lassoCourt": {
+        "tentatives": 38,
+        "reussis": 0
+      },
+      "lassoLong": {
+        "tentatives": 28,
+        "reussis": 0
+      },
+      "lassos": 5,
+      "apogees": 4,
+      "longueurMaxDepuis": null,
+      "pics": {},
+      "respirations": [],
+      "tirsAvantV2": [],
+      "recu": "recus/3241e40bd304349f-dieu-20.json.gz"
+    }
+  ],
+  "resume": {
+    "pilotes": {
+      "inerte": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 24.97916666666589,
+        "temps": [
+          19.974999999999508,
+          29.62499999999896
+        ],
+        "score": 30,
+        "atteint": 0,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 1,
+        "premierCoup30": 1,
+        "mortMur8": 0,
+        "avant35": 1,
+        "avant90": 1,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassoLong": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "tourneur": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 18.633333333332917,
+        "temps": [
+          14.991666666666456,
+          22.42499999999937
+        ],
+        "score": 180,
+        "atteint": 0,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 1,
+        "premierCoup30": 1,
+        "mortMur8": 0,
+        "avant35": 1,
+        "avant90": 1,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassoLong": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "maladroit": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 20.309166668354916,
+        "temps": [
+          12.84999999999991,
+          107.71000001036303
+        ],
+        "score": 490,
+        "atteint": 0,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 0.95,
+        "premierCoup30": 0.9,
+        "mortMur8": 0,
+        "avant35": 0.75,
+        "avant90": 0.9,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassoLong": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "kamikaze": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 52.38291667277376,
+        "temps": [
+          13.291666666666552,
+          116.88250001027066
+        ],
+        "score": 12590,
+        "atteint": 0,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 0.9,
+        "premierCoup30": 1,
+        "mortMur8": 0,
+        "avant35": 0.3,
+        "avant90": 0.9,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassoLong": {
+          "reussis": 0,
+          "tentatives": 0,
+          "taux": null
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "humain": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 160.697083342839,
+        "temps": [
+          28.241666666665704,
+          321.10833335108816
+        ],
+        "score": 25180,
+        "atteint": 0.15,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 0.8,
+        "premierCoup30": 0.7,
+        "mortMur8": 0,
+        "avant35": 0.05,
+        "avant90": 0.45,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 2,
+          "tentatives": 305,
+          "taux": 0.006557377049180328
+        },
+        "lassoLong": {
+          "reussis": 0,
+          "tentatives": 75,
+          "taux": 0
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "bon": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 57.32833333511895,
+        "temps": [
+          26.608333333332464,
+          383.47750001730066
+        ],
+        "score": 1710,
+        "atteint": 0.15,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 0.9,
+        "premierCoup30": 0.85,
+        "mortMur8": 0,
+        "avant35": 0.15,
+        "avant90": 0.65,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 1,
+          "tentatives": 298,
+          "taux": 0.003355704697986577
+        },
+        "lassoLong": {
+          "reussis": 1,
+          "tentatives": 46,
+          "taux": 0.021739130434782608
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "expert": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 116.65729167290851,
+        "temps": [
+          62.72000000178531,
+          358.0354166843891
+        ],
+        "score": 17525,
+        "atteint": 0.25,
+        "battu": 0,
+        "mortAvant": 1,
+        "coupV1": 0.2,
+        "premierCoup30": 0.2,
+        "mortMur8": 0,
+        "avant35": 0,
+        "avant90": 0.4,
+        "perdVie": 1,
+        "combat": null,
+        "combatMediane": null,
+        "lassoCourt": {
+          "reussis": 2,
+          "tentatives": 189,
+          "taux": 0.010582010582010581
+        },
+        "lassoLong": {
+          "reussis": 2,
+          "tentatives": 56,
+          "taux": 0.03571428571428571
+        },
+        "lassosMin": 0,
+        "apogeesMin": 0,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      },
+      "dieu": {
+        "n": 20,
+        "censures": 0,
+        "mediane": 338.8968750177386,
+        "temps": [
+          270.79166668446686,
+          466.2354166842882
+        ],
+        "score": 162630,
+        "atteint": 1,
+        "battu": 1,
+        "mortAvant": 0,
+        "coupV1": 0.1,
+        "premierCoup30": 0.05,
+        "mortMur8": 0,
+        "avant35": 0,
+        "avant90": 0,
+        "perdVie": 0,
+        "combat": [
+          38.79999999996471,
+          197.728333334941
+        ],
+        "combatMediane": 86.65833333325453,
+        "lassoCourt": {
+          "reussis": 1,
+          "tentatives": 416,
+          "taux": 0.002403846153846154
+        },
+        "lassoLong": {
+          "reussis": 5,
+          "tentatives": 193,
+          "taux": 0.025906735751295335
+        },
+        "lassosMin": 0,
+        "apogeesMin": 4,
+        "longueurMaxDepuis": "non atteinte par au moins la moitié",
+        "erreurs": 0
+      }
+    },
+    "rythme": {
+      "pics": [
+        {
+          "n": 1,
+          "effectif": 20,
+          "mediane": 18
+        },
+        {
+          "n": 2,
+          "effectif": 17,
+          "mediane": 18
+        },
+        {
+          "n": 3,
+          "effectif": 5,
+          "mediane": 19
+        },
+        {
+          "n": 4,
+          "effectif": 5,
+          "mediane": 21
+        },
+        {
+          "n": 5,
+          "effectif": 4,
+          "mediane": 19
+        }
+      ],
+      "croissants": false,
+      "respirations": {
+        "complete": 34,
+        "tronquees": 17,
+        "minJeu": 4.133333333329574,
+        "minReel": 10.766666666675235,
+        "echecs": [
+          {
+            "n": 5,
+            "pic": 18,
+            "jeu": 4.133333333329574,
+            "reel": 11.333333333323026,
+            "complete": true,
+            "tenu": false,
+            "graine": 4
+          },
+          {
+            "n": 1,
+            "pic": 15,
+            "jeu": 7.92833333512111,
+            "reel": 15.758333333332438,
+            "complete": true,
+            "tenu": false,
+            "graine": 5
+          },
+          {
+            "n": 5,
+            "pic": 20,
+            "jeu": 7.3749999999932925,
+            "reel": 15.483333333319251,
+            "complete": true,
+            "tenu": false,
+            "graine": 12
+          },
+          {
+            "n": 1,
+            "pic": 19,
+            "jeu": 7.836666668454448,
+            "reel": 15.666666666665776,
+            "complete": true,
+            "tenu": false,
+            "graine": 17
+          }
+        ]
+      },
+      "tirsAvantV2": []
+    },
+    "B": {
+      "inerte.35": true,
+      "inerte.mur8": false,
+      "tourneur.90": true,
+      "maladroit.mediane": false,
+      "maladroit.cyclope": true,
+      "kamikaze.avant": true,
+      "kamikaze.gagne": true,
+      "humain.mediane": true,
+      "humain.lassoCourt": false,
+      "humain.lassoLong": false,
+      "bon.cyclope": false,
+      "bon.bat": false,
+      "expert.bat": false,
+      "expert.perdVie": true,
+      "dieu.duree": false,
+      "dieu.combat": false,
+      "dieu.erreurs": true,
+      "rythme.pics": false,
+      "rythme.respiration": false,
+      "rythme.tirs": true
+    },
+    "i": {
+      "tourneur.score": false,
+      "maladroit.coup30": true,
+      "humain.cyclope": true,
+      "humain.bat": false,
+      "humain.coupV1": true,
+      "bon.mortAvant": true,
+      "bon.coupV1": true,
+      "bon.longueur": true,
+      "expert.cyclope": false,
+      "expert.lassos": false,
+      "expert.apogees": false,
+      "rythme.score": false
+    },
+    "nbB": 9
+  },
+  "calculMs": 151184,
+  "complete": true
+}

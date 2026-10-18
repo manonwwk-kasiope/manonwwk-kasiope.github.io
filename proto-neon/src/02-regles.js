@@ -568,18 +568,18 @@
       premiereMenaceAvant: 20,
       traqueur: { vagues: [2, 3, 4, 5], inaction: 7, annonce: 1.5, second: 6 },
       elroy: { reste: 0.20, acceleration: 0.30 },
-      vitessesFleches: [50, 55, 60, 65, 70],
+      vitessesFleches: [40, 44, 48, 52, 56],
       plafondDur: { ennemis: 40, tirs: 80 },
       vagues: [
         {
           n: 1, id: 'eveil', nom: 'ÉVEIL', quartier: 'docks', etat: 'calme', vitesse: 68,
-          quota: 24, duree: 22, plafond: 10, chargesFleches: 1, tirsEnnemis: false,
+          quota: 24, duree: 22, plafond: 12, chargesFleches: 1, tirsEnnemis: false,
           formations: [{ t: 0, f: 'file' }, { t: 5, f: 'file' }, { t: 10, f: 'nuee' }, { t: 14, f: 'duoMines' }, { t: 17, f: 'pince' }],
           remplissage: 'file', travelling: null, convois: null, pastille: null, pic: null
         },
         {
           n: 2, id: 'meute', nom: 'MEUTE', quartier: 'artere', etat: 'montee', vitesse: 72,
-          quota: 48, duree: 42, plafond: 16, chargesFleches: 2, tirsEnnemis: true,
+          quota: 48, duree: 42, plafond: 16, chargesFleches: 1, tirsEnnemis: true,
           formations: [{ t: 2, f: 'meute' }, { t: 14, f: 'meute' }, { t: 28, f: 'meute' }, { t: 8, f: 'champMines' }, { t: 30, f: 'champMines' },
             { t: 18, f: 'pince' }, { t: 26, f: 'pince' }, { t: 36, f: 'pince' }, { t: 10, f: 'nuee' }, { t: 22, f: 'nuee' }],
           remplissage: null, travelling: { t: 12, vx: 8 }, convois: null, pastille: 20, pic: null
@@ -636,7 +636,7 @@
       tir: { taille: 5, rayon: 2, correlationMax: 0.5 },
       codex: { duree: 2, echelle: 2 },
       fleche: {
-        nom: 'FLÈCHE', pv: 20, r: 5, sprite: 15, approche: [50, 70], fige: 0.6, distance: [40, 110],
+        nom: 'FLÈCHE', pv: 20, r: 5, sprite: 15, approche: [40, 56], fige: 0.6, distance: [40, 110],
         bond: { vitesse: 160, duree: 0.42, longueur: 67 }, recharge: 1.6,
         esquive: { duree: 0.25, vitesse: 70, angleDeg: 12, distance: 60, recharge: 1.2 },
         codex: 'SE FIGE, PUIS FONCE'
@@ -734,7 +734,7 @@
     colosse: {
       corps: [96, 128], tete: [40, 32], main: [24, 24], plaques: 6, plaque: [12, 12],
       silhouettes: { loin: 48, mi: 80 },
-      pvPhase: 1500, pvTotal: 4500, pvMain: 300,
+      pvPhase: 1200, pvTotal: 3600, pvMain: 300,
       entree: { total: 6.8, gelees: 1.6, warning: 3.0, bandes: 10, coupure: 0.25, panneau: 1.6, garde: 0.3,
         arrivee: 2.2, ralenti: 0.3, jauge: 0.9 },
       seuils: [1, 0.66, 0.33, 0],
