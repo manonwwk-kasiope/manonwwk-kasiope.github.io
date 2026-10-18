@@ -285,6 +285,8 @@
       cx = lx + Cm.w / 2; cy = ly + Cm.h / 2;
       ex = lx; ey = ly;
     }
+    // Un changement de préférence annule aussi une poussée déjà engagée.
+    if (facteurSecousse() === 0) { jx = 0; jy = 0; }
     // poussées : s'amortissent en 0,15 s ; rien si la secousse est coupée
     if (jx !== 0 || jy !== 0) {
       var f = Math.exp(-dt * 20);

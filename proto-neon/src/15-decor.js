@@ -903,13 +903,19 @@
   function taireFondJeu(cam) {
     if (!enJeu()) return;
     var g = N.gfx, b = g.buf(), B = N.pal.BAYER;
+    var cj = N.R.decorContrejour, encre = N.pal.i(cj.encre), rangs = g.H > g.W ? cj.rangsPortrait : cj.rangs;
     /* Ciel, soleil, cité : garder les détails et les étoiles, baisser les encres chaudes et
        leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
     for (var sy = 0; sy < YH; sy++) {
       var row = sy * g.W, br = (sy & 3) << 2;
       for (var sx = 0; sx < g.W; sx++) {
         var table = B[br | (sx & 3)] === 0 ? lutAccentJeu : lutLointainJeu;
-        b[row + sx] = table[b[row + sx]];
+        var v = table[b[row + sx]];
+        /* Contre-jour froid, fixe dans la trame écran : on éclaire les matières du
+           lointain sans réchauffer le sol ni combler ses silhouettes nuit profonde. */
+        if (v !== C.V && v !== C.NP && N.pal.L[v] <= RD().lumiere.seuil && B[br | (sx & 3)] < rangs)
+          v = encre;
+        b[row + sx] = v;
       }
     }
     /* Le sol se tait jusqu'aux bords de l'écran, y compris au-delà des murs mobiles :

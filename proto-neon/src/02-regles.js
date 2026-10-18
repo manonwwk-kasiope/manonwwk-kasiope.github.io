@@ -1144,6 +1144,8 @@
       { dureeMax: 44 }
     ]
   };
+  /* codex-p23 : contre-jour froid du lointain, Bayer fixe ; le sol garde les plafonds 01b. */
+  R.decorContrejour = { rangs: 4, rangsPortrait: 8, encre: 'acier' };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

@@ -23,7 +23,26 @@ function juger(res, nom, a, C, etat) {
   res.verifie(`${nom} : cyan dans le décor (pixels)`, a.decorCyan, 0, a.decorCyan === 0);
   res.verifie(`${nom} : magenta et rose pâle du décor`, a.decorMagenta, '< 0.005', a.decorMagenta < 0.005);
   if (a.gaine && a.gaine.bord) res.verifie(`${nom} : gaine des menaces (pixels de bord en nuit profonde)`, a.gaine.part, 1, a.gaine.gaine === a.gaine.bord, { bord: a.gaine.bord });
-  else res.nonMesurable(`${nom} : gaine des menaces`, 'aucun pixel d’ennemi (code 5) dans l’image');
+  else res.note(`${nom} : aucun ennemi dans l’image ambiante ; gaine mesurée dans le cas dirigé ci-dessous`);
+}
+
+// Une ambiance sans menace ne prouve pas sa gaine. Le spawn ordinaire naît hors champ.
+// Repositionner seulement ses coordonnées publiques, puis lire le tampon ;
+// conserver séparément les chiffres de lumière de l'image ambiante.
+async function gaineDirigee(s, res, nom) {
+  if (!await exiger(s, res, nom + ' : gaine dirigée', ['N.ennemis.spawn', 'N.cam'])) return;
+  const id = await s.eval(() => {
+    const N = window.__N, v = N.cam;
+    N.game.dbg.god(true);
+    const e = N.ennemis.spawn('fleche', v.x + v.w * N.R.camera.cadre.min, v.y + v.h * N.R.camera.cadre.max, {});
+    if (e) { e.x = v.x + v.w * N.R.camera.cadre.min; e.y = v.y + v.h * N.R.camera.cadre.max; }
+    return e ? e.id : null;
+  });
+  if (id === null) { res.nonMesurable(`${nom} : gaine dirigée`, 'apparition de la menace refusée'); return; }
+  await s.images(3);
+  const a = await s.analyse({ gaine: true });
+  if (!a.masque || !a.gaine || !a.gaine.bord) res.nonMesurable(`${nom} : gaine dirigée`, 'aucun bord de menace dans le tampon après apparition');
+  else res.verifie(`${nom} : gaine dirigée (vraie menace ajoutée)`, a.gaine.part, 1, a.gaine.gaine === a.gaine.bord, { bord: a.gaine.bord, gaine: a.gaine.gaine, id });
 }
 
 export async function mesurer(banc, res) {
@@ -36,7 +55,9 @@ export async function mesurer(banc, res) {
   if (d.ok) {
     await s.attendre(() => ['jeu'].includes(window.__MESURE.etat()), null, 10000);
     await s.avancer(C.desT || 1);
-    juger(res, 'partie à t = 1 s (calme)', await s.analyse({ gaine: true }), C, 'calme');
+    const a = await s.analyse({ gaine: true });
+    juger(res, 'partie à t = 1 s (calme)', a, C, 'calme');
+    if (a.masque && (!a.gaine || !a.gaine.bord)) await gaineDirigee(s, res, 'partie à t = 1 s (calme)');
   } else res.nonMesurable('partie à t = 1 s', d.raison);
   /* 2. les scènes calme, montee, chaos, colosse */
   for (const e of ETATS) {
@@ -45,6 +66,7 @@ export async function mesurer(banc, res) {
     const a = await s.analyse({ gaine: true });
     res.capture(await s.captureTampon('R-11-' + e));
     juger(res, `scène ${e}`, a, C, e);
+    if (a.masque && (!a.gaine || !a.gaine.bord)) await gaineDirigee(s, res, `scène ${e}`);
   }
   /* 3. t = 30 s, comparé à SNAKE 2030 au même instant et au même profil (captures d'écran) */
   const d2 = await s.demarrer({ graine: 2, pilote: 'bon', god: true });

@@ -228,7 +228,13 @@
     try { if (typeof localStorage !== 'undefined') localStorage.setItem('snake2975.fx', JSON.stringify({ s: userShake, f: userFlash })); } catch (e) {}
   }
   readPrefs();
-  function shakeK() { return userShake !== null ? userShake : (reduced ? 0 : 1); }
+  function mouvementReduit() {
+    // Relire la préférence : elle peut changer pendant une partie.
+    try { reduced = !!(typeof window !== 'undefined' && window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    return reduced;
+  }
+  function shakeK() { return mouvementReduit() ? 0 : (userShake !== null ? userShake : 1); }
   function flashOn() { return userFlash !== null ? userFlash : true; }
 
   /* ---------------- limiteur de flashs ---------------- */
@@ -570,7 +576,8 @@
     for (var e = 0; e < NEX; e++) {
       if (!eOn[e]) continue;
       eAge[e] += dt;
-      if (eIgn[e] < 60000) eIgn[e]++;
+      // L'allumage est visuel : en mouvement réduit, il tient comme l'âge pendant le gel.
+      if (!(mouvementReduit() && N.horloge && N.horloge.gele()) && eIgn[e] < 60000) eIgn[e]++;
       if (eAge[e] >= eLife[e]) { eOn[e] = 0; continue; }
       nex++;
       var ff = eFire[e], a = eAge[e];

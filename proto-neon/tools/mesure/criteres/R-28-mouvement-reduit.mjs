@@ -11,19 +11,31 @@ export async function mesurer(banc, res) {
   const s = await banc.ouvrir('paysage', { dt: 1 / 60, reducedMotion: 'reduce' });
   const { R } = await seuils(s, 'R28');
   const L = (R.decor && R.decor.lumiere) || { calme: { part: 0.25 }, reduit: 0.005 };
-  if (!await exiger(s, res, 'élite', ['N.ennemis.spawn', 'N.ennemis.hit', 'N.game.dbg.scene', 'N.gfx.present'])) return;
+  if (!await exiger(s, res, 'élite', ['N.ennemis.spawn', 'N.ennemis.hit', 'N.game.dbg.scene', 'N.gfx.present', 'N.journal.lire'])) return;
   res.verifie('prefers-reduced-motion vu par la page', await s.eval(() => matchMedia('(prefers-reduced-motion: reduce)').matches), true, true);
   const v = await s.scene('v5');
   if (!v.ok) res.nonMesurable('mort d’une élite', v.raison);
   else {
     await s.eval(() => { const d = window.__MESURE.dbg(); if (d.god) d.god(true); });
-    const id = await s.eval(() => { const N = window.__N, p = window.__S.player; try { const e = N.ennemis.spawn('fleche', p.x + Math.cos(p.ang) * 70, p.y + Math.sin(p.ang) * 70, { elite: 'flecheBlindee', direct: true }); return e ? e.id : null; } catch (x) { return null; } });
+    let id = await s.eval(() => { const N = window.__N; try { const e = N.ennemis.spawn('fleche', N.cam.x + N.cam.w / 2, N.cam.y + N.cam.h / 2, { elite: 'flecheBlindee' }); return e ? e.id : null; } catch (x) { return null; } });
     if (id === null) res.nonMesurable('mort d’une élite', 'N.ennemis.spawn n’a rien rendu');
     else {
       await s.images(20);
       await s.eval(c => window.__MESURE.parImage('r28', c), IMAGE);
       await s.images(10);
-      await s.eval(i => { const N = window.__N; for (let k = 0; k < 50; k++) { const e = N.ennemis.list.find(x => x.id === i && x.etat !== 'mort'); if (!e) break; N.ennemis.hit(e, (e.pvMax || 1) * 4, { genre: 'arme', type: 'canon', id: 0 }); } }, id);
+      id = await s.eval(i => {
+        const N = window.__N;
+        // L'élite de chauffe a pu mourir sous le tir automatique. Construire alors la
+        // cible au moment de la frappe, et ne jamais attribuer son gel à un autre kill.
+        let e = N.ennemis.list.find(x => x.id === i && x.etat !== 'mort');
+        if (!e) e = N.ennemis.spawn('fleche', N.cam.x, N.cam.y, { elite: 'flecheBlindee' });
+        if (!e) return null;
+        e.x = N.cam.x + N.cam.w / 2; e.y = N.cam.y + N.cam.h / 2;
+        for (let k = 0; k < 50 && e.etat !== 'mort'; k++) N.ennemis.hit(e, (e.pvMax || 1) * 4, { genre: 'arme', type: 'canon', id: 0 });
+        return e.id;
+      }, id);
+      const morte = await s.eval(i => window.__N.journal.lire('kill').some(e => e.d.id === i), id);
+      res.verifie('mort réelle de l’élite au journal', morte, true, morte);
       await s.images(40);
       const I = (await s.eval(() => window.__MESURE.arreter('r28'))).map(x => ({ ...x, b: Buffer.from(x.b, 'base64') }));
       const avant = I.slice(0, 10), apres = I.slice(10, 40), c0 = avant[avant.length - 1];
