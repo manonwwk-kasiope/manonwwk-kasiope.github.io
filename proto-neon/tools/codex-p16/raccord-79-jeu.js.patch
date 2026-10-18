@@ -1,0 +1,30 @@
+--- a/proto-neon/src/79-jeu.js
++++ b/proto-neon/src/79-jeu.js
+@@ -519,15 +519,15 @@
+     if (et === 'attraction') {
+       etT += dt; O.T.t += dt; O.T.ak += dt;
+       pas(dt);
+-      if (!simulant && modOk(N.cam, 'update')) N.cam.update(dt);
++      if (modOk(N.cam, 'update')) N.cam.update(dt);
+       publier();
+       if (N.joueuse.etat === 'mort' || etT >= R.ecrans.attraction.demo) commencerAttraction();
+       return;
+     }
+     if (hsCd > 0) hsCd -= dt;
+     etT += dt;
+-    /* la caméra suit la tête à chaque pas de jeu (le mode simulé l'avance lui-même) */
+-    if (!simulant && N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
++    /* la caméra suit la tête au même endroit en mode dessiné et simulé */
++    if (N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
+ 
+     if (JOUE[et]) {
+       O.T.t += dt; O.T.ak += dt;
+@@ -840,7 +840,7 @@
+       if (nouveau && dt === 0 && N.horloge.arretee() && !(N.S && N.S.paused)) dt = h;
+       N.game.update(dt);
+       if (N.fx && N.fx.update) N.fx.update(dt);
+-      if (N.cam && N.cam.update) N.cam.update(dt);
++      /* La caméra avance dans update(), au même endroit que dans frame(). */
+     }
+     simulant = false;
+     return N.journal.dump();

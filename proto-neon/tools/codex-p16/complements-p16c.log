@@ -1,0 +1,298 @@
+{
+  "dateParis": "18/10/2026 04:43:51",
+  "mesures": {
+    "avant": {
+      "initial": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          2,
+          2
+        ]
+      },
+      "simuleRepete": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          338,
+          338
+        ]
+      },
+      "graineDifferente": {
+        "different": true,
+        "apparitions": [
+          34,
+          32
+        ]
+      },
+      "dessineRepete": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          492,
+          492
+        ]
+      },
+      "framesSansDessin": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          427,
+          427
+        ]
+      },
+      "dessineSimule": {
+        "egaux": false,
+        "premier": 19,
+        "a": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.08412205609432473}]",
+        "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.06543600754574878}]"
+      },
+      "erreurs": [
+        {
+          "count": 0,
+          "sigs": {}
+        },
+        {
+          "count": 0,
+          "sigs": {}
+        },
+        {
+          "count": 0,
+          "sigs": {}
+        }
+      ]
+    },
+    "apres": {
+      "initial": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          2,
+          2
+        ]
+      },
+      "simuleRepete": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          338,
+          338
+        ]
+      },
+      "graineDifferente": {
+        "different": true,
+        "apparitions": [
+          34,
+          32
+        ]
+      },
+      "dessineRepete": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          492,
+          492
+        ]
+      },
+      "framesSansDessin": {
+        "egaux": true,
+        "premier": -1,
+        "longueurs": [
+          427,
+          427
+        ]
+      },
+      "dessineSimule": {
+        "egaux": false,
+        "premier": 19,
+        "a": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.08412205609432473}]",
+        "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.06543600754574878}]"
+      },
+      "erreurs": [
+        {
+          "count": 0,
+          "sigs": {}
+        },
+        {
+          "count": 0,
+          "sigs": {}
+        },
+        {
+          "count": 0,
+          "sigs": {}
+        }
+      ]
+    }
+  },
+  "suiteCamera": {
+    "preuve": "hitstopLeft reste fondé sur S.frame, que dbg.simuler ne fait jamais avancer ; ralenti borne sa durée avec cette valeur",
+    "ralentisOriginaux": [
+      {
+        "t": 14.174999999999836,
+        "pas": 1701,
+        "demande": [
+          0.25,
+          0.45,
+          {
+            "visuel": true
+          }
+        ],
+        "hitstopLeft": 10,
+        "horloge": {
+          "t": 14.174999999999836,
+          "pas": 1701,
+          "reel": 14.174999999999836,
+          "gel": 0.16666666666666666,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      },
+      {
+        "t": 36.683333333331895,
+        "pas": 4422,
+        "demande": [
+          0.15,
+          0.35,
+          null
+        ],
+        "hitstopLeft": 10,
+        "horloge": {
+          "t": 36.683333333331895,
+          "pas": 4422,
+          "reel": 36.84999999999855,
+          "gel": 0,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      },
+      {
+        "t": 40.79041666860224,
+        "pas": 5905,
+        "demande": [
+          0.15,
+          0.35,
+          null
+        ],
+        "hitstopLeft": 0,
+        "horloge": {
+          "t": 40.79041666860224,
+          "pas": 5905,
+          "reel": 49.20833333333118,
+          "gel": 0,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      }
+    ],
+    "ralentisAvecHorloge": [
+      {
+        "t": 14.174999999999836,
+        "pas": 1701,
+        "demande": [
+          0.25,
+          0.45,
+          {
+            "visuel": true
+          }
+        ],
+        "hitstopLeft": 10,
+        "horloge": {
+          "t": 14.174999999999836,
+          "pas": 1701,
+          "reel": 14.174999999999836,
+          "gel": 0.16666666666666666,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      },
+      {
+        "t": 36.683333333331895,
+        "pas": 4422,
+        "demande": [
+          0.15,
+          0.35,
+          null
+        ],
+        "hitstopLeft": 10,
+        "horloge": {
+          "t": 36.683333333331895,
+          "pas": 4422,
+          "reel": 36.84999999999855,
+          "gel": 0,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      },
+      {
+        "t": 40.784583335368254,
+        "pas": 5906,
+        "demande": [
+          0.15,
+          0.35,
+          null
+        ],
+        "hitstopLeft": 0,
+        "horloge": {
+          "t": 40.784583335368254,
+          "pas": 5906,
+          "reel": 49.216666666664516,
+          "gel": 0,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      },
+      {
+        "t": 59.36916667073712,
+        "pas": 8213,
+        "demande": [
+          0.15,
+          0.35,
+          null
+        ],
+        "hitstopLeft": 3,
+        "horloge": {
+          "t": 59.36916667073712,
+          "pas": 8213,
+          "reel": 68.4416666666672,
+          "gel": 0,
+          "dtMonde": 0.008333333333333333,
+          "dtJoueuse": 0.008333333333333333,
+          "gele": false,
+          "arretee": false
+        }
+      }
+    ],
+    "comparaison": {
+      "egaux": true,
+      "premier": -1,
+      "longueurs": [
+        427,
+        427
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "fin": {
+      "etat": "jeu",
+      "t": 60.11208333944034,
+      "pas": 8341,
+      "image": 0,
+      "score": 10070,
+      "vague": 2
+    }
+  }
+}

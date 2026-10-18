@@ -1,0 +1,92 @@
+{
+  "id": "R-30",
+  "titre": "Rejouabilité",
+  "seuil": "même graine et mêmes entrées → même journal (dessiné et simulé) ; graine différente → vagues différentes",
+  "bloquant": true,
+  "statut": "echec",
+  "resume": "4 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+  "mesures": [
+    {
+      "nom": "réinitialisation : même graine → même journal initial",
+      "valeur": true,
+      "seuil": true,
+      "statut": "ok",
+      "egaux": true,
+      "premier": -1,
+      "longueurs": [
+        2,
+        2
+      ]
+    },
+    {
+      "nom": "simulé : même graine → même journal",
+      "valeur": true,
+      "seuil": true,
+      "statut": "ok",
+      "entrees": 338,
+      "egaux": true,
+      "premier": -1,
+      "longueurs": [
+        338,
+        338
+      ]
+    },
+    {
+      "nom": "graine différente → apparitions différentes dans le détail",
+      "valeur": true,
+      "seuil": true,
+      "statut": "ok",
+      "apparitions": [
+        34,
+        32
+      ]
+    },
+    {
+      "nom": "dessiné : même graine → même journal",
+      "valeur": true,
+      "seuil": true,
+      "statut": "ok",
+      "entrees": 492,
+      "egaux": true,
+      "premier": -1,
+      "longueurs": [
+        492,
+        492
+      ]
+    },
+    {
+      "nom": "dessiné = simulé (types de jeu)",
+      "valeur": false,
+      "seuil": true,
+      "statut": "echec",
+      "entrees": [
+        427,
+        320
+      ],
+      "typesDessinExclus": [
+        "hudBanniere",
+        "flash"
+      ],
+      "dessins": 65,
+      "comparaisonAvantFiltrage": {
+        "egaux": false,
+        "premier": 7,
+        "a": "[\"flash\",{\"aire\":3309,\"accepte\":true,\"_type\":\"externe\",\"_issue\":\"sous-seuil\",\"_compte\":false,\"_echelle\":1,\"_temps\":0.8166666666666662,\"_image\":55,\"_luminance\":n",
+        "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":0}]"
+      },
+      "egaux": false,
+      "premier": 19,
+      "a": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.08412205609432473}]",
+      "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.06543600754574878}]"
+    }
+  ],
+  "notes": [],
+  "captures": [],
+  "duree": 145.4,
+  "bundle": {
+    "url": "http://127.0.0.1:58728/proto-neon/__avant.html",
+    "empreinte": "d0696d00c558"
+  },
+  "date": "2026-10-18T02:33:35.315Z",
+  "dateParis": "18/10/2026 · 04 h 33"
+}

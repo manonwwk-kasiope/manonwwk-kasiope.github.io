@@ -1,0 +1,5 @@
+--- a/proto-neon/src/50-fx.js
++++ b/proto-neon/src/50-fx.js
+@@ -883,1 +883,1 @@
+-      var gl = hitstopLeft() / 60;
++      var gl = N.horloge && N.horloge.etat ? N.horloge.etat().gel : hitstopLeft() / 60;

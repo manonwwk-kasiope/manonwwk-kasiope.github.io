@@ -1,0 +1,134 @@
+{
+  "a": {
+    "t": 0,
+    "reel": 0,
+    "pas": 0,
+    "r": 0
+  },
+  "b": {
+    "t": 1.9999999999999953,
+    "reel": 1.9999999999999953,
+    "pas": 240,
+    "r": 2000
+  },
+  "ralentis": 0,
+  "etat": "jeu",
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 7,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 7,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 7,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 2,
+      "t": 0.016666666666666666,
+      "image": 1,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 0.016666666666666666,
+        "_image": 1,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 2,
+      "t": 0.016666666666666666,
+      "image": 1,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.016666666666666666,
+        "x": 144,
+        "y": 120,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    }
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "ratios": {
+    "ancien": 0.9999999999999977,
+    "machine": 0.9999999999999977,
+    "secondesMurales": 2,
+    "secondesTraitees": 1.9999999999999953,
+    "secondesMonde": 1.9999999999999953,
+    "pasTraites": 240
+  },
+  "egalite": true
+}

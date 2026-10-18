@@ -1,0 +1,23 @@
+--- a/proto-neon/src/15-decor.js
++++ b/proto-neon/src/15-decor.js
+@@ -850,7 +850,19 @@
+        leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
+     for (var sy = 0; sy < YH; sy++) {
+       var row = sy * g.W, br = (sy & 3) << 2;
+-      for (var sx = 0; sx < g.W; sx++) {
++      // Une table par sous-colonne, résolue une fois par rangée (Bayer reste en phase écran).
++      var t0 = B[br] === 0 ? lutAccentJeu : lutLointainJeu;
++      var t1 = B[br | 1] === 0 ? lutAccentJeu : lutLointainJeu;
++      var t2 = B[br | 2] === 0 ? lutAccentJeu : lutLointainJeu;
++      var t3 = B[br | 3] === 0 ? lutAccentJeu : lutLointainJeu;
++      var sx = 0, fin = g.W - 3;
++      for (; sx < fin; sx += 4) {
++        b[row + sx] = t0[b[row + sx]];
++        b[row + sx + 1] = t1[b[row + sx + 1]];
++        b[row + sx + 2] = t2[b[row + sx + 2]];
++        b[row + sx + 3] = t3[b[row + sx + 3]];
++      }
++      for (; sx < g.W; sx++) {
+         var table = B[br | (sx & 3)] === 0 ? lutAccentJeu : lutLointainJeu;
+         b[row + sx] = table[b[row + sx]];
+       }

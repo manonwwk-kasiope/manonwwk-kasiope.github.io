@@ -682,3 +682,51 @@ Codex-p28 — mis à jour à 04 h 22 (Paris) : calibration 10/10 exacte ; R-18 i
 | codex-p34 | `tools/codex-p34/verifier.mjs`, hors bac | si nécessaire, exécuter `cd proto-neon && node tools/codex-p34/verifier.mjs` et renvoyer `navigateur/resultats.json` | script prêt, jamais exécuté ici : un Chromium muet, trois profils en série, états, journal, vrais indices du tampon et captures. Aucune connexion sortante ni tentative de serveur local dans ce lot |
 
 Décision recommandée : maintenir l'arrêt du réglage global, corriger l'observation et la définition des pilotes avant un nouveau candidat ; les vingt cibles numériques ont un témoin abstrait commun mais leur réalisation par le jeu actuel n'est pas prouvée. Les seuils, profils, budget de flash, mur létal et morsure-coupe restent inchangés. Les simulations et contre-exemples mathématiques sont séparés dans les données sources.
+
+
+## codex-p16 — performance de l'image et instruments R-20/R-30
+
+18/10/2026 · 02 h 44 (Paris). Preuves et reprise : `tools/codex-p16/rapport.md`.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p16 | `02-regles.js`, ajout `perf.imageP16` | `bayerCote=4`, `images=600`, `chauffeImages=120` | 4 est la géométrie de la matrice existante ; 600 est la preuve demandée par scène et profil ; 120 images échauffent le banc avant les prélèvements. Aucun chiffre de gameplay, aucune qualité visuelle ni seuil modifiés. |
+| codex-p16 | `10-gfx.js`, `78-hud.js` | décisions Bayer par sous-colonne, couronnes par intervalles ; copie opaque de bannières via réserve | réduire parcours inutiles et travail par pixel ; conserver origine, arrondis, clipping, index zéro et masque. Identité des primitives prouvée sans DOM ; sortie CRT à vérifier hors bac. Aucun gain navigateur annoncé. |
+| codex-p16 | `tools/mesure/criteres/R-20-performance.mjs` | temps réellement traité = différence de `horloge.reel()` ; conserver ratio historique `t()` en métadonnée | les ralentis et gels voulus ne sont pas des pas perdus. Seuil 0,99 inchangé ; une perte CPU reste mesurée. Témoin calme en VM : 240 pas sans ralenti, deux ratios exactement égaux. |
+| codex-p16 | `tools/mesure/criteres/R-30-rejouabilite.mjs` | exclure `hudBanniere` et `flash` seulement entre les modes | ces types décrivent le rendu et le limiteur de lumière ; les comparaisons dessiné/dessiné les gardent. Un kill absent/changé reste refusé. Les nouvelles traces flash du lot p10 exposent aussi les admissions sous-seuil. |
+| codex-p16 | `15-decor.js` — codex-p13 | raccord `tools/codex-p16/raccord-15-decor.js.patch`, non appliqué | `taireFondJeu` choisit la même table Bayer par sous-colonne une fois par rangée, puis déroule les quatre écritures. Décor dominant dans le profil VM ; Canvas/CRT et gain navigateur restent à mesurer. |
+| codex-p16 | `79-jeu.js` — cheffe d'orchestre | raccord `tools/codex-p16/raccord-79-jeu.js.patch`, non appliqué | vraie divergence additionnelle R-30 sur les sources reçues : caméra avant `pas()` en dessiné, après en simulé. Le raccord avance la caméra au même endroit via update(), une fois. Égalité des 91 entrées de jeu à 15 s en copie VM ; le mode dessiné répété conserve ses 99 traces. Cela modifie la simulation et exige une intégration/revue séparée, pas un filtrage de gameplay. |
+| codex-p16 | exécution hors bac | `node proto-neon/tools/codex-p16/verifier.mjs` ; avec raccords en mémoire : ajouter `--raccords` | un Chromium muet, trois profils, quatre scènes, 600 images comparées octet par octet (index + RGBA final), vrai frame/chaque step chronométrés, R-20/R-30 officiels relancés. Aucun listen ni Chromium essayé ici. |
+
+Les reçus navigateur de départ restent en échec : charge 4,5 ms contre 0,8 ms pour 2030, ratio ×4 0,98479. Le CRT reste intact faute de profil réel ; les temps VM ne remplacent pas R-20. Les sources et le bundle initiaux sont conservés dans le dossier de mission ; aucun commit.
+
+Codex-p16 — mis à jour le 18/10/2026 · 03 h 29 (Paris) : 80/80 parties avant/après strictement identiques, toutes finies, journaux compris ; zéro erreur VM et console. 7 200 images de scénarios identiques dans le tampon, plus 600 images réellement en état VOL par profil (deux réarmements publics par profil). 4 200 cas de primitives, zéro différence de pixels ou de masque. Candidate inchangée depuis ces mesures, bundles synchronisés, build sortie 0. Preuve consolidée : `tools/codex-p16/verification-finale.json`. Le banc navigateur, y compris le complément VOL et les raccords optionnels, est prêt et non exécuté ; R-20 global et sortie CRT restent à vérifier. Aucun commit.
+
+### codex-p16b — reprise du vérifieur après le délai expiré hors bac
+
+18/10/2026 · 03 h 41 (Paris), mis à jour à 03 h 41. Reçu initial conservé dans `tools/codex-p16/navigateur/echec-0333.json` : aucun profil ni critère mesuré, attente expirée après 30 000 ms. Ce résultat n'est pas une validation navigateur.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-p16b | `02-regles.js`, ajout `perf.attenteP16` | `delaiMs=30000`, `pollingMs=100` | conserver la borne précédente et vérifier les crochets par timer, indépendamment du RAF neutralisé ; aucun seuil R-20/R-30 ni chiffre de gameplay modifié. |
+| codex-p16b | `tools/codex-p16/` | reconstruire les bundles depuis le build final, servir `/proto-neon/__avant.html` et `__apres.html`, empreintes sources/fichiers/réponses instrumentées et ressources résolues | éliminer les bundles périmés et aligner art/cine/musique sur l'emplacement du jeu ; avant = même socle final, avec seulement les optimisations de 10-gfx/78-hud retirées. |
+| codex-p16b | `tools/codex-p16/verifier.mjs` | diagnostic par iframe avant attente et en échec : crochets, ready, images absentes, état, erreurs, requêtes en 404 ; alternance AB/BA et dispersion | `ready` peut être vrai malgré une erreur Image ; ne pas confondre absence d'image et attente non repollée. Les coûts appariés sans enveloppes de modules sont séparés du profilage et de la qualification complète R-20. |
+
+Les contrôles statiques des deux variantes passent ; 85 références d'actifs par bundle existent localement. Aucun serveur, navigateur ou réseau sortant utilisé ici. Les sources de jeu des 80 parties précédentes restent identiques après retrait du seul ajout des paramètres d'attente (empreinte vérifiée), donc aucune partie validée rejouée. Relance hors bac indispensable : `cd proto-neon && node tools/codex-p16/verifier.mjs`. Rapport de reprise : `tools/codex-p16/rapport.md`.
+
+
+### codex-p16c — reprise après le reçu navigateur du 18/10 à 04 h 23–04 h 37
+
+18/10/2026 · 04 h 47 (Paris), mis à jour à 04 h 47. Rapport et toutes les mesures : `tools/codex-p16/rapport.md` ; reçu reçu conservé dans `tools/codex-p16/recu-p16b/`.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p16c | `10-gfx.js`, `78-hud.js` | optimisations du lot retirées ; sources exactement restaurées à leur état initial | appariement AB/BA non concluant : charge paysage p95 4 → 3,905 ms, delta médian 0, moyenne −0,0198 ms, écart-type 0,5459 ms ; signe du gain moyen inversé entre AB et BA. Aucun gain maintenu. `20-crt.js` était déjà inchangé. |
+| codex-p16c | `02-regles.js`, ajout `perf.rejeuP16` | `facteurBorne=4`, `tranche=0.25` | reprendre la borne ×4 et la tranche de 0,25 s des pilotes pour le rejeu contrôlé ; aucun chiffre de gameplay ni seuil modifié. Les anciens paramètres Bayer/attente du banc restent pour respecter l'ajout seulement. |
+| codex-p16c | `tools/mesure/criteres/R-30-rejouabilite.mjs`, `tools/codex-p16/raf-controle.mjs` | RAF contrôlé installé avant boot au rechargement, profil vierge et protocole exact des pilotes ; comparer aussi vraies frames avec/sans dessin | S.frame survit à reset ; une image de chargement suffit à décaler flash.d._image dans les DEUX versions. Aucun champ de flash filtré entre dessins ; témoins négatifs conservés. VM : 492 traces dessinées identiques et 427 types de jeu identiques avec/sans dessin, avant/après. |
+| codex-p16c | `79-jeu.js` — cheffe d'orchestre | raccord caméra déjà proposé, non appliqué ; ordre identique de cam.update en dessiné/simulé | premier écart des types de jeu à l'entrée 19, avant comme après ; défaut de simulation antérieur, distinct du compteur d'image de l'instrument. |
+| codex-p16c | `50-fx.js` — propriétaire du module | raccord `tools/codex-p16/raccord-50-fx.js.patch`, NON appliqué : borner le nouveau ralenti avec `N.horloge.etat().gel` quand disponible | après le seul raccord caméra, nouvel écart à l'entrée 219 ; à t=36,6833 s, hitstopLeft=10 mais horloge.gel=0, car dbg.simuler ne fait pas avancer S.frame. Caméra + gel public, en mémoire seulement : 427/427 entrées de jeu égales jusqu'à 60 s, zéro erreur. Ne pas intégrer sans revue séparée des effets et des parties. |
+| codex-p16c | `tools/mesure/criteres/R-20-performance.mjs` | conserver le ratio des pas réels ; observer pendant la fenêtre phase/pause/temps/qualité/dimensions des deux jeux ; publier aussi le p95 brut en cas d'incomparabilité | ancien reçu SNAKE 2030 sans contrôle après startRun : hypothèse d'écran inactif ou de qualité adaptative, non prouvée. Si 2030 reste actif et stable, le critère conserve strictement snake2975 < snake2030 ; sinon non mesurable, jamais OK. |
+| codex-p16c | exécution hors bac | `cd proto-neon && node tools/codex-p16/verifier.mjs` ; reçu neuf `tools/codex-p16/navigateur-p16c/resultats.json` | avant = candidate optimisée reçue, après = optimisations retirées ; mêmes instruments, mêmes scènes et profils, AB/BA, pixels index/RGBA et R-20/R-30 complets. `--raccords` ne teste plus le décor non mesuré : caméra + gel uniquement en mémoire. |
+
+Preuve des 80 parties réemployée sans rejouer le lot validé : sources finales = sources du reçu avant (SHA-256 `2bb363d3ee6f60def19760502a3d1ebaa3812bd6779cef8855f812ec361ca994`) hors seuls paramètres du banc ; sources reçues = reçu après (SHA-256 `46b9c2fcc019b0768a9951d46ab61e2bf6b12ab718df7c5c11cbb04e794f7a51`) hors ajout d'attente. Les deux reçus donnent 80/80 identiques, journaux compris, finies sans erreur. Sources détaillées et vérification exacte dans `tools/codex-p16/diagnostic-p16c.json`. R-20/R-30 navigateur et Safari restent à vérifier ; aucun serveur, Chromium, réseau sortant ou commit utilisé dans ce bac.

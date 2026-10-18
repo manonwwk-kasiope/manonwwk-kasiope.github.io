@@ -1150,6 +1150,14 @@
   R.arene.signaux = { hz: 1, marge: 7, pasY: 20, pasX: 6, colonnes: 4 };
   /* codex-p24 : présentation de la borne, durées de boucle existantes conservées. */
   R.ecrans.attraction.presentation = { ennemis: ['fleche', 'tourelle', 'sentinelle', 'mine'], spriteW: 32, recordsMax: 3 };
+  /* codex-p16 — géométrie de Bayer et taille de la preuve appariée, sans réglage de jeu nouveau. */
+  R.perf.imageP16 = { bayerCote: 4, images: 600, chauffeImages: 120 };
+
+  /* codex-p16b — attente du banc, indépendante de requestAnimationFrame neutralisé. */
+  R.perf.attenteP16 = { delaiMs: 30000, pollingMs: 100 };
+
+  /* codex-p16c — bornes du rejeu contrôlé, reprises du protocole des pilotes. */
+  R.perf.rejeuP16 = { facteurBorne: 4, tranche: 0.25 };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
