@@ -1327,6 +1327,8 @@ var MUSIQUE_EMBED = null;
     flash: { fenetre: 1, max: 3, rafale: 0.05, aireCSS: 21824, aire: 0.066 },
     mesure: { images: 600, dt: 1 / 60, luminanceDelta: 0.1, luminanceSombre: 0.8 }
   };
+  // codex-p32 : repère de mur sous le radar/défi en portrait, avant le toast.
+  R.colosse.gaineP32 = { hautPortrait: 40, plaqueMarge: 4, plaqueHauteur: 24 };
   /* codex-p11 : politique publique de la partie d'attraction ; durées existantes inchangées. */
   R.ecrans.attraction.pilote = 'bon';
   R.gestes.msParSeconde = 1000;
@@ -24025,15 +24027,93 @@ N.colosse = (function () {
     if (!HANDS[k]) HANDS[k] = outlineS(rotS(bati().main0, k * PI / 8), NP);
     return HANDS[k];
   }
+  /* La gaine porte sur les pixels réellement visibles, APRÈS rotation, tramage et flash.
+     Couche locale réutilisée : aucune lecture du décor, du masque de mesure ou d'un autre
+     module. Le pinceau reprend les primitives entières de gfx ; seul le dessin passe ici.
+     Les trous du Bayer et les extrémités des télégraphes ont ainsi aussi leur nuit profonde. */
+  var couche = null, gainee = null, menacesVue = null, dessinMonde = true, gx0, gy0, gx1, gy1;
+  function ouvrirDessin() {
+    var g = N.gfx;
+    if (!couche || couche.w !== g.W || couche.h !== g.H) {
+      couche = O.mk(g.W, g.H); gainee = O.mk(g.W, g.H); menacesVue = new Uint8Array(g.W * g.H);
+    }
+    couche.data.fill(0); gx0 = g.W; gy0 = g.H; gx1 = gy1 = -1;
+  }
+  function pointDessin(x, y, ci) {
+    var g = N.gfx;
+    x = Math.round(x) - g.ox(); y = Math.round(y) - g.oy();
+    if (x < 0 || y < 0 || x >= couche.w || y >= couche.h) return;
+    couche.data[y * couche.w + x] = ci;
+    gx0 = Math.min(gx0, x); gy0 = Math.min(gy0, y); gx1 = Math.max(gx1, x); gy1 = Math.max(gy1, y);
+  }
+  function rectangleDessin(x, y, w, h, ci) {
+    x = Math.round(x); y = Math.round(y); w = Math.round(w); h = Math.round(h);
+    for (var j = 0; j < h; j++) for (var i = 0; i < w; i++) pointDessin(x + i, y + j, ci);
+  }
+  function ligneDessin(x0, y0, x1, y1, ci) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1, err = dx - dy;
+    for (;;) {
+      pointDessin(x0, y0, ci);
+      if (x0 === x1 && y0 === y1) break;
+      var e2 = err + err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+    }
+  }
+  function cercleDessin(x, y, r, ci, t) {
+    x = Math.round(x); y = Math.round(y); r = Math.round(r);
+    var g = N.gfx;
+    for (var j = -r; j <= r; j++) {
+      var dx = (Math.sqrt(r * r - j * j) + 0.5) | 0;
+      for (var i = -dx; i <= dx; i++) if (t === undefined || t >= 1 || N.pal.dither(x + i - g.ox(), y + j - g.oy(), t)) pointDessin(x + i, y + j, ci);
+    }
+  }
+  function anneauDessin(x, y, r, ci, t) {
+    x = Math.round(x); y = Math.round(y); r = Math.round(r);
+    if (r < 0 || (t !== undefined && !(t > 0))) return;
+    var g = N.gfx;
+    function pt(px, py) { if (t === undefined || t >= 1 || N.pal.dither(px - g.ox(), py - g.oy(), t)) pointDessin(px, py, ci); }
+    var ox = r, oy = 0, err = 1 - r;
+    while (ox >= oy) {
+      pt(x + ox, y + oy); pt(x - ox, y + oy); pt(x + ox, y - oy); pt(x - ox, y - oy);
+      pt(x + oy, y + ox); pt(x - oy, y + ox); pt(x + oy, y - ox); pt(x - oy, y - ox);
+      oy++;
+      if (err < 0) err += 2 * oy + 1; else { ox--; err += 2 * (oy - ox) + 1; }
+    }
+  }
+  var pinceau = { px: pointDessin, rect: rectangleDessin, line: ligneDessin, circ: cercleDessin,
+    ring: anneauDessin, ditherCirc: cercleDessin };
+  function fermerDessin() {
+    if (gx1 < gx0) return;
+    var g = N.gfx, w = couche.w, h = couche.h, d = couche.data, b = gainee.data, ep = R.lisibiliteP10.teteGaine;
+    b.fill(0);
+    // Dilatation cardinale de l'encre, sans épaissir les gaines déjà présentes.
+    for (var y = gy0; y <= gy1; y++) for (var x = gx0; x <= gx1; x++) {
+      var i = y * w + x, v = d[i];
+      if (!v || v === NP) continue;
+      for (var k = 1; k <= ep; k++) {
+        if (x >= k && !d[i - k]) b[i - k] = NP;
+        if (x + k < w && !d[i + k]) b[i + k] = NP;
+        if (y >= k && !d[i - k * w]) b[i - k * w] = NP;
+        if (y + k < h && !d[i + k * w]) b[i + k * w] = NP;
+      }
+    }
+    for (var yy = gy0; yy <= gy1; yy++) for (var xx = gx0; xx <= gx1; xx++) {
+      var at = yy * w + xx, c = d[at];
+      // Au bord du cadre, la gaine se replie vers l'intérieur plutôt que sortir du tampon.
+      if (c) b[at] = xx < ep || yy < ep || xx >= w - ep || yy >= h - ep ? NP : c;
+    }
+    if (dessinMonde) for (var p = 0; p < b.length; p++) if (b[p]) menacesVue[p] = b[p];
+    g.blit(gainee, g.ox(), g.oy());
+  }
   /* une pièce à la densité k (1 = pleine), en gardant ses couleurs ; le flash de frappe la blanchit */
-  function dp(s, x, y, k, flash) {
-    if (flash) { O.putInk(O.inner(s), x, y, OS); return; }
-    if (k >= 1) { O.put(s, x, y); return; }
+  function dp(s, x, y, k, flash, encre) {
     if (!(k > 0)) return;
-    var x0 = Math.round(x) - s.cx, y0 = Math.round(y) - s.cy, D = N.pal.dither, g = N.gfx, d = s.data, w = s.w;
+    var x0 = Math.round(x) - s.cx, y0 = Math.round(y) - s.cy, D = N.pal.dither, g = pinceau, d = s.data, w = s.w;
     for (var j = 0; j < s.h; j++) for (var i = 0; i < w; i++) {
       var v = d[j * w + i];
-      if (v && D(x0 + i, y0 + j, k)) g.px(x0 + i, y0 + j, v);
+      if (v && (k >= 1 || D(x0 + i, y0 + j, k))) g.px(x0 + i, y0 + j, v === NP ? NP : flash ? OS : encre === undefined ? v : encre);
     }
   }
 
@@ -24130,10 +24210,12 @@ N.colosse = (function () {
   function dessinerMurs() {
     var m = st.mur;
     if (!m) return;
-    var v = O.VUE, a = m.rect, g = N.gfx, bord = R.apparitions.naissance.bord;
+    var v = O.VUE, a = m.rect, g = pinceau, bord = R.apparitions.naissance.bord;
     // Les cibles hors cadre ont un repère au bord : l'annonce reste visible sur téléphone.
     var x0 = O.clamp(a.x, v.x + bord, v.x + v.w - bord), x1 = O.clamp(a.x + a.w, v.x + bord, v.x + v.w - bord);
-    var y0 = O.clamp(a.y, v.y + bord, v.y + v.h - bord), y1 = O.clamp(a.y + a.h, v.y + bord, v.y + v.h - bord);
+    // Le repère projeté doit rester sous les plaques du score et du radar.
+    var haut = v.y + (O.geo.safe.t | 0) + (O.geo.portrait ? R.colosse.gaineP32.hautPortrait : R.hud.tempsForts.banniere.hautReserve);
+    var y0 = O.clamp(a.y, haut, v.y + v.h - bord), y1 = O.clamp(a.y + a.h, haut, v.y + v.h - bord);
     g.line(x0, y0, x0, y1, MAG); g.line(x1, y0, x1, y1, MAG);
     g.line(x0, y0, x1, y0, MAG); g.line(x0, y1, x1, y1, MAG);
   }
@@ -24689,7 +24771,7 @@ N.colosse = (function () {
 
   /* ============================ le dessin du corps (sous la joueuse) ============================ */
   function oeilDessin(x, y, mode) {
-    var g = N.gfx, P = N.joueuse && N.joueuse.tete;
+    var g = pinceau, P = N.joueuse && N.joueuse.tete;
     if (mode === 'ferme') { g.rect(x - 6, y, 13, 1, SANG); g.rect(x - 5, y + 1, 11, 1, NP); return; }
     if (mode === 'vise') {                                           // fente : il charge
       var on = (Math.floor(O.T.ak * 14) & 1) === 0;
@@ -24728,7 +24810,7 @@ N.colosse = (function () {
     var fl = st.flashO > 0 && (st.mode === 'combat');
     var hy = by - CFG.dTete, ty = by + 16;
     if (sil) {
-      O.blitDither(S.tronc, bx, ty, SANG, k); O.blitDither(S.tete, bx, hy, SANG, k);
+      dp(S.tronc, bx, ty, k, false, SANG); dp(S.tete, bx, hy, k, false, SANG);
       return;
     }
     if (st.ph === 1 || st.mode === 'arrivee') {                      // les mains encore au corps
@@ -24740,11 +24822,13 @@ N.colosse = (function () {
     if (k >= 0.5 && st.mode !== 'mort') {
       var eo = (st.mode === 'combat' && oeilVulnerable()) ? 'ouvert' : (st.atk && st.atk.phase === 0) ? 'vise' : (st.atk && st.atk.k === 'rayon') ? 'vise' : 'ferme';
       if (eo === 'ouvert' && st.oeilT < 0.4 && (Math.floor(O.T.ak * 16) & 1)) eo = 'ferme';
-      if (fl && eo === 'ouvert') { N.gfx.circ(bx, hy + 1, 8, OS); } else oeilDessin(bx, hy + 1, eo);
+      if (fl && eo === 'ouvert') { pinceau.circ(bx, hy + 1, 8, OS); } else oeilDessin(bx, hy + 1, eo);
     } else if (st.mode === 'mort') oeilDessin(bx, hy + 1, 'vise');
   }
   function draw() {
     if (!st.on) return;
+    ouvrirDessin();
+    dessinMonde = true; menacesVue.fill(0);
     O.safe('colosse.corps', corps);
     /* les mains détachées (phase 2) : lames orientées dans le sens de leur course */
     if (st.ph === 2 && st.mode === 'combat') {
@@ -24754,11 +24838,12 @@ N.colosse = (function () {
         dp(main16(O.dir16(m.ang)), m.x, m.y, m._fant ? 0.6 : 1, st.mflash[i] > 0);
       }
     }
+    fermerDessin();
   }
 
   /* ============================ les télégraphes (monde) et la jauge (écran) ============================ */
   function trait(x0, y0, x1, y1, plein) {                           // pointillés qui courent, gainés de nuit profonde ; plein et rose sur la fin
-    var g = N.gfx, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, x, y;
+    var g = pinceau, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, x, y;
     if (L < 1) return;
     var c = dx / L, s = dy / L, nx = -s, ny = c, ph = (O.T.ak * 30) | 0, V = O.VUE;
     for (i = 0; i < L; i++) {
@@ -24769,7 +24854,7 @@ N.colosse = (function () {
     }
   }
   function bande(x0, y0, x1, y1, hw, plein) {                       // la bande exacte de la lame : bords en pointillés, fond tramé
-    var g = N.gfx, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, j;
+    var g = pinceau, dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy) | 0, i, j;
     if (L < 1) return;
     var c = dx / L, s = dy / L, nx = -s, ny = c, D = N.pal.dither, V = O.VUE;
     for (i = 0; i < L; i += 1) {
@@ -24784,14 +24869,14 @@ N.colosse = (function () {
     trait(x0 - nx * hw, y0 - ny * hw, x1 - nx * hw, y1 - ny * hw, plein);
   }
   function anneaux(x, y, k, r0, plein) {
-    var g = N.gfx;
+    var g = pinceau;
     for (var j = 0; j < 3; j++) {
       var r = r0 * (1 - k) + 12 + j * 5;
       g.ring(x, y, r + 1, NP, 1); g.ring(x, y, r, plein ? ROSE : MAG, 0.5 + 0.5 * k);
     }
   }
   function teles() {
-    var a = st.atk, e = st.oeil, g = N.gfx, i, plein;
+    var a = st.atk, e = st.oeil, g = pinceau, i, plein;
     if (!a || a.phase !== 0 || !e) return;
     plein = a.tele - a.t <= 0.3;
     var k = O.clamp(a.t / a.tele, 0, 1), ex = e.x, ey = e.y;
@@ -24828,8 +24913,16 @@ N.colosse = (function () {
   }
   var SEUILS = [0.66, 0.33];
   function jauge() {
-    var g = N.gfx, geo = O.geo, W = geo.W, sf = geo.safe || { l: 0, t: 0 };
+    var g = pinceau, geo = O.geo, W = geo.W, sf = geo.safe || { l: 0, t: 0 };
     var w = Math.max(60, Math.min(W - 2 * (sf.l | 0) - 40, 240)) | 0, x = ((W - w) / 2) | 0, y = (sf.t | 0) + geo.hudH + 3, h = 5;
+    // Gainer les seules pièces réellement dessinées sous la jauge, sans plaque opaque
+    // supplémentaire sur le décor. menacesVue est notre propre couche, pas le masque de test.
+    var marge = R.colosse.gaineP32.plaqueMarge, reel = N.gfx, owner = reel.owner();
+    reel.owner(N.ids.proprietaires.ennemi);
+    for (var py = Math.max(0, y - marge); py < Math.min(reel.H, y - marge + R.colosse.gaineP32.plaqueHauteur); py++) {
+      for (var px = Math.max(0, x - marge); px < Math.min(reel.W, x + w + marge); px++) if (menacesVue[py * reel.W + px]) reel.px(px, py, NP);
+    }
+    reel.owner(owner);
     var fill = st.mode === 'arrivee' ? O.clamp(st.jaugeT / K.jauge, 0, 1) : 1;
     var fr = O.clamp(pv(), 0, 1) * fill, fw = Math.round(w * fr);
     g.rect(x - 1, y - 1, w + 2, h + 2, NP);
@@ -24838,18 +24931,29 @@ N.colosse = (function () {
     if (fw > 0) g.rect(x, y, fw, 1, ROSE);
     for (var i = 0; i < SEUILS.length; i++) g.rect(x + Math.round(w * SEUILS[i]), y - 2, 1, h + 4, OS);
     var nom = CFG.noms[st.ph] || 'LE CYCLOPE';
+    fermerDessin();
     O.textC(nom, W / 2, y + h + 3, OS, true, 1);
+    ouvrirDessin();
   }
   function drawTop() {
     if (!st.on) return;
-    var g = N.gfx;
+    var g = pinceau;
+    ouvrirDessin();
+    dessinMonde = true;
     O.safe('colosse.murs', dessinerMurs);
     O.safe('colosse.teles', teles);
     if (st.mode === 'mort' && st.brasierT > 0 && (!N.fx || typeof N.fx.flashGate !== 'function' || N.fx.flashGate(15000))) {
       g.ditherCirc(st.bx, st.by - 20, 74, BRA, 0.75);
     }
+    fermerDessin();
     O.origine(0, 0);
+    ouvrirDessin();
+    dessinMonde = false;
+    // La jauge et son libellé sont de l'interface, comme le score et le radar.
+    var owner = N.gfx.owner(); N.gfx.owner(N.ids.proprietaires.hud);
     O.safe('colosse.jauge', jauge);
+    N.gfx.owner(owner);
+    fermerDessin();
     O.origineMonde();
   }
 
