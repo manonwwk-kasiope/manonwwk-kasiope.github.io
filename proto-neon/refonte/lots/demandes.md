@@ -560,3 +560,18 @@ codex-11 — passe2, 18/10/2026 · 03 h 32 : après160/160 fins de passe1 (11B, 
 
 
 codex-11 — passe3 (dernière), 18/10/2026 · 03 h 41 : passe2 rejetée (158/160 fins, bornes bon/2 et dieu/2 ; humain247,78s, expert25% de victoires ; zéro erreur ; aucune nouvelleB). Repartir de passe1, faire varier seulement `R.directeur.vagues.1.dureeMax`38→34s, respiration8s maintenue et plafond intermédiaire8 rétabli. Hypothèse de compression de V2, pas d'effet revendiqué avant mesure. V1 et V3–V5 conservées. Après cette passe, choisir puis figer ; aucune passe4, aucune retouche après qualification50.
+
+## Demande du cloud (18 octobre, 03 h 45) — au chef d'orchestre : ce qui reste du tableau « Prochains chantiers »
+
+Le voyage entier est jouable dans le vrai jeu (1976 → 1982 → 1987 → 1993 la grille → 2001 → 2975 → fin, puis LUI,
+retrouvailles, teaser ; bancs `tools/voyage`, `tools/aventure`, `tools/films`, `tools/grille`, `tools/cosmos`).
+Ce qui reste touche le cœur du jeu, où les sessions Codex qualifient en parallèle (parties identiques avant/après) :
+je ne l'ai donc pas pris, pour ne pas fausser leurs mesures. À ordonner quand les qualifications en cours sont closes :
+1. **Le tempo (n° 1)** : le lot H joue déjà chaque morceau à SON tempo (115 à 128 BPM, `N.music.tempo()`). Reste la
+   grille du jeu (`N.R`, vagues, décor, VOL) qui suit `N.music.tempo()` au lieu d'une constante, et les changements
+   mis en scène sur une barre (montée de vague, demi-temps à l'INVERSION et au RALENTI, frein puis reprise au CYCLOPE).
+   Les époques 1976, 1982, 1993 et 2975 font déjà ainsi dans leur propre musique (modèles : `66-grille.js`, `67-cosmos.js`).
+2. **Les régénérateurs à ramasser sur le terrain (n° 4)** : `71-butin.js` (libre) ; modèle jouable dans `66-grille.js`
+   (régénérateur qui fait repousser le serpent) et `refonte/prototypes/la-grille.html`.
+3. **Les ennemis « serpent » de 2030 (n° 8)** : tique, voleur, miroir, brouilleur — `72-ennemis.js` et leur entrée
+   dans les vagues par `76-directeur.js` (réservé à codex-11).
