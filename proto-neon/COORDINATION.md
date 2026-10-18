@@ -168,6 +168,8 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
    POINT ORDRE13 (18/10/2026 · 06 h 52) : base45ef605 figée dans tools/codex-12/elites/, seul79-scene change. Une correction géométrique bornant l’empreinte brasier dans le cadrage, mêmes rayon/durée/aire admise/porte/planification, aucune retouche50/72/02 ni déplacement de cible. Quatre contrats producteur passent, dont porte refusée→aucunbrasier ; pas encore de verdict tampon. Référence80engagée59841/session17589 ; suite60764/session32316 attend sa fin puis80après, cache distinct pargraîne. Chromiumunique61506/session14062 attendChef pourR12troisprofils/R13troisprofils+réduit avant/après, instrumentscopiésfigés. Attenteinitiale60405 arrêtée avant toute mesure pour corriger fermeture/captureconsole, finréelle vérifiée, aucunChromiumdoublonné. REPRISE : tools/codex-12/elites/REPRISE.json. Pas une livraison finale, n’ajoute aucune file.
 
+   COMPLÉMENT ORDRE13 (18/10/2026 · 06 h 56) :80avant et80après réellement terminés, **80/80 métriques strictement identiques**,0JS/console,79fins de chaque côté et même dieu/2 borné540s (reçus/écarts conservés). Sessions17589/32316 fermées, PIDs59841/60764/61531 morts ; ne les relance pas. Seule file61506/session14062 attend encoreChef pourR12/R13avant/après. Pas encore de verdict de pixels ni de conformitéR13. Candidatgéométrique etinstruments toujoursfigés, aucun autre réglage.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |

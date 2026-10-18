@@ -1,23 +1,13 @@
 {
   "objectif": "Ordre13 R12 mortsélites / R13 préservé",
-  "dateParis": "18/10/2026 · 06 h 52",
+  "dateParis": "18/10/2026 · 06 h 56",
   "base": "45ef605b9dd0fb8f64a172f08ba540c3f196f06b",
-  "phase": "Qualification en cours, candidat géométrique figé, aucun réglage de règle",
+  "phase": "80avant/après terminés : 80/80 métriques identiques,0JS,79fins chacun ; Chromium attendChef",
   "processus": [
-    {
-      "pid": 59841,
-      "session": 17589,
-      "tache": "80avant pargraine série, vérifier fin réelle"
-    },
-    {
-      "pid": 60764,
-      "session": 32316,
-      "tache": "qualifier attendavant puis80apres ; son ancienchromiumPid60405 est caduc, surveiller61506 séparément"
-    },
     {
       "pid": 61506,
       "session": 14062,
-      "tache": "criteres.mjs attendChef, R12/R13 avant/après dansunseulcréneau, aucun doublon"
+      "tache": "criteres.mjs : seule filecourante, attenteChef puisR12/R13avant/après"
     }
   ],
   "arreteAvantMesure": {
@@ -27,7 +17,8 @@
   },
   "preuves": {
     "contrats": "4/4 contrats producteur conformes ; pas une preuve tampon",
-    "sources": "39sources avant/apres ; seul79-scene, mêmeporte/aire/durée/planification, seuls centres bornésdansvue"
+    "sources": "39sources avant/apres ; seul79-scene, mêmeporte/aire/durée/planification, seuls centres bornésdansvue",
+    "80": "ecarts.json,80/80toutesmétriquesidentiques,79finsavant/après,même dieu2borne540,0JSconsole"
   },
   "restant": [
     "80avant/après puis ecarts",
@@ -40,5 +31,11 @@
     "modifier50/72réservés oucritères",
     "réglageB/regroupement"
   ],
-  "prochaineAction": "Lire lesdeux fichiersexecution etps réels. Master60764 ne suitplusChromiumcourant, Qfini peut seulement signifier80terminés ; attendrecriteres-execution.phase=fini etPID61506 mort avant rapport.mjs. Aucun nouveau banc. Scripts/sources/instrumentsfigés, pulls horspaire possibles carcopies complètes, jamaisécraserp35/p38/p44."
+  "prochaineAction": "Vérifier61506/14062 etcriteres-execution.json. Aucun nouveauChrome/VM. Master60764 terminé, session32316fermée, phases80closes. Attendre phasefini etPID61506 mort puisrapport.mjs (lectureseule), livrerlescritèresavecréserves réelles, libérer79 ettools puispull/relireboîte.",
+  "processusTermines": [
+    59841,
+    60764,
+    61531,
+    60405
+  ]
 }
