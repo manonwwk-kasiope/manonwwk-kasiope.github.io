@@ -1,0 +1,49 @@
+--- a/src/50-fx.js
++++ b/src/50-fx.js
+@@ -312,6 +312,8 @@
+ 
+   /* ---------------- secousse à trauma ---------------- */
+   var trauma = 0, shakeOut = 0, shakeF = -1, shakeBase = 0;
++  var shakeClock = 0, shakeDebut = -Infinity, shakeCrete = 0;
++  var SH_BUD = N.R && N.R.scene && N.R.scene.budgets && N.R.scene.budgets.secousse;
+   /* plafond en pixels de jeu : 12 à px = 2 (iPhone), 8 à px = 4 (bureau), jamais sous 7 (critère 4 : 6 au moins) */
+   function shMax() {
+     var P = (N.gfx && N.gfx.PX) | 0 || 2, m = SH_CSS / P;
+@@ -328,6 +330,21 @@
+     var M = shMax();
+     if (a > M) a = M;
+     var need = Math.sqrt(a / M), f = frameNo();
++    /* Une rafale ne rallonge pas chaque petite secousse : sa crête remplace,
++       sans addition, la précédente dans la fenêtre. Une première frappe isolée
++       garde son amplitude et sa décroissance ; les impacts R12 (dont CYCLOPE)
++       reprennent immédiatement la main. Aucune action sur l’horloge des flashs. */
++    if (SH_BUD) {
++      if (a >= SH_BUD.forte || shakeClock - shakeDebut >= SH_BUD.fenetre) {
++        shakeDebut = shakeClock; shakeCrete = need;
++        if (need > trauma) trauma = need;
++      } else if (need > shakeCrete) {
++        shakeCrete = need;
++        if (need > trauma) trauma = need;
++      }
++      writeShake();
++      return;
++    }
+     /* le même impact appelle souvent boom() puis shake() : dans une même image, on garde le plus fort ;
+        d'une image à l'autre, les coups s'accumulent */
+     if (f !== shakeF) { shakeF = f; shakeBase = trauma; }
+@@ -567,6 +584,7 @@
+        pendant une chaîne de gels ferait clignoter les bords clairs (mesuré : 11 flashs/s sur bureau) */
+     var rdt = frozen() ? dtR / HS_SLOW : dtR;
+     if (rdt > 0.05) rdt = 0.05;
++    shakeClock += rdt;
+     trauma -= TDECAY * rdt;
+     if (trauma < 0) trauma = 0;
+     writeShake();
+@@ -1245,6 +1263,7 @@
+        appelle reset() à chaque interlude, une seconde après une explosion peut encore compter) */
+     resetG();
+     hsSet = -1e9; hsEnd = -1e9; trauma = 0; shakeOut = 0; shakeF = -1; shakeBase = 0;
++    shakeClock = 0; shakeDebut = -Infinity; shakeCrete = 0;
+     for (var h = 0; h < 1024; h++) { HITF[h] = -1e9; HITT[h] = -1e9; }
+     readPrefs();
+     if (s) { s.shake = 0; s.heat = 0; }

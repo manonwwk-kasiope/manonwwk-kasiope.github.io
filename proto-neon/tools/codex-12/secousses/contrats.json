@@ -1,0 +1,98 @@
+{
+  "dateParis": "18/10/2026 12:00:23",
+  "controles": [
+    {
+      "nom": "Impact isolé 2.2px, PX=2 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 2.2,
+        "pasPositifs": 11
+      }
+    },
+    {
+      "nom": "Impact isolé 6px, PX=2 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 6.000000000000001,
+        "pasPositifs": 18
+      }
+    },
+    {
+      "nom": "Impact isolé 12px, PX=2 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 12,
+        "pasPositifs": 25
+      }
+    },
+    {
+      "nom": "Impact isolé 2.2px, PX=4 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 2.2,
+        "pasPositifs": 14
+      }
+    },
+    {
+      "nom": "Impact isolé 6px, PX=4 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 5.999999999999999,
+        "pasPositifs": 22
+      }
+    },
+    {
+      "nom": "Impact isolé 12px, PX=4 : courbe strictement identique",
+      "ok": true,
+      "preuve": {
+        "max": 8,
+        "pasPositifs": 25
+      }
+    },
+    {
+      "nom": "Rafale ordinaire : occupation réduite, retour au silence dans la fenêtre",
+      "ok": true,
+      "preuve": {
+        "avant": 120,
+        "apres": 20,
+        "pas": 120
+      }
+    },
+    {
+      "nom": "CYCLOPE : impact fort prioritaire même pendant une rafale faible",
+      "ok": true,
+      "preuve": {
+        "pic": 12
+      }
+    },
+    {
+      "nom": "Écriture directe caméra conservée (chemin CYCLOPE)",
+      "ok": true,
+      "preuve": {
+        "apresUnPas": 7.235363282309382
+      }
+    },
+    {
+      "nom": "Fenêtre expirée : une nouvelle frappe ordinaire reprend sa pleine amplitude",
+      "ok": true,
+      "preuve": {
+        "pic": 2.2
+      }
+    },
+    {
+      "nom": "Préférence secousse nulle conservée",
+      "ok": true,
+      "preuve": {
+        "pic": 0
+      }
+    },
+    {
+      "nom": "Porte de flashs et journal strictement identiques sous mêmes sollicitations",
+      "ok": true,
+      "preuve": {
+        "decisions": 120,
+        "comparaison": "JSONstrict : prototypes decontextesVM distincts exclus"
+      }
+    }
+  ]
+}
