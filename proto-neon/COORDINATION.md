@@ -116,6 +116,7 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/15-decor.js` | Codex (session parallèle codex-p13) | 18/10 à 02 h 13 | R-13 photosensibilité : le décor produit jusqu'à 14 flashs/s (seuil 3), mesure de codex-p10 |
 | `src/77-score.js`, `src/80-ecrans.js` | Codex (session parallèle codex-p12) | 18/10 à 02 h 00 | R-16 (`N.score.defis`), R-36 (déblocages, défis du jour, raison de revenir) |
 | `src/50-fx.js`, `src/40-sprites.js` | Codex (session parallèle codex-p10) | 18/10 à 01 h 55 | R-13 (journal des flashs, ≤ 3 par seconde prouvé) et R-37 (gaine de la tête) |
 | `src/76-defile.js` (nouveau), `src/76-directeur.js`, `tools/codex-10/` | Codex | 18/10 à 01 h 45 | codex-10 : DÉFILÉ et respiration ; raccord79 livré en patch, chiffres02 réservés àp5 (aucune modification sans partage explicite) |
