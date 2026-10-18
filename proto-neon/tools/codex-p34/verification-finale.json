@@ -1,0 +1,25 @@
+{
+  "dateParis": "18/10/2026 05:09:20",
+  "checks": {
+    "calibration10": true,
+    "actuel80": true,
+    "contrefactuel30": true,
+    "finEtZeroErreur": true,
+    "paires190": true,
+    "temoin20": true,
+    "sourceListe": true,
+    "sourcesIntactes": true,
+    "indexIdentiqueHead": true,
+    "relecture40": true
+  },
+  "tousConformes": true,
+  "buildSortie": 0,
+  "playwright": "script contrôlé, non exécuté",
+  "reseauSortant": "aucun",
+  "commit": "aucun",
+  "incidentAudit": {
+    "commande": "git show HEAD:proto-neon/index.html via execFileSync",
+    "erreur": "ENOBUFS",
+    "resolution": "Comparaison des empreintes de blob Git, sans transférer le contenu du bundle dans le tampon de sortie ; aucune simulation rejouée"
+  }
+}
