@@ -142,7 +142,8 @@ N.dir = (function () {
   /* créer un ennemi : portail de 600 ms (le double pour une élite), modificateur RAPIDE de la vague 5, compte du quota */
   function mk(type, x, y, o) {
     o = o || {};
-    if (N.ennemis.counts().regular >= plafond()) return null;
+    var comptes = N.ennemis.counts();
+    if (comptes.regular >= plafond() || comptes.regular + comptes.traqueur >= secteur().plafondDur.ennemis) return null;
     var w = info(), por = o.portail !== undefined ? o.portail : ((R && R.apparitions && R.apparitions.portail) || 0.6) * (o.elite ? 2 : 1);
     var mods = o.mods || {};
     if (w && w.rapide && !o.elite && type !== 'mine' && type !== 'ruche' && rnd() < w.rapide) { mods = { rapide: true }; }
@@ -358,7 +359,7 @@ N.dir = (function () {
     if (st.gate > 0 && P) {
       if (st.angPrec !== null) st.turn += Math.abs(O.wrapA(P.ang - st.angPrec));
       st.angPrec = P.ang;
-      if (st.turn > Math.PI / 4 && st.tw < st.gate) st.gate = st.tw;
+      if (st.turn > secteur().premierEnnemi.apresVirageDeg * Math.PI / 180 && st.tw < st.gate) st.gate = st.tw;
     }
     var cap = plafond(), regl = reglage();
     /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
