@@ -1327,6 +1327,33 @@ var MUSIQUE_EMBED = null;
   R.ecrans.attraction.pilote = 'bon';
   R.gestes.msParSeconde = 1000;
 
+  /* codex-p13 : fondus et trames du décor, aucune règle de combat modifiée. */
+  R.decorPhotosensibilite = {
+    fondu: 1.2, cycle: 4.8, cameraVitesse: 60, eclairDuree: 1.2, eclairRepos: 2.4,
+    trame: 4, rangsFondu: 64, seuilLumineuxSol: 0.25, solChaudMax: 0.03, solLumineuxMax: 0.08
+  };
+  /* codex-p4c : inégalité stricte hors champ, en pixels de jeu ; autres marges réemployées. */
+  R.apparitions.naissance = { bord: 1 };
+  // Identités stables distinctes des ennemis et des mèches instables de 72.
+  R.arene.teleMurs = { ids: [-10001, -10002, -10003, -10004] };
+  /* codex-p12 : défis mesurables sans modifier les flux ni le combat des pilotes. */
+  R.defis.partie = {
+    reserve: ['premierJet', 'lasso6', 'sansCoupe', 'chaine5', 'sansFilet'],
+    finirNom: 'FINIR', finirBut: 1,
+    // Primes versées au bilan : elles ne déclenchent pas de vie bonus pendant le combat.
+    legacy: { nom: 'DIX KILLS EN CHAÎNE', but: 10, prime: 5000, energie: 20 },
+    jourRepli: 20261017
+  };
+  R.defis.retour = {
+    // Seuils du lot R-36 ; les identifiants et options restent ceux de R.deblocages.
+    seuils: [25, 180, 350, 550, 800]
+  };
+  R.ecrans.retour = {
+    echelle: 2, marge: 5, padding: 4, ecart: 8, ligne: 18, barreH: 3,
+    texteH: 14, colonnes: 2, paginationReserve: 2, boutonPt: 44,
+    finNoms: { ralenti: 'RALENTI', repli: 'REPLI', styles: 'STYLES', galerie: 'GALERIE', departV3: 'DÉPART V3' }
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
@@ -1762,7 +1789,7 @@ var MUSIQUE_EMBED = null;
     for (var k in v) if (L.cartes.indexOf(k) < 0 || !(typeof v[k] === 'number' && (v[k] | 0) === v[k] && v[k] >= 0 && v[k] <= 4)) return false;
     return true;
   }, 'niveaux : { idCarte: palier 0 à 4 } ou tableau de paliers');
-  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b' });
+  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b', fin: '?o', retour: '?o' });
   /* S.vol (lot I) : LE VOL vu par les pilotes, null hors du VOL. Les objets visibles seulement (rayon projeté ≥ 1), dans le plan de la
      tête : x, y = l'endroit où l'objet croisera la tête, dans le repère de `tete` ; z = sa profondeur actuelle ; r = son rayon dans le
      plan de la tête ; avant = les secondes avant qu'il croise la tête ; reste = les secondes qui restent au VOL. */
@@ -1799,7 +1826,8 @@ var MUSIQUE_EMBED = null;
   CH.pouvoir = obj({ id: un(L.pouvoirs), evt: un(['debut', 'fin', 'pret']) });
   CH.apogee = obj({ id: un(['apogee']), evt: un(['pleine', 'debut', 'fin']) });
   CH.boost = obj({ id: un(['boost']), evt: un(['on', 'off', 'panne']) });
-  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+' });
+  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+',
+    evt: '?s', portee: '?s', nom: '?s', etat: '?s', fait: '?b', prog: '?n+', but: '?n+', jour: '?i+', vague: '?i+' });
   CH.deblocage = obj({ id: un(L.deblocages) });
 
   /* ---- les enregistrements du journal (§ 7.9) : {pas, t, image, type, d}, d au schéma du type ---- */
@@ -3431,7 +3459,7 @@ N.art = (function () {
    INTERFACE (N.decor) — rien ne s'appelle au chargement :
        build()                    branche les événements (vague, vol, inversion, phase) ; idempotent
        etat(nom)                  'calme'|'montee'|'chaos'|'inversion'|'colosse'|'victoire' ; sans argument : l'état
-       quartier(nom)              'docks'|'artere'|'centrale'|'ciel'|'tours'|'coeur'|'eclipse' ; balayage tramé de 0,5 s
+       quartier(nom)              'docks'|'artere'|'centrale'|'ciel'|'tours'|'coeur'|'eclipse' ; fondu tramé borné par N.R.decorPhotosensibilite.fondu
        preparer(nom)              précalcul par tranches (une par image) pendant LE VOL qui mène à ce quartier
        drawFar(cam)               P0..P5 et le sol, en ESPACE ÉCRAN (origine (0,0)) : à appeler après N.gfx.clear
        drawPlateau(cam)           grille holographique et murs, en espace MONDE (origine (cam.x, cam.y))
@@ -3451,6 +3479,7 @@ N.art = (function () {
 
   /* ================================ les chiffres (→ N.R.decor) ================================ */
   function RD() { return (N.R && N.R.decor) || {}; }
+  function securite() { return N.R.decorPhotosensibilite; }
   var CW = 640, CH = 96;                  // → N.R.decor.plans.P3.prolonge : la cité, bouclée à 640 px de large
   var SW = 448, SHT = 76;                 // les structures : une bande de 448 × 76
   var MW = 512, MH = 44;                  // les montagnes (512 de large, comme `horizon`)
@@ -3487,7 +3516,7 @@ N.art = (function () {
   function enJeu() {
     if (!N.game || !N.game.etat) return false;
     var e = N.game.etat();
-    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort';
+    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort' || e === 'victoire' || e === 'fin';
   }
 
   /* ================================ outils ================================ */
@@ -3581,7 +3610,10 @@ N.art = (function () {
     return env[i0 & 3] + (env[(i0 + 1) & 3] - env[i0 & 3]) * f;
   }
   /* ---- P3 : la cité, 640 × 96, bouclée ---- */
-  function buildVille(q) {
+  function buildVille(q, phase) {
+    if (phase === undefined) {
+      var im = buildVille(q, 0); im.phases = [im, buildVille(q, 1)]; return im;
+    }
     var Q = QU[q], V = Q.ville, r = flux(Q.seed), img = newImg(CW, CH), base = CH - 1;
     var fenP = Q.fen, band = Q.bande;
     /* une passe de fond (nuit), une passe de devant (ardoise) : deux profondeurs, la cité n'est pas un mur */
@@ -3593,7 +3625,7 @@ N.art = (function () {
         if (pass === 0) h = Math.round(h * 0.78) + 3;
         if (V.centrale && pass === 1 && x > CW / 2 - 70 && x < CW / 2 + 40) h = r.i(60, 90);
         h = Math.min(h, CH - 2);
-        batiment(img, r, x, base, w, h, corps, pass, V, fenP, band);
+        batiment(img, r, x, base, w, h, corps, pass, V, fenP, band, phase);
         x += w + r.i(V.ecartMin, V.ecartMax);
       }
     }
@@ -3602,7 +3634,7 @@ N.art = (function () {
       for (var px = 6; px < CW; px += 30) fr(img, px, ry + 3, 2, 12, C.IN); }
     return img;
   }
-  function batiment(img, r, x, base, w, h, corps, pass, V, fenP, band) {
+  function batiment(img, r, x, base, w, h, corps, pass, V, fenP, band, phase) {
     var top = base - h + 1;
     fr(img, x, top, w, h, corps);
     fr(img, x + w - 1, top, 1, h, pass ? C.IN : C.AR);                   // arête éclairée : le côté droit
@@ -3625,7 +3657,7 @@ N.art = (function () {
         var yy = fy + k; if (yy >= base) break;
         for (var xx = x + 1; xx < x + w - 1; xx++) {
           if (((xx - x + ph) % 6) === 5) continue;                       // pilier
-          if (((xx + yy) & 1) !== 0) continue;                           // trame d'échiquier : 50 %, jamais un plein
+          if (((xx + yy + phase) & 1) !== 0) continue;                           // trame d'échiquier : 50 %, jamais un plein
           var cell = ((xx - x + ph) / 3) | 0;
           var u = ((Math.imul(cell + 1, 2654435761) ^ Math.imul(fy + 7, 40503) ^ Math.imul(x + 3, 9973)) >>> 0) / 4294967296;
           if (u > litProb) continue;
@@ -3750,8 +3782,15 @@ N.art = (function () {
     fp(img, x + (w >> 1), base - h - 1, 6);
   }
 
-  /* ---- P0 : le ciel, une image par (quartier, état), accrochée à l'horizon (bas de l'image = l'horizon) ---- */
-  function buildSky(q, e) {
+  /* ---- P0 : le ciel, quatre phases par (quartier, état), accrochée à l'horizon (bas de l'image = l'horizon) ---- */
+  function buildSky(q, e, phase) {
+    /* Le Bayer est ancré à l'écran : déplacer l'horizon d'un pixel ne doit pas
+       inverser tous les points du ciel. Quatre phases gardent les caches de plans. */
+    if (phase === undefined) {
+      var im = buildSky(q, e, 0); im.phases = [im];
+      for (var p = 1; p < securite().trame; p++) im.phases.push(buildSky(q, e, p));
+      return im;
+    }
     var Q = QU[q], E = ET[e], B = N.pal.BAYER, W = vueW, SH = Math.ceil(vueH * 0.82) + 6, img = newImg(W, SH), d = img.data;
     var ck = Q.ciel, kk = E.ciel;
     var brD = Math.min(0.62, ck.br * kk * 0.55), amD = Math.min(0.5, ck.am * kk * 0.42), saD = Math.min(0.95, ck.sa * kk);
@@ -3763,7 +3802,7 @@ N.art = (function () {
       var brT = clamp01(1 - dd / FOND) * brD * 1.1 + clamp01(1 - dd / haut) * brD * 0.35;
       var amT = clamp01(1 - dd / (FOND * 0.7)) * amD + clamp01(1 - dd / (haut * 0.7)) * amD * 0.4 + clamp01(1 - dd / haut) * brD * 0.4 + clamp01(1 - dd / (SH * 0.95)) * Math.min(0.34, brD * 0.4);   // la longue traîne du ciel : de l'ambre tramé, plus clair que le magenta des ennemis
       if (E.eclipse) { saT = clamp01(1 - dd / (haut * 2.2)) * 1.0; amT *= 0.1; }
-      var o = y * W, br = (y & 3) << 2, br2 = ((y + 2) & 3) << 2, br3 = ((y + 1) & 3) << 2;
+      var o = y * W, br = ((y + phase) & 3) << 2, br2 = ((y + phase + 2) & 3) << 2, br3 = ((y + phase + 1) & 3) << 2;
       for (var x = 0; x < W; x++) {
         var c = C.V;
         if (nuT * 16 > B[br | (x & 3)]) c = C.NU;
@@ -3841,21 +3880,23 @@ N.art = (function () {
 
   /* ================================ l'état courant et les transitions ================================ */
   var cur = { q: 'docks', e: 'calme' };
-  var trans = null, reduit = null;
+  var trans = null, reduit = null, fondStable = null;
+  var camDecorX = null, camDecorY = null;
   var avZ = 0, lastT = -1, tDecor = 0, yhRef = 0, yhLast = 0;
-  var fenT = 0, eclairT = 0, eclairX = 0.5, eclipseK = 0, fenRanges = 0;
+  var fenT = 0, eclairT = 0, dernierEclair = -Infinity, eclairX = 0.5, eclipseK = 0, fenRanges = 0;
   var ondes = [{ x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 },
     { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }];
   var ondeN = 0;
-  var scratch = null, tmpLut = null;
+  var lutRowsAvant = null, fonduCite = 1;
   var etapes = [], preparing = '';
   var branche = false, etatAvantInversion = null, accelK = 1;
 
   function reducedMotion() {
-    if (reduit !== null) return reduit;
-    reduit = false;
-    try { if (typeof window !== 'undefined' && window.matchMedia) reduit = !!window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-    return reduit;
+    if (reduit === null) {
+      reduit = { matches: false };
+      try { if (typeof window !== 'undefined' && window.matchMedia) reduit = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) {}
+    }
+    return !!reduit.matches;
   }
   function mouvementCoupe() {
     var S = N.S, r = S && S.reglages;
@@ -3886,12 +3927,12 @@ N.art = (function () {
     if (!pal() || !N.gfx || !N.gfx.W) { cur.q = vers.q; cur.e = vers.e; return; }
     verifierVue();
     ensure(vers.q, vers.e);
-    /* le balayage tramé de 0,5 s : de haut en bas, la matrice de Bayer comme fondu ; l'ancien décor continue de vivre dessous */
-    var tr = (RD().transition) || 0.5;
-    if (trans && trans.u < 1) trans = { de: trans.vers, vers: vers, t0: tDecor, dur: tr, u: 0 };
-    else trans = { de: { q: cur.q, e: cur.e }, vers: vers, t0: tDecor, dur: tr, u: 0 };
+    /* Repartir du dernier fond VRAIMENT affiché, même quand quartier et état changent
+       dans le même pas. Ne jamais copier le tampon composé des acteurs. */
+    trans = { de: { q: cur.q, e: cur.e }, vers: vers, t0: null,
+      dur: Math.max(RD().transition, securite().fondu), u: 0,
+      fond: fondStable && fondStable.length === N.gfx.buf().length ? new Uint8Array(fondStable) : null };
     cur.q = vers.q; cur.e = vers.e;
-    if (mouvementCoupe()) trans = null;
   }
   function ensure(q, e) { res('ville', q); res('struct', q); res('mont', q); res('sky', q, e); res('floor', q, e); mist(); p6img(); }
 
@@ -3917,21 +3958,21 @@ N.art = (function () {
   function majLuts(q, e, t) {
     lumieres();
     var Q = QU[q], E = ET[e], cyc = Q.cyc;
-    var tm = t / TEMPS, ph = Math.floor(tm * E.signs * 0.5);
+    var ph = Math.floor(t / securite().cycle);
     if (mouvementCoupe()) ph = 0;
-    var rapide = E.pulse ? 2 : 1;
+    var rapide = 1;
     var a = C[cyc[(ph * rapide) & 3]], b = C[cyc[((ph * rapide) + 2) & 3]];
-    var blink = (E.blink && !mouvementCoupe()) ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
+    var blink = (E.blink && !mouvementCoupe()) ? ((Math.floor(t / securite().cycle) & 1) ? C.JA : C.NU) : C.AM;
     var f9 = C[Q.remap[9]], f10 = C[Q.remap[10]];
     for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutFire[i] = i; lutP5[i] = i; }
-    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t * 1.4) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
+    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t / securite().cycle) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
     lutLit[5] = a; lutLit[6] = b; lutLit[7] = C.AM; lutLit[8] = C.JA; lutLit[9] = f9; lutLit[10] = f10;
-    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (!mouvementCoupe() && (Math.floor(t * 6) & 1)) ? C.BR : C.SA; lutDark[8] = (!mouvementCoupe() && (Math.floor(t * 4) & 1)) ? C.AM : C.BR;
+    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (!mouvementCoupe() && (Math.floor(t / securite().cycle) & 1)) ? C.BR : C.SA; lutDark[8] = (!mouvementCoupe() && (Math.floor(t / securite().cycle) & 1)) ? C.AM : C.BR;
     lutDark[9] = C.NU; lutDark[10] = C.NU; lutDark[12] = C.AR;      // la cité s'éteint ; restent les incendies (étiquettes 7 et 8)
-    var mc = mouvementCoupe(), fa = (!mc && (Math.floor(t * 6) & 1)) ? C.BR : C.AM, fb = (!mc && (Math.floor(t * 5 + 1) & 1)) ? C.AM : C.BR;
+    var mc = mouvementCoupe(), fa = (!mc && (Math.floor(t / securite().cycle) & 1)) ? C.BR : C.AM, fb = (!mc && (Math.floor(t / securite().cycle + 1) & 1)) ? C.AM : C.BR;
     lutFire[5] = fa; lutFire[6] = fb; lutFire[7] = fa; lutFire[8] = fb; lutFire[9] = fb; lutFire[10] = fa; lutFire[12] = C.AR;   // les étages qui brûlent
     /* les balises des structures : sang / nuit à la noire, ambre / nuit à contretemps */
-    var bt = mouvementCoupe() || (Math.floor(tm * 0.5) & 1) === 0;
+    var bt = mouvementCoupe() || (Math.floor(t / securite().cycle) & 1) === 0;
     lutP5[5] = bt ? C.SA : C.NU; lutP5[6] = bt ? C.NU : C.AM; lutP5[9] = C.AM; lutP5[10] = C.JA;
     for (var j = 0; j < 16; j++) lutP5Jeu[j] = lutCalmeJeu[lutP5[j]];
     /* par rangée : les fenêtres allumées par les élites (fenetres()), l'éclipse qui éteint la cité rangée par rangée */
@@ -3946,12 +3987,38 @@ N.art = (function () {
     }
   }
 
+  /* Couleurs des enseignes/fenêtres/incendies : même période lente et même
+     fondu sur 64 rangs. Le ciel et les fenêtres ne changent jamais de phase de trame
+     quand la caméra bouge. Les silhouettes gardent leur vraie position entière. */
+  function lumiereCite(q, e, t) {
+    var cycle = securite().cycle, origine = Math.floor(t / cycle) * cycle;
+    fonduCite = mouvementCoupe() ? 1 : clamp01((t - origine) / securite().fondu);
+    if (fonduCite < 1) {
+      majLuts(q, e, origine - cycle);
+      if (!lutRowsAvant) { lutRowsAvant = []; for (var r = 0; r < CH; r++) lutRowsAvant.push(mk()); }
+      for (var y = 0; y < CH; y++) lutRowsAvant[y].set(lutRows[y]);
+    }
+    majLuts(q, e, mouvementCoupe() ? 0 : origine);
+  }
+  function poserCite(ville, x0, y0) {
+    var g = N.gfx;
+    if (fonduCite >= 1) { g.layer(ville, { x: x0, y: y0, wrapX: true, luts: lutRows }); return; }
+    var b = g.buf(), d = ville.data;
+    for (var r = Math.max(0, -y0); r < Math.min(CH, g.H - y0); r++) {
+      var y = y0 + r, ro = y * g.W, so = r * ville.w;
+      for (var x = 0; x < g.W; x++) {
+        var v = d[so + ((x - x0) % ville.w + ville.w) % ville.w];
+        if (v) b[ro + x] = (rangFondu(x, y) < fonduCite * securite().rangsFondu ? lutRows : lutRowsAvant)[r][v];
+      }
+    }
+  }
+
   /* ================================ le sol ligne par ligne ================================ */
   /* proj : { sc, scMax, Kz, g0 } — s(dy) = min(dy × sc, scMax), z(dy) = Kz / dy ; g(dy) = g0 + (1 − g0) × min(1, dy / dyB) */
   var P = { sc: 1 / 80, scMax: 1.6, Kz: K_SOL, g0: 0.08, dyB: 80 };
   function sol(buf, W, H, yh, camX, av, e, q, sunX, t, lat, o) {
     var B = N.pal.BAYER, xf = W >> 1;
-    var E = ET[e], lignes = E.lignes, pulse = E.pulse ? (((t / TEMPS) % 1) < 0.28) : false;
+    var E = ET[e], lignes = E.lignes, pulse = E.pulse && !mouvementCoupe() ? ((t % securite().cycle) < securite().cycle / 2) : false;
     var amb = C.AM, bra = C.BR, vio = C.VI, ind = C.IN;
     var rows = H - 1 - yh, rest = !(t > 0) || mouvementCoupe();
     for (var dy = 1; dy <= rows; dy++) {
@@ -4090,9 +4157,9 @@ N.art = (function () {
     var Q = QU[q], E = ET[e];
     var yh = horizonY(H, camY, portrait); YH = yh;
     var sky = res('sky', q, e), ville = res('ville', q), mont = res('mont', q), st = res('struct', q), fl = res('floor', q, e);
-    majLuts(q, e, t);
+    lumiereCite(q, e, t);
     /* P0 : le ciel (recopie de rangées, accroché à l'horizon) */
-    g.layer(sky, { x: 0, y: yh - sky.h + 1, opaque: true });
+    g.layer(sky.phases[((yh - sky.h + 1) % securite().trame + securite().trame) % securite().trame], { x: 0, y: yh - sky.h + 1, opaque: true });
     /* P1 : les étoiles, deux phases de scintillement */
     etoiles(buf, W, H, yh, camX, camY, t, q, e);
     /* P2 : le soleil en bandes (hors portrait : 80 px de diamètre ; portrait : 64) puis les montagnes */
@@ -4106,7 +4173,7 @@ N.art = (function () {
     soleil(buf, W, H, yh, sx, R, kHaut, t, eclP > 0.55, e);
     g.layer(mont, { x: -Math.round(camX * F_P2), y: yh - MH + 1, wrapX: true });
     /* P3 : la cité, une table de couleurs par rangée (fenêtres, enseignes, éclipse) */
-    g.layer(ville, { x: -Math.round(camX * F_P3), y: yh - CH + 1, wrapX: true, luts: lutRows });
+    poserCite(ville.phases[(Math.round(camX * F_P3) + yh - CH + 1) & 1], -Math.round(camX * F_P3), yh - CH + 1);
     /* P4 : la brume, dérive de 4 px/s */
     var dr = mouvementCoupe() ? 0 : t * 4;
     g.layer(mist(), { x: -Math.round(camX * F_P4X + dr), y: yh - MISTH + 3, wrapX: true });
@@ -4118,7 +4185,7 @@ N.art = (function () {
     /* P5 : les structures, debout sur le sol, 0,60 */
     structures(buf, W, H, yh, camX, camY, t, st, e, q);
     /* l'éclair éventuel, sur l'horizon */
-    if (eclairT > 0) eclairDraw(buf, W, H, yh);
+    if (eclairT > 0 && !mouvementCoupe()) eclairDraw(buf, W, H, yh);
   }
 
   function etoiles(buf, W, H, yh, camX, camY, t, q, e) {
@@ -4192,19 +4259,19 @@ N.art = (function () {
   function eclairDraw(buf, W, H, yh) {
     /* un éclair : une ligne brisée d'os, et un voile d'ambre tramé à 12 % sur une petite aire (sous le limiteur) */
     var x = Math.round(W * (0.15 + 0.7 * eclairX)), y = 0, B = N.pal.BAYER, hs = (Math.floor(eclairX * 65536) | 0) + 1;
-    var on = eclairT > 0.12;
+    var enveloppe = Math.sin(Math.PI * clamp01(eclairT / securite().eclairDuree));
+    var on = enveloppe > 0;
     if (on) {                                                        // une ligne brisée, tirée d'un hachage de la position (pas de flux alloué)
       while (y < yh - 2) {
         hs = (Math.imul(hs, 1664525) + 1013904223) | 0; var seg = 4 + ((hs >>> 8) % 6);
-        for (var k = 0; k < seg && y < yh; k++, y++) { buf[y * W + x] = C.OS; if (k & 1) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; }
+        for (var k = 0; k < seg && y < yh; k++, y++) { if (rangFondu(x, y) < enveloppe * securite().rangsFondu) buf[y * W + x] = C.OS; if ((k & 1) && rangFondu(x + 1, y) < enveloppe * securite().rangsFondu) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; }
         hs = (Math.imul(hs, 1664525) + 1013904223) | 0; x += ((hs >>> 8) % 11) - 5; x = clamp(x, 2, W - 3);
       }
     }
-    for (var yy = Math.max(0, yh - 22); yy < yh; yy++) for (var xx = Math.max(0, x - 26); xx < Math.min(W, x + 26); xx++) if (0.10 * 16 > B[((yy & 3) << 2) | (xx & 3)]) buf[yy * W + xx] = C.AM;
+    for (var yy = Math.max(0, yh - 22); yy < yh; yy++) for (var xx = Math.max(0, x - 26); xx < Math.min(W, x + 26); xx++) if (0.10 * 16 > B[((yy & 3) << 2) | (xx & 3)] && rangFondu(xx, yy) < enveloppe * securite().rangsFondu) buf[yy * W + xx] = C.AM;
   }
 
   /* ================================ drawFar : tout le décor lointain ================================ */
-  var iTrans = 0;
   function drawFar(cam) {
     if (!pal() || !N.gfx || !N.gfx.buf || !N.gfx.buf()) return;
     var g = N.gfx; g.origin(0, 0);
@@ -4215,6 +4282,16 @@ N.art = (function () {
     var t = tempsJeu();
     var dt = lastT < 0 ? 0 : t - lastT; lastT = t; if (dt < 0) dt = 0; if (dt > 0.25) dt = 0.25;
     tDecor = t;
+    /* La caméra de jeu garde son suivi immédiat. Le lointain rejoint sa cible à
+       vitesse bornée : même sans clignotement, un ciel tramé déplacé de plusieurs
+       lignes par image peut ajouter un flash aux explosions. Pendant un gel il tient. */
+    if (camDecorX === null || mouvementCoupe()) { camDecorX = camX; camDecorY = camY; }
+    else {
+      var pasCamera = securite().cameraVitesse * dt;
+      camDecorX += clamp(camX - camDecorX, -pasCamera, pasCamera);
+      camDecorY += clamp(camY - camDecorY, -pasCamera, pasCamera);
+    }
+    camX = Math.round(camDecorX); camY = Math.round(camDecorY);
     ensureCur();
     tranche();
     /* le sol avance d'une case par temps de jeu (deux au chaos, six pendant LE VOL), plus vite en accélération */
@@ -4224,29 +4301,37 @@ N.art = (function () {
     if (fenT > 0) fenT -= dt;
     if (eclairT > 0) eclairT -= dt;
     if (g.mask && g.mask()) g.mask().fill(8);
-    if (trans && trans.u < 1) {
-      trans.u = clamp01((t - trans.t0) / trans.dur);
-      if (!mouvementCoupe()) {
-        var W = g.W, H = g.H;
-        rendreFar(trans.de.q, trans.de.e, camX, camY, t);
-        scratch = g.copyTo(scratch);
-        rendreFar(trans.vers.q, trans.vers.e, camX, camY, t);
-        var front = trans.u * (H + 20), buf = g.buf(), B = N.pal.BAYER;
-        for (var y = 0; y < H; y++) {
-          var p = (front - y) / 16;
-          if (p >= 1) continue;
-          var o = y * W, br = (y & 3) << 2;
-          if (p <= 0) { for (var x = 0; x < W; x++) buf[o + x] = scratch[o + x]; }
-          else { var lim = p * 16; for (var x2 = 0; x2 < W; x2++) if (!(lim > B[br | (x2 & 3)])) buf[o + x2] = scratch[o + x2]; }
-        }
-        if (trans.u >= 1) trans = null;
-        taireFondJeu(cam);
-        return;
-      }
-      trans = null;
+    if (trans && !trans.fond) {
+      rendreFar(trans.de.q, trans.de.e, camX, camY, t);
+      taireFondJeu(cam); trans.fond = new Uint8Array(g.buf());
     }
     rendreFar(cur.q, cur.e, camX, camY, t);
     taireFondJeu(cam);
+    if (trans) {
+      if (trans.t0 === null) trans.t0 = t;
+      trans.u = clamp01((t - trans.t0) / trans.dur);
+      var b = g.buf(), old = trans.fond;
+      if (old.length === b.length) {
+        for (var y = 0; y < g.H; y++) for (var x = 0; x < g.W; x++) {
+          var i = y * g.W + x;
+          if (rangFondu(x, y) >= trans.u * securite().rangsFondu) b[i] = old[i];
+        }
+      }
+      if (trans.u >= 1) trans = null;
+    }
+    /* Pendant un fondu, l’ancien ciel peut passer sous le nouvel horizon : le sol
+       reçoit aussi la table calme APRÈS la composition. */
+    if (trans && enJeu()) {
+      var solBuf = g.buf();
+      for (var si = Math.max(0, YH) * g.W; si < solBuf.length; si++) solBuf[si] = lutCalmeJeu[solBuf[si]];
+    }
+    fondStable = g.copyTo(fondStable);
+  }
+  /* Bayer 8×8 dérivé du Bayer 4×4 officiel : pas d'alpha ni de couleur nouvelle.
+     64 petites étapes remplacent les sauts de 6,25 % d'un fondu 4×4 plein écran. */
+  function rangFondu(x, y) {
+    var B = N.pal.BAYER, cote = securite().trame;
+    return cote * B[((y % cote) * cote) + (x % cote)] + B[(((y / cote) | 0) & 1) * (cote * cote / 2) + ((((x / cote) | 0) & 1) * (cote / 2))];
   }
   function taireFondJeu(cam) {
     if (!enJeu()) return;
@@ -4293,7 +4378,7 @@ N.art = (function () {
       for (var iy = gy0; iy <= ay1; iy += 16) for (var ix = gx0; ix <= ax1; ix += 16) {
         var dx = 0, dy = 0;
         for (var k = 0; k < 6; k++) {
-          var o = ondes[k]; if (o.f <= 0) continue;
+          var o = ondes[k]; if (o.f <= 0 || mouvementCoupe()) continue;
           var age = t - o.t; if (age < 0 || age > 1.2) continue;
           var ddx = ix - o.x, ddy = iy - o.y, dd = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001, rr = age * 140;
           var amp = o.f * 6 * Math.exp(-Math.abs(dd - rr) / 14) * (1 - age / 1.2);
@@ -4314,7 +4399,7 @@ N.art = (function () {
       for (var a = 0; a < an.length; a++) annonce(buf, W, H, cx, cy, an[a], t);
     }
     /* l'alerte de proximité : à moins de 24 px, le pan proche de la tête s'allume en rose pâle tramé */
-    var th = N.joueuse && N.joueuse.tete, us = N.cam && N.cam._tete;
+    var th = N.joueuse && N.joueuse.tete;
     if (th && N.world && N.world.distMur) {
       var dm = N.world.distMur(th.x, th.y), al = (RD() && N.R && N.R.monde && N.R.monde.mur && N.R.monde.mur.alerte) || 24;
       if (dm.d < al) alerte(buf, W, H, cx, cy, Wd, dm, th, 1 - Math.max(0, dm.d) / al);
@@ -4353,7 +4438,7 @@ N.art = (function () {
     if (!pal() || !N.gfx || !N.gfx.buf || !N.gfx.buf()) return;
     var g = N.gfx, buf = g.buf(), W = g.W, H = g.H;
     if (!cam) cam = N.cam || { x: 0, y: 0 };
-    var cx = cam.x | 0, cy = cam.y | 0, t = tDecor, im = p6img(), d = im.data;
+    var cx = mouvementCoupe() ? 300 : cam.x | 0, cy = mouvementCoupe() ? 160 : cam.y | 0, t = tDecor, im = p6img(), d = im.data;
     g.owner(8);
     var bandH = Math.max(6, Math.round(H * 0.12)), procheLut = enJeu() ? lutCalmeJeu : null;
     /* les poutrelles : des silhouettes de nuit profonde tramées, à 1,4 × la caméra, SEULEMENT dans les 12 % du haut et du bas */
@@ -4383,12 +4468,19 @@ N.art = (function () {
 
   /* ================================ le reste de l'interface ================================ */
   function ondule(x, y, force) {
+    if (mouvementCoupe()) return;
     var o = ondes[ondeN % 6]; ondeN++;
     o.x = x; o.y = y; o.f = clamp(+force || 1, 0, 4); o.t = tDecor;
   }
   function fenetres() { fenT = 1.8; fenRanges = (fenRanges + 2) % 7; }
-  function eclair() { eclairT = 0.32; eclairX = ((Math.floor(tDecor * 1000) * 2654435761) >>> 0) / 4294967296; }
-  function eclipse(t) { eclipseK = clamp01(+t || 0); }
+  function eclair() {
+    if (mouvementCoupe() || (N.S && N.S.reglages && N.S.reglages.flashs === false)) return;
+    if (tDecor - dernierEclair < securite().eclairRepos) return;
+    dernierEclair = tDecor; eclairT = securite().eclairDuree; eclairX = ((Math.floor(tDecor * 1000) * 2654435761) >>> 0) / 4294967296; }
+  function eclipse(t) {
+    var k = clamp01(+t || 0); if (k === eclipseK) return;
+    commencer({ q: cur.q, e: cur.e }); eclipseK = k;
+  }
   function horizon() { return YH; }
   /* multiplie la vitesse d'avance du sol (la plongée : les lignes accélèrent) ; 1 = normal */
   function acceler(k) { accelK = clamp(+k || 1, 0, 16); }
@@ -4416,16 +4508,16 @@ N.art = (function () {
     var q = QU[o.vers] ? o.vers : cur.q, q0 = QU[o.depuis] ? o.depuis : cur.q, mont = clamp01(o.montee || 0);
     var e = 'montee';
     ensure(q0, e); ensure(q, e);
-    majLuts(q, e, t);
+    lumiereCite(q, e, t);
     var skyQ = res('sky', q0, e);
-    g.layer(skyQ, { x: 0, y: yh - skyQ.h + 1, opaque: true });
+    g.layer(skyQ.phases[((yh - skyQ.h + 1) % securite().trame + securite().trame) % securite().trame], { x: 0, y: yh - skyQ.h + 1, opaque: true });
     etoiles(buf, W, H, yh, 0, 0, t, q0, e);
     var R = H > W ? 32 : 40, sx = Math.round(W * 0.5);
     soleil(buf, W, H, yh, sx, R, QU[q0].sun * 0.9, t, false, e);
     g.layer(res('mont', q0), { x: 0, y: yh - MH + 1, wrapX: true });
     /* la cité d'arrivée monte de l'horizon par rangées entières ; le sol la recouvre plus bas */
     var ville = res('ville', q), vy = yh - CH + 1 + Math.round((1 - mont) * (CH - 1));
-    g.layer(ville, { x: 0, y: vy, wrapX: true, luts: lutRows });
+    poserCite(ville.phases[vy & 1], 0, vy);
     var fl = res('floor', q0, 'vol');
     g.layer(fl, { x: 0, y: yh, opaque: true });
     var sol0 = o.sol0 > yh ? o.sol0 : yh + Math.round((H - yh) * 0.4);
@@ -4477,7 +4569,7 @@ N.art = (function () {
     if (N.gfx && N.gfx.W) { verifierVue(); ensure(q, e); }
     trans = null; cur.q = q; cur.e = e;
   }
-  function reset() { accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
+  function reset() { camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
 
   N.decor = {
     build: build, reset: reset, fixer: fixer, etat: etat, quartier: quartier, preparer: preparer,
@@ -19270,6 +19362,40 @@ N.ennemis = (function () {
   }
 
   /* ============================ naissance ============================ */
+  /* Point hors du cadre réel, sprite compris. Les coordonnées du directeur et des
+     couvées ne sont pas des autorisations de naître sous les yeux de la joueuse. */
+  function horsVue(e) {
+    var V = O.VUE, m = Math.max(e.r, (conf(e.type).sprite || 0) / 2) + R.apparitions.marge;
+    return e.x < V.x - m || e.x > V.x + V.w + m || e.y < V.y - m || e.y > V.y + V.h + m;
+  }
+  function placerNaissance(e) {
+    if (horsVue(e)) return true;
+    var V = O.VUE, A = O.A, m = Math.max(e.r, (conf(e.type).sprite || 0) / 2) + R.apparitions.marge;
+    var bord = e.r + R.apparitions.interieurMurs, pas = R.apparitions.interieurMurs;
+    var x0 = A.x0 + bord, x1 = A.x1 - bord, y0 = A.y0 + bord, y1 = A.y1 - bord;
+    var bx = e.x, by = e.y, meilleur = Infinity;
+    function essayer(x, y) {
+      if (x < x0 || x > x1 || y < y0 || y > y1) return;
+      if (x >= V.x - m && x <= V.x + V.w + m && y >= V.y - m && y <= V.y + V.h + m) return;
+      var mur = N.arene && N.arene.murArriere ? N.arene.murArriere() : null;
+      if (mur && ((mur.sens > 0 && x < mur.x + bord) || (mur.sens < 0 && x > mur.x - bord))) return;
+      var dist = O.d2(x, y, e.x, e.y);
+      for (var i = 0; i < list.length; i++) {
+        var autre = list[i], ecart = e.r + autre.r + R.apparitions.shownMarge;
+        if (autre !== e && autre.etat !== 'mort' && O.d2(x, y, autre.x, autre.y) < ecart * ecart) return;
+      }
+      if (dist < meilleur) { meilleur = dist; bx = x; by = y; }
+    }
+    var g = V.x - m - R.apparitions.naissance.bord, d = V.x + V.w + m + R.apparitions.naissance.bord;
+    var h = V.y - m - R.apparitions.naissance.bord, b = V.y + V.h + m + R.apparitions.naissance.bord;
+    essayer(g, O.clamp(e.y, y0, y1)); essayer(d, O.clamp(e.y, y0, y1));
+    essayer(O.clamp(e.x, x0, x1), h); essayer(O.clamp(e.x, x0, x1), b);
+    for (var y = y0; y <= y1; y += pas) { essayer(g, y); essayer(d, y); }
+    for (var x = x0; x <= x1; x += pas) { essayer(x, h); essayer(x, b); }
+    if (meilleur === Infinity) return false;
+    e.x = bx; e.y = by; e._tx = bx; e._ty = by;
+    return true;
+  }
   function newEnemy(type, x, y, opts) {
     var c = conf(type), P = tete(), E = (R && R.elites) || {}, M = (R && R.modificateurs) || {};
     var boss = type === 'cyclope';
@@ -19316,6 +19442,8 @@ N.ennemis = (function () {
     arena();
     opts = opts || {};
     var e = newEnemy(type, x, y, opts), P = tete();
+    // 73-colosse pilote ses objets externes : leur raccord est demandé séparément.
+    if (!e._ext && !placerNaissance(e)) e._attenteNaissance = true;
     if (type === 'mine') { e._st = 'derive'; stationMine(e); }
     else if (type === 'tourelle') { e._st = 'entre'; station(e, 24); }
     else if (type === 'sentinelle') { e._orb = P ? Math.atan2(y - P.y, x - P.x) : 0; e._cd = rr(2.5, 3.5); }
@@ -19325,13 +19453,14 @@ N.ennemis = (function () {
     if (opts.stT !== undefined) e._stT = opts.stT;
     if (inv.t > 0 && !e.boss && type !== 'traqueur' && type !== 'planeur') { e._stAvant = e._st; e._st = 'proie'; }
     if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
-    else apparu(e);
+    else if (!e._attenteNaissance) apparu(e);
+    if (e._attenteNaissance) e.etat = 'portail';
     list.push(e);
     if (type === 'mine' && opts.annoncePose && e.etat === 'portail') {
       // Interface publique de pose du CYCLOPE : contact ET mèche attendent le portail.
       e._minePosee = true;
       e.vuDepuis = vu6(e) ? 0 : -1;
-      armer(e, 'disque', e._portailTotal, 'tout');
+      e._poseAttente = true; e._poseAnnonce = false; e._poseT = 0; e._inoff = 1;
       publierTele(); // dès spawn(), sans attendre l'update suivant de 72 ou 73
     }
     return e;
@@ -19704,7 +19833,7 @@ N.ennemis = (function () {
       }
     }
     /* elle s'amorce quand la tête ou un segment entre dans le cercle d'armement (34 px, toujours affiché) */
-    if (e._st !== 'arme' && canAct(e) && segDansCercle(e.x, e.y, cercle)) { e._st = 'arme'; e._stT = meche; armer(e, 'disque', meche, 'tout'); }
+    if (e._st !== 'arme' && peutArmer(e) && segDansCercle(e.x, e.y, cercle)) { e._st = 'arme'; e._stT = meche; armer(e, 'disque', meche, 'tout'); }
   }
 
   /* ---- TOURELLE : le tireur, blindée de face ---- */
@@ -19784,7 +19913,7 @@ N.ennemis = (function () {
       if (s) { e.x += (P.x - e.x) / d * v * s * dt; e.y += (P.y - e.y) / d * v * s * dt; }
       e._cd -= dt;
       if (e._cd <= 0) {
-        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && canAct(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
+        if (larvesDe(e) + (c.larves || 3) <= (c.larvesMax || 12) && count() + (c.larves || 3) <= 36 && peutArmer(e)) { e._st = 'couve'; e._stT = (c.petales || 0.7) + (c.couvee || 0.6); armer(e, 'disque', e._stT, 'tout'); }
         else e._cd = 0.5;
       }
     } else if (e._st === 'couve') {
@@ -19916,21 +20045,33 @@ N.ennemis = (function () {
     for (i = 0; i < list.length; i++) {
       e = list[i];
       if (e._dead) continue;
+      if (e._attenteNaissance) {
+        if (!placerNaissance(e)) continue;
+        e._attenteNaissance = false;
+        if (!(e._portail > 0)) apparu(e);
+      }
       e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
       if (e._flash > 0) e._flash -= dt;
-      if (e._minePosee && e.etat === 'portail') {
-        // Une mine hors champ attend aussi les 600 ms de visibilité continue de R-08.
-        e.vuDepuis = vu6(e) ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
-      }
       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
         e._portail -= dt;
-        if (e._minePosee && e._portail <= 0 && e.vuDepuis < R.criteres.R08.visible) e._portail = R.temps.h;
+        // Si la caméra a rejoint le portail, ne pas matérialiser ni téléporter son marqueur visible.
+        if (e._portail <= 0 && !e._ext && !horsVue(e)) e._portail = R.temps.h;
         if (e._portail <= 0) { e._portail = 0; apparu(e); }
         continue;
       }
       /* vue : depuis combien de temps l'ennemi est entièrement visible */
       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+      if (e._poseAttente) {
+        // Contact neutralisé et mèche arrêtée jusqu'à une annonce intégralement vue.
+        if (!vu6(e)) { e._poseAnnonce = false; e._poseT = 0; }
+        else {
+          if (!e._poseAnnonce) { e._poseAnnonce = true; armer(e, 'disque', e._portailTotal, 'tout'); }
+          e._poseT += dt;
+        }
+        if (e._poseT < e._portailTotal || e.vuDepuis < R.criteres.R08.visible) continue;
+        e._poseAttente = false; e._inoff = 0;
+      }
       if (e._ext) { if (e.etat !== 'mort') e.etat = 'approche'; continue; }       // le CYCLOPE (73-colosse) se pilote seul
       if (e._stun > 0) e._stun -= dt;
       if (e._kx || e._ky) { e.x += e._kx * dt; e.y += e._ky * dt; var f = Math.pow(0.02, dt); e._kx *= f; e._ky *= f; if (Math.abs(e._kx) + Math.abs(e._ky) < 2) { e._kx = 0; e._ky = 0; } }
@@ -20042,6 +20183,12 @@ N.ennemis = (function () {
     TVN = 0;
     for (i = 0; i < list.length; i++) {
       e = list[i];
+      if (e._attenteNaissance) { e.tele = -1; continue; }
+      if (!e._dead && e._poseAttente && e.etat !== 'portail') {
+        e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
+          conf('mine').souffle || CFG.mineSouffle, Math.max(0, e._portailTotal - e._poseT), e._portailTotal, 'tout', e.type);
+        continue;
+      }
       if (!e._dead && e._minePosee && e.etat === 'portail') {
         e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y,
           conf('mine').souffle || CFG.mineSouffle, e._portail, e._portailTotal, 'tout', e.type);
@@ -20104,6 +20251,7 @@ N.ennemis = (function () {
         u.x + u.vx * u.vie, u.y + u.vy * u.vie, u.r, 0, TP.tirVie, 'tout', 'cyclope', 0, 0, u.src.id);
     }
     if (N.colosse && N.colosse.publierTele) N.colosse.publierTele(teleAjouter);
+    if (N.arene && N.arene.publierTele) N.arene.publierTele(teleAjouter);
     TV.length = TVN;
     if (s.tele !== TV) s.tele = TV;
   }
@@ -20244,7 +20392,7 @@ N.ennemis = (function () {
   function drawEnemies() {
     for (var i = 0; i < list.length; i++) {
       var e = list[i];
-      if (e._dead || e.etat === 'portail' || e._ext) continue;
+      if (e._dead || e.etat === 'portail' || e._ext || e._attenteNaissance) continue;
       drawEnemy(e);
     }
   }
@@ -20294,8 +20442,8 @@ N.ennemis = (function () {
     var g = N.gfx, i, e;
     for (i = 0; i < list.length; i++) {
       e = list[i];
-      if (e._dead) continue;
-      if (e.etat === 'portail') {                       // le portail : croix de visée et anneaux qui se resserrent
+      if (e._dead || e._attenteNaissance) continue;
+      if (e.etat === 'portail' || e._poseAttente) {      // portail ou protection visible après naissance
         if (e._minePosee) {
           // Anneau stable du vrai souffle : aucune alternance lumineuse ni flash ajouté.
           var mp = R.colosse.minesPosees, mr = conf('mine').souffle || CFG.mineSouffle;
@@ -20381,7 +20529,7 @@ N.ennemis = (function () {
    INTERFACE (§ 7.8) : reset(), update(dt), draw(), travelling(vx, depuis), convois(cfg), voies() -> [], sillage(x, y) -> bool,
    actif().  Ajouts : entree(vague) / pic() / nettoyee() (le directeur 76-directeur les APPELLE : aucun écouteur `vague`
    ici, le contrat n'en prévoit pas pour ce module), murArriere() -> {x, sens, actif} | null (pour les apparitions, § 3.8),
-   etat() (instantané pour les tests).
+   etat() (instantané pour les tests), publierTele(ajouter) (zones des murs, agrégées par 72).
      travelling(vx, depuis) : vx signé (le signe choisit le sens), absent -> sens et vitesse automatiques ; depuis = abscisse
         du bord gauche de départ. Même séquence que dans une vague (mise en place, annonce, départ).
      convois(cfg) : { voie: 0..4, sens: ±1 } lance un convoi tout de suite avec son annonce ; { t, periode, alea } programme
@@ -20464,7 +20612,9 @@ N.arene = (function () {
     tv.ph = 'mise'; tv.t = 0; tv.ann = false; tv.appele = false;
     var deja = Math.abs((w.x1 - w.x0) - CFG.largeur) < 1 && Math.abs(w.x0 - tv.depuis) < 1 && w.y0 <= 0.5 && w.y1 >= mondeH() - 0.5;
     if (deja) { tv.annAt = 0; tv.callAt = CFG.annonceTrav; tv.departAt = CFG.annonceTrav; }
-    else { tv.callAt = 0; tv.annAt = Math.max(0, CFG.miseEnPlace - CFG.annonceTrav); tv.departAt = CFG.miseEnPlace; }
+    else { tv.annAt = 0; tv.callAt = CFG.annonceTrav; tv.departAt = CFG.annonceTrav + CFG.miseEnPlace; }
+    annoncerTrav();
+    if (N.ennemis && N.ennemis.publierTele) N.ennemis.publierTele();
     return true;
   }
   function annoncerTrav() {
@@ -20649,6 +20799,33 @@ N.arene = (function () {
     }
   }
 
+  /* Zones mortelles : les quatre frontières courantes et les lignes finales datées.
+     Avant le premier mouvement, elles sont publiées pendant les deux secondes de garde.
+     Après, reste=0 désigne un danger réel, y compris pendant le retour ou une arène externe.
+     Aucun grand rectangle rempli au milieu de la zone jouable. */
+  function publierTele(ajouter) {
+    var w = monde();
+    if (!w || typeof ajouter !== 'function') return;
+    var attente = tv.ph === 'mise' && !tv.appele;
+    var mobile = w.enMouvement();
+    if (!attente && !mobile) return;
+    var rest = attente ? Math.max(0, tv.callAt - tv.t) : 0;
+    var an = w.mursAnnonces ? w.mursAnnonces() : null;
+    var cible = attente ? { x: tv.depuis, y: 0, w: CFG.largeur, h: mondeH() } : (an && an[0]);
+    var x0 = w.x0, x1 = w.x1, y0 = w.y0, y1 = w.y1;
+    if (cible && (tv.ph === 'mise' || tv.ph === 'marche')) {
+      var voyage = w.voyage && w.voyage();
+      var fin = attente || tv.ph === 'mise' ? Math.max(0, tv.departAt - tv.t)
+        : (voyage && tv.vx ? voyage.restant / Math.abs(tv.vx) : 0);
+      ajouter(RA.teleMurs.ids[0], 'ligne', cible.x, cible.y, cible.x, cible.y + cible.h, 0, fin, CFG.annonceTrav, 'tout', 'murMobile');
+      ajouter(RA.teleMurs.ids[1], 'ligne', cible.x + cible.w, cible.y, cible.x + cible.w, cible.y + cible.h, 0, fin, CFG.annonceTrav, 'tout', 'murMobile');
+    }
+    ajouter(RA.teleMurs.ids[0], 'ligne', x0, y0, x0, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[1], 'ligne', x1, y0, x1, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[2], 'ligne', x0, y0, x1, y0, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+    ajouter(RA.teleMurs.ids[3], 'ligne', x0, y1, x1, y1, 0, rest, CFG.annonceTrav, 'tout', 'murMobile');
+  }
+
   /* ============================ pas de jeu ============================ */
   function pas() {
     var dt = dtc, P = N.joueuse && N.joueuse.tete;
@@ -20661,6 +20838,8 @@ N.arene = (function () {
     majSillage(dt);
     majMonde();
     publierVoies();
+    // Avant la collision joueuse du même pas ; 72 réagrège après ses propres changements.
+    if (N.ennemis && N.ennemis.publierTele) N.ennemis.publierTele();
   }
   function update(dt) {
     if (!(dt > 0)) return;
@@ -20840,11 +21019,27 @@ N.arene = (function () {
   function drawIn() {
     if (CV.ph !== 'off') { drawVoie(); if (CV.ph === 'passage') drawConvoi(); }
     if (tv.ph === 'mise' || tv.ph === 'marche') drawTrav();
+    drawMurs();
   }
-  function draw() { if (CV.ph !== 'off' || tv.ph === 'mise' || tv.ph === 'marche') O.safe('arene.draw', drawIn); }
+  function drawMurs() {
+    var w = monde();
+    if (!w) return;
+    var attente = tv.ph === 'mise' && !tv.appele, an = w.mursAnnonces && w.mursAnnonces();
+    var a = attente ? { x: tv.depuis, y: 0, w: CFG.largeur, h: mondeH() } : (an && an[0]);
+    if (!a) return;
+    var G = N.gfx, ep = R.monde.mur.epaisseur;
+    // Positions finales stables, dans la même palette que les chevrons ; aucune pulsation ajoutée.
+    G.rect(a.x - R.apparitions.naissance.bord, a.y, ep, a.h, O.NP);
+    G.rect(a.x + a.w - R.apparitions.naissance.bord, a.y, ep, a.h, O.NP);
+    G.line(a.x, a.y, a.x, a.y + a.h, O.MAGENTA);
+    G.line(a.x + a.w, a.y, a.x + a.w, a.y + a.h, O.MAGENTA);
+    G.line(a.x, a.y, a.x + a.w, a.y, O.MAGENTA);
+    G.line(a.x, a.y + a.h, a.x + a.w, a.y + a.h, O.MAGENTA);
+  }
+  function draw() { if (CV.ph !== 'off' || tv.ph === 'mise' || tv.ph === 'marche' || (N.world && N.world.enMouvement())) O.safe('arene.draw', drawIn); }
 
   return {
-    reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif,
+    reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif, publierTele: publierTele,
     entree: entree, pic: pic, nettoyee: nettoyee, murArriere: murArriere, etat: etat
   };
 })();
@@ -23389,8 +23584,8 @@ N.dir = (function () {
 N.score = (function () {
   'use strict';
   var O = N.outils, R = N.R;
-  var CFG = {                                    // → N.R : le défi de la démo (DIX KILLS EN CHAÎNE), absent de N.R.defis
-    defiNom: 'DIX KILLS EN CHAÎNE', defiBut: 10, defiPrime: 5000, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
+  var CFG = {                                    // Compatibilité du combat reçu ; chiffres dans N.R.defis.partie.legacy
+    defiNom: R.defis.partie.legacy.nom, defiBut: R.defis.partie.legacy.but, defiPrime: R.defis.partie.legacy.prime, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
   };
   var REG0 = { musique: true, effets: true, secousse: 1, flashs: true, ecran: 'riche', texte: 1, manche: 1, actions: 'doigts' };
   var API = null;
@@ -23444,7 +23639,8 @@ N.score = (function () {
     API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
-    API.defis = { finir: m.defi }; API.defiVague = null;
+    API.defis = defisDuJour(); API.defisVagues = []; API.defiVague = null;
+    journalDefis('selection');
     publier();
   }
   function publier() { if (!S) S = N.S; if (S) { S.score = m.score; S.lives = m.vies; S.challenge = m.defi; } API.score = m.score; API.vies = m.vies; }
@@ -23476,7 +23672,7 @@ N.score = (function () {
     var d = m.defi;
     d.etat = 'reussi'; d.t = O.T.t; d.prog = d.but;
     ajouter(CFG.defiPrime, null, null);
-    m.stats.energie += 20;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
+    m.stats.energie += R.defis.partie.legacy.energie;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
     if (N.arsenal && N.arsenal.surcharger) N.arsenal.surcharger(true);
     var max = (R && R.vies && R.vies.max) || 4; if (m.vies < max) m.vies++;
     O.sfx('defi');
@@ -23493,17 +23689,74 @@ N.score = (function () {
     if (N.ev) N.ev.emit('defi', { id: 'finir', ok: false, prime: 0 });
   }
 
+  /* Trois objectifs publics : FINIR et deux du jour. Le flux autonome ne consomme
+     jamais celui des vagues ; aucun effet sur les vies, armes, gardes ou trajectoires. */
+  function defisDuJour() {
+    var jour = Number(S && S.jour) || R.defis.partie.jourRepli;
+    var flux = N.rng.flux(jour, 'defis'), pool = R.defis.partie.reserve.slice();
+    var liste = [{ id: 'finir', nom: R.defis.partie.finirNom, but: R.defis.partie.finirBut,
+      prog: 0, fait: false, etat: 'actif', prime: R.defis.finir.prime, jour: jour }];
+    while (liste.length < R.defis.parPartie && pool.length) {
+      var id = pool.splice(flux.i(0, pool.length - 1), 1)[0], d = R.defis.reserve[id];
+      liste.push({ id: id, nom: d.nom, but: d.destructions || d.enfermes || d.mult ||
+        (d.vagues ? d.vagues.length : R.defis.partie.finirBut), prog: 0, fait: false,
+        etat: 'actif', prime: d.prime, jour: jour });
+    }
+    return liste;
+  }
+  function journalDefi(d, evt, portee) {
+    if (N.journal) N.journal('defi', { id: d.id, ok: d.etat === 'reussi', prime: 0,
+      evt: evt, portee: portee || 'partie', nom: d.nom || d.texte, etat: d.etat,
+      fait: d.etat === 'reussi', prog: d.prog, but: d.but, jour: d.jour, vague: d.n });
+  }
+  function journalDefis(evt) { API.defis.forEach(function (d) { journalDefi(d, evt); }); }
+  function etatDefi(d, etat) {
+    if (d.etat !== 'actif' || etat === 'actif') return;
+    d.etat = etat; d.fait = etat === 'reussi';
+    if (d.fait) d.prog = d.but;
+    journalDefi(d, 'bilan');
+    if (N.hud && N.hud.toast) N.hud.toast((d.fait ? '✓ ' : '✗ ') + d.nom);
+  }
+  function suivreDefis(evt, c) {
+    if (!m.stats || !Array.isArray(API.defis)) return;
+    API.defis.forEach(function (d) {
+      if (d.etat !== 'actif' || d.id === 'finir') return;
+      var cfg = R.defis.reserve[d.id];
+      if (d.id === 'premierJet') {
+        if (O.T.t <= cfg.avant) d.prog = Math.min(d.but, m.stats.kills);
+        if (d.prog >= d.but && O.T.t >= cfg.jamaisAvant && O.T.t <= cfg.avant) etatDefi(d, 'reussi');
+        else if (O.T.t > cfg.avant) etatDefi(d, 'rate');
+      } else if (d.id === 'lasso6' && evt === 'lasso') d.prog = Math.min(d.but, Math.max(d.prog, c.n));
+      else if (d.id === 'chaine5') d.prog = Math.min(d.but, Math.max(d.prog, mult()));
+      else if (d.id === 'sansCoupe') {
+        if (evt === 'coupe' || evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'vague' && c.evt === 'nettoyee' && cfg.vagues.indexOf(c.n) >= 0) {
+          d.vagues = d.vagues || []; if (d.vagues.indexOf(c.n) < 0) d.vagues.push(c.n); d.prog = d.vagues.length;
+        }
+      } else if (d.id === 'sansFilet') {
+        if (evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'phase' && c.evt === 'entree') d.prog = d.but;
+      }
+      if (d.prog >= d.but && d.id !== 'premierJet') etatDefi(d, 'reussi');
+    });
+  }
+
   /* ---- le défi de vague (§ 2.14) : un objectif parmi trois, tiré par le flux 'defis' à l'entrée de chaque vague ;
      réussi : 1 000 × le numéro de la vague et 10 énergie. Seuls les objectifs que les événements mesurent aujourd'hui
      sont tirés (lassos, enfermés, cellules, mines, tourelles, broyés, multiplicateur) ; les autres attendent leurs événements. */
   function butDe(d) { return d.lassos || d.enfermes || d.cellules || d.mines || d.tourelles || d.mult || d.broyes || 0; }
-  function tirerDefiVague(n) {
+  function tirerDefiVague(n, flux) {
     var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
     if (!L) return null;
     var ok = L.filter(butDe);
     if (!ok.length) return null;
-    var d = ok[Math.min(ok.length - 1, (O.rf('defis') * ok.length) | 0)];
-    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', n: n };
+    var d = ok[Math.min(ok.length - 1, ((flux ? flux.f() : O.rf('defis')) * ok.length) | 0)];
+    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', fait: false, n: n };
+  }
+  function apercuVague(n) {
+    var flux = N.rng.flux(N.rng.graine(), 'defis');
+    flux.reprendre(N.rng('defis').etat());
+    return tirerDefiVague(n || R.secteurs[0].vagues[0].n, flux);
   }
   function avanceDv(champ, v, max) {
     var d = m.dv;
@@ -23513,7 +23766,8 @@ N.score = (function () {
   }
   function dvOk() {
     var d = m.dv, V = R.defis.vague, prime = V.prime * d.n;
-    d.etat = 'reussi'; d.prog = d.but; m.dvFaits++;
+    d.etat = 'reussi'; d.fait = true; d.prog = d.but; m.dvFaits++;
+    journalDefi(d, 'bilan', 'vague');
     ajouter(prime, null, null);
     m.stats.energie += V.energie;
     O.sfx('defi');
@@ -23545,6 +23799,7 @@ N.score = (function () {
       else if (c.type === 'tourelle') avanceDv('tourelles', 1);       // → N.R : l'angle de 45° (v3Cote) n'est pas mesuré
       var d = m.defi;
       if (d && d.etat === 'actif') { d.prog = m.chaine; if (m.chaine > d.meilleur) d.meilleur = m.chaine; if (m.chaine >= d.but) defiOk(); }
+      suivreDefis('kill', c);
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
@@ -23568,29 +23823,35 @@ N.score = (function () {
       m.stats.morts.push({ cause: d.cause, auteur: d.auteur, t: d.t, vague: d.vague, visibleDepuis: d.visibleDepuis, teleDuree: d.teleDuree });
       publier();
     }, '77-score');
-    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); }, '77-score');
+    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); suivreDefis('mort', {}); }, '77-score');
     N.ev.on('vague', 20, function (c) {
       if (c.evt === 'entree') {
         m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
+        if (m.dv) { API.defisVagues.push(m.dv); journalDefi(m.dv, 'selection', 'vague'); }
         if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
         return;
       }
       if (c.evt !== 'nettoyee') return;
-      if (m.dv && m.dv.etat === 'actif') m.dv.etat = 'rate';
+      if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
       ajouter(p * c.n, null, null);
     }, '77-score');
   }
 
+  if (N.ev) ['ramassage', 'lasso', 'coupe', 'vague', 'phase'].forEach(function (evt) {
+    N.ev.on(evt, evt === 'phase' ? N.ids.rangs.score : N.ids.rangs.defis, function (c) { suivreDefis(evt, c); }, '77-score');
+  });
+
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    suivreDefis('temps', {});
     if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
   }
 
   /* fin de partie : le record, l'énergie, les déblocages, et le RÉSUMÉ que lit l'écran de fin ; `victoire` vrai si le colosse est tombé */
-  function seuils() { return (R && R.deblocages) || []; }
+  function seuils() { return R.deblocages.map(function (d, i) { return { id: d.id, seuil: R.defis.retour.seuils[i] }; }); }
   function prochainPour(e) {
     var L = seuils(), prec = 0;
     for (var i = 0; i < L.length; i++) { if (e < L[i].seuil) return { id: L[i].id, reste: L[i].seuil - e, part: O.clamp((e - prec) / (L[i].seuil - prec), 0, 1), seuil: L[i].seuil, prec: prec }; prec = L[i].seuil; }
@@ -23619,6 +23880,16 @@ N.score = (function () {
     if (!lu) charger();
     if (m.resume) return { record: m.resume.record, nouveau: m.newRecord };
     m.stats.victoire = !!victoire;
+    var primes = 0, energieDefis = 0;
+    API.defis.forEach(function (d) {
+      if (d.id === 'finir' && d.etat === 'actif' && victoire) etatDefi(d, 'reussi');
+      if (d.etat === 'actif') etatDefi(d, 'rate');
+      if (d.fait && !d.paye) { primes += d.prime; if (d.id !== 'finir') energieDefis += R.defis.energieReserve; d.paye = true; }
+    });
+    if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
+    // Bilan seulement : ne pas franchir un seuil de vie bonus pendant une partie.
+    m.score += primes; publier();
+    journalDefis('fin');
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
     var dernier = pr.dernier || 0, avantE = pr.energie || 0;
@@ -23630,7 +23901,7 @@ N.score = (function () {
     disque.records = tableau.map(function (r) { return r.score; });
     disque.marquesRecords = tableau.map(function (r) { return r.marque; });
     if (!m.continuations) pr.parties++;
-    var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
+    var gagne = m.stats.energie + energieDefis + (victoire ? R.defis.finir.energie : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
     pr.energie = avantE + gagne; pr.dernier = m.score;
     for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
       pr.deblocages.push(L[i].id); debloques.push(L[i].id);
@@ -23640,14 +23911,17 @@ N.score = (function () {
     var d = (S && S.death) || m.stats.morts[m.stats.morts.length - 1] || null, dir = N.dir;
     var tot = dir && dir.nombreVagues ? dir.nombreVagues() : 5, vague = d && d.vague ? d.vague : (dir && dir.vague ? dir.vague() : 1);
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
-    var note = victoire ? 'B' : boss ? 'C' : 'D';
+    var faits = API.defis.filter(function (d) { return d.fait; }).length;
+    var note = victoire ? (faits === R.defis.parPartie && !m.stats.morts.length ? 'S' : faits > R.defis.partie.finirBut ? 'A' : 'B') : boss ? 'C' : 'D';
     m.resume = {
       victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
       pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
       build: build(), defi: m.defi ? { nom: m.defi.nom, etat: m.defi.etat, prog: m.defi.prog, but: m.defi.but, meilleur: m.defi.meilleur } : null,
-      energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
+      defis: API.defis.map(function (d) { return { id: d.id, nom: d.nom, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but, jour: d.jour }; }),
+      defisVagues: API.defisVagues.map(function (d) { return { id: d.id, nom: d.texte, n: d.n, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but }; }),
+      primesDefis: primes, energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
       conseil: conseil(d ? d.cause : null, d ? d.auteur : null), cartes: N.cartes && N.cartes.prises ? N.cartes.prises() : {}
     };
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
@@ -23665,6 +23939,7 @@ N.score = (function () {
     m.continuations++;
     m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
     m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
+    API.defis.forEach(function (d) { if (d.etat === 'rate' && d.id !== 'sansCoupe' && d.id !== 'sansFilet' && d.id !== 'premierJet') d.etat = 'actif'; });
     m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;
     publier();
     return true;
@@ -23674,7 +23949,7 @@ N.score = (function () {
     reset: reset, update: update, continuer: continuer, continuerPossible: continuerPossible, classement: classement,
     marque: function () { return m.continuations ? 'C' : ''; },
     palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
-    defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
+    defis: [], defisVagues: [], apercuVague: apercuVague, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
     profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],
@@ -25086,9 +25361,9 @@ N.game = (function () {
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
     if (u) {
-      if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
+      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
-      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
+      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
     return true;
   }
@@ -25144,12 +25419,28 @@ N.game = (function () {
     if (info.premiere) lancer(false);
     else aller(avantAventure);
   }
+  /* les films d'époque au bon moment (demande n° 7) : profondeur au début de la vague 3, warp à la vague 4 ; l'espace
+     et 2975 viennent à la victoire (finirVoyage), après le CYCLOPE. Sans aventure en cours (départs directs, pilotes),
+     rien ne change. */
+  var EPOQUES = [[3, 'profondeur'], [4, 'warp']], epoquesVues = {};
+  function epoqueSuivante() {
+    if (!modOk(N.aventure, 'reprendre') || !N.aventure.enCours() || !N.dir.vague) return;
+    var v = N.dir.vague();
+    for (var i = 0; i < EPOQUES.length; i++) {
+      var e = EPOQUES[i];
+      if (v >= e[0] && !epoquesVues[e[1]]) {
+        epoquesVues[e[1]] = true;
+        if (N.aventure.reprendre(e[1])) { avantAventure = et; aller('aventure'); }
+        return;
+      }
+    }
+  }
   function commencerAventure() {
     if (!modOk(N.aventure, 'demarrer')) { lancer(false); return; }
     if (modOk(N.intro, 'skip')) N.intro.skip();
     if (modOk(N.intro, 'stop')) N.intro.stop();
     if (modOk(N.fx, 'reset')) N.fx.reset();
-    voyageFini = false;
+    voyageFini = false; epoquesVues = {};
     aller('aventure');
     N.aventure.demarrer({ aJouer: entrerDansLeNeon, surFin: function (bilan) {
       musiqueAventure(false);
@@ -25225,7 +25516,7 @@ N.game = (function () {
     finClip = null;
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
-    aller('plongee');
+    aller('briefing');
   }
   function film(nom, suite, opts) {
     if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
@@ -25456,7 +25747,12 @@ N.game = (function () {
       if (nouveau) { var a = N.ui.sortie(); if (a && a.action === 'jouer') aller('titre'); } else N.ui.sortie();
       etT += dt; return;
     }
-    if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
+    if (et === 'briefing') {
+      N.ui.update(dt); etT += dt;
+      if (etT >= R.ecrans.briefing.duree) aller('plongee');
+      return;
+    }
+    if (et === 'ouverture') { etT += dt; if (etT > 0.5) aller('titre'); return; }
     if (et === 'titre') {
       if (activiteTitre()) etT = 0;
       s.input.any = false;
@@ -25489,6 +25785,7 @@ N.game = (function () {
         film('reveil', lancerBoss, { nom: 'LE CYCLOPE' });
       } else if (et === 'reapparition' && N.joueuse.etat === 'vivant') aller(etatJeu === 'reapparition' ? 'jeu' : etatJeu);
       if (N.dir.bossMort && N.dir.bossMort() && (et === 'boss' || et === 'jeu')) debutVictoire();
+      if (et === 'jeu') epoqueSuivante();
     } else if (et === 'plongee') {
       O.T.ak += dt;
       appel('decor', function () { if (N.decor && N.decor.update) N.decor.update(dt); });
@@ -26392,13 +26689,13 @@ N.ui = (function () {
     publier();
   }
   function finActions() {
-    var f = R.ecrans.fin, a = f.actions, sf = O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var f = R.ecrans.fin, a = f.actions, sf = (N.S && N.S.safe) || O.geo.safe, W = O.geo.W, H = O.geo.H;
     var x0 = (sf.l | 0) + a.marge, x1 = W - (sf.r | 0) - a.marge;
-    var h = Math.ceil(f.boutonPt / px()), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
+    var h = Math.max(R.ecrans.retour.texteH + R.ecrans.retour.padding * 2, Math.ceil(Math.max(f.boutonPt, R.ecrans.retour.boutonPt) / px())), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
     var x = Math.round((x0 + x1 - w * 2 - a.ecart) / 2), y = H - (sf.b | 0) - a.marge - h;
     var age = Math.floor(Math.max(0, T - f.garde)), c = f.continuer;
     var propose = !cur_opts.victoire && !!(N.score && N.score.continuerPossible && N.score.continuerPossible());
-    return { continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
+    return { bilan: cibleBilan(), continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
       propose: propose, disponible: propose && age <= c.de - c.a, restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
   }
   function entreeFin(q) {
@@ -26406,6 +26703,9 @@ N.ui = (function () {
     // La date de début vient de boot ; un doigt déjà posé pendant la garde ne valide rien au relâcher.
     if (q.key === null && typeof q.t0 === 'number' && typeof q.t1 === 'number' && T - (q.t1 - q.t0) / R.ecrans.fin.actions.msParSeconde < R.ecrans.fin.garde) return;
     var a = finActions(), action = null;
+    var cb = a.bilan;
+    if (a.pret && (q.key === 'Tab' || (q.key === null && q.x >= cb.x && q.x < cb.x + cb.w && q.y >= cb.y && q.y < cb.y + cb.h))) { cur_opts.bilan = !cur_opts.bilan; cur_opts.pageBilan = 0; return; }
+    if (cur_opts.bilan && a.pret && (q.key === 'ArrowRight' || q.key === 'ArrowDown' || (q.key === null && q.y >= cb.y + cb.h && q.y < a.rejouer.y))) { cur_opts.pageBilan = (cur_opts.pageBilan || 0) + 1; return; }
     if (q.key === 'ArrowLeft' || q.key === 'ArrowUp') choix = a.disponible ? 0 : 1;
     else if (q.key === 'ArrowRight' || q.key === 'ArrowDown') choix = 1;
     else if (q.key === 'Digit1') action = 'continuer';
@@ -26492,31 +26792,7 @@ N.ui = (function () {
   }
 
   /* ============================ la pause ============================ */
-  function pause() {
-    var W = O.geo.W, H = O.geo.H, g = N.gfx, bw = Math.min(W - 8, 190), x = Math.round((W - bw) / 2);
-    var pr = N.cartes && N.cartes.prises ? N.cartes.prises() : {}, ids = [], k;
-    for (k in pr) if (pr[k] > 0) ids.push(k);
-    var d = N.score && N.score.defi, ch = cible();
-    var dvq = N.score && N.score.defiVague, bh = 32 + ch + (ids.length ? 24 : 0) + (d ? 14 : 0) + (dvq ? 11 : 0), y = Math.round(H / 2 - bh / 2);
-    veil();
-    g.rect(x - 1, y - 1, bw + 2, bh + 2, O.NP); g.rect(x, y, bw, bh, O.NUIT); g.rect(x, y, bw, 1, O.ACIER);
-    O.textC('PAUSE', W / 2, y + 6, O.OS, false, 2);
-    /* REPRENDRE : une cible de 44 pt, et tout l'écran la valide */
-    var cw = Math.min(bw - 16, 120), cx = Math.round(W / 2 - cw / 2), cy = y + 24;
-    g.rect(cx - 1, cy - 1, cw + 2, ch + 2, O.NP); g.rect(cx, cy, cw, ch, O.ARDOISE); g.rect(cx, cy, cw, 1, O.JAUNE); g.rect(cx, cy + ch - 1, cw, 1, O.JAUNE);
-    O.textC(O.hasTouch() ? 'REPRENDRE' : 'ESPACE : REPRENDRE', W / 2, cy + Math.round(ch / 2) - 3, O.OS, false, 1);
-    var yy = cy + ch + 6;
-    if (ids.length) {
-      var gap = 18, x0 = Math.round(W / 2 - (ids.length * gap - 2) / 2);
-      for (var i = 0; i < ids.length; i++) {
-        icone(ids[i], x0 + i * gap + 7, yy + 7, N.cartes && N.cartes.rarete ? O.OS : O.OS);
-        if (pr[ids[i]] > 1) O.text(String(pr[ids[i]]), x0 + i * gap + 11, yy + 13, O.JAUNE, true, 1);
-      }
-      yy += 24;
-    }
-    if (d) { O.textC((d.etat === 'reussi' ? '✓ ' : '') + d.nom + (d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : ''), W / 2, yy, d.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1); yy += 11; }
-    if (dvq) O.textC((dvq.etat === 'reussi' ? '✓ ' : dvq.etat === 'rate' ? '✗ ' : '') + 'V' + dvq.n + ' : ' + dvq.texte + (dvq.etat === 'actif' ? ' ' + dvq.prog + '/' + dvq.but : ''), W / 2, yy, dvq.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1);
-  }
+  function pause() { veil(); peindreRetour('pause'); }
 
   /* ============================ les cartes ============================ */
   /* la disposition : paysage = plaques côte à côte (120 × 80 ; plus étroites et plus hautes au-delà de trois) ; portrait = plaques empilées 180 × 48 */
@@ -26640,123 +26916,119 @@ N.ui = (function () {
     g.rect(x - 1, y - 1, w + 2, 6, O.NP); g.rect(x, y, w, 4, O.ARDOISE);
     var f = Math.round(w * O.clamp(part, 0, 1)); if (f > 0) g.rect(x, y, f, 4, c);
   }
+  /* Bilan resserré : tous les objectifs et le prochain seuil restent à l'écran.
+     Géométrie publiée pour contrôler les textes réellement peints dans le tampon. */
+  function cibleBilan() {
+    var C = R.ecrans.retour, sf = (N.S && N.S.safe) || O.geo.safe;
+    var largeur = O.geo.W - Math.ceil(sf.l) - Math.ceil(sf.r) - C.marge * 2;
+    return { x: Math.ceil(sf.l) + C.marge, y: Math.ceil(sf.t) + C.marge,
+      w: O.geo.portrait ? largeur : Math.floor((largeur - C.ecart) / C.colonnes),
+      h: Math.max(C.texteH + C.padding * 2, Math.ceil(C.boutonPt / px())) };
+  }
+  function retourModele(nom) {
+    O.geom();
+    var C = R.ecrans.retour, sf = (N.S && N.S.safe) || O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var x = Math.ceil(sf.l) + C.marge, y = Math.ceil(sf.t) + C.marge;
+    var w = W - Math.ceil(sf.r) - C.marge - x;
+    var port = O.geo.portrait, col = port ? w : Math.floor((w - C.ecart) / C.colonnes);
+    var actions = nom === 'fin' ? finActions() : null;
+    var bas = actions ? actions.rejouer.y - C.padding : H - Math.ceil(sf.b) - C.marge;
+    var lignes = [], barres = [];
+    function ligne(t, xx, yy, ink, largeur) {
+      var ls = coupe(t, (largeur || col) / C.echelle);
+      ls.forEach(function (txt) {
+        lignes.push({ texte: txt, x: xx, y: yy, w: O.textW(txt, C.echelle), h: C.texteH, echelle: C.echelle, encre: ink });
+        yy += C.ligne;
+      });
+      return yy;
+    }
+    var score = N.score, r = score && score.resume ? score.resume() : null;
+    var v = r ? r.victoire : !!cur_opts.victoire, yy = y;
+    if (nom === 'fin') {
+      yy = ligne(v ? 'GAGNÉ · BILAN >' : 'PERDU · BILAN >', x, yy, v ? O.JAUNE : O.ROSE);
+      yy = ligne('SCORE ' + (r ? r.score : score ? score.score : 0) + (r && r.marque ? ' C' : ''), x, yy, O.JAUNE);
+      if (r) {
+        yy = ligne(r.debloques.length ? '✓ ' + C.finNoms[r.debloques[r.debloques.length - 1]] + (r.debloques.length > 1 ? ' +' + (r.debloques.length - 1) : '') : 'V' + r.vague + ' ' + mmss(r.temps) + ' NOTE ' + r.note, x, yy, r.debloques.length ? O.JAUNE : O.OS);
+        if (r.cause) yy = ligne(N.ids.texte(r.cause, r.auteur), x, yy, O.ROSE);
+        yy = ligne('ÉNERGIE ' + r.energie, x, yy, O.AMBRE);
+        // Le prochain seuil est montré MÊME si une option vient de se débloquer.
+        if (r.prochain) {
+          yy = ligne('PROCHAIN', x, yy, O.ACIER);
+          yy = ligne(C.finNoms[r.prochain.id] + ' : ' + r.prochain.reste, x, yy, O.JAUNE);
+          barres.push({ x: x, y: yy, w: col, h: C.barreH, part: r.prochain.part }); yy += C.padding;
+        } else yy = ligne('TOUT DÉBLOQUÉ', x, yy, O.JAUNE);
+      }
+    } else {
+      yy = ligne(nom === 'pause' ? 'PAUSE · TOUCHE' : 'OBJECTIFS', x, yy, O.JAUNE);
+      if (nom === 'pause') yy = ligne('POUR REPRENDRE', x, yy, O.OS);
+      yy = ligne('FINIR + ' + R.defis.duJour + ' DU JOUR', x, yy, O.OS);
+      var p = score && score.prochain ? score.prochain() : null;
+      if (p) { yy = ligne('PROCHAIN', x, yy, O.ACIER); yy = ligne(C.finNoms[p.id] + ' : ' + p.reste, x, yy, O.AMBRE); }
+    }
+    if (nom === 'fin' && cur_opts.bilan && r) {
+      lignes = []; barres = []; yy = y;
+      function detail(t, ink) { yy = ligne(t, x, yy, ink || O.OS, w); }
+      detail('< OBJECTIFS', O.JAUNE);
+      var recs = score.classement ? score.classement() : [], marque = recs.length && recs[0].marque ? ' ' + recs[0].marque : '';
+      detail('RECORD ' + r.record + marque + (r.nouveauRecord ? ' NOUVEAU' : ''), O.JAUNE);
+      if (r.ecart !== null) detail('ÉCART ' + (r.ecart >= 0 ? '+' : '') + r.ecart);
+      detail((r.victoire ? 'SECTEUR NETTOYÉ' : 'SECTEUR ' + Math.round(r.progression * 100) + ' %') + ' · NOTE ' + r.note);
+      if (r.build) {
+        detail(r.build.nom, O.AMBRE);
+        detail((r.build.armes || []).map(function (a) { return String(a.id).toUpperCase() + ' ' + romain(a.palier !== undefined ? a.palier : a.niveau); }).join(' · '));
+      }
+      detail('DÉTRUITS ' + r.kills + ' · CHAÎNE ' + r.maxChaine);
+      detail('COUPES ' + r.coupes + ' · LASSO ' + r.maxLasso);
+      detail('VAGUES RÉUSSIES ' + r.defisVague, O.AMBRE);
+      detail('ÉNERGIE +' + r.energieGagnee + ' · TOTAL ' + r.energie, O.AMBRE);
+      if (r.debloques.length) detail('OUVERT : ' + r.debloques.map(function (id) { return C.finNoms[id]; }).join(', '), O.JAUNE);
+      if (r.conseil) detail(r.conseil, O.ACIER);
+      var corps = lignes.slice(1), capacite = Math.max(1, Math.floor((bas - y) / C.ligne) - C.paginationReserve);
+      var pages = Math.ceil(corps.length / capacite), page = (cur_opts.pageBilan || 0) % pages;
+      lignes = lignes.slice(0, 1).concat(corps.slice(page * capacite, (page + 1) * capacite));
+      lignes.forEach(function (l, i) { l.y = y + i * C.ligne; });
+      yy = y + lignes.length * C.ligne;
+      ligne('BILAN ' + (page + 1) + '/' + pages + ' >', x, yy, O.JAUNE, w);
+      return { nom: nom, bilan: true, page: page, pages: pages, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions, debloques: r.debloques.slice() };
+    }
+    var dx = port ? x : x + col + C.ecart, dy = port ? yy + C.padding : y;
+    var defis = r && nom === 'fin' ? r.defis : score && score.defis;
+    dy = ligne('DÉFIS DU JOUR', dx, dy, O.AMBRE);
+    (defis || []).forEach(function (d) {
+      if (d.id === 'finir') { dy = ligne('FINIR ' + (d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.JAUNE : O.OS); return; }
+      dy = ligne((d.fait ? '✓ ' : '· ') + d.nom, dx, dy, d.fait ? O.JAUNE : O.OS);
+      dy = ligne((d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.AMBRE : O.ACIER);
+    });
+    var dv = score && score.defiVague;
+    if (!dv && nom === 'briefing' && score && score.apercuVague) dv = score.apercuVague();
+    if (dv) {
+      dy = ligne('V' + dv.n + ' ' + (dv.fait ? 'FAIT ' : 'NON ') + dv.prog + '/' + dv.but, dx, dy, dv.fait ? O.JAUNE : O.OS);
+      var d = dv.def, lib = d.lassos ? 'LASSO' : d.enfermes ? 'ENFERMÉS' : d.cellules ? 'CELLULES' : d.mines ? 'MINES' : d.tourelles ? 'TOURELLES' : d.mult ? 'MULTIPLICATEUR' : 'BROYÉS';
+      dy = ligne(lib, dx, dy, O.ACIER);
+    }
+    return { nom: nom, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions,
+      debloques: r && nom === 'fin' ? r.debloques.slice() : [] };
+  }
+  function peindreRetour(nom) {
+    var m = retourModele(nom), C = R.ecrans.retour, g = N.gfx;
+    g.rect(m.x - C.padding, m.y - C.padding, m.w + C.padding * 2, m.bas - m.y + C.padding, O.NUIT);
+    m.lignes.forEach(function (l) { O.text(l.texte, l.x, l.y, l.encre, false, l.echelle); });
+    m.barres.forEach(function (b) { g.rect(b.x, b.y, b.w, b.h, O.ARDOISE); g.rect(b.x, b.y, Math.round(b.w * b.part), b.h, O.AMBRE); });
+    if (N.S && N.S.ecran) N.S.ecran.retour = m;
+    return m;
+  }
   function fin() {
-    var W = O.geo.W, H = O.geo.H, g = N.gfx, o = cur_opts, sf = O.geo.safe, r = N.score && N.score.resume ? N.score.resume() : null;
-    var v = r ? r.victoire : !!o.victoire;
-    if (!O.current()) {
-      var a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get(v ? 'victoire' : 'defaite'); }) : null;
-      if (a && a.data) fond(a, 0.6);
-    }
-    var port = O.geo.portrait, x0 = (sf.l | 0) + 5, x1 = W - (sf.r | 0) - 5, y0 = (sf.t | 0) + 4, y1 = H - (sf.b | 0) - 4, bord = v ? O.JAUNE : O.ROSE;
-    g.ditherRect(x0 - 3, y0 - 3, x1 - x0 + 6, y1 - y0 + 6, O.NP, 0.75);
-    g.rect(x0, y0, x1 - x0, y1 - y0, O.NUIT); g.rect(x0, y0, x1 - x0, 1, bord); g.rect(x0, y1 - 1, x1 - x0, 1, bord);
-    var cw = port ? x1 - x0 - 10 : Math.floor((x1 - x0 - 18) / 2), cx0 = x0 + 5, cx1 = port ? cx0 : cx0 + cw + 8;      // deux colonnes en paysage, une en portrait
-    var yl = y0 + 6, bloc = 0;
-    function vu() { return T >= (bloc++) * CFG.rev; }                                 // chaque bloc se dévoile à son tour
-    var ink = v ? O.JAUNE : O.MAGENTA;
-    /* 1. le titre */
-    if (vu()) O.text(v ? 'SECTEUR NETTOYÉ' : 'SIGNAL PERDU', cx0, yl + 3, ink, false, 2);
-    yl += 19;
-    /* 2. la cause, nommée, avec le quartier, la vague et l'heure */
-    if (r && !v && r.cause) {
-      if (vu()) {
-        O.text('DÉTRUITE PAR', cx0, yl, O.ACIER, false, 1);
-        var cs = coupe(N.ids.texte(r.cause, r.auteur), cw), cy = yl + 10, i;
-        for (i = 0; i < cs.length; i++) { O.text(cs[i], cx0, cy, O.MAGENTA, false, 1); cy += 9; }
-        var ls = coupe('VAGUE ' + r.vague + (r.quartier ? ' · ' + N.ids.nom(r.quartier) : '') + ' · ' + mmss(r.temps), cw);
-        for (i = 0; i < ls.length; i++) { O.text(ls[i], cx0, cy, O.ACIER, false, 1); cy += 9; }
-      }
-      yl += 38;
-    } else if (v) { if (vu()) O.text('SURCHARGE DÉBLOQUÉE', cx0, yl, O.JAUNE, false, 1); yl += 14; }
-    /* 3. la progression */
-    if (r) {
-      if (vu()) {
-        O.text(v ? 'SECTEUR 100 %' : r.boss ? 'CYCLOPE ATTEINT' : 'SECTEUR ' + Math.round(r.progression * 100) + ' %', cx0, yl, O.ACIER, false, 1);
-        barre(cx0, yl + 10, cw, r.progression, v ? O.JAUNE : O.OS);
-      }
-      yl += 20;
-    }
-    /* 4. le score compté jusqu'à sa valeur, l'écart à la partie précédente et le record */
-    var sc = r ? r.score : (N.score ? N.score.score : 0);
-    if (vu()) {
-      var k = O.clamp((T - (bloc - 1) * CFG.rev) / 0.9, 0, 1), aff = Math.round(sc * (1 - (1 - k) * (1 - k))), w1 = O.textW('SCORE ', 1);
-      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7) + (r && r.marque ? ' ' + r.marque : ''), cx0 + w1, yl, O.JAUNE, false, 1);
-      if (r && r.ecart !== null && k >= 1) droite((r.ecart >= 0 ? '+' : '') + espace(r.ecart), cx0 + cw, yl, r.ecart >= 0 ? O.JAUNE : O.ACIER, 1);
-      var nr = r ? r.nouveauRecord : false;
-      var classement = N.score && N.score.classement ? N.score.classement() : [], marqueRecord = classement.length && classement[0].marque ? ' ' + classement[0].marque : '';
-      O.text((nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7)) + marqueRecord, cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
-    }
-    yl += 24;
-    /* 5. le build : son nom et ses icônes */
-    if (r && r.build) {
-      if (vu()) {
-        O.text(r.build.nom, cx0, yl, O.OS, false, 1);
-        var bi = r.build.armes || [], xi = cx0 + 7;
-        for (var q = 0; q < bi.length; q++) {
-          icone(bi[q].id, xi, yl + 20, O.OS);
-          O.textC(romain(bi[q].palier !== undefined ? bi[q].palier : bi[q].niveau), xi, yl + 30, O.ACIER, false, 1); xi += 19;
-        }
-        if (r.build.pouvoir) icone(r.build.pouvoir, xi + 3, yl + 20, O.JAUNE);
-      }
-      yl += 42;
-    }
-    /* la colonne de droite (en portrait, la suite de la colonne) */
-    var cx = cx1, y = port ? yl : y0 + 6;
-    /* 6. le bilan, ligne à ligne */
-    if (r && vu()) {
-      var lignes = [['DÉTRUITS', r.kills], ['CHAÎNE MAX', r.maxChaine], ['COUPES', r.coupes]];
-      if (r.lassos) lignes.splice(2, 0, ['LASSO MAX', r.maxLasso]);
-      for (var m = 0; m < lignes.length; m++) {
-        if (T < (bloc - 1) * CFG.rev + m * 0.12) break;
-        O.text(lignes[m][0], cx, y + m * 9, O.ACIER, false, 1); droite(String(lignes[m][1]), cx + cw, y + m * 9, O.OS, 1);
-      }
-    }
-    y += 38;
-    /* 7. la note, qui tombe, et le défi */
-    if (r && vu()) {
-      var dy = Math.round((1 - O.clamp((T - (bloc - 1) * CFG.rev) / 0.2, 0, 1)) * -10);
-      O.text('NOTE', cx, y + 4, O.ACIER, false, 1);
-      O.text(r.note, cx + 30, y + dy, r.note === 'D' ? O.ACIER : O.JAUNE, false, 3);
-      if (r.defi) {
-        var ok = r.defi.etat === 'reussi', dl = coupe((ok ? '✓ ' : '✗ ') + r.defi.nom + (ok ? '' : ' ' + r.defi.meilleur + '/' + r.defi.but), cw - 52);
-        for (var dd = 0; dd < dl.length; dd++) O.text(dl[dd], cx + 52, y + 1 + dd * 9, ok ? O.AMBRE : O.ACIER, false, 1);
-        if (r.defisVague) O.text('DÉFIS DE VAGUE ×' + r.defisVague, cx + 52, y + 1 + dl.length * 9, O.AMBRE, false, 1);
-      }
-    }
-    y += 26;
-    /* 8. UN conseil */
-    if (r && r.conseil) {
-      var cl = coupe(r.conseil, cw);
-      if (vu()) for (var z = 0; z < cl.length; z++) O.text(cl[z], cx, y + z * 9, O.OS, false, 1);
-      y += cl.length * 9 + 5;
-    }
-    /* 9. l'énergie gagnée et le prochain déblocage, avec sa barre qui se remplit sous les yeux */
-    if (r) {
-      if (vu()) {
-        var t9 = T - (bloc - 1) * CFG.rev;
-        O.text('ÉNERGIE +' + r.energieGagnee, cx, y, O.OS, false, 1);
-        if (r.debloques.length) {
-          O.text('DÉBLOQUÉ : ' + (DEBNOMS[r.debloques[0]] || r.debloques[0]), cx, y + 10, O.JAUNE, false, 1);
-          barre(cx, y + 20, cw, 1, O.JAUNE);
-          if (!bruit) { bruit = true; O.sfx('record'); }
-        } else if (r.prochain) {
-          var from = r.avant && r.avant.id === r.prochain.id ? r.avant.part : 0;
-          O.text('PROCHAIN : ' + (DEBNOMS[r.prochain.id] || r.prochain.id) + ' DANS ' + r.prochain.reste, cx, y + 10, O.ACIER, false, 1);
-          barre(cx, y + 20, cw, from + (r.prochain.part - from) * O.clamp(t9 / 0.9, 0, 1), O.AMBRE);
-        }
-      }
-    }
-    /* 10. Deux cibles fixes et distinctes, sans clignotement. Un toucher hors cible ne relance plus. */
-    var actions = finActions(), ac = R.ecrans.fin.actions;
+    var m = peindreRetour('fin'), actions = m.actions, C = R.ecrans.retour;
+    if (m.debloques.length && !bruit) { bruit = true; O.sfx('record'); }
     ['continuer', 'rejouer'].forEach(function (nom, i) {
       var rc = actions[nom], ok = actions.pret && (nom !== 'continuer' || actions.disponible);
-      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER —';
-      g.rect(rc.x - 1, rc.y - 1, rc.w + 2, rc.h + 2, O.NP); g.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
-      g.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER); g.rect(rc.x, rc.y + rc.h - 1, rc.w, 1, ok ? O.JAUNE : O.ACIER);
-      if (!O.hasTouch() && choix === i && ok) { g.rect(rc.x, rc.y, 1, rc.h, O.JAUNE); g.rect(rc.x + rc.w - 1, rc.y, 1, rc.h, O.JAUNE); }
-      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - ac.texteH) / 2), ok ? O.OS : O.ACIER, false, 1);
+      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'SUITE ' + actions.restant : 'SUITE —';
+      N.gfx.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
+      N.gfx.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER);
+      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - C.texteH) / 2), ok ? O.OS : O.ACIER, false, C.echelle);
     });
   }
+  function briefing() { peindreRetour('briefing'); }
 
   function draw() {
     if (!cur) return;
@@ -26765,10 +27037,11 @@ N.ui = (function () {
     else if (cur === 'demarrage') demarrage();
     else if (cur === 'titre') titre();
     else if (cur === 'fin') fin();
+    else if (cur === 'briefing') briefing();
   }
 
   return { ouvrir: ouvrir, fermer: fermer, actif: actif, update: update, draw: draw, sortie: sortie, ecran: ecran, cartes: CARTES, veil: veil, icone: icone,
-    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions };
+    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions, retourModele: retourModele };
 })();
 
 /* ===== 85-pilote.js ===== */
@@ -27150,6 +27423,16 @@ function errLog(where, e) {
   ERR.sigs[sig]++; ERR.count++;
 }
 function step(where, fn) { if (!fn) return; try { fn(); } catch (e) { errLog(where, e); } }
+
+/* codex-p12 : la date civile vit au boot, jamais dans le score ni dans les flux de partie. */
+function actualiserJourParis() {
+  try {
+    var p = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    var champs = {};
+    p.forEach(function (x) { champs[x.type] = x.value; });
+    S.jour = Number(champs.year + champs.month + champs.day);
+  } catch (e) { if (!S.jour) S.jour = N.R.defis.partie.jourRepli; }
+}
 
 /* ---- palette de secours : remplacée par 00-pal.js dès qu'il existe ---- */
 var FALLBACK = ['#0d0221', '#190b28', '#241734', '#541388', '#2d1b69', '#ff2a6d', '#ff8fab', '#05d9e8',
@@ -27622,6 +27905,7 @@ function boot() {
   out = document.getElementById('out');
   if (!out) { errLog('boot', new Error('canvas #out absent')); return; }
   octx = out.getContext('2d', { alpha: false });
+  actualiserJourParis();
   if (typeof window !== 'undefined') {
     window.__S = S; window.__PAL = palTable();
     if (window.__SEED) N.reseed(window.__SEED);
@@ -27656,7 +27940,7 @@ function boot() {
     if (document.hidden) {
       S.paused = true; keys = {}; stick.id = null; entreeRaz(); stickUpdate();
       step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
-    } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
+    } else { actualiserJourParis(); step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null); }
   });
   app.addEventListener('pointerdown', onPointer);
   app.addEventListener('pointermove', onPointer);
@@ -27681,8 +27965,8 @@ boot();})();</script>
 /* LA DÉMO DU VOYAGE (proto-neon/demo/index.html) — en attendant que 79-jeu.js branche N.aventure lui-même
    (refonte/lots/demandes.md, « LE branchement qui relie tout »), cette page relie l'aventure au VRAI jeu :
    l'ouverture du jeu → le choix ELLE / LUI → connexion → 1976 → fissure → 1982 → le vrai jeu néon (vague 1) ;
-   au début des vagues 3, 4 et 5, l'aventure reprend la main pour les films d'époque (profondeur, warp, espace), et
-   après « espace », pour 2975 (N.cosmos : l'espace profond et le vaisseau amiral, qui mène droit à la fin) ;
+   au début des vagues 3 et 4, l'aventure reprend la main pour les films d'époque (profondeur, warp) ; à la victoire
+   sur le CYCLOPE, pour l'espace puis 2975 (N.cosmos : l'espace profond et le vaisseau amiral), puis la fin ;
    à la victoire, pour la fin du personnage ; quand les deux sont finis, retrouvailles et teaser SNAKE 3019.
    Une fois l'aventure finie, elle recommence à l'écran de choix (l'autre personnage). La piste principale se tait
    pendant le choix, 1976 et 1982, qui jouent leur propre musique. Cette page est une démonstration : le jeu
@@ -27710,7 +27994,7 @@ boot();})();</script>
   /* la main revient à l'aventure aux moments clés du vrai jeu */
   function surveiller() {
     var v = N.dir && N.dir.vague ? N.dir.vague() : 0, et = N.game.etat();
-    var etapes = [[3, 'profondeur'], [4, 'warp'], [5, 'espace']];
+    var etapes = [[3, 'profondeur'], [4, 'warp']];                 // l'espace et 2975 : à la victoire, après le CYCLOPE
     for (var i = 0; i < etapes.length; i++) {
       var e = etapes[i];
       if (v >= e[0] && !vu[e[1]] && et === 'jeu') { vu[e[1]] = 1; if (N.aventure.reprendre(e[1])) { neon = false; return; } }
