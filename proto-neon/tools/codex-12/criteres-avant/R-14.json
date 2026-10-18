@@ -1,0 +1,84 @@
+{
+ "id": "R-14",
+ "titre": "Budgets d’effets",
+ "seuil": "≤ 12 % d’images secouées ; ≤ 1 bannière par 10 s hors CYCLOPE",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "0 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "images secouées (pire partie)",
+   "valeur": 0.14641,
+   "seuil": "≤ 0.12",
+   "statut": "echec",
+   "mediane": 0.12973289182700182,
+   "parties": 10
+  },
+  {
+   "nom": "bannières à moins de 10 s de la précédente, hors CYCLOPE",
+   "valeur": 295,
+   "seuil": 0,
+   "statut": "echec",
+   "bannieres": 382,
+   "exemples": [
+    {
+     "graine": 1,
+     "t": 4.1,
+     "ecart": 3.32,
+     "texte": "FILE",
+     "avant": [
+      "VAGUE 1",
+      "ÉVEIL"
+     ]
+    },
+    {
+     "graine": 1,
+     "t": 33.4,
+     "ecart": 8.73,
+     "texte": "MEUTE",
+     "avant": [
+      "VAGUE 1 NETTOYÉE",
+      "PARFAIT"
+     ]
+    },
+    {
+     "graine": 1,
+     "t": 43.2,
+     "ecart": 9.77,
+     "texte": "LE PLATEAU AVANCE",
+     "avant": "MEUTE"
+    },
+    {
+     "graine": 1,
+     "t": 48.2,
+     "ecart": 4.99,
+     "texte": "LE PLATEAU AVANCE",
+     "avant": "LE PLATEAU AVANCE"
+    },
+    {
+     "graine": 1,
+     "t": 57.5,
+     "ecart": 9.3,
+     "texte": "CHAMP DE MINES",
+     "avant": "LE PLATEAU AVANCE"
+    },
+    {
+     "graine": 1,
+     "t": 80.6,
+     "ecart": 0.34,
+     "texte": "BATTERIE",
+     "avant": "LE PLATEAU AVANCE"
+    }
+   ]
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 45.3,
+ "bundle": {
+  "url": "http://127.0.0.1:61885/proto-neon/index.html",
+  "empreinte": "61a924e614ea"
+ },
+ "date": "2026-10-18T03:12:52.965Z",
+ "dateParis": "18/10/2026 · 05 h 12"
+}

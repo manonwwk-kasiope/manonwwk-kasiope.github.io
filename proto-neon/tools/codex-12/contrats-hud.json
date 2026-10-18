@@ -1,0 +1,166 @@
+{
+  "dateParis": "18/10/2026 05:17:50",
+  "conforme": true,
+  "controles": [
+    {
+      "nom": "cas construit : ancien comptage en échec",
+      "ok": true
+    },
+    {
+      "nom": "admissions espacées sans dessin",
+      "ok": true
+    },
+    {
+      "nom": "admissions espacées avec dessin",
+      "ok": true
+    },
+    {
+      "nom": "mêmes admissions dessinées/simulées",
+      "ok": true
+    },
+    {
+      "nom": "réserve transition et bannière entrée conservées",
+      "ok": true
+    },
+    {
+      "nom": "zéro erreur",
+      "ok": true
+    }
+  ],
+  "sans": {
+    "dessine": false,
+    "erreurs": [],
+    "err": 0,
+    "demandes": [
+      {
+        "t": 0,
+        "txt": "A"
+      },
+      {
+        "t": 0.09999999999999999,
+        "txt": "B"
+      },
+      {
+        "t": 0.19999999999999998,
+        "txt": "C"
+      },
+      {
+        "t": 0.3000000000000001,
+        "txt": "B"
+      },
+      {
+        "t": 11.000000000000016,
+        "txt": "D"
+      },
+      {
+        "t": 11.99999999999996,
+        "txt": "REFUSÉ PENDANT TRANSITION"
+      },
+      {
+        "t": 22.999999999999336,
+        "txt": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
+    "admissions": [
+      {
+        "t": 0,
+        "texte": "A",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 0
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 10.000000000000073
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 2,
+        "temps": 22.999999999999336
+      }
+    ],
+    "ancienComptage": 4,
+    "nouveauComptage": 0,
+    "transitionPreservee": true,
+    "entreePresente": true
+  },
+  "avec": {
+    "dessine": true,
+    "erreurs": [],
+    "err": 0,
+    "demandes": [
+      {
+        "t": 0,
+        "txt": "A"
+      },
+      {
+        "t": 0.09999999999999999,
+        "txt": "B"
+      },
+      {
+        "t": 0.19999999999999998,
+        "txt": "C"
+      },
+      {
+        "t": 0.3000000000000001,
+        "txt": "B"
+      },
+      {
+        "t": 11.000000000000016,
+        "txt": "D"
+      },
+      {
+        "t": 11.99999999999996,
+        "txt": "REFUSÉ PENDANT TRANSITION"
+      },
+      {
+        "t": 22.999999999999336,
+        "txt": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
+    "admissions": [
+      {
+        "t": 0,
+        "texte": "A",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 0
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 10.000000000000073
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 2,
+        "temps": 22.999999999999336
+      }
+    ],
+    "ancienComptage": 4,
+    "nouveauComptage": 0,
+    "transitionPreservee": true,
+    "entreePresente": true
+  }
+}

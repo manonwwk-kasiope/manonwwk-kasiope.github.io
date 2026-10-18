@@ -44,7 +44,7 @@ N.dir = (function () {
   var st = {
     n: 0, tw: 0, phase: 'attente', entrees: 0, fini: false, secteur: 0, tuto: true, nettoye: false, bossMort: false,
     queue: [], spawned: 0, freeCd: 2, pic: null, picFait: false, pastilleFaite: false, derniereAction: 0, traqueurs: 0, traqueurT: -99,
-    prochainGroupe: 0, melangeT: 0, lastBeat: -1, beat: false, gate: 0, turn: 0, angPrec: null, vus: {}, alive: 0, elroy: false, premiere: true
+    prochainGroupe: 0, melangeT: 0, melangeN: 0, lastBeat: -1, beat: false, gate: 0, turn: 0, angPrec: null, vus: {}, alive: 0, elroy: false, premiere: true
   };
   var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9, respirations: [] };
   var repos = { demande: false, fini: false, pic: 0, duree: 0, debut: null };
@@ -63,7 +63,7 @@ N.dir = (function () {
     VAGUES = null;
     st.n = 0; st.tw = 0; st.phase = 'attente'; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
     st.queue.length = 0; st.spawned = 0; st.freeCd = 2; st.pic = null; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99;
-    st.prochainGroupe = 0; st.melangeT = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
+    st.prochainGroupe = 0; st.melangeT = 0; st.melangeN = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
     repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
     st.secteur = secteur | 0; st.tuto = !(opts && opts.sansTuto);
     stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0; stats.maxAlive = 0; stats.minDistTele = 1e9;
@@ -77,10 +77,12 @@ N.dir = (function () {
     n = O.clamp(n | 0, 1, vs.length || 1);
     var w = vs[n - 1] || {};
     st.n = n; st.tw = 0; st.phase = 'vague'; st.fini = false; st.nettoye = false; st.entrees++;
-    st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.prochainGroupe = 0; st.melangeT = 0; st.elroy = false;
+    st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.prochainGroupe = 0; st.melangeT = 0; st.melangeN = 0; st.elroy = false;
     repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
     st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
     st.queue.length = 0;
+    if (N.hud && N.hud.reserverBanniere) N.hud.reserverBanniere(false);
+    st.melangeT = prochaineSalve(w);
     var fs = reglage().formations || w.formations || [];
     for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false, annonce: 0 });
     st.queue.sort(function (a, b) { return a.t - b.t; });
@@ -314,6 +316,14 @@ N.dir = (function () {
     O.sfx('traqueur');
   }
 
+  function debutMelange(w) { return w.melange.demarre !== undefined ? w.melange.demarre : (w.travelling ? w.travelling.t : secteur().entree); }
+  function nombreSalves(w) { return w.melange ? Math.max(0, Math.ceil((w.duree - debutMelange(w)) / w.melange.intervalle)) : 0; }
+  function prochaineSalve(w) {
+    if (!w.melange || st.melangeN >= nombreSalves(w)) return Infinity;
+    var lot = (CFG.rythme && CFG.rythme.regrouperSalves[st.n - 1]) || 1;
+    return debutMelange(w) + Math.min(nombreSalves(w) - 1, st.melangeN + lot - 1) * w.melange.intervalle;
+  }
+
   /* ============================ la vague ============================ */
   function vivants() { var c = N.ennemis.counts(); return c.regular; }
   /* Une vraie baisse de densité, avant le nettoyage et le pic suivant. La vague
@@ -337,6 +347,7 @@ N.dir = (function () {
   function demanderRespiration(w) {
     if (repos.demande) return;
     repos.demande = true;
+    if (N.hud && N.hud.reserverBanniere) N.hud.reserverBanniere(true);
     N.ennemis.purge('indifferent');
     if (N.arene && N.arene.nettoyee) N.arene.nettoyee();
     if (N.decor && N.decor.etat) N.decor.etat('calme');
@@ -385,11 +396,15 @@ N.dir = (function () {
         break;
       }
     }
-    /* V5 : toutes les formations, deux à la fois, toutes les 5 s */
-    if (!chassePause && w.melange && st.tw >= (w.melange.demarre !== undefined ? w.melange.demarre : (w.travelling ? w.travelling.t : 6)) && st.tw >= st.melangeT && st.beat) {
+    /* Même nombre de salves et mêmes effectifs nominaux ; regroupement temporel N.R.
+       La dernière salve impaire garde son rendez-vous, aucune salve n'est ajoutée. */
+    if (!chassePause && w.melange && st.tw >= st.melangeT && st.beat) {
       var toutes = ['file', 'meute', 'nuee', 'duoMines', 'champMines', 'pince', 'batterie', 'essaim', 'duel', 'garde'];
-      for (i = 0; i < w.melange.parSalve; i++) formation(toutes[ri(0, toutes.length - 1)]);
-      st.melangeT = st.tw + (w.melange.intervalle || 5);
+      var lot = (CFG.rythme && CFG.rythme.regrouperSalves[st.n - 1]) || 1;
+      var total = nombreSalves(w);
+      for (var salve = 0; salve < lot && st.melangeN < total; salve++, st.melangeN++)
+        for (i = 0; i < w.melange.parSalve; i++) formation(toutes[ri(0, toutes.length - 1)]);
+      st.melangeT = prochaineSalve(w);
     }
     /* le remplissage : tant que le quota n'est pas atteint et que la vague manque d'ennemis, une FILE (ou une formation de la vague) */
     var quota = regl.quota !== undefined ? regl.quota : w.quota;

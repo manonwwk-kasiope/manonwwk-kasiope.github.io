@@ -42,7 +42,9 @@ N.defile = (function () {
     N.dir.fin(); N.ennemis.reset();
     if (N.arene && N.arene.nettoyee) N.arene.nettoyee();
     if (N.decor) { N.decor.quartier('ciel'); N.decor.etat('calme'); }
+    if (N.hud && N.hud.reserverBanniere) N.hud.reserverBanniere(false);
     if (N.hud && N.hud.banniere) N.hud.banniere('LE DÉFILÉ', { c: 'acier' });
+    if (N.hud && N.hud.reserverBanniere) N.hud.reserverBanniere(true);
     escadrille(); publier(); journal('debut');
     return true;
   }
@@ -50,7 +52,7 @@ N.defile = (function () {
     actif = false; termine = true; parfait = pris === cfg().planeurs;
     if (parfait) {
       N.score.ajouter(cfg().parfait); rare = !!R.cartes.defileParfaitRare;
-      if (N.hud && N.hud.banniere) N.hud.banniere('PARFAIT', { c: 'jaune' });
+      if (N.hud && N.hud.tag) N.hud.tag('PARFAIT');
     }
     N.ennemis.reset(); publier(); journal('fin');
   }
