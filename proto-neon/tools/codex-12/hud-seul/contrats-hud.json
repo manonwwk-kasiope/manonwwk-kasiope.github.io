@@ -1,0 +1,216 @@
+{
+  "dateParis": "18/10/2026 05:49:52",
+  "conforme": true,
+  "controles": [
+    {
+      "nom": "cas construit : ancien comptage en échec",
+      "ok": true
+    },
+    {
+      "nom": "admissions espacées sans dessin",
+      "ok": true
+    },
+    {
+      "nom": "admissions espacées avec dessin",
+      "ok": true
+    },
+    {
+      "nom": "mêmes admissions dessinées/simulées",
+      "ok": true
+    },
+    {
+      "nom": "réserve transition et bannière entrée conservées",
+      "ok": true
+    },
+    {
+      "nom": "chaque admission dessinée correspond à un rendu géométrique réel",
+      "ok": true
+    },
+    {
+      "nom": "zéro erreur",
+      "ok": true
+    }
+  ],
+  "sans": {
+    "dessine": false,
+    "rendus": [],
+    "erreurs": [],
+    "err": 0,
+    "demandes": [
+      {
+        "t": 0,
+        "txt": "A"
+      },
+      {
+        "t": 0.09999999999999999,
+        "txt": "B"
+      },
+      {
+        "t": 0.19999999999999998,
+        "txt": "C"
+      },
+      {
+        "t": 0.3000000000000001,
+        "txt": "B"
+      },
+      {
+        "t": 11.000000000000016,
+        "txt": "D"
+      },
+      {
+        "t": 11.99999999999996,
+        "txt": "REFUSÉ PENDANT TRANSITION"
+      },
+      {
+        "t": 22.999999999999336,
+        "txt": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
+    "admissions": [
+      {
+        "t": 0,
+        "texte": "A",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 0
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 10.000000000000073
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 2,
+        "temps": 22.999999999999336
+      }
+    ],
+    "ancienComptage": 4,
+    "nouveauComptage": 0,
+    "transitionPreservee": true,
+    "entreePresente": true
+  },
+  "avec": {
+    "dessine": true,
+    "rendus": [
+      {
+        "t": 0.008333333333333333,
+        "texte": "A",
+        "cyclope": false,
+        "temps": 0.008333333333333333,
+        "x": 193,
+        "y": 56,
+        "w": 37,
+        "h": 57,
+        "echelle": 5,
+        "lignes": [
+          "A"
+        ]
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "temps": 10.000000000000073,
+        "x": 193,
+        "y": 56,
+        "w": 37,
+        "h": 57,
+        "echelle": 5,
+        "lignes": [
+          "B"
+        ]
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "temps": 22.999999999999336,
+        "x": 103,
+        "y": 56,
+        "w": 217,
+        "h": 105,
+        "echelle": 5,
+        "lignes": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
+    "erreurs": [],
+    "err": 0,
+    "demandes": [
+      {
+        "t": 0,
+        "txt": "A"
+      },
+      {
+        "t": 0.09999999999999999,
+        "txt": "B"
+      },
+      {
+        "t": 0.19999999999999998,
+        "txt": "C"
+      },
+      {
+        "t": 0.3000000000000001,
+        "txt": "B"
+      },
+      {
+        "t": 11.000000000000016,
+        "txt": "D"
+      },
+      {
+        "t": 11.99999999999996,
+        "txt": "REFUSÉ PENDANT TRANSITION"
+      },
+      {
+        "t": 22.999999999999336,
+        "txt": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
+    "admissions": [
+      {
+        "t": 0,
+        "texte": "A",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 0
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 0,
+        "temps": 10.000000000000073
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "etat": "jeu",
+        "vague": 2,
+        "temps": 22.999999999999336
+      }
+    ],
+    "ancienComptage": 4,
+    "nouveauComptage": 0,
+    "transitionPreservee": true,
+    "entreePresente": true
+  }
+}

@@ -1,9 +1,20 @@
 {
   "objectif": "ordre11/codex-12",
-  "phase": "Tous processus terminés. Preuves complètes livrables ; regroupement rejeté et retiré. Attente arbitragesClaude.",
-  "dateParis": "18/10/2026 · 05 h 33",
+  "phase": "Ordre12en cours : HUDseul/R15 ; ancienregroupementclosnonretenu",
+  "dateParis": "18/10/2026 · 05 h 53",
   "base": "76d76e337fab45f246761a500e79dd58760533f8",
-  "processus": [],
+  "processus": [
+    {
+      "pid": 31811,
+      "session": 86044,
+      "tache": "qualifier.mjs, sous-processusdansqualification-execution.json"
+    },
+    {
+      "pid": 27254,
+      "session": 87832,
+      "tache": "Chromiumavant, attendchef.lock, pasdedoublon"
+    }
+  ],
   "restant": [
     "médiation et arbitrage de Claude sur le sous-ensemble HUD et les pics sous garde10%",
     "règle R15 vagues interrompues avant pic/respiration",
@@ -28,8 +39,9 @@
     "ChromiumApres": "Terminé : R14bannières0violation sur165admissions et secousses14,92%échec ; R15annonces1,pics6/10/17,5/20/24,resp90,91% etpicsmanquantséchecs ; R31septconformes ; R35V1conforme,relance2échecs.0erreur.",
     "admissionsReelles": "205/205entrées annoncées par admissioncorrespondante, pas seulementdemande ; 971admissions ordinaires hors CYCLOPE sur60parties et0intervalle<10s. Lecture desmêmesraw, aucunreplay."
   },
-  "prochaineAction": "Livrer rapport/proofs, libérer sources, pull et relireordres. Aucune relance des160VM/120Chromium. Aucun nouveau réglage ni80supplémentaire avantarbitrageClaude. Rapportsaprèsportentcandidatregroupérejeté, jamais le codecourant aprèsretrait.",
+  "prochaineAction": "Suivreexclusivementhud-seul/REPRISE.json etqualification-execution.json. Anciennes160partiesVM et120Chromium racineconservées, nepasrejouer. Actuelbasee52da2d,80avant79fins0JSerr, aprèsencours, natifSIGSEGVtraitéparreprisegraine/cachesconservés.",
   "rapport": "rapport.mjs préparé, ne le lancer qu’après qualification-execution.phase=fini et4critèresaprès présents",
   "retrait": "Retrait sourcegroupement vérifié strictement :76avant + deux appels facultatifs de réserve seulement ; N.R.rythme retiré, indexrebâti séparément, preuvescandidatefigées.",
-  "verrou": "14004/14863 réellement terminés, session44535 closecode1attenducarcritèreséchoués, témoinpropre absent ; aucunChromium12actif."
+  "verrou": "14004/14863 réellement terminés, session44535 closecode1attenducarcritèreséchoués, témoinpropre absent ; aucunChromium12actif.",
+  "suiteHUD": "hud-seul/REPRISE.json"
 }

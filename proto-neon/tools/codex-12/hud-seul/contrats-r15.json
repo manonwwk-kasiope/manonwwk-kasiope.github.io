@@ -1,0 +1,140 @@
+{
+  "dateParis": "18/10/2026 05:45:50",
+  "reference": "arbitrageClaude18/10 05h35, seuils inchangés",
+  "conforme": true,
+  "controles": [
+    {
+      "nom": "perte à12s,pic prévu30s : exclue sans échec imputé",
+      "ok": true
+    },
+    {
+      "nom": "respiration non exigible après perte avant pic",
+      "ok": true
+    },
+    {
+      "nom": "perte à31s sans pic : doit échouer",
+      "ok": true
+    },
+    {
+      "nom": "pic réel à30s : reste conforme",
+      "ok": true
+    },
+    {
+      "nom": "limite exactement30s sans pic : exigible et échec",
+      "ok": true
+    },
+    {
+      "nom": "profil publié sans changer éligibilité",
+      "ok": true
+    }
+  ],
+  "cas": {
+    "early": {
+      "profil": "paysage",
+      "graine": 1,
+      "finie": true,
+      "duree": 12,
+      "vagues": [
+        {
+          "n": 3,
+          "evt": "entree",
+          "t": 0
+        }
+      ],
+      "echantillons": [
+        {
+          "vague": 3,
+          "t": 1,
+          "vivants": 10
+        },
+        {
+          "vague": 3,
+          "t": 12,
+          "vivants": 9
+        }
+      ]
+    },
+    "late": {
+      "profil": "paysage",
+      "graine": 2,
+      "finie": true,
+      "duree": 31,
+      "vagues": [
+        {
+          "n": 3,
+          "evt": "entree",
+          "t": 0
+        }
+      ],
+      "echantillons": [
+        {
+          "vague": 3,
+          "t": 1,
+          "vivants": 10
+        },
+        {
+          "vague": 3,
+          "t": 12,
+          "vivants": 9
+        },
+        {
+          "vague": 3,
+          "t": 31,
+          "vivants": 9
+        }
+      ]
+    },
+    "withPic": {
+      "profil": "paysage",
+      "graine": 3,
+      "finie": true,
+      "duree": 31,
+      "vagues": [
+        {
+          "n": 3,
+          "evt": "entree",
+          "t": 0
+        },
+        {
+          "n": 3,
+          "evt": "pic",
+          "t": 30
+        }
+      ],
+      "echantillons": [
+        {
+          "vague": 3,
+          "t": 1,
+          "vivants": 10
+        },
+        {
+          "vague": 3,
+          "t": 12,
+          "vivants": 9
+        },
+        {
+          "vague": 3,
+          "t": 31,
+          "vivants": 9
+        }
+      ]
+    }
+  },
+  "comptage": {
+    "jouees": 2,
+    "exclues": [
+      {
+        "interrompue": true,
+        "profil": "paysage",
+        "graine": 1,
+        "n": 3,
+        "disponible": 12,
+        "heurePic": 30
+      }
+    ],
+    "eligibles": 1,
+    "avec": 0,
+    "valeur": 0,
+    "conforme": false
+  }
+}
