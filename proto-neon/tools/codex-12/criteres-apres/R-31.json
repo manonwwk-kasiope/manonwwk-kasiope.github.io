@@ -1,0 +1,91 @@
+{
+ "id": "R-31",
+ "titre": "Le plateau se déplace",
+ "seuil": "≥ 25 % en mouvement (V2-V5) ; TRAVELLING V2, V3, V5 ; 5 VOLS ; ≥ 4 convois en V4 ; 0 mort par mur mobile non annoncé",
+ "bloquant": true,
+ "statut": "ok",
+ "resume": "7 ok, 0 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "arène en mouvement, vagues 2 à 5",
+   "valeur": 0.26769,
+   "seuil": "≥ 0.25",
+   "statut": "ok",
+   "pas": 1334055
+  },
+  {
+   "nom": "TRAVELLING en V2",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 60
+  },
+  {
+   "nom": "TRAVELLING en V3",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 50
+  },
+  {
+   "nom": "TRAVELLING en V5",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 39
+  },
+  {
+   "nom": "VOLS par partie gagnée",
+   "valeur": 5,
+   "seuil": 5,
+   "statut": "ok",
+   "parties": 21,
+   "vols": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "nom": "convois en V4 (minimum par partie)",
+   "valeur": 4,
+   "seuil": "≥ 4",
+   "statut": "ok",
+   "parties": 39
+  },
+  {
+   "nom": "morts par un mur mobile sans annonce",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "mortsMurMobile": 7
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 74.3,
+ "bundle": {
+  "url": "http://127.0.0.1:63239/proto-neon/index.html",
+  "empreinte": "ecfc6ea2cd86"
+ },
+ "date": "2026-10-18T03:30:33.517Z",
+ "dateParis": "18/10/2026 · 05 h 30"
+}

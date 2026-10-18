@@ -1,0 +1,35 @@
+{
+ "id": "R-14",
+ "titre": "Budgets d’effets",
+ "seuil": "≤ 12 % d’images secouées ; ≤ 1 bannière par 10 s hors CYCLOPE",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "1 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "images secouées (pire partie)",
+   "valeur": 0.1492,
+   "seuil": "≤ 0.12",
+   "statut": "echec",
+   "mediane": 0.11611857457552761,
+   "parties": 10
+  },
+  {
+   "nom": "bannières à moins de 10 s de la précédente, hors CYCLOPE",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "bannieres": 165,
+   "exemples": []
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 40.7,
+ "bundle": {
+  "url": "http://127.0.0.1:63239/proto-neon/index.html",
+  "empreinte": "ecfc6ea2cd86"
+ },
+ "date": "2026-10-18T03:26:39.855Z",
+ "dateParis": "18/10/2026 · 05 h 26"
+}
