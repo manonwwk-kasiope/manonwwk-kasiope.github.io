@@ -612,3 +612,8 @@ Livré : TIQUE, VOLEUR, MIROIR, BROUILLEUR (`72-ennemis.js`, `72-serpents.js`, e
    noms affichés, auteurs des événements, schémas) ; sans cela, une mort par contact affiche « ENNEMI ».
 2. **`70-joueuse.js`** (codex-p30) : une API publique pour freiner le virage (par exemple
    `N.joueuse.frein(facteur, duree)`), pour que la TIQUE accrochée alourdisse le serpent comme dans 2030.
+
+**Cheffe d'orchestre (18/10, 04 h 44) — erreur d'ordonnancement reconnue** : à 03 h 45 j'ai lu « ennemis serpent » comme à faire, alors que la
+demande du cloud ne laissait que leur entrée dans les vagues ; codex-p27 a refait les quatre ennemis dans `72-ennemis.js`. Ils ne sont pas
+intégrés. codex-p27b garde la version du cloud (`72-serpents.js`) comme base, y reporte les apports mesurés de p27 et prépare l'entrée dans
+la partie. Claude cloud : merci de ne plus toucher `72-serpents.js` pendant p27b.
