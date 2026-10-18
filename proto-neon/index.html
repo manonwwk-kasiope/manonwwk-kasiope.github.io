@@ -1402,6 +1402,8 @@ var MUSIQUE_EMBED = null;
       { dureeMax: 44 }
     ]
   };
+  /* codex-p23 : contre-jour froid du lointain, Bayer fixe ; le sol garde les plafonds 01b. */
+  R.decorContrejour = { rangs: 4, rangsPortrait: 8, encre: 'acier' };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
@@ -3390,6 +3392,8 @@ N.art = (function () {
       cx = lx + Cm.w / 2; cy = ly + Cm.h / 2;
       ex = lx; ey = ly;
     }
+    // Un changement de préférence annule aussi une poussée déjà engagée.
+    if (facteurSecousse() === 0) { jx = 0; jy = 0; }
     // poussées : s'amortissent en 0,15 s ; rien si la secousse est coupée
     if (jx !== 0 || jy !== 0) {
       var f = Math.exp(-dt * 20);
@@ -4385,13 +4389,19 @@ N.art = (function () {
   function taireFondJeu(cam) {
     if (!enJeu()) return;
     var g = N.gfx, b = g.buf(), B = N.pal.BAYER;
+    var cj = N.R.decorContrejour, encre = N.pal.i(cj.encre), rangs = g.H > g.W ? cj.rangsPortrait : cj.rangs;
     /* Ciel, soleil, cité : garder les détails et les étoiles, baisser les encres chaudes et
        leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
     for (var sy = 0; sy < YH; sy++) {
       var row = sy * g.W, br = (sy & 3) << 2;
       for (var sx = 0; sx < g.W; sx++) {
         var table = B[br | (sx & 3)] === 0 ? lutAccentJeu : lutLointainJeu;
-        b[row + sx] = table[b[row + sx]];
+        var v = table[b[row + sx]];
+        /* Contre-jour froid, fixe dans la trame écran : on éclaire les matières du
+           lointain sans réchauffer le sol ni combler ses silhouettes nuit profonde. */
+        if (v !== C.V && v !== C.NP && N.pal.L[v] <= RD().lumiere.seuil && B[br | (sx & 3)] < rangs)
+          v = encre;
+        b[row + sx] = v;
       }
     }
     /* Le sol se tait jusqu'aux bords de l'écran, y compris au-delà des murs mobiles :
@@ -10640,7 +10650,13 @@ if (typeof window !== 'undefined') window.__N = N;
     try { if (typeof localStorage !== 'undefined') localStorage.setItem('snake2975.fx', JSON.stringify({ s: userShake, f: userFlash })); } catch (e) {}
   }
   readPrefs();
-  function shakeK() { return userShake !== null ? userShake : (reduced ? 0 : 1); }
+  function mouvementReduit() {
+    // Relire la préférence : elle peut changer pendant une partie.
+    try { reduced = !!(typeof window !== 'undefined' && window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    return reduced;
+  }
+  function shakeK() { return mouvementReduit() ? 0 : (userShake !== null ? userShake : 1); }
   function flashOn() { return userFlash !== null ? userFlash : true; }
 
   /* ---------------- limiteur de flashs ---------------- */
@@ -10982,7 +10998,8 @@ if (typeof window !== 'undefined') window.__N = N;
     for (var e = 0; e < NEX; e++) {
       if (!eOn[e]) continue;
       eAge[e] += dt;
-      if (eIgn[e] < 60000) eIgn[e]++;
+      // L'allumage est visuel : en mouvement réduit, il tient comme l'âge pendant le gel.
+      if (!(mouvementReduit() && N.horloge && N.horloge.gele()) && eIgn[e] < 60000) eIgn[e]++;
       if (eAge[e] >= eLife[e]) { eOn[e] = 0; continue; }
       nex++;
       var ff = eFire[e], a = eAge[e];
