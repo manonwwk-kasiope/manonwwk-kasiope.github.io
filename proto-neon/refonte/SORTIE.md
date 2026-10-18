@@ -43,6 +43,10 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
   l'acier gris resterait, que le jury a jugé terne. Le reste de R-11 reste bloquant (0 cyan dans le décor, magenta
   et rose pâle < 0,5 %, vide < 30 %, gaine des menaces). Le « pas triste » (retour n° 1 de la propriétaire) se juge
   au jury (ambiance ≥ 8/10) et au JALON.
+- **18/10/2026 · 05 h 11 — cible R-04 « inerte : première mort au mur avant 8 s » → « avant 11 s ».** Démonstration (codex-p34,
+  `tools/codex-p34/rapport.md` § 3.2) : départ à 0,38 × 1024 = 389,12 px, tête limitée à 1021 px, croisière 68 px/s : 9,29 s de trajet nu,
+  avant la grâce au mur ; mesuré 10,18 s sur dix graines. 8 s est inatteignable sans changer le départ ou la vitesse, ce qui changerait le
+  jeu pour tous ; la cible garde son intention (immobile = mort rapide). Décision de la cheffe d'orchestre, réversible par la propriétaire.
 
 ## Arrêt de non-convergence
 

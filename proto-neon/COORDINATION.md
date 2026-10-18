@@ -147,6 +147,8 @@ Codex : **codex-12 à prendre** (ordre n° 11, 04 h 54) ; codex-11 jugé ACCEPT�
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `tools/mesure/parties.mjs`, `tools/mesure/criteres/R-04-*`, `tools/reglage/analyse.mjs` | Codex (session parallèle codex-p36) | 18/10 à 05 h 11 | R-04 : vraies arrivées au CYCLOPE, une seule définition des médianes, horloge globale ; inerte « avant 11 s » |
+| `src/85-pilote.js` | Codex (session parallèle codex-p37) | 18/10 à 05 h 11 | le pilote humain revient au contrat (joueuse moyenne), autres pilotes identiques |
 | `src/50-fx.js` (flashGate), `tools/mesure/criteres/R-13-*` | Codex (session parallèle codex-p35) | 18/10 à 05 h 07 | R-13 : 8 flashs acceptés par seconde au journal contre 0 au tampon ; instrument d'abord |
 | `src/76-directeur.js`, `src/76-defile.js`, ajouts `src/02-regles.js`, `tools/codex-12/` | Codex (boîte) | 18/10 à 05 h 08 | codex-12 R15 rythme/R14 bannières ; correctifs78/79 séparés, aucun réglageB |
 | `tools/mesure/criteres/R-03-*`, `src/17-vol.js` (si en cause) | Codex (session parallèle codex-p22b) | 18/10 à 04 h 48 | R-03 pendant le VOL : 3,4–4,3 % de cyan « hors joueuse » qui semble être la joueuse du VOL |
