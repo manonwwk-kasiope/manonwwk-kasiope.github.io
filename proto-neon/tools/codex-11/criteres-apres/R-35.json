@@ -1,0 +1,45 @@
+{
+ "id": "R-35",
+ "titre": "Relance",
+ "seuil": "REJOUER → serpent en main < 2 s, sans briefing ; V1 ≤ 24 s (médiane)",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "1 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "REJOUER → serpent en main (s)",
+   "valeur": 2.81667,
+   "seuil": "< 2",
+   "statut": "echec",
+   "etats": [
+    "briefing",
+    "plongee",
+    "jeu"
+   ]
+  },
+  {
+   "nom": "REJOUER sans briefing",
+   "valeur": false,
+   "seuil": true,
+   "statut": "echec"
+  },
+  {
+   "nom": "durée de V1 (médiane, s)",
+   "valeur": 23.89167,
+   "seuil": "≤ 24",
+   "statut": "ok",
+   "parties": 50,
+   "min": 23.84166666666591,
+   "max": 25.024999999999174
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 4.6,
+ "bundle": {
+  "url": "http://127.0.0.1:59050/proto-neon/index.html",
+  "empreinte": "5c4aa366a7d3"
+ },
+ "date": "2026-10-18T02:40:34.391Z",
+ "dateParis": "18/10/2026 · 04 h 40"
+}

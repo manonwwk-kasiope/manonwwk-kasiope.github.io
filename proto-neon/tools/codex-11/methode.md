@@ -43,3 +43,9 @@ La troisième passe a déjà un reçu bon/2 censuré à540s : elle ne satisfait 
 ## Diagnostic du comparateur Chromium — 18/10/2026 · 04 h 24
 
 Le premier contrôleavant retrouve exactement les huit champs finaux des dix parties, mais échoue au journal strict. Défaut constaté du comparateur : l’URL ne demandait pas journal=1 au chargement, contrairement au VM et au verifier.mjs original p5 ; les événements avant activation explicite en cours de protocole manquent. Reçuinitial conservé dans equivalence-avant-initial.json. Correction de l’URL uniquement et conservation des données brutes VM/Chromium gzip ; comparaison stricte des journaux inchangée. Reprise des seules dix comparaisonsavant pendant le créneauaprès, puis les dix comparaisonsaprès déjà prévues. R31/R35avant en cours non rejoués. Aucun seuil, aucune source du jeu, aucune des800parties de mesure modifiée ou relancée pour ce diagnostic. Si un écart persiste, l’examiner sans le masquer.
+
+## Clôture des mesures figées — 18/10/2026 · 04 h 53
+
+Pipeline34367/72314 terminé, reçuR31/R35 après à04h40. Aucun nouvel essai de réglage : trois passes épuisées, final400 terminé. L’égalité stricte des journaux reste en échec après correction de l’URL : vingt métriques finales identiques, structures des événements identiques ; défis initiaux jour17/18, autres écarts numériques seulement (diagnostic-equivalence.json). Aucune tolérance ni suppression de champs, aucun nouveau replay autorisé par ce diagnostic.
+
+R31 : une mort bon/16 après V5 par murMobile sans annonce, après la fin du travelling ; V1 R35 conforme, relance avec briefing encore en échec sur la paire figée. Contrôle limité du bundle courant déjà engagé86013/session51892, attente du créneau ; ne pas le dupliquer. La médiation décidera de la suite, le palier global reste non validé.
