@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 05 h 14)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 05 h 44)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -34,6 +34,12 @@
   cibles B arrêté** (non-convergence) ; décision de spécification inerte « avant 11 s ». Sessions : p33 (tempo), p35 (R-13 limiteur), p36 (R-04
   instrument), p37 (pilote humain), p38 (dessiné = simulé) ; boîte : codex-12 (R-15, R-14). File navigateur : p21, p30, p32, rejeu aventure
   (copie batterie figée 6b040d7, pour juger p26b), p15b, p22b, p27b. Après : p31 (provenance des morts, consigne prête), batterie complète, jury.
+- À 05 h 44 : intégré p27b (ennemis de 2030 unifiés, b34d288 + raccords a9aa133 ; R-13 global préexistant → p35). Jugés : p15b (arrêt de
+  non-convergence ; **p15c** reporte ses changements sur la pointe et mesure avant/après sur la même base), p22b (diagnostic accepté, cyan du panneau
+  PLONGÉE ; **p22c** propage l'attribution ou change l'encre), codex-12 (accepté avec réserves ; règle R-15 des vagues interrompues ; **ordre n° 12** :
+  qualifier le correctif des bannières). Livrés en attente du navigateur : p33 (tempo), p36 (R-04 ; raccord 02-regles « inerte 11 s »), p37 (pilote
+  humain : 3 cibles tenues, LASSO et V1 sous cibles). Sessions : p35, p38, p15c, p22c ; boîte : codex-12 (ordre 12). File navigateur (ordre non garanti) :
+  p37 en cours, puis p21, p30, p32, rejeu aventure (p26b), p36, p33. Ensuite : p31 dès que p30 et p32 libèrent 70-joueuse et 73-colosse.
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;
