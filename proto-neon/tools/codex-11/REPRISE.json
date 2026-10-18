@@ -1,6 +1,6 @@
 {
   "objectif": "codex-11, voir methode.md et ordre10",
-  "phase": "R31/R35avant terminés ; créneauaprès72314 attend puis reprend10comparaisonsavant corrigées,10après etR31/R35après",
+  "phase": "attente effective du créneauaprès, aucune autre action de jeu autorisée avant ces preuves",
   "sourceBase": "52fe12d pour pairefigée, intégrations p14/p17/p18/p4d et suivantes préservées sur branche mais horspaire",
   "sourceFigée": "avant-sources.json",
   "source79": "aucune édition autorisée ici ; patch si indispensable",
@@ -12,12 +12,13 @@
     "livraison et pull boîte"
   ],
   "budget": "3 passes exploratoires maximum, arrêt 2 sans nouvelleB ; final unique50graines, plafond540s",
-  "misAJourParis": "18/10/2026 · 04 h 27",
+  "misAJourParis": "18/10/2026 · 04 h 33",
   "enCours": [
     {
       "session": 9823,
       "pid": 34367,
-      "tache": "file unique ; enfant72314 en attente puis équivalence corrigée et critèresaprès",
+      "enfantPid": 72314,
+      "tache": "créneauaprès en attente du chef ; puis reprise10avant,10après etR31/R35après",
       "etat": "tools/codex-11/qualification-execution.json"
     }
   ],
@@ -26,7 +27,8 @@
     "passe1": "160/160fins0erreur,11B ; V1<24s, maladroit56,32, humain213,07 ; dieu médiane379,18 mais plage328,37–457,39",
     "passe2": "160cas collectés,158fins,2bornes sans erreur ; rejetée,5B, aucune nouvelleB",
     "passe3": "160cas collectés,159fins,bon/2borné sans erreur ; rejetée,6B",
-    "finalVM": "397/400fins,expert34/dieu30/dieu42bornés540,0erreur,7/20B ; V1 et VOLs dans mesures-logiques.json (Chromium pas encore qualifié)"
+    "finalVM": "397/400fins,expert34/dieu30/dieu42bornés540,0erreur,7/20B ; V1 et VOLs dans mesures-logiques.json (Chromium pas encore qualifié)",
+    "criteresAvant": "R31:6ok1échec(TRAVELLINGV2),5VOLS conformes ; R35:3échecs,dontV1=35,14104s etREJOUER2,81667s+briefing surpaire ancienne.60reçusChrome cache, ne pasrejouer."
   },
   "sourceCandidate": "apres-sources.json = valeurs1 + correctif TRAQUEUR. Passe3 source figée distincte ; source globale02 est déjà préparée avec valeurs1, ajouts des autres sessions conservés.",
   "prochaineAction": "Observer9823 et sesenfants, lire equivalence-avant.json/apres.json après fin. Si écarts persistants, lire rawgzip et premiersEcartsJournal avant nouvelleaction. Pas de réglage du jeu ni de qualification50 supplémentaire. Ensuite rapport.mjs, consolecourante, livraison/libération etpull.",
@@ -35,5 +37,6 @@
   "secondMac": "SSH MacBook-Air-de-Manon.local essayé03h15 : connexion refusée ; aucun calcul ni clé installé à distance. Une seule file VM sur ce Mac.",
   "sourceReservation": "76-defile encore réservé, non modifié ; cinquièmeVOL déjà prouvé sur référence",
   "preuveCorrectif": "2contrats échouent avant surTRAQUEUR ;18/18après, sourceSHA dans contrats.json.",
-  "diagnosticComparateur": "Première équivalenceavant :10métriques finales exactes mais journal strict faux. URL sans journal=1 au chargement, différente du bancp5. Initial archivé equivalence-avant-initial.json, code corrigé sans changer de comparateur strict ; les10avant repris danslecréneauaprès, donnéesVM/Chrome gzip désormais gardées. Ne pas relancerR31/R35avant ni800parties."
+  "diagnosticComparateur": "Première équivalenceavant :10métriques finales exactes mais journal strict faux. URL sans journal=1 au chargement, différente du bancp5. Initial archivé equivalence-avant-initial.json, code corrigé sans changer de comparateur strict ; les10avant repris danslecréneauaprès, donnéesVM/Chrome gzip désormais gardées. Ne pas relancerR31/R35avant ni800parties.",
+  "verificationCourante": "console-integration.mjs remplacé par contrôleBanc officiel, troisprofils V1sim5s et deuxvolets UI deR35 pour savoir si le défaut ancien deREJOUER existeencore. Àlancer uniquement après fin9823, buildcourant, mêmeprotocoleverrou. Pas encoreexécuté."
 }
