@@ -1159,6 +1159,32 @@
   /* codex-p16c — bornes du rejeu contrôlé, reprises du protocole des pilotes. */
   R.perf.rejeuP16 = { facteurBorne: 4, tranche: 0.25 };
 
+  /* codex-p27b — source unique des serpents cloud, commune aventure / partie.
+     Comportements et calendrier conservés ; seule l'annonce d'arrachement passe de 0,6 à 0,8 s. */
+  R.serpents = {
+    types: {
+    tique: { nom: 'TIQUE', frein: 0.75, pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
+      morsure: { periode: 3.2, annonce: 0.9, premiere: 1.6 }, points: 60 },
+    voleur: { nom: 'VOLEUR', penalite: 40, pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
+      besace: 3, patience: 14, annonceFuite: 2, arrache: { distance: 12, annonce: 0.8, segments: 2, prise: 18 }, prime: 1, points: 150 },
+    miroir: { nom: 'MIROIR', pv: 60, r: 5, sprite: 11, retard: 1.5, ecartQueue: 14, rejoint: 1.6, blindageDeg: 75, segments: 3,
+      espaceSeg: 6, bord: 3, points: 250 },
+    brouilleur: { nom: 'BROUILLEUR', pv: 40, r: 6.5, sprite: 14, champ: 42, souffle: 0.05, garde: 0.75, approche: 1.0, allure: 0.6, glisse: 0.25,
+      coupure: 0.18, gresille: 0.68, points: 200 }
+  },
+    plan: {
+      2: [{ t: 9, type: 'tique' }, { t: 15, type: 'tique' }],
+      3: [{ t: 8, type: 'voleur' }, { t: 26, type: 'tique' }],
+      4: [{ t: 8, type: 'brouilleur' }, { t: 24, type: 'miroir' }],
+      5: [{ t: 7, type: 'miroir' }, { t: 22, parmi: ['voleur', 'brouilleur', 'tique'] }]
+    },
+    max: 2, portail: 0.9, marge: 30, distanceTete: 90,
+    placement: { essais: 32, bords: 4, profondeur: 40, interieur: 20, cadre: 24 },
+    annonce: { duree: 0.8, rayon: 12, approche: 1.45, virage: 6 },
+    visuel: { sonneAlternances: 4 },
+    journalMax: 400
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

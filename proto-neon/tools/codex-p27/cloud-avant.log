@@ -1,0 +1,43 @@
+
+=== paysage ===
+ok paysage : l'aventure arrive au néon (briefing/neon)
+ok paysage : N.aventure.enCours() vrai pendant le néon
+ok paysage V2 : naissances {"tique":2} (prévu tique, tique)
+ok paysage V2 : au plus deux à la fois (2)
+ok paysage V2 : aucune naissance dans la vue (2 naissances)
+ok paysage V3 : naissances {"voleur":1,"tique":1} (prévu voleur, tique)
+ok paysage V3 : au plus deux à la fois (1)
+ok paysage V3 : aucune naissance dans la vue (2 naissances)
+ok paysage V4 : naissances {"brouilleur":1,"miroir":1} (prévu brouilleur, miroir)
+ok paysage V4 : au plus deux à la fois (1)
+ok paysage V4 : aucune naissance dans la vue (2 naissances)
+ok paysage V5 : naissances {"miroir":1,"tique":1} (prévu miroir, ?)
+ok paysage V5 : au plus deux à la fois (1)
+ok paysage V5 : aucune naissance dans la vue (2 naissances)
+ok paysage : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)
+ok paysage TIQUE : elle rejoint le serpent et s'accroche près de la queue
+ok paysage TIQUE : accrochée, elle alourdit le virage (×0.75)
+ok paysage noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)
+ok paysage TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)
+ok paysage TIQUE : elle mord le dernier segment (−1)
+ok paysage TIQUE : l'accélération tenue la secoue
+ok paysage TIQUE : poursuivie, elle est abattue ou écrasée {"arme:canon":1}
+ok paysage TIQUE : la tête qui passe dessus l'écrase {"joueuse:devore":1}
+ok paysage VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »
+ok paysage VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)
+ok paysage VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)
+ok paysage VOLEUR : abattu au tir {"arme:canon":1}
+ok paysage VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)
+ok paysage VOLEUR : sans butin au sol, il vient arracher la queue (annonce)
+ok paysage VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)
+ok paysage MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)
+ok paysage MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)
+ok paysage MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {"joueuse:lasso":1}
+ok paysage BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)
+ok paysage BROUILLEUR : sa coque avale les tirs (21 avalés pendant la scène)
+ok paysage BROUILLEUR : la tête qui le traverse le détruit {"joueuse:devore":1}
+ok paysage PALETTE : 2685 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {"nuitProfonde":2264,"rosePale":274,"sang":32,"magenta":84,"acier":14,"ambre":10,"ardoise":4,"os":3}
+ECHEC paysage : zéro erreur (__ERR 43, page 0)
+
+1 échec(s) :
+ - paysage : zéro erreur (__ERR 43, page 0)

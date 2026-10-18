@@ -1,0 +1,344 @@
+{
+  "limite": "VM sans DOM ; assertions cloud, pas de captures ni de validation Safari",
+  "verdicts": [
+    {
+      "ok": true,
+      "quoi": "paysage : l'aventure arrive au néon (briefing/neon)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage : N.aventure.enCours() vrai pendant le néon"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : naissances {\"tique\":2} (prévu tique, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : naissances {\"voleur\":1,\"tique\":1} (prévu voleur, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : au plus deux à la fois (2)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : naissances {\"brouilleur\":1,\"miroir\":1} (prévu brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : naissances {\"miroir\":1,\"tique\":1} (prévu miroir, ?)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : elle rejoint le serpent et s'accroche près de la queue"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : accrochée, elle alourdit le virage (×0.75)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : elle mord le dernier segment (−1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : l'accélération tenue la secoue"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : poursuivie, elle est abattue ou écrasée {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : la tête qui passe dessus l'écrase {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : abattu au tir {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : sans butin au sol, il vient arracher la queue (annonce)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {\"joueuse:lasso\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : sa coque avale les tirs (21 avalés pendant la scène)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : la tête qui le traverse le détruit {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage PALETTE : 2312 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {\"nuitProfonde\":1954,\"rosePale\":219,\"sang\":42,\"magenta\":92,\"acier\":4,\"os\":1}"
+    },
+    {
+      "ok": false,
+      "quoi": "paysage : zéro erreur (__ERR 230, page 0)"
+    }
+  ],
+  "mesures": {
+    "paysage": {
+      "vague2": {
+        "naissances": {
+          "tique": 2
+        },
+        "evts": {
+          "tique:naissance": 2,
+          "tique:pret": 1,
+          "tique:mort": 1
+        },
+        "morts": {
+          "tique": {
+            "arme:canon": 1
+          }
+        },
+        "vus": {
+          "tique": 10.550000000000042
+        },
+        "maxVivants": 1
+      },
+      "vague3": {
+        "naissances": {
+          "voleur": 1,
+          "tique": 1
+        },
+        "evts": {
+          "voleur:naissance": 1,
+          "voleur:pret": 1,
+          "tique:naissance": 1,
+          "voleur:mort": 1
+        },
+        "morts": {
+          "voleur": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "voleur": 9.766666666666753,
+          "tique": 28.235833337405264
+        },
+        "maxVivants": 2
+      },
+      "vague4": {
+        "naissances": {
+          "brouilleur": 1,
+          "miroir": 1
+        },
+        "evts": {
+          "brouilleur:naissance": 1,
+          "brouilleur:pret": 1,
+          "brouilleur:brouille": 1,
+          "brouilleur:mort": 1,
+          "miroir:naissance": 1,
+          "miroir:pret": 1
+        },
+        "morts": {
+          "brouilleur": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "brouilleur": 9.809583335369936,
+          "miroir": 26.351250002035663
+        },
+        "maxVivants": 1
+      },
+      "vague5": {
+        "naissances": {
+          "miroir": 1,
+          "tique": 1
+        },
+        "evts": {
+          "miroir:naissance": 1,
+          "miroir:pret": 1,
+          "miroir:rejoue": 1,
+          "miroir:mort": 1,
+          "tique:naissance": 1
+        },
+        "morts": {
+          "miroir": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "miroir": 8.459583335369972,
+          "tique": 27.90958333536887
+        },
+        "maxVivants": 1
+      },
+      "tique": {
+        "poursuite": {
+          "secouee": true,
+          "morte": true,
+          "morts": {
+            "arme:canon": 1
+          }
+        },
+        "ecrase": {
+          "morte": true,
+          "morts": {
+            "joueuse:devore": 1
+          }
+        }
+      },
+      "voleur": {
+        "arr": 1,
+        "perdu": 2,
+        "vol": 1
+      },
+      "miroir": {
+        "mort": true,
+        "lassos": 1,
+        "morts": {
+          "joueuse:lasso": 1
+        }
+      },
+      "brouilleur": {
+        "blinde": true,
+        "mort": true,
+        "morts": {
+          "joueuse:devore": 1
+        },
+        "avales": 21
+      },
+      "palette": {
+        "types": [
+          "tique",
+          "voleur",
+          "miroir",
+          "brouilleur"
+        ],
+        "total": 2312,
+        "interdits": 0,
+        "parEncre": {
+          "nuitProfonde": 1954,
+          "rosePale": 219,
+          "sang": 42,
+          "magenta": 92,
+          "acier": 4,
+          "os": 1
+        }
+      },
+      "erreurs": {
+        "err": {
+          "n": 230,
+          "sigs": {
+            "ev:schema:apparition|charge:apparition.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 6,
+            "ev:schema:arme|charge:arme.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]": 89,
+            "ev:schema:kill|charge:kill.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 3,
+            "ev:schema:apparition|charge:apparition.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 5,
+            "ev:schema:arme|charge:arme.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]": 55,
+            "ev:schema:kill|charge:kill.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 2,
+            "ev:schema:apparition|charge:apparition.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 3,
+            "ev:schema:arme|charge:arme.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]": 6,
+            "ev:schema:kill|charge:kill.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 2,
+            "ev:schema:apparition|charge:apparition.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 4,
+            "ev:schema:arme|charge:arme.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]": 49,
+            "ev:schema:kill|charge:kill.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]": 2,
+            "ev:schema:coup|charge:coup.auteur : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]": 1,
+            "ev:schema:coupe|charge:coupe.auteur : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]": 1,
+            "ev:schema:coup|charge:coup.auteur : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]": 1,
+            "ev:schema:coupe|charge:coupe.auteur : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]": 1
+          }
+        },
+        "logs": []
+      }
+    }
+  },
+  "erreursConsole": [
+    "[ev:schema:apparition] Error: charge:apparition.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:arme] Error: charge:arme.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]",
+    "[ev:schema:kill] Error: charge:kill.type : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:apparition] Error: charge:apparition.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:arme] Error: charge:arme.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]",
+    "[ev:schema:kill] Error: charge:kill.type : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:apparition] Error: charge:apparition.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:arme] Error: charge:arme.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]",
+    "[ev:schema:kill] Error: charge:kill.type : \"brouilleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:apparition] Error: charge:apparition.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:arme] Error: charge:arme.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\",\"convoi\"]",
+    "[ev:schema:kill] Error: charge:kill.type : \"miroir\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"cyclope\"]",
+    "[ev:schema:coup] Error: charge:coup.auteur : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]",
+    "[ev:schema:coupe] Error: charge:coupe.auteur : \"tique\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]",
+    "[ev:schema:coup] Error: charge:coup.auteur : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]",
+    "[ev:schema:coupe] Error: charge:coupe.auteur : \"voleur\" hors de [\"fleche\",\"dard\",\"larve\",\"mine\",\"tourelle\",\"lame\",\"ruche\",\"sentinelle\",\"rival\",\"planeur\",\"traqueur\",\"mur\",\"murMobile\",\"corps\",\"convoi\",\"cyclope\",\"cyclope:main\",\"vol\"]"
+  ]
+}

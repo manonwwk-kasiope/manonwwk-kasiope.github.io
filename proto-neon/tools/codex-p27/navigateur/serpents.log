@@ -1,0 +1,122 @@
+
+=== paysage ===
+  ok   paysage : l'aventure arrive au néon (briefing/neon)
+  ok   paysage : N.aventure.enCours() vrai pendant le néon
+  ok   paysage V2 : naissances {"tique":2} (prévu tique, tique)
+  ok   paysage V2 : au plus deux à la fois (2)
+  ok   paysage V2 : aucune naissance dans la vue (2 naissances)
+  ok   paysage V3 : naissances {"voleur":1,"tique":1} (prévu voleur, tique)
+  ok   paysage V3 : au plus deux à la fois (1)
+  ok   paysage V3 : aucune naissance dans la vue (2 naissances)
+  ok   paysage V4 : naissances {"brouilleur":1,"miroir":1} (prévu brouilleur, miroir)
+  ok   paysage V4 : au plus deux à la fois (1)
+  ok   paysage V4 : aucune naissance dans la vue (2 naissances)
+  ok   paysage V5 : naissances {"miroir":1,"tique":1} (prévu miroir, ?)
+  ok   paysage V5 : au plus deux à la fois (2)
+  ok   paysage V5 : aucune naissance dans la vue (2 naissances)
+  ok   paysage : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)
+  ok   paysage TIQUE : elle rejoint le serpent et s'accroche près de la queue
+  ok   paysage TIQUE : accrochée, elle alourdit le virage (×0.75)
+  ok   paysage noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)
+  ok   paysage TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)
+  ok   paysage TIQUE : elle mord le dernier segment (−1)
+  ok   paysage TIQUE : l'accélération tenue la secoue
+  ok   paysage TIQUE : poursuivie, elle est abattue ou écrasée {"arme:canon":1}
+  ok   paysage TIQUE : la tête qui passe dessus l'écrase {"joueuse:devore":1}
+  ok   paysage VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »
+  ok   paysage VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)
+  ok   paysage VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)
+  ok   paysage VOLEUR : abattu au tir {"arme:canon":1}
+  ok   paysage VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)
+  ok   paysage VOLEUR : sans butin au sol, il vient arracher la queue (annonce)
+  ok   paysage VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)
+  ok   paysage MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)
+  ok   paysage MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)
+  ok   paysage MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {"joueuse:lasso":1}
+  ok   paysage BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)
+  ok   paysage BROUILLEUR : sa coque avale les tirs (26 avalés pendant la scène)
+  ok   paysage BROUILLEUR : la tête qui le traverse le détruit {"joueuse:devore":1}
+  ok   paysage PALETTE : 2446 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {"nuitProfonde":1966,"sang":89,"magenta":122,"rosePale":234,"acier":15,"ardoise":18,"os":2}
+  ok   paysage : zéro erreur (__ERR 0, page 0)
+
+=== portrait ===
+  ok   portrait : l'aventure arrive au néon (briefing/neon)
+  ok   portrait : N.aventure.enCours() vrai pendant le néon
+  ok   portrait V2 : naissances {"tique":2} (prévu tique, tique)
+  ok   portrait V2 : au plus deux à la fois (2)
+  ok   portrait V2 : aucune naissance dans la vue (2 naissances)
+  ok   portrait V3 : naissances {"voleur":1,"tique":1} (prévu voleur, tique)
+  ok   portrait V3 : au plus deux à la fois (1)
+  ok   portrait V3 : aucune naissance dans la vue (2 naissances)
+  ok   portrait V4 : naissances {"brouilleur":1,"miroir":1} (prévu brouilleur, miroir)
+  ok   portrait V4 : au plus deux à la fois (1)
+  ok   portrait V4 : aucune naissance dans la vue (2 naissances)
+  ok   portrait V5 : naissances {"miroir":1,"tique":1} (prévu miroir, ?)
+  ok   portrait V5 : au plus deux à la fois (2)
+  ok   portrait V5 : aucune naissance dans la vue (2 naissances)
+  ok   portrait : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)
+  ok   portrait TIQUE : elle rejoint le serpent et s'accroche près de la queue
+  ok   portrait TIQUE : accrochée, elle alourdit le virage (×0.75)
+  ok   portrait noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)
+  ok   portrait TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)
+  ok   portrait TIQUE : elle mord le dernier segment (−1)
+  ok   portrait TIQUE : l'accélération tenue la secoue
+  ok   portrait TIQUE : poursuivie, elle est abattue ou écrasée {"arme:canon":1}
+  ok   portrait TIQUE : la tête qui passe dessus l'écrase {"joueuse:devore":1}
+  ok   portrait VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »
+  ok   portrait VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)
+  ok   portrait VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)
+  ok   portrait VOLEUR : abattu au tir {"arme:canon":1}
+  ok   portrait VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)
+  ok   portrait VOLEUR : sans butin au sol, il vient arracher la queue (annonce)
+  ok   portrait VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)
+  ok   portrait MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)
+  ok   portrait MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)
+  ok   portrait MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {"joueuse:lasso":1}
+  ok   portrait BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)
+  ok   portrait BROUILLEUR : sa coque avale les tirs (7 avalés pendant la scène)
+  ok   portrait BROUILLEUR : la tête qui le traverse le détruit {"joueuse:devore":1}
+  ok   portrait PALETTE : 2336 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {"nuitProfonde":1795,"rosePale":65,"sang":129,"magenta":322,"acier":11,"ardoise":12,"os":2}
+  ok   portrait : zéro erreur (__ERR 0, page 0)
+
+=== bureau ===
+  ok   bureau : l'aventure arrive au néon (briefing/neon)
+  ok   bureau : N.aventure.enCours() vrai pendant le néon
+  ok   bureau V2 : naissances {"tique":2} (prévu tique, tique)
+  ok   bureau V2 : au plus deux à la fois (2)
+  ok   bureau V2 : aucune naissance dans la vue (2 naissances)
+  ok   bureau V3 : naissances {"voleur":1,"tique":1} (prévu voleur, tique)
+  ok   bureau V3 : au plus deux à la fois (1)
+  ok   bureau V3 : aucune naissance dans la vue (2 naissances)
+  ok   bureau V4 : naissances {"brouilleur":1,"miroir":1} (prévu brouilleur, miroir)
+  ok   bureau V4 : au plus deux à la fois (1)
+  ok   bureau V4 : aucune naissance dans la vue (2 naissances)
+  ok   bureau V5 : naissances {"miroir":1,"tique":1} (prévu miroir, ?)
+  ok   bureau V5 : au plus deux à la fois (1)
+  ok   bureau V5 : aucune naissance dans la vue (2 naissances)
+  ok   bureau : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)
+  ok   bureau TIQUE : elle rejoint le serpent et s'accroche près de la queue
+  ok   bureau TIQUE : accrochée, elle alourdit le virage (×0.75)
+  ok   bureau noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)
+  ok   bureau TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)
+  ok   bureau TIQUE : elle mord le dernier segment (−1)
+  ok   bureau TIQUE : l'accélération tenue la secoue
+  ok   bureau TIQUE : poursuivie, elle est abattue ou écrasée {"arme:canon":1}
+  ok   bureau TIQUE : la tête qui passe dessus l'écrase {"joueuse:devore":1}
+  ok   bureau VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »
+  ok   bureau VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)
+  ok   bureau VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)
+  ok   bureau VOLEUR : abattu au tir {"arme:canon":1}
+  ok   bureau VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)
+  ok   bureau VOLEUR : sans butin au sol, il vient arracher la queue (annonce)
+  ok   bureau VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)
+  ok   bureau MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)
+  ok   bureau MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)
+  ok   bureau MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {"joueuse:lasso":1}
+  ok   bureau BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)
+  ok   bureau BROUILLEUR : sa coque avale les tirs (22 avalés pendant la scène)
+  ok   bureau BROUILLEUR : la tête qui le traverse le détruit {"joueuse:devore":1}
+  ok   bureau PALETTE : 2079 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {"sang":118,"nuitProfonde":1630,"rosePale":64,"magenta":246,"acier":9,"ardoise":9,"os":3}
+  ok   bureau : zéro erreur (__ERR 0, page 0)
+
+tout passe

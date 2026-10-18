@@ -1,5 +1,5 @@
 /* tools/serpents/banc.mjs — les serpents de 2030 (TIQUE, VOLEUR, MIROIR, BROUILLEUR) dans le VRAI jeu néon, en aventure.
-   Pour chaque profil (paysage 844 × 390 iPhone, portrait 390 × 844 iPhone, bureau 1280 × 800 souris) :
+   Pour chaque profil (paysage 844 × 390 iPhone, portrait 390 × 844 iPhone, bureau 1440 × 900 souris) :
    1. l'aventure comme la propriétaire : titre → JOUER → choix → 1976, 1982, films sautés → le néon (tools/voyage/banc.mjs) ;
    2. LES VAGUES : N.game.dbg.vague(2…5), pilote « bon », invulnérable ; chaque serpent prévu naît, annoncé, hors de la vue,
       deux au plus à la fois ; les films d'époque (profondeur, warp) qui s'invitent sont sautés ;
@@ -11,7 +11,8 @@
    Captures dans --sortie (défaut : le scratchpad de la session). Usage : serveur http sur la racine du dépôt (8133),
    node build.mjs tools/serpents/index.html, puis node tools/serpents/banc.mjs [--profils paysage,portrait,bureau]. Sortie 0 si tout passe. */
 import fs from 'fs';
-import { chromium, devices } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import { chromium, devices } from 'playwright';
+if (process.argv.includes('--statique')) { await import('../codex-p27/banc-vm.mjs'); process.exit(process.exitCode || 0); }
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 && i + 1 < process.argv.length ? process.argv[i + 1] : d; };
 const SORTIE = arg('--sortie', '/tmp/claude-0/-home-user-manonwwk-kasiope-github-io/7b0d9e92-8e26-5f74-a679-fd3a5e906236/scratchpad/serpents');
 const PROFILS = arg('--profils', 'paysage,portrait,bureau').split(',');
@@ -59,6 +60,7 @@ function aides() {
   };
   /* une scène contrôlée : vague 2 relancée, directeur arrêté, terrain vidé, la tête au centre gauche, invulnérable */
   B.scene = function () {
+    if (B.statique) B.statique(false);
     const n = N(), O = n.outils;
     if (B._dirUpd) n.dir.update = B._dirUpd;
     n.game.dbg.vague(2);
@@ -71,7 +73,28 @@ function aides() {
     B.pilote('cercle', { cx, cy, r: 120 });
     B.sim(0.3);
   };
-  B.finScene = function () { const n = N(); if (B._dirUpd) { n.dir.update = B._dirUpd; B._dirUpd = null; } B.pilote(null); };
+  // Le canon ne doit pas abattre le VOLEUR pendant la mesure de vol/fuite.
+  // Rétabli avant l'assertion de mort au canon ; aucun PV ni seuil de comportement modifié.
+  B.tirs = function (on) {
+    const n = N();
+    if (!on && !B._arsenalUpd) { B._arsenalUpd = n.arsenal.update; n.arsenal.update = function () {}; n.arsenal.tirs.forEach(b => { b.life = 0; }); }
+    if (on && B._arsenalUpd) { n.arsenal.update = B._arsenalUpd; B._arsenalUpd = null; }
+  };
+  B.statique = function (on, e) {
+    const n = N();
+    if (!on && B._joueuseUpd) { n.joueuse.update = B._joueuseUpd; B._joueuseUpd = null; n.cam.mode('jeu'); }
+    if (on && !B._joueuseUpd) {
+      // Isoler la collecte de l'aimant de la tête ; trace et IA du voleur restent réelles.
+      B._joueuseUpd = n.joueuse.update; n.joueuse.update = function (dt) {
+        const p = { x: n.joueuse.tete.x, y: n.joueuse.tete.y, ang: n.joueuse.tete.ang, trace: true };
+        B._joueuseUpd(dt); n.joueuse.force(p);
+      };
+      n.joueuse.force({ x: B.cx + 35, y: B.cy, ang: 0, len: 14, trace: true });
+      e.x = B.cx - 35; e.y = B.cy;
+      n.cam.reset(B.cx, B.cy); n.cam.mode('libre'); n.outils.geom();
+    }
+  };
+  B.finScene = function () { B.statique(false); B.tirs(true); const n = N(); if (B._dirUpd) { n.dir.update = B._dirUpd; B._dirUpd = null; } B.pilote(null); };
   /* l'écran : un ennemi est-il dessiné en entier dans la vue ? et sa boîte en px CSS pour un recadrage */
   B.boite = function (e, demi) {
     const n = N(), V = n.outils.VUE, r = n.gfx.canvas().getBoundingClientRect(), k = r.width / n.outils.geo.W;
@@ -114,7 +137,7 @@ async function profil(nom) {
   console.log(`\n=== ${nom} ===`);
   const ctxOpts = nom === 'paysage' ? { ...devices['iPhone 13'], viewport: { width: 844, height: 390 } }
     : nom === 'portrait' ? { ...devices['iPhone 13'], viewport: { width: 390, height: 844 } }
-      : { viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1, hasTouch: false, isMobile: false };
+      : { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, hasTouch: false, isMobile: false };
   const browser = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-required', '--mute-audio'] });
   const page = await (await browser.newContext(ctxOpts)).newPage();
   const logs = []; page.on('pageerror', e => logs.push('page : ' + e.message)); page.on('console', m => { if (m.type() === 'error') logs.push('console : ' + m.text()); });
@@ -229,10 +252,12 @@ async function profil(nom) {
 
   /* ---- 3b. VOLEUR ---- */
   r = await page.evaluate(() => {
-    const B = window.__B, N = window.__N; B.scene(); N.serpents.remiseStats();
+    const B = window.__B, N = window.__N; B.scene(); B.tirs(false); N.serpents.remiseStats();
     const e = N.serpents.forcer('voleur'); if (!e) return {};
-    B.sim(4, () => e.etat !== 'portail' && B.vu(e));
-    for (let i = 0; i < 3; i++) N.butin.lacher(e.x + 14 * Math.cos(i * 2), e.y + 14 * Math.sin(i * 2), 1, { type: 'cellule', libre: true });
+    B.sim(14, () => e.etat !== 'portail' && B.vu(e) && e._pretSerpent !== false);
+    B.statique(true, e);
+    // Une cellule à la fois : trois cellules simultanées peuvent fusionner en un objet.
+    for (let i = 0; i < 3; i++) { N.butin.lacher(e.x + 2, e.y, 1, { type: 'cellule', libre: true }); B.sim(1.2, () => e._sac >= i + 1); }
     B.sim(8, () => e._st === 'alerte');
     return { vols: B.evt('voleur:vol'), sac: e._sac, alerte: e._st === 'alerte' };
   });
@@ -244,11 +269,12 @@ async function profil(nom) {
   r = await page.evaluate(() => {
     const B = window.__B, N = window.__N; N.serpents.remiseStats();
     const e = N.serpents.forcer('voleur'); if (!e) return {};
-    B.sim(4, () => e.etat !== 'portail' && B.vu(e));
-    for (let i = 0; i < 2; i++) N.butin.lacher(e.x + 12 * Math.cos(i * 3), e.y + 12 * Math.sin(i * 3), 1, { type: 'cellule', libre: true });
+    B.sim(14, () => e.etat !== 'portail' && B.vu(e) && e._pretSerpent !== false);
+    B.statique(true, e);
+    for (let i = 0; i < 2; i++) { N.butin.lacher(e.x + 2, e.y, 1, { type: 'cellule', libre: true }); B.sim(1.2, () => e._sac >= i + 1); }
     B.sim(4, () => e._sac >= 2);
     const sac = e._sac, val = e._val, n0 = N.butin.list.length;
-    B.pilote('vers', { id: e.id });
+    B.statique(false); B.tirs(true); B.pilote('vers', { id: e.id });
     B.sim(8, () => e._dead);
     const grosse = N.butin.list.filter(o => o.type === 'cellule' && o.valeur >= 2).map(o => o.valeur);
     return { sac, val, mort: e._dead, morts: B.morts('voleur'), grosse };
@@ -257,8 +283,10 @@ async function profil(nom) {
   verifie(r.grosse && r.grosse.some(v => v >= r.val), `${nom} VOLEUR : il rend tout en une grosse cellule (valeur ${JSON.stringify(r.grosse)} pour ${r.val} volés)`);
   await capture(page, `voleur-recupere-${nom}`, null, 0);
   r = await page.evaluate(() => {
-    const B = window.__B, N = window.__N; B.scene(); N.serpents.remiseStats();
+    const B = window.__B, N = window.__N; B.scene(); B.tirs(false); N.serpents.remiseStats();
     const e = N.serpents.forcer('voleur'); if (!e) return {};
+    B.sim(14, () => e.etat !== 'portail' && B.vu(e) && e._pretSerpent !== false);
+    B.statique(true, e);
     const len0 = N.joueuse.len();
     B.sim(14, () => e._st === 'arrache');
     return { arrache: e._st === 'arrache', len0 };
@@ -267,6 +295,7 @@ async function profil(nom) {
   await capture(page, `voleur-arrache-${nom}`, 'voleur', 40);
   r = await page.evaluate(len0 => { const B = window.__B, N = window.__N, e = B.un('voleur'); B.sim(2, () => B.evt('voleur:vol') > 0); return { arr: B.evt('voleur:arrache'), perdu: len0 - N.joueuse.len(), vol: B.evt('voleur:vol') }; }, r.len0);
   verifie(r.arr === 1 && r.perdu === 2 && r.vol >= 1, `${nom} VOLEUR : deux segments arrachés, la cellule tombée empochée (−${r.perdu}, vols ${r.vol})`);
+  await page.evaluate(() => { window.__B.statique(false); window.__B.tirs(true); });
   M.voleur = r;
 
   /* ---- 3c. MIROIR ---- */

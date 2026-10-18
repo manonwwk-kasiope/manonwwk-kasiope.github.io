@@ -22,15 +22,14 @@
    Chiffres : N.R.ennemis, N.R.elites, N.R.modificateurs, N.R.inversion ; les valeurs de la démo qui manquent : CFG (→ N.R).
 
    LES SERPENTS DE 2030 (chantier n° 8, refonte/inventaire-ennemis-niveaux.md I-16 à I-19) : TIQUE, VOLEUR, MIROIR, BROUILLEUR.
-   Quatre types de plus, que SEUL 72-serpents.js crée, et seulement pendant une aventure (N.aventure.enCours()). Un type qui n'est
+   Quatre types de plus, que SEUL 72-serpents.js crée (aventure, et partie après raccord du directeur). Un type qui n'est
    jamais créé ne change rien : chaque ajout ci-dessous ne s'exécute que pour un objet de ces types (ou tant qu'un BROUILLEUR vit),
    aucun tirage n'est pris au flux 'ennemis' de la partie (leur naissance tire dans le générateur propre de 72-serpents), aucun
-   champ n'est ajouté aux autres ennemis. Chiffres : SERP ci-dessous (→ N.R ; les identifiants sont à demander au gardien de
-   03-socle, qui ne les connaît pas encore : N.ids.ennemis, auteurs, noms).
+   champ n'est ajouté aux autres ennemis. Chiffres : N.R.serpents ; noms inscrits dans 03-socle ; liste de types à raccorder (patch livré).
      TIQUE       s'accroche de côté près de la queue, mord le dernier segment toutes les 3,2 s (annonce 0,9 s), tombe après
                  deux morsures. Inoffensive au contact : la TÊTE L'ÉCRASE ; l'accélération tenue 0,6 s la secoue ; un tir l'abat.
      VOLEUR      file sur les cellules au sol et les empoche (sa besace se remplit) ; sans butin, il arrache deux segments
-                 à la queue (annonce 0,6 s) et ramasse la cellule tombée. À 3 objets : « IL FUIT ! », 2 s d'arrêt et sa ligne
+                 à la queue (annonce 0,8 s) et ramasse la cellule tombée. À 3 objets : « IL FUIT ! », 2 s d'arrêt et sa ligne
                  de fuite en pointillés, puis il file vers le bord de la vue. ABATTU, il rend tout en une grosse cellule.
      MIROIR      le serpent en négatif : il rejoue ta trajectoire 1,5 s plus tard (jamais sur ton corps) ; sa tête tue.
                  De face, il renvoie les tirs ; vulnérable de dos. Une boucle de LASSO refermée sur lui le brise.
@@ -45,17 +44,8 @@ N.ennemis = (function () {
     flecheBonds: 160, mineSouffle: 30, mineDegats: 40, fuseSouffle: 34, fuseDegats: 60,
     tourelleTourne: 1.2, tourelleVie: 1.7
   };
-  /* les serpents de 2030 (→ N.R) ; allures en multiples de la vitesse de la tête, distances en px de jeu */
-  var SERP = {
-    tique: { nom: 'TIQUE', frein: 0.75, pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
-      morsure: { periode: 3.2, annonce: 0.9, premiere: 1.6 }, points: 60 },
-    voleur: { nom: 'VOLEUR', penalite: 40, pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
-      besace: 3, patience: 14, annonceFuite: 2, arrache: { distance: 12, annonce: 0.6, segments: 2, prise: 18 }, prime: 1, points: 150 },
-    miroir: { nom: 'MIROIR', pv: 60, r: 5, sprite: 11, retard: 1.5, ecartQueue: 14, rejoint: 1.6, blindageDeg: 75, segments: 3,
-      espaceSeg: 6, bord: 3, points: 250 },
-    brouilleur: { nom: 'BROUILLEUR', pv: 40, r: 6.5, sprite: 14, champ: 42, souffle: 0.05, garde: 0.75, approche: 1.0, allure: 0.6, glisse: 0.25,
-      coupure: 0.18, gresille: 0.68, points: 200 }
-  };
+  /* Comportements cloud ; chiffres communs à l’aventure et à la partie. */
+  var SERP = R.serpents.types;
   var TAU = O.TAU;
   var TP = R.publicationTele;
   var S = null;
@@ -230,7 +220,8 @@ N.ennemis = (function () {
     var avant = aleaPropre, e;
     aleaPropre = opts.alea || sa;
     try { e = newEnemy(type, x, y, opts); } finally { aleaPropre = avant; }
-    e._serpent = true; e._inoff = 0;
+    e._serpent = true; e._partieSerpent = !!opts.partie; e._inoff = 1;
+    e._pretSerpent = false; e._annonceSerpent = false; e._gardeSerpent = R.serpents.annonce.duree;
     if (!placerNaissance(e)) e._attenteNaissance = true;
     if (type === 'tique') { e._inoff = 1; e._side = sa() < 0.5 ? -1 : 1; e._k = -1; e._secoue = 0; e._morsures = 0; }
     else if (type === 'voleur') { e._sac = 0; e._val = 0; e._scan = 0; e._duree = 0; e._cible = null; e._fx = x; e._fy = y; e._fuiteA = 0; }
@@ -238,9 +229,8 @@ N.ennemis = (function () {
     else if (type === 'brouilleur') { e._inoff = 1; e._rc = SERP.brouilleur.champ; e._zap = 0; e._dedans = false; }
     if (opts.st) e._st = opts.st;
     if (inv.t > 0) { e._stAvant = e._st; e._st = 'proie'; }
-    if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
-    else if (!e._attenteNaissance) apparu(e);
-    if (e._attenteNaissance) e.etat = 'portail';
+    var portail = Math.max(R.serpents.portail, opts.portail || 0);
+    e._portail = portail; e._portailTotal = portail; e.etat = 'portail';
     list.push(e);
     noter('naissance', e);
     return e;
@@ -402,7 +392,7 @@ N.ennemis = (function () {
     for (var i = 0; i < list.length; i++) {
       var e = list[i]; if (e._dead) continue;
       c[e.type] = (c[e.type] || 0) + 1;
-      if (!e.boss && e.type !== 'traqueur' && e.type !== 'planeur' && !e._serpent) c.regular++;   // les serpents de 2030 ne comptent pas au quota
+      if (!e.boss && e.type !== 'traqueur' && e.type !== 'planeur' && (!e._serpent || e._partieSerpent)) c.regular++;   // en aventure : dosage historique ; en partie : plafond commun
     }
     return c;
   }
@@ -418,6 +408,7 @@ N.ennemis = (function () {
       var e = list[i];
       if (e._dead || e.boss || e.type === 'traqueur' || e.type === 'planeur') continue;
       e._stAvant = BASE[e.type]; e._st = 'proie';
+      if (e._serpent) { e._pretSerpent = false; e._annonceSerpent = false; e._gardeSerpent = R.serpents.annonce.duree; }
     }
     for (i = 0; i < tirs.length; i++) tirs[i]._dead = true;
     for (i = 0; i < lasers.length; i++) lasers[i]._dead = true;
@@ -821,7 +812,7 @@ N.ennemis = (function () {
     if (crash) kill(e, { genre: 'joueuse', type: 'devore', id: -1 });
   }
 
-  /* ============================ les serpents de 2030 (aventure seulement, créés par 72-serpents.js) ============================
+  /* ============================ les serpents de 2030 (créés uniquement par 72-serpents.js) ============================
      Ils ne lisent la joueuse et le butin que par leurs interfaces publiques : N.joueuse.tete / len() / segPos(k) / boost /
      couper(k, src, cause) / invul() / etat, N.butin.list (champs du schéma : type, x, y, valeur, vie) et N.butin.lacher ;
      le BROUILLEUR éteint les tirs de N.arsenal.tirs (life = 0 : l'arsenal les retire lui-même au pas suivant, avant tout
@@ -852,6 +843,35 @@ N.ennemis = (function () {
     var J = N.joueuse, p = J.segPos(k), q = J.segPos(k + 1), dx = p.x - q.x, dy = p.y - q.y, m = Math.sqrt(dx * dx + dy * dy) || 1;
     ACC.x = p.x - dy / m * side * ecart; ACC.y = p.y + dx / m * side * ecart; ACC.a = Math.atan2(dy, dx);
     return ACC;
+  }
+
+  /* Une annonce CONTINUE en vue avant toute action. Si le cadre la perd,
+     le préavis entier recommence. L'approche hors champ reste inoffensive. */
+  function gardeSerpent(e, dt, P) {
+    if (e._pretSerpent) return false;
+    var c = R.serpents.annonce;
+    e._inoff = 1;
+    if (!vu6(e)) {
+      e._annonceSerpent = false; e._gardeSerpent = c.duree;
+      var J = N.joueuse, q = e.type === 'brouilleur' ? P : J.segPos(J.len());
+      aller(e, q.x, q.y, c.approche * vT(), dt, c.virage);
+      return true;
+    }
+    if (!e._annonceSerpent) {
+      e._annonceSerpent = true; e._gardeSerpent = c.duree;
+      armer(e, 'disque', c.duree, e.type === 'miroir' ? 'tete' : 'corps');
+      return true;
+    }
+    e._gardeSerpent -= dt;
+    if (e._gardeSerpent > 0) return true;
+    e._pretSerpent = true; e._annonceSerpent = false;
+    e._inoff = e.type === 'tique' || e.type === 'brouilleur' ? 1 : 0;
+    noter('pret', e);
+    return false;
+  }
+  function queueVisible() {
+    var J = N.joueuse, q = J.segPos(J.len());
+    return O.visible(q.x, q.y, -R.serpents.annonce.rayon);
   }
 
   /* ---- TIQUE : elle s'accroche au corps et mord la queue ; la tête l'écrase ---- */
@@ -894,8 +914,9 @@ N.ennemis = (function () {
     else e._secoue = Math.max(0, e._secoue - dt * 0.5);
     if (e._st === 'accroche') {
       e._cd -= dt;
-      if (e._cd <= 0 && peutArmer(e) && len > 4) { e._st = 'mord'; e._stT = c.morsure.annonce; armer(e, 'disque', e._stT, 'corps'); }
+      if (e._cd <= 0 && peutArmer(e) && queueVisible() && len > 4) { e._st = 'mord'; e._stT = c.morsure.annonce; armer(e, 'disque', e._stT, 'corps'); }
     } else if (e._st === 'mord') {
+      if (!vu6(e) || !queueVisible()) { e._st = 'accroche'; e._cd = 0; return; }
       e._stT -= dt;
       if (e._stT <= 0) {
         if (!J.invul() && len > 4) {
@@ -962,13 +983,13 @@ N.ennemis = (function () {
       } else if (vivanteJ() && len > 4) {
         q = J.segPos(len);                                       // sans butin au sol : il vient arracher la queue
         aller(e, q.x, q.y, c.queue * v, dt, 6);
-        if (O.d2(e.x, e.y, q.x, q.y) < c.arrache.distance * c.arrache.distance && peutArmer(e)) {
+        if (O.d2(e.x, e.y, q.x, q.y) < c.arrache.distance * c.arrache.distance && peutArmer(e) && queueVisible()) {
           e._st = 'arrache'; e._stT = c.arrache.annonce; armer(e, 'disque', e._stT, 'corps');
         }
       } else if (P) aller(e, P.x, P.y, 0.85 * c.allure * v, dt, 4);
       if (e._sac >= c.besace || (e._sac > 0 && e._duree > c.patience)) alerteFuite(e, P);
     } else if (e._st === 'arrache') {
-      if (!vivanteJ() || len <= 4) { e._st = 'cherche'; e._scan = 0; return; }
+      if (!vivanteJ() || len <= 4 || !vu6(e) || !queueVisible()) { e._st = 'cherche'; e._scan = 0; return; }
       q = J.segPos(len);
       aller(e, q.x, q.y, 1.4 * v, dt);                            // collé à la queue pendant l'annonce
       e._stT -= dt;
@@ -1056,8 +1077,8 @@ N.ennemis = (function () {
       e._zap -= dt;
       if (e._zap <= 0) {
         e._zap = c.gresille;
-        var flashs = !(S && S.reglages && S.reglages.flashs === false);
-        if (flashs && N.fx && N.fx.glitch) O.safe('fx.glitch', function () { N.fx.glitch(0.22, 0.18); });
+        // Le champ local et l'icône portent le brouillage ; aucun glitch plein écran.
+        // Un effet d'écran répété n'a pas de garantie R-13, même limité en fréquence.
         O.sfx('impact');
       }
     } else e._zap = 0;
@@ -1144,7 +1165,8 @@ N.ennemis = (function () {
       if (e._st === 'proie') updProie(e, dt, P);
       else if (e._st === 'fuite') {                       // fuir() : il s'éloigne de la tête
         var dd0 = Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) || 1; e.x += (e.x - P.x) / dd0 * 60 * dt; e.y += (e.y - P.y) / dd0 * 60 * dt;
-      } else if (e.type === 'fleche') updFleche(e, dt, P);
+      } else if (e._serpent && gardeSerpent(e, dt, P)) { /* préavis commun, sans attaque */ }
+      else if (e.type === 'fleche') updFleche(e, dt, P);
       else if (e.type === 'dard') updDard(e, dt, P);
       else if (e.type === 'larve') updLarve(e, dt, P);
       else if (e.type === 'mine') updMine(e, dt, P);
@@ -1276,6 +1298,11 @@ N.ennemis = (function () {
         continue;
       }
       if (e._dead || e.etat === 'portail' || e._ext || e._st === 'proie') { e.tele = -1; continue; }
+      if (e._serpent && e._annonceSerpent) {
+        e.tele = teleAjouter(e.id, 'disque', e.x, e.y, e.x, e.y, R.serpents.annonce.rayon,
+          e._gardeSerpent, R.serpents.annonce.duree, e.type === 'miroir' ? 'tete' : 'corps', e.type);
+        continue;
+      }
       id = -1; r = 0.8 * e.r;
       var st = e._st, tot = e._teleTotal || 0.6, rest = e._stT, c;
       if (e.type === 'fleche' && st === 'vise') {
@@ -1501,7 +1528,7 @@ N.ennemis = (function () {
   }
   function inkSerp(e) {
     if (e._st === 'proie') return encre(e);
-    if (e._st === 'tombe' && (Math.floor(O.T.ak * 10) & 1)) return O.ARDOISE;     // décrochée : elle clignote, sonnée
+    if (e._st === 'tombe' && (Math.floor(O.T.ak * R.serpents.visuel.sonneAlternances) & 1)) return O.ARDOISE;     // décrochée : elle clignote, sonnée
     return -1;
   }
   function poser(s, x, y, ink) { if (ink >= 0) O.putInk(s, x, y, ink); else O.put(s, x, y); }
@@ -1602,13 +1629,16 @@ N.ennemis = (function () {
      en pointillés rose pâle, gainée de nuit profonde, jusqu'au bord par où il sortira */
   function drawTeleSerpent(e, kk, rest) {
     var g = N.gfx, J = N.joueuse;
-    if ((e._st === 'mord' || e._st === 'arrache') && J) {
+    if (e._annonceSerpent) {
+      g.ring(e.x, e.y, R.serpents.annonce.rayon + 1, O.NP, 1);
+      g.ring(e.x, e.y, R.serpents.annonce.rayon, O.ROSE, 1);
+    } else if ((e._st === 'mord' || e._st === 'arrache') && J) {
       var q = J.segPos(J.len()), fin = rest <= 0.3, r0 = (e._st === 'mord' ? 9 : 12) * (1 - kk) + 3;
       g.ring(q.x, q.y, r0 + 1, O.NP, 1); g.ring(q.x, q.y, r0, fin ? O.ROSE : O.MAGENTA, 1);
       if (e._st === 'mord') { g.ring(e.x, e.y, e.r + 4 - 2 * kk, O.NP, 1); g.ring(e.x, e.y, e.r + 3 - 2 * kk, fin ? O.ROSE : O.MAGENTA, 0.8); }
     } else if (e.type === 'voleur' && (e._st === 'alerte' || e._st === 'evade')) {
       var dx = e._fx - e.x, dy = e._fy - e.y, L = Math.sqrt(dx * dx + dy * dy), c = dx / (L || 1), s = dy / (L || 1), ph = Math.floor(O.T.ak * 20);
-      if (e._st === 'alerte' && (Math.floor(O.T.ak * 6) & 1)) return;            // l'annonce bat à 3 Hz
+      // Ligne continue : le préavis ne disparaît jamais pendant la fuite annoncée.
       for (var i = e.r + 3; i < L; i++) {
         if (((i + 6000 - ph) % 5) >= 2) continue;
         var x = e.x + c * i, y = e.y + s * i;

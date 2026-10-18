@@ -1,0 +1,903 @@
+{
+  "limite": "VM sans DOM ; assertions cloud, pas de captures ni de validation Safari",
+  "verdicts": [
+    {
+      "ok": true,
+      "quoi": "paysage : l'aventure arrive au néon (briefing/neon)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage : N.aventure.enCours() vrai pendant le néon"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : naissances {\"tique\":2} (prévu tique, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V2 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : naissances {\"voleur\":1,\"tique\":1} (prévu voleur, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : au plus deux à la fois (2)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V3 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : naissances {\"brouilleur\":1,\"miroir\":1} (prévu brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V4 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : naissances {\"miroir\":1,\"tique\":1} (prévu miroir, ?)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage V5 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : elle rejoint le serpent et s'accroche près de la queue"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : accrochée, elle alourdit le virage (×0.75)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : elle mord le dernier segment (−1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : l'accélération tenue la secoue"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : poursuivie, elle est abattue ou écrasée {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage TIQUE : la tête qui passe dessus l'écrase {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : abattu au tir {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : sans butin au sol, il vient arracher la queue (annonce)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {\"joueuse:lasso\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : sa coque avale les tirs (21 avalés pendant la scène)"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage BROUILLEUR : la tête qui le traverse le détruit {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage PALETTE : 2327 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {\"nuitProfonde\":1959,\"rosePale\":213,\"sang\":46,\"magenta\":94,\"acier\":6,\"ardoise\":6,\"os\":3}"
+    },
+    {
+      "ok": true,
+      "quoi": "paysage : zéro erreur (__ERR 0, page 0)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait : l'aventure arrive au néon (briefing/neon)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait : N.aventure.enCours() vrai pendant le néon"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V2 : naissances {\"tique\":2} (prévu tique, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V2 : au plus deux à la fois (2)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V2 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V3 : naissances {\"voleur\":1,\"tique\":1} (prévu voleur, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V3 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V3 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V4 : naissances {\"brouilleur\":1,\"miroir\":1} (prévu brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V4 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V4 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V5 : naissances {\"miroir\":1,\"tique\":1} (prévu miroir, ?)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V5 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait V5 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : elle rejoint le serpent et s'accroche près de la queue"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : accrochée, elle alourdit le virage (×0.75)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : elle mord le dernier segment (−1)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : l'accélération tenue la secoue"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : poursuivie, elle est abattue ou écrasée {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait TIQUE : la tête qui passe dessus l'écrase {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : abattu au tir {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : sans butin au sol, il vient arracher la queue (annonce)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {\"joueuse:lasso\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait BROUILLEUR : sa coque avale les tirs (8 avalés pendant la scène)"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait BROUILLEUR : la tête qui le traverse le détruit {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait PALETTE : 2452 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {\"nuitProfonde\":1922,\"rosePale\":68,\"magenta\":310,\"sang\":128,\"acier\":11,\"ardoise\":12,\"os\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "portrait : zéro erreur (__ERR 0, page 0)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau : l'aventure arrive au néon (briefing/neon)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau : N.aventure.enCours() vrai pendant le néon"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V2 : naissances {\"tique\":2} (prévu tique, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V2 : au plus deux à la fois (2)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V2 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V3 : naissances {\"voleur\":1,\"tique\":1} (prévu voleur, tique)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V3 : au plus deux à la fois (2)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V3 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V4 : naissances {\"brouilleur\":1,\"miroir\":1} (prévu brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V4 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V4 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V5 : naissances {\"miroir\":1,\"tique\":1} (prévu miroir, ?)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V5 : au plus deux à la fois (1)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau V5 : aucune naissance dans la vue (2 naissances)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau : les quatre ont eu leur règle de première rencontre (tique, voleur, brouilleur, miroir)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : elle rejoint le serpent et s'accroche près de la queue"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : accrochée, elle alourdit le virage (×0.76)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau noms des ennemis de 2030 inscrits au contrat (TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : la morsure s'annonce (anneau qui se resserre, 0,9 s)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : elle mord le dernier segment (−1)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : l'accélération tenue la secoue"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : poursuivie, elle est abattue ou écrasée {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau TIQUE : la tête qui passe dessus l'écrase {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : il empoche les cellules (3) puis crie « IL FUIT ! »"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −120)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : abattu au tir {\"arme:canon\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : il rend tout en une grosse cellule (valeur [3] pour 2 volés)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : sans butin au sol, il vient arracher la queue (annonce)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau VOLEUR : deux segments arrachés, la cellule tombée empochée (−2, vols 1)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau MIROIR : il roule sur ta trajectoire (écart 0 px, retard 1.50 s, 38 px derrière la queue)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau MIROIR : de face il renvoie le tir (−0 PV), de dos il le prend (−10 PV)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau MIROIR : une boucle de LASSO refermée sur lui le brise (1 lasso) {\"joueuse:lasso\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau BROUILLEUR : la tête dans le champ, les armes se taisent (0 tir vivant sur 12 pas)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau BROUILLEUR : sa coque avale les tirs (22 avalés pendant la scène)"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau BROUILLEUR : la tête qui le traverse le détruit {\"joueuse:devore\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau PALETTE : 1749 pixels d'ennemis autour de tique, voleur, miroir, brouilleur, 0 cyan ; encres {\"ardoise\":12,\"sang\":71,\"magenta\":189,\"nuitProfonde\":1420,\"acier\":14,\"rosePale\":42,\"os\":1}"
+    },
+    {
+      "ok": true,
+      "quoi": "bureau : zéro erreur (__ERR 0, page 0)"
+    }
+  ],
+  "mesures": {
+    "paysage": {
+      "vague2": {
+        "naissances": {
+          "tique": 2
+        },
+        "evts": {
+          "tique:naissance": 2,
+          "tique:pret": 1,
+          "tique:mort": 1
+        },
+        "morts": {
+          "tique": {
+            "arme:canon": 1
+          }
+        },
+        "vus": {
+          "tique": 10.550000000000042
+        },
+        "maxVivants": 1
+      },
+      "vague3": {
+        "naissances": {
+          "voleur": 1,
+          "tique": 1
+        },
+        "evts": {
+          "voleur:naissance": 1,
+          "voleur:pret": 1,
+          "tique:naissance": 1,
+          "voleur:mort": 1
+        },
+        "morts": {
+          "voleur": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "voleur": 9.766666666666753,
+          "tique": 28.235833337405264
+        },
+        "maxVivants": 2
+      },
+      "vague4": {
+        "naissances": {
+          "brouilleur": 1,
+          "miroir": 1
+        },
+        "evts": {
+          "brouilleur:naissance": 1,
+          "brouilleur:pret": 1,
+          "brouilleur:brouille": 1,
+          "brouilleur:mort": 1,
+          "miroir:naissance": 1,
+          "miroir:pret": 1
+        },
+        "morts": {
+          "brouilleur": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "brouilleur": 9.809583335369936,
+          "miroir": 26.351250002035663
+        },
+        "maxVivants": 1
+      },
+      "vague5": {
+        "naissances": {
+          "miroir": 1,
+          "tique": 1
+        },
+        "evts": {
+          "miroir:naissance": 1,
+          "miroir:pret": 1,
+          "miroir:rejoue": 1,
+          "miroir:mort": 1,
+          "tique:naissance": 1
+        },
+        "morts": {
+          "miroir": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "miroir": 8.459583335369972,
+          "tique": 27.90958333536887
+        },
+        "maxVivants": 1
+      },
+      "tique": {
+        "poursuite": {
+          "secouee": true,
+          "morte": true,
+          "morts": {
+            "arme:canon": 1
+          }
+        },
+        "ecrase": {
+          "morte": true,
+          "morts": {
+            "joueuse:devore": 1
+          }
+        }
+      },
+      "voleur": {
+        "arr": 1,
+        "perdu": 2,
+        "vol": 1
+      },
+      "miroir": {
+        "mort": true,
+        "lassos": 1,
+        "morts": {
+          "joueuse:lasso": 1
+        }
+      },
+      "brouilleur": {
+        "blinde": true,
+        "mort": true,
+        "morts": {
+          "joueuse:devore": 1
+        },
+        "avales": 21
+      },
+      "palette": {
+        "types": [
+          "tique",
+          "voleur",
+          "miroir",
+          "brouilleur"
+        ],
+        "total": 2327,
+        "interdits": 0,
+        "parEncre": {
+          "nuitProfonde": 1959,
+          "rosePale": 213,
+          "sang": 46,
+          "magenta": 94,
+          "acier": 6,
+          "ardoise": 6,
+          "os": 3
+        }
+      },
+      "erreurs": {
+        "err": {
+          "n": 0,
+          "sigs": {}
+        },
+        "logs": []
+      }
+    },
+    "portrait": {
+      "vague2": {
+        "naissances": {
+          "tique": 2
+        },
+        "evts": {
+          "tique:naissance": 2,
+          "tique:pret": 1,
+          "tique:accroche": 1
+        },
+        "morts": {},
+        "vus": {
+          "tique": 10.300000000000056
+        },
+        "maxVivants": 2
+      },
+      "vague3": {
+        "naissances": {
+          "voleur": 1,
+          "tique": 1
+        },
+        "evts": {
+          "voleur:naissance": 1,
+          "voleur:pret": 1,
+          "voleur:mort": 1,
+          "tique:naissance": 1
+        },
+        "morts": {
+          "voleur": {
+            "arme:canon": 1
+          }
+        },
+        "vus": {
+          "voleur": 9.376250002036587,
+          "tique": 27.590416672576435
+        },
+        "maxVivants": 1
+      },
+      "vague4": {
+        "naissances": {
+          "brouilleur": 1,
+          "miroir": 1
+        },
+        "evts": {
+          "brouilleur:naissance": 1,
+          "brouilleur:mort": 1,
+          "miroir:naissance": 1
+        },
+        "morts": {
+          "brouilleur": {
+            "joueuse:apogee": 1
+          }
+        },
+        "vus": {
+          "brouilleur": 11.384583335369822,
+          "miroir": 25.72750000407212
+        },
+        "maxVivants": 1
+      },
+      "vague5": {
+        "naissances": {
+          "miroir": 1,
+          "tique": 1
+        },
+        "evts": {
+          "miroir:naissance": 1,
+          "miroir:pret": 1,
+          "miroir:rejoue": 1,
+          "miroir:mort": 1,
+          "tique:naissance": 1
+        },
+        "morts": {
+          "miroir": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "miroir": 11.183333333333339,
+          "tique": 23.859583335369067
+        },
+        "maxVivants": 1
+      },
+      "tique": {
+        "poursuite": {
+          "secouee": true,
+          "morte": true,
+          "morts": {
+            "arme:canon": 1
+          }
+        },
+        "ecrase": {
+          "morte": true,
+          "morts": {
+            "joueuse:devore": 1
+          }
+        }
+      },
+      "voleur": {
+        "arr": 1,
+        "perdu": 2,
+        "vol": 1
+      },
+      "miroir": {
+        "mort": true,
+        "lassos": 1,
+        "morts": {
+          "joueuse:lasso": 1
+        }
+      },
+      "brouilleur": {
+        "blinde": true,
+        "mort": true,
+        "morts": {
+          "joueuse:devore": 1
+        },
+        "avales": 8
+      },
+      "palette": {
+        "types": [
+          "tique",
+          "voleur",
+          "miroir",
+          "brouilleur"
+        ],
+        "total": 2452,
+        "interdits": 0,
+        "parEncre": {
+          "nuitProfonde": 1922,
+          "rosePale": 68,
+          "magenta": 310,
+          "sang": 128,
+          "acier": 11,
+          "ardoise": 12,
+          "os": 1
+        }
+      },
+      "erreurs": {
+        "err": {
+          "n": 0,
+          "sigs": {}
+        },
+        "logs": []
+      }
+    },
+    "bureau": {
+      "vague2": {
+        "naissances": {
+          "tique": 2
+        },
+        "evts": {
+          "tique:naissance": 2,
+          "tique:pret": 1,
+          "tique:accroche": 1,
+          "tique:morsure": 1
+        },
+        "morts": {},
+        "vus": {
+          "tique": 10.550000000000042
+        },
+        "maxVivants": 2
+      },
+      "vague3": {
+        "naissances": {
+          "voleur": 1,
+          "tique": 1
+        },
+        "evts": {
+          "voleur:naissance": 1,
+          "voleur:pret": 1,
+          "voleur:vol": 2,
+          "tique:naissance": 1
+        },
+        "morts": {},
+        "vus": {
+          "voleur": 11.266666666666667,
+          "tique": 28.109583335368896
+        },
+        "maxVivants": 2
+      },
+      "vague4": {
+        "naissances": {
+          "brouilleur": 1,
+          "miroir": 1
+        },
+        "evts": {
+          "brouilleur:naissance": 1,
+          "brouilleur:pret": 1,
+          "brouilleur:avale": 13,
+          "brouilleur:brouille": 1,
+          "brouilleur:mort": 1,
+          "miroir:naissance": 1
+        },
+        "morts": {
+          "brouilleur": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "brouilleur": 12.799999999999914,
+          "miroir": 26.235833337405378
+        },
+        "maxVivants": 1
+      },
+      "vague5": {
+        "naissances": {
+          "miroir": 1,
+          "tique": 1
+        },
+        "evts": {
+          "miroir:naissance": 1,
+          "miroir:pret": 1,
+          "miroir:rejoue": 1,
+          "miroir:mort": 1,
+          "tique:naissance": 1
+        },
+        "morts": {
+          "miroir": {
+            "joueuse:lasso": 1
+          }
+        },
+        "vus": {
+          "miroir": 11.99999999999996,
+          "tique": 23.801250002035808
+        },
+        "maxVivants": 1
+      },
+      "tique": {
+        "poursuite": {
+          "secouee": true,
+          "morte": true,
+          "morts": {
+            "arme:canon": 1
+          }
+        },
+        "ecrase": {
+          "morte": true,
+          "morts": {
+            "joueuse:devore": 1
+          }
+        }
+      },
+      "voleur": {
+        "arr": 1,
+        "perdu": 2,
+        "vol": 1
+      },
+      "miroir": {
+        "mort": true,
+        "lassos": 1,
+        "morts": {
+          "joueuse:lasso": 1
+        }
+      },
+      "brouilleur": {
+        "blinde": true,
+        "mort": true,
+        "morts": {
+          "joueuse:devore": 1
+        },
+        "avales": 22
+      },
+      "palette": {
+        "types": [
+          "tique",
+          "voleur",
+          "miroir",
+          "brouilleur"
+        ],
+        "total": 1749,
+        "interdits": 0,
+        "parEncre": {
+          "ardoise": 12,
+          "sang": 71,
+          "magenta": 189,
+          "nuitProfonde": 1420,
+          "acier": 14,
+          "rosePale": 42,
+          "os": 1
+        }
+      },
+      "erreurs": {
+        "err": {
+          "n": 0,
+          "sigs": {}
+        },
+        "logs": []
+      }
+    }
+  },
+  "erreursConsole": []
+}
