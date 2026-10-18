@@ -196,6 +196,7 @@ Codex : en attente — ordre13 livré, médiation R13 et prochain ordre de Claud
 | `src/70-joueuse.js` (tête, gaine), `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p30) | 18/10 à 04 h 04 | R-37 : gaine complète de la tête, arsenal à ≥ 3 px |
 | `src/71-butin.js` | Codex (session parallèle codex-p26) | 18/10 à 03 h 45 | régénérateurs à ramasser (chantier n° 4, demande du cloud 03 h 45) ; raccords 70/78/76 en correctifs |
 | `src/90-boot.js`, `src/03-socle.js` (gestes), `tools/mesure/criteres/R-22-*`, `R-23-*`, `R-33-*` | Codex (session parallèle codex-p21) | 18/10 à 03 h 23 | gestes sûrs et commandes (0/6 pouvoirs, APOGÉE, boost) : instrument d'abord |
+| `src/30-music.js`, `src/15-decor.js`, `src/02-regles.js` (musique.tempoScene), `src/76-directeur.js`, `src/74-arsenal.js` (ONDE, 3 lignes), `src/17-vol.js` (3 lignes), `tools/H/morceaux.mjs` | Claude cloud | 18/10 à 11 h 00 | chantier n° 1, le tempo qui change : codex-p33b n'a ni réservé ni commité depuis l'ordre de 07 h 24 (3 h 30) ; réservations p22b et p30 caduques (closes à 05 h 29 et 06 h 44). Application de `refonte/propositions/tempo-cloud.patch` |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
 ## Prochains chantiers (à prendre)
