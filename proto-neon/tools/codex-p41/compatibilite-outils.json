@@ -1,0 +1,90 @@
+{
+  "outil": "/usr/bin/patch --batch -F 0 -p1",
+  "conforme": true,
+  "cas": [
+    {
+      "ordre": [
+        "p41"
+      ],
+      "appels": [
+        {
+          "lot": "p41",
+          "fichier": "79-jeu.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/79-jeu.js'\n",
+          "erreur": ""
+        }
+      ],
+      "sha256": {
+        "79-jeu.js": "c0c12971f8232642c618f79d56396d65ac9d1f1354c601c83ee65665f27b87b4",
+        "50-fx.js": "9b8f5711e3613c24c82a404c84b9ca76c558492a76b6c43493cc229d4d551265"
+      }
+    },
+    {
+      "ordre": [
+        "p38",
+        "p41"
+      ],
+      "appels": [
+        {
+          "lot": "p38",
+          "fichier": "79-jeu.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/79-jeu.js'\n",
+          "erreur": ""
+        },
+        {
+          "lot": "p38",
+          "fichier": "50-fx.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/50-fx.js'\n",
+          "erreur": ""
+        },
+        {
+          "lot": "p41",
+          "fichier": "79-jeu.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/79-jeu.js'\n",
+          "erreur": ""
+        }
+      ],
+      "sha256": {
+        "79-jeu.js": "db56b2b48fbfd92a77dd56727752247f9719a5f6d746aec072541361a1495423",
+        "50-fx.js": "fef3b989ccfd26bd7d853852b655b55be80e8c61ae2338ae73eba780d7e1baaa"
+      }
+    },
+    {
+      "ordre": [
+        "p41",
+        "p38"
+      ],
+      "appels": [
+        {
+          "lot": "p41",
+          "fichier": "79-jeu.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/79-jeu.js'\n",
+          "erreur": ""
+        },
+        {
+          "lot": "p38",
+          "fichier": "79-jeu.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/79-jeu.js'\n",
+          "erreur": ""
+        },
+        {
+          "lot": "p38",
+          "fichier": "50-fx.js",
+          "code": 0,
+          "sortie": "patching file 'proto-neon/src/50-fx.js'\n",
+          "erreur": ""
+        }
+      ],
+      "sha256": {
+        "79-jeu.js": "db56b2b48fbfd92a77dd56727752247f9719a5f6d746aec072541361a1495423",
+        "50-fx.js": "fef3b989ccfd26bd7d853852b655b55be80e8c61ae2338ae73eba780d7e1baaa"
+      }
+    }
+  ]
+}

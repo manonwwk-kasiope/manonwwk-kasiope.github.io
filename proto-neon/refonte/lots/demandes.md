@@ -875,3 +875,24 @@ Les chiffres des primitives locales (Bresenham, cercle, anneau) sont les opérat
 | codex-p38 | vérification navigateur hors bac | lancer `cd proto-neon && node tools/codex-p38/verifier.mjs` et renvoyer `tools/codex-p38/navigateur/resultats.json` | script prêt : deux bundles figés en mémoire, dix graines et trois profils, un Chromium muet, mêmes entrées contrôlées, journaux au pas et vrais pixels ; aucun serveur/navigateur ni réseau sortant lancé dans ce bac. Safari réel reste distinct. |
 
 Codex-p38 — mis à jour le 18/10/2026 · 06 h 01 (Paris) : diagnostic et raccords livrés, **lot arrêté, palier non validé**. Calibration e1bdc6f 10/10 exacte ; fenêtres R-30 de 60 s : 0/30 égales avant, 28/30 avec caméra seule, 30/30 avec caméra + gel public, pas et temps compris. Entrées imposées : premier ramassage au pas 759 contre 761 avant, journaux égaux après. Non-régression sur l'état reçu : **0/80 journaux inchangés**, seulement 10/80 résumés [temps,vague,score] identiques ; dieu/graine 2 corrigée atteint la borne à 540,1558333796039 s sans finir. Zéro erreur de jeu dans les reçus. Audit final : 160 reçus de parties, 30 paires R-30, empreintes et patchs vérifiés ; sources réservées inchangées, build sortie 0, aucun commit. Commande navigateur et dépendances dans `tools/codex-p38/rapport.md`. L'exécution hors bac et la requalification des mesures restent indispensables ; aucun résultat navigateur p38 annoncé.
+
+
+## codex-p41 — R-35, relance rapide
+
+18/10/2026 · 06 h 14 (Paris). Sources reçues à `544ee5b`, figées dans `tools/codex-p41/sources-avant.json.gz`.
+
+| mission | fichier | besoin / raison |
+|---|---|---|
+| codex-p41 | `79-jeu.js` — propriétaire / cheffe | appliquer `tools/codex-p41/raccord-79-jeu.js.patch` : après le reset complet, `lancer(true)` entre directement dans la première vague ; `lancer(false)` garde son briefing. Supprimer les deux attentes de la relance, sans changer les durées des autres parcours. |
+| codex-p41 | `50-fx.js` / `79-jeu.js` — codex-p38 | raccords p38 copiés comme témoins dans le dossier de mission ; application p41 seul, p38→p41 et p41→p38 sans fuzz et sources combinées identiques. Aucun changement de p41 dans `50-fx.js`. |
+| codex-p41 | `02-regles.js` | aucun ajout : le raccord n'introduit ni nombre de gameplay ni seuil ; il lit le numéro de la première vague existante dans `N.R.secteurs[0].vagues[0].n`. Les seuils R-35 restent <2 s et ≤24 s, sans modification. |
+| codex-p41 | `tools/codex-p41/` | réservé pour scripts, raccords et reçus de cette mission : calibration historique, relance à chaque image, 80 paires officielles, V1 et contrôles publics d'intermède. |
+| codex-p41 | vérification hors bac | `cd proto-neon && node tools/codex-p41/verifier.mjs` : un Chromium muet, paysage 844×390 tactile, portrait 390×844 tactile, bureau 1440×900, serveur local sur port libre ; script prêt mais jamais lancé dans ce bac. |
+
+Chiffres du banc : les 10 calibrations, 80 paires, 50 graines bon, tranches de 0,25 s, borne 540 s, pas de 1/60 s, 40 images de garde et 200 images de relance reprennent le protocole ou les critères existants. Aucun réglage de difficulté ni d'effet. Rapport final et valeurs : `tools/codex-p41/rapport.md`, `bilan.json`. Aucun commit.
+
+Codex-p41 — écart conservé dans le lot reçu : `dieu`, graine 2, atteint la borne de jeu 540,2216666824312 s en V4, score 124920, avant **et** après ; journaux et sorties strictement identiques, zéro erreur. `parties80.mjs` sort 1 car 79/80 paires seulement sont terminées ; aucune borne allongée et aucune censure comptée comme une fin.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-p41 | `85-pilote.js` / `76-directeur.js` — cheffe et propriétaires | examiner séparément la non-fin du couple dieu/2 dans l'état reçu ; ne pas changer ces fichiers dans p41 | V4 entrée à 154,54416667871038 s, aucune sortie de V4 à la borne ; cause non établie. Reçus complets dans `tools/codex-p41/parties/`, index `parties80.json`. |
