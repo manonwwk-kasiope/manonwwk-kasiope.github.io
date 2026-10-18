@@ -24,7 +24,7 @@ pas directement : elles se coordonnent par ce fichier et par les commits. Lis ce
 s'arrête). C'est elle seule qui écrit les ordres de Codex ci-dessous.
 
 Le médiateur : `/mediateur` (`.claude/skills/mediateur/SKILL.md`) juge ce qui a été poussé et tranche.
-Dernière médiation : codex-05b (ACCEPTÉ), 18/10/2026 à 01 h 54 ; avant : codex-01c (candidat non retenu, 01b gardé), 18/10/2026 à 01 h 36 ; avant : codex-05 (ACCEPTÉ AVEC RÉSERVES) et codex-06 (ACCEPTÉ), 18/10/2026 à 01 h 14 ; avant : codex-02 et lot I (e1bdc6f, cc4b780 ; 18/10/2026 à 00 h 37) — ACCEPTÉ / ACCEPTÉ AVEC RÉSERVES ; codex-01b, livraison e4ef174 (18/10/2026 à 00 h 36) — ACCEPTÉ ; codex-03 (d3938e6) — ACCEPTÉ ; avant : codex-01 (738bbcb) — ACCEPTÉ AVEC RÉSERVES.
+Dernière médiation : codex-p14 et codex-p18 (ACCEPTÉS AVEC RÉSERVES / ACCEPTÉ), 18/10/2026 à 03 h 23 ; avant : codex-05b (ACCEPTÉ), 18/10/2026 à 01 h 54 ; avant : codex-01c (candidat non retenu, 01b gardé), 18/10/2026 à 01 h 36 ; avant : codex-05 (ACCEPTÉ AVEC RÉSERVES) et codex-06 (ACCEPTÉ), 18/10/2026 à 01 h 14 ; avant : codex-02 et lot I (e1bdc6f, cc4b780 ; 18/10/2026 à 00 h 37) — ACCEPTÉ / ACCEPTÉ AVEC RÉSERVES ; codex-01b, livraison e4ef174 (18/10/2026 à 00 h 36) — ACCEPTÉ ; codex-03 (d3938e6) — ACCEPTÉ ; avant : codex-01 (738bbcb) — ACCEPTÉ AVEC RÉSERVES.
 
 **La vision du jeu fait foi : `refonte/VISION-PROGRESSION.md`** — « un snake qui traverse l'univers », de 1976
 (snake bidon, bips binaires) à l'intergalactique ; WARP et curseur cible ; ennemis sur des plans parallèles ;
@@ -126,14 +126,15 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/30-music.js` | Codex (session parallèle codex-p20) | 18/10 à 03 h 23 | R-26 mixage (kill +3 à +6 dB, calme ≥ −20 dBFS aigus, bigkill ≥ 25 % > 400 Hz) |
+| `src/90-boot.js`, `src/03-socle.js` (gestes), `tools/mesure/criteres/R-22-*`, `R-23-*`, `R-33-*` | Codex (session parallèle codex-p21) | 18/10 à 03 h 23 | gestes sûrs et commandes (0/6 pouvoirs, APOGÉE, boost) : instrument d'abord |
+| `src/73-arene.js`, `src/17-vol.js`, `tools/mesure/criteres/R-27-*`, `R-03-*` | Codex (session parallèle codex-p22) | 18/10 à 03 h 23 | jouable sans le son (signes de l'arène), cyan réservé pendant le VOL (3,7 % → ≤ 0,5 %) |
+| `src/12-cam.js`, `src/50-fx.js`, `src/15-decor.js`, `tools/mesure/criteres/R-28-*`, `R-11-*` | Codex (session parallèle codex-p23) | 18/10 à 03 h 23 | mouvement réduit pendant le gel (24 % → ≤ 0,5 %), lumière du décor R-11 sans casser 01/01b/03/p13 |
 | `src/76-directeur.js`, `src/76-defile.js`, ajouts dans `src/02-regles.js`, `tools/codex-11/` | Codex (boîte) | 18/10/2026 · 03 h 04 | codex-11 : directeur réglable, V1≤24s, progression initiale ; raccord79 fourni à Claude si nécessaire |
-| `src/77-score.js` | Codex (session parallèle codex-p18) | 18/10 à 02 h 45 | le score récompense l'habileté (bon / kamikaze 1,0 → ≥ 1,3) |
 | `src/73-colosse.js`, `src/70-joueuse.js` (annonces), `tools/mesure/criteres/R-31-*` | Codex (session parallèle codex-p4d) | 18/10 à 02 h 42 | finir R-06 (8 apparitions du CYCLOPE) et R-31 (annonce de l'arène) ; p4c et p13 intégrés |
 | `src/10-gfx.js`, `src/20-crt.js`, `src/78-hud.js`, `tools/mesure/criteres/R-20-*`, `R-30-*` | Codex (session parallèle codex-p16) | 18/10 à 02 h 30 | R-20 performance (4,5 ms contre 0,8 ms), mesures de temps R-20 ×4 et R-30 |
 | `src/79-scene.js` | Codex (session parallèle codex-p15) | 18/10 à 02 h 28 | R-12 (aucune explosion à la mort des élites) et R-05 (une seule cause de mort sur sept) ; instrument p3c intégré (26a756b) |
-| `src/85-pilote.js` | Codex (session parallèle codex-p14) | 18/10 à 02 h 27 | LASSO et APOGÉE jouables et joués (R-34, R-04) ; réglage p5 intégré (51c9aa1), arrêté à 8/20 |
 | `src/80-ecrans.js`, `tools/mesure/criteres/R-36-*` | Codex (session parallèle codex-p17) | 18/10 à 02 h 45 | finition des écrans briefing / pause / fin (défis lisibles), R-36 « TOUT DÉBLOQUÉ » ; p12 intégré (147ac95) |
-| `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/66-grille.js`, `tools/grille/` (nouveaux) | Claude cloud | 18/10 à 03 h 30 | chantier n° 6 : la scène d'immersion isométrique (`la-grille.html`) devient l'époque 1993 de l'aventure |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
