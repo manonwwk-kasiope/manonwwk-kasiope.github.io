@@ -1,0 +1,28 @@
+<!-- tools/serpents/panneau.html — panneau d'essai des serpents de 2030 (inséré par build.mjs dans tools/serpents/index.html).
+     Caché sauf avec ?panneau=1 (les captures du banc ne le montrent pas). Les boutons font naître un serpent tout de suite
+     (N.serpents.forcer, en aventure seulement : lancer JOUER puis arriver au néon). -->
+<div id="serpents-panneau" style="display:none;position:fixed;left:6px;bottom:6px;z-index:9;font:11px/1.3 ui-monospace,Menlo,monospace;color:#fffce8;background:rgba(13,2,33,.85);padding:6px;border:1px solid #541388;pointer-events:auto">
+  <div>SERPENTS DE 2030 — <span id="serpents-etat">…</span></div>
+  <button data-t="tique">TIQUE</button> <button data-t="voleur">VOLEUR</button> <button data-t="miroir">MIROIR</button>
+  <button data-t="brouilleur">BROUILLEUR</button> <button data-v="2">V2</button> <button data-v="4">V4</button>
+  <button data-god="1">INVULNÉRABLE</button>
+</div>
+<script>
+(function () {
+  if (!/[?&]panneau=1\b/.test(location.search)) return;
+  var p = document.getElementById('serpents-panneau'), et = document.getElementById('serpents-etat');
+  p.style.display = 'block';
+  p.addEventListener('click', function (ev) {
+    var b = ev.target, N = window.__N; if (!N || b.tagName !== 'BUTTON') return;
+    ev.stopPropagation();
+    if (b.dataset.t) N.serpents.forcer(b.dataset.t);
+    if (b.dataset.v) N.game.dbg.vague(+b.dataset.v);
+    if (b.dataset.god) N.game.dbg.god(true);
+  });
+  setInterval(function () {
+    var N = window.__N; if (!N || !N.serpents) return;
+    var s = N.serpents.etat(), l = N.ennemis.list.filter(function (e) { return e._serpent; }).map(function (e) { return e.type + ':' + e._st; });
+    et.textContent = (s.aventure ? 'aventure' : 'hors aventure') + ' · V' + s.vague + ' · ' + (l.join(' ') || 'aucun');
+  }, 400);
+})();
+</script>

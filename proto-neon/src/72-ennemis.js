@@ -19,7 +19,23 @@
    devorer(e), dans(poly), pres(x, y, r), tir(x, y, vx, vy, opts), tirs, effacerTirs(x, y, r), inverser(dur), fuir(), purge(ordre).
    Ajouts : lasers, counts(), drawTele(), drawEnemies(), purgeEnCours(), rayon(x0, y0, x1, y1, dur, w, src), teleLigne, marque,
    inversion() -> secondes restantes, charges(), publierTele() (rafraîchissement après 73-colosse).
-   Chiffres : N.R.ennemis, N.R.elites, N.R.modificateurs, N.R.inversion ; les valeurs de la démo qui manquent : CFG (→ N.R). */
+   Chiffres : N.R.ennemis, N.R.elites, N.R.modificateurs, N.R.inversion ; les valeurs de la démo qui manquent : CFG (→ N.R).
+
+   LES SERPENTS DE 2030 (chantier n° 8, refonte/inventaire-ennemis-niveaux.md I-16 à I-19) : TIQUE, VOLEUR, MIROIR, BROUILLEUR.
+   Quatre types de plus, que SEUL 72-serpents.js crée, et seulement pendant une aventure (N.aventure.enCours()). Un type qui n'est
+   jamais créé ne change rien : chaque ajout ci-dessous ne s'exécute que pour un objet de ces types (ou tant qu'un BROUILLEUR vit),
+   aucun tirage n'est pris au flux 'ennemis' de la partie (leur naissance tire dans le générateur propre de 72-serpents), aucun
+   champ n'est ajouté aux autres ennemis. Chiffres : SERP ci-dessous (→ N.R ; les identifiants sont à demander au gardien de
+   03-socle, qui ne les connaît pas encore : N.ids.ennemis, auteurs, noms).
+     TIQUE       s'accroche de côté près de la queue, mord le dernier segment toutes les 3,2 s (annonce 0,9 s), tombe après
+                 deux morsures. Inoffensive au contact : la TÊTE L'ÉCRASE ; l'accélération tenue 0,6 s la secoue ; un tir l'abat.
+     VOLEUR      file sur les cellules au sol et les empoche (sa besace se remplit) ; sans butin, il arrache deux segments
+                 à la queue (annonce 0,6 s) et ramasse la cellule tombée. À 3 objets : « IL FUIT ! », 2 s d'arrêt et sa ligne
+                 de fuite en pointillés, puis il file vers le bord de la vue. ABATTU, il rend tout en une grosse cellule.
+     MIROIR      le serpent en négatif : il rejoue ta trajectoire 1,5 s plus tard (jamais sur ton corps) ; sa tête tue.
+                 De face, il renvoie les tirs ; vulnérable de dos. Une boucle de LASSO refermée sur lui le brise.
+     BROUILLEUR  un champ de 42 px qui avale tes tirs ; la tête dedans, tes armes se taisent (icône « tir coupé »). Il ne tue
+                 pas : la TÊTE QUI LE TRAVERSE le détruit (ou le LASSO). */
 N.ennemis = (function () {
   'use strict';
   var O = N.outils, R = N.R;
@@ -29,6 +45,17 @@ N.ennemis = (function () {
     flecheBonds: 160, mineSouffle: 30, mineDegats: 40, fuseSouffle: 34, fuseDegats: 60,
     tourelleTourne: 1.2, tourelleVie: 1.7
   };
+  /* les serpents de 2030 (→ N.R) ; allures en multiples de la vitesse de la tête, distances en px de jeu */
+  var SERP = {
+    tique: { nom: 'TIQUE', pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
+      morsure: { periode: 3.2, annonce: 0.9, premiere: 1.6 }, points: 60 },
+    voleur: { nom: 'VOLEUR', pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
+      besace: 3, patience: 14, annonceFuite: 2, arrache: { distance: 12, annonce: 0.6, segments: 2, prise: 18 }, prime: 1, points: 150 },
+    miroir: { nom: 'MIROIR', pv: 60, r: 5, sprite: 11, retard: 1.5, ecartQueue: 14, rejoint: 1.6, blindageDeg: 75, segments: 3,
+      espaceSeg: 6, bord: 3, points: 250 },
+    brouilleur: { nom: 'BROUILLEUR', pv: 40, r: 6.5, sprite: 14, champ: 42, souffle: 0.05, garde: 0.75, approche: 1.0, allure: 0.6, glisse: 0.25,
+      coupure: 0.18, gresille: 0.68, points: 200 }
+  };
   var TAU = O.TAU;
   var TP = R.publicationTele;
   var S = null;
@@ -36,14 +63,16 @@ N.ennemis = (function () {
   var charges = 0, inv = { t: 0, total: 0 }, purgeFile = null, purgeI = 0, purgeNext = 0, purgeT = 0;
   var AL = 0, AR = 0, AT = 0, AB = 0;
 
-  function conf(t) { return (R && R.ennemis && R.ennemis[t]) || {}; }
+  function conf(t) { return (R && R.ennemis && R.ennemis[t]) || SERP[t] || {}; }
   function arena() { var A = O.A; AL = A.x0 + 7; AR = A.x1 - 7; AT = A.y0 + 7; AB = A.y1 - 7; }
   function tete() { return N.joueuse && N.joueuse.tete; }
   function vague() { return (N.dir && N.dir.vague && N.dir.vague()) || 1; }
   function wave() { return (N.dir && N.dir.info && N.dir.info()) || null; }
-  function rr(a, b) { return O.rr('ennemis', a, b); }
-  function ri(a, b) { return O.ri('ennemis', a, b); }
-  function rnd() { return O.rf('ennemis'); }
+  /* aleaPropre : posé le temps de la naissance d'un serpent de 2030 seulement ; sinon le flux 'ennemis' de la partie, comme avant */
+  var aleaPropre = null;
+  function rr(a, b) { return aleaPropre ? a + (b - a) * aleaPropre() : O.rr('ennemis', a, b); }
+  function ri(a, b) { return aleaPropre ? a + ((aleaPropre() * (b - a + 1)) | 0) : O.ri('ennemis', a, b); }
+  function rnd() { return aleaPropre ? aleaPropre() : O.rf('ennemis'); }
   function srcDe(e) { return { genre: 'ennemi', type: e.type, id: e.id }; }
   function vitesseTete() { var P = tete(); return P ? P.vit : 68; }
   function maxCharges() { var w = wave(); return (w && w.chargesFleches) || 1; }
@@ -62,9 +91,13 @@ N.ennemis = (function () {
     derive: 'approche', pose: 'approche', actif: 'approche', esquive: 'approche',
     vise: 'arme', arme: 'arme', verrou: 'arme', mord: 'arme', recule: 'arme', couve: 'arme',
     fonce: 'attaque', tire: 'attaque', traverse: 'attaque',
-    recup: 'recup', proie: 'proie', mort: 'mort', fuite: 'fuite', naissance: 'portail', portail: 'portail' };
+    recup: 'recup', proie: 'proie', mort: 'mort', fuite: 'fuite', naissance: 'portail', portail: 'portail',
+    /* les serpents de 2030 */
+    accroche: 'approche', tombe: 'recup', cherche: 'approche', arrache: 'arme', alerte: 'arme', evade: 'fuite',
+    rejoue: 'approche', plane: 'approche' };
   var BASE = { fleche: 'chasse', dard: 'croise', larve: 'zig', mine: 'pose', tourelle: 'pose', lame: 'chasse', ruche: 'garde',
-    sentinelle: 'orbite', traqueur: 'chasse', planeur: 'actif', rival: 'actif' };
+    sentinelle: 'orbite', traqueur: 'chasse', planeur: 'actif', rival: 'actif',
+    tique: 'chasse', voleur: 'cherche', miroir: 'entre', brouilleur: 'plane' };
 
   function reset() {
     S = N.S;
@@ -73,6 +106,8 @@ N.ennemis = (function () {
     if (inv.t > 0 && N.ev) N.ev.emit('inversion', { evt: 'fin', dur: 0 });
     inv.t = 0; inv.total = 0;
     TVN = 0; TV.length = 0;
+    CHAMPS.length = 0; brouT = 0; aleaPropre = null; graineLocale = 0x2975;
+    if (N.serpents && N.serpents.reset) N.serpents.reset();          // le planning des serpents de 2030 (rien n'y est tiré)
     if (S) { S.enemies = list; S.shots = tirs; S.tele = TV; }
   }
 
@@ -156,6 +191,7 @@ N.ennemis = (function () {
   function spawn(type, x, y, opts) {
     arena();
     opts = opts || {};
+    if (SERP[type]) return spawnSerpent(type, x, y, opts);
     var e = newEnemy(type, x, y, opts), P = tete();
     // 73-colosse pilote ses objets externes : leur raccord est demandé séparément.
     if (!e._ext && !placerNaissance(e)) e._attenteNaissance = true;
@@ -180,6 +216,36 @@ N.ennemis = (function () {
     }
     return e;
   }
+  /* un serpent de 2030 : tout ce qui se tire à sa naissance vient du générateur propre (opts.alea, ou le repli local),
+     jamais du flux 'ennemis' ; il passe par le même raccord de naissance et le même portail que les autres */
+  var graineLocale = 0x2975;
+  function aleaLocal() {                                    // repli : mulberry32 à graine fixe, remis à zéro par reset()
+    graineLocale = (graineLocale + 0x6D2B79F5) | 0;
+    var t = Math.imul(graineLocale ^ (graineLocale >>> 15), 1 | graineLocale);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  function sa() { return (N.serpents && N.serpents.alea) ? N.serpents.alea() : aleaLocal(); }
+  function spawnSerpent(type, x, y, opts) {
+    var avant = aleaPropre, e;
+    aleaPropre = opts.alea || sa;
+    try { e = newEnemy(type, x, y, opts); } finally { aleaPropre = avant; }
+    e._serpent = true; e._inoff = 0;
+    if (!placerNaissance(e)) e._attenteNaissance = true;
+    if (type === 'tique') { e._inoff = 1; e._side = sa() < 0.5 ? -1 : 1; e._k = -1; e._secoue = 0; e._morsures = 0; }
+    else if (type === 'voleur') { e._sac = 0; e._val = 0; e._scan = 0; e._duree = 0; e._cible = null; e._fx = x; e._fy = y; e._fuiteA = 0; }
+    else if (type === 'miroir') { e._hist = []; e._sg = []; e._kM = 0; }
+    else if (type === 'brouilleur') { e._inoff = 1; e._rc = SERP.brouilleur.champ; e._zap = 0; e._dedans = false; }
+    if (opts.st) e._st = opts.st;
+    if (inv.t > 0) { e._stAvant = e._st; e._st = 'proie'; }
+    if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
+    else if (!e._attenteNaissance) apparu(e);
+    if (e._attenteNaissance) e.etat = 'portail';
+    list.push(e);
+    noter('naissance', e);
+    return e;
+  }
+  function noter(evt, e, plus) { if (N.serpents && N.serpents.noter) N.serpents.noter(evt, e, plus); }
   function apparu(e) {
     e.etat = ETAT[e._st] || 'approche';
     if (N.ev) N.ev.emit('apparition', { id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite });
@@ -253,11 +319,13 @@ N.ennemis = (function () {
     if (e._dead) return false;
     e._dead = true; e.etat = 'mort'; e.pv = Math.min(e.pv, 0);
     var P = tete(), base = (R && R.score && R.score.base && R.score.base[e.type]) || 0;
+    if (!base && e._serpent) base = SERP[e.type].points;
     src = src || SRC_PAR_DEFAUT;
     if (N.ev) N.ev.emit('kill', {
       id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite, boss: !!e.boss, base: base, src: src,
       distTete: P ? Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) : 0, gen: 0
     });
+    if (e._serpent) mortSerpent(e, src);
     if (src.genre !== 'decor') {
       if (e.mods.instable) nouvelleFuse(e.x, e.y);
       if (e.type === 'mine') souffle(e.x, e.y, CFG.mineSouffle, CFG.mineDegats, e, true);     // abattue : n'explose pas sur la joueuse
@@ -277,6 +345,10 @@ N.ennemis = (function () {
     if (!e || e._dead || e.etat === 'mort') return false;
     if (e._st === 'naissance' || e.etat === 'portail') return false;      // rien ne blesse avant son apparition
     if (e.type === 'traqueur') return (src && src.type === 'lasso') ? kill(e, src) : false;     // seul un LASSO le tue
+    if (e._serpent || CHAMPS.length || brouT > 0) {                    // serpents de 2030 : champ du BROUILLEUR, face du MIROIR
+      if (e._serpent && src && src.type === 'lasso' && (e.type === 'miroir' || e.type === 'brouilleur')) return kill(e, src);
+      if (tirAvale(e, src)) return false;
+    }
     if (e._ext && e.boss) {
       if (N.colosse && N.colosse.touche) dmg = N.colosse.touche(e, dmg, src);
       if (!(dmg > 0)) return false;
@@ -318,6 +390,8 @@ N.ennemis = (function () {
         var xa = poly[a * 2], ya = poly[a * 2 + 1], xb = poly[b * 2], yb = poly[b * 2 + 1];
         if (((ya > e.y) !== (yb > e.y)) && (e.x < (xb - xa) * (e.y - ya) / (yb - ya) + xa)) dedans = !dedans;
       }
+      // le MIROIR roule SUR ta trace : une boucle plus longue que son retard le prend dans son bord
+      if (!dedans && e.type === 'miroir' && e._serpent && surLeBord(poly, e.x, e.y, SERP.miroir.bord)) dedans = true;
       if (dedans) o.push(e);
     }
     return o;
@@ -328,7 +402,7 @@ N.ennemis = (function () {
     for (var i = 0; i < list.length; i++) {
       var e = list[i]; if (e._dead) continue;
       c[e.type] = (c[e.type] || 0) + 1;
-      if (!e.boss && e.type !== 'traqueur' && e.type !== 'planeur') c.regular++;
+      if (!e.boss && e.type !== 'traqueur' && e.type !== 'planeur' && !e._serpent) c.regular++;   // les serpents de 2030 ne comptent pas au quota
     }
     return c;
   }
@@ -747,6 +821,277 @@ N.ennemis = (function () {
     if (crash) kill(e, { genre: 'joueuse', type: 'devore', id: -1 });
   }
 
+  /* ============================ les serpents de 2030 (aventure seulement, créés par 72-serpents.js) ============================
+     Ils ne lisent la joueuse et le butin que par leurs interfaces publiques : N.joueuse.tete / len() / segPos(k) / boost /
+     couper(k, src, cause) / invul() / etat, N.butin.list (champs du schéma : type, x, y, valeur, vie) et N.butin.lacher ;
+     le BROUILLEUR éteint les tirs de N.arsenal.tirs (life = 0 : l'arsenal les retire lui-même au pas suivant, avant tout
+     contact), comme la joueuse retire le tir ennemi qui l'a frappée. Leur hasard : sa(), le générateur de 72-serpents. */
+  var ESP = (R && R.longueur && R.longueur.espacement) || 5;
+  var CHAMPS = [], brouT = 0;                                    // les BROUILLEURS vivants de ce pas ; la coupure des armes
+  var SRC_ECRASE = { genre: 'joueuse', type: 'devore', id: -1 };
+  function rayonTeteJ() { return (R && R.mort && R.mort.rayonTete) || 3; }
+  function vivanteJ() { var J = N.joueuse; return !!J && J.etat === 'vivant'; }
+  function vT() { return Math.max(40, vitesseTete()); }
+  function popTexte(x, y, s, c) {
+    if (N.hud && N.hud.pop) O.safe('hud.pop', function () { N.hud.pop(x, y, s, { c: c }); });
+    else O.pop(x, y, s, O.JAUNE);
+  }
+  function aller(e, x, y, v, dt, virage) {                     // vers (x, y) sans dépasser ; virage borné si demandé
+    var dx = x - e.x, dy = y - e.y, d = Math.sqrt(dx * dx + dy * dy);
+    if (d < 0.01) return 0;
+    var a = Math.atan2(dy, dx);
+    e.ang = virage ? O.turnTo(e.ang, a, virage * dt) : a;
+    var pas = Math.min(d, v * dt);
+    if (virage && d > 24) { e.x += Math.cos(e.ang) * pas; e.y += Math.sin(e.ang) * pas; }
+    else { e.x += dx / d * pas; e.y += dy / d * pas; }
+    return d;
+  }
+  /* le point d'accroche : à côté du segment k (k compté depuis la tête), sur le flanc `side` */
+  var ACC = { x: 0, y: 0, a: 0 };
+  function pointAccroche(k, side, ecart) {
+    var J = N.joueuse, p = J.segPos(k), q = J.segPos(k + 1), dx = p.x - q.x, dy = p.y - q.y, m = Math.sqrt(dx * dx + dy * dy) || 1;
+    ACC.x = p.x - dy / m * side * ecart; ACC.y = p.y + dx / m * side * ecart; ACC.a = Math.atan2(dy, dx);
+    return ACC;
+  }
+
+  /* ---- TIQUE : elle s'accroche au corps et mord la queue ; la tête l'écrase ---- */
+  function tomber(e, secouee) {
+    var c = SERP.tique, a = sa() * TAU;
+    e._st = 'tombe'; e._stT = c.tombe; e._k = -1; e._secoue = 0;
+    e._kx = Math.cos(a) * 45; e._ky = Math.sin(a) * 45;
+    if (secouee) { popTexte(e.x, e.y - 6, 'SECOUÉE', 'jaune'); noter('secouee', e); } else noter('tombee', e);
+  }
+  function updTique(e, dt, P) {
+    var c = SERP.tique, J = N.joueuse, len = J ? J.len() : 0, re = rayonTeteJ() + e.r + c.ecrase;
+    e._inoff = 1;                                                // son contact ne tue jamais : c'est la tête qui l'écrase
+    if (vivanteJ() && O.d2(e.x, e.y, P.x, P.y) < re * re) {
+      popTexte(e.x, e.y - 6, 'ÉCRASÉE', 'jaune');
+      kill(e, SRC_ECRASE);
+      return;
+    }
+    if (e._st === 'tombe') { e._stT -= dt; if (e._stT <= 0) e._st = 'chasse'; e.ang += dt * 9; return; }
+    if (e._st === 'chasse') {
+      if (!vivanteJ() || len < 4) { e.ang += dt * 3; return; }
+      var k = Math.max(2, len - 2), pt = pointAccroche(k, e._side, c.cote);
+      var d = Math.sqrt(O.d2(e.x, e.y, pt.x, pt.y));
+      var a = Math.atan2(pt.y - e.y, pt.x - e.x) + Math.sin(e._age * 9 + e.id) * 0.5 * O.clamp(d / 50, 0, 1);   // elle trottine en zigzag
+      e.ang = O.turnTo(e.ang, a, 8 * dt);
+      if (d < 18) aller(e, pt.x, pt.y, c.approche * vT() * 1.2, dt);
+      else avance(e, e.ang, c.approche * vT(), dt);
+      if (d < 4) {
+        e._st = 'accroche'; e._k = k; e._cd = c.morsure.premiere; e._secoue = 0; e._morsures = 0;
+        O.sfx('coupe', { pitch: 6 }); noter('accroche', e);
+      }
+      return;
+    }
+    /* accrochée ('accroche' puis 'mord') : elle suit le segment ; le serpent qui fond sous elle ou l'accélération la décrochent */
+    if (!vivanteJ() || len <= e._k || len < 4) { tomber(e, false); return; }
+    var q = pointAccroche(e._k, e._side, c.cote);
+    e.x = q.x; e.y = q.y; e.ang = q.a + e._side * Math.PI / 2;
+    if (J.boost) { e._secoue += dt; if (e._secoue >= c.secoue) { tomber(e, true); return; } }
+    else e._secoue = Math.max(0, e._secoue - dt * 0.5);
+    if (e._st === 'accroche') {
+      e._cd -= dt;
+      if (e._cd <= 0 && peutArmer(e) && len > 4) { e._st = 'mord'; e._stT = c.morsure.annonce; armer(e, 'disque', e._stT, 'corps'); }
+    } else if (e._st === 'mord') {
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        if (!J.invul() && len > 4) {
+          var bout = J.segPos(len);
+          if (J.couper(len - 1, srcDe(e), 'ennemi') > 0) { O.spark(bout.x, bout.y, O.ROSE, 4); e._morsures++; noter('morsure', e); }
+        }
+        e._st = 'accroche'; e._cd = c.morsure.periode;
+      }
+    }
+  }
+
+  /* ---- VOLEUR : il empoche ton butin, puis il fuit ---- */
+  function butinProche(e, portee) {
+    var B = N.butin && N.butin.list, best = null, bd = portee * portee;
+    if (!B) return null;
+    for (var i = 0; i < B.length; i++) {
+      var o = B[i];
+      if ((o.type !== 'cellule' && o.type !== 'noyau') || !(o.vie > 0.3)) continue;
+      var d = O.d2(e.x, e.y, o.x, o.y);
+      if (d < bd) { bd = d; best = o; }
+    }
+    return best;
+  }
+  function voler(e, o) {
+    e._sac++; e._val += o.type === 'noyau' ? 2 : Math.max(1, o.valeur | 0);
+    o.vie = 0;                                                   // 71-butin le retire à son pas, avant tout ramassage
+    O.spark(o.x, o.y, O.AMBRE, 3); O.sfx('coupe', { pitch: 3 });
+    e._cible = null; e._scan = 0;
+    noter('vol', e);
+  }
+  function alerteFuite(e, P) {
+    var V = O.VUE, A = O.A, a = Math.atan2(e.y - P.y, e.x - P.x) || 0, c = Math.cos(a), s = Math.sin(a), t = 1e9;
+    /* le bord de la vue (ou le mur, s'il vient avant) dans la direction opposée à la tête : il y file tout droit */
+    var x0 = Math.max(V.x, A.x0 + e.r + 1), x1 = Math.min(V.x + V.w, A.x1 - e.r - 1), y0 = Math.max(V.y, A.y0 + e.r + 1), y1 = Math.min(V.y + V.h, A.y1 - e.r - 1);
+    if (c > 1e-3) t = Math.min(t, (x1 - e.x) / c); else if (c < -1e-3) t = Math.min(t, (x0 - e.x) / c);
+    if (s > 1e-3) t = Math.min(t, (y1 - e.y) / s); else if (s < -1e-3) t = Math.min(t, (y0 - e.y) / s);
+    t = Math.max(0, Math.min(t, 600));
+    e._fuiteA = a; e._fx = e.x + c * (t + e.r + 10); e._fy = e.y + s * (t + e.r + 10);
+    e._st = 'alerte'; e._stT = SERP.voleur.annonceFuite; e._teleTotal = e._stT;
+    popTexte(e.x, e.y - V.y < 28 ? e.y + 14 : e.y - 9, 'IL FUIT !', 'rose');      // sous lui s'il frôle le haut (le HUD)
+    O.sfx('arme', { type: 'recul' });
+    noter('alerte', e);
+  }
+  function echapper(e) {
+    e._dead = true; e.etat = 'mort';                             // il sort sans `kill` : ni points ni butin
+    if (N.hud && N.hud.tag) O.safe('hud.tag', function () { N.hud.tag('BUTIN VOLÉ  −' + e._sac); });
+    O.sfx('defiRate');
+    noter('evade', e);
+  }
+  function updVoleur(e, dt, P) {
+    var c = SERP.voleur, J = N.joueuse, v = vT(), len = J ? J.len() : 0, q;
+    e._duree += dt;
+    if (e._st === 'cherche') {
+      e._scan -= dt;
+      if (e._scan <= 0) { e._scan = c.scan; e._cible = butinProche(e, c.portee); }
+      var o = e._cible;
+      if (o && !(o.vie > 0)) { o = e._cible = null; e._scan = 0; }
+      if (o) {
+        aller(e, o.x, o.y, c.allure * v, dt, 6);
+        if (O.d2(e.x, e.y, o.x, o.y) < c.prise * c.prise && N.butin.list.indexOf(o) >= 0) voler(e, o);
+      } else if (vivanteJ() && len > 4) {
+        q = J.segPos(len);                                       // sans butin au sol : il vient arracher la queue
+        aller(e, q.x, q.y, c.queue * v, dt, 6);
+        if (O.d2(e.x, e.y, q.x, q.y) < c.arrache.distance * c.arrache.distance && peutArmer(e)) {
+          e._st = 'arrache'; e._stT = c.arrache.annonce; armer(e, 'disque', e._stT, 'corps');
+        }
+      } else if (P) aller(e, P.x, P.y, 0.85 * c.allure * v, dt, 4);
+      if (e._sac >= c.besace || (e._sac > 0 && e._duree > c.patience)) alerteFuite(e, P);
+    } else if (e._st === 'arrache') {
+      if (!vivanteJ() || len <= 4) { e._st = 'cherche'; e._scan = 0; return; }
+      q = J.segPos(len);
+      aller(e, q.x, q.y, 1.4 * v, dt);                            // collé à la queue pendant l'annonce
+      e._stT -= dt;
+      if (e._stT <= 0) {
+        if (!J.invul() && O.d2(e.x, e.y, q.x, q.y) < c.arrache.prise * c.arrache.prise &&
+          J.couper(Math.max(3, len - c.arrache.segments), srcDe(e), 'ennemi') > 0) { O.spark(q.x, q.y, O.ROSE, 4); noter('arrache', e); }
+        e._st = 'cherche'; e._scan = 0; e._cd = 1.2;
+      }
+    } else if (e._st === 'alerte') {
+      e._stT -= dt;
+      e.ang = e._fuiteA;
+      if (e._stT <= 0) e._st = 'evade';
+    } else if (e._st === 'evade') {
+      avance(e, e._fuiteA, c.fuite * v, dt); e.ang = e._fuiteA;
+      var V = O.VUE, A = O.A, m = e.r + 8;
+      if (e.x < V.x - m || e.x > V.x + V.w + m || e.y < V.y - m || e.y > V.y + V.h + m ||
+        e.x < A.x0 + e.r || e.x > A.x1 - e.r || e.y < A.y0 + e.r || e.y > A.y1 - e.r) { echapper(e); return; }
+    }
+  }
+  function rendreButin(e) {
+    if (!(e._val > 0) || !N.butin || !N.butin.lacher) return;
+    var L = N.butin.list, n0 = L.length;
+    N.butin.lacher(e.x, e.y, 1, { type: 'cellule' });
+    if (L.length > n0) {
+      var o = L[L.length - 1];
+      o.valeur = e._val + (e._sac >= 2 ? SERP.voleur.prime : 0); o.vie = Math.max(o.vie, 9);   // une seule grosse cellule
+    }
+    popTexte(e.x, e.y - 9, 'RÉCUPÉRÉ', 'jaune');
+  }
+
+  /* ---- MIROIR : ta trajectoire, rejouée 1,5 s plus tard (au-delà de ta queue) ---- */
+  function updMiroir(e, dt, P) {
+    var c = SERP.miroir, J = N.joueuse, v = vT(), len = J ? J.len() : 0, i;
+    var recul = Math.max(c.retard * v, (len + 1) * ESP + c.ecartQueue), k = recul / ESP;
+    var T = J.segPos(k), tx = T.x, ty = T.y, Av = J.segPos(k - 1), face = Math.atan2(Av.y - ty, Av.x - tx);
+    e._kM = k;
+    var d = Math.sqrt(O.d2(e.x, e.y, tx, ty));
+    if (e._st === 'rejoue') {
+      if (d > 8 || !vivanteJ()) e._st = 'entre';
+      else { e.x = tx; e.y = ty; e.ang = face; }
+    }
+    if (e._st === 'entre') {
+      if (vivanteJ()) aller(e, tx, ty, c.rejoint * v, dt, 6);
+      if (d < 3 && vivanteJ()) { e._st = 'rejoue'; e.ang = face; noter('rejoue', e); }
+    }
+    /* ses trois segments : sa propre trace, un point tous les 2 px */
+    var H = e._hist, last = H.length ? H[H.length - 1] : null;
+    if (!last || O.d2(last.x, last.y, e.x, e.y) >= 4) { H.push({ x: e.x, y: e.y }); if (H.length > 40) H.shift(); }
+    var sg = e._sg, acc = 0, ns = 0, px = e.x, py = e.y;
+    for (i = H.length - 1; i >= 0 && ns < c.segments; i--) {
+      acc += Math.sqrt(O.d2(px, py, H[i].x, H[i].y)); px = H[i].x; py = H[i].y;
+      if (acc >= c.espaceSeg * (ns + 1)) { sg[ns] = sg[ns] || { x: 0, y: 0 }; sg[ns].x = px; sg[ns].y = py; ns++; }
+    }
+    sg.length = ns;
+  }
+  function deFace(e) {
+    var P = tete(); if (!P) return false;
+    return Math.abs(O.wrapA(Math.atan2(P.y - e.y, P.x - e.x) - e.ang)) < SERP.miroir.blindageDeg * Math.PI / 180;
+  }
+  function surLeBord(poly, x, y, r) {
+    var nv = poly.length / 2, r2 = r * r;
+    for (var a = 0, b = nv - 1; a < nv; b = a++) if (O.segDist2(x, y, poly[b * 2], poly[b * 2 + 1], poly[a * 2], poly[a * 2 + 1]) < r2) return true;
+    return false;
+  }
+
+  /* ---- BROUILLEUR : le champ qui coupe les armes ; la tête qui le traverse le détruit ---- */
+  function updBrouilleur(e, dt, P) {
+    var c = SERP.brouilleur, v = vT(), rc = c.champ * (1 + c.souffle * Math.sin(e._age * 2.4)), i;
+    e._inoff = 1; e._rc = rc;
+    var dx = e.x - P.x, dy = e.y - P.y, d = Math.sqrt(dx * dx + dy * dy) || 1, re = rayonTeteJ() + e.r + 2;
+    if (vivanteJ() && d < re) { popTexte(e.x, e.y - 8, 'BROUILLAGE ROMPU', 'jaune'); kill(e, SRC_ECRASE); return; }
+    if (e._st === 'plane') {                                     // il tient la tête au bord de son champ, et glisse de côté
+      var g = rc * c.garde, s = d > g + 6 ? -1 : d < g - 6 ? 1 : 0, ux = dx / d, uy = dy / d;
+      var k = s < 0 ? c.approche : c.allure;                    // il colle à la tête (on le sème en filant droit), recule plus lentement
+      e.x += (ux * s * k - uy * e._sens * c.glisse) * v * dt;
+      e.y += (uy * s * k + ux * e._sens * c.glisse) * v * dt;
+      bornes(e);
+    }
+    e._spin += dt * 1.3;
+    e.ang = Math.atan2(-dy, -dx);
+    e._dedans = vivanteJ() && d < rc && e._st !== 'proie';
+    if (e._dedans) {
+      if (brouT <= 0) noter('brouille', e);
+      brouT = c.coupure;
+      e._zap -= dt;
+      if (e._zap <= 0) {
+        e._zap = c.gresille;
+        var flashs = !(S && S.reglages && S.reglages.flashs === false);
+        if (flashs && N.fx && N.fx.glitch) O.safe('fx.glitch', function () { N.fx.glitch(0.22, 0.18); });
+        O.sfx('impact');
+      }
+    } else e._zap = 0;
+    if (e._st === 'proie') return;
+    CHAMPS.push(e);
+    var T = N.arsenal && N.arsenal.tirs;                         // la coque avale les tirs de la joueuse qui y entrent
+    if (T) for (i = 0; i < T.length; i++) {
+      var b = T[i];
+      if (b.life > 0 && O.d2(b.x, b.y, e.x, e.y) < rc * rc) { b.life = 0; O.spark(b.x, b.y, O.VIOLET, 2); noter('avale', e); }
+    }
+  }
+  function eteindreTirs() {
+    var T = N.arsenal && N.arsenal.tirs;
+    if (T) for (var i = 0; i < T.length; i++) if (T[i].life > 0) T[i].life = 0;
+  }
+  /* un coup d'arme sur un ennemi : avalé par un champ, coupé par le brouillage, renvoyé par la face du MIROIR -> true */
+  function tirAvale(e, src) {
+    if (!src || src.genre !== 'arme' || src.type === 'eperon') return false;          // contact, LASSO, APOGÉE, mines : rien ne les arrête
+    if (e._st === 'proie') return false;
+    if (brouT > 0) { O.spark(e.x, e.y, O.VIOLET, 1); return true; }
+    for (var i = 0; i < CHAMPS.length; i++) {
+      var b = CHAMPS[i];
+      if (b !== e && !b._dead && O.d2(e.x, e.y, b.x, b.y) < b._rc * b._rc) { O.spark(e.x, e.y, O.VIOLET, 1); return true; }
+    }
+    if (e.type === 'brouilleur' && e._serpent) { O.spark(e.x, e.y, O.VIOLET, 2); return true; }
+    if (e.type === 'miroir' && e._serpent && deFace(e)) {
+      O.spark(e.x + Math.cos(e.ang) * e.r, e.y + Math.sin(e.ang) * e.r, O.OS, 3); O.sfx('ricochet');
+      return true;
+    }
+    return false;
+  }
+  function mortSerpent(e, src) {
+    var decor = src && src.genre === 'decor';
+    if (e.type === 'voleur' && !decor) rendreButin(e);
+    if (e.type === 'brouilleur') O.ringFx(e.x, e.y, e._rc || SERP.brouilleur.champ, O.MAGENTA, 0.4);   // le champ s'effondre
+    if (e.type === 'miroir' && !decor) O.ringFx(e.x, e.y, 14, O.ROSE, 0.35);
+    noter('mort', e, src);
+  }
+
   /* ============================ mise à jour ============================ */
   function update(dt) {
     if (!S) S = N.S;
@@ -757,6 +1102,7 @@ N.ennemis = (function () {
     for (i = 0; i < list.length; i++) if (!list[i]._dead && list[i].type === 'fleche' && (list[i]._st === 'vise' || list[i]._st === 'fonce')) recompte++;
     charges = recompte;
     if (inv.t > 0) { inv.t -= dt; if (inv.t <= 0) finInversion(); }
+    CHAMPS.length = 0;                                     // les champs des BROUILLEURS, refaits à chaque pas (vide sans eux)
     for (i = 0; i < list.length; i++) {
       e = list[i];
       if (e._dead) continue;
@@ -804,13 +1150,18 @@ N.ennemis = (function () {
       else if (e.type === 'traqueur') updTraqueur(e, dt, P);
       else if (e.type === 'planeur') updPlaneur(e, dt, P);
       else if (e.type === 'rival') updRival(e, dt, P);
+      else if (e.type === 'tique') updTique(e, dt, P);
+      else if (e.type === 'voleur') updVoleur(e, dt, P);
+      else if (e.type === 'miroir') updMiroir(e, dt, P);
+      else if (e.type === 'brouilleur') updBrouilleur(e, dt, P);
       if (e._dead) continue;
       e.etat = ETAT[e._st] || 'approche';
       var dirA = (e._st === 'vise' || e._st === 'fonce' || e._st === 'verrou' || e._st === 'recule') ? e._aim : e.ang;
       e.dir = O.dir16(dirA);
-      /* trop loin hors de la vue : on le rappelle (une flèche qui a dépassé sa cible) */
+      /* trop loin hors de la vue : on le rappelle (une flèche qui a dépassé sa cible) ; le MIROIR roule sur la trace, le VOLEUR
+         qui s'enfuit sort par le bord */
       var V = O.VUE;
-      if (e.type !== 'planeur' && e.type !== 'rival' && (e.x < V.x - 60 || e.x > V.x + V.w + 60 || e.y < V.y - 60 || e.y > V.y + V.h + 60)) {
+      if (e.type !== 'planeur' && e.type !== 'rival' && e.type !== 'miroir' && e._st !== 'evade' && (e.x < V.x - 60 || e.x > V.x + V.w + 60 || e.y < V.y - 60 || e.y > V.y + V.h + 60)) {
         e.x = O.clamp(e.x, Math.max(V.x - 40, AL), Math.min(V.x + V.w + 40, AR)); e.y = O.clamp(e.y, Math.max(V.y - 40, AT), Math.min(V.y + V.h + 40, AB));
         if (e.type === 'fleche' && e._st !== 'proie' && e._st !== 'fuite') e._st = 'chasse';
       }
@@ -852,8 +1203,12 @@ N.ennemis = (function () {
       }
       if (purgeI >= purgeFile.length) purgeFile = null;
     }
+    /* la tête dans un champ de BROUILLEUR (et 180 ms après) : les tirs de la joueuse s'éteignent à la bouche */
+    if (brouT > 0) { brouT -= dt; eteindreTirs(); }
     compact(tirs); compact(lasers);
     for (i = list.length - 1; i >= 0; i--) if (list[i]._dead) list.splice(i, 1);
+    /* les serpents de 2030 : 72-serpents.js décide de leurs naissances (hors aventure, il rend la main sans rien faire) */
+    if (N.serpents && N.serpents.pas) N.serpents.pas(dt);
     vitesses(dt);
     publierTele();
   }
@@ -949,6 +1304,10 @@ N.ennemis = (function () {
         id = teleAjouter(e.id, 'ligne', e._tx, e._ty, e._tx + Math.cos(e._aim) * c, e._ty + Math.sin(e._aim) * c, r, rest + 0.2, tot, 'tout', e.type);
       } else if (e.type === 'rival' && st === 'arme') {
         id = teleAjouter(e.id, 'losange', e._tx, e._ty, e._tx, e._ty, 5, rest, tot, 'tete', e.type);
+      } else if (e._serpent && (st === 'mord' || st === 'arrache') && N.joueuse) {
+        // TIQUE et VOLEUR : la morsure prend le bout de la queue, c'est là qu'est la zone
+        var bq = N.joueuse.segPos(N.joueuse.len());
+        id = teleAjouter(e.id, 'disque', bq.x, bq.y, bq.x, bq.y, st === 'mord' ? 5 : 7, rest, tot, 'corps', e.type);
       }
       e.tele = id;
     }
@@ -1061,6 +1420,7 @@ N.ennemis = (function () {
     }
   }
   function drawEnemy(e) {
+    if (e._serpent) { drawSerpent(e); return; }
     var ak = O.T.ak, f = Math.floor(ak * 6) + (e.id & 3), s = enemySprite(e, f), x = e.x, y = e.y, ink;
     if (!s) return;
     if (e.type === 'fleche' && e._st === 'vise') x += (Math.floor(ak * 20) & 1) ? 1 : 0;      // elle tremble avant de se jeter
@@ -1099,6 +1459,86 @@ N.ennemis = (function () {
     }
     var sg = e._segs;
     if (sg) for (i = sg.length - 1; i >= 0; i--) O.put(fbSpr('perle', 0), sg[i].x, sg[i].y);
+  }
+
+  /* ---- les serpents de 2030 : formes propres (familles du § I-03 : rondeurs et pattes pour TIQUE, VOLEUR, BROUILLEUR ;
+     la tête de la joueuse en négatif pour le MIROIR), encres magenta, sang, rose pâle, os, nuit profonde, acier, ardoise et
+     ambre (le butin volé) ; jamais de cyan. Dessinées tournées vers la droite, puis tournées par seizièmes de tour. ---- */
+  var SART = {
+    tique: ['.m.m...', '..sss..', '.smmmsr', 'msmmrm.', '.smmmsr', '..sss..', '.m.m...'],
+    voleur: ['.....sss...', '....smmms..', '...smmrrms.', '...smmmmms.', '.kkksmmmm..', 'k1122smms..', 'k1122smm...', 'k3344ksm...',
+      '.kkkk.sm...', '.....m..m..', '....m....m.'],
+    miroir: ['..sssss..', '.smmmmms.', 'smmmmmmrs', 'smmmnmmmr', 'smmmmmmmr', 'smmmnmmmr', 'smmmmmmrs', '.smmmmms.', '..sssss..'],
+    miroirS: ['.sss.', 'smmms', 'smnms', 'smmms', '.sss.'],
+    miroirQ: ['sms', 'mnm', 'sms'],
+    brouilleur: ['r.........r', '.m.......m.', '..m.....m..', '...m...m...', '...sssss...', '..smmmmms..', '.smm...mms.',
+      '.sm..o..ms.', '.smm...mms.', '..smmmmms..', '...sssss...', '..s.....s..']
+  };
+  var SPS = {};
+  function sprSerp(nom, dir, var2) {
+    var k = nom + '|' + dir + '|' + (var2 || 0);
+    if (SPS[k]) return SPS[k];
+    var rw = SART[nom], s;
+    if (nom === 'voleur') {                                      // la besace : n cases d'ambre sur quatre, miroir gauche/droite
+      var n = var2 & 7, gauche = !!(var2 & 8);
+      rw = rw.map(function (l) {
+        l = l.replace(/[1-4]/g, function (d) { return (+d) <= n ? 'a' : 'd'; });
+        return gauche ? l.split('').reverse().join('') : l;
+      });
+      s = rows(rw, true);
+    } else {
+      if (nom === 'brouilleur' && var2) rw = rw.map(function (l, i) { return i === 0 ? l.replace(/r/g, 'o') : l; });   // les pointes émettent
+      s = rows(rw, true);
+      if (dir) s = tourne(s, dir * Math.PI / 8);
+    }
+    SPS[k] = s;
+    return s;
+  }
+  function inkSerp(e) {
+    if (e._st === 'proie') return encre(e);
+    if (e._st === 'tombe' && (Math.floor(O.T.ak * 10) & 1)) return O.ARDOISE;     // décrochée : elle clignote, sonnée
+    return -1;
+  }
+  function poser(s, x, y, ink) { if (ink >= 0) O.putInk(s, x, y, ink); else O.put(s, x, y); }
+  function hsh(a, b) { var h = Math.imul(a ^ 0x9E3779B9, 0x85EBCA6B) ^ Math.imul(b + 0x632BE5AB, 0xC2B2AE35); h ^= h >>> 13; return ((Math.imul(h, 0x27D4EB2F) ^ (h >>> 15)) >>> 0) / 4294967296; }
+  function drawSerpent(e) {
+    var g = N.gfx, ak = O.T.ak, x = e.x, y = e.y, ink = inkSerp(e), s, j;
+    if (e.type === 'brouilleur') {
+      var rc = e._rc || SERP.brouilleur.champ, dedans = e._dedans && e._st !== 'proie';
+      if (e._st !== 'proie') {
+        // la zone : assombrie d'une trame de nuit profonde (lisible sur la ville comme sur le sol), la coque gainée
+        g.ditherCirc(x, y, rc, O.NP, dedans ? 0.3 : 0.2);
+        g.ring(x, y, rc + 1, O.NP, 1); g.ring(x, y, rc - 1, O.NP, 1);
+        g.ring(x, y, rc, dedans ? O.ROSE : O.MAGENTA, dedans ? 1 : 0.7);
+        for (j = 0; j < 6; j++) {                                 // six ondes qui courent sur la coque
+          var a0 = e._spin * 1.6 + j * TAU / 6;
+          for (var t = 0; t < 5; t++) g.px(x + Math.cos(a0 + t * 0.04) * rc, y + Math.sin(a0 + t * 0.04) * rc, dedans ? O.MAGENTA : O.ROSE);
+        }
+      }
+      s = sprSerp('brouilleur', 0, Math.floor(ak * 4) & 1);              // le poste à antennes en V, toujours debout
+      poser(s, x, y, ink);
+    } else if (e.type === 'tique') {
+      s = sprSerp('tique', O.dir16(e.ang), 0);
+      poser(s, x, y, ink);
+      if (e._st === 'accroche' || e._st === 'mord') g.px(x, y, O.ROSE);             // accrochée : le point clair au cœur
+    } else if (e.type === 'voleur') {
+      var gauche = Math.cos(e.ang) < 0 ? 8 : 0;
+      s = sprSerp('voleur', 0, Math.min(4, e._sac | 0) | gauche);
+      if (e._st === 'alerte') x += (Math.floor(ak * 24) & 1) ? 1 : -1;           // il trépigne avant de filer
+      if (e._st === 'evade') { O.blitDither(s, x - Math.cos(e.ang) * 5, y - Math.sin(e.ang) * 5, O.SANG, 0.5); }
+      poser(s, x, y, ink);
+    } else if (e.type === 'miroir') {
+      var sg = e._sg || [];
+      for (j = sg.length - 1; j >= 0; j--) poser(sprSerp(j >= 2 ? 'miroirQ' : 'miroirS', 0, 0), sg[j].x, sg[j].y, ink);
+      s = sprSerp('miroir', O.dir16(e.ang), 0);
+      if (ink < 0) {                                             // l'aberration : un pixel de décalage, rose pâle d'un côté, sang de l'autre
+        var cran = Math.floor(ak / (0.28 + 0.62 * hsh(e.id, Math.floor(ak / 0.6))));
+        var ox = hsh(e.id, cran) < 0.5 ? 1 : -1, oy = hsh(cran, e.id) < 0.5 ? 1 : 0;
+        O.putInk(s, x + ox, y + oy, O.ROSE); O.putInk(s, x - ox, y - oy, O.SANG);
+      }
+      poser(s, x, y, ink);
+    }
+    if (s && O.isFlash(e)) O.putInk(O.inner(s), x, y, O.OS);
   }
   function drawEnemyShots() {
     var f = Math.floor(O.T.ak * 8);
@@ -1153,6 +1593,33 @@ N.ennemis = (function () {
     var g = N.gfx;
     g.line(x - r, y, x, y - r, c); g.line(x, y - r, x + r, y, c); g.line(x + r, y, x, y + r, c); g.line(x, y + r, x - r, y, c);
   }
+  /* TIQUE et VOLEUR : l'anneau qui se resserre sur le bout de la queue (ce qui sera pris) ; le VOLEUR qui fuit : sa ligne de fuite
+     en pointillés rose pâle, gainée de nuit profonde, jusqu'au bord par où il sortira */
+  function drawTeleSerpent(e, kk, rest) {
+    var g = N.gfx, J = N.joueuse;
+    if ((e._st === 'mord' || e._st === 'arrache') && J) {
+      var q = J.segPos(J.len()), fin = rest <= 0.3, r0 = (e._st === 'mord' ? 9 : 12) * (1 - kk) + 3;
+      g.ring(q.x, q.y, r0 + 1, O.NP, 1); g.ring(q.x, q.y, r0, fin ? O.ROSE : O.MAGENTA, 1);
+      if (e._st === 'mord') { g.ring(e.x, e.y, e.r + 4 - 2 * kk, O.NP, 1); g.ring(e.x, e.y, e.r + 3 - 2 * kk, fin ? O.ROSE : O.MAGENTA, 0.8); }
+    } else if (e.type === 'voleur' && (e._st === 'alerte' || e._st === 'evade')) {
+      var dx = e._fx - e.x, dy = e._fy - e.y, L = Math.sqrt(dx * dx + dy * dy), c = dx / (L || 1), s = dy / (L || 1), ph = Math.floor(O.T.ak * 20);
+      if (e._st === 'alerte' && (Math.floor(O.T.ak * 6) & 1)) return;            // l'annonce bat à 3 Hz
+      for (var i = e.r + 3; i < L; i++) {
+        if (((i + 6000 - ph) % 5) >= 2) continue;
+        var x = e.x + c * i, y = e.y + s * i;
+        g.px(x - s, y + c, O.NP); g.px(x + s, y - c, O.NP); g.px(x, y, O.ROSE);
+      }
+      losange(e._fx, e._fy, 4, O.NP); losange(e._fx, e._fy, 3, O.ROSE);
+    }
+  }
+  /* l'icône « tir coupé » au-dessus de la tête : un trait de tir barré d'une croix (tant que le brouillage dure) */
+  function drawTirCoupe() {
+    var P = tete(), g = N.gfx; if (!P) return;
+    var x = Math.round(P.x), y = Math.round(P.y) - 13;
+    g.rect(x - 5, y - 4, 11, 9, O.NP);
+    g.line(x - 3, y, x + 2, y, O.ROSE); g.px(x + 3, y, O.OS);
+    g.line(x - 3, y - 3, x + 3, y + 3, O.MAGENTA); g.line(x - 3, y + 3, x + 3, y - 3, O.MAGENTA);
+  }
   function drawTele() {
     var g = N.gfx, i, e;
     for (i = 0; i < list.length; i++) {
@@ -1191,8 +1658,9 @@ N.ennemis = (function () {
         g.ring(e.x, e.y, e.r + 4 + 6 * (1 - kk), O.MAGENTA, 0.5 + 0.5 * kk);
       } else if (e.type === 'rival' && e._st === 'arme') {
         losange(e._tx, e._ty, 5, O.NP); losange(e._tx, e._ty, 4, O.ROSE);
-      }
+      } else if (e._serpent) drawTeleSerpent(e, kk, rest);
     }
+    if (brouT > 0) drawTirCoupe();
     for (i = 0; i < fuses.length; i++) {                // la mèche d'un INSTABLE : le disque de souffle qui se remplit
       var fu = fuses[i], fk = 1 - fu.t / fu.d;
       g.ditherCirc(fu.x, fu.y, fu.r, O.MAGENTA, 0.08 + 0.3 * fk);
