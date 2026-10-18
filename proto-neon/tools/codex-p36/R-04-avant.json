@@ -1,0 +1,226 @@
+{
+  "id": "R-04",
+  "titre": "Difficulté",
+  "seuil": "cibles bloquantes des 8 pilotes (§ 4.10)",
+  "bloquant": true,
+  "statut": "echec",
+  "resume": "11 ok, 10 en échec, 7 indicatives hors cible, 0 non mesurables",
+  "mesures": [
+    {
+      "nom": "inerte : perd ses 3 vies avant 35 s (5 graines)",
+      "valeur": 0.8,
+      "seuil": 1,
+      "statut": "echec"
+    },
+    {
+      "nom": "inerte : première mort au mur avant 8 s",
+      "valeur": 0,
+      "seuil": 1,
+      "statut": "echec"
+    },
+    {
+      "nom": "tourneur : perd ses 3 vies avant 90 s (5 graines)",
+      "valeur": 1,
+      "seuil": 1,
+      "statut": "ok"
+    },
+    {
+      "nom": "tourneur : score / score du bon (médianes)",
+      "valeur": 0.00127,
+      "seuil": "< 0.1",
+      "statut": "ok",
+      "indicatif": true
+    },
+    {
+      "nom": "maladroit : game over médian (s) (5 graines)",
+      "valeur": 17.575,
+      "seuil": [
+        45,
+        150
+      ],
+      "statut": "echec"
+    },
+    {
+      "nom": "maladroit : atteint le CYCLOPE (parties)",
+      "valeur": 1,
+      "seuil": 0,
+      "statut": "echec"
+    },
+    {
+      "nom": "maladroit : premier coup avant 30 s",
+      "valeur": 1,
+      "seuil": "≥ 0.8",
+      "statut": "ok",
+      "indicatif": true
+    },
+    {
+      "nom": "kamikaze : game over avant le CYCLOPE (5 graines)",
+      "valeur": 0,
+      "seuil": "≥ 0.9",
+      "statut": "echec"
+    },
+    {
+      "nom": "kamikaze : victoires",
+      "valeur": 0,
+      "seuil": "≤ 2 sur 50",
+      "statut": "ok"
+    },
+    {
+      "nom": "humain : game over médian (s) (5 graines)",
+      "valeur": 425.03792,
+      "seuil": [
+        120,
+        210
+      ],
+      "statut": "echec"
+    },
+    {
+      "nom": "humain : atteint le CYCLOPE",
+      "valeur": 1,
+      "seuil": [
+        0.1,
+        0.35
+      ],
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "humain : bat le CYCLOPE",
+      "valeur": 0.8,
+      "seuil": [
+        0.02,
+        0.12
+      ],
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "humain : au moins un coup en V1",
+      "valeur": 0.2,
+      "seuil": "≥ 0.5",
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "bon : atteint le CYCLOPE (5 graines)",
+      "valeur": 1,
+      "seuil": [
+        0.3,
+        0.6
+      ],
+      "statut": "echec"
+    },
+    {
+      "nom": "bon : bat le CYCLOPE",
+      "valeur": 0.4,
+      "seuil": [
+        0.1,
+        0.3
+      ],
+      "statut": "echec"
+    },
+    {
+      "nom": "bon : au moins une mort avant le CYCLOPE",
+      "valeur": 0.4,
+      "seuil": "≥ 0.7",
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "bon : au moins un coup en V1",
+      "valeur": 0.2,
+      "seuil": "≥ 0.4",
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "bon : longueur maximale atteinte (médiane, s)",
+      "valeur": 64.65375,
+      "seuil": "≥ 120",
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "expert : atteint le CYCLOPE",
+      "valeur": 1,
+      "seuil": "≥ 0.8",
+      "statut": "ok",
+      "indicatif": true
+    },
+    {
+      "nom": "expert : bat le CYCLOPE (5 graines)",
+      "valeur": 0.6,
+      "seuil": [
+        0.4,
+        0.7
+      ],
+      "statut": "ok"
+    },
+    {
+      "nom": "expert : perd au moins une vie",
+      "valeur": 1,
+      "seuil": "≥ 0.8",
+      "statut": "ok"
+    },
+    {
+      "nom": "expert : LASSO par partie (médiane)",
+      "valeur": 7,
+      "seuil": "≥ 10",
+      "statut": "hors-cible",
+      "indicatif": true
+    },
+    {
+      "nom": "expert : APOGÉE par partie (médiane)",
+      "valeur": 18,
+      "seuil": "≥ 2",
+      "statut": "ok",
+      "indicatif": true
+    },
+    {
+      "nom": "dieu : finit le secteur (5 graines)",
+      "valeur": 1,
+      "seuil": 1,
+      "statut": "ok"
+    },
+    {
+      "nom": "dieu : durée du secteur (médiane, s)",
+      "valeur": 413.87333,
+      "seuil": [
+        320,
+        390
+      ],
+      "statut": "echec",
+      "min": 378.53625004497684,
+      "max": 538.6187500461235
+    },
+    {
+      "nom": "dieu : combat du CYCLOPE (s)",
+      "valeur": null,
+      "seuil": [
+        55,
+        90
+      ],
+      "statut": "echec"
+    },
+    {
+      "nom": "dieu : zéro erreur",
+      "valeur": 1,
+      "seuil": 1,
+      "statut": "ok"
+    },
+    {
+      "nom": "rythme : score bon / kamikaze (médianes)",
+      "valeur": 7.37393,
+      "seuil": "≥ 1.3",
+      "statut": "ok",
+      "indicatif": true
+    }
+  ],
+  "notes": [
+    "inerte : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+    "humain : la réussite du LASSO (cible bloquante) est mesurée par R-34",
+    "graines : 1 à 5 (5) — moins de 50 graines : proportions indicatives (± 11 points sur 20 graines)"
+  ],
+  "captures": [],
+  "duree": 0.3
+}

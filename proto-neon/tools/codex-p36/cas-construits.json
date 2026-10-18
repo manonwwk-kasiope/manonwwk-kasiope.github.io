@@ -1,0 +1,315 @@
+{
+  "dateParis": "18/10/2026 05:59:26",
+  "nature": "fictif, oracles connus, aucune simulation de jeu",
+  "cas": [
+    {
+      "nom": "film V1→V2 : aucun accès CYCLOPE",
+      "ok": true
+    },
+    {
+      "nom": "alerte / panneau / boss sans événement : aucun accès",
+      "ok": true
+    },
+    {
+      "nom": "phase/arrivee sans combat commencé : accès réel",
+      "ok": true
+    },
+    {
+      "nom": "phase/entree seule : aucune arrivée inventée",
+      "ok": true
+    },
+    {
+      "nom": "victoire : fin incluse dans la médiane ; défaite distincte",
+      "ok": true
+    },
+    {
+      "nom": "défaite : fin incluse et gameOver conservé",
+      "ok": true
+    },
+    {
+      "nom": "victoire uniquement journalisée, entre deux échantillons : reconnue",
+      "ok": true
+    },
+    {
+      "nom": "combat officiel : première entrée phase 1, pas arrivée ; répits inclus",
+      "ok": true
+    },
+    {
+      "nom": "victoire sans phase/mort : combat officiel absent, borne alternative séparée",
+      "ok": true
+    },
+    {
+      "nom": "deux horloges : mort.t globale, tempsCombat séparé ; reçu non muté",
+      "ok": true
+    },
+    {
+      "nom": "mort après arrivée / V2 : temps de combat ne la replace pas avant",
+      "ok": true
+    },
+    {
+      "nom": "médiane paire, impaire, null exclus des nombres ; tableau vide",
+      "ok": true
+    },
+    {
+      "nom": "censure : pas de médiane validée sur le sous-ensemble terminé",
+      "ok": true
+    },
+    {
+      "nom": "durée manquante : aucune fin médiane inventée",
+      "ok": true
+    },
+    {
+      "nom": "11 s strict et cible N.R future respectée ; N.R non muté",
+      "ok": true
+    },
+    {
+      "nom": "vrai R-04 : quatre victoires 350 s + défaite 150 s → médiane 350, avant 150",
+      "ok": true
+    },
+    {
+      "nom": "vrai R-04 : mort à 11 s refusée, 10,5 acceptée ; combat.t=1 ne trompe pas",
+      "ok": true
+    },
+    {
+      "nom": "banc et critère : même médiane des cinq fins construites",
+      "ok": true
+    },
+    {
+      "nom": "vrai R-04 et banc : censure → non mesurable, pas de succès",
+      "ok": true
+    }
+  ],
+  "conforme": true,
+  "R04": {
+    "id": "R-04",
+    "titre": "Difficulté",
+    "seuil": "cibles bloquantes des 8 pilotes (§ 4.10)",
+    "bloquant": true,
+    "statut": "echec",
+    "resume": "10 ok, 9 en échec, 8 indicatives hors cible, 1 non mesurables",
+    "mesures": [
+      {
+        "nom": "inerte : perd ses 3 vies avant 35 s (5 graines)",
+        "valeur": 0,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      {
+        "nom": "inerte : première mort au mur avant 11 s",
+        "valeur": 0.8,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      {
+        "nom": "tourneur : perd ses 3 vies avant 90 s (5 graines)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      {
+        "nom": "tourneur : score / score du bon (médianes)",
+        "valeur": 1,
+        "seuil": "< 0.1",
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "maladroit : fin de partie médiane (s), victoires comprises (5 graines)",
+        "valeur": 35,
+        "seuil": [
+          45,
+          150
+        ],
+        "statut": "echec"
+      },
+      {
+        "nom": "maladroit : atteint le CYCLOPE (parties)",
+        "valeur": 0,
+        "seuil": 0,
+        "statut": "ok"
+      },
+      {
+        "nom": "maladroit : premier coup avant 30 s",
+        "valeur": 1,
+        "seuil": "≥ 0.8",
+        "statut": "ok",
+        "indicatif": true
+      },
+      {
+        "nom": "kamikaze : game over avant le CYCLOPE (5 graines)",
+        "valeur": 1,
+        "seuil": "≥ 0.9",
+        "statut": "ok"
+      },
+      {
+        "nom": "kamikaze : victoires",
+        "valeur": 0,
+        "seuil": "≤ 2 sur 50",
+        "statut": "ok"
+      },
+      {
+        "nom": "humain : fin de partie médiane (s), victoires comprises (5 graines)",
+        "valeur": 350,
+        "seuil": [
+          120,
+          210
+        ],
+        "statut": "echec"
+      },
+      {
+        "nom": "humain : atteint le CYCLOPE",
+        "valeur": 0.8,
+        "seuil": [
+          0.1,
+          0.35
+        ],
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "humain : bat le CYCLOPE",
+        "valeur": 0.8,
+        "seuil": [
+          0.02,
+          0.12
+        ],
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "humain : au moins un coup en V1",
+        "valeur": 0.2,
+        "seuil": "≥ 0.5",
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "bon : atteint le CYCLOPE (5 graines)",
+        "valeur": 0,
+        "seuil": [
+          0.3,
+          0.6
+        ],
+        "statut": "echec"
+      },
+      {
+        "nom": "bon : bat le CYCLOPE",
+        "valeur": 0,
+        "seuil": [
+          0.1,
+          0.3
+        ],
+        "statut": "echec"
+      },
+      {
+        "nom": "bon : au moins une mort avant le CYCLOPE",
+        "valeur": 1,
+        "seuil": "≥ 0.7",
+        "statut": "ok",
+        "indicatif": true
+      },
+      {
+        "nom": "bon : au moins un coup en V1",
+        "valeur": 1,
+        "seuil": "≥ 0.4",
+        "statut": "ok",
+        "indicatif": true
+      },
+      {
+        "nom": "bon : longueur maximale atteinte (médiane, s)",
+        "valeur": "jamais",
+        "seuil": "≥ 120",
+        "statut": "ok",
+        "indicatif": true
+      },
+      {
+        "nom": "expert : atteint le CYCLOPE",
+        "valeur": 0,
+        "seuil": "≥ 0.8",
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "expert : bat le CYCLOPE (5 graines)",
+        "valeur": 0,
+        "seuil": [
+          0.4,
+          0.7
+        ],
+        "statut": "echec"
+      },
+      {
+        "nom": "expert : perd au moins une vie",
+        "valeur": 1,
+        "seuil": "≥ 0.8",
+        "statut": "ok"
+      },
+      {
+        "nom": "expert : LASSO par partie (médiane)",
+        "valeur": 0,
+        "seuil": "≥ 10",
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "expert : APOGÉE par partie (médiane)",
+        "valeur": 0,
+        "seuil": "≥ 2",
+        "statut": "hors-cible",
+        "indicatif": true
+      },
+      {
+        "nom": "dieu : finit le secteur (5 graines)",
+        "valeur": 0,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      {
+        "nom": "dieu : durée du secteur (médiane, s)",
+        "valeur": null,
+        "seuil": [
+          320,
+          390
+        ],
+        "statut": "echec",
+        "min": null,
+        "max": null
+      },
+      {
+        "nom": "dieu : combat du CYCLOPE (s)",
+        "statut": "non-mesurable",
+        "raison": "non mesurable : phase/entree n=1 ou phase/mort absent : 0/0 combats mesurables"
+      },
+      {
+        "nom": "dieu : zéro erreur",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      {
+        "nom": "rythme : score bon / kamikaze (médianes)",
+        "valeur": 1,
+        "seuil": "≥ 1.3",
+        "statut": "hors-cible",
+        "indicatif": true
+      }
+    ],
+    "notes": [
+      "Médianes de fin : toutes les parties terminées, victoires comprises, horloge globale ; un lot censuré est non mesurable. gameOver reste un diagnostic des seules défaites.",
+      "CYCLOPE atteint : événement phase/arrivee uniquement. Combat : première phase/entree n=1 à phase/mort, répits compris ; aucune substitution par un panneau ou une victoire.",
+      "inerte : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "tourneur : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "maladroit : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "kamikaze : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "humain : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "bon : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "expert : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "dieu : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md",
+      "humain : la réussite du LASSO (cible bloquante) est mesurée par R-34",
+      "dieu : borne alternative première phase/entree → section/victoire (s), non substituée : []",
+      "graines : 1 à 5 (5) — moins de 50 graines : proportions indicatives (± 11 points sur 20 graines)"
+    ],
+    "captures": [],
+    "duree": 0
+  }
+}

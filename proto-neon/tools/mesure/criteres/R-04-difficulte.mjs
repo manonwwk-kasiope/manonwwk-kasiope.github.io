@@ -1,14 +1,18 @@
 /* R-04 — Difficulté : les 8 pilotes dans leurs cibles bloquantes du § 4.10 (N.R.pilotes) ; les cibles
    indicatives sont rapportées. 50 graines, mode simulé, iPhone 13 paysage, __DT = 1/60, profil vierge. */
-import { executer, principal, seuils, stats, pct } from '../commun.mjs';
-import { lot, bilanLot, PILOTES } from '../parties.mjs';
+import { executer, principal, seuils, stats } from '../commun.mjs';
+import { lot, bilanLot, PILOTES, mediane, medianeFins, ciblesR04 } from '../parties.mjs';
 
 export const meta = { id: 'R-04', titre: 'Difficulté', seuil: 'cibles bloquantes des 8 pilotes (§ 4.10)', bloquant: true };
 const dans = (v, [a, b]) => v !== null && v >= a && v <= b;
 
 export async function mesurer(banc, res) {
   const { R } = await seuils(null, 'R04');
-  const P = R.pilotes || {};
+  // Décision cheffe 18/10 05 h 11 : mur <11 s. Trajet nu
+  // (1021 - 389,12) / 68 = 9,29235 s, avant grâce et plongée : <8 s impossible.
+  const P = ciblesR04(R);
+  res.note('Médianes de fin : toutes les parties terminées, victoires comprises, horloge globale ; un lot censuré est non mesurable. gameOver reste un diagnostic des seules défaites.');
+  res.note('CYCLOPE atteint : événement phase/arrivee uniquement. Combat : première phase/entree n=1 à phase/mort, répits compris ; aucune substitution par un panneau ou une victoire.');
   const graines = banc.graines(P.banc && P.banc.graines || 50, 5);
   const L = {};
   for (const pilote of PILOTES) {
@@ -19,10 +23,10 @@ export async function mesurer(banc, res) {
     if (!b.resumes.some(r => r.piloteConforme)) res.note(`${pilote} : aucune décision « cap » au journal du pilote — repli du squelette, pas le pilote gelé de refonte/lots/pilotes.md`);
   }
   const part = (l, f) => stats.part(l, f);
-  const med = l => stats.mediane(l.filter(x => x !== null));
+  const med = mediane;
   const n = l => ` (${l.length} graines)`;
   if (L.inerte) {
-    const l = L.inerte, c = P.inerte || { perdAvant: 35, partPerd: 1, premiereMortAvant: 8 };
+    const l = L.inerte, c = P.inerte || { perdAvant: 35, partPerd: 1, premiereMortAvant: 11 };
     res.verifie('inerte : perd ses 3 vies avant ' + c.perdAvant + ' s' + n(l), part(l, r => r.gameOver !== null && r.gameOver < c.perdAvant), c.partPerd, part(l, r => r.gameOver !== null && r.gameOver < c.perdAvant) >= c.partPerd);
     const pm = part(l, r => r.premiereMort && r.premiereMort.cause === 'mur' && r.premiereMort.t < c.premiereMortAvant);
     res.verifie('inerte : première mort au mur avant ' + c.premiereMortAvant + ' s', pm, 1, pm >= 1);
@@ -35,8 +39,9 @@ export async function mesurer(banc, res) {
   }
   if (L.maladroit) {
     const l = L.maladroit, c = P.maladroit || { medianeGameOver: [45, 150], cyclope: 0, premierCoupAvant: 30, partPremierCoup: 0.8 };
-    const m = med(l.map(r => r.gameOver));
-    res.verifie('maladroit : game over médian (s)' + n(l), m, c.medianeGameOver, dans(m, c.medianeGameOver));
+    const m = medianeFins(l);
+    if (m === null) res.nonMesurable('maladroit : fin de partie médiane (s)', 'lot incomplet ou durée de fin absente');
+    else res.verifie('maladroit : fin de partie médiane (s), victoires comprises' + n(l), m, c.medianeGameOver, dans(m, c.medianeGameOver));
     const cy = l.filter(r => r.cyclopeAtteint).length;
     res.verifie('maladroit : atteint le CYCLOPE (parties)', cy, c.cyclope, cy <= c.cyclope);
     const pc = part(l, r => { const t = [...r.coups, ...r.morts].map(x => x.t).sort((a, b) => a - b)[0]; return t !== undefined && t < c.premierCoupAvant; });
@@ -51,8 +56,9 @@ export async function mesurer(banc, res) {
   }
   if (L.humain) {
     const l = L.humain, c = P.humain || { medianeGameOver: [120, 210], cyclope: [0.1, 0.35], bat: [0.02, 0.12], coupV1: 0.5, lasso: { court: 0.5, long: 0.4 } };
-    const m = med(l.map(r => r.gameOver));
-    res.verifie('humain : game over médian (s)' + n(l), m, c.medianeGameOver, dans(m, c.medianeGameOver));
+    const m = medianeFins(l);
+    if (m === null) res.nonMesurable('humain : fin de partie médiane (s)', 'lot incomplet ou durée de fin absente');
+    else res.verifie('humain : fin de partie médiane (s), victoires comprises' + n(l), m, c.medianeGameOver, dans(m, c.medianeGameOver));
     res.indicatif('humain : atteint le CYCLOPE', part(l, r => r.cyclopeAtteint), c.cyclope, dans(part(l, r => r.cyclopeAtteint), c.cyclope));
     res.indicatif('humain : bat le CYCLOPE', part(l, r => r.victoire), c.bat, dans(part(l, r => r.victoire), c.bat));
     res.indicatif('humain : au moins un coup en V1', part(l, r => r.coupsV1 > 0), '≥ ' + c.coupV1, part(l, r => r.coupsV1 > 0) >= c.coupV1);
@@ -66,7 +72,8 @@ export async function mesurer(banc, res) {
     res.indicatif('bon : au moins un coup en V1', part(l, r => r.coupsV1 > 0), '≥ ' + c.coupV1, part(l, r => r.coupsV1 > 0) >= c.coupV1);
     const lenMax = R.longueur && (R.longueur.max || R.longueur.lenMax);
     if (lenMax) {
-      const t = med(l.map(r => { const e = r.echantillons.find(x => x.len >= lenMax); return e ? e.t : Infinity; }));
+      const temps = l.map(r => { const e = r.echantillons.find(x => x.len >= lenMax); return e ? e.t : Infinity; }).sort((a, b) => a - b);
+      const t = (temps[Math.floor((temps.length - 1) / 2)] + temps[Math.ceil((temps.length - 1) / 2)]) / 2;
       res.indicatif('bon : longueur maximale atteinte (médiane, s)', t === Infinity ? 'jamais' : t, '≥ ' + c.longueurMaxAvant, t >= c.longueurMaxAvant);
     } else res.nonMesurable('bon : longueur maximale avant 2:00', 'N.R.longueur.max absent');
   }
@@ -84,8 +91,10 @@ export async function mesurer(banc, res) {
     res.verifie('dieu : finit le secteur' + n(l), fini.length / l.length, 1, fini.length === l.length);
     const d = med(fini.map(r => r.duree));
     res.verifie('dieu : durée du secteur (médiane, s)', d, c.duree, fini.length > 0 && fini.every(r => dans(r.duree, c.duree)), { min: Math.min(...fini.map(r => r.duree)), max: Math.max(...fini.map(r => r.duree)) });
-    const cb = fini.map(r => r.combatCyclope).filter(x => x !== null);
-    res.verifie('dieu : combat du CYCLOPE (s)', med(cb), c.combat, cb.length > 0 && cb.every(x => dans(x, c.combat)));
+    const cb = fini.map(r => r.combatCyclope).filter(Number.isFinite);
+    if (!fini.length || cb.length !== fini.length) res.nonMesurable('dieu : combat du CYCLOPE (s)', `phase/entree n=1 ou phase/mort absent : ${cb.length}/${fini.length} combats mesurables`);
+    else res.verifie('dieu : combat du CYCLOPE (s)', med(cb), c.combat, cb.every(x => dans(x, c.combat)));
+    res.note('dieu : borne alternative première phase/entree → section/victoire (s), non substituée : ' + JSON.stringify(fini.map(r => r.combatCyclopeJusquaVictoire)));
     const z = l.filter(r => r.erreurs && r.erreurs.zero).length;
     res.verifie('dieu : zéro erreur', z / l.length, 1, z === l.length);
   }

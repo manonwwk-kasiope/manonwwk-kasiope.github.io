@@ -85,20 +85,47 @@ export async function enchainees(banc, pilote, n, o = {}) {
 }
 
 /* ---------------------------------------------------------------- le résumé d'une partie */
-const ETATS_CYCLOPE = ['alerte', 'panneau', 'boss'];
+/* Conventions partagées par R-04 et le banc de réglage. Aucun état d'écran ne
+   prouve une arrivée : seul le module du boss émet phase/arrivee. */
+export const mediane = a => {
+  const b = a.filter(Number.isFinite).sort((x, y) => x - y);
+  return b.length ? (b[Math.floor((b.length - 1) / 2)] + b[Math.ceil((b.length - 1) / 2)]) / 2 : null;
+};
+/* Toutes les fins, victoires comprises ; jamais la médiane conditionnelle aux
+   défaites. Une partie inachevée ou sans durée rend le lot non mesurable. */
+export function medianeFins(l) {
+  return l.length && l.every(r => r.finie && Number.isFinite(r.duree)) ? mediane(l.map(r => r.duree)) : null;
+}
+export function evenementHorloge(x) {
+  const charge = x.d || x;
+  return { ...charge, ...(x.d && Number.isFinite(charge.t) ? { tempsCombat: charge.t } : {}), t: x.t, pas: x.pas };
+}
+/* Décision de spécification du 18/10 à 05 h 11 : <11 s au lieu de <8 s.
+   (1021 - 389,12) / 68 = 9,29235 s de trajet nu, avant grâce au mur et
+   plongée (codex-p34 §3.2). Aucun autre seuil ne change. Le propriétaire
+   de 02-regles doit reporter la décision dans N.R (demande codex-p36) :
+   cette mission interdit toute écriture dans src/. Seule l'ancienne valeur
+   8 (ou son absence) est migrée, une future valeur N.R reste prioritaire. */
+export function ciblesR04(R = {}) {
+  const P = R.pilotes || {}, inerte = P.inerte || { perdAvant: 35, partPerd: 1 };
+  return { ...P, inerte: { ...inerte, premiereMortAvant:
+    inerte.premiereMortAvant === undefined || inerte.premiereMortAvant === 8 ? 11 : inerte.premiereMortAvant } };
+}
 export function resumer(p) {
   if (!p || !p.ok) return null;
   const J = p.journal || [], E = p.echantillons || [];
   const de = (type) => J.filter(x => x.type === type);
   const d = x => x.d || x;
-  const vagues = de('vague').map(x => ({ t: x.t, ...d(x) }));
-  const phases = de('phase').map(x => ({ t: x.t, ...d(x) }));
-  const morts = de('mort').map(x => ({ t: x.t, ...d(x) }));
-  const coups = de('coup').map(x => ({ t: x.t, ...d(x) }));
-  const entreeCyclope = phases.find(x => x.evt === 'entree') || (E.find(x => ETATS_CYCLOPE.includes(x.etat)) ? { t: E.find(x => ETATS_CYCLOPE.includes(x.etat)).t } : null);
-  const mortCyclope = phases.find(x => x.evt === 'mort');
-  const victoire = !!mortCyclope || E.some(x => x.etat === 'victoire');
-  const duree = p.fin ? p.fin.t : (E.length ? E[E.length - 1].t : 0);
+  const vagues = de('vague').map(evenementHorloge);
+  const phases = de('phase').map(evenementHorloge);
+  const morts = de('mort').map(evenementHorloge);
+  const coups = de('coup').map(evenementHorloge);
+  const entreeCyclope = phases.find(x => x.evt === 'arrivee') || null;
+  const debutCombatCyclope = phases.find(x => x.evt === 'entree' && x.n === 1) || null;
+  const mortCyclope = phases.find(x => x.evt === 'mort') || null;
+  const sectionVictoire = de('section').find(x => d(x).nom === 'victoire');
+  const victoire = !!mortCyclope || !!sectionVictoire || E.some(x => x.etat === 'victoire');
+  const duree = p.fin ? p.fin.t : (E.length ? E[E.length - 1].t : null);
   const finie = p.raison === 'fin';
   /* la vague en cours à l'instant t : d'après les entrées de vague du journal, sinon l'échantillon */
   const vagueA = t => { let v = 0; for (const x of vagues) if (x.evt === 'entree' && x.t <= t) v = x.n; if (!v) { const e = E.find(y => y.t >= t); v = e && e.vague || 0; } return v; };
@@ -107,22 +134,26 @@ export function resumer(p) {
   /* pics de vivants par vague (échantillons) */
   const pics = {};
   for (const e of E) if (e.vague) pics[e.vague] = Math.max(pics[e.vague] || 0, e.vivants || 0);
-  const pilote = de('pilote').map(x => ({ t: x.t, ...d(x) }));
+  const pilote = de('pilote').map(evenementHorloge);
   return {
     graine: p.params && p.params.graine, pilote: p.params && p.params.pilote, variante: p.params && p.params.variante,
     raison: p.raison, finie, duree, victoire, defaite: finie && !victoire,
-    gameOver: finie && !victoire ? duree : null,
+    gameOver: finie && !victoire ? duree : null, // diagnostic des seules défaites, pas la médiane R-04
+    finPartie: finie ? duree : null,
     morts, premiereMort: morts[0] || null, coups,
     coupsV1: coups.filter(x => vagueA(x.t) <= 1).length + morts.filter(x => vagueA(x.t) <= 1).length,
-    cyclopeAtteint: !!entreeCyclope, cyclopeBattu: !!mortCyclope,
-    combatCyclope: entreeCyclope && mortCyclope ? mortCyclope.t - entreeCyclope.t : null,
+    cyclopeAtteint: !!entreeCyclope, cyclopeBattu: victoire,
+    combatCyclope: debutCombatCyclope && mortCyclope ? mortCyclope.t - debutCombatCyclope.t : null,
+    // Borne alternative explicite si phase/mort manque ; jamais substituée au combat officiel.
+    combatCyclopeJusquaVictoire: debutCombatCyclope && sectionVictoire ? sectionVictoire.t - debutCombatCyclope.t : null,
+    debutCombatCyclope: debutCombatCyclope ? debutCombatCyclope.t : null,
     entreeCyclope: entreeCyclope ? entreeCyclope.t : null,
     vagues, phases, pics, entreeV, nettoyeeV, vagueA,
-    cartes: de('carte').map(x => ({ t: x.t, ...d(x) })),
-    lassos: de('lasso').map(x => ({ t: x.t, ...d(x) })),
-    apogees: de('apogee').length, vols: de('vol').map(x => ({ t: x.t, ...d(x) })),
-    arene: de('arene').map(x => ({ t: x.t, ...d(x) })),
-    apparitions: de('apparition').map(x => ({ t: x.t, ...d(x) })),
+    cartes: de('carte').map(evenementHorloge),
+    lassos: de('lasso').map(evenementHorloge),
+    apogees: de('apogee').length, vols: de('vol').map(evenementHorloge),
+    arene: de('arene').map(evenementHorloge),
+    apparitions: de('apparition').map(evenementHorloge),
     pilote, piloteConforme: pilote.some(x => x.evt === 'cap'), appels: p.appels || {},
     transitions: p.parPas ? p.parPas.transitions : [],
     score: p.fin ? p.fin.score : null, fin: p.fin, echantillons: E, parPas: p.parPas, erreurs: p.erreurs

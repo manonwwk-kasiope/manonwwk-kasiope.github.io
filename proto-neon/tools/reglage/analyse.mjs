@@ -1,11 +1,11 @@
-export const mediane = a => { const b=a.filter(Number.isFinite).sort((x,y)=>x-y); return b.length ? (b[Math.floor((b.length-1)/2)]+b[Math.ceil((b.length-1)/2)])/2 : null; };
+import { resumer, mediane, medianeFins, ciblesR04 } from '../mesure/parties.mjs';
+export { mediane };
 const plage = a => a.length ? [Math.min(...a),Math.max(...a)] : null;
 export function analyser(r) {
-  const j=r.journal, entree=j.find(e=>e.type==='phase'&&e.d.evt==='entree'&&e.d.n===1);
-  const victoire=j.find(e=>e.type==='section'&&e.d.nom==='victoire');
-  const arrivee=j.find(e=>e.type==='phase'&&e.d.evt==='arrivee');
+  const resume = resumer({ok:true,raison:r.fin ? 'fin' : r.raison,journal:r.journal,echantillons:r.trace.map(p=>({t:p.t,etat:p.e,vague:p.n})),fin:{t:r.tempsJeu,score:r.score}});
+  const j=r.journal;
   const v1=j.find(e=>e.type==='vague'&&e.d.evt==='entree'&&e.d.n===1),v2=j.find(e=>e.type==='vague'&&e.d.evt==='entree'&&e.d.n===2);
-  const coups=j.filter(e=>e.type==='coup'), morts=j.filter(e=>e.type==='mort');
+  const coups=j.filter(e=>e.type==='coup');
   const essais=[]; let essai=null;
   for (const e of j) {
     if(e.type==='pilote'&&e.d.evt==='lassoTente'){essai={longueur:e.d.longueur,t:e.t,pas:e.pas,reussi:false};essais.push(essai);}
@@ -37,25 +37,26 @@ export function analyser(r) {
     respirations.push({n:+n,pic,jeu,reel,complete:nettoyee,tenu:nettoyee?jeu>=8:null});
   }
   return {pilote:r.pilote,graine:r.graine,fin:r.fin,raison:r.raison,err:r.err,erreursConsole:r.erreursConsole,
-    temps:r.tempsJeu,score:r.score,vague:r.vague,atteint:!!arrivee,battu:!!victoire,
-    combat:entree&&victoire?victoire.t-entree.t:null,
-    morts:morts.length,mortAvant:morts.some(e=>!arrivee||e.pas<arrivee.pas),
-    premiereMort:morts[0]?{t:morts[0].t,cause:morts[0].d.cause}:null,
+    temps:r.tempsJeu,tempsCombat:r.tempsCombat,score:r.score,vague:r.vague,atteint:resume.cyclopeAtteint,battu:resume.victoire,
+    combat:resume.combatCyclope,combatJusquaVictoire:resume.combatCyclopeJusquaVictoire,
+    morts:resume.morts.length,mortAvant:resume.morts.some(e=>resume.entreeCyclope===null||e.t<resume.entreeCyclope),
+    premiereMort:resume.premiereMort,
     coupV1:coups.some(e=>e.pas>=(v1?.pas||0)&&e.pas<(v2?.pas||Infinity)),premierCoup:coups[0]?.t??null,
     lassoCourt:lasso([8,20]),lassoLong:lasso([30,40]),
     lassos:j.filter(e=>e.type==='lasso').length,apogees:j.filter(e=>e.type==='apogee'&&e.d.evt==='debut').length,
     longueurMaxDepuis:r.longueurMaxDepuis,pics,respirations,tirsAvantV2:r.tirsAvantV2};
 }
-export function bilan(cas) {
+export function bilan(cas, R = {}) {
+  const cibleInerte = ciblesR04(R).inerte;
   const pilotes={};
   for(const nom of [...new Set(cas.map(c=>c.pilote))]){
     const a=cas.filter(c=>c.pilote===nom),n=a.length,pred=f=>a.filter(f).length/n;
     const ratio=k=>{const reussis=a.reduce((s,c)=>s+c[k].reussis,0),tentatives=a.reduce((s,c)=>s+c[k].tentatives,0);return {reussis,tentatives,taux:tentatives?reussis/tentatives:null};};
-    pilotes[nom]={n,censures:a.filter(c=>!c.fin).length,mediane:mediane(a.map(c=>c.temps)),temps:plage(a.map(c=>c.temps)),score:mediane(a.map(c=>c.score)),
+    pilotes[nom]={n,censures:a.filter(c=>!c.fin).length,mediane:medianeFins(a.map(c=>({finie:c.fin,duree:c.temps}))),temps:plage(a.map(c=>c.temps)),score:mediane(a.map(c=>c.score)),
       atteint:pred(c=>c.atteint),battu:pred(c=>c.battu),mortAvant:pred(c=>c.mortAvant),coupV1:pred(c=>c.coupV1),
-      premierCoup30:pred(c=>c.premierCoup!==null&&c.premierCoup<30),mortMur8:pred(c=>c.premiereMort?.cause==='mur'&&c.premiereMort.t<8),
-      avant35:pred(c=>c.fin&&c.morts>=3&&c.temps<35),avant90:pred(c=>c.fin&&c.morts>=3&&c.temps<90),
-      perdVie:pred(c=>c.morts>0),combat:plage(a.map(c=>c.combat).filter(Number.isFinite)),combatMediane:mediane(a.map(c=>c.combat)),
+      premierCoup30:pred(c=>c.premierCoup!==null&&c.premierCoup<30),mortMur8:pred(c=>c.premiereMort?.cause==='mur'&&c.premiereMort.t<8),mortMur11:pred(c=>c.premiereMort?.cause==='mur'&&c.premiereMort.t<cibleInerte.premiereMortAvant),
+      avant35:pred(c=>c.fin&&!c.battu&&c.temps<35),avant90:pred(c=>c.fin&&!c.battu&&c.temps<90),perdAvantCyclope:pred(c=>c.fin&&!c.battu&&!c.atteint),
+      perdVie:pred(c=>c.morts>0),combat:plage(a.map(c=>c.combat).filter(Number.isFinite)),combatMediane:mediane(a.map(c=>c.combat)),combatsMesurables:a.filter(c=>Number.isFinite(c.combat)).length,
       lassoCourt:ratio('lassoCourt'),lassoLong:ratio('lassoLong'),lassosMin:Math.min(...a.map(c=>c.lassos)),apogeesMin:Math.min(...a.map(c=>c.apogees)),
       longueurMaxDepuis:(()=>{const b=a.map(c=>c.longueurMaxDepuis??Infinity).sort((x,y)=>x-y);const m=(b[Math.floor((b.length-1)/2)]+b[Math.ceil((b.length-1)/2)])/2;return Number.isFinite(m)?m:'non atteinte par au moins la moitié';})(),
       erreurs:a.reduce((s,c)=>s+c.err+c.erreursConsole.length,0)};
@@ -67,15 +68,15 @@ export function bilan(cas) {
     tirsAvantV2:bon.flatMap(c=>c.tirsAvantV2.map(x=>({...x,graine:c.graine})))};
   const B={},i={}; const between=(v,a,b)=>v!==null&&v>=a&&v<=b;
   const p=pilotes;
-  if(p.inerte){B['inerte.35']=p.inerte.avant35===1;B['inerte.mur8']=p.inerte.mortMur8===1;}
+  if(p.inerte){B['inerte.35']=p.inerte.avant35===1;B['inerte.mur11']=p.inerte.mortMur11===1;}
   if(p.tourneur){B['tourneur.90']=p.tourneur.avant90===1;i['tourneur.score']=p.bon?p.tourneur.score<.1*p.bon.score:null;}
   if(p.maladroit){B['maladroit.mediane']=between(p.maladroit.mediane,45,150);B['maladroit.cyclope']=p.maladroit.atteint===0;i['maladroit.coup30']=p.maladroit.premierCoup30>=.8;}
-  if(p.kamikaze){B['kamikaze.avant']=p.kamikaze.atteint<=.1;B['kamikaze.gagne']=p.kamikaze.battu<=2/50;}
+  if(p.kamikaze){B['kamikaze.avant']=p.kamikaze.perdAvantCyclope>=.9;B['kamikaze.gagne']=p.kamikaze.battu<=2/50;}
   if(p.humain){B['humain.mediane']=between(p.humain.mediane,120,210);B['humain.lassoCourt']=p.humain.lassoCourt.taux===null?null:p.humain.lassoCourt.taux>=.5;B['humain.lassoLong']=p.humain.lassoLong.taux===null?null:p.humain.lassoLong.taux>=.4;
     i['humain.cyclope']=between(p.humain.atteint,.1,.35);i['humain.bat']=between(p.humain.battu,.02,.12);i['humain.coupV1']=p.humain.coupV1>=.5;}
   if(p.bon){B['bon.cyclope']=between(p.bon.atteint,.3,.6);B['bon.bat']=between(p.bon.battu,.1,.3);i['bon.mortAvant']=p.bon.mortAvant>=.7;i['bon.coupV1']=p.bon.coupV1>=.4;i['bon.longueur']=typeof p.bon.longueurMaxDepuis==='string'||p.bon.longueurMaxDepuis>=120;}
   if(p.expert){B['expert.bat']=between(p.expert.battu,.4,.7);B['expert.perdVie']=p.expert.perdVie>=.8;i['expert.cyclope']=p.expert.atteint>=.8;i['expert.lassos']=p.expert.lassosMin>=10;i['expert.apogees']=p.expert.apogeesMin>=2;}
-  if(p.dieu){B['dieu.duree']=!!p.dieu.temps&&p.dieu.temps[0]>=320&&p.dieu.temps[1]<=390&&p.dieu.battu===1;B['dieu.combat']=!!p.dieu.combat&&p.dieu.combat[0]>=55&&p.dieu.combat[1]<=90&&p.dieu.battu===1;B['dieu.erreurs']=p.dieu.erreurs===0;}
+  if(p.dieu){B['dieu.duree']=!!p.dieu.temps&&p.dieu.temps[0]>=320&&p.dieu.temps[1]<=390&&p.dieu.battu===1;B['dieu.combat']=p.dieu.combatsMesurables!==p.dieu.n?null:!!p.dieu.combat&&p.dieu.combat[0]>=55&&p.dieu.combat[1]<=90&&p.dieu.battu===1;B['dieu.erreurs']=p.dieu.erreurs===0;}
   if(p.bon){B['rythme.pics']=rythme.croissants;B['rythme.respiration']=completes.length?rythme.respirations.echecs.length===0:null;B['rythme.tirs']=!rythme.tirsAvantV2.length;i['rythme.score']=p.kamikaze?p.bon.score>=1.3*p.kamikaze.score:null;}
   // Une partie bornée n'est ni une défaite ni une victoire : aucune cible de son pilote n'est validée.
   for(const [nom,p] of Object.entries(pilotes))if(p.censures){
