@@ -89,9 +89,12 @@ export async function mesurer(banc, res) {
     runs.every(r => r.err.count === 0 && r.erreurs.zero));
   const sansPas = l => l.map(s => s.replace(/^\[\d+,/, '['));
   const jeuDessine = cle(da.journal, T, true), jeuSimule = cle(a.journal, T, true);
-  const r3 = comparer(sansPas(jeuDessine), sansPas(jeuSimule));
+  /* Les deux parcours partagent le pas fixe : son numéro fait partie de la preuve.
+     La comparaison sans pas reste un diagnostic, jamais le verdict. */
+  const r3 = comparer(jeuDessine, jeuSimule);
   res.verifie('dessiné = simulé (types de jeu)', r3.egaux, true, r3.egaux,
-    { diagnostic:'Défauts antérieurs : ordre cam.update différent dans dbg.simuler ; hitstopLeft fondé sur S.frame figé en simulation borne le ralenti suivant. Raccords 79-jeu/50-fx demandés séparément.',
+    { diagnostic:'Comparaison stricte [pas,type,données] ; seuls les types de présentation déjà déclarés sont exclus. Causes et raccords réservés : tools/codex-p38/rapport.md.',
+      comparaisonSansPas: comparer(sansPas(jeuDessine), sansPas(jeuSimule)),
       fins:[da.fin,a.fin], entrees: [jeuDessine.length, jeuSimule.length], typesDessinExclus: TYPES_DESSIN,
       dessins: da.journal.filter(x => TYPES_DESSIN.includes(x.type) && x.t <= T).length,
       comparaisonAvantFiltrage: comparer(sansPas(kda), sansPas(ka)), ...r3 });

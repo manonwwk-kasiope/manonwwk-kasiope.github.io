@@ -1,0 +1,40 @@
+{
+  "dateParis": "18/10/2026 05:19:58",
+  "cases": [
+    {
+      "nom": "témoin identique",
+      "attendu": true,
+      "obtenu": true
+    },
+    {
+      "nom": "donnée de kill altérée",
+      "attendu": false,
+      "obtenu": false
+    },
+    {
+      "nom": "kill supprimé",
+      "attendu": false,
+      "obtenu": false
+    },
+    {
+      "nom": "pas de jeu décalé",
+      "attendu": false,
+      "obtenu": false
+    },
+    {
+      "nom": "journal tronqué",
+      "attendu": false,
+      "obtenu": false
+    },
+    {
+      "nom": "présentation seulement",
+      "attendu": true,
+      "obtenu": true
+    },
+    {
+      "nom": "flash conservé entre dessins",
+      "attendu": false,
+      "obtenu": false
+    }
+  ]
+}
