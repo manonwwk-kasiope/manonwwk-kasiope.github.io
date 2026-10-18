@@ -13849,6 +13849,8 @@ N.themes = (function () {
        bilan   marque le personnage fini (N.choix.marquerFini) et regarde si les deux le sont
      si : 'deux' (seulement quand les deux pilotes sont finis) | 'seul' (seulement sinon).
      sauf : (étape jeu) passée si l'époque nommée a joué — N.cosmos remplace le retour au jeu en 2975.
+     final : (époque) jouée même pendant le rattrapage — à la victoire du jeu, le voyage passe encore par 2975.
+     isole : (époque) la piste principale se tait et N.warp ne voit plus les ennemis du jeu gelé, le temps de l'époque.
      theme : 'qui' | 'autre' | 'deux' — le thème du pilote (63-themes.js) pendant le film. */
   var ETAPES = [
     { id: 'choix', type: 'choix' },
@@ -13864,7 +13866,7 @@ N.themes = (function () {
     { id: 'jeu-2001', type: 'jeu', epoque: 2001 },
     { id: 'espace', type: 'film', base: 'espace', evt: 'espace', legende: '2975 — L\'INTERGALACTIQUE' },
     /* 2975, le final : N.cosmos (67-cosmos.js) s'il est là — l'espace profond et le vaisseau amiral — ; sinon le jeu reprend */
-    { id: '2975', type: 'epoque', module: 'cosmos', graine: 2975 },
+    { id: '2975', type: 'epoque', module: 'cosmos', graine: 2975, final: true, isole: true },
     { id: 'jeu-2975', type: 'jeu', epoque: 2975, sauf: '2975' },
     { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, theme: 'qui', legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
     { id: 'bilan', type: 'bilan' },
@@ -13877,7 +13879,7 @@ N.themes = (function () {
   ];
   var MAX_PAS = 64;                                          // garde-fou contre une boucle d'étapes vides
 
-  var A = { on: false, i: -1, qui: null, deux: false, main: false, aJouer: null, surFin: null, opts: null,
+  var A = { iso: null, on: false, i: -1, qui: null, deux: false, main: false, aJouer: null, surFin: null, opts: null,
     suite: false, cible: -1, vus: {}, t: 0, joues: [], journal: [], profil: { elle: false, lui: false }, premiere: true };
   function ajournal(e) { A.journal.push({ e: e, t: +A.t.toFixed(2) }); if (A.journal.length > 96) A.journal.shift(); }
   function etapeCourante() { return A.i >= 0 && A.i < ETAPES.length ? ETAPES[A.i] : null; }
@@ -13924,7 +13926,20 @@ N.themes = (function () {
     t = t === 'qui' ? q : t === 'autre' ? (q === 'elle' ? 'lui' : 'elle') : t;
     try { if (t) N.themes.jouer(t, { fondu: 1 }); else if (N.themes.qui()) N.themes.arreter(e && e.type === 'epoque' ? 0.3 : 1.2); } catch (x) { signaler('aventure.themes', x); }
   }
+  /* isoler une époque qui a tout à elle (2975) : sa musique, sa lunette ; rendu à l'étape suivante */
+  function isoler(on) {
+    if (on && !A.iso) {
+      A.iso = { musique: false, liste: null };
+      try { if (N.music && N.music.stop) { N.music.stop(); A.iso.musique = true; } } catch (x) {}
+      if (N.ennemis && N.ennemis.list) { A.iso.liste = N.ennemis.list; N.ennemis.list = []; }
+    } else if (!on && A.iso) {
+      var r = A.iso; A.iso = null;
+      if (r.liste && N.ennemis) N.ennemis.list = r.liste;
+      try { if (r.musique && N.music && N.music.start) N.music.start(); } catch (x) {}
+    }
+  }
   function entrer(i) {
+    isoler(false);
     for (var pas = 0; pas < MAX_PAS; pas++, i++) {
       A.main = false;
       if (i >= ETAPES.length) { finir('fin'); return; }
@@ -13934,7 +13949,7 @@ N.themes = (function () {
       if (e.si === 'seul' && A.deux) continue;
       if (A.cible >= 0) {                                   // rattrapage : on va vers la cible sans rendre la main
         if (i === A.cible) A.cible = -1;
-        else if (e.type === 'jeu' || e.type === 'epoque' || (e.evt && A.vus[e.id])) continue;
+        else if (e.type === 'jeu' || (e.type === 'epoque' && !e.final) || (e.evt && A.vus[e.id])) continue;
       }
       if (e.type === 'choix') {
         if (A.opts.qui === 'elle' || A.opts.qui === 'lui') { A.qui = A.opts.qui; ajournal('choix donné ' + A.qui); continue; }
@@ -13957,6 +13972,7 @@ N.themes = (function () {
         if (m) { try { ok = m.start({ graine: gr, qui: A.qui, surFin: suite }) !== false; } catch (x) { signaler('aventure.' + e.module, x); ok = false; } }
         if (!ok) { ajournal('époque ' + e.id + ' absente'); continue; }
         A.vus[e.id] = true; A.main = true; ajournal('époque ' + e.id); ambiance(e);
+        if (e.isole) isoler(true);
         preparerSuivant(i);
         return;
       }
@@ -13990,6 +14006,7 @@ N.themes = (function () {
   }
   function couper() {
     var e = etapeCourante();
+    isoler(false);
     if (F.on) N.film.stop();
     if (e && e.type === 'epoque') { var m = moduleDe(e.module); if (m && m.stop) { try { m.stop(); } catch (x) {} } }
     if (e && e.type === 'choix' && N.choix && N.choix.stop && N.choix.actif && N.choix.actif()) { try { N.choix.stop(); } catch (x) {} }
