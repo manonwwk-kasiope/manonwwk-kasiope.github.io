@@ -1069,6 +1069,12 @@
   R.ecrans.attraction.pilote = 'bon';
   R.gestes.msParSeconde = 1000;
 
+  /* codex-p13 : fondus et trames du décor, aucune règle de combat modifiée. */
+  R.decorPhotosensibilite = {
+    fondu: 1.2, cycle: 4.8, cameraVitesse: 60, eclairDuree: 1.2, eclairRepos: 2.4,
+    trame: 4, rangsFondu: 64, seuilLumineuxSol: 0.25, solChaudMax: 0.03, solLumineuxMax: 0.08
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

@@ -411,3 +411,18 @@ Réemploi des durées existantes ; aucun nouveau seuil de jeu, aucun seuil de te
 Codex-p11 — après intégration du raccord de schéma, reconstruire `index.html` par `cd proto-neon && node build.mjs` avant le contrôle navigateur ; sinon le bundle conserve encore le schéma antérieur.
 
 Codex-p11 — mis à jour le 18/10/2026 à 02 h 18 (Paris) : VM calibrée sur 10 références historiques exactes ; 24/24 parties avant/après strictement identiques (temps, vague, score et journal complet), toutes finies sans erreur. Attraction mesurée à 15,008333333333121 s sur les trois formats ; JOUER → aventure intact. Build sortie 0. Détails et limites dans `tools/codex-p11/rapport.md`. Chantier bloqué pour la validation finale sur le raccord de schéma hors réservation et le reçu navigateur hors bac ; aucune exécution serveur/Chromium ici.
+
+## codex-p13 — décor et photosensibilité (18/10/2026 · 02 h 25, Paris)
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p13 | `02-regles.js`, ajout seul `decorPhotosensibilite.fondu = 1.2` | fondu minimal commun des quartiers/états et des couleurs de la cité | répartir les révélations sur 64 petites étapes, conserver la palette et éviter les reprises brusques d'une transition interrompue ; mouvement réduit conserve le fondu |
+| codex-p13 | `02-regles.js`, `decorPhotosensibilite.cycle = 4.8` | période entre deux accents des enseignes, fenêtres, incendies et inversion | remplacer les alternances locales à 4–6 changements/s par une animation lente avec fondu ; aucun seuil R-13 modifié |
+| codex-p13 | `02-regles.js`, `decorPhotosensibilite.cameraVitesse = 60` | déplacement du lointain borné à 60 pixels de jeu/s par axe | l'ablation implique aussi le déplacement du fond tramé ; calmer son rattrapage sans toucher au suivi de la caméra de jeu, aux murs ni aux collisions |
+| codex-p13 | `02-regles.js`, `decorPhotosensibilite.eclairDuree = 1.2`, `eclairRepos = 2.4` | enveloppe douce et intervalle minimal entre départs d'éclairs | supprimer le saut marche/arrêt ; ne pas redéclencher en rafale ; désactiver en mouvement réduit ou flashs coupés |
+| codex-p13 | `02-regles.js`, `decorPhotosensibilite.trame = 4`, `rangsFondu = 64` | Bayer officiel 4×4, extension déterministe 8×8 pour les fondus | conserver les seize encres ; rephaser le ciel et les fenêtres sur l'écran plutôt que laisser le déplacement inverser la trame ; passer de sauts plein écran de 6,25 % à 1,5625 % par rang |
+| codex-p13 | `02-regles.js`, `decorPhotosensibilite.seuilLumineuxSol = 0.25`, `solChaudMax = 0.03`, `solLumineuxMax = 0.08` | publication des seuils existants de lisibilité 01b, utilisés par la mesure | sol strictement sous l'horizon, largeur entière ; aucune tolérance relâchée |
+| codex-p13 | `15-decor.js` | maintenir la table nuit/ardoise pendant victoire et fin | la cascade du CYCLOPE ne doit pas réallumer brutalement tout le sol ; aucun pixel d'acteur assombri |
+| codex-p13 | vérification hors bac | lancer `cd proto-neon && node tools/codex-p13/verifier.mjs` et renvoyer `tools/codex-p13/navigateur/resultats.json` | neuf scènes de 600 images, trois profils successifs, un Chromium muet, vrais pixels, sol et journaux ; HTTP et Chromium interdits ici, aucune tentative |
+
+Les modifications p10 reçues sont conservées. La section codex-p10 annoncée par la mission n'était pas présente dans ce `demandes.md` reçu ; son rapport et son fichier d'attribution ont été lus. Les résultats, y compris les essais intermédiaires insuffisants, sont conservés dans `tools/codex-p13/`. Aucun commit. Le rendu navigateur, le coût sur iPhone et Safari réel restent à vérifier hors bac.

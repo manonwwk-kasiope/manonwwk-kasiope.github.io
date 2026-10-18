@@ -26,7 +26,7 @@
    INTERFACE (N.decor) — rien ne s'appelle au chargement :
        build()                    branche les événements (vague, vol, inversion, phase) ; idempotent
        etat(nom)                  'calme'|'montee'|'chaos'|'inversion'|'colosse'|'victoire' ; sans argument : l'état
-       quartier(nom)              'docks'|'artere'|'centrale'|'ciel'|'tours'|'coeur'|'eclipse' ; balayage tramé de 0,5 s
+       quartier(nom)              'docks'|'artere'|'centrale'|'ciel'|'tours'|'coeur'|'eclipse' ; fondu tramé borné par N.R.decorPhotosensibilite.fondu
        preparer(nom)              précalcul par tranches (une par image) pendant LE VOL qui mène à ce quartier
        drawFar(cam)               P0..P5 et le sol, en ESPACE ÉCRAN (origine (0,0)) : à appeler après N.gfx.clear
        drawPlateau(cam)           grille holographique et murs, en espace MONDE (origine (cam.x, cam.y))
@@ -46,6 +46,7 @@
 
   /* ================================ les chiffres (→ N.R.decor) ================================ */
   function RD() { return (N.R && N.R.decor) || {}; }
+  function securite() { return N.R.decorPhotosensibilite; }
   var CW = 640, CH = 96;                  // → N.R.decor.plans.P3.prolonge : la cité, bouclée à 640 px de large
   var SW = 448, SHT = 76;                 // les structures : une bande de 448 × 76
   var MW = 512, MH = 44;                  // les montagnes (512 de large, comme `horizon`)
@@ -82,7 +83,7 @@
   function enJeu() {
     if (!N.game || !N.game.etat) return false;
     var e = N.game.etat();
-    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort';
+    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort' || e === 'victoire' || e === 'fin';
   }
 
   /* ================================ outils ================================ */
@@ -176,7 +177,10 @@
     return env[i0 & 3] + (env[(i0 + 1) & 3] - env[i0 & 3]) * f;
   }
   /* ---- P3 : la cité, 640 × 96, bouclée ---- */
-  function buildVille(q) {
+  function buildVille(q, phase) {
+    if (phase === undefined) {
+      var im = buildVille(q, 0); im.phases = [im, buildVille(q, 1)]; return im;
+    }
     var Q = QU[q], V = Q.ville, r = flux(Q.seed), img = newImg(CW, CH), base = CH - 1;
     var fenP = Q.fen, band = Q.bande;
     /* une passe de fond (nuit), une passe de devant (ardoise) : deux profondeurs, la cité n'est pas un mur */
@@ -188,7 +192,7 @@
         if (pass === 0) h = Math.round(h * 0.78) + 3;
         if (V.centrale && pass === 1 && x > CW / 2 - 70 && x < CW / 2 + 40) h = r.i(60, 90);
         h = Math.min(h, CH - 2);
-        batiment(img, r, x, base, w, h, corps, pass, V, fenP, band);
+        batiment(img, r, x, base, w, h, corps, pass, V, fenP, band, phase);
         x += w + r.i(V.ecartMin, V.ecartMax);
       }
     }
@@ -197,7 +201,7 @@
       for (var px = 6; px < CW; px += 30) fr(img, px, ry + 3, 2, 12, C.IN); }
     return img;
   }
-  function batiment(img, r, x, base, w, h, corps, pass, V, fenP, band) {
+  function batiment(img, r, x, base, w, h, corps, pass, V, fenP, band, phase) {
     var top = base - h + 1;
     fr(img, x, top, w, h, corps);
     fr(img, x + w - 1, top, 1, h, pass ? C.IN : C.AR);                   // arête éclairée : le côté droit
@@ -220,7 +224,7 @@
         var yy = fy + k; if (yy >= base) break;
         for (var xx = x + 1; xx < x + w - 1; xx++) {
           if (((xx - x + ph) % 6) === 5) continue;                       // pilier
-          if (((xx + yy) & 1) !== 0) continue;                           // trame d'échiquier : 50 %, jamais un plein
+          if (((xx + yy + phase) & 1) !== 0) continue;                           // trame d'échiquier : 50 %, jamais un plein
           var cell = ((xx - x + ph) / 3) | 0;
           var u = ((Math.imul(cell + 1, 2654435761) ^ Math.imul(fy + 7, 40503) ^ Math.imul(x + 3, 9973)) >>> 0) / 4294967296;
           if (u > litProb) continue;
@@ -345,8 +349,15 @@
     fp(img, x + (w >> 1), base - h - 1, 6);
   }
 
-  /* ---- P0 : le ciel, une image par (quartier, état), accrochée à l'horizon (bas de l'image = l'horizon) ---- */
-  function buildSky(q, e) {
+  /* ---- P0 : le ciel, quatre phases par (quartier, état), accrochée à l'horizon (bas de l'image = l'horizon) ---- */
+  function buildSky(q, e, phase) {
+    /* Le Bayer est ancré à l'écran : déplacer l'horizon d'un pixel ne doit pas
+       inverser tous les points du ciel. Quatre phases gardent les caches de plans. */
+    if (phase === undefined) {
+      var im = buildSky(q, e, 0); im.phases = [im];
+      for (var p = 1; p < securite().trame; p++) im.phases.push(buildSky(q, e, p));
+      return im;
+    }
     var Q = QU[q], E = ET[e], B = N.pal.BAYER, W = vueW, SH = Math.ceil(vueH * 0.82) + 6, img = newImg(W, SH), d = img.data;
     var ck = Q.ciel, kk = E.ciel;
     var brD = Math.min(0.62, ck.br * kk * 0.55), amD = Math.min(0.5, ck.am * kk * 0.42), saD = Math.min(0.95, ck.sa * kk);
@@ -358,7 +369,7 @@
       var brT = clamp01(1 - dd / FOND) * brD * 1.1 + clamp01(1 - dd / haut) * brD * 0.35;
       var amT = clamp01(1 - dd / (FOND * 0.7)) * amD + clamp01(1 - dd / (haut * 0.7)) * amD * 0.4 + clamp01(1 - dd / haut) * brD * 0.4 + clamp01(1 - dd / (SH * 0.95)) * Math.min(0.34, brD * 0.4);   // la longue traîne du ciel : de l'ambre tramé, plus clair que le magenta des ennemis
       if (E.eclipse) { saT = clamp01(1 - dd / (haut * 2.2)) * 1.0; amT *= 0.1; }
-      var o = y * W, br = (y & 3) << 2, br2 = ((y + 2) & 3) << 2, br3 = ((y + 1) & 3) << 2;
+      var o = y * W, br = ((y + phase) & 3) << 2, br2 = ((y + phase + 2) & 3) << 2, br3 = ((y + phase + 1) & 3) << 2;
       for (var x = 0; x < W; x++) {
         var c = C.V;
         if (nuT * 16 > B[br | (x & 3)]) c = C.NU;
@@ -436,21 +447,23 @@
 
   /* ================================ l'état courant et les transitions ================================ */
   var cur = { q: 'docks', e: 'calme' };
-  var trans = null, reduit = null;
+  var trans = null, reduit = null, fondStable = null;
+  var camDecorX = null, camDecorY = null;
   var avZ = 0, lastT = -1, tDecor = 0, yhRef = 0, yhLast = 0;
-  var fenT = 0, eclairT = 0, eclairX = 0.5, eclipseK = 0, fenRanges = 0;
+  var fenT = 0, eclairT = 0, dernierEclair = -Infinity, eclairX = 0.5, eclipseK = 0, fenRanges = 0;
   var ondes = [{ x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 },
     { x: 0, y: 0, f: 0, t: -9 }, { x: 0, y: 0, f: 0, t: -9 }];
   var ondeN = 0;
-  var scratch = null, tmpLut = null;
+  var lutRowsAvant = null, fonduCite = 1;
   var etapes = [], preparing = '';
   var branche = false, etatAvantInversion = null, accelK = 1;
 
   function reducedMotion() {
-    if (reduit !== null) return reduit;
-    reduit = false;
-    try { if (typeof window !== 'undefined' && window.matchMedia) reduit = !!window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-    return reduit;
+    if (reduit === null) {
+      reduit = { matches: false };
+      try { if (typeof window !== 'undefined' && window.matchMedia) reduit = window.matchMedia('(prefers-reduced-motion: reduce)'); } catch (e) {}
+    }
+    return !!reduit.matches;
   }
   function mouvementCoupe() {
     var S = N.S, r = S && S.reglages;
@@ -481,12 +494,12 @@
     if (!pal() || !N.gfx || !N.gfx.W) { cur.q = vers.q; cur.e = vers.e; return; }
     verifierVue();
     ensure(vers.q, vers.e);
-    /* le balayage tramé de 0,5 s : de haut en bas, la matrice de Bayer comme fondu ; l'ancien décor continue de vivre dessous */
-    var tr = (RD().transition) || 0.5;
-    if (trans && trans.u < 1) trans = { de: trans.vers, vers: vers, t0: tDecor, dur: tr, u: 0 };
-    else trans = { de: { q: cur.q, e: cur.e }, vers: vers, t0: tDecor, dur: tr, u: 0 };
+    /* Repartir du dernier fond VRAIMENT affiché, même quand quartier et état changent
+       dans le même pas. Ne jamais copier le tampon composé des acteurs. */
+    trans = { de: { q: cur.q, e: cur.e }, vers: vers, t0: null,
+      dur: Math.max(RD().transition, securite().fondu), u: 0,
+      fond: fondStable && fondStable.length === N.gfx.buf().length ? new Uint8Array(fondStable) : null };
     cur.q = vers.q; cur.e = vers.e;
-    if (mouvementCoupe()) trans = null;
   }
   function ensure(q, e) { res('ville', q); res('struct', q); res('mont', q); res('sky', q, e); res('floor', q, e); mist(); p6img(); }
 
@@ -512,21 +525,21 @@
   function majLuts(q, e, t) {
     lumieres();
     var Q = QU[q], E = ET[e], cyc = Q.cyc;
-    var tm = t / TEMPS, ph = Math.floor(tm * E.signs * 0.5);
+    var ph = Math.floor(t / securite().cycle);
     if (mouvementCoupe()) ph = 0;
-    var rapide = E.pulse ? 2 : 1;
+    var rapide = 1;
     var a = C[cyc[(ph * rapide) & 3]], b = C[cyc[((ph * rapide) + 2) & 3]];
-    var blink = (E.blink && !mouvementCoupe()) ? ((Math.floor(t * 5) & 1) ? C.JA : C.NU) : C.AM;
+    var blink = (E.blink && !mouvementCoupe()) ? ((Math.floor(t / securite().cycle) & 1) ? C.JA : C.NU) : C.AM;
     var f9 = C[Q.remap[9]], f10 = C[Q.remap[10]];
     for (var i = 0; i < 16; i++) { lutBase[i] = i; lutLit[i] = i; lutDark[i] = i; lutFire[i] = i; lutP5[i] = i; }
-    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t * 1.4) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
+    lutBase[5] = a; lutBase[6] = b; lutBase[7] = C.AR; lutBase[8] = E.blink ? blink : (mouvementCoupe() || (Math.floor(t / securite().cycle) & 1) ? f9 : C.AR); lutBase[9] = f9; lutBase[10] = f10;
     lutLit[5] = a; lutLit[6] = b; lutLit[7] = C.AM; lutLit[8] = C.JA; lutLit[9] = f9; lutLit[10] = f10;
-    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (!mouvementCoupe() && (Math.floor(t * 6) & 1)) ? C.BR : C.SA; lutDark[8] = (!mouvementCoupe() && (Math.floor(t * 4) & 1)) ? C.AM : C.BR;
+    lutDark[5] = C.NU; lutDark[6] = C.NU; lutDark[7] = (!mouvementCoupe() && (Math.floor(t / securite().cycle) & 1)) ? C.BR : C.SA; lutDark[8] = (!mouvementCoupe() && (Math.floor(t / securite().cycle) & 1)) ? C.AM : C.BR;
     lutDark[9] = C.NU; lutDark[10] = C.NU; lutDark[12] = C.AR;      // la cité s'éteint ; restent les incendies (étiquettes 7 et 8)
-    var mc = mouvementCoupe(), fa = (!mc && (Math.floor(t * 6) & 1)) ? C.BR : C.AM, fb = (!mc && (Math.floor(t * 5 + 1) & 1)) ? C.AM : C.BR;
+    var mc = mouvementCoupe(), fa = (!mc && (Math.floor(t / securite().cycle) & 1)) ? C.BR : C.AM, fb = (!mc && (Math.floor(t / securite().cycle + 1) & 1)) ? C.AM : C.BR;
     lutFire[5] = fa; lutFire[6] = fb; lutFire[7] = fa; lutFire[8] = fb; lutFire[9] = fb; lutFire[10] = fa; lutFire[12] = C.AR;   // les étages qui brûlent
     /* les balises des structures : sang / nuit à la noire, ambre / nuit à contretemps */
-    var bt = mouvementCoupe() || (Math.floor(tm * 0.5) & 1) === 0;
+    var bt = mouvementCoupe() || (Math.floor(t / securite().cycle) & 1) === 0;
     lutP5[5] = bt ? C.SA : C.NU; lutP5[6] = bt ? C.NU : C.AM; lutP5[9] = C.AM; lutP5[10] = C.JA;
     for (var j = 0; j < 16; j++) lutP5Jeu[j] = lutCalmeJeu[lutP5[j]];
     /* par rangée : les fenêtres allumées par les élites (fenetres()), l'éclipse qui éteint la cité rangée par rangée */
@@ -541,12 +554,38 @@
     }
   }
 
+  /* Couleurs des enseignes/fenêtres/incendies : même période lente et même
+     fondu sur 64 rangs. Le ciel et les fenêtres ne changent jamais de phase de trame
+     quand la caméra bouge. Les silhouettes gardent leur vraie position entière. */
+  function lumiereCite(q, e, t) {
+    var cycle = securite().cycle, origine = Math.floor(t / cycle) * cycle;
+    fonduCite = mouvementCoupe() ? 1 : clamp01((t - origine) / securite().fondu);
+    if (fonduCite < 1) {
+      majLuts(q, e, origine - cycle);
+      if (!lutRowsAvant) { lutRowsAvant = []; for (var r = 0; r < CH; r++) lutRowsAvant.push(mk()); }
+      for (var y = 0; y < CH; y++) lutRowsAvant[y].set(lutRows[y]);
+    }
+    majLuts(q, e, mouvementCoupe() ? 0 : origine);
+  }
+  function poserCite(ville, x0, y0) {
+    var g = N.gfx;
+    if (fonduCite >= 1) { g.layer(ville, { x: x0, y: y0, wrapX: true, luts: lutRows }); return; }
+    var b = g.buf(), d = ville.data;
+    for (var r = Math.max(0, -y0); r < Math.min(CH, g.H - y0); r++) {
+      var y = y0 + r, ro = y * g.W, so = r * ville.w;
+      for (var x = 0; x < g.W; x++) {
+        var v = d[so + ((x - x0) % ville.w + ville.w) % ville.w];
+        if (v) b[ro + x] = (rangFondu(x, y) < fonduCite * securite().rangsFondu ? lutRows : lutRowsAvant)[r][v];
+      }
+    }
+  }
+
   /* ================================ le sol ligne par ligne ================================ */
   /* proj : { sc, scMax, Kz, g0 } — s(dy) = min(dy × sc, scMax), z(dy) = Kz / dy ; g(dy) = g0 + (1 − g0) × min(1, dy / dyB) */
   var P = { sc: 1 / 80, scMax: 1.6, Kz: K_SOL, g0: 0.08, dyB: 80 };
   function sol(buf, W, H, yh, camX, av, e, q, sunX, t, lat, o) {
     var B = N.pal.BAYER, xf = W >> 1;
-    var E = ET[e], lignes = E.lignes, pulse = E.pulse ? (((t / TEMPS) % 1) < 0.28) : false;
+    var E = ET[e], lignes = E.lignes, pulse = E.pulse && !mouvementCoupe() ? ((t % securite().cycle) < securite().cycle / 2) : false;
     var amb = C.AM, bra = C.BR, vio = C.VI, ind = C.IN;
     var rows = H - 1 - yh, rest = !(t > 0) || mouvementCoupe();
     for (var dy = 1; dy <= rows; dy++) {
@@ -685,9 +724,9 @@
     var Q = QU[q], E = ET[e];
     var yh = horizonY(H, camY, portrait); YH = yh;
     var sky = res('sky', q, e), ville = res('ville', q), mont = res('mont', q), st = res('struct', q), fl = res('floor', q, e);
-    majLuts(q, e, t);
+    lumiereCite(q, e, t);
     /* P0 : le ciel (recopie de rangées, accroché à l'horizon) */
-    g.layer(sky, { x: 0, y: yh - sky.h + 1, opaque: true });
+    g.layer(sky.phases[((yh - sky.h + 1) % securite().trame + securite().trame) % securite().trame], { x: 0, y: yh - sky.h + 1, opaque: true });
     /* P1 : les étoiles, deux phases de scintillement */
     etoiles(buf, W, H, yh, camX, camY, t, q, e);
     /* P2 : le soleil en bandes (hors portrait : 80 px de diamètre ; portrait : 64) puis les montagnes */
@@ -701,7 +740,7 @@
     soleil(buf, W, H, yh, sx, R, kHaut, t, eclP > 0.55, e);
     g.layer(mont, { x: -Math.round(camX * F_P2), y: yh - MH + 1, wrapX: true });
     /* P3 : la cité, une table de couleurs par rangée (fenêtres, enseignes, éclipse) */
-    g.layer(ville, { x: -Math.round(camX * F_P3), y: yh - CH + 1, wrapX: true, luts: lutRows });
+    poserCite(ville.phases[(Math.round(camX * F_P3) + yh - CH + 1) & 1], -Math.round(camX * F_P3), yh - CH + 1);
     /* P4 : la brume, dérive de 4 px/s */
     var dr = mouvementCoupe() ? 0 : t * 4;
     g.layer(mist(), { x: -Math.round(camX * F_P4X + dr), y: yh - MISTH + 3, wrapX: true });
@@ -713,7 +752,7 @@
     /* P5 : les structures, debout sur le sol, 0,60 */
     structures(buf, W, H, yh, camX, camY, t, st, e, q);
     /* l'éclair éventuel, sur l'horizon */
-    if (eclairT > 0) eclairDraw(buf, W, H, yh);
+    if (eclairT > 0 && !mouvementCoupe()) eclairDraw(buf, W, H, yh);
   }
 
   function etoiles(buf, W, H, yh, camX, camY, t, q, e) {
@@ -787,19 +826,19 @@
   function eclairDraw(buf, W, H, yh) {
     /* un éclair : une ligne brisée d'os, et un voile d'ambre tramé à 12 % sur une petite aire (sous le limiteur) */
     var x = Math.round(W * (0.15 + 0.7 * eclairX)), y = 0, B = N.pal.BAYER, hs = (Math.floor(eclairX * 65536) | 0) + 1;
-    var on = eclairT > 0.12;
+    var enveloppe = Math.sin(Math.PI * clamp01(eclairT / securite().eclairDuree));
+    var on = enveloppe > 0;
     if (on) {                                                        // une ligne brisée, tirée d'un hachage de la position (pas de flux alloué)
       while (y < yh - 2) {
         hs = (Math.imul(hs, 1664525) + 1013904223) | 0; var seg = 4 + ((hs >>> 8) % 6);
-        for (var k = 0; k < seg && y < yh; k++, y++) { buf[y * W + x] = C.OS; if (k & 1) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; }
+        for (var k = 0; k < seg && y < yh; k++, y++) { if (rangFondu(x, y) < enveloppe * securite().rangsFondu) buf[y * W + x] = C.OS; if ((k & 1) && rangFondu(x + 1, y) < enveloppe * securite().rangsFondu) buf[y * W + Math.min(W - 1, x + 1)] = C.JA; }
         hs = (Math.imul(hs, 1664525) + 1013904223) | 0; x += ((hs >>> 8) % 11) - 5; x = clamp(x, 2, W - 3);
       }
     }
-    for (var yy = Math.max(0, yh - 22); yy < yh; yy++) for (var xx = Math.max(0, x - 26); xx < Math.min(W, x + 26); xx++) if (0.10 * 16 > B[((yy & 3) << 2) | (xx & 3)]) buf[yy * W + xx] = C.AM;
+    for (var yy = Math.max(0, yh - 22); yy < yh; yy++) for (var xx = Math.max(0, x - 26); xx < Math.min(W, x + 26); xx++) if (0.10 * 16 > B[((yy & 3) << 2) | (xx & 3)] && rangFondu(xx, yy) < enveloppe * securite().rangsFondu) buf[yy * W + xx] = C.AM;
   }
 
   /* ================================ drawFar : tout le décor lointain ================================ */
-  var iTrans = 0;
   function drawFar(cam) {
     if (!pal() || !N.gfx || !N.gfx.buf || !N.gfx.buf()) return;
     var g = N.gfx; g.origin(0, 0);
@@ -810,6 +849,16 @@
     var t = tempsJeu();
     var dt = lastT < 0 ? 0 : t - lastT; lastT = t; if (dt < 0) dt = 0; if (dt > 0.25) dt = 0.25;
     tDecor = t;
+    /* La caméra de jeu garde son suivi immédiat. Le lointain rejoint sa cible à
+       vitesse bornée : même sans clignotement, un ciel tramé déplacé de plusieurs
+       lignes par image peut ajouter un flash aux explosions. Pendant un gel il tient. */
+    if (camDecorX === null || mouvementCoupe()) { camDecorX = camX; camDecorY = camY; }
+    else {
+      var pasCamera = securite().cameraVitesse * dt;
+      camDecorX += clamp(camX - camDecorX, -pasCamera, pasCamera);
+      camDecorY += clamp(camY - camDecorY, -pasCamera, pasCamera);
+    }
+    camX = Math.round(camDecorX); camY = Math.round(camDecorY);
     ensureCur();
     tranche();
     /* le sol avance d'une case par temps de jeu (deux au chaos, six pendant LE VOL), plus vite en accélération */
@@ -819,29 +868,37 @@
     if (fenT > 0) fenT -= dt;
     if (eclairT > 0) eclairT -= dt;
     if (g.mask && g.mask()) g.mask().fill(8);
-    if (trans && trans.u < 1) {
-      trans.u = clamp01((t - trans.t0) / trans.dur);
-      if (!mouvementCoupe()) {
-        var W = g.W, H = g.H;
-        rendreFar(trans.de.q, trans.de.e, camX, camY, t);
-        scratch = g.copyTo(scratch);
-        rendreFar(trans.vers.q, trans.vers.e, camX, camY, t);
-        var front = trans.u * (H + 20), buf = g.buf(), B = N.pal.BAYER;
-        for (var y = 0; y < H; y++) {
-          var p = (front - y) / 16;
-          if (p >= 1) continue;
-          var o = y * W, br = (y & 3) << 2;
-          if (p <= 0) { for (var x = 0; x < W; x++) buf[o + x] = scratch[o + x]; }
-          else { var lim = p * 16; for (var x2 = 0; x2 < W; x2++) if (!(lim > B[br | (x2 & 3)])) buf[o + x2] = scratch[o + x2]; }
-        }
-        if (trans.u >= 1) trans = null;
-        taireFondJeu(cam);
-        return;
-      }
-      trans = null;
+    if (trans && !trans.fond) {
+      rendreFar(trans.de.q, trans.de.e, camX, camY, t);
+      taireFondJeu(cam); trans.fond = new Uint8Array(g.buf());
     }
     rendreFar(cur.q, cur.e, camX, camY, t);
     taireFondJeu(cam);
+    if (trans) {
+      if (trans.t0 === null) trans.t0 = t;
+      trans.u = clamp01((t - trans.t0) / trans.dur);
+      var b = g.buf(), old = trans.fond;
+      if (old.length === b.length) {
+        for (var y = 0; y < g.H; y++) for (var x = 0; x < g.W; x++) {
+          var i = y * g.W + x;
+          if (rangFondu(x, y) >= trans.u * securite().rangsFondu) b[i] = old[i];
+        }
+      }
+      if (trans.u >= 1) trans = null;
+    }
+    /* Pendant un fondu, l’ancien ciel peut passer sous le nouvel horizon : le sol
+       reçoit aussi la table calme APRÈS la composition. */
+    if (trans && enJeu()) {
+      var solBuf = g.buf();
+      for (var si = Math.max(0, YH) * g.W; si < solBuf.length; si++) solBuf[si] = lutCalmeJeu[solBuf[si]];
+    }
+    fondStable = g.copyTo(fondStable);
+  }
+  /* Bayer 8×8 dérivé du Bayer 4×4 officiel : pas d'alpha ni de couleur nouvelle.
+     64 petites étapes remplacent les sauts de 6,25 % d'un fondu 4×4 plein écran. */
+  function rangFondu(x, y) {
+    var B = N.pal.BAYER, cote = securite().trame;
+    return cote * B[((y % cote) * cote) + (x % cote)] + B[(((y / cote) | 0) & 1) * (cote * cote / 2) + ((((x / cote) | 0) & 1) * (cote / 2))];
   }
   function taireFondJeu(cam) {
     if (!enJeu()) return;
@@ -888,7 +945,7 @@
       for (var iy = gy0; iy <= ay1; iy += 16) for (var ix = gx0; ix <= ax1; ix += 16) {
         var dx = 0, dy = 0;
         for (var k = 0; k < 6; k++) {
-          var o = ondes[k]; if (o.f <= 0) continue;
+          var o = ondes[k]; if (o.f <= 0 || mouvementCoupe()) continue;
           var age = t - o.t; if (age < 0 || age > 1.2) continue;
           var ddx = ix - o.x, ddy = iy - o.y, dd = Math.sqrt(ddx * ddx + ddy * ddy) + 0.001, rr = age * 140;
           var amp = o.f * 6 * Math.exp(-Math.abs(dd - rr) / 14) * (1 - age / 1.2);
@@ -909,7 +966,7 @@
       for (var a = 0; a < an.length; a++) annonce(buf, W, H, cx, cy, an[a], t);
     }
     /* l'alerte de proximité : à moins de 24 px, le pan proche de la tête s'allume en rose pâle tramé */
-    var th = N.joueuse && N.joueuse.tete, us = N.cam && N.cam._tete;
+    var th = N.joueuse && N.joueuse.tete;
     if (th && N.world && N.world.distMur) {
       var dm = N.world.distMur(th.x, th.y), al = (RD() && N.R && N.R.monde && N.R.monde.mur && N.R.monde.mur.alerte) || 24;
       if (dm.d < al) alerte(buf, W, H, cx, cy, Wd, dm, th, 1 - Math.max(0, dm.d) / al);
@@ -948,7 +1005,7 @@
     if (!pal() || !N.gfx || !N.gfx.buf || !N.gfx.buf()) return;
     var g = N.gfx, buf = g.buf(), W = g.W, H = g.H;
     if (!cam) cam = N.cam || { x: 0, y: 0 };
-    var cx = cam.x | 0, cy = cam.y | 0, t = tDecor, im = p6img(), d = im.data;
+    var cx = mouvementCoupe() ? 300 : cam.x | 0, cy = mouvementCoupe() ? 160 : cam.y | 0, t = tDecor, im = p6img(), d = im.data;
     g.owner(8);
     var bandH = Math.max(6, Math.round(H * 0.12)), procheLut = enJeu() ? lutCalmeJeu : null;
     /* les poutrelles : des silhouettes de nuit profonde tramées, à 1,4 × la caméra, SEULEMENT dans les 12 % du haut et du bas */
@@ -978,12 +1035,19 @@
 
   /* ================================ le reste de l'interface ================================ */
   function ondule(x, y, force) {
+    if (mouvementCoupe()) return;
     var o = ondes[ondeN % 6]; ondeN++;
     o.x = x; o.y = y; o.f = clamp(+force || 1, 0, 4); o.t = tDecor;
   }
   function fenetres() { fenT = 1.8; fenRanges = (fenRanges + 2) % 7; }
-  function eclair() { eclairT = 0.32; eclairX = ((Math.floor(tDecor * 1000) * 2654435761) >>> 0) / 4294967296; }
-  function eclipse(t) { eclipseK = clamp01(+t || 0); }
+  function eclair() {
+    if (mouvementCoupe() || (N.S && N.S.reglages && N.S.reglages.flashs === false)) return;
+    if (tDecor - dernierEclair < securite().eclairRepos) return;
+    dernierEclair = tDecor; eclairT = securite().eclairDuree; eclairX = ((Math.floor(tDecor * 1000) * 2654435761) >>> 0) / 4294967296; }
+  function eclipse(t) {
+    var k = clamp01(+t || 0); if (k === eclipseK) return;
+    commencer({ q: cur.q, e: cur.e }); eclipseK = k;
+  }
   function horizon() { return YH; }
   /* multiplie la vitesse d'avance du sol (la plongée : les lignes accélèrent) ; 1 = normal */
   function acceler(k) { accelK = clamp(+k || 1, 0, 16); }
@@ -1011,16 +1075,16 @@
     var q = QU[o.vers] ? o.vers : cur.q, q0 = QU[o.depuis] ? o.depuis : cur.q, mont = clamp01(o.montee || 0);
     var e = 'montee';
     ensure(q0, e); ensure(q, e);
-    majLuts(q, e, t);
+    lumiereCite(q, e, t);
     var skyQ = res('sky', q0, e);
-    g.layer(skyQ, { x: 0, y: yh - skyQ.h + 1, opaque: true });
+    g.layer(skyQ.phases[((yh - skyQ.h + 1) % securite().trame + securite().trame) % securite().trame], { x: 0, y: yh - skyQ.h + 1, opaque: true });
     etoiles(buf, W, H, yh, 0, 0, t, q0, e);
     var R = H > W ? 32 : 40, sx = Math.round(W * 0.5);
     soleil(buf, W, H, yh, sx, R, QU[q0].sun * 0.9, t, false, e);
     g.layer(res('mont', q0), { x: 0, y: yh - MH + 1, wrapX: true });
     /* la cité d'arrivée monte de l'horizon par rangées entières ; le sol la recouvre plus bas */
     var ville = res('ville', q), vy = yh - CH + 1 + Math.round((1 - mont) * (CH - 1));
-    g.layer(ville, { x: 0, y: vy, wrapX: true, luts: lutRows });
+    poserCite(ville.phases[vy & 1], 0, vy);
     var fl = res('floor', q0, 'vol');
     g.layer(fl, { x: 0, y: yh, opaque: true });
     var sol0 = o.sol0 > yh ? o.sol0 : yh + Math.round((H - yh) * 0.4);
@@ -1072,7 +1136,7 @@
     if (N.gfx && N.gfx.W) { verifierVue(); ensure(q, e); }
     trans = null; cur.q = q; cur.e = e;
   }
-  function reset() { accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
+  function reset() { camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
 
   N.decor = {
     build: build, reset: reset, fixer: fixer, etat: etat, quartier: quartier, preparer: preparer,
