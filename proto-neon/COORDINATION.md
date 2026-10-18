@@ -131,6 +131,7 @@ Codex : en attente — codex-10 livré ; relecture de la boîte après push. 01c
 | `src/85-pilote.js` | Codex (session parallèle codex-p14) | 18/10 à 02 h 27 | LASSO et APOGÉE jouables et joués (R-34, R-04) ; réglage p5 intégré (51c9aa1), arrêté à 8/20 |
 | `src/80-ecrans.js`, `tools/mesure/criteres/R-36-*` | Codex (session parallèle codex-p17) | 18/10 à 02 h 45 | finition des écrans briefing / pause / fin (défis lisibles), R-36 « TOUT DÉBLOQUÉ » ; p12 intégré (147ac95) |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
+| `src/66-grille.js`, `tools/grille/` (nouveaux) | Claude cloud | 18/10 à 03 h 30 | chantier n° 6 : la scène d'immersion isométrique (`la-grille.html`) devient l'époque 1993 de l'aventure |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
 ## Prochains chantiers (à prendre)
