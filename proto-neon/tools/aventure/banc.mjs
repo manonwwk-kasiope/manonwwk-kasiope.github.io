@@ -155,6 +155,8 @@ async function aventureElle(page, P, M) {
   M.films.push(await film(page, P, 'profondeur', { cap: '08-profondeur' }));
   M.films.push(await film(page, P, 'warp', { cap: '09-warp' }));
   M.films.push(await film(page, P, 'espace', { cap: '10-espace' }));
+  /* au rattrapage aussi, le voyage passe par 2975 */
+  if (await page.evaluate(() => !!(window.__N.cosmos && window.__N.cosmos.start))) await passer2975(page, P, '10b-2975-rattrapage');
   M.films.push(await film(page, P, 'fin', { cap: '11-fin-elle' }));
   M.films.push(await film(page, P, 'rejouer', { cap: '12-rejouer' }));
   const b = await attendreQue(page, () => window.__AV_FIN, null, 4000);
@@ -163,6 +165,24 @@ async function aventureElle(page, P, M) {
   M.elle = s.joues;
   verifie(JSON.stringify(s.joues) === JSON.stringify(['connexion-elle', 'fissure-elle', 'neon-elle', 'profondeur-elle', 'warp-elle', 'espace-elle', 'fin-elle', 'pilote-lui']),
     `${P.nom} : films d'ELLE ${s.joues.join(', ')}`);
+}
+
+/* 2975 : N.cosmos joue (aussi au rattrapage) ; on le saute (amiral, explosion, épilogue, fin) jusqu'au film de fin */
+async function passer2975(page, P, cap) {
+  verifie(!!await attendreEtape(page, '2975', 3000), `${P.nom} : époque 2975 (N.cosmos)`);
+  await attendre(1500);
+  const iso = await page.evaluate(() => ({ liste: window.__N.ennemis ? window.__N.ennemis.list.length : 0 }));
+  verifie(iso.liste === 0, `${P.nom} : 2975 isolée (N.ennemis.list vide pour N.warp : ${iso.liste})`);
+  await capture(page, P, cap);
+  let sorti = false;
+  for (let k = 0; k < 40 && !sorti; k++) {
+    await page.evaluate(() => window.__N.aventure.sauter());
+    await attendre(500);
+    sorti = await page.evaluate(() => window.__N.aventure.etape() !== '2975');
+  }
+  verifie(sorti, `${P.nom} : 2975 se termine et rend la main à l'aventure`);
+  const et = await page.evaluate(() => window.__N.aventure.etape());
+  verifie(et === 'fin', `${P.nom} : après 2975, le film de fin (étape ${et}) sans repasser par le jeu`);
 }
 
 async function aventureLui(page, P, M) {
@@ -188,22 +208,7 @@ async function aventureLui(page, P, M) {
     await attendre(300);
     await page.evaluate(e => window.__aventure.rendre(e), evt);
     M.films.push(await film(page, P, evt, { cap }));
-    if (evt === 'espace' && cosmos) {
-      /* 2975 : N.cosmos remplace le retour au jeu ; on le saute (amiral, puis fin) jusqu'au film de fin */
-      verifie(!!await attendreEtape(page, '2975', 3000), `${P.nom} : époque 2975 (N.cosmos)`);
-      await attendre(1500);
-      await capture(page, P, '18b-2975');
-      let sorti = false;
-      for (let k = 0; k < 40 && !sorti; k++) {
-        await page.evaluate(() => window.__N.aventure.sauter());
-        await attendre(500);
-        sorti = await page.evaluate(() => window.__N.aventure.etape() !== '2975');
-      }
-      verifie(sorti, `${P.nom} : 2975 se termine et rend la main à l'aventure`);
-      const et = await page.evaluate(() => window.__N.aventure.etape());
-      verifie(et === 'fin', `${P.nom} : après 2975, le film de fin (étape ${et}) sans repasser par le jeu`);
-      break;
-    }
+    if (evt === 'espace' && cosmos) { await passer2975(page, P, '18b-2975'); break; }
     const jj = await attendreQue(page, a => (window.__AV_JEU && window.__AV_JEU.etape === a && !window.__N.aventure.actif()) ? window.__AV_JEU : null, apres, 3000);
     verifie(!!jj, `${P.nom} : après ${evt}, aJouer({ etape: ${apres}, epoque: ${jj && jj.epoque} })`);
   }

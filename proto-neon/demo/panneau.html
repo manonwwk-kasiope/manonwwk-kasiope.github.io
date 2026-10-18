@@ -39,24 +39,15 @@
     if (et === 'victoire') victoire = true;
     if (et === 'fin' && victoire) { victoire = false; if (N.aventure.reprendre('fin')) neon = false; }
   }
-  /* en 2975, N.cosmos a sa propre lunette : on cache à N.warp les ennemis du jeu gelé, pour qu'il ne les verrouille pas */
-  var vraie = null;
-  function cache(on) {
-    var E = N.ennemis; if (!E) return;
-    if (on && vraie === null) { vraie = E.list; E.list = []; }
-    else if (!on && vraie !== null) { E.list = vraie; vraie = null; }
-  }
   function brancher() {
     g = N.game; u0 = g.update; d0 = g.draw; t0 = g.drawTop;
     g.update = function (dt) {
       if (!parti) lancer();
       if (N.aventure.actif()) {
         var et = N.aventure.etape ? N.aventure.etape() : '';
-        if (et === 'choix' || et === '1976' || et === '1982' || et === '2975') musique(false);
-        cache(et === '2975');
+        if (et === 'choix' || et === '1976' || et === '1982') musique(false);   // 2975 : l'aventure s'en charge (isole)
         N.aventure.update(dt); return;
       }
-      cache(false);
       if (neon) { musique(true); u0.call(g, dt); surveiller(); }
     };
     g.draw = function () { if (N.aventure.actif() || !neon) { N.aventure.draw(); return; } d0.call(g); };

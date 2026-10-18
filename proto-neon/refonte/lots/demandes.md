@@ -208,6 +208,16 @@ les films par personnage, les fins, les retrouvailles et le teaser.**
    portrait). Modèle qui marche : `demo/panneau.html` (la démo du voyage entier, `demo/index.html`, testée de bout en
    bout : choix → 1976 → 1982 → néon → profondeur à la vague 3 → fin, zéro erreur).
 
+7. (ajout du 18 octobre, après codex-09) **2975 joue déjà dans le vrai jeu**, sans rien changer à 79-jeu.js : à la
+   victoire, `finirVoyage()` → `reprendre('fin')` rattrape les films profondeur, warp, espace, puis l'époque finale
+   2975 (N.cosmos, environ 2 min, `final: true`), puis le film de fin. Pendant 2975, N.aventure tait elle-même la piste
+   principale et cache `N.ennemis.list` à N.warp (`isole: true`), et rend tout à l'étape suivante. Vérifié dans le vrai
+   jeu : titre → JOUER → … → victoire → films → 2975 → fin → écran de fin, 0 erreur.
+   Facultatif, pour que les films d'époque tombent au bon moment plutôt qu'au rattrapage : appeler
+   `N.aventure.reprendre('profondeur' | 'warp' | 'espace')` au début des vagues 3, 4 et 5 (et `aller('aventure')`
+   si c'est accepté), comme le fait `demo/panneau.html` (`surveiller()`). Après « espace », c'est 2975 puis la fin :
+   le jeu néon ne reprend pas.
+
 ## codex-p6 — API de test (18/10/2026 · 00 h 51, Paris ; mis à jour à 00 h 52)
 
 | lot | fichier | besoin / changement | raison / preuve |
