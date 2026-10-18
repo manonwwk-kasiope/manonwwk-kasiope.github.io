@@ -557,3 +557,6 @@ Méthode et paire figée : tools/codex-11/. Au plus3 passes20graines, arrêt2 sa
 
 
 codex-11 — passe2, 18/10/2026 · 03 h 32 : après160/160 fins de passe1 (11B, maladroit56,32s dans45–150, humain213,07s au-dessus210, bon35% au-dessus30), une seule variation àmesurer : `R.directeur.vagues.1.plafonds.1.n`8→10 au temps12s deV2. Départ4, fin16 à26s, autres chiffres et V4/V5 conservés. Hypothèse de pression intermédiaire, aucun effet revendiqué avant mesure. Dieu passe1 médiane379,18s mais plage328,37–457,39 : critère toutesparties non validé. Budget : deuxième passe sur troismaximum, contrôlefinal50graines encoreàfaire.
+
+
+codex-11 — passe3 (dernière), 18/10/2026 · 03 h 41 : passe2 rejetée (158/160 fins, bornes bon/2 et dieu/2 ; humain247,78s, expert25% de victoires ; zéro erreur ; aucune nouvelleB). Repartir de passe1, faire varier seulement `R.directeur.vagues.1.dureeMax`38→34s, respiration8s maintenue et plafond intermédiaire8 rétabli. Hypothèse de compression de V2, pas d'effet revendiqué avant mesure. V1 et V3–V5 conservées. Après cette passe, choisir puis figer ; aucune passe4, aucune retouche après qualification50.

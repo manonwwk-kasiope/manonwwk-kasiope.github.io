@@ -1139,7 +1139,7 @@
         plafonds: [{ t: 0, n: 3 }, { t: 8, n: 4 }, { t: 12, n: 6 }],
         formations: [{ t: 0, f: 'file' }, { t: 8, f: 'file' }, { t: 12, f: 'nuee' }],
         formationsEffectifs: { file: { fleches: 2 }, nuee: { larves: [2, 3] } } },
-      { dureeMax: 38, intervalle: 2, plafonds: [{ t: 0, n: 4 }, { t: 12, n: 10 }, { t: 26, n: 16 }],
+      { dureeMax: 34, intervalle: 2, plafonds: [{ t: 0, n: 4 }, { t: 12, n: 8 }, { t: 26, n: 16 }],
         formationsEffectifs: { meute: { fleches: 3 }, nuee: { larves: [2, 4] } } },
       { dureeMax: 44 }
     ]

@@ -1,6 +1,6 @@
 {
   "objectif": "codex-11, voir methode.md et ordre10",
-  "phase": "passe2 exploratoire20, seule variation plafond intermédiaireV2 8→10",
+  "phase": "passe3 finale exploratoire20, source figée",
   "sourceBase": "52fe12d",
   "sourceFigée": "avant-sources.json",
   "source79": "aucune édition autorisée ici ; patch si indispensable",
@@ -12,20 +12,22 @@
     "livraison et pull boîte"
   ],
   "budget": "3 passes exploratoires maximum, arrêt 2 sans nouvelleB ; final unique50graines, plafond540s",
-  "misAJourParis": "18/10/2026 · 03 h 32",
+  "misAJourParis": "18/10/2026 · 03 h 41",
   "enCours": [
     {
-      "session": 65595,
-      "tache": "passe2, vingt graines ×huit pilotes, source figée, sérieunique",
-      "journal": "tools/codex-11/passe-2.log"
+      "session": 31170,
+      "pid": 31311,
+      "tache": "passe3,160cas figés,dernière exploration",
+      "journal": "tools/codex-11/passe-3.log"
     }
   ],
   "preuves": {
     "avant": "400 cas,395fins,5bornes,0erreur,source52fe12d",
-    "passe1": "160/160fins0erreur,11B ; V1<24s, maladroit56,32, humain213,07 ; dieu médiane379,18 mais plage328,37–457,39"
+    "passe1": "160/160fins0erreur,11B ; V1<24s, maladroit56,32, humain213,07 ; dieu médiane379,18 mais plage328,37–457,39",
+    "passe2": "160cas collectés,158fins,2bornes sans erreur ; rejetée,5B, aucune nouvelleB"
   },
-  "sourceCandidate": "passe-2-sources.json ; snapshot dérivé de passe1, p14 exclu des DEUX séries appariées, préservé dans le checkout",
-  "prochaineAction": "observer la seule passe2 en cours ; la comparer àpasse1 et référence20, décider de la candidate avant la qualification50. Aucune reprise de53009/90732 : sessions terminées.",
+  "sourceCandidate": "passe-3-sources.json ; dérivée1, V2total34s au lieu38, p2rejetée",
+  "prochaineAction": "attendre la seule passe3, puis choisir1ou3 et geler avant qualification50. Aucune quatrième passe. Baseline53009, suite90732 et passe265595 terminées ; ne pas les relancer.",
   "banc": "banc/worker/protocole/analyse exacts de p5 ; chargeur ajouté uniquement pour les sources figées",
   "verrouChromium": "pas encore demandé ; après final VM, criteres.mjs attend chef.lock et zéro headless puis revendique son propre témoin pour équivalence et R31/R35",
   "secondMac": "SSH MacBook-Air-de-Manon.local essayé03h15 : connexion refusée ; aucun calcul ni clé installé à distance. Une seule file VM sur ce Mac.",

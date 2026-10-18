@@ -25,3 +25,11 @@ Priorité du pic : quand son heure est atteinte, les groupes ordinaires attenden
 Passe1 : 160/160 fins, zéro erreur ; maladroit56,32s, humain213,07s, bon35% de victoires, expert45%. Dieu médiane379,18s, mais plage328,37–457,39s : le seuil de durée porte sur toutes les parties et reste non validé. Onze B. V1 mesurée sous24s sur les20graines bon.
 
 Une seule variation : le plafond intermédiaire de V2, à12s de vague, passe de8 à10 (`directeur.vagues.1.plafonds.1.n`). Départ4 et palier final16 à26s conservés, cadence et toutes les autres valeurs inchangées. Hypothèse : remettre de la pression après l'entrée calme, pour réduire le léger dépassement humain et le taux de victoire bon, tout en conservant la survie maladroite. Ce n'est pas une cause prouvée avant mesure. Aucune retouche de V4/V5 ni des pilotes ; la paire conserve le85 antérieur àp14. Les ajouts p14 reçus par pull sont conservés dans le checkout, sans modifier les séries figées.
+
+## Passe exploratoire 3 — dernière, décidée le18/10/2026 à03h41
+
+Passe2 rejetée : 158/160 fins, deux bornes540s (bon/2 et dieu/2), zéro erreur ; humain247,78s, expert25% de victoires, cinq B après traitement des censures. Aucune nouvelle B par rapport aux séries antérieures. La passe1 reste la meilleure référence entièrement finie et sans erreur.
+
+Repartir de passe1 : seul le budget total de V2 passe de38 à34s, respiration8s conservée. Le plafond intermédiaire revient8 (celui de passe1), sans nouveau réglage de densité, V1 et V3–V5 inchangées. Hypothèse : réduire la longueur de la séquence tout en conservant l'entrée et l'apprentissage observés, pour ramener humain vers sa cible sans ajouter d'ennemis. Tous les résultats seront publiés. C'est la troisième et dernière passe ; le contrôle final50 utilisera la candidate retenue, aucune quatrième passe ni retouche après ce contrôle.
+
+Choix de candidate : d'abord collecte entièrement finie et sans erreur, V1≤24s et survie maladroite45–150s ; puis les cibles humaines et de durée dieu demandées par l'ordre, enfin les B globales pour apprécier les compromis. Un seuil manqué reste publié même si la médiane s'améliore. La passe2 ne sera pas retenue avec ses deux cas censurés.
