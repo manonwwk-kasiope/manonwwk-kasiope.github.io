@@ -259,7 +259,7 @@ N.joueuse = (function () {
     if (N.dir && N.dir.vague) { var w = N.dir.vague(); vague = (w && typeof w === 'object') ? (w.n | 0) : (w | 0); }
     var vs = R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues;
     if (vs && vs[Math.max(0, vague - 1)]) quartier = vs[Math.max(0, vague - 1)].quartier;
-    if (N.decor && N.decor.quartier && N.decor.quartierCourant) quartier = N.decor.quartierCourant();
+    if (N.decor && N.decor.quartier) quartier = N.decor.quartier() || quartier;
     var d = {
       cause: cause, auteur: auteurDe(src, I.e), auteurId: src && src.id >= 0 ? src.id : null,
       x: P.x, y: P.y, t: O.T.t, vague: vague, quartier: quartier, visibleDepuis: I.vu, teleDuree: I.tele
