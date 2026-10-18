@@ -48,6 +48,15 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
   avant la grâce au mur ; mesuré 10,18 s sur dix graines. 8 s est inatteignable sans changer le départ ou la vitesse, ce qui changerait le
   jeu pour tous ; la cible garde son intention (immobile = mort rapide). Décision de la cheffe d'orchestre, réversible par la propriétaire.
 
+- **Performance, comparaison avec SNAKE 2030 (R-20, 18/10/2026 à 07 h 28) — à trancher par la propriétaire.** Deux passes d'optimisation
+  sans changer un pixel (codex-p45 puis p45b, 7 200 images identiques, 80 parties identiques) ont ramené le p95 de la scène charge, en VM,
+  de 2,79 à 1,72 ms (−38 %) ; la seconde ne gagne plus que 6,7 % : **arrêt pour non-convergence**. Le seul filtre d'écran à tube (20-crt),
+  que SNAKE 2030 n'a pas, coûte déjà 1,05 ms (p95 VM) ; le rendu complet minimal observé est 0,998 ms, au-dessus des 0,815 ms de SNAKE 2030
+  (mesure historique en Chromium, non directement comparable). Les autres seuils de R-20 sont tenus (≤ 11 ms ×1, ≤ 25 ms ×4, temps de jeu ≥ 0,99).
+  **Recommandation de la cheffe** : garder le filtre à tube et remplacer « plus rapide que SNAKE 2030 » par « p95 ≤ 16,7 ms sur l'iPhone de la
+  propriétaire » (le vrai critère du joueur, déjà dans R-20) ; ce qu'on perd : la comparaison chiffrée avec 2030. Alternative : couper le tube
+  sur iPhone pour viser 2030, au prix de l'image. En attendant, le seuil reste écrit et l'échec est publié.
+
 ## Arrêt de non-convergence
 
 Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
