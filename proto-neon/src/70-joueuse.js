@@ -486,8 +486,8 @@ N.joueuse = (function () {
     var ecart = Math.abs(O.wrapA(st.target - P.ang));
     var stk = inp && inp.stick && inp.stick.active;
     var haut = stk && inp.mag >= (st.geste ? B.seuilCourse - 0.05 : B.seuilCourse);
-    if (haut && (st.geste || ecart < B.ecartDeg * RAD)) { st.pousseT += dt; if (st.pousseT >= B.maintien) st.geste = true; }
-    else { st.pousseT = 0; if (!haut) st.geste = false; }
+    if (haut && ecart < B.ecartDeg * RAD) { st.pousseT += dt; if (st.pousseT >= B.maintien) st.geste = true; }
+    else { st.pousseT = 0; if (!haut || ecart > B.coupureDeg * RAD) st.geste = false; }
     var veut = !!(inp && inp.boost) || st.geste;
     st.nouveau = veut && !st.veutPrev;
     st.veutPrev = veut;
