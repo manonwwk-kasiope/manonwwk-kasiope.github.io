@@ -162,8 +162,8 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
 | `src/85-pilote.js`, `tools/codex-p39/` | Codex (session parallèle codex-p39) | 18/10 à 05 h 55 | LASSO 2–5 % : pilote ou règle (correctif 70-joueuse en patch) |
-| nouveau module d'attraction, `tools/codex-p40/` | Codex (session parallèle codex-p40) | 18/10 à 06 h 09 | R-19 : DÉMO, galerie, records, invitation |
-| chemin REJOUER, `tools/codex-p41/` | Codex (session parallèle codex-p41) | 18/10 à 06 h 09 | R-35 : relance < 2 s sans briefing |
+| nouveau module d'attraction, `tools/codex-p40/` | Codex (session parallèle codex-p40) | 18/10 à 06 h 06 | R-19 : DÉMO, galerie, records, invitation |
+| chemin REJOUER, `tools/codex-p41/` | Codex (session parallèle codex-p41) | 18/10 à 06 h 06 | R-35 : relance < 2 s sans briefing |
 | `src/78-hud.js`, `tools/mesure/criteres/R-14-*`, `R-15-*`, `tools/codex-12/` | Codex (boîte) | 18/10 à 05 h 43 | ordre12 : qualification HUD seule, R15 vagues interrompues ;79-scene en correctif seulement |
 | `tools/mesure/criteres/R-30-*` (lecture), `tools/codex-p38/` | Codex (session parallèle codex-p38) | 18/10 à 05 h 13 | partie dessinée ≠ partie simulée (R-30) : cause et correctifs en patches |
 | `tools/mesure/parties.mjs`, `tools/mesure/criteres/R-04-*`, `tools/reglage/analyse.mjs` | Codex (session parallèle codex-p36) | 18/10 à 05 h 11 | R-04 : vraies arrivées au CYCLOPE, une seule définition des médianes, horloge globale ; inerte « avant 11 s » |
