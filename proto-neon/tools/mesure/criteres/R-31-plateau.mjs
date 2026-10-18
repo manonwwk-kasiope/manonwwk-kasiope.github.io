@@ -6,6 +6,26 @@ import { lot, bilanLot } from '../parties.mjs';
 
 export const meta = { id: 'R-31', titre: 'Le plateau se déplace', seuil: '≥ 25 % en mouvement (V2-V5) ; TRAVELLING V2, V3, V5 ; 5 VOLS ; ≥ 4 convois en V4 ; 0 mort par mur mobile non annoncé', bloquant: true };
 
+// Même prédicat exporté pour les collisions contrôlées et la campagne.
+// Le dernier cycle seul compte ; un convoi, un départ ou une annonce ancienne ne valent pas préavis.
+export function murMobileAnnonce(r, m, annonce) {
+  if (m.teleDuree >= annonce) return true;
+  const bornes = (r.vagues || []).filter(v => v.t <= m.t && ['entree', 'nettoyee'].includes(v.evt))
+    .concat((r.phases || []).filter(p => p.t <= m.t && (p.evt === 'arrivee' || p.evt === 'entree' && p.n === 3)));
+  const depuis = bornes.reduce((t, b) => Math.max(t, b.t), -Infinity);
+  const cycle = (r.arene || []).filter(a => a.t >= depuis && a.t <= m.t && ['travellingAnnonce', 'travelling', 'fin'].includes(a.evt));
+  let avertissement = null, parti = false;
+  for (const a of cycle) {
+    if (a.evt === 'travellingAnnonce') { avertissement = a; parti = false; }
+    else if (a.evt === 'fin') { avertissement = null; parti = false; }
+    else if (a.evt === 'travelling') {
+      if (parti || !avertissement || a.vx !== avertissement.vx) avertissement = null;
+      parti = true;
+    }
+  }
+  return !!avertissement && m.t - avertissement.t >= annonce;
+}
+
 export async function mesurer(banc, res) {
   const { R, s } = await seuils(null, 'R31');
   const b = bilanLot(await lot(banc, 'bon', banc.graines(50, 5)));
@@ -31,7 +51,12 @@ export async function mesurer(banc, res) {
   else res.nonMesurable('convois en V4', 'aucune partie ne finit la vague 4');
   const annonce = (R.arene && R.arene.travelling && R.arene.travelling.annonce) || 2;
   let mm = 0, sans = 0;
-  for (const r of tous) for (const m of r.morts.filter(x => x.auteur === 'murMobile')) { mm++; const ann = m.teleDuree >= annonce - 1e-6 || r.arene.some(a => ['travelling', 'convoiAnnonce'].includes(a.evt) && a.t <= m.t - annonce); if (!ann) sans++; }
+  // S.death.t est le temps de combat local : comparer les horodatages du JOURNAL entre eux.
+  for (const p of b.parties.concat(d.ok ? d.parties : [])) {
+    const j = p.journal || [], de = type => j.filter(e => e.type === type).map(e => ({ ...e.d, t: e.t }));
+    const r = { arene: de('arene'), vagues: de('vague'), phases: de('phase') };
+    for (const m of de('mort').filter(x => x.auteur === 'murMobile')) { mm++; if (!murMobileAnnonce(r, m, annonce)) sans++; }
+  }
   res.verifie('morts par un mur mobile sans annonce', sans, 0, sans === 0, { mortsMurMobile: mm });
 }
 if (principal(import.meta.url)) executer({ meta, mesurer });

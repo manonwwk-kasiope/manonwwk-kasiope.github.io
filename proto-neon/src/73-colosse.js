@@ -212,7 +212,7 @@ N.colosse = (function () {
       arrT: 0, jaugeT: 0, lastReel: 0, repT: 0, repBan: false,
       mortT: 0, nExpl: 0, carcasse: false, purge: false, purgeT: 0, nPurge: 0, clr: 0, poussiere: 0,
       flashO: 0, ricT: -9, brasierT: 0, vue: false,
-      plaques: [], arene: null, aleaDx: 0, aleaDy: 0
+      plaques: [], arene: null, mur: null, arriveeZ: 0, aleaDx: 0, aleaDy: 0
     };
   }
   function reset() {
@@ -261,6 +261,46 @@ N.colosse = (function () {
   }
   function retirer(o) { if (o) { o._dead = true; o.etat = 'mort'; o.x = -9999; o.y = -9999; } }
 
+  /* R-31 : garde réelle AVANT les glissements propres au CYCLOPE. Les zones et
+     le dessin existent dès la demande, pas seulement au premier mouvement. */
+  function annoncerArene(rect, duree, ids) {
+    st.mur = { rect: rect, duree: duree, ids: ids, t: 0, parti: false };
+  }
+  function majMurs(dt) {
+    var m = st.mur;
+    if (!m) return;
+    m.t += dt;
+    if (!m.parti && m.t >= R.arene.travelling.annonce) {
+      m.parti = true;
+      if (N.world && typeof N.world.arena === 'function') N.world.arena(m.rect, m.duree);
+    }
+    // Garder l'attribution jusqu'au dernier pas réellement mobile (caméra mise à jour après nous).
+    if (m.parti && N.world && !N.world.enMouvement()) st.mur = null;
+  }
+  function teleMurs(ajouter) {
+    var m = st.mur, w = N.world;
+    if (!m || !w) return;
+    var rest = Math.max(0, R.arene.travelling.annonce - m.t);
+    function cadre(x, y, l, h, reste) {
+      ajouter(m.ids[0], 'ligne', x, y, x, y + h, 0, reste, R.arene.travelling.annonce, 'tout', 'murMobile');
+      ajouter(m.ids[1], 'ligne', x + l, y, x + l, y + h, 0, reste, R.arene.travelling.annonce, 'tout', 'murMobile');
+      ajouter(m.ids[2], 'ligne', x, y, x + l, y, 0, reste, R.arene.travelling.annonce, 'tout', 'murMobile');
+      ajouter(m.ids[3], 'ligne', x, y + h, x + l, y + h, 0, reste, R.arene.travelling.annonce, 'tout', 'murMobile');
+    }
+    cadre(w.x0, w.y0, w.x1 - w.x0, w.y1 - w.y0, rest);
+    cadre(m.rect.x, m.rect.y, m.rect.w, m.rect.h, Math.max(0, R.arene.travelling.annonce + m.duree - m.t));
+  }
+  function dessinerMurs() {
+    var m = st.mur;
+    if (!m) return;
+    var v = O.VUE, a = m.rect, g = N.gfx, bord = R.apparitions.naissance.bord;
+    // Les cibles hors cadre ont un repère au bord : l'annonce reste visible sur téléphone.
+    var x0 = O.clamp(a.x, v.x + bord, v.x + v.w - bord), x1 = O.clamp(a.x + a.w, v.x + bord, v.x + v.w - bord);
+    var y0 = O.clamp(a.y, v.y + bord, v.y + v.h - bord), y1 = O.clamp(a.y + a.h, v.y + bord, v.y + v.h - bord);
+    g.line(x0, y0, x0, y1, MAG); g.line(x1, y0, x1, y1, MAG);
+    g.line(x0, y0, x1, y0, MAG); g.line(x0, y1, x1, y1, MAG);
+  }
+
   /* ============================ start / entrée de phase ============================ */
   function start() {
     lire();
@@ -276,13 +316,16 @@ N.colosse = (function () {
     var ay = yhi >= ylo ? O.clamp(my - h / 2, ylo, yhi) : (K.mondeH - h) / 2;
     if (!(N.world && typeof N.world.arena === 'function')) { ax = A.x0; ay = A.y0; w = A.x1 - A.x0; h = A.y1 - A.y0; }
     st.arene = { x: ax, y: ay, w: w, h: h };
-    if (N.world && typeof N.world.arena === 'function') O.safe('world.arena', function () { N.world.arena({ x: ax, y: ay, w: w, h: h }, K.aDur); });
+    annoncerArene(st.arene, K.aDur, R.colosse.entreeHorsVue.mursEntree);
     st.cx = ax + w / 2; st.cy = ay + h / 2;
-    st.bx = st.cx; st.by = st.cy; st.z = CFG.arriveeZ; st.sol = false;
-    st.oeil = creer('oeil', st.cx, st.cy - CFG.dTete, K.pvTotal, CFG.rOeil);
+    st.bx = st.cx; st.by = st.cy;
+    st.arriveeZ = Math.max(CFG.arriveeZ, st.cy + R.colosse.corps[1] / 2 - O.VUE.y + R.apparitions.marge + R.apparitions.naissance.bord);
+    st.z = st.arriveeZ; st.sol = false;
+    st.oeil = creer('oeil', st.cx, st.cy - CFG.dTete - st.z, K.pvTotal, CFG.rOeil);
     for (var i = 0; i < 6; i++) st.plaques.push({ ox: PLQ[i][0], oy: PLQ[i][1], s: 0, t: 0, gx: 0, gy: 0, sx: 0, sy: 0 });
     emitPhase(1, 'arrivee');
     O.sfx('impactBoss');
+    rafraichirTele();
     return st.oeil;
   }
   var PLQ = [[-30, -20], [30, -20], [-34, 6], [34, 6], [-26, 32], [26, 32]];
@@ -301,7 +344,9 @@ N.colosse = (function () {
     if (n === 2) {
       var mi = [CFG.rMain, CFG.rMain];
       for (i = 0; i < 2; i++) {
-        var m = creer('main', st.bx + (i ? 1 : -1) * CFG.epaule, st.by - 4, K.pvMain, mi[i]);
+        var marge = Math.ceil(Math.sqrt(R.colosse.main[0] * R.colosse.main[0] + R.colosse.main[1] * R.colosse.main[1])) / 2 + R.apparitions.marge + R.apparitions.naissance.bord;
+        var x = i ? O.VUE.x + O.VUE.w + marge : O.VUE.x - marge;
+        var m = creer('main', x, st.by - 4, K.pvMain, mi[i]);
         if (m) { m._m = 'idle'; m.ang = PI / 2; }
         st.mains[i] = m;
       }
@@ -317,7 +362,7 @@ N.colosse = (function () {
       if (ar) {
         var nw = ar.w * (1 - K.aRes), nh = ar.h * (1 - K.aRes), nx = ar.x + (ar.w - nw) / 2, ny = ar.y + (ar.h - nh) / 2;
         st.arene = { x: nx, y: ny, w: nw, h: nh };
-        if (N.world && typeof N.world.arena === 'function') O.safe('world.arena', function () { N.world.arena({ x: nx, y: ny, w: nw, h: nh }, K.aResDur); });
+        annoncerArene(st.arene, K.aResDur, R.colosse.entreeHorsVue.mursPhase3);
       }
     }
   }
@@ -708,13 +753,14 @@ N.colosse = (function () {
     var d = dtReel(dt);
     st.arrT += d; st.jaugeT += d;
     var u = O.clamp(st.arrT / K.arrivee, 0, 1);
-    st.z = (1 - ease(u)) * CFG.arriveeZ; st.sol = false;
+    st.z = (1 - ease(u)) * st.arriveeZ; st.sol = false;
     if (st.arrT >= K.arrivee) finArrivee();
   }
   function update(dt) {
     if (!st.on || !(dt > 0)) return;
     var P = N.joueuse && N.joueuse.tete;
     st.t += dt; st.fl += dt;
+    majMurs(dt);
     if (st.flashO > 0) st.flashO -= dt;
     if (st.brasierT > 0) st.brasierT -= dt;
     if (st.mode === 'arrivee') arrivee(dt);
@@ -737,6 +783,7 @@ N.colosse = (function () {
      Plusieurs zones peuvent avoir le même id d'attaque ; par.id reste l'id de l'auteur des dégâts. */
   function publierTele(ajouter) {
     var a = st.atk, e = st.oeil, i, j, L, m;
+    if (st.on) teleMurs(ajouter);
     if (!st.on || st.mode !== 'combat' || !a || !e || e._dead) return;
     var rest = a.phase === 0 ? Math.max(0, a.tele - a.t) : 0;
     function zone(forme, x0, y0, x1, y1, r, cible, id, rste, total, a0, a1) {
@@ -959,6 +1006,7 @@ N.colosse = (function () {
   function drawTop() {
     if (!st.on) return;
     var g = N.gfx;
+    O.safe('colosse.murs', dessinerMurs);
     O.safe('colosse.teles', teles);
     if (st.mode === 'mort' && st.brasierT > 0 && (!N.fx || typeof N.fx.flashGate !== 'function' || N.fx.flashGate(15000))) {
       g.ditherCirc(st.bx, st.by - 20, 74, BRA, 0.75);

@@ -127,6 +127,7 @@ N.joueuse = (function () {
     st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
     st.bcl = 0; st.bclArme = false; st.bclRech = 0; st.bclFx = -1; st.perdu = 0; st.repT = 0; st.pvAttente = null;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
+    annoncesMurs = {};
     clk = 0; trailReset(P.x, P.y, P.ang, 40);
     st.res = 100; st.bOn = false; st.bk = 0; st.geste = false; st.pousseT = 0; st.veutPrev = false; st.susp = false; st.panne = false; st.bas = 0;
     st.sansBoost = 9; st.nouveau = false; st.trav = 0; st.repli = 0; st.lenAvant = 0;
@@ -177,9 +178,41 @@ N.joueuse = (function () {
     for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i];
     return null;
   }
+  // Métadonnées de mort seulement : durée réellement observée dans S.tele.
+  // Un total promis, ou une zone découverte déjà active, ne prouve aucune annonce préalable.
+  var annoncesMurs = {};
+  function observerAnnoncesMurs() {
+    var zones = S && S.tele || [], groupes = {}, maintenant = N.horloge.t(), i, z, a;
+    for (i = 0; i < zones.length; i++) {
+      z = zones[i];
+      if (!z.par || z.par.type !== 'murMobile') continue;
+      a = groupes[z.id];
+      if (!a || z.reste < a.reste) groupes[z.id] = z;
+    }
+    for (var id in annoncesMurs) if (!groupes[id]) delete annoncesMurs[id];
+    for (id in groupes) {
+      z = groupes[id]; a = annoncesMurs[id];
+      if (!a || z.reste > a.reste) a = annoncesMurs[id] = { depuis: maintenant, annonce: z.reste > 0 };
+      a.reste = z.reste;
+    }
+  }
+  function annonceMurMortel() {
+    var w = N.world, zones = S && S.tele || [], duree = 0;
+    if (!w || !w.enMouvement()) return duree;
+    var pan = distMur(P.x, P.y).pan;
+    for (var i = 0; i < zones.length; i++) {
+      var z = zones[i], a = annoncesMurs[z.id];
+      if (!z.par || z.par.type !== 'murMobile' || z.reste > 0 || !a || !a.annonce) continue;
+      var bord = pan === 'g' ? z.x0 === w.x0 && z.x1 === w.x0
+        : pan === 'd' ? z.x0 === w.x1 && z.x1 === w.x1
+        : pan === 'h' ? z.y0 === w.y0 && z.y1 === w.y0 : z.y0 === w.y1 && z.y1 === w.y1;
+      if (bord) duree = Math.max(duree, Math.min(z.total, Math.max(0, N.horloge.t() - a.depuis)));
+    }
+    return duree;
+  }
   function infoSource(src) {
     var e = src && src.genre === 'ennemi' ? trouver(src.id) : null;
-    return { vu: e ? (e.vuDepuis > 0 ? e.vuDepuis : 0) : 0, tele: e && e._teleTotal > 0 ? e._teleTotal : 0, e: e };
+    return { vu: e ? (e.vuDepuis > 0 ? e.vuDepuis : 0) : 0, tele: src && src.genre === 'arene' && src.type === 'murMobile' ? annonceMurMortel() : e && e._teleTotal > 0 ? e._teleTotal : 0, e: e };
   }
 
   /* ============================ la mort ============================
@@ -320,6 +353,7 @@ N.joueuse = (function () {
   function update(dt) {
     if (!S) S = N.S;
     if (!S) return;
+    observerAnnoncesMurs();
     dt = O.dtJ(dt);
     if (!(dt > 0)) dt = 0;
     if (dt > 0.05) dt = 0.05;
@@ -730,6 +764,7 @@ N.joueuse = (function () {
     var pk = N.horloge && N.horloge.pas ? N.horloge.pas() : 0;      // un seul passage par pas, que 79-jeu ou 71-butin l'appelle
     if (pk > 0 && pk === aprK) return;
     aprK = pk;
+    observerAnnoncesMurs();
     dt = O.dtJ(dt);
     if (!(dt > 0)) return;
     iv.t -= dt;

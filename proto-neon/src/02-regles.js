@@ -1120,6 +1120,12 @@
     defisCourts: { finir: 'FINIR', premierJet: '1ER JET', lasso6: 'LASSO', sansCoupe: 'INTACT', chaine5: 'CHAÎNE', sansFilet: 'UNE VIE' }
   };
 
+  /* codex-p4d : identités des annonces propres au boss, séparées par glissement. */
+  R.colosse.entreeHorsVue = {
+    mursEntree: [-10005, -10006, -10007, -10008],
+    mursPhase3: [-10009, -10010, -10011, -10012]
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
