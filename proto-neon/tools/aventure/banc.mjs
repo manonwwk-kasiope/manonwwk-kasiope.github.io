@@ -204,11 +204,25 @@ async function aventureLui(page, P, M) {
   /* chaque époque future rendue par son événement ; le jeu reprend entre chaque */
   const evts = [['profondeur', 'jeu-1993', '16-profondeur-lui'], ['warp', 'jeu-2001', '17-warp-lui'], ['espace', 'jeu-2975', '18-espace-lui']];
   const cosmos = await page.evaluate(() => !!(window.__N.cosmos && window.__N.cosmos.start));
+  const grille = await page.evaluate(() => !!(window.__N.grille && window.__N.grille.start));
   for (const [evt, apres, cap] of evts) {
     await attendre(300);
     await page.evaluate(e => window.__aventure.rendre(e), evt);
     M.films.push(await film(page, P, evt, { cap }));
     if (evt === 'espace' && cosmos) { await passer2975(page, P, '18b-2975'); break; }
+    if (evt === 'profondeur' && grille) {
+      /* 1993 : N.grille joue après le film ; on le saute jusqu'au retour au jeu */
+      verifie(!!await attendreEtape(page, '1993', 3000), `${P.nom} : époque 1993 (N.grille)`);
+      await attendre(1500);
+      await capture(page, P, '16b-1993');
+      let sorti = false;
+      for (let k = 0; k < 40 && !sorti; k++) {
+        await page.evaluate(() => window.__N.aventure.sauter());
+        await attendre(500);
+        sorti = await page.evaluate(() => window.__N.aventure.etape() !== '1993');
+      }
+      verifie(sorti, `${P.nom} : 1993 se termine et rend la main à l'aventure`);
+    }
     const jj = await attendreQue(page, a => (window.__AV_JEU && window.__AV_JEU.etape === a && !window.__N.aventure.actif()) ? window.__AV_JEU : null, apres, 3000);
     verifie(!!jj, `${P.nom} : après ${evt}, aJouer({ etape: ${apres}, epoque: ${jj && jj.epoque} })`);
   }
