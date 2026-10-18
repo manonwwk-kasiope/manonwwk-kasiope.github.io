@@ -1,0 +1,103 @@
+{
+  "dateParis": "18/10/2026 12:04:13",
+  "serveurLance": false,
+  "navigateurLance": false,
+  "avant": {
+    "sourcesSha256": "293ec8e75189b9ead75a525537b8e0a1caf30ab4f607282116bdcfa7d2f9e8dc",
+    "bundleSha256": "57bb0d1089f28178c98b6cb8cc6dbeed1407ddd780732d01d1b1292cb42fc9ac",
+    "inventaire": {
+      "videos": 50,
+      "clips": 50,
+      "images": 335,
+      "audio": 53,
+      "sonsSynthese": 51,
+      "voixSynthese": 6,
+      "recettesHorsBundle": 48,
+      "voixHorsBundle": 12,
+      "fichiersSansDeclenchement": 314,
+      "referencesSansFichier": 0,
+      "videosHorsClips": 0
+    }
+  },
+  "controles": [
+    {
+      "nom": "syntaxe inventaire.mjs",
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "nom": "syntaxe verifier.mjs",
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "nom": "syntaxe temoin.mjs",
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "nom": "syntaxe controle-node.mjs",
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "nom": "import du vérifieur sans effet",
+      "code": 0,
+      "stdout": "{\"exports\":[\"BANC\",\"creerServeur\",\"precontroler\",\"profils\",\"verifier\"],\"profils\":[\"iphone-paysage\",\"iphone-portrait\",\"bureau\"]}\n",
+      "stderr": ""
+    },
+    {
+      "nom": "node build.mjs",
+      "code": 0,
+      "stdout": "build : 39 modules, 2293715 octets → index.html\n  00-pal.js\n  02-regles.js\n  03-socle.js\n  05-art.js\n  10-gfx.js\n  12-cam.js\n  15-decor.js\n  17-vol.js\n  20-crt.js\n  30-music.js\n  40-sprites.js\n  50-fx.js\n  60-intro.js\n  62-choix.js\n  63-themes.js\n  64-aventure.js\n  66-grille.js\n  67-cosmos.js\n  68-terminal.js\n  69-arcade.js\n  70-commun.js\n  70-joueuse.js\n  71-butin.js\n  72-ennemis.js\n  72-serpents.js\n  73-arene.js\n  73-colosse.js\n  74-arsenal.js\n  75-cartes.js\n  76-defile.js\n  76-directeur.js\n  77-score.js\n  78-hud.js\n  78-warp.js\n  79-jeu.js\n  79-scene.js\n  80-ecrans.js\n  85-pilote.js\n  90-boot.js\n  art/affiche-duo.png\n  art/affiche.png\n  art/alerte.png\n  art/amiral-elle.png\n  art/amiral-lui.png\n  art/apotheose-elle.png\n  art/apotheose-lui.png\n  art/apotheose.png\n  art/boss.png\n  art/briefing.png\n  art/chasse-elle.png\n  art/chasse-lui.png\n  art/chasse.png\n  art/connexion-elle.png\n  art/connexion-lui.png\n  art/connexion.png\n  art/defaite-elle.png\n  art/defaite-lui.png\n  art/defaite.png\n  art/espace-elle.png\n  art/espace-lui.png\n  art/eveil.png\n  art/exterieur.png\n  art/fin-elle.png\n  art/fin-lui.png\n  art/fissure-elle.png\n  art/fissure-lui.png\n  art/horizon.png\n  art/logo.png\n  art/neon-elle.png\n  art/neon-lui.png\n  art/pilote-elle.png\n  art/pilote-lui.png\n  art/plongee-elle.png\n  art/plongee-lui.png\n  art/plongee.png\n  art/profondeur-elle.png\n  art/profondeur-lui.png\n  art/retournement-elle.png\n  art/retournement-lui.png\n  art/retournement.png\n  art/retrouvailles.png\n  art/reveil-elle.png\n  art/reveil-lui.png\n  art/reveil.png\n  art/rival-elle.png\n  art/rival-lui.png\n  art/rival.png\n  art/teaser-3019.png\n  art/victoire.png\n  art/warp-elle.png\n  art/warp-lui.png\n  cine/affiche-duo.mp4\n  cine/affiche.mp4\n  cine/alerte.mp4\n  cine/amiral-elle.mp4\n  cine/amiral-lui.mp4\n  cine/apotheose-elle.mp4\n  cine/apotheose-lui.mp4\n  cine/apotheose.mp4\n  cine/boss.mp4\n  cine/briefing.mp4\n  cine/chasse-elle.mp4\n  cine/chasse-lui.mp4\n  cine/chasse.mp4\n  cine/connexion-elle.mp4\n  cine/connexion-lui.mp4\n  cine/connexion.mp4\n  cine/defaite-elle.mp4\n  cine/defaite-lui.mp4\n  cine/defaite.mp4\n  cine/espace-elle.mp4\n  cine/espace-lui.mp4\n  cine/eveil.mp4\n  cine/exterieur.mp4\n  cine/fin-elle.mp4\n  cine/fin-lui.mp4\n  cine/fissure-elle.mp4\n  cine/fissure-lui.mp4\n  cine/neon-elle.mp4\n  cine/neon-lui.mp4\n  cine/pilote-elle.mp4\n  cine/pilote-lui.mp4\n  cine/plongee-elle.mp4\n  cine/plongee-lui.mp4\n  cine/plongee.mp4\n  cine/profondeur-elle.mp4\n  cine/profondeur-lui.mp4\n  cine/retournement-elle.mp4\n  cine/retournement-lui.mp4\n  cine/retournement.mp4\n  cine/retrouvailles.mp4\n  cine/reveil-elle.mp4\n  cine/reveil-lui.mp4\n  cine/reveil.mp4\n  cine/rival-elle.mp4\n  cine/rival-lui.mp4\n  cine/rival.mp4\n  cine/teaser-3019.mp4\n  cine/victoire.mp4\n  cine/warp-elle.mp4\n  cine/warp-lui.mp4\n  musique : 21 blocs, MUSIQUE_BASE = musique/\n",
+      "stderr": ""
+    }
+  ],
+  "ok": true,
+  "apres": {
+    "sourcesSha256": "293ec8e75189b9ead75a525537b8e0a1caf30ab4f607282116bdcfa7d2f9e8dc",
+    "bundleSha256": "57bb0d1089f28178c98b6cb8cc6dbeed1407ddd780732d01d1b1292cb42fc9ac",
+    "inventaire": {
+      "videos": 50,
+      "clips": 50,
+      "images": 335,
+      "audio": 53,
+      "sonsSynthese": 51,
+      "voixSynthese": 6,
+      "recettesHorsBundle": 48,
+      "voixHorsBundle": 12,
+      "fichiersSansDeclenchement": 314,
+      "referencesSansFichier": 0,
+      "videosHorsClips": 0
+    }
+  },
+  "sourcesInchangees": true,
+  "bundleIdentique": true,
+  "precontrole": {
+    "ok": true,
+    "erreurs": []
+  },
+  "temoin": {
+    "ok": true,
+    "codeSain": 0,
+    "codeRenomme": 1,
+    "raccord": {
+      "portee": "preuve statique uniquement ; aucun essai de progression ou de pixels",
+      "avant": [
+        "cine/affiche.mp4",
+        "cine/amiral-elle.mp4",
+        "cine/amiral-lui.mp4"
+      ],
+      "apres": [
+        "cine/affiche.mp4"
+      ],
+      "build": 0
+    }
+  },
+  "protocoleSha256": "cac35f4a23590e146f141bda3ed7d050b0bf379770c3ab6210a4205c18b18978",
+  "finParis": "18/10/2026 12:04:41"
+}
