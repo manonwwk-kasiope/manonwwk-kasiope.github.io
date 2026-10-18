@@ -1,6 +1,8 @@
 # SNAKE 2975 — version 0
 
-18/10/2026 · 11 h 55 (Paris) — notes pour la propriétaire.
+18/10/2026 · 11 h 55 (Paris), mis à jour à 13 h 38 — notes pour la propriétaire.
+
+**Contrôle de sortie au navigateur (13 h 38, source `36c72aa`, Chrome, iPhone 13 paysage et portrait, bureau 1440 × 900) : 50 films sur 50 décodés et lus par le vrai chemin du jeu, 388 fichiers (images, morceaux) chargés et décodés, parcours titre → choix → film sauté → 1976, une partie complète jusqu'à l'écran de fin puis REJOUER, 0 erreur sur les trois formats** (`tools/v0/navigateur/resultats.json`). Safari sur l'iPhone réel reste à vérifier.
 
 **Un snake qui commence sur un vieux terminal et finit dans l'espace.** Cette version contient déjà le voyage, les combats néon et les aventures d'ELLE et de LUI. Elle vise d'abord Safari sur iPhone, en paysage comme en portrait ; le bureau garde ses commandes. **La sortie complète n'est pas encore validée : les flashs dépassent encore la limite dans des essais publiés.** Les résultats ci-dessous viennent des documents de sortie et des médiations ; aucun nouvel essai de jeu ni contrôle en ligne n'a été exécuté pour ces notes.
 
@@ -40,10 +42,11 @@ Les bips du terminal deviennent musique d'arcade, puis **Neon Velocity** et **si
 | Début des vagues 3 et 4 | PROFONDEUR puis WARP, respectivement. |
 | Avant le CYCLOPE | RÉVEIL, puis ALERTE et révélation du colosse. |
 | Victoire sur le CYCLOPE | APOTHÉOSE, puis ESPACE et le combat spatial ; ensuite la fin du personnage. |
+| Arrivée du vaisseau amiral | AMIRAL, propre au personnage, une fois par partie. |
 | Après une aventure finie | Invitation à découvrir l'autre pilote ; si les deux sont finis, RETROUVAILLES et teaser SNAKE 3019, puis À SUIVRE. |
 | Bilan | Fond de VICTOIRE ou de DÉFAITE ; la défaite a une variante par personnage. |
 
-Sources du calendrier, y compris les numéros de vagues : [enchaînement du jeu](../src/79-jeu.js), [aventure](../src/64-aventure.js), [intermèdes](../src/60-intro.js), [choix](../src/62-choix.js). Un toucher ou une touche permet de passer les films après leur courte garde. Si la vidéo ne peut pas jouer, une image fixe prend le relais. La lecture effective de tous ces clips sur Safari est **à vérifier**. Le film de l'amiral est disponible, mais son déclenchement n'est pas confirmé par l'enchaînement reçu. Sources : [lecteurs](../src/05-art.js), [aventure](../src/64-aventure.js), [combat spatial](../src/67-cosmos.js).
+Sources du calendrier, y compris les numéros de vagues : [enchaînement du jeu](../src/79-jeu.js), [aventure](../src/64-aventure.js), [intermèdes](../src/60-intro.js), [choix](../src/62-choix.js). Un toucher ou une touche permet de passer les films après leur courte garde. Si la vidéo ne peut pas jouer, une image fixe prend le relais. La lecture effective de tous ces clips sur Safari est **à vérifier**. Le film de l'amiral joue une fois, à l'arrivée du vaisseau amiral, dans la version du personnage (codex-v0d, contrôlé au navigateur sur les trois formats). Sources : [lecteurs](../src/05-art.js), [aventure](../src/64-aventure.js), [combat spatial](../src/67-cosmos.js).
 
 **Comment jouer**
 
