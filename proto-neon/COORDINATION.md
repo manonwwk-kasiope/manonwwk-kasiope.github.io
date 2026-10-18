@@ -112,6 +112,7 @@ Codex : codex-10 en cours ; 01c clos, 05b livré prêt pour médiation.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/77-score.js`, `src/80-ecrans.js` | Codex (session parallèle codex-p12) | 18/10 à 02 h 00 | R-16 (`N.score.defis`), R-36 (déblocages, défis du jour, raison de revenir) |
 | `src/50-fx.js`, `src/40-sprites.js` | Codex (session parallèle codex-p10) | 18/10 à 01 h 55 | R-13 (journal des flashs, ≤ 3 par seconde prouvé) et R-37 (gaine de la tête) |
 | `src/76-defile.js` (nouveau), `src/76-directeur.js`, `tools/codex-10/` | Codex | 18/10 à 01 h 45 | codex-10 : DÉFILÉ et respiration ; raccord79 livré en patch, chiffres02 réservés àp5 (aucune modification sans partage explicite) |
 | `src/70-joueuse.js`, `src/78-hud.js`, `src/12-cam.js` | Codex (session parallèle codex-p8) | 18/10 à 01 h 44 | longueur critique qui se sent, accélération visible (manques n° 6 et 9) |
