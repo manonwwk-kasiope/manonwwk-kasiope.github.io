@@ -1,0 +1,407 @@
+{
+  "etat": "attraction",
+  "ecran": {
+    "nom": "attraction",
+    "depuis": 0.025,
+    "cartes": [],
+    "niveaux": {},
+    "choix": 0,
+    "pret": false,
+    "retour": {
+      "nom": "attraction",
+      "volet": "demo",
+      "t": 0.025,
+      "lignes": [
+        {
+          "texte": "DÉMO",
+          "x": 5,
+          "y": 5,
+          "w": 46,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "UNE TOUCHE",
+          "x": 5,
+          "y": 206,
+          "w": 118,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        }
+      ]
+    }
+  },
+  "w": 360,
+  "h": 225,
+  "px": 4,
+  "palette": [
+    "#0d0221",
+    "#190b28",
+    "#241734",
+    "#541388",
+    "#2d1b69",
+    "#ff2a6d",
+    "#ff8fab",
+    "#05d9e8",
+    "#d1f7ff",
+    "#ff9e00",
+    "#ffd319",
+    "#ff5714",
+    "#fffce8",
+    "#8a8fa3",
+    "#8b0f3a",
+    "#01012b"
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 2084,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansFilet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS FILET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansCoupe",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS COUPE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 7,
+      "type": "partie",
+      "d": {
+        "graine": 17,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 7,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 7,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 7,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 7,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "section",
+      "d": {
+        "nom": "attraction"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "niveau"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "flash",
+      "d": {
+        "aire": 6016,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 0,
+        "_image": 906,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 906,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0,
+        "x": 92,
+        "y": 132,
+        "w": 176,
+        "h": 87,
+        "echelle": 4,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 907,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    }
+  ],
+  "son": {
+    "global": true,
+    "musique": true,
+    "effets": true
+  },
+  "tete": {
+    "x": 390.82,
+    "y": 256,
+    "ang": 0,
+    "vit": 68
+  },
+  "sha256": "b140215909bab6e5e612e6a19b01a91bbe3db041e06474ff02943ec1f1261207",
+  "horsPalette": 0,
+  "secondes": 15.017200000047684,
+  "preuve": {
+    "etat": "attraction",
+    "volet": "demo",
+    "lignes": [
+      {
+        "texte": "DÉMO",
+        "pixels": 280,
+        "dansZone": true
+      },
+      {
+        "texte": "UNE TOUCHE",
+        "pixels": 560,
+        "dansZone": true
+      }
+    ],
+    "err": 0
+  }
+}

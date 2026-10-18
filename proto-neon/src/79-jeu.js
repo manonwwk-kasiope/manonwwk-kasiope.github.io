@@ -38,7 +38,7 @@ N.game = (function () {
 
   var et = 'demarrage', etT = 0, etatJeu = 'jeu', avant = 'jeu', seed = 2975, partieN = 0;
   var muted = false, muteTick = 0;
-  var demo = false, seedTitre = 0, sonTitreCoupe = false;
+  var demo = false, seedTitre = 0, sonTitreCoupe = false, canauxTitre = null;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
   var god = false, simulant = false, departExplicite = false;
@@ -137,6 +137,7 @@ N.game = (function () {
     var u = N.ui;
     if (u) {
       if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' && N.defile ? { rareGarantie: N.defile.prendreRare() } : undefined);
+      else if (nom === 'attraction' && prev !== 'attraction') u.ouvrir('attraction');
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
       else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
@@ -149,6 +150,7 @@ N.game = (function () {
     if (!demo) {
       seedTitre = seed;
       sonTitreCoupe = modOk(N.music, 'muted') ? N.music.muted() : muted;
+      canauxTitre = modOk(N.music, 'muted') ? { musique: N.music.muted('musique'), effets: N.music.muted('effets') } : null;
     }
     // Le silence global couvre aussi les voix et les cues, au-delà des deux canaux.
     if (modOk(N.music, 'mute')) N.music.mute(true);
@@ -167,6 +169,7 @@ N.game = (function () {
     partie(seedTitre); // efface le score de démonstration, jamais score.terminer()
     if (modOk(N.music, 'mute')) N.music.mute(sonTitreCoupe);
     applyMute();
+    if (canauxTitre && modOk(N.music, 'mute')) { N.music.mute('musique', canauxTitre.musique); N.music.mute('effets', canauxTitre.effets); }
   }
   function activiteTitre() {
     var i = S_().input;

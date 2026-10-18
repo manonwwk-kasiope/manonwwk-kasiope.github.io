@@ -1,0 +1,13 @@
+evalmachine.<anonymous>:10
+ const obligatoires={cause:!r.cause||texte.includes(N.ids.texte(r.cause,r.auteur)),quartier:!r.quartier||texte.includes(N.ids.noms.quartiers[r.quartier]),progression:/SECTEUR \d+ %/.test(texte),score:/SCORE/.test(texte),record:/RECORD/.test(texte),ecart:r.ecart===null||/ÉCART/.test(texte),build:!r.build||texte.includes(r.build.nom),note:/NOTE [SABCD]/.test(texte),conseil:!r.conseil||texte.includes(r.conseil),defis:/DÉFIS DU JOUR/.test(texte),energie:/ÉNERGIE/.test(texte),prochain:/RALENTI|REPLI|STYLES|GALERIE|DÉPART V3|TOUT DÉBLOQUÉ/.test(texte),continuer:/CONTINUER \?/.test(texte)};
+                                                                                                                                            ^
+
+TypeError: Cannot read properties of undefined (reading 'docks')
+    at observerFin (evalmachine.<anonymous>:10:141)
+    at evalmachine.<anonymous>:15:3
+    at Script.runInContext (node:vm:149:12)
+    at Object.runInContext (node:vm:301:6)
+    at evaluer (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/r18.mjs:14:33)
+    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/r18.mjs:20:49
+
+Node.js v24.15.0

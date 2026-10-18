@@ -1148,6 +1148,8 @@
   R.decorContrejour = { rangs: 4, rangsPortrait: 8, encre: 'acier' };
   /* codex-p22 : chevrons persistants, accent lent ; aucun seuil de mesure changé. */
   R.arene.signaux = { hz: 1, marge: 7, pasY: 20, pasX: 6, colonnes: 4 };
+  /* codex-p24 : présentation de la borne, durées de boucle existantes conservées. */
+  R.ecrans.attraction.presentation = { ennemis: ['fleche', 'tourelle', 'sentinelle', 'mine'], spriteW: 32, recordsMax: 3 };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

@@ -1,0 +1,30 @@
+8f55a91 paysage 1/12 false []
+8f55a91 portrait 1/12 false []
+8f55a91 bureau 1/12 false []
+p17 paysage 1/12 false []
+p17 portrait 1/12 false []
+p17 bureau 1/12 false []
+recu paysage 1/12 false []
+recu portrait 1/12 false []
+recu bureau 1/12 false []
+apres paysage 1/12 false []
+apres portrait 1/12 false []
+apres bureau 1/12 false []
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok(out.filter(c=>['8f55a91','apres'].includes(c.phase)).every(c=>c.ok))
+
+    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/r18.mjs:24:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.15.0

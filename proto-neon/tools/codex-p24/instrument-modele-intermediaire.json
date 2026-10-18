@@ -1,0 +1,224 @@
+[
+  {
+    "mode": "avant",
+    "mesures": [
+      {
+        "nom": "attraction après 15 s d’inaction",
+        "valeur": 15.05,
+        "seuil": "15 ± 1 s",
+        "ok": true,
+        "raison": "état attraction observé"
+      },
+      {
+        "nom": "bandeau DÉMO peint",
+        "valeur": false,
+        "seuil": "présent",
+        "ok": false
+      },
+      {
+        "nom": "galerie peinte",
+        "valeur": false,
+        "seuil": "vue",
+        "ok": false
+      },
+      {
+        "nom": "tableau des records peint",
+        "valeur": false,
+        "seuil": "vu",
+        "ok": false
+      },
+      {
+        "nom": "invitation peinte",
+        "valeur": false,
+        "seuil": "vue",
+        "ok": false
+      },
+      {
+        "nom": "zéro erreur",
+        "valeur": 0,
+        "seuil": 0,
+        "ok": true
+      },
+      {
+        "nom": "premier geste rend le titre",
+        "valeur": true,
+        "seuil": true,
+        "ok": true
+      }
+    ],
+    "notes": [
+      "volets observés sur leurs pixels : "
+    ],
+    "captures": []
+  },
+  {
+    "mode": "apres",
+    "mesures": [
+      {
+        "nom": "attraction après 15 s d’inaction",
+        "valeur": 15.05,
+        "seuil": "15 ± 1 s",
+        "ok": true,
+        "raison": "état attraction observé"
+      },
+      {
+        "nom": "bandeau DÉMO peint",
+        "valeur": true,
+        "seuil": "présent",
+        "ok": true
+      },
+      {
+        "nom": "galerie peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "tableau des records peint",
+        "valeur": true,
+        "seuil": "vu",
+        "ok": true
+      },
+      {
+        "nom": "invitation peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "zéro erreur",
+        "valeur": 0,
+        "seuil": 0,
+        "ok": true
+      },
+      {
+        "nom": "premier geste rend le titre",
+        "valeur": true,
+        "seuil": true,
+        "ok": true
+      }
+    ],
+    "notes": [
+      "volets observés sur leurs pixels : demo, galerie, records, invitation"
+    ],
+    "captures": []
+  },
+  {
+    "mode": "jamais",
+    "mesures": [
+      {
+        "nom": "attraction après 15 s d’inaction",
+        "valeur": null,
+        "seuil": "15 ± 1 s",
+        "ok": false,
+        "raison": "jamais atteinte en 25 s"
+      }
+    ],
+    "notes": [],
+    "captures": []
+  },
+  {
+    "mode": "tropTot",
+    "mesures": [
+      {
+        "nom": "attraction après 15 s d’inaction",
+        "valeur": 13.05,
+        "seuil": "15 ± 1 s",
+        "ok": false,
+        "raison": "état attraction observé"
+      },
+      {
+        "nom": "bandeau DÉMO peint",
+        "valeur": true,
+        "seuil": "présent",
+        "ok": true
+      },
+      {
+        "nom": "galerie peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "tableau des records peint",
+        "valeur": true,
+        "seuil": "vu",
+        "ok": true
+      },
+      {
+        "nom": "invitation peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "zéro erreur",
+        "valeur": 0,
+        "seuil": 0,
+        "ok": true
+      },
+      {
+        "nom": "premier geste rend le titre",
+        "valeur": true,
+        "seuil": true,
+        "ok": true
+      }
+    ],
+    "notes": [
+      "volets observés sur leurs pixels : demo, galerie, records, invitation"
+    ],
+    "captures": []
+  },
+  {
+    "mode": "tropTard",
+    "mesures": [
+      {
+        "nom": "attraction après 15 s d’inaction",
+        "valeur": 17.05,
+        "seuil": "15 ± 1 s",
+        "ok": false,
+        "raison": "état attraction observé"
+      },
+      {
+        "nom": "bandeau DÉMO peint",
+        "valeur": true,
+        "seuil": "présent",
+        "ok": true
+      },
+      {
+        "nom": "galerie peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "tableau des records peint",
+        "valeur": true,
+        "seuil": "vu",
+        "ok": true
+      },
+      {
+        "nom": "invitation peinte",
+        "valeur": true,
+        "seuil": "vue",
+        "ok": true
+      },
+      {
+        "nom": "zéro erreur",
+        "valeur": 0,
+        "seuil": 0,
+        "ok": true
+      },
+      {
+        "nom": "premier geste rend le titre",
+        "valeur": true,
+        "seuil": true,
+        "ok": true
+      }
+    ],
+    "notes": [
+      "volets observés sur leurs pixels : demo, galerie, records, invitation"
+    ],
+    "captures": []
+  }
+]

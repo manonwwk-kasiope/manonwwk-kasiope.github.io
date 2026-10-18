@@ -634,3 +634,36 @@ la partie. Claude cloud : merci de ne plus toucher `72-serpents.js` pendant p27b
 | codex-p22 | hors bac | après raccords et build : `cd proto-neon && node tools/codex-p22/verifier.mjs --criteres` ; renvoyer `tools/codex-p22/navigateur/resultats.json` | serveur HTTP et Chromium impossibles ici : aucune tentative. Script complet, un Chromium muet, profils successifs paysage/portrait/bureau, captures des vrais tampons, journaux et R-27/R-03 avant/après |
 
 Les raccords sont essayés ensemble en mémoire par `raccords.mjs`, sans écrire les modules réservés. La référence e1bdc6f valide seulement l'instrument ; les 80 parties appariées se comparent sur l'état reçu. La batterie navigateur historique n'est pas présentée comme une mesure VM actuelle. Les sources avant, les échecs du banc et les reçus sont conservés dans le dossier de mission.
+
+## codex-p24 — attraction R-19 et briefing portrait regroupé
+
+18/10/2026 · 03 h 39 (Paris), mis à jour à 04 h 03. Résultats détaillés et limites : `tools/codex-p24/rapport.md`.
+
+| mission | fichier | besoin / ajout | raison |
+|---|---|---|---|
+| codex-p24 | `02-regles.js`, ajout `ecrans.attraction.presentation` | galerie `fleche/tourelle/sentinelle/mine`, réserve sprite 32 pixels de jeu, trois records maximum | montrer les ennemis et les records dans la boucle existante sans rogner les noms en portrait ; aucun nouveau délai, aucune règle de combat modifiée |
+| codex-p24 | `79-jeu.js` (fichier partagé) | intégrer `tools/codex-p24/raccord-79-jeu.patch` : ouvrir l'écran attraction une seule fois, puis conserver son horloge de présentation entre les reprises de la démo ; restaurer séparément les deux canaux audio | les 20/6/5/4 secondes de la boucle restent celles de N.R ; les reprises de partie ne doivent pas effacer la galerie et les records ni remplacer des préférences audio asymétriques |
+| codex-p24 | `80-ecrans.js` | briefing portrait : réutiliser l'écart existant de 8 pixels, centrer l'ensemble des blocs ; indication DÉPART AUTO à l'échelle 2 sur les trois profils | supprimer les deux grands vides sans réduire le texte ; aucune nouvelle constante de composition ; fin et pause restent inchangées |
+| codex-p24 | `tools/mesure/criteres/R-19-attraction.mjs` | départ titre explicite, mesure des volets sur l'état publié et les pixels peints, contrôle du retour titre et de zéro erreur | `ui.actif()` est un booléen ; un appel à `spr.text` ne prouve pas un texte visible ; garder strictement 15 ± 1 s |
+| codex-p24 | vérification hors bac | `cd proto-neon && node tools/codex-p24/verifier.mjs` | un Chromium muet, trois profils en série, compositions p17, captures titre/briefing/fin/attraction, buffers et journaux ; le script prévisualise le raccord 79 en mémoire tant qu'il n'est pas intégré. Safari physique reste une vérification distincte |
+
+Le fichier `79-jeu.js` n'est pas modifié ici ; le candidat est exercé uniquement dans la VM et dans la prévisualisation du vérifieur. Aucun besoin de raccord dans `90-boot.js` reçu ; aucune modification de `60-intro.js` nécessaire pour le briefing public concerné (OBJECTIFS/ÉNERGIE/DÉFIS). Le reçu de batterie ancien rapporte null après 25 secondes ; sur l'état reçu, le départ est déjà observé à 15,008 s en VM. Cette différence n'est pas attribuée à p24. Aucun commit.
+
+Codex-p24 — fin des contrôles locaux : 10/10 calibrations historiques exactes ; 80/80 paires identiques (temps jeu/combat, vague, score, journal SHA-256), zéro erreur ; 36/36 compositions p17 conservées. R-19 construit : 15,008333 s avant et après, 7/7 mesures après ; cas absent / 13,05 / 17,05 s refusés. Modèle final dans le champ déjà prévu S.ecran.retour : 4/4 volets conformes au schéma. Construction sortie 0. Le seul changement après gel des parties déplace une affectation de métadonnées de dessin ; réutilisation exacte des reçus vérifiée par reutilisation-parties.json. Chantier bloqué pour la qualification finale : intégration du raccord 79, contrôle Playwright hors bac et Safari réel.
+
+## codex-p28 — restaurer le contenu de fin R-18
+
+18/10/2026 · 04 h 20 (Paris). Reçus et limites : `tools/codex-p28/rapport.md`.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p28 | `80-ecrans.js` | rendre sur la fin principale quartier, progression, record, écart disponible, build, note et conseil, avec les défis et l'énergie | rétablir R-18 sans cacher ces rubriques derrière BILAN ; le résumé vient de l'interface publique `N.score.resume()` |
+| codex-p28 | `80-ecrans.js` | `CONTINUER ?` et décompte existant 9 → 0 ; largeur tirée de la mesure du libellé, boutons empilés en portrait | garder la phrase entière à l'échelle 2 et les cibles existantes de 44 pt ; la garde, la disponibilité, le score et les vies ne changent pas |
+| codex-p28 | `80-ecrans.js` | composer les lignes avec les constantes existantes de `ecrans.retour` : échelle 2, texteH 14, ligne 18, marge 5, padding 4, écart 8, barreH 3, deux colonnes ; mesurer les accents dans le vrai sprite | aucune nouvelle constante numérique dans le jeu ; l'espacement est calculé sur les glyphes et la place sûre, sans réduire la police ni écraser les accents |
+| codex-p28 | `80-ecrans.js` | le sprite de la phrase complète fournit les glyphes des lignes repliées ; cause longue sur la largeur disponible, conseil en bas sur toute la largeur | conserver un texte complet réellement rendu et les rubriques du critère R-18 inchangé, sans appel de texte factice ; éviter les titres et prépositions isolés signalés par p17 |
+| codex-p28 | `80-ecrans.js` | arrêter la zone tactile de pagination BILAN avant le premier des boutons empilés | CONTINUER reste actionnable lorsque le bilan détaillé est ouvert en portrait |
+| codex-p28 | vérification hors bac | `cd proto-neon && node tools/codex-p28/verifier.mjs` | un seul Chromium muet, trois profils en série, compositions p17/p24, défaite, victoire, décompte complet, R-18 réel, tampons et journaux ; script prêt, non exécuté dans ce bac |
+
+Aucun raccord demandé dans un autre module. `02-regles.js` est strictement identique à l'état reçu : aucun chiffre de jeu ajouté. Les modifications p24 reçues et son raccord 79 encore non intégré sont conservés. Aucun commit, serveur, Chromium ou réseau sortant dans ce lot.
+
+Codex-p28 — mis à jour à 04 h 22 (Paris) : calibration 10/10 exacte ; R-18 inchangé à 12/12 sur chacun des trois profils après, contre 6/12, 6/12 et 5/12 sur p17 et l'état p24 reçu ; 36/36 compositions avant et après, 24/24 briefing/pause strictement identiques, 39/39 fins avec glyphes intacts, 80/80 parties strictement identiques jusqu'au journal SHA-256, zéro erreur VM. Build sortie 0. Les dernières différences après chargement des parties sont bornées et leur réutilisation est vérifiée dans `reutilisation-parties.json`. Livraison locale terminée ; captures navigateur et Safari restent à vérifier hors bac.

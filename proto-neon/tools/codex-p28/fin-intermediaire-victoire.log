@@ -1,0 +1,19 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: paysage gagne
+    at mesure (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/fin.mjs:7:234)
+    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/fin.mjs:20:152
+    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)
+    at async node:internal/modules/esm/loader:639:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.15.0

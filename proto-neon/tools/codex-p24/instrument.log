@@ -1,0 +1,37 @@
+avant [
+  [ 'attraction après 15 s d’inaction', 15.05, true ],
+  [ 'bandeau DÉMO peint', false, false ],
+  [ 'galerie peinte', false, false ],
+  [ 'tableau des records peint', false, false ],
+  [ 'invitation peinte', false, false ],
+  [ 'zéro erreur', 0, true ],
+  [ 'premier geste rend le titre', true, true ]
+]
+apres [
+  [ 'attraction après 15 s d’inaction', 15.05, true ],
+  [ 'bandeau DÉMO peint', true, true ],
+  [ 'galerie peinte', true, true ],
+  [ 'tableau des records peint', true, true ],
+  [ 'invitation peinte', true, true ],
+  [ 'zéro erreur', 0, true ],
+  [ 'premier geste rend le titre', true, true ]
+]
+jamais [ [ 'attraction après 15 s d’inaction', null, false ] ]
+tropTot [
+  [ 'attraction après 15 s d’inaction', 13.05, false ],
+  [ 'bandeau DÉMO peint', true, true ],
+  [ 'galerie peinte', true, true ],
+  [ 'tableau des records peint', true, true ],
+  [ 'invitation peinte', true, true ],
+  [ 'zéro erreur', 0, true ],
+  [ 'premier geste rend le titre', true, true ]
+]
+tropTard [
+  [ 'attraction après 15 s d’inaction', 17.05, false ],
+  [ 'bandeau DÉMO peint', true, true ],
+  [ 'galerie peinte', true, true ],
+  [ 'tableau des records peint', true, true ],
+  [ 'invitation peinte', true, true ],
+  [ 'zéro erreur', 0, true ],
+  [ 'premier geste rend le titre', true, true ]
+]

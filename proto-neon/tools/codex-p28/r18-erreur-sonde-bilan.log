@@ -1,0 +1,15 @@
+evalmachine.<anonymous>:12
+ const boutons=['continuer','rejouer','bilan'].map(n=>({nom:n,...a[n],wPt:a[n].w*g.PX,hPt:a[n].h*g.PX}));
+                                                                               ^
+
+TypeError: Cannot read properties of undefined (reading 'w')
+    at evalmachine.<anonymous>:12:80
+    at Array.map (<anonymous>)
+    at observerFin (evalmachine.<anonymous>:12:48)
+    at evalmachine.<anonymous>:15:3
+    at Script.runInContext (node:vm:149:12)
+    at Object.runInContext (node:vm:301:6)
+    at evaluer (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/r18.mjs:14:33)
+    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p28/r18.mjs:20:49
+
+Node.js v24.15.0
