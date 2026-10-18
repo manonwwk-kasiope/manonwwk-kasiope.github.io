@@ -1,15 +1,9 @@
 {
   "objectif": "Ordre13 R12 mortsélites / R13 préservé",
-  "dateParis": "18/10/2026 · 07 h 47",
+  "dateParis": "18/10/2026 · 10 h 56",
   "base": "45ef605b9dd0fb8f64a172f08ba540c3f196f06b",
-  "phase": "80appariésclos ; reprise de l’attente Chromium après course de créneau, aucune mesure démarrée",
-  "processus": [
-    {
-      "pid": 86009,
-      "session": 56740,
-      "tache": "Seule filecourante criteres.mjs ; attenteChef et R12/R13avant/après avec rendu propre du témoin si course"
-    }
-  ],
+  "phase": "Mesures terminées ; R12 36/36,80appariésidentiques,0erreur ; R13 échoué préexistant ; preuvesprêtes pour médiation",
+  "processus": [],
   "arreteAvantMesure": {
     "pid": 60405,
     "session": 88413,
@@ -18,11 +12,13 @@
   "preuves": {
     "contrats": "4/4 contrats producteur conformes ; pas une preuve tampon",
     "sources": "39sources avant/apres ; seul79-scene, mêmeporte/aire/durée/planification, seuls centres bornésdansvue",
-    "80": "ecarts.json,80/80toutesmétriquesidentiques,79finsavant/après,même dieu2borne540,0JSconsole"
+    "80": "ecarts.json,80/80toutesmétriquesidentiques,79finsavant/après,même dieu2borne540,0JSconsole",
+    "Chromium": "14critères et14sessionsterminés08h08,0erreur ; R12 30→36/36 ; R13tamponavant/après paysage0/0,portrait6/6,bureau5/4,réduit2/2 ; journal13/23/15/28 inchangé,compteacceptes etnondépartsuniques ; huitfenêtres3600images"
   },
   "restant": [
-    "R12troisprofils etR13troisprofils+réduitpaysage avant/après surpairefigée",
-    "Rapport etlivraisonmédiation,puisboîte"
+    "Pousser preuves/rapport et reçuCOORD",
+    "Libérer79 ettools",
+    "MédiationClaude/R13global, aucunrejeu sansnouveauchangementouordre"
   ],
   "interdits": [
     "doublon59841/60764/61506 ouChromium",
@@ -30,13 +26,14 @@
     "modifier50/72réservés oucritères",
     "réglageB/regroupement"
   ],
-  "prochaineAction": "Vérifier PID86009/session56740 etcriteres-execution.json. Ne jamais relancer les80 ou61506. Siattente, laisserfileunique. QuandphasefiniETpidmort, rapport.mjs parlectureseule, examineréchecsréels, livrerpuislibérer79 ettools. Sources/instruments inchangés, aucune nouvellevaleur.",
+  "prochaineAction": "Commiter preuves, pull/rebase/build etpush. PuislivraisonCOORDavechashpreuves, libérer réservations etpull/relire. Nepluslancer61506/86009 ouVM. R13resteéchec, pasdepalierglobalvalidé.",
   "processusTermines": [
     59841,
     60764,
     61531,
     60405,
-    61506
+    61506,
+    86009
   ],
   "incidentCreneau": "incident-creneau-61506.json ; phasearrêt avant navigateur, résultatsempty,0rejeu ; sixcontratscreneauconformes"
 }
