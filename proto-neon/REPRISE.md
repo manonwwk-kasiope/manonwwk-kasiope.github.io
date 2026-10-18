@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 03 h 23)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 03 h 51)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -21,6 +21,10 @@
   `chef/proto-neon/tools/verif-p15-avant/`, à supprimer après), p17 (navigateur ok, captures vues, à intégrer), p4d (CYCLOPE 15 → 0
   apparitions, vérifieur en file). Sessions `codex exec` : p16 (perf), p19 (instrument R-12), p20 (mixage : 30-music), p21 (gestes :
   90-boot, 03-socle), p22 (R-27/R-03 : 73-arene, 17-vol), p23 (R-28/R-11 : 12-cam, 50-fx, 15-decor) ; boîte : codex-11 (directeur).
+- À 03 h 51 : intégrés aussi p17 (écrans), p4d (CYCLOPE), p19 (instrument R-12) et le correctif `quartier()` de 70-joueuse. Renvoyés : p15b (R-13 1 → 8 flashs/s,
+  R-05 7 → 4), p16b (vérifieur sans mesure). Lancés : p20 à p27 (p26 régénérateurs, p27 ennemis de 2030), p29 (diagnostic R-08). **En attente de
+  lancement : codex-p28** (consigne prête `consignes/codex-p28.md`, R-18 régressé par p17) **dans la copie codex-p24 dès que p24 a livré**.
+  File navigateur : p16, p23, p20. Batterie `318ce61` : 8 ok (régressions R-08, R-18).
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;

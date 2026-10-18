@@ -49,11 +49,11 @@ finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité 
 Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
 diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un pilote.
 
-## Où en est chaque porte (mis à jour le 18/10/2026 à 01 h 54)
+## Où en est chaque porte (mis à jour le 18/10/2026 à 03 h 51)
 
 | porte | état | preuve |
 |---|---|---|
-| 1. Batterie R-01 à R-38 | sur `8f55a91` (rapide, 01 h 52) : **9 ok** (R-01, 08, 09, 10, 18, 21, 24, 29, 32), 22 échecs, 4 partiels, 1 non mesurable, 1 erreur (R-36) ; l'horloge de la simulation est réparée (codex-05b). Échecs répartis : codex-10 (R-15), codex-p3c (diagnostic) | `~/Projets/wt-snake/recus/batterie-8f55a91/` |
+| 1. Batterie R-01 à R-38 | sur `318ce61` (rapide, 03 h 49, 968 s) : **8 ok**, 22 échecs, 5 partiels, 2 non mesurables, 0 erreur. Gagnés depuis 8f55a91 : R-31 (ok), R-26 et R-36 (partiels). **Régressions** : R-08 mort juste 88,5 % (≥ 95 %, diagnostic codex-p29) et R-18 écran de fin (CONTINUER ? et le contenu du bilan retirés par codex-p17 → codex-p28 après codex-p24) ; R-17 devient non mesurable (tourelle de la scène mortTir). Précédente : `8f55a91` 9 ok | `~/Projets/wt-snake/recus/batterie-318ce61/` |
 | 2. Pilotes | 80/80 parties, déterministes ; jeu trop dur ; réglage en cours (codex-p5, 5 passes au plus) | `mediation/2026-10-18-codex-02-lot-I.md` |
 | 3. Lisibilité | **fermée sur 01b** : codex-01, 01b, 03 acceptés ; codex-01c (ambiance) non retenu, plancher 12 % manqué sur 2 scènes sur 3 ; le soleil plein reste une piste si le jury note l'image sous 8 | `mediation/2026-10-18-codex-01c.md` |
 | 4. Performance | R-20 : 2 échecs à diagnostiquer (codex-p3c) | batterie |
