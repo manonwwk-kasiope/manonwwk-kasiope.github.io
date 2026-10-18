@@ -1466,6 +1466,9 @@ var MUSIQUE_EMBED = null;
 
   /* codex-12 ordre14 : une crête ordinaire par fenêtre ; impacts forts R12 prioritaires. */
   R.scene.budgets.secousse = { fenetre: 1, forte: R.criteres.R12.camera };
+  /* codex-v0d — film d'arrivée de l'amiral : clip de 5 s, garde INTERMEDES,
+     niveau et fondu déjà employés par la musique de cosmos. */
+  R.filmAmiral = { duree: 5, garde: 0.3, gainMusique: 0.62, fonduMusique: 0.05 };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
@@ -13969,6 +13972,7 @@ N.themes = (function () {
     F.surFin = typeof o.surFin === 'function' ? o.surFin : null;
     F.carte = o.carte && o.carte.titre ? { titre: String(o.carte.titre), sous: o.carte.sous ? String(o.carte.sous) : '', haut: !!o.carte.haut } : null;
     F.focal = o.focal || (nom && FOCAL[nom]) || [192, 108];
+    F.sautDes = o.garde >= 0 ? +o.garde : CFG.garde;
     F.saute = false; F.garde = 0; F.typed = 0; F.bip = 0; F.video = false; F.videoVue = false;
     F.clip = false;
     if (nom) { try { F.clip = !!(N.art && N.art.play && N.art.play(nom)); } catch (e) { F.clip = false; } }
@@ -14004,7 +14008,7 @@ N.themes = (function () {
     if (F.repli && art(F.nom)) F.repli = false;           // le panneau finit de se décoder
     var s = S(), inp = s.input;
     if (inp) {
-      if (F.garde < CFG.garde || !F.sautable) inp.any = false;
+      if (F.garde < F.sautDes || !F.sautable) inp.any = false;
       else if (inp.any || (inp.taps && inp.taps.length)) { inp.any = false; finFilm('saut'); return; }
     }
     if (F.t >= F.d) finFilm('fin');
@@ -16236,6 +16240,42 @@ N.themes = (function () {
     msg: '', msgT: 0, msgD: 2, msg2: '', grosses: [], detone: false, flashT: 0, hit: 0,
     compte: null, journal: [], surFin: null, finAppele: false, premiereExplosion: -1, instants: {}
   };
+  /* Le lecteur appartient au cosmos seulement entre jouer et surFin. Aucun temps
+     du monde, warp, hasard ni ordonnanceur musical n'avance pendant cet intervalle. */
+  var filmAmiralVu = false, filmAmiralOn = false;
+  function filmActif() { return filmAmiralOn; }
+  function gainFilm(valeur) {
+    if (A.out && A.ctx) {
+      try {
+        A.out.gain.cancelScheduledValues(A.ctx.currentTime);
+        A.out.gain.setTargetAtTime(valeur, A.ctx.currentTime, N.R.filmAmiral.fonduMusique);
+      } catch (e) { if (N.socle && N.socle.signaler) N.socle.signaler('cosmos.film.audio', e); }
+    }
+  }
+  function finirFilm() {
+    filmAmiralOn = false;
+    /* Le temps audio est réel : recaler le prochain pas sans perdre sa place dans
+       la mesure, la section et le demi-temps conservés. */
+    A.next = 0;
+    gainFilm(N.R.filmAmiral.gainMusique);
+  }
+  function arreterFilmAmiral() {
+    if (!filmAmiralOn) return;
+    if (N.film && N.film.stop) N.film.stop();
+    finirFilm();
+  }
+  function jouerAmiral() {
+    if (filmAmiralVu) return;
+    filmAmiralVu = true;
+    /* Les départs contractuels ne passent pas par le voyage. S'ils appellent
+       néanmoins ce module, conserver la même politique : aucun film ajouté. */
+    if (N.pilote && N.pilote.actif && N.pilote.actif()) return;
+    if (!N.film || !N.film.jouer) return;
+    var nom = 'amiral-' + T.qui;
+    filmAmiralOn = N.film.jouer(nom, { duree: N.R.filmAmiral.duree,
+      garde: N.R.filmAmiral.garde, surFin: finirFilm });
+    if (filmAmiralOn) gainFilm(0);
+  }
   function compteNeuf() {
     return { tues: 0, mange: 0, coupes: 0, morsures: 0, tirs: 0, verrous: 0, missiles: 0, touchesMissile: 0, warps: 0, warpsExternes: 0,
       grosses: 0, obus: 0, faibles: 0, rocs: 0 };
@@ -17366,6 +17406,7 @@ N.themes = (function () {
     placerBoss(b);
     dire('LE VAISSEAU AMIRAL', 3.2, 'IL DESCEND DU PLAN HAUT');
     marquer('boss'); journal('amiral');
+    jouerAmiral();
   }
   function local(b, u, v, s) { var hl = b.L * 0.5 * s, hw = b.Wd * 0.5 * s, ca = Math.cos(b.a), sa = Math.sin(b.a); return { x: b.x + u * hl * ca - v * hw * sa, y: b.y + u * hl * sa + v * hw * ca }; }
   function placerBoss(b) {
@@ -17515,6 +17556,7 @@ N.themes = (function () {
   function start(o) {
     if (!pal() || !G()) return false;
     o = o || {};
+    arreterFilmAmiral(); filmAmiralVu = false;
     BAY = N.pal.BAYER || new Uint8Array([0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]);
     var q = o.qui;
     if (q !== 'elle' && q !== 'lui') { try { q = N.choix && N.choix.personnage ? N.choix.personnage() : null; } catch (e) { q = null; } }
@@ -17559,6 +17601,7 @@ N.themes = (function () {
     if (!T.on || !pal()) return;
     if (!(dt > 0)) dt = 0; if (dt > 0.1) dt = 0.1;
     if (S().paused) return;
+    if (filmAmiralOn) { N.film.update(dt); return; }
     if (G() && (G().W !== T.W || G().H !== T.H)) layout();
     T.t += dt; T.pt += dt; T.msgT += dt;
     nebuleuseBande();
@@ -17662,6 +17705,7 @@ N.themes = (function () {
   function draw() {
     if (!T.on && T.phase !== 'fini') return;
     if (!pal() || !G() || !G().buf) return;
+    if (filmAmiralOn) { N.film.draw(); return; }
     var g = G();
     if (g.W !== T.W || g.H !== T.H) layout();
     B = g.buf(); BW = g.W; BH = g.H;
@@ -18239,8 +18283,10 @@ N.themes = (function () {
   N.cosmos = {
     start: start, update: update, draw: draw,
     actif: function () { return T.on; },
+    filmActif: filmActif,
     phase: function () { return T.phase; },
     stop: function () {
+      arreterFilmAmiral();
       T.on = false; T.phase = 'fini'; T.finAppele = true;
       if (A.out && A.ctx) { try { A.out.gain.setTargetAtTime(0.0001, A.ctx.currentTime, 0.05); } catch (e) { } }
     },
@@ -18248,6 +18294,7 @@ N.themes = (function () {
        l'épilogue ; pendant l'épilogue → la fin (surFin, une seule fois) ; après, rien */
     skip: function () {
       if (!T.on) return false;
+      if (filmAmiralOn) return false; // un saut d'époque ne franchit pas le film
       if (T.phase === 'entree' || T.phase === 'voyage') return sauter();
       if (T.phase === 'boss') {
         var b = T.boss; if (!b) return false;
