@@ -1,0 +1,30 @@
+{
+  "avantSha256": "238a65cd2c938daedbea8ad77a92b29498ee693843b0f0e361aa8482d0232c0f",
+  "apresSha256": "d8b9cbf04b17a01651d54d952c4cd065e81013c69e2ea915928bf66430641a2d",
+  "seulRetourModeleModifie": true,
+  "autresSourcesIdentiques": true,
+  "fonctionsDeLogique": [
+    {
+      "nom": "ouvrir",
+      "identique": true
+    },
+    {
+      "nom": "fermer",
+      "identique": true
+    },
+    {
+      "nom": "update",
+      "identique": true
+    },
+    {
+      "nom": "sortie",
+      "identique": true
+    },
+    {
+      "nom": "finActions",
+      "identique": true
+    }
+  ],
+  "lecteursExternesDuModele": [],
+  "justification": "Le protocole de partie sans DOM met à jour et ne dessine pas. Seul retourModele change pour retirer les fragments PROCHAIN et DU/JOUR ; les reçus réels des 80 parties restent ceux du moteur inchangé. Les contrôles de composition et le build sont rejoués sur le rendu final."
+}

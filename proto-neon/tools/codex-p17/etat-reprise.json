@@ -1,0 +1,23 @@
+{
+  "mission": "codex-p17",
+  "dateParis": "18/10/2026 03:15:23",
+  "etat": "Livrables et contrôles VM terminés ; validation finale navigateur bloquée hors bac",
+  "preuves": {
+    "calibration": 10,
+    "partiesIdentiques": 80,
+    "partiesTotal": 80,
+    "compositionFinale": 36,
+    "compositionTotal": 36,
+    "r36Terminal": 8,
+    "erreursJeu": 0,
+    "build": 0
+  },
+  "commande": "cd proto-neon && node tools/codex-p17/verifier.mjs",
+  "reste": [
+    "Reçu Playwright, 72 captures avant/après",
+    "Relecture des captures et Safari physique",
+    "Critère R-36 complet sur 25 parties persistantes"
+  ],
+  "tachesEnCours": [],
+  "commit": false
+}

@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+import {performance} from 'node:perf_hooks';
+import {sources,monde,jouer} from './vm-liaisons.mjs';
+const src=sources();src.find(([f])=>f==='80-ecrans.js')[1]=fs.readFileSync(new URL('avant/80-ecrans.js',import.meta.url),'utf8');
+const ref=JSON.parse(fs.readFileSync(new URL('avant.json',import.meta.url))).cas.find(c=>c.pilote==='expert'&&c.graine===1);
+const debut=performance.now(),w=monde(src),r=jouer(w,'expert',1);
+const obtenu={pilote:r.pilote,graine:r.graine,raison:r.raison,tempsJeu:r.tempsJeu,tempsCombat:r.tempsCombat,vague:r.vague,score:r.score,err:r.err,erreurs:r.erreurs,journalSha256:crypto.createHash('sha256').update(JSON.stringify(w.N.journal.dump())).digest('hex')};
+const sortie={dureeReelleSecondes:(performance.now()-debut)/1000,attendu:ref,obtenu,identique:JSON.stringify(ref)===JSON.stringify(obtenu)};
+fs.writeFileSync(new URL('equivalence-vm.json',import.meta.url),JSON.stringify(sortie,null,2));console.log(sortie);assert.ok(sortie.identique);

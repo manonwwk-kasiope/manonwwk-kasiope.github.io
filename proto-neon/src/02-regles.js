@@ -1114,6 +1114,12 @@
     lasso: true
   };
 
+  /* codex-p17 : une marque, un nom et un compteur aligné, à l'échelle 2. */
+  R.ecrans.retour.finition = {
+    marqueW: 18,
+    defisCourts: { finir: 'FINIR', premierJet: '1ER JET', lasso6: 'LASSO', sansCoupe: 'INTACT', chaine5: 'CHAÎNE', sansFilet: 'UNE VIE' }
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

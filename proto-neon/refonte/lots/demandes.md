@@ -498,3 +498,21 @@ codex-p14 — mis à jour le 18/10/2026 à 02 h 56 (Paris). **Lot arrêté aprè
 La prime de continuité est une prime distincte ; le HUD garde le multiplicateur de la chaîne de combat § 2.13, pas un faux multiplicateur de 5 s. Les nouveaux points entrent dans le score, les gains flottants et les records existants. Aucune prime forfaitaire pour APOGÉE ou pour le temps passé. Les primes de p12 restent versées au bilan. Preuves et commande hors bac : `tools/codex-p18/rapport.md`.
 
 Validation codex-p18 : VM historique 10/10 exactes ; 50 graines par bon/kamikaze/tourneur. Scores médians bon/kamikaze : 2,218742 avant → 3,332277 après (cible ≥1,3) ; tourneur/bon : 0,003902 → 0,003464 (cible <0,10). Le seuil bon/kamikaze était donc déjà tenu sur l’état reçu, distinct du constat p5 de 0,9995 ; ne pas attribuer cette entrée à p18. 80/80 parties obligatoires à temps/vague identiques ; contrôle élargi 200/200 paires à temps/vague, morts, cartes, défis p12 et journal réel complet identiques. 400 fins sans erreur et attribution exacte des points ; huit scénarios ciblés satisfaits. Build sortie 0, règles en ajout seul et périmètre contrôlés. Aucun serveur/Chromium lancé ; script trois profils prêt, qualification navigateur à vérifier hors bac.
+
+
+## codex-p17 — finition briefing, pause et fin ; R-36 terminal
+
+18/10/2026 · 02 h 52 (Paris), mis à jour à 03 h 15. Mesures et statut final : `tools/codex-p17/rapport.md`.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p17 | `02-regles.js`, ajout `ecrans.retour.finition.marqueW = 18` | réserve de 18 pixels de jeu pour la marque ✓ / ·, à l'échelle 2 existante | aligner le nom et la progression de chaque défi sur une seule ligne, sans rogner la marque |
+| codex-p17 | `02-regles.js`, ajout `ecrans.retour.finition.defisCourts` | PREMIER JET → 1ER JET ; SANS COUPE → INTACT ; SANS FILET → UNE VIE ; LASSO / CHAÎNE gardent leur compteur à droite | garder des noms entiers et lisibles dans la colonne disponible, sans baisser l'échelle 2 ; le libellé long est conservé lorsqu'il tient |
+| codex-p17 | `80-ecrans.js` | trois blocs en portrait, espaces égaux calculés avec la place réellement disponible ; barre de prochain déblocage aussi au briefing et à la pause | répartir l'écran jusqu'aux actions plutôt que tasser tous les textes en haut ; dimensions et cibles existantes réemployées |
+| codex-p17 | `80-ecrans.js` | cause principale sans le suffixe INSTABLE si nécessaire ; cause complète, temps, note, build et récompenses dans BILAN | les causes longues ne doivent pas repousser le prochain palier sous la zone sûre ; aucune donnée du bilan supprimée |
+| codex-p17 | `tools/mesure/criteres/R-36-raison-de-revenir.mjs` | exiger tous les identifiants de `N.R.deblocages` dans `N.score.deblocages`, prochain nul ET texte TOUT DÉBLOQUÉ réellement peint et dans la zone sûre | reconnaître le terme du vrai catalogue, sans sixième récompense ; seuils de déblocage 25 / 180 / 350 / 550 / 800 et bornes parties 1–2 / 12–25 inchangés |
+| codex-p17 | vérification hors bac | `cd proto-neon && node tools/codex-p17/verifier.mjs` | un Chromium muet, trois formats, 72 captures avant/après (briefing/pause/fin, défis zéro/en cours/faits, dernier palier acquis), buffers, journaux et erreurs ; ne pas lancer dans ce bac |
+
+Aucun autre propriétaire sollicité pour un raccord. Les fixtures de défis des contrôles de composition sont explicitement synthétiques ; le dernier palier est acquis par le vrai bilan du score depuis son seuil moins une unité. Les PNG `tampon-vm/` proviennent du tampon VM sans DOM et ne sont pas des captures Playwright. Aucun commit.
+
+Codex-p17 — finition finale : suppression du titre PROCHAIN isolé et des groupes FINIR LE / SECTEUR, 2 DÉFIS DU / JOUR ; FINIR puis 2 DÉFIS, nom du prochain palier et reste sur une ligne. 80/80 parties du moteur identiques (temps jeu/combat, vague, score, empreinte du journal), zéro erreur ; rendu final 36/36 cas, variantes extrêmes sans débordement, R-36 terminal 8/8, build sortie 0. Les derniers textes modifient seulement retourModele : réutilisation des reçus du moteur inchangé vérifiée dans tools/codex-p17/reutilisation-parties.json ; contrôles de rendu rejoués. Captures, Safari et R-36 complet sur 25 parties persistantes restent à vérifier hors bac. Aucun commit.
