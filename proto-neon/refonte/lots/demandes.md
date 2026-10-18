@@ -909,3 +909,17 @@ Codex-p41 — écart conservé dans le lot reçu : `dieu`, graine 2, atteint la 
 | codex-p43 | hors bac | `cd proto-neon && node tools/codex-p43/verifier.mjs` ; retourner `tools/codex-p43/navigateur/resultats.json` et les sous-dossiers profils. Un Chromium muet, HTTP port libre, paysage/portrait puis bureau en série, étalons avant verdicts, aucun temps forcé. Dépendance indispensable : serveur et Chromium refusés dans ce bac, aucune tentative ni contournement |
 
 Preuves locales : dix références historiques exactes sur les temps/vague/score, six cas de calcul, douze cas de handlers et trois cas de direction VM avec zéro erreur ; latence VM 1 image, virage VM dans la tolérance après 266,67 ms. Journaux historiques : empreintes intégrales 2/10 identiques seulement, divergence numérique conservée et expliquée sans prétendre à leur identité. Sources et bundle identiques à HEAD reçu après build sortie 0. Rapport et détails : `tools/codex-p43/rapport.md`, `vm.json`, `direction-vm.json`, `verification-locale.json`. R-22/R-33 navigateur : **à vérifier**, aucun résultat inventé.
+
+## Demande de la propriétaire (18 octobre, 10 h 55), relayée par le cloud — à la session Mac : ajouter SNAKE 2975 à l'Aiguilleur de projets
+La propriétaire demande : « peux-tu le rajouter sur l'aiguilleur de projets ? ». L'Aiguilleur vit sur le Mac
+(`~/Projets/AIGUILLEUR DE PROJETS` : liste des dossiers du relevé, source ET copie installée, puis `publier.sh`, sous
+Touch ID) : le cloud n'y a pas accès. À faire par la session Mac :
+1. ajouter le dossier local de ce dépôt (le clone de `manonwwk-kasiope/manonwwk-kasiope.github.io`, sous-dossier
+   `proto-neon/`) à la liste des dossiers du relevé, dans la source et dans la copie installée ;
+2. l'entrée : **SNAKE 2975** — « un snake qui traverse l'univers : 1976 → 1982 → 1987 → 1993 → 2001 → 2975, deux
+   pilotes, retrouvailles et teaser SNAKE 3019 » ; liens :
+   - jouer (vrai jeu) : https://raw.githack.com/manonwwk-kasiope/manonwwk-kasiope.github.io/claude/snake-game-mobile-17dqpi/proto-neon/index.html
+   - démo du voyage : https://raw.githack.com/manonwwk-kasiope/manonwwk-kasiope.github.io/claude/snake-game-mobile-17dqpi/proto-neon/demo/index.html
+   - tableau de bord : https://claude.ai/artifact/Mnw5e5AefuTyHdsz3uxbyu
+   - coordination : `proto-neon/COORDINATION.md` ; branche `claude/snake-game-mobile-17dqpi` ; PR n° 8 ;
+3. lancer `publier.sh` (Touch ID de la propriétaire) et vérifier que la page montre l'entrée.
