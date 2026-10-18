@@ -545,7 +545,9 @@
   }
 
   /* ---------------- mise à jour ---------------- */
+  function filmAmiral() { return !!(N.cosmos && N.cosmos.filmActif && N.cosmos.filmActif()); }
   function update(dt) {
+    if (filmAmiral()) return;
     dt = +dt || 0;
     if (dt < 0) dt = 0;
     if (dt > 0.1) dt = 0.1;
@@ -834,6 +836,7 @@
   }
 
   function draw() {
+    if (filmAmiral()) return;
     var g = N.gfx;
     if (!g || !g.buf) return;
     buf = g.buf();
@@ -1121,6 +1124,7 @@
     OX = ox; OY = oy;
   }
   function drawEcran() {
+    if (filmAmiral()) return;
     if (!bind()) return;
     ecranVu = frameNo();
     drawEcranFx();
