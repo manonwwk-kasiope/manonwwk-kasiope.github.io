@@ -120,6 +120,7 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/77-score.js` | Codex (session parallèle codex-p18) | 18/10 à 02 h 45 | le score récompense l'habileté (bon / kamikaze 1,0 → ≥ 1,3) |
 | `src/73-colosse.js`, `src/70-joueuse.js` (annonces), `tools/mesure/criteres/R-31-*` | Codex (session parallèle codex-p4d) | 18/10 à 02 h 42 | finir R-06 (8 apparitions du CYCLOPE) et R-31 (annonce de l'arène) ; p4c et p13 intégrés |
 | `src/10-gfx.js`, `src/20-crt.js`, `src/78-hud.js`, `tools/mesure/criteres/R-20-*`, `R-30-*` | Codex (session parallèle codex-p16) | 18/10 à 02 h 30 | R-20 performance (4,5 ms contre 0,8 ms), mesures de temps R-20 ×4 et R-30 |
 | `src/79-scene.js` | Codex (session parallèle codex-p15) | 18/10 à 02 h 28 | R-12 (aucune explosion à la mort des élites) et R-05 (une seule cause de mort sur sept) ; instrument p3c intégré (26a756b) |
