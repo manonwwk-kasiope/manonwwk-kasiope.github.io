@@ -4,6 +4,7 @@ import difflib, json, hashlib
 root=Path(__file__).resolve().parents[2]
 a=(root/'src/79-jeu.js').read_text(); b=a
 changes=[
+("if (N.vol && N.vol.start) appel('vol.start', function () { N.vol.start(n, n + 1); });", "if (N.vol && N.vol.start) appel('vol.start', function () {\n      if (n === 3 && N.defile) {\n        var d = R.secteurs[0].defile;\n        N.vol.start(N.defile.joue() ? d.quartier : N.dir.info().quartier, N.defile.joue() ? R.secteurs[0].vagues[n].quartier : d.quartier);\n      } else N.vol.start(n, n + 1);\n    });"),
 ("if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);", "if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' && N.defile ? { rareGarantie: N.defile.prendreRare() } : undefined);"),
 ("N.butin.reset(); N.ennemis.reset(); N.arsenal.reset(); N.score.reset(); N.dir.reset(0, {}); N.hud.reset();", "N.butin.reset(); N.ennemis.reset(); N.arsenal.reset(); N.score.reset(); N.dir.reset(0, {}); N.hud.reset();\n    if (N.defile) N.defile.reset();"),
 ("function apresVol() { lancerVague(N.dir.vague() + 1); }", "function apresVol() {\n    if (N.dir.vague() === 3 && N.defile && !N.defile.joue()) { N.defile.demarrer(); aller('defile'); }\n    else lancerVague(N.dir.vague() + 1);\n  }"),
@@ -19,6 +20,6 @@ p=root/'tools/codex-10/raccord-jeu.patch'
 p.write_text(''.join(difflib.unified_diff(a.splitlines(keepends=True),b.splitlines(keepends=True),fromfile='a/proto-neon/src/79-jeu.js',tofile='b/proto-neon/src/79-jeu.js')))
 h=(root/'index.html').read_text(); start='/* ===== 79-jeu.js ===== */\n';end='/* ===== 79-scene.js ===== */'
 i=h.index(start)+len(start);j=h.index(end,i);h=h[:i]+b+'\n'+h[j:]
-Path('/tmp/snake-codex10-apres.html').write_text(h)
+tmp=Path('/tmp/snake-codex10-apres-partiel.html'); tmp.write_text(h); tmp.replace('/tmp/snake-codex10-apres.html')
 p.with_name('raccord-manifest.json').write_text(json.dumps({'fichierSource':'src/79-jeu.js','sourceAvantSha256':hashlib.sha256(a.encode()).hexdigest(),'sourceApresSha256':hashlib.sha256(b.encode()).hexdigest(),'bundleCandidatSha256':hashlib.sha256(h.encode()).hexdigest(),'sourcePartageeModifiee':False,'limite':'patch préparé après intégration09 sur7a1abc9 ; aucune écriture du79partagé, toujours réservé àune autre session'},ensure_ascii=False,indent=2)+'\n')
 print('patch généré ; src/79-jeu.js intact')
