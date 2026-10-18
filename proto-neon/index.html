@@ -1354,6 +1354,14 @@ var MUSIQUE_EMBED = null;
     finNoms: { ralenti: 'RALENTI', repli: 'REPLI', styles: 'STYLES', galerie: 'GALERIE', departV3: 'DÉPART V3' }
   };
 
+  /* codex-p14 : politique du doigt, aucun seuil de réussite ni règle de LASSO changé. */
+  R.pilotageLasso = {
+    trainePart: 0.5, rayonVirageMarge: 1.25, margeCible: 2,
+    angles: [0, -0.35, 0.35, -0.7, 0.7], gainRadial: 1.2, correctionMax: 0.7,
+    margeMur: 14, prevision: 0.16, progressionFin: 0.25, tempsMarge: 0.6,
+    intervalle: 0.9, ciblePoids: 12, capPoids: 4, apogeeCibles: 2
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
@@ -27060,11 +27068,11 @@ N.ui = (function () {
 })();
 
 /* ===== 85-pilote.js ===== */
-/* ===== 85-pilote.js — huit politiques gelées, refonte/lots/pilotes.md =====
+/* ===== 85-pilote.js — huit politiques, humain/bon/expert révisés par codex-p14 =====
    Lecture : vues publiques de S, N.R, N.ids, N.game.etat(), N.horloge.H/pas().
    Écriture du jeu : S.input seulement ; hasard : flux pilote ; journal : N.journal('pilote', …).
    Le raccord window.__PILOT ignore son snapshot (il contient des objets hors contrat).
-   Constantes de la spécification gelée non exposées par N.R : tables locales (→ N.R),
+   Constantes historiques non exposées par N.R : tables locales (→ N.R),
    sans modifier les règles ni les cibles du jeu.
    Les producteurs manquants sont demandés dans refonte/lots/demandes.md : aucun accès privé de repli. */
 (function () {
@@ -27228,7 +27236,7 @@ N.ui = (function () {
     return phi - sens * (PI / 2 - k);
   }
   function finirLasso(raison) { note('lassoFin', { raison: raison }); P.lasso = null; }
-  function lasso(S) {
+  function lassoAncien(S) {
     var p = S.player, L = P.lasso, i;
     if (!L && p.len >= 8 && P.t - P.dernierLasso > 1.5) {
       var group = groupe(S);
@@ -27260,6 +27268,90 @@ N.ui = (function () {
     if (cout(cap, S, true) >= CERT) { finirLasso('danger'); return null; }
     P.cout = cout(cap, S, false); return cap;
   }
+  /* Un centre mémorisé, choisi de côté : le doigt trace une boucle, il ne poursuit pas
+     le barycentre mouvant d'un groupe. La tête est la seule source de géométrie de la
+     trajectoire ; aucune lecture de la trace privée, aucune activation du LASSO. */
+  function lassoDoigt() { return P.nom === 'humain' || P.nom === 'bon' || P.nom === 'expert'; }
+  function rayonLasso(p) {
+    var C = N.R.pilotageLasso, corps = p.len * N.R.longueur.espacement;
+    return Math.max(N.R.joueuse.rayonVirage * C.rayonVirageMarge,
+      (corps + p.vit * (N.R.f.traine(p.len) - N.R.lasso.ageMin) * C.trainePart) / TAU);
+  }
+  function surCercle(c, r, S) {
+    var M = S.monde, m = N.R.pilotageLasso.margeMur;
+    return !!M && c.x - r > M.x0 + m && c.x + r < M.x1 - m && c.y - r > M.y0 + m && c.y + r < M.y1 - m;
+  }
+  function choisirBoucle(S) {
+    var C = N.R.pilotageLasso, p = S.player, r = rayonLasso(p), best = null, score = -Infinity;
+    if (TAU * r > p.len * N.R.longueur.espacement + p.vit * (N.R.f.traine(p.len) - N.R.lasso.ageMin)) return null;
+    for (var s = -1; s <= 1; s += 2) for (var j = 0; j < C.angles.length; j++) {
+      var a = p.ang + s * PI / 2 + C.angles[j], c = { x: p.x + r * Math.cos(a), y: p.y + r * Math.sin(a) };
+      if (!surCercle(c, r, S)) continue;
+      var ids = [], value = 0, enemies = S.enemies || [];
+      for (var i = 0; i < enemies.length; i++) {
+        var e = enemies[i];
+        if (!danger(e) || e.boss || !dansVue(e, S)) continue;
+        var marge = N.R.mort.rayonTete + e.r * N.R.mort.ennemi.facteurRayon + C.margeCible;
+        if (distance(e, c) < r - marge) { ids.push(e.id); value += C.ciblePoids; }
+      }
+      value -= Math.abs(C.angles[j]) * C.capPoids;
+      if (ids.length && value > score) { score = value; best = { c: c, r: r, s: s, ids: ids }; }
+    }
+    return best;
+  }
+  function dangerBoucle(S, L) {
+    var p = S.player, C = N.R.pilotageLasso, t = C.prevision, a = p.ang + L.s * p.vit * t / L.r;
+    var x = p.x + (Math.sin(a) - Math.sin(p.ang)) * L.r / L.s;
+    var y = p.y - (Math.cos(a) - Math.cos(p.ang)) * L.r / L.s;
+    var M = S.monde, r = N.R.mort.rayonTete;
+    if (M && Math.min(x - M.x0, M.x1 - x, y - M.y0, M.y1 - y) < r) return 'mur';
+    var tele = S.tele || [], shots = S.shots || [], enemies = S.enemies || [], i, e;
+    for (i = 0; i < tele.length; i++) if (tele[i].reste <= t && (tele[i].cible === 'tete' || tele[i].cible === 'tout') && zone(x, y, tele[i])) return 'tele';
+    for (i = 0; i < shots.length; i++) {
+      e = shots[i]; if (Math.hypot(x - e.x - e.vx * t, y - e.y - e.vy * t) < r + e.r) return 'tir';
+    }
+    for (i = 0; i < enemies.length; i++) {
+      e = enemies[i]; if (!danger(e) || e.type === 'planeur') continue;
+      if (Math.hypot(x - e.x - e.vx * t, y - e.y - e.vy * t) < r + e.r * N.R.mort.ennemi.facteurRayon) return 'ennemi';
+    }
+    // Un segment avance vers la queue pendant la prédiction. Les trois derniers
+    // ferment ; les traiter comme un obstacle interdit précisément de finir la boucle.
+    var segs = p.segs || [], fin = p.len - N.R.mort.morsure.derniersFermant;
+    for (i = N.R.mort.morsure.segMin; i + p.vit * t / N.R.longueur.espacement < fin && 2 * i + 1 < segs.length; i++)
+      if (Math.hypot(x - segs[2 * i], y - segs[2 * i + 1]) < N.R.mort.morsure.rayon) return 'corps';
+    return false;
+  }
+  function lasso(S) {
+    if (!lassoDoigt()) return lassoAncien(S);
+    var C = N.R.pilotageLasso, p = S.player, L = P.lasso;
+    if (!L && p.len >= N.R.mort.morsure.segMin && P.t - P.dernierLasso >= C.intervalle) {
+      L = choisirBoucle(S);
+      if (L && !dangerBoucle(S, L)) {
+        L.t = P.t; L.tourne = 0; L.phi = Math.atan2(p.y - L.c.y, p.x - L.c.x);
+        P.lasso = L; P.dernierLasso = P.t;
+        note('lassoTente', { n: L.ids.length, rayon: L.r, longueur: p.len, sens: L.s, x: L.c.x, y: L.c.y });
+      } else L = null;
+    }
+    if (!L) return null;
+    var phi = Math.atan2(p.y - L.c.y, p.x - L.c.x);
+    L.tourne += L.s * angle(phi - L.phi); L.phi = phi;
+    if (L.tourne >= TAU + C.progressionFin) { finirLasso('boucle'); return null; }
+    if (P.t - L.t > TAU * L.r / p.vit + C.tempsMarge) { finirLasso('temps'); return null; }
+    // Finir le geste même si l'arsenal a abattu sa cible initiale : d'autres
+    // poursuivants peuvent être entrés dans la boucle. Un cercle vide reste un échec.
+    var menace = dangerBoucle(S, L), traverse = menace && menace !== 'mur' && menace !== 'tele';
+    L.menace = menace;
+    if (menace && !(traverse && (P.t < L.protege || p.pouvoir === 'traversee' && p.pouvoirPret))) { finirLasso('danger'); return null; }
+    // Viser là où sera le pouce à la sortie de sa file de réaction ; le bruit humain
+    // et les 120 ms restent appliqués ensuite, sans prédire les mouvements ennemis cachés.
+    var tau = REACTION[P.nom], avance = p.vit * tau / L.r, a = p.ang + L.s * avance;
+    var q = { x: p.x + (Math.sin(a) - Math.sin(p.ang)) * L.r / L.s,
+      y: p.y - (Math.cos(a) - Math.cos(p.ang)) * L.r / L.s };
+    var radial = Math.atan2(q.y - L.c.y, q.x - L.c.x);
+    var correction = clamp(C.gainRadial * (distance(q, L.c) - L.r) / L.r, -C.correctionMax, C.correctionMax);
+    P.cout = 0;
+    return radial + L.s * (PI / 2 + correction);
+  }
   function proche(S, butin, ennemis) {
     var best = null, min = Infinity, lists = [];
     if (butin) lists.push(S.butin || []); if (ennemis) lists.push(S.enemies || []);
@@ -27280,7 +27372,7 @@ N.ui = (function () {
     if (!p.pouvoirPret) P.pouvoirEnFile = false;
     if (p.apogee < 100) P.apogeeEnFile = false;
     if (P.nom === 'expert' && (P.opts.variante === 'auto' || P.opts.variante === 'diriger')) return;
-    if (P.nom !== 'bon' && P.nom !== 'expert' && P.nom !== 'dieu' && P.nom !== 'kamikaze') return;
+    if (P.nom !== 'bon' && P.nom !== 'expert' && P.nom !== 'dieu' && P.nom !== 'kamikaze' && P.nom !== 'humain') return;
     var pouvoir = false, apogee = false, nVue = 0, nPres = 0, nTele = 0, oeil = false;
     for (i = 0; i < enemies.length; i++) {
       var e = enemies[i]; if (!danger(e)) continue;
@@ -27292,12 +27384,13 @@ N.ui = (function () {
       var z = tele[i]; if (dansVue({ x: z.x0, y: z.y0 }, S)) nTele++;
       if (p.pouvoir === 'traversee' && z.reste < 0.2 && (z.cible === 'tete' || z.cible === 'tout') && zone(p.x + Math.cos(p.ang) * p.vit * z.reste, p.y + Math.sin(p.ang) * p.vit * z.reste, z)) pouvoir = true;
     }
+    if (P.lasso && P.lasso.menace && p.pouvoir === 'traversee') pouvoir = true;
     if (p.pouvoir === 'traversee') for (i = 0; i < shots.length; i++) if (approche(shots[i], p, 0.2) < 4 + shots[i].r) pouvoir = true;
     if (p.pouvoir === 'ralenti' && nTele >= 3) pouvoir = true;
     if (p.pouvoir === 'repli' && nPres >= 5) pouvoir = true;
-    apogee = nVue >= 8 || (P.nom === 'expert' && oeil);
+    apogee = nVue >= 8 || (lassoDoigt() && (oeil || nPres > 0 || nVue >= N.R.pilotageLasso.apogeeCibles));
     if (P.nom === 'kamikaze') pouvoir = apogee = true;
-    if (p.pouvoirPret && pouvoir && !P.pouvoirEnFile) { out.pouvoir = true; P.pouvoirEnFile = true; note('pouvoir', { id: p.pouvoir || null }); }
+    if (p.pouvoirPret && pouvoir && !P.pouvoirEnFile) { out.pouvoir = true; P.pouvoirEnFile = true; if (P.lasso && p.pouvoir === 'traversee') P.lasso.protege = P.t + REACTION[P.nom] + N.R.pouvoirs.traversee.duree; note('pouvoir', { id: p.pouvoir || null }); }
     if (p.apogee >= 100 && apogee && !P.apogeeEnFile) { out.apogee = true; P.apogeeEnFile = true; note('apogee'); }
   }
   function carte(S, out) {
@@ -27363,7 +27456,7 @@ N.ui = (function () {
       P.bruit = N.rng('pilote').r(-erreur, erreur) * PI / 180; P.prochainBruit = P.t + 0.25;
     }
     out.cap = P.cap; out.bruit = P.bruit; out.mag = 0.8;
-    if (P.nom === 'expert' && P.opts.variante !== 'diriger') {
+    if (P.nom === 'expert' && P.opts.variante !== 'diriger' && !P.lasso) {
       var semer = (S.enemies || []).some(function (e2) { return danger(e2) && e2.type === 'traqueur' && distance(e2, p) < 80; });
       var boost = (P.cout > 150 && Math.abs(angle(P.cap - p.ang)) < PI / 12 && p.reserve > 30) || semer;
       if (P.opts.variante === 'auto') out.mag = boost ? 1 : 0.8; else out.boost = boost;

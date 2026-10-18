@@ -1096,6 +1096,14 @@
     finNoms: { ralenti: 'RALENTI', repli: 'REPLI', styles: 'STYLES', galerie: 'GALERIE', departV3: 'DÉPART V3' }
   };
 
+  /* codex-p14 : politique du doigt, aucun seuil de réussite ni règle de LASSO changé. */
+  R.pilotageLasso = {
+    trainePart: 0.5, rayonVirageMarge: 1.25, margeCible: 2,
+    angles: [0, -0.35, 0.35, -0.7, 0.7], gainRadial: 1.2, correctionMax: 0.7,
+    margeMur: 14, prevision: 0.16, progressionFin: 0.25, tempsMarge: 0.6,
+    intervalle: 0.9, ciblePoids: 12, capPoids: 4, apogeeCibles: 2
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
