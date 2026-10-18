@@ -439,7 +439,19 @@ N.score = (function () {
     profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],
     fenetreRestante: function () { return O.clamp(1 - (O.T.t - m.dernier) / fenetre(), 0, 1); },
     terminer: terminer, record: record, defiRate: defiRate, nouveauRecord: function () { return m.newRecord; },
-    ajouter: function (pts, x, y) { ajouter(pts, x, y); }
+    ajouter: function (pts, x, y) { ajouter(pts, x, y); },
+    /* retirer des points (jamais sous zéro) : le VOLEUR de 2030 qui s'échappe avec son butin, en aventure seulement.
+       Ne touche ni au cumul de combat (la vie bonus) ni au multiplicateur ; rend ce qui a été retiré. */
+    retirer: function (pts, source) {
+      if (!(pts > 0)) return 0;
+      var r = Math.min(m.score, Math.round(pts));
+      if (r <= 0) return 0;
+      m.score -= r;
+      source = source || 'perte';
+      m.stats.points[source] = (m.stats.points[source] || 0) - r;
+      publier();
+      return r;
+    }
   };
   /* records et déblocages : mêmes références que le disque une fois lu */
   Object.defineProperty(API, 'records', { get: function () { if (!lu) charger(); return disque.records; }, enumerable: true });

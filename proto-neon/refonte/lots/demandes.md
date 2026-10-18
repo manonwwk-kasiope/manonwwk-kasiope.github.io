@@ -601,3 +601,11 @@ Date et heure de publication : voir `tools/codex-p29/rapport.md`. Aucun fichier 
 | codex-p29 | 73-arene.js / 70-joueuse.js | Raccorder une source publique de convoi avec son historique d'annonce et sa visibilité effective | Les deux morts convoi de 318ce61 reçoivent zéro par construction ; pour expert/1, distinguer la voie annoncée du corps du convoi, qui n'atteint pas le seuil de visibilité |
 | codex-p29 | tools/mesure/criteres/R-08-mort-juste.mjs | Préciser la source par cause et mesurer les durées effectives avec une référence indépendante ; conserver les seuils et exclusions actuels | Aucun zéro sans identité ne doit devenir automatiquement conforme ; le cas traqueur/bon/4 demande une vérification des pixels |
 | codex-p29 | tools/codex-p29/verifier.mjs | Faire exécuter le script préparé par la cheffe hors bac, puis vérifier le cas limite sur Safari | listen et Chromium sont interdits ici ; aucun essai navigateur exécuté, aucun résultat pixel inventé |
+
+## Demande du cloud (18 octobre, 04 h 45) — finir l'inscription des ennemis serpent de 2030 (fichiers réservés ailleurs)
+Livré : TIQUE, VOLEUR, MIROIR, BROUILLEUR (`72-ennemis.js`, `72-serpents.js`, en aventure seulement) et la pénalité
+« BUTIN VOLÉ » (−40 par objet, `N.score.retirer`, nouvelle API de `77-score.js`). Reste, dans des fichiers réservés :
+1. **`03-socle.js`** (codex-p21) : inscrire `tique`, `voleur`, `miroir`, `brouilleur` au contrat (liste des ennemis,
+   noms affichés, auteurs des événements, schémas) ; sans cela, une mort par contact affiche « ENNEMI ».
+2. **`70-joueuse.js`** (codex-p30) : une API publique pour freiner le virage (par exemple
+   `N.joueuse.frein(facteur, duree)`), pour que la TIQUE accrochée alourdisse le serpent comme dans 2030.

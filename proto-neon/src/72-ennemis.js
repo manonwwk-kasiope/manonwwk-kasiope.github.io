@@ -49,7 +49,7 @@ N.ennemis = (function () {
   var SERP = {
     tique: { nom: 'TIQUE', pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
       morsure: { periode: 3.2, annonce: 0.9, premiere: 1.6 }, points: 60 },
-    voleur: { nom: 'VOLEUR', pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
+    voleur: { nom: 'VOLEUR', penalite: 40, pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
       besace: 3, patience: 14, annonceFuite: 2, arrache: { distance: 12, annonce: 0.6, segments: 2, prise: 18 }, prime: 1, points: 150 },
     miroir: { nom: 'MIROIR', pv: 60, r: 5, sprite: 11, retard: 1.5, ecartQueue: 14, rejoint: 1.6, blindageDeg: 75, segments: 3,
       espaceSeg: 6, bord: 3, points: 250 },
@@ -939,7 +939,10 @@ N.ennemis = (function () {
   }
   function echapper(e) {
     e._dead = true; e.etat = 'mort';                             // il sort sans `kill` : ni points ni butin
-    if (N.hud && N.hud.tag) O.safe('hud.tag', function () { N.hud.tag('BUTIN VOLÉ  −' + e._sac); });
+    /* comme dans 2030 : −40 points par objet emporté (jamais sous zéro) */
+    var perte = 0;
+    if (N.score && N.score.retirer) perte = O.safe('score.retirer', function () { return N.score.retirer(SERP.voleur.penalite * e._sac, 'vol'); }) || 0;
+    if (N.hud && N.hud.tag) O.safe('hud.tag', function () { N.hud.tag('BUTIN VOLÉ  ' + (perte ? '−' + perte : '×' + e._sac)); });
     O.sfx('defiRate');
     noter('evade', e);
   }

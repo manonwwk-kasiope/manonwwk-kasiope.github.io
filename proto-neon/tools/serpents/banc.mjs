@@ -224,8 +224,9 @@ async function profil(nom) {
   });
   verifie(r.vols >= 3 && r.alerte, `${nom} VOLEUR : il empoche les cellules (${r.vols}) puis crie « IL FUIT ! »`);
   await capture(page, `voleur-fuite-annoncee-${nom}`, 'voleur', 60);
-  r = await page.evaluate(() => { const B = window.__B; B.sim(10, () => B.evt('voleur:evade') > 0); return { evade: B.evt('voleur:evade') }; });
+  r = await page.evaluate(() => { const B = window.__B, N = window.__N; N.score.ajouter(1000); const avant = N.score.score; B.sim(10, () => B.evt('voleur:evade') > 0); return { evade: B.evt('voleur:evade'), perte: avant - N.score.score }; });
   verifie(r.evade === 1, `${nom} VOLEUR : non abattu, il s'échappe par le bord (BUTIN VOLÉ)`);
+  verifie(r.perte === 120, `${nom} VOLEUR : BUTIN VOLÉ coûte 40 points par objet (3 objets → −${r.perte})`);
   r = await page.evaluate(() => {
     const B = window.__B, N = window.__N; N.serpents.remiseStats();
     const e = N.serpents.forcer('voleur'); if (!e) return {};
