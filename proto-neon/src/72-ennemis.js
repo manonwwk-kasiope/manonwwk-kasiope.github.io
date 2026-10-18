@@ -47,7 +47,7 @@ N.ennemis = (function () {
   };
   /* les serpents de 2030 (→ N.R) ; allures en multiples de la vitesse de la tête, distances en px de jeu */
   var SERP = {
-    tique: { nom: 'TIQUE', pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
+    tique: { nom: 'TIQUE', frein: 0.75, pv: 10, r: 3.5, sprite: 9, approche: 1.45, cote: 5, ecrase: 3, secoue: 0.6, tombe: 1.2,
       morsure: { periode: 3.2, annonce: 0.9, premiere: 1.6 }, points: 60 },
     voleur: { nom: 'VOLEUR', penalite: 40, pv: 30, r: 5.5, sprite: 13, allure: 0.95, queue: 1.15, fuite: 1.3, portee: 320, prise: 8, scan: 0.28,
       besace: 3, patience: 14, annonceFuite: 2, arrache: { distance: 12, annonce: 0.6, segments: 2, prise: 18 }, prime: 1, points: 150 },
@@ -888,6 +888,8 @@ N.ennemis = (function () {
     if (!vivanteJ() || len <= e._k || len < 4) { tomber(e, false); return; }
     var q = pointAccroche(e._k, e._side, c.cote);
     e.x = q.x; e.y = q.y; e.ang = q.a + e._side * Math.PI / 2;
+    /* comme dans 2030 : accrochée, elle alourdit le virage du serpent */
+    if (J.frein) J.frein(c.frein, 0.15);
     if (J.boost) { e._secoue += dt; if (e._secoue >= c.secoue) { tomber(e, true); return; } }
     else e._secoue = Math.max(0, e._secoue - dt * 0.5);
     if (e._st === 'accroche') {

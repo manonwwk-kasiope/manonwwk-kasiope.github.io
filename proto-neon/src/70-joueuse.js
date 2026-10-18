@@ -124,6 +124,7 @@ N.joueuse = (function () {
     P.y = at ? cfg.y : (portrait ? A.y0 + (A.y1 - A.y0) * 0.62 : cy);
     P.ang = at && typeof cfg.ang === 'number' ? cfg.ang : a0;
     P.vit = vitesse();
+    frein.f = 1; frein.t = 0;
     st.target = P.ang; st.a0 = a0; st.len = (cfg && cfg.len) || CFG.lenDepart; st.rate = 1; st.invul = 0; st.grace = -1; st.mordT = 0;
     st.bcl = 0; st.bclArme = false; st.bclRech = 0; st.bclFx = -1; st.perdu = 0; st.repT = 0; st.pvAttente = null;
     st.pulse = -1; st.gone = 0; st.etat = 'vivant'; st.ready = 0; st.vitBase = P.vit;
@@ -350,7 +351,11 @@ N.joueuse = (function () {
   }, '70-joueuse');
 
   /* ============================ mise à jour ============================ */
+  /* le frein du virage (la TIQUE de 2030 accrochée alourdit le serpent) : facteur 1 sans frein, donc le calcul du
+     virage reste exactement le même ; demandé image par image, il retombe à 1 dès qu'on ne le redemande plus */
+  var frein = { f: 1, t: 0 };
   function update(dt) {
+    if (frein.t > 0) { frein.t -= dt; if (frein.t <= 0) { frein.t = 0; frein.f = 1; } }
     if (!S) S = N.S;
     if (!S) return;
     observerAnnoncesMurs();
@@ -371,7 +376,7 @@ N.joueuse = (function () {
     if (st.repli > 0) mul *= 1 + CFG.repliVitesse;
     P.vit = vitesse() * mul;
     var V = P.vit, virage = V / (jz.rayonVirage || 11);           // le rayon de virage (11 px) ne grandit jamais avec la vitesse
-    P.ang = O.turnTo(P.ang, st.target, virage * st.rate * dt);
+    P.ang = O.turnTo(P.ang, st.target, virage * st.rate * frein.f * dt);
     P.x += Math.cos(P.ang) * V * dt; P.y += Math.sin(P.ang) * V * dt;
     trailStep(P.x, P.y);
     if (st.invul > 0) { st.invul -= dt; if (st.invul <= 0) { st.invul = 0; if (st.etat === 'reapparition') { st.etat = 'vivant'; N.joueuse.etat = 'vivant'; } } }
@@ -960,6 +965,7 @@ N.joueuse = (function () {
     reapparaitre: reapparaitre, desintegre: desintegre, pointSur: pointSur,
     god: function (b) { if (b !== undefined) st.god = !!b; return st.god; },
     cap: function () { return st.target; },
+    frein: function (f, duree) { frein.f = O.clamp(+f || 1, 0.3, 1); frein.t = Math.max(frein.t, +duree || 0); if (frein.f >= 1) frein.t = 0; },
     pret: function () { return st.ready; },
     distMur: distMur,
     segPos: function (k) { segAt(k); return { x: SPX, y: SPY }; },

@@ -172,6 +172,19 @@ async function profil(nom) {
     return { ok: true, accroche, len0, id: e.id };
   });
   verifie(r.ok && r.accroche, `${nom} TIQUE : elle rejoint le serpent et s'accroche près de la queue`);
+  /* accrochée, elle alourdit le virage (N.joueuse.frein) : pas de virage maximal par image, frein en place / frein neutralisé */
+  r = await page.evaluate(() => {
+    const B = window.__B, N = window.__N, O = N.outils, t0 = O.turnTo, fr = N.joueuse.frein, pas = [];
+    O.turnTo = function (a, b, m) { pas.push(m); return t0.apply(this, arguments); };
+    B.sim(0.4, () => false); const avec = pas.splice(0);
+    N.joueuse.frein(1, 0); N.joueuse.frein = function () {};
+    B.sim(0.4, () => false); const sans = pas.splice(0);
+    N.joueuse.frein = fr; O.turnTo = t0;
+    const moy = a => a.reduce((s, x) => s + x, 0) / Math.max(1, a.length);
+    return { ratio: moy(avec) / moy(sans), n: avec.length + sans.length, nom: N.ids.texte('ennemi', 'tique') + ' / ' + N.ids.texte('tir', 'voleur') + ' / ' + N.ids.texte('ennemi', 'miroir') + ' / ' + N.ids.texte('ennemi', 'brouilleur') };
+  });
+  verifie(r.n > 10 && r.ratio > 0.7 && r.ratio < 0.8, `${nom} TIQUE : accrochée, elle alourdit le virage (×${r.ratio.toFixed(2)})`);
+  verifie(r.nom === 'TIQUE / TIR DU VOLEUR / MIROIR / BROUILLEUR', `${nom} noms des ennemis de 2030 inscrits au contrat (${r.nom})`);
   await capture(page, `tique-accrochee-${nom}`, 'tique', 36);
   r = await page.evaluate(() => {
     const B = window.__B, N = window.__N, e = B.un('tique'); if (!e) return {};
@@ -202,7 +215,8 @@ async function profil(nom) {
   const t1 = r;
   r = await page.evaluate(() => {                    // l'écrasement seul : une tique accrochée, la tête posée à côté d'elle
     const B = window.__B, N = window.__N; N.serpents.remiseStats();
-    B.pilote('cercle', { cx: B.cx, cy: B.cy, r: 120 });
+    /* grand cercle : la tique accrochée freine le virage, un cercle serré refermerait un LASSO sur elle */
+    B.pilote('cercle', { cx: B.cx, cy: B.cy, r: 150 });
     const e = N.serpents.forcer('tique'); if (!e) return {};
     B.sim(14, () => e._st === 'accroche');
     const P = N.joueuse.tete, a = Math.atan2(e.y - P.y, e.x - P.x);

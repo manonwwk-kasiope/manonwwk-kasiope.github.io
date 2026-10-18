@@ -603,6 +603,9 @@ Date et heure de publication : voir `tools/codex-p29/rapport.md`. Aucun fichier 
 | codex-p29 | tools/codex-p29/verifier.mjs | Faire exécuter le script préparé par la cheffe hors bac, puis vérifier le cas limite sur Safari | listen et Chromium sont interdits ici ; aucun essai navigateur exécuté, aucun résultat pixel inventé |
 
 ## Demande du cloud (18 octobre, 04 h 45) — finir l'inscription des ennemis serpent de 2030 (fichiers réservés ailleurs)
+**FAIT le 18/10 vers 05 h (Claude cloud), par ajouts disjoints des zones réservées** : `tique`, `voleur`, `miroir`, `brouilleur`
+au NOMS et au DE de `03-socle.js` ; `N.joueuse.frein(facteur, duree)` dans `70-joueuse.js` (facteur 1 sans frein : virage
+identique), la TIQUE accrochée freine à ×0,75. Parties directes identiques (3 graines × 2 protocoles).
 Livré : TIQUE, VOLEUR, MIROIR, BROUILLEUR (`72-ennemis.js`, `72-serpents.js`, en aventure seulement) et la pénalité
 « BUTIN VOLÉ » (−40 par objet, `N.score.retirer`, nouvelle API de `77-score.js`). Reste, dans des fichiers réservés :
 1. **`03-socle.js`** (codex-p21) : inscrire `tique`, `voleur`, `miroir`, `brouilleur` au contrat (liste des ennemis,

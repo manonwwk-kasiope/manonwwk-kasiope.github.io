@@ -147,7 +147,6 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 | `src/76-directeur.js`, `src/76-defile.js`, ajouts dans `src/02-regles.js`, `tools/codex-11/` | Codex (boîte) | 18/10/2026 · 03 h 04 | codex-11 : directeur réglable, V1≤24s, progression initiale ; raccord79 fourni à Claude si nécessaire |
 | `src/10-gfx.js`, `src/20-crt.js`, `src/78-hud.js`, `tools/mesure/criteres/R-20-*`, `R-30-*` | Codex (session parallèle codex-p16) | 18/10 à 02 h 30 | R-20 performance (4,5 ms contre 0,8 ms), mesures de temps R-20 ×4 et R-30 |
 | `src/79-scene.js` | Codex (session parallèle codex-p15, reprise p15b) | 18/10 à 03 h 25 | R-12 (aucune explosion à la mort des élites) et R-05 (une seule cause de mort sur sept) ; instrument p3c intégré (26a756b) |
-| `src/03-socle.js` (tables NOMS et DE seulement), `src/70-joueuse.js` (facteur de frein du virage seulement), `src/72-ennemis.js` (TIQUE) | Claude cloud | 18/10 à 05 h 00 | ajouts disjoints des zones réservées par p21 (gestes) et p30 (tête, gaine) : noms des ennemis de 2030, frein de la TIQUE ; facteur 1 hors TIQUE, parties identiques |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
 ## Prochains chantiers (à prendre)
@@ -176,7 +175,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
    REPLI s'équipent depuis 232c778.
 8. Les causes communes de `refonte/couverture-snake2030.md` : brancher l'horloge à pas fixe dans `90-boot.js`
    (aucun ralenti n'agit), injecter la banque de 48 sons (`sons/banque.js`) par `build.mjs`, `N.decor.build()`
-   (ordre n° 3 de Codex), puis les ennemis « serpent » de 2030 (tique, voleur, miroir, brouilleur). **Ennemis serpent faits le 18/10 (Claude cloud)** : `72-ennemis.js` + `72-serpents.js`, en aventure seulement ; banc `tools/serpents/` ; à inscrire au contrat de 03-socle (types, noms).
+   (ordre n° 3 de Codex), puis les ennemis « serpent » de 2030 (tique, voleur, miroir, brouilleur). **Ennemis serpent faits le 18/10 (Claude cloud)** : `72-ennemis.js` + `72-serpents.js`, en aventure seulement ; banc `tools/serpents/` ; noms inscrits à 03-socle, frein de la TIQUE dans 70-joueuse (18/10, 05 h).
 9. Le jury indépendant (lot 10), après le JALON A joué par la propriétaire sur iPhone.
 
 ## Livré par la session cloud (à brancher)

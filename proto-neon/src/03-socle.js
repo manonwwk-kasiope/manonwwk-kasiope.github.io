@@ -231,13 +231,16 @@
     braise: 'BRAISE', traversee: 'TRAVERSÉE', ralenti: 'RALENTI', repli: 'REPLI', apogee: 'APOGÉE', lasso: 'LASSO',
     docks: 'LES DOCKS', artere: "L'ARTÈRE", centrale: 'LA CENTRALE', ciel: 'LE CIEL', tours: 'LES TOURS',
     coeur: 'LE CŒUR', eclipse: "L'ÉCLIPSE",
-    flecheBlindee: 'FLÈCHE BLINDÉE', rucheInstable: 'RUCHE INSTABLE'
+    flecheBlindee: 'FLÈCHE BLINDÉE', rucheInstable: 'RUCHE INSTABLE',
+    /* les ennemis « serpent » de 2030 (72-ennemis.js, en aventure seulement) */
+    tique: 'TIQUE', voleur: 'VOLEUR', miroir: 'MIROIR', brouilleur: 'BROUILLEUR'
   };
   /* le complément « de … » des textes de cause : 'TIR DE TOURELLE', 'RAYON DU CYCLOPE' */
   var DE = {
     fleche: 'DE FLÈCHE', dard: 'DE DARD', larve: 'DE LARVE', mine: 'DE MINE', tourelle: 'DE TOURELLE', lame: 'DE LAME',
     ruche: 'DE RUCHE', sentinelle: 'DE SENTINELLE', rival: 'DU RIVAL', planeur: 'DE PLANEUR', traqueur: 'DU TRAQUEUR',
-    cyclope: 'DU CYCLOPE', 'cyclope:main': 'DU CYCLOPE'
+    cyclope: 'DU CYCLOPE', 'cyclope:main': 'DU CYCLOPE',
+    tique: 'DE TIQUE', voleur: 'DU VOLEUR', miroir: 'DU MIROIR', brouilleur: 'DU BROUILLEUR'
   };
 
   /* N.ids.texte(cause, auteur) : le nom de la cause, affiché sous la mort et sur l'écran de fin, à la
