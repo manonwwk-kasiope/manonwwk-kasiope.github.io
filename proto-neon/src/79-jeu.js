@@ -553,15 +553,15 @@ N.game = (function () {
     if (et === 'attraction') {
       etT += dt; O.T.t += dt; O.T.ak += dt;
       pas(dt);
-      if (!simulant && modOk(N.cam, 'update')) N.cam.update(dt);
+      if (modOk(N.cam, 'update')) N.cam.update(dt);
       publier();
       if (N.joueuse.etat === 'mort' || etT >= R.ecrans.attraction.demo) commencerAttraction();
       return;
     }
     if (hsCd > 0) hsCd -= dt;
     etT += dt;
-    /* la caméra suit la tête à chaque pas de jeu (le mode simulé l'avance lui-même) */
-    if (!simulant && N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
+    /* Même ordre caméra/jeu en simulation et dans la boucle dessinée. */
+    if (N.cam && N.cam.update) appel('cam.update', function () { N.cam.update(dt); });
 
     if (JOUE[et]) {
       O.T.t += dt; O.T.ak += dt;
@@ -878,7 +878,7 @@ N.game = (function () {
       if (nouveau && dt === 0 && N.horloge.arretee() && !(N.S && N.S.paused)) dt = h;
       N.game.update(dt);
       if (N.fx && N.fx.update) N.fx.update(dt);
-      if (N.cam && N.cam.update) N.cam.update(dt);
+      /* update() a déjà avancé la caméra, comme dans frame(). */
     }
     simulant = false;
     return N.journal.dump();
