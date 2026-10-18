@@ -1,0 +1,44 @@
+{
+ "id": "R-05",
+ "titre": "On peut mourir",
+ "seuil": "les sept causes naturelles au moins une fois ; morsure = coupe",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "1 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "causes distinctes produites",
+   "valeur": 6,
+   "seuil": 7,
+   "statut": "echec",
+   "parCause": {
+    "mur": 65,
+    "ennemi": 127,
+    "laser": 3,
+    "tir": 9,
+    "convoi": 5,
+    "souffle": 1
+   },
+   "manquantes": [
+    "traine"
+   ],
+   "parties": 70
+  },
+  {
+   "nom": "causes hors des sept causes naturelles",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "inconnues": []
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 80.6,
+ "bundle": {
+  "url": "http://127.0.0.1:52378/index.html",
+  "empreinte": "bf55cbae9b54"
+ },
+ "date": "2026-10-18T04:22:43.140Z",
+ "dateParis": "18/10/2026 · 06 h 22"
+}

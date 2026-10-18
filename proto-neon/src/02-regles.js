@@ -786,6 +786,10 @@
       apogee: { gelImages: 6, ralenti: 0.25, duree: 0.42 },
       danger: { bordsHz: 1.2 },
       cyclope: { ralenti: 0.3, duree: 2.2, phase: 7, mortImages: 24, force: 1.0 },
+      /* codex-p15c : report p15b sur la pointe ; empreinte admise via flashGate. */
+      impactFort: { secousse: 12, reculElite: 3, reculCrash: 4, forceAttenuee: 0.2 },
+      impactContinu: { aire: 0.36, duree: 0.9, epaisseurFacteur: 2, intervalle: 0.5,
+        attenteImages: 60, rappelImages: 27, rappelDureeImages: 4 },
       etiquettePouvoir: 1,
       budgets: { flashsParSeconde: 3, imagesSecouees: 0.12, banniereIntervalle: 10, bannieresSimultanees: 1 }
     },

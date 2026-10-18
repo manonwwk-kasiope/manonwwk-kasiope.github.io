@@ -32,7 +32,7 @@ N.scene = (function () {
   var DISSOLUTION = 0.73;                       // → N.R : durée de la désintégration en temps de jeu, celle de 79-jeu.js (CFG.mort.dissolution)
   var TAU = Math.PI * 2;
 
-  var T = 0, hsCd = 0, banFin = -99, banDeb = -99, voixFin = -99, voixPrio = -1, portailCd = 0, armeCd = 0, dangerT = 0, dangerCycle = -1;
+  var T = 0, empreinteFin = -99, impactEnAttente = null, impactPlanifie = false, impactSerie = 0, hsCd = 0, banFin = -99, banDeb = -99, voixFin = -99, voixPrio = -1, portailCd = 0, armeCd = 0, dangerT = 0, dangerCycle = -1;
   var mt = -1, mortN = 0, mortLen = 0, mortP = new Float32Array(128), mortHX = 0, mortHY = 0, mortGO = false, mortTete = false;
   /* ce que la scène a produit, pour les tests (« chaque effet attendu au § 5.3 exactement une fois ») */
   var ST = { booms: 0, gels: 0, ondes: 0, bannieres: 0, voix: 0, poussees: 0, sons: {} };
@@ -40,15 +40,19 @@ N.scene = (function () {
   /* ============================ les appels, tous gardés ============================ */
   function head() { return N.joueuse && N.joueuse.tete; }
   function fx() { return N.fx; }
-  function boom(x, y, f, ci, v) { ST.booms++; if (N.fx && N.fx.boom) { try { N.fx.boom(x, y, f, ci, v); } catch (e) { sig('boom', e); } } }
+  function boom(x, y, f, ci, v) { ST.booms++; if (N.fx && N.fx.boom) { try { return N.fx.boom(x, y, f, ci, v); } catch (e) { sig('boom', e); } } }
   function gel(n) { ST.gels++; if (N.fx && N.fx.hitstop) { try { N.fx.hitstop(n); } catch (e) { sig('hitstop', e); } } }
-  function shake(a) { if (N.fx && N.fx.shake) { try { N.fx.shake(a); } catch (e) { sig('shake', e); } } }
+  function mouvementReduit() {
+    if (N.fx && N.fx.options && N.fx.options().reduced) return true;
+    return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  function shake(a) { if (mouvementReduit()) return; if (N.fx && N.fx.shake) { try { N.fx.shake(a); } catch (e) { sig('shake', e); } } }
   function onde(x, y, r0, r1, ci, d, o) { ST.ondes++; if (N.fx && N.fx.onde) { try { N.fx.onde(x, y, r0, r1, ci, d, o); } catch (e) { sig('onde', e); } } }
   function ralenti(k, d, o) { if (N.fx && N.fx.ralenti) { try { N.fx.ralenti(k, d, o); } catch (e) { sig('ralenti', e); } } }
   function apres(s, f) { if (N.fx && N.fx.apres) { if (!N.fx.apres(s, f)) f(); } else f(); }
   function sfx(nom, o) { ST.sons[nom] = (ST.sons[nom] || 0) + 1; O.sfx(nom, o); }
   function cue(nom) { if (N.music && N.music.cue) { try { N.music.cue(nom); } catch (e) { sig('cue', e); } } }
-  function jolt(dx, dy) { ST.poussees++; if (N.cam && N.cam.jolt) { try { N.cam.jolt(dx, dy); } catch (e) { sig('jolt', e); } } }
+  function jolt(dx, dy) { if (mouvementReduit()) return; ST.poussees++; if (N.cam && N.cam.jolt) { try { N.cam.jolt(dx, dy); } catch (e) { sig('jolt', e); } } }
   function sig(w, e) { if (N.socle && N.socle.signaler) N.socle.signaler('scene→' + w, e); }
   function pan(x) { var V = O.VUE; return V.w > 0 ? O.clamp((x - V.x - V.w / 2) / (V.w / 2), -1, 1) : 0; }
   function nom(t) { return (N.ids && N.ids.noms && N.ids.noms[t]) || String(t || '').toUpperCase(); }
@@ -81,44 +85,91 @@ N.scene = (function () {
     var dx = h.x - x, dy = h.y - y, m = Math.sqrt(dx * dx + dy * dy);
     if (m > 0.01) jolt(dx / m * k, dy / m * k);
   }
-  var CASC = [[-18, -9, 0.0], [15, 11, 0.2], [-7, 16, 0.4], [13, -15, 0.7], [0, 2, 1.0]];
-  function colosseMort(c) {
-    var n = Math.max(1, RC.explosions | 0), cas = RC.cascade || 0.66;
-    gel(RC.arretImages || 24);
-    boom(c.x, c.y, 1, O.MAGENTA);
-    shake(12);
-    if (N.cam && N.cam.secousse) { try { N.cam.secousse(RC.camera || 6, 0, 1); } catch (e) { sig('secousse', e); } }
-    sfx('colosseMort');
-    for (var i = 1; i < n; i++) {
-      (function (o, k) {
-        apres(0.04 + cas * o[2], function () {
-          boom(c.x + o[0], c.y + o[1], 0.62 + 0.06 * k, O.MAGENTA);
-          shake(6); if (k & 1) sfx('bigkill', { pan: pan(c.x + o[0]) });
-          onde(c.x + o[0], c.y + o[1], 4, 46, O.JAUNE, 0.4);
-        });
-      })(CASC[i % CASC.length], i);
+  /* Une admission, une empreinte ; la file privilégie boss et élites sans réserver
+     de place dans le limiteur global. Un refus ne consomme pas notre cadence. */
+  function rappelSecousse(imageMort) {
+    if (mouvementReduit() || !N.fx || !N.fx.apres || !N.S) return;
+    var image = imageMort + RS.impactContinu.rappelImages;
+    var fin = image + RS.impactContinu.rappelDureeImages;
+    var restant = (RS.impactContinu.rappelImages + RS.impactContinu.rappelDureeImages + 1) * R.temps.pasMax, serie = impactSerie;
+    function attendre() {
+      if (serie !== impactSerie || mouvementReduit()) return;
+      if (--restant <= 0 || N.S.frame >= fin) return;
+      if (N.S.frame >= image) shake(RS.impactFort.secousse);
+      N.fx.apres(0, attendre);
     }
+    N.fx.apres(0, attendre);
+  }
+  function planifierImpact() {
+    if (impactPlanifie || !impactEnAttente || !N.fx || !N.fx.apres) return;
+    var serie = impactSerie;
+    impactPlanifie = true;
+    if (!N.fx.apres(0, function () {
+      if (serie !== impactSerie) return;
+      impactPlanifie = false; essayerImpact();
+    })) impactPlanifie = false;
+  }
+  function essayerImpact() {
+    var p = impactEnAttente, F = RS.impactContinu, G = N.gfx;
+    if (!p || !F || !G || !N.fx || !N.fx.flashGate || !N.S) return false;
+    var image = N.S.frame;
+    if (--p.pas <= 0 || image - p.imageMort > F.attenteImages) { impactEnAttente = null; return false; }
+    if (p.derniereImage === image || T < empreinteFin) { planifierImpact(); return false; }
+    p.derniereImage = image;
+    var rayon = Math.sqrt(G.W * G.H * F.aire / Math.PI) / (1 + F.epaisseurFacteur / 2);
+    var epaisseur = rayon * F.epaisseurFacteur, aire = Math.PI * Math.pow(rayon + epaisseur / 2, 2);
+    if (!N.fx.flashGate(aire, { type: 'scene', ci: O.BRASIER })) { planifierImpact(); return false; }
+    impactEnAttente = null; empreinteFin = T + F.intervalle;
+    onde(p.charge.x, p.charge.y, rayon, rayon, O.BRASIER, F.duree, { epaisseur: epaisseur });
+    shake(RS.impactFort.secousse);
+    if (p.charge.elite || p.charge.boss) rappelSecousse(p.imageMort);
+    return true;
+  }
+  function explosionForte(c) {
+    var F = RS.impactContinu, p = impactEnAttente;
+    if (!F || !N.S) return false;
+    if (p && ((p.charge.boss && !c.boss) || (p.charge.elite && !c.elite && !c.boss))) {
+      if (!mouvementReduit()) boom(c.x, c.y, RS.impactFort.forceAttenuee, O.MAGENTA);
+      return false;
+    }
+    impactEnAttente = { charge: c, imageMort: N.S.frame, derniereImage: -1,
+      pas: (F.attenteImages + 1) * R.temps.pasMax };
+    if (T < empreinteFin && !mouvementReduit()) boom(c.x, c.y, RS.impactFort.forceAttenuee, O.MAGENTA);
+    var admis = essayerImpact();
+    if (!admis) planifierImpact();
+    return admis;
+  }
+  function colosseMort(c) {
+    var cas = RC.cascade || 0.66;
+    gel(RC.arretImages || 24);
+    var fort = explosionForte(c);
+    if (fort) shake(RS.impactFort.secousse);
+    if (fort && !mouvementReduit() && N.cam && N.cam.secousse) { try { N.cam.secousse(RC.camera || 6, 0, 1); } catch (e) { sig('secousse', e); } }
+    sfx('colosseMort');
+    // Le colosse produit déjà ses explosions publiques : ne pas superposer une deuxième cascade.
     if (N.ennemis && N.ennemis.effacerTirs) { try { N.ennemis.effacerTirs(c.x, c.y, 140); } catch (e) { sig('effacerTirs', e); } }
     apres(cas + 0.6, function () { banniere('SECTEUR NETTOYÉ', { c: 'jaune', duree: 2.6 }, 2); });
   }
   function onKill(c) {
-    if (c.src && c.src.genre === 'decor') { boom(c.x, c.y, c.boss ? 1 : 0.36, O.MAGENTA); return; }
+    if (c.src && c.src.genre === 'decor') {
+      if (mouvementReduit() && (c.boss || c.elite || c.type === 'rival')) explosionForte(c);
+      else boom(c.x, c.y, c.boss ? 1 : 0.36, O.MAGENTA);
+      return;
+    }
     if (c.boss) { colosseMort(c); return; }
     var ch = N.score && N.score.chaine ? N.score.chaine() : 1;
-    var rival = c.type === 'rival', crash = rival && c.src && c.src.genre !== 'arme';
+    var fort, rival = c.type === 'rival', crash = rival && c.src && c.src.genre !== 'arme';
     if (crash) {                                                    // RIVAL écrasé : explosion d'élite au point du choc
-      boom(c.x, c.y, 0.8, O.MAGENTA); gel((RS.rival && RS.rival.gelImages) || 6); shake(8);
-      onde(c.x, c.y, 4, 52, O.ROSE, 0.45); sfx('crash', { pan: pan(c.x) });
+      fort = explosionForte(c); gel((RS.rival && RS.rival.gelImages) || 6); if (fort) shake(RS.impactFort.secousse);
+      sfx('crash', { pan: pan(c.x) });
       pop(c.x, c.y - 12, 'CRASH !', 'rose'); banniere('CRASH !', { c: 'rose', duree: 1.2 }, 0);
-      recul(c.x, c.y, 4);
-    } else if (c.elite || rival) {                                  // élite : force supérieure à 0,6, secousse, grille qui ondule
+      recul(c.x, c.y, RS.impactFort.reculCrash);
+    } else if (c.elite || rival) {                                  // élite : empreinte chaude admise, secousse bornée
       var E = RS.elite || { force: 0.8, gelImages: 5, ondule: 48 };
-      boom(c.x, c.y, E.force, O.MAGENTA); gel(E.gelImages); shake(8);
-      onde(c.x, c.y, 4, 48, O.ROSE, 0.4);
-      if (N.decor) { try { if (N.decor.ondule) N.decor.ondule(c.x, c.y, E.ondule); if (N.decor.fenetres) N.decor.fenetres(); } catch (e) { sig('decor', e); } }
+      fort = explosionForte(c); gel(E.gelImages); if (fort) shake(RS.impactFort.secousse);
       sfx('bigkill', { pan: pan(c.x) });
       banniere(nom(c.type), { c: 'magenta', duree: 1.2 }, 0);
-      recul(c.x, c.y, 3);
+      recul(c.x, c.y, RS.impactFort.reculElite);
     } else {
       var tireur = c.type === 'tourelle' || c.type === 'sentinelle';
       var f = Math.min(KL.forceMax, (tireur ? KL.forceTireur : KL.force) + KL.parEnchaine * Math.max(0, ch - 1));
@@ -282,6 +333,7 @@ N.scene = (function () {
   function update(dt) {
     if (!(dt >= 0)) dt = 0;
     T += dt;
+    if (impactEnAttente && !impactPlanifie) planifierImpact();
     if (hsCd > 0) hsCd -= dt;
     if (portailCd > 0) portailCd -= dt;
     if (armeCd > 0) armeCd -= dt;
@@ -307,7 +359,7 @@ N.scene = (function () {
   }
 
   function reset() {
-    T = 0; hsCd = 0; banFin = -99; banDeb = -99; voixFin = -99; voixPrio = -1; portailCd = 0; armeCd = 0; dangerT = 0; dangerCycle = -1; mt = -1; mortN = 0; mortLen = 0;
+    T = 0; empreinteFin = -99; impactEnAttente = null; impactPlanifie = false; impactSerie++; hsCd = 0; banFin = -99; banDeb = -99; voixFin = -99; voixPrio = -1; portailCd = 0; armeCd = 0; dangerT = 0; dangerCycle = -1; mt = -1; mortN = 0; mortLen = 0;
     ST.booms = 0; ST.gels = 0; ST.ondes = 0; ST.bannieres = 0; ST.voix = 0; ST.poussees = 0; ST.sons = {};
     onVague.coupes0 = 0;
   }
