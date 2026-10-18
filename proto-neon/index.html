@@ -1533,7 +1533,7 @@ var MUSIQUE_EMBED = null;
      une demande au gardien, jamais en douce.
      ================================================================================================ */
   var L = {
-    ennemis: ['fleche', 'dard', 'larve', 'mine', 'tourelle', 'lame', 'ruche', 'sentinelle', 'rival', 'planeur', 'traqueur'],
+    ennemis: ['tique', 'voleur', 'miroir', 'brouilleur', 'fleche', 'dard', 'larve', 'mine', 'tourelle', 'lame', 'ruche', 'sentinelle', 'rival', 'planeur', 'traqueur'],
     /* les parties du CYCLOPE vivent dans N.ennemis.list avec boss:true et ce type */
     ennemisBoss: ['cyclope'],
     armes: ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ', 'onde', 'sillage'],
@@ -26279,6 +26279,7 @@ N.dir = (function () {
       if (st.turn > secteur().premierEnnemi.apresVirageDeg * Math.PI / 180 && st.tw < st.gate) st.gate = st.tw;
     }
     var cap = plafond(), regl = reglage();
+    if (!chassePause && N.serpents && N.serpents.pasPartie) N.serpents.pasPartie(dt, cap);
     /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
     if (!chassePause && st.beat && st.tw >= st.prochainGroupe) {
       for (i = 0; i < st.queue.length; i++) {

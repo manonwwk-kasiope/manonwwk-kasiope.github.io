@@ -77,7 +77,7 @@
      une demande au gardien, jamais en douce.
      ================================================================================================ */
   var L = {
-    ennemis: ['fleche', 'dard', 'larve', 'mine', 'tourelle', 'lame', 'ruche', 'sentinelle', 'rival', 'planeur', 'traqueur'],
+    ennemis: ['tique', 'voleur', 'miroir', 'brouilleur', 'fleche', 'dard', 'larve', 'mine', 'tourelle', 'lame', 'ruche', 'sentinelle', 'rival', 'planeur', 'traqueur'],
     /* les parties du CYCLOPE vivent dans N.ennemis.list avec boss:true et ce type */
     ennemisBoss: ['cyclope'],
     armes: ['canon', 'tourelles', 'arc', 'missiles', 'drones', 'minesQ', 'onde', 'sillage'],

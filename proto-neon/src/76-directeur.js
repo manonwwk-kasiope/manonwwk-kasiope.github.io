@@ -364,6 +364,7 @@ N.dir = (function () {
       if (st.turn > secteur().premierEnnemi.apresVirageDeg * Math.PI / 180 && st.tw < st.gate) st.gate = st.tw;
     }
     var cap = plafond(), regl = reglage();
+    if (!chassePause && N.serpents && N.serpents.pasPartie) N.serpents.pasPartie(dt, cap);
     /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
     if (!chassePause && st.beat && st.tw >= st.prochainGroupe) {
       for (i = 0; i < st.queue.length; i++) {
