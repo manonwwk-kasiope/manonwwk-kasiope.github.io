@@ -1336,6 +1336,23 @@ var MUSIQUE_EMBED = null;
   R.apparitions.naissance = { bord: 1 };
   // Identités stables distinctes des ennemis et des mèches instables de 72.
   R.arene.teleMurs = { ids: [-10001, -10002, -10003, -10004] };
+  /* codex-p12 : défis mesurables sans modifier les flux ni le combat des pilotes. */
+  R.defis.partie = {
+    reserve: ['premierJet', 'lasso6', 'sansCoupe', 'chaine5', 'sansFilet'],
+    finirNom: 'FINIR', finirBut: 1,
+    // Primes versées au bilan : elles ne déclenchent pas de vie bonus pendant le combat.
+    legacy: { nom: 'DIX KILLS EN CHAÎNE', but: 10, prime: 5000, energie: 20 },
+    jourRepli: 20261017
+  };
+  R.defis.retour = {
+    // Seuils du lot R-36 ; les identifiants et options restent ceux de R.deblocages.
+    seuils: [25, 180, 350, 550, 800]
+  };
+  R.ecrans.retour = {
+    echelle: 2, marge: 5, padding: 4, ecart: 8, ligne: 18, barreH: 3,
+    texteH: 14, colonnes: 2, paginationReserve: 2, boutonPt: 44,
+    finNoms: { ralenti: 'RALENTI', repli: 'REPLI', styles: 'STYLES', galerie: 'GALERIE', departV3: 'DÉPART V3' }
+  };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
@@ -1772,7 +1789,7 @@ var MUSIQUE_EMBED = null;
     for (var k in v) if (L.cartes.indexOf(k) < 0 || !(typeof v[k] === 'number' && (v[k] | 0) === v[k] && v[k] >= 0 && v[k] <= 4)) return false;
     return true;
   }, 'niveaux : { idCarte: palier 0 à 4 } ou tableau de paliers');
-  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b' });
+  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b', fin: '?o', retour: '?o' });
   /* S.vol (lot I) : LE VOL vu par les pilotes, null hors du VOL. Les objets visibles seulement (rayon projeté ≥ 1), dans le plan de la
      tête : x, y = l'endroit où l'objet croisera la tête, dans le repère de `tete` ; z = sa profondeur actuelle ; r = son rayon dans le
      plan de la tête ; avant = les secondes avant qu'il croise la tête ; reste = les secondes qui restent au VOL. */
@@ -1809,7 +1826,8 @@ var MUSIQUE_EMBED = null;
   CH.pouvoir = obj({ id: un(L.pouvoirs), evt: un(['debut', 'fin', 'pret']) });
   CH.apogee = obj({ id: un(['apogee']), evt: un(['pleine', 'debut', 'fin']) });
   CH.boost = obj({ id: un(['boost']), evt: un(['on', 'off', 'panne']) });
-  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+' });
+  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+',
+    evt: '?s', portee: '?s', nom: '?s', etat: '?s', fait: '?b', prog: '?n+', but: '?n+', jour: '?i+', vague: '?i+' });
   CH.deblocage = obj({ id: un(L.deblocages) });
 
   /* ---- les enregistrements du journal (§ 7.9) : {pas, t, image, type, d}, d au schéma du type ---- */
@@ -23566,8 +23584,8 @@ N.dir = (function () {
 N.score = (function () {
   'use strict';
   var O = N.outils, R = N.R;
-  var CFG = {                                    // → N.R : le défi de la démo (DIX KILLS EN CHAÎNE), absent de N.R.defis
-    defiNom: 'DIX KILLS EN CHAÎNE', defiBut: 10, defiPrime: 5000, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
+  var CFG = {                                    // Compatibilité du combat reçu ; chiffres dans N.R.defis.partie.legacy
+    defiNom: R.defis.partie.legacy.nom, defiBut: R.defis.partie.legacy.but, defiPrime: R.defis.partie.legacy.prime, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
   };
   var REG0 = { musique: true, effets: true, secousse: 1, flashs: true, ecran: 'riche', texte: 1, manche: 1, actions: 'doigts' };
   var API = null;
@@ -23621,7 +23639,8 @@ N.score = (function () {
     API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
-    API.defis = { finir: m.defi }; API.defiVague = null;
+    API.defis = defisDuJour(); API.defisVagues = []; API.defiVague = null;
+    journalDefis('selection');
     publier();
   }
   function publier() { if (!S) S = N.S; if (S) { S.score = m.score; S.lives = m.vies; S.challenge = m.defi; } API.score = m.score; API.vies = m.vies; }
@@ -23653,7 +23672,7 @@ N.score = (function () {
     var d = m.defi;
     d.etat = 'reussi'; d.t = O.T.t; d.prog = d.but;
     ajouter(CFG.defiPrime, null, null);
-    m.stats.energie += 20;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
+    m.stats.energie += R.defis.partie.legacy.energie;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
     if (N.arsenal && N.arsenal.surcharger) N.arsenal.surcharger(true);
     var max = (R && R.vies && R.vies.max) || 4; if (m.vies < max) m.vies++;
     O.sfx('defi');
@@ -23670,17 +23689,74 @@ N.score = (function () {
     if (N.ev) N.ev.emit('defi', { id: 'finir', ok: false, prime: 0 });
   }
 
+  /* Trois objectifs publics : FINIR et deux du jour. Le flux autonome ne consomme
+     jamais celui des vagues ; aucun effet sur les vies, armes, gardes ou trajectoires. */
+  function defisDuJour() {
+    var jour = Number(S && S.jour) || R.defis.partie.jourRepli;
+    var flux = N.rng.flux(jour, 'defis'), pool = R.defis.partie.reserve.slice();
+    var liste = [{ id: 'finir', nom: R.defis.partie.finirNom, but: R.defis.partie.finirBut,
+      prog: 0, fait: false, etat: 'actif', prime: R.defis.finir.prime, jour: jour }];
+    while (liste.length < R.defis.parPartie && pool.length) {
+      var id = pool.splice(flux.i(0, pool.length - 1), 1)[0], d = R.defis.reserve[id];
+      liste.push({ id: id, nom: d.nom, but: d.destructions || d.enfermes || d.mult ||
+        (d.vagues ? d.vagues.length : R.defis.partie.finirBut), prog: 0, fait: false,
+        etat: 'actif', prime: d.prime, jour: jour });
+    }
+    return liste;
+  }
+  function journalDefi(d, evt, portee) {
+    if (N.journal) N.journal('defi', { id: d.id, ok: d.etat === 'reussi', prime: 0,
+      evt: evt, portee: portee || 'partie', nom: d.nom || d.texte, etat: d.etat,
+      fait: d.etat === 'reussi', prog: d.prog, but: d.but, jour: d.jour, vague: d.n });
+  }
+  function journalDefis(evt) { API.defis.forEach(function (d) { journalDefi(d, evt); }); }
+  function etatDefi(d, etat) {
+    if (d.etat !== 'actif' || etat === 'actif') return;
+    d.etat = etat; d.fait = etat === 'reussi';
+    if (d.fait) d.prog = d.but;
+    journalDefi(d, 'bilan');
+    if (N.hud && N.hud.toast) N.hud.toast((d.fait ? '✓ ' : '✗ ') + d.nom);
+  }
+  function suivreDefis(evt, c) {
+    if (!m.stats || !Array.isArray(API.defis)) return;
+    API.defis.forEach(function (d) {
+      if (d.etat !== 'actif' || d.id === 'finir') return;
+      var cfg = R.defis.reserve[d.id];
+      if (d.id === 'premierJet') {
+        if (O.T.t <= cfg.avant) d.prog = Math.min(d.but, m.stats.kills);
+        if (d.prog >= d.but && O.T.t >= cfg.jamaisAvant && O.T.t <= cfg.avant) etatDefi(d, 'reussi');
+        else if (O.T.t > cfg.avant) etatDefi(d, 'rate');
+      } else if (d.id === 'lasso6' && evt === 'lasso') d.prog = Math.min(d.but, Math.max(d.prog, c.n));
+      else if (d.id === 'chaine5') d.prog = Math.min(d.but, Math.max(d.prog, mult()));
+      else if (d.id === 'sansCoupe') {
+        if (evt === 'coupe' || evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'vague' && c.evt === 'nettoyee' && cfg.vagues.indexOf(c.n) >= 0) {
+          d.vagues = d.vagues || []; if (d.vagues.indexOf(c.n) < 0) d.vagues.push(c.n); d.prog = d.vagues.length;
+        }
+      } else if (d.id === 'sansFilet') {
+        if (evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'phase' && c.evt === 'entree') d.prog = d.but;
+      }
+      if (d.prog >= d.but && d.id !== 'premierJet') etatDefi(d, 'reussi');
+    });
+  }
+
   /* ---- le défi de vague (§ 2.14) : un objectif parmi trois, tiré par le flux 'defis' à l'entrée de chaque vague ;
      réussi : 1 000 × le numéro de la vague et 10 énergie. Seuls les objectifs que les événements mesurent aujourd'hui
      sont tirés (lassos, enfermés, cellules, mines, tourelles, broyés, multiplicateur) ; les autres attendent leurs événements. */
   function butDe(d) { return d.lassos || d.enfermes || d.cellules || d.mines || d.tourelles || d.mult || d.broyes || 0; }
-  function tirerDefiVague(n) {
+  function tirerDefiVague(n, flux) {
     var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
     if (!L) return null;
     var ok = L.filter(butDe);
     if (!ok.length) return null;
-    var d = ok[Math.min(ok.length - 1, (O.rf('defis') * ok.length) | 0)];
-    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', n: n };
+    var d = ok[Math.min(ok.length - 1, ((flux ? flux.f() : O.rf('defis')) * ok.length) | 0)];
+    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', fait: false, n: n };
+  }
+  function apercuVague(n) {
+    var flux = N.rng.flux(N.rng.graine(), 'defis');
+    flux.reprendre(N.rng('defis').etat());
+    return tirerDefiVague(n || R.secteurs[0].vagues[0].n, flux);
   }
   function avanceDv(champ, v, max) {
     var d = m.dv;
@@ -23690,7 +23766,8 @@ N.score = (function () {
   }
   function dvOk() {
     var d = m.dv, V = R.defis.vague, prime = V.prime * d.n;
-    d.etat = 'reussi'; d.prog = d.but; m.dvFaits++;
+    d.etat = 'reussi'; d.fait = true; d.prog = d.but; m.dvFaits++;
+    journalDefi(d, 'bilan', 'vague');
     ajouter(prime, null, null);
     m.stats.energie += V.energie;
     O.sfx('defi');
@@ -23722,6 +23799,7 @@ N.score = (function () {
       else if (c.type === 'tourelle') avanceDv('tourelles', 1);       // → N.R : l'angle de 45° (v3Cote) n'est pas mesuré
       var d = m.defi;
       if (d && d.etat === 'actif') { d.prog = m.chaine; if (m.chaine > d.meilleur) d.meilleur = m.chaine; if (m.chaine >= d.but) defiOk(); }
+      suivreDefis('kill', c);
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
@@ -23745,29 +23823,35 @@ N.score = (function () {
       m.stats.morts.push({ cause: d.cause, auteur: d.auteur, t: d.t, vague: d.vague, visibleDepuis: d.visibleDepuis, teleDuree: d.teleDuree });
       publier();
     }, '77-score');
-    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); }, '77-score');
+    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); suivreDefis('mort', {}); }, '77-score');
     N.ev.on('vague', 20, function (c) {
       if (c.evt === 'entree') {
         m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
+        if (m.dv) { API.defisVagues.push(m.dv); journalDefi(m.dv, 'selection', 'vague'); }
         if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
         return;
       }
       if (c.evt !== 'nettoyee') return;
-      if (m.dv && m.dv.etat === 'actif') m.dv.etat = 'rate';
+      if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
       ajouter(p * c.n, null, null);
     }, '77-score');
   }
 
+  if (N.ev) ['ramassage', 'lasso', 'coupe', 'vague', 'phase'].forEach(function (evt) {
+    N.ev.on(evt, evt === 'phase' ? N.ids.rangs.score : N.ids.rangs.defis, function (c) { suivreDefis(evt, c); }, '77-score');
+  });
+
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    suivreDefis('temps', {});
     if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
   }
 
   /* fin de partie : le record, l'énergie, les déblocages, et le RÉSUMÉ que lit l'écran de fin ; `victoire` vrai si le colosse est tombé */
-  function seuils() { return (R && R.deblocages) || []; }
+  function seuils() { return R.deblocages.map(function (d, i) { return { id: d.id, seuil: R.defis.retour.seuils[i] }; }); }
   function prochainPour(e) {
     var L = seuils(), prec = 0;
     for (var i = 0; i < L.length; i++) { if (e < L[i].seuil) return { id: L[i].id, reste: L[i].seuil - e, part: O.clamp((e - prec) / (L[i].seuil - prec), 0, 1), seuil: L[i].seuil, prec: prec }; prec = L[i].seuil; }
@@ -23796,6 +23880,16 @@ N.score = (function () {
     if (!lu) charger();
     if (m.resume) return { record: m.resume.record, nouveau: m.newRecord };
     m.stats.victoire = !!victoire;
+    var primes = 0, energieDefis = 0;
+    API.defis.forEach(function (d) {
+      if (d.id === 'finir' && d.etat === 'actif' && victoire) etatDefi(d, 'reussi');
+      if (d.etat === 'actif') etatDefi(d, 'rate');
+      if (d.fait && !d.paye) { primes += d.prime; if (d.id !== 'finir') energieDefis += R.defis.energieReserve; d.paye = true; }
+    });
+    if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
+    // Bilan seulement : ne pas franchir un seuil de vie bonus pendant une partie.
+    m.score += primes; publier();
+    journalDefis('fin');
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
     var dernier = pr.dernier || 0, avantE = pr.energie || 0;
@@ -23807,7 +23901,7 @@ N.score = (function () {
     disque.records = tableau.map(function (r) { return r.score; });
     disque.marquesRecords = tableau.map(function (r) { return r.marque; });
     if (!m.continuations) pr.parties++;
-    var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
+    var gagne = m.stats.energie + energieDefis + (victoire ? R.defis.finir.energie : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
     pr.energie = avantE + gagne; pr.dernier = m.score;
     for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
       pr.deblocages.push(L[i].id); debloques.push(L[i].id);
@@ -23817,14 +23911,17 @@ N.score = (function () {
     var d = (S && S.death) || m.stats.morts[m.stats.morts.length - 1] || null, dir = N.dir;
     var tot = dir && dir.nombreVagues ? dir.nombreVagues() : 5, vague = d && d.vague ? d.vague : (dir && dir.vague ? dir.vague() : 1);
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
-    var note = victoire ? 'B' : boss ? 'C' : 'D';
+    var faits = API.defis.filter(function (d) { return d.fait; }).length;
+    var note = victoire ? (faits === R.defis.parPartie && !m.stats.morts.length ? 'S' : faits > R.defis.partie.finirBut ? 'A' : 'B') : boss ? 'C' : 'D';
     m.resume = {
       victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
       pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
       build: build(), defi: m.defi ? { nom: m.defi.nom, etat: m.defi.etat, prog: m.defi.prog, but: m.defi.but, meilleur: m.defi.meilleur } : null,
-      energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
+      defis: API.defis.map(function (d) { return { id: d.id, nom: d.nom, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but, jour: d.jour }; }),
+      defisVagues: API.defisVagues.map(function (d) { return { id: d.id, nom: d.texte, n: d.n, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but }; }),
+      primesDefis: primes, energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
       conseil: conseil(d ? d.cause : null, d ? d.auteur : null), cartes: N.cartes && N.cartes.prises ? N.cartes.prises() : {}
     };
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
@@ -23842,6 +23939,7 @@ N.score = (function () {
     m.continuations++;
     m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
     m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
+    API.defis.forEach(function (d) { if (d.etat === 'rate' && d.id !== 'sansCoupe' && d.id !== 'sansFilet' && d.id !== 'premierJet') d.etat = 'actif'; });
     m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;
     publier();
     return true;
@@ -23851,7 +23949,7 @@ N.score = (function () {
     reset: reset, update: update, continuer: continuer, continuerPossible: continuerPossible, classement: classement,
     marque: function () { return m.continuations ? 'C' : ''; },
     palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
-    defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
+    defis: [], defisVagues: [], apercuVague: apercuVague, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
     profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],
@@ -25263,9 +25361,9 @@ N.game = (function () {
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
     if (u) {
-      if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
+      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
-      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
+      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
     return true;
   }
@@ -25402,7 +25500,7 @@ N.game = (function () {
     finClip = null;
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
-    aller('plongee');
+    aller('briefing');
   }
   function film(nom, suite, opts) {
     if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
@@ -25633,7 +25731,12 @@ N.game = (function () {
       if (nouveau) { var a = N.ui.sortie(); if (a && a.action === 'jouer') aller('titre'); } else N.ui.sortie();
       etT += dt; return;
     }
-    if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
+    if (et === 'briefing') {
+      N.ui.update(dt); etT += dt;
+      if (etT >= R.ecrans.briefing.duree) aller('plongee');
+      return;
+    }
+    if (et === 'ouverture') { etT += dt; if (etT > 0.5) aller('titre'); return; }
     if (et === 'titre') {
       if (activiteTitre()) etT = 0;
       s.input.any = false;
@@ -26569,13 +26672,13 @@ N.ui = (function () {
     publier();
   }
   function finActions() {
-    var f = R.ecrans.fin, a = f.actions, sf = O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var f = R.ecrans.fin, a = f.actions, sf = (N.S && N.S.safe) || O.geo.safe, W = O.geo.W, H = O.geo.H;
     var x0 = (sf.l | 0) + a.marge, x1 = W - (sf.r | 0) - a.marge;
-    var h = Math.ceil(f.boutonPt / px()), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
+    var h = Math.max(R.ecrans.retour.texteH + R.ecrans.retour.padding * 2, Math.ceil(Math.max(f.boutonPt, R.ecrans.retour.boutonPt) / px())), w = Math.floor(Math.min(a.largeurMax, (x1 - x0 - a.ecart) / 2));
     var x = Math.round((x0 + x1 - w * 2 - a.ecart) / 2), y = H - (sf.b | 0) - a.marge - h;
     var age = Math.floor(Math.max(0, T - f.garde)), c = f.continuer;
     var propose = !cur_opts.victoire && !!(N.score && N.score.continuerPossible && N.score.continuerPossible());
-    return { continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
+    return { bilan: cibleBilan(), continuer: { x: x, y: y, w: w, h: h }, rejouer: { x: x + w + a.ecart, y: y, w: w, h: h },
       propose: propose, disponible: propose && age <= c.de - c.a, restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
   }
   function entreeFin(q) {
@@ -26583,6 +26686,9 @@ N.ui = (function () {
     // La date de début vient de boot ; un doigt déjà posé pendant la garde ne valide rien au relâcher.
     if (q.key === null && typeof q.t0 === 'number' && typeof q.t1 === 'number' && T - (q.t1 - q.t0) / R.ecrans.fin.actions.msParSeconde < R.ecrans.fin.garde) return;
     var a = finActions(), action = null;
+    var cb = a.bilan;
+    if (a.pret && (q.key === 'Tab' || (q.key === null && q.x >= cb.x && q.x < cb.x + cb.w && q.y >= cb.y && q.y < cb.y + cb.h))) { cur_opts.bilan = !cur_opts.bilan; cur_opts.pageBilan = 0; return; }
+    if (cur_opts.bilan && a.pret && (q.key === 'ArrowRight' || q.key === 'ArrowDown' || (q.key === null && q.y >= cb.y + cb.h && q.y < a.rejouer.y))) { cur_opts.pageBilan = (cur_opts.pageBilan || 0) + 1; return; }
     if (q.key === 'ArrowLeft' || q.key === 'ArrowUp') choix = a.disponible ? 0 : 1;
     else if (q.key === 'ArrowRight' || q.key === 'ArrowDown') choix = 1;
     else if (q.key === 'Digit1') action = 'continuer';
@@ -26669,31 +26775,7 @@ N.ui = (function () {
   }
 
   /* ============================ la pause ============================ */
-  function pause() {
-    var W = O.geo.W, H = O.geo.H, g = N.gfx, bw = Math.min(W - 8, 190), x = Math.round((W - bw) / 2);
-    var pr = N.cartes && N.cartes.prises ? N.cartes.prises() : {}, ids = [], k;
-    for (k in pr) if (pr[k] > 0) ids.push(k);
-    var d = N.score && N.score.defi, ch = cible();
-    var dvq = N.score && N.score.defiVague, bh = 32 + ch + (ids.length ? 24 : 0) + (d ? 14 : 0) + (dvq ? 11 : 0), y = Math.round(H / 2 - bh / 2);
-    veil();
-    g.rect(x - 1, y - 1, bw + 2, bh + 2, O.NP); g.rect(x, y, bw, bh, O.NUIT); g.rect(x, y, bw, 1, O.ACIER);
-    O.textC('PAUSE', W / 2, y + 6, O.OS, false, 2);
-    /* REPRENDRE : une cible de 44 pt, et tout l'écran la valide */
-    var cw = Math.min(bw - 16, 120), cx = Math.round(W / 2 - cw / 2), cy = y + 24;
-    g.rect(cx - 1, cy - 1, cw + 2, ch + 2, O.NP); g.rect(cx, cy, cw, ch, O.ARDOISE); g.rect(cx, cy, cw, 1, O.JAUNE); g.rect(cx, cy + ch - 1, cw, 1, O.JAUNE);
-    O.textC(O.hasTouch() ? 'REPRENDRE' : 'ESPACE : REPRENDRE', W / 2, cy + Math.round(ch / 2) - 3, O.OS, false, 1);
-    var yy = cy + ch + 6;
-    if (ids.length) {
-      var gap = 18, x0 = Math.round(W / 2 - (ids.length * gap - 2) / 2);
-      for (var i = 0; i < ids.length; i++) {
-        icone(ids[i], x0 + i * gap + 7, yy + 7, N.cartes && N.cartes.rarete ? O.OS : O.OS);
-        if (pr[ids[i]] > 1) O.text(String(pr[ids[i]]), x0 + i * gap + 11, yy + 13, O.JAUNE, true, 1);
-      }
-      yy += 24;
-    }
-    if (d) { O.textC((d.etat === 'reussi' ? '✓ ' : '') + d.nom + (d.etat === 'actif' ? ' ' + d.prog + '/' + d.but : ''), W / 2, yy, d.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1); yy += 11; }
-    if (dvq) O.textC((dvq.etat === 'reussi' ? '✓ ' : dvq.etat === 'rate' ? '✗ ' : '') + 'V' + dvq.n + ' : ' + dvq.texte + (dvq.etat === 'actif' ? ' ' + dvq.prog + '/' + dvq.but : ''), W / 2, yy, dvq.etat === 'reussi' ? O.JAUNE : O.ACIER, false, 1);
-  }
+  function pause() { veil(); peindreRetour('pause'); }
 
   /* ============================ les cartes ============================ */
   /* la disposition : paysage = plaques côte à côte (120 × 80 ; plus étroites et plus hautes au-delà de trois) ; portrait = plaques empilées 180 × 48 */
@@ -26817,123 +26899,119 @@ N.ui = (function () {
     g.rect(x - 1, y - 1, w + 2, 6, O.NP); g.rect(x, y, w, 4, O.ARDOISE);
     var f = Math.round(w * O.clamp(part, 0, 1)); if (f > 0) g.rect(x, y, f, 4, c);
   }
+  /* Bilan resserré : tous les objectifs et le prochain seuil restent à l'écran.
+     Géométrie publiée pour contrôler les textes réellement peints dans le tampon. */
+  function cibleBilan() {
+    var C = R.ecrans.retour, sf = (N.S && N.S.safe) || O.geo.safe;
+    var largeur = O.geo.W - Math.ceil(sf.l) - Math.ceil(sf.r) - C.marge * 2;
+    return { x: Math.ceil(sf.l) + C.marge, y: Math.ceil(sf.t) + C.marge,
+      w: O.geo.portrait ? largeur : Math.floor((largeur - C.ecart) / C.colonnes),
+      h: Math.max(C.texteH + C.padding * 2, Math.ceil(C.boutonPt / px())) };
+  }
+  function retourModele(nom) {
+    O.geom();
+    var C = R.ecrans.retour, sf = (N.S && N.S.safe) || O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var x = Math.ceil(sf.l) + C.marge, y = Math.ceil(sf.t) + C.marge;
+    var w = W - Math.ceil(sf.r) - C.marge - x;
+    var port = O.geo.portrait, col = port ? w : Math.floor((w - C.ecart) / C.colonnes);
+    var actions = nom === 'fin' ? finActions() : null;
+    var bas = actions ? actions.rejouer.y - C.padding : H - Math.ceil(sf.b) - C.marge;
+    var lignes = [], barres = [];
+    function ligne(t, xx, yy, ink, largeur) {
+      var ls = coupe(t, (largeur || col) / C.echelle);
+      ls.forEach(function (txt) {
+        lignes.push({ texte: txt, x: xx, y: yy, w: O.textW(txt, C.echelle), h: C.texteH, echelle: C.echelle, encre: ink });
+        yy += C.ligne;
+      });
+      return yy;
+    }
+    var score = N.score, r = score && score.resume ? score.resume() : null;
+    var v = r ? r.victoire : !!cur_opts.victoire, yy = y;
+    if (nom === 'fin') {
+      yy = ligne(v ? 'GAGNÉ · BILAN >' : 'PERDU · BILAN >', x, yy, v ? O.JAUNE : O.ROSE);
+      yy = ligne('SCORE ' + (r ? r.score : score ? score.score : 0) + (r && r.marque ? ' C' : ''), x, yy, O.JAUNE);
+      if (r) {
+        yy = ligne(r.debloques.length ? '✓ ' + C.finNoms[r.debloques[r.debloques.length - 1]] + (r.debloques.length > 1 ? ' +' + (r.debloques.length - 1) : '') : 'V' + r.vague + ' ' + mmss(r.temps) + ' NOTE ' + r.note, x, yy, r.debloques.length ? O.JAUNE : O.OS);
+        if (r.cause) yy = ligne(N.ids.texte(r.cause, r.auteur), x, yy, O.ROSE);
+        yy = ligne('ÉNERGIE ' + r.energie, x, yy, O.AMBRE);
+        // Le prochain seuil est montré MÊME si une option vient de se débloquer.
+        if (r.prochain) {
+          yy = ligne('PROCHAIN', x, yy, O.ACIER);
+          yy = ligne(C.finNoms[r.prochain.id] + ' : ' + r.prochain.reste, x, yy, O.JAUNE);
+          barres.push({ x: x, y: yy, w: col, h: C.barreH, part: r.prochain.part }); yy += C.padding;
+        } else yy = ligne('TOUT DÉBLOQUÉ', x, yy, O.JAUNE);
+      }
+    } else {
+      yy = ligne(nom === 'pause' ? 'PAUSE · TOUCHE' : 'OBJECTIFS', x, yy, O.JAUNE);
+      if (nom === 'pause') yy = ligne('POUR REPRENDRE', x, yy, O.OS);
+      yy = ligne('FINIR + ' + R.defis.duJour + ' DU JOUR', x, yy, O.OS);
+      var p = score && score.prochain ? score.prochain() : null;
+      if (p) { yy = ligne('PROCHAIN', x, yy, O.ACIER); yy = ligne(C.finNoms[p.id] + ' : ' + p.reste, x, yy, O.AMBRE); }
+    }
+    if (nom === 'fin' && cur_opts.bilan && r) {
+      lignes = []; barres = []; yy = y;
+      function detail(t, ink) { yy = ligne(t, x, yy, ink || O.OS, w); }
+      detail('< OBJECTIFS', O.JAUNE);
+      var recs = score.classement ? score.classement() : [], marque = recs.length && recs[0].marque ? ' ' + recs[0].marque : '';
+      detail('RECORD ' + r.record + marque + (r.nouveauRecord ? ' NOUVEAU' : ''), O.JAUNE);
+      if (r.ecart !== null) detail('ÉCART ' + (r.ecart >= 0 ? '+' : '') + r.ecart);
+      detail((r.victoire ? 'SECTEUR NETTOYÉ' : 'SECTEUR ' + Math.round(r.progression * 100) + ' %') + ' · NOTE ' + r.note);
+      if (r.build) {
+        detail(r.build.nom, O.AMBRE);
+        detail((r.build.armes || []).map(function (a) { return String(a.id).toUpperCase() + ' ' + romain(a.palier !== undefined ? a.palier : a.niveau); }).join(' · '));
+      }
+      detail('DÉTRUITS ' + r.kills + ' · CHAÎNE ' + r.maxChaine);
+      detail('COUPES ' + r.coupes + ' · LASSO ' + r.maxLasso);
+      detail('VAGUES RÉUSSIES ' + r.defisVague, O.AMBRE);
+      detail('ÉNERGIE +' + r.energieGagnee + ' · TOTAL ' + r.energie, O.AMBRE);
+      if (r.debloques.length) detail('OUVERT : ' + r.debloques.map(function (id) { return C.finNoms[id]; }).join(', '), O.JAUNE);
+      if (r.conseil) detail(r.conseil, O.ACIER);
+      var corps = lignes.slice(1), capacite = Math.max(1, Math.floor((bas - y) / C.ligne) - C.paginationReserve);
+      var pages = Math.ceil(corps.length / capacite), page = (cur_opts.pageBilan || 0) % pages;
+      lignes = lignes.slice(0, 1).concat(corps.slice(page * capacite, (page + 1) * capacite));
+      lignes.forEach(function (l, i) { l.y = y + i * C.ligne; });
+      yy = y + lignes.length * C.ligne;
+      ligne('BILAN ' + (page + 1) + '/' + pages + ' >', x, yy, O.JAUNE, w);
+      return { nom: nom, bilan: true, page: page, pages: pages, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions, debloques: r.debloques.slice() };
+    }
+    var dx = port ? x : x + col + C.ecart, dy = port ? yy + C.padding : y;
+    var defis = r && nom === 'fin' ? r.defis : score && score.defis;
+    dy = ligne('DÉFIS DU JOUR', dx, dy, O.AMBRE);
+    (defis || []).forEach(function (d) {
+      if (d.id === 'finir') { dy = ligne('FINIR ' + (d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.JAUNE : O.OS); return; }
+      dy = ligne((d.fait ? '✓ ' : '· ') + d.nom, dx, dy, d.fait ? O.JAUNE : O.OS);
+      dy = ligne((d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.AMBRE : O.ACIER);
+    });
+    var dv = score && score.defiVague;
+    if (!dv && nom === 'briefing' && score && score.apercuVague) dv = score.apercuVague();
+    if (dv) {
+      dy = ligne('V' + dv.n + ' ' + (dv.fait ? 'FAIT ' : 'NON ') + dv.prog + '/' + dv.but, dx, dy, dv.fait ? O.JAUNE : O.OS);
+      var d = dv.def, lib = d.lassos ? 'LASSO' : d.enfermes ? 'ENFERMÉS' : d.cellules ? 'CELLULES' : d.mines ? 'MINES' : d.tourelles ? 'TOURELLES' : d.mult ? 'MULTIPLICATEUR' : 'BROYÉS';
+      dy = ligne(lib, dx, dy, O.ACIER);
+    }
+    return { nom: nom, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions,
+      debloques: r && nom === 'fin' ? r.debloques.slice() : [] };
+  }
+  function peindreRetour(nom) {
+    var m = retourModele(nom), C = R.ecrans.retour, g = N.gfx;
+    g.rect(m.x - C.padding, m.y - C.padding, m.w + C.padding * 2, m.bas - m.y + C.padding, O.NUIT);
+    m.lignes.forEach(function (l) { O.text(l.texte, l.x, l.y, l.encre, false, l.echelle); });
+    m.barres.forEach(function (b) { g.rect(b.x, b.y, b.w, b.h, O.ARDOISE); g.rect(b.x, b.y, Math.round(b.w * b.part), b.h, O.AMBRE); });
+    if (N.S && N.S.ecran) N.S.ecran.retour = m;
+    return m;
+  }
   function fin() {
-    var W = O.geo.W, H = O.geo.H, g = N.gfx, o = cur_opts, sf = O.geo.safe, r = N.score && N.score.resume ? N.score.resume() : null;
-    var v = r ? r.victoire : !!o.victoire;
-    if (!O.current()) {
-      var a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get(v ? 'victoire' : 'defaite'); }) : null;
-      if (a && a.data) fond(a, 0.6);
-    }
-    var port = O.geo.portrait, x0 = (sf.l | 0) + 5, x1 = W - (sf.r | 0) - 5, y0 = (sf.t | 0) + 4, y1 = H - (sf.b | 0) - 4, bord = v ? O.JAUNE : O.ROSE;
-    g.ditherRect(x0 - 3, y0 - 3, x1 - x0 + 6, y1 - y0 + 6, O.NP, 0.75);
-    g.rect(x0, y0, x1 - x0, y1 - y0, O.NUIT); g.rect(x0, y0, x1 - x0, 1, bord); g.rect(x0, y1 - 1, x1 - x0, 1, bord);
-    var cw = port ? x1 - x0 - 10 : Math.floor((x1 - x0 - 18) / 2), cx0 = x0 + 5, cx1 = port ? cx0 : cx0 + cw + 8;      // deux colonnes en paysage, une en portrait
-    var yl = y0 + 6, bloc = 0;
-    function vu() { return T >= (bloc++) * CFG.rev; }                                 // chaque bloc se dévoile à son tour
-    var ink = v ? O.JAUNE : O.MAGENTA;
-    /* 1. le titre */
-    if (vu()) O.text(v ? 'SECTEUR NETTOYÉ' : 'SIGNAL PERDU', cx0, yl + 3, ink, false, 2);
-    yl += 19;
-    /* 2. la cause, nommée, avec le quartier, la vague et l'heure */
-    if (r && !v && r.cause) {
-      if (vu()) {
-        O.text('DÉTRUITE PAR', cx0, yl, O.ACIER, false, 1);
-        var cs = coupe(N.ids.texte(r.cause, r.auteur), cw), cy = yl + 10, i;
-        for (i = 0; i < cs.length; i++) { O.text(cs[i], cx0, cy, O.MAGENTA, false, 1); cy += 9; }
-        var ls = coupe('VAGUE ' + r.vague + (r.quartier ? ' · ' + N.ids.nom(r.quartier) : '') + ' · ' + mmss(r.temps), cw);
-        for (i = 0; i < ls.length; i++) { O.text(ls[i], cx0, cy, O.ACIER, false, 1); cy += 9; }
-      }
-      yl += 38;
-    } else if (v) { if (vu()) O.text('SURCHARGE DÉBLOQUÉE', cx0, yl, O.JAUNE, false, 1); yl += 14; }
-    /* 3. la progression */
-    if (r) {
-      if (vu()) {
-        O.text(v ? 'SECTEUR 100 %' : r.boss ? 'CYCLOPE ATTEINT' : 'SECTEUR ' + Math.round(r.progression * 100) + ' %', cx0, yl, O.ACIER, false, 1);
-        barre(cx0, yl + 10, cw, r.progression, v ? O.JAUNE : O.OS);
-      }
-      yl += 20;
-    }
-    /* 4. le score compté jusqu'à sa valeur, l'écart à la partie précédente et le record */
-    var sc = r ? r.score : (N.score ? N.score.score : 0);
-    if (vu()) {
-      var k = O.clamp((T - (bloc - 1) * CFG.rev) / 0.9, 0, 1), aff = Math.round(sc * (1 - (1 - k) * (1 - k))), w1 = O.textW('SCORE ', 1);
-      O.text('SCORE ', cx0, yl, O.ACIER, false, 1); O.text(O.pad(aff, 7) + (r && r.marque ? ' ' + r.marque : ''), cx0 + w1, yl, O.JAUNE, false, 1);
-      if (r && r.ecart !== null && k >= 1) droite((r.ecart >= 0 ? '+' : '') + espace(r.ecart), cx0 + cw, yl, r.ecart >= 0 ? O.JAUNE : O.ACIER, 1);
-      var nr = r ? r.nouveauRecord : false;
-      var classement = N.score && N.score.classement ? N.score.classement() : [], marqueRecord = classement.length && classement[0].marque ? ' ' + classement[0].marque : '';
-      O.text((nr ? 'NOUVEAU RECORD' : 'RECORD ' + O.pad(r ? r.record : (N.score ? N.score.record() : 0), 7)) + marqueRecord, cx0, yl + 10, nr ? O.JAUNE : O.ACIER, false, 1);
-    }
-    yl += 24;
-    /* 5. le build : son nom et ses icônes */
-    if (r && r.build) {
-      if (vu()) {
-        O.text(r.build.nom, cx0, yl, O.OS, false, 1);
-        var bi = r.build.armes || [], xi = cx0 + 7;
-        for (var q = 0; q < bi.length; q++) {
-          icone(bi[q].id, xi, yl + 20, O.OS);
-          O.textC(romain(bi[q].palier !== undefined ? bi[q].palier : bi[q].niveau), xi, yl + 30, O.ACIER, false, 1); xi += 19;
-        }
-        if (r.build.pouvoir) icone(r.build.pouvoir, xi + 3, yl + 20, O.JAUNE);
-      }
-      yl += 42;
-    }
-    /* la colonne de droite (en portrait, la suite de la colonne) */
-    var cx = cx1, y = port ? yl : y0 + 6;
-    /* 6. le bilan, ligne à ligne */
-    if (r && vu()) {
-      var lignes = [['DÉTRUITS', r.kills], ['CHAÎNE MAX', r.maxChaine], ['COUPES', r.coupes]];
-      if (r.lassos) lignes.splice(2, 0, ['LASSO MAX', r.maxLasso]);
-      for (var m = 0; m < lignes.length; m++) {
-        if (T < (bloc - 1) * CFG.rev + m * 0.12) break;
-        O.text(lignes[m][0], cx, y + m * 9, O.ACIER, false, 1); droite(String(lignes[m][1]), cx + cw, y + m * 9, O.OS, 1);
-      }
-    }
-    y += 38;
-    /* 7. la note, qui tombe, et le défi */
-    if (r && vu()) {
-      var dy = Math.round((1 - O.clamp((T - (bloc - 1) * CFG.rev) / 0.2, 0, 1)) * -10);
-      O.text('NOTE', cx, y + 4, O.ACIER, false, 1);
-      O.text(r.note, cx + 30, y + dy, r.note === 'D' ? O.ACIER : O.JAUNE, false, 3);
-      if (r.defi) {
-        var ok = r.defi.etat === 'reussi', dl = coupe((ok ? '✓ ' : '✗ ') + r.defi.nom + (ok ? '' : ' ' + r.defi.meilleur + '/' + r.defi.but), cw - 52);
-        for (var dd = 0; dd < dl.length; dd++) O.text(dl[dd], cx + 52, y + 1 + dd * 9, ok ? O.AMBRE : O.ACIER, false, 1);
-        if (r.defisVague) O.text('DÉFIS DE VAGUE ×' + r.defisVague, cx + 52, y + 1 + dl.length * 9, O.AMBRE, false, 1);
-      }
-    }
-    y += 26;
-    /* 8. UN conseil */
-    if (r && r.conseil) {
-      var cl = coupe(r.conseil, cw);
-      if (vu()) for (var z = 0; z < cl.length; z++) O.text(cl[z], cx, y + z * 9, O.OS, false, 1);
-      y += cl.length * 9 + 5;
-    }
-    /* 9. l'énergie gagnée et le prochain déblocage, avec sa barre qui se remplit sous les yeux */
-    if (r) {
-      if (vu()) {
-        var t9 = T - (bloc - 1) * CFG.rev;
-        O.text('ÉNERGIE +' + r.energieGagnee, cx, y, O.OS, false, 1);
-        if (r.debloques.length) {
-          O.text('DÉBLOQUÉ : ' + (DEBNOMS[r.debloques[0]] || r.debloques[0]), cx, y + 10, O.JAUNE, false, 1);
-          barre(cx, y + 20, cw, 1, O.JAUNE);
-          if (!bruit) { bruit = true; O.sfx('record'); }
-        } else if (r.prochain) {
-          var from = r.avant && r.avant.id === r.prochain.id ? r.avant.part : 0;
-          O.text('PROCHAIN : ' + (DEBNOMS[r.prochain.id] || r.prochain.id) + ' DANS ' + r.prochain.reste, cx, y + 10, O.ACIER, false, 1);
-          barre(cx, y + 20, cw, from + (r.prochain.part - from) * O.clamp(t9 / 0.9, 0, 1), O.AMBRE);
-        }
-      }
-    }
-    /* 10. Deux cibles fixes et distinctes, sans clignotement. Un toucher hors cible ne relance plus. */
-    var actions = finActions(), ac = R.ecrans.fin.actions;
+    var m = peindreRetour('fin'), actions = m.actions, C = R.ecrans.retour;
+    if (m.debloques.length && !bruit) { bruit = true; O.sfx('record'); }
     ['continuer', 'rejouer'].forEach(function (nom, i) {
       var rc = actions[nom], ok = actions.pret && (nom !== 'continuer' || actions.disponible);
-      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER —';
-      g.rect(rc.x - 1, rc.y - 1, rc.w + 2, rc.h + 2, O.NP); g.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
-      g.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER); g.rect(rc.x, rc.y + rc.h - 1, rc.w, 1, ok ? O.JAUNE : O.ACIER);
-      if (!O.hasTouch() && choix === i && ok) { g.rect(rc.x, rc.y, 1, rc.h, O.JAUNE); g.rect(rc.x + rc.w - 1, rc.y, 1, rc.h, O.JAUNE); }
-      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - ac.texteH) / 2), ok ? O.OS : O.ACIER, false, 1);
+      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'SUITE ' + actions.restant : 'SUITE —';
+      N.gfx.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
+      N.gfx.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER);
+      O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - C.texteH) / 2), ok ? O.OS : O.ACIER, false, C.echelle);
     });
   }
+  function briefing() { peindreRetour('briefing'); }
 
   function draw() {
     if (!cur) return;
@@ -26942,10 +27020,11 @@ N.ui = (function () {
     else if (cur === 'demarrage') demarrage();
     else if (cur === 'titre') titre();
     else if (cur === 'fin') fin();
+    else if (cur === 'briefing') briefing();
   }
 
   return { ouvrir: ouvrir, fermer: fermer, actif: actif, update: update, draw: draw, sortie: sortie, ecran: ecran, cartes: CARTES, veil: veil, icone: icone,
-    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions };
+    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions, retourModele: retourModele };
 })();
 
 /* ===== 85-pilote.js ===== */
@@ -27327,6 +27406,16 @@ function errLog(where, e) {
   ERR.sigs[sig]++; ERR.count++;
 }
 function step(where, fn) { if (!fn) return; try { fn(); } catch (e) { errLog(where, e); } }
+
+/* codex-p12 : la date civile vit au boot, jamais dans le score ni dans les flux de partie. */
+function actualiserJourParis() {
+  try {
+    var p = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    var champs = {};
+    p.forEach(function (x) { champs[x.type] = x.value; });
+    S.jour = Number(champs.year + champs.month + champs.day);
+  } catch (e) { if (!S.jour) S.jour = N.R.defis.partie.jourRepli; }
+}
 
 /* ---- palette de secours : remplacée par 00-pal.js dès qu'il existe ---- */
 var FALLBACK = ['#0d0221', '#190b28', '#241734', '#541388', '#2d1b69', '#ff2a6d', '#ff8fab', '#05d9e8',
@@ -27799,6 +27888,7 @@ function boot() {
   out = document.getElementById('out');
   if (!out) { errLog('boot', new Error('canvas #out absent')); return; }
   octx = out.getContext('2d', { alpha: false });
+  actualiserJourParis();
   if (typeof window !== 'undefined') {
     window.__S = S; window.__PAL = palTable();
     if (window.__SEED) N.reseed(window.__SEED);
@@ -27833,7 +27923,7 @@ function boot() {
     if (document.hidden) {
       S.paused = true; keys = {}; stick.id = null; entreeRaz(); stickUpdate();
       step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
-    } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
+    } else { actualiserJourParis(); step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null); }
   });
   app.addEventListener('pointerdown', onPointer);
   app.addEventListener('pointermove', onPointer);
