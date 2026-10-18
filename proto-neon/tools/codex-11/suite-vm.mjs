@@ -1,0 +1,7 @@
+/* Une seule file : termine la référence existante, puis la passe exploratoire figée1. */
+import fs from'node:fs';import path from'node:path';import{spawn}from'node:child_process';import{fileURLToPath}from'node:url';
+const H=path.dirname(fileURLToPath(import.meta.url)),parent=11615,live=p=>{try{process.kill(p,0);return true}catch(e){if(e.code==='ESRCH')return false;throw e}};
+const r={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),pid:process.pid,parentPid:parent,phase:'attente baseline400'},save=()=>fs.writeFileSync(path.join(H,'suite-vm-execution.json'),JSON.stringify(r,null,2)+'\n');save();
+try{let avant;while(true){try{avant=JSON.parse(fs.readFileSync(path.join(H,'avant.json'),'utf8'))}catch{}if(avant?.complete)break;if(!live(parent))throw Error('Baseline terminale sans collecte complète ; aucune nouvelle passe');await new Promise(ok=>setTimeout(ok,1000))}
+if(avant.cas.some(c=>c.err||c.erreursConsole.length))throw Error('Erreur de jeu dans la référence');r.phase='passe-1,20graines';save();const fd=fs.openSync(path.join(H,'passe-1.log'),'w');r.code=await new Promise((ok,ko)=>{const p=spawn(process.execPath,[path.join(H,'banc.mjs'),'--serie','passe-1','--graines','20'],{env:{...process.env,SNAKE11_SOURCES:path.join(H,'passe-1-sources.json')},stdio:['ignore',fd,fd]});r.enfantPid=p.pid;save();p.on('exit',ok);p.on('error',ko)});fs.closeSync(fd);r.phase='fini';save();if(r.code)process.exitCode=r.code;
+}catch(e){r.phase='arrêt';r.erreur=String(e.stack||e);save();process.exitCode=1}console.log(JSON.stringify(r));

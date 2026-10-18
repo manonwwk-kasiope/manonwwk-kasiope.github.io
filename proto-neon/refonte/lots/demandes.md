@@ -545,3 +545,12 @@ Codex-p4d — mis à jour le 18/10/2026 · 03 h 21 (Paris) : 60 parties avant et
 | codex-p19 | propriétaires `50-fx.js` / `79-scene.js` (diagnostic à confirmer hors bac) | examiner les échecs conservés, sans baisse de seuil ni correction prescrite à l'aveugle | VM p15 : élites caméra 3,6864 / 4,2240 / 4,5787 px (<6), flèche brasier 0 image. VM intégrée : caméra élites 10,1606 px (≥6), brasier 0 image pour les trois. Résultats réels VM, pas une qualification navigateur ; reçus `tools/codex-p19/*-vm.json` |
 
 Aucun fichier `src/`, aucun `sonde.js`, aucun seuil changé ; aucun commit. Build intégré : sortie 0, `index.html` sans différence Git. Build p15 : sortie 0 vers un fichier du dossier codex-p19, copie p15 en lecture seule. Rapport et limites : `tools/codex-p19/rapport.md`.
+
+
+## codex-11 — directeur réglable et première minute (18/10/2026 · 03 h 10)
+
+Ordre10 de Claude. Ajouts N.R.directeur uniquement ; paramètres historiques transférés depuis CFG sans nouveau sens (énergie libre2,6s/min3, mines12, traqueurs2, géométrie24/1,15/70/16, espacements14/13/30/24, essais60, remplissage2/10/0,85, quota0,9 et minimum5s). Les effectifs de toutes les formations lisent N.R.formations ; tailles de réservation identiques aux tailles produites, NUÉE réservée par sa borne haute. Le plafond s'applique à chaque spawn du directeur, même après20s, sans dérogation.
+
+Hypothèse passe1 (pas encore mesurée) : budgets respiration incluse V1=23,5s, V2=38s, V3=44s ; V4/V5 gardent tout leur combat48/50s et leurs paramètres. V1 quota8, intervalle4s, plafonds3→4→6 aux temps0/8/12s, FILE2, NUÉE2–3, calendrier FILE0/8s et NUÉE12s. V2 intervalle2s, plafonds4→8→16 aux temps0/12/26s, MEUTE3, NUÉE2–4. Objectif : apprentissage puis montée progressive. La respiration>=8s reste réelle ; après son achèvement, fin de vague sans attendre une queue définitivement suspendue ni la soupape. Seuils p5/R35/R31 inchangés, aucun pilote modifié.
+
+Méthode et paire figée : tools/codex-11/. Au plus3 passes20graines, arrêt2 sans nouvelleB puis une qualification50graines, pas de réglage après le final. Les naissances autonomes des RUCHES appartiennent à72 ; les contrôles de plafond du directeur ne prétendent pas vérifier ses producteurs externes. Cinquième VOL : à vérifier sur le raccord codex-10 déjà intégré, avant d'en modifier le nombre.

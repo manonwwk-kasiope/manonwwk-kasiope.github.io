@@ -1126,6 +1126,25 @@
     mursPhase3: [-10009, -10010, -10011, -10012]
   };
 
+  /* codex-11 : paramètres lus par le directeur, et progression de la première minute.
+     Les effectifs globaux et les vagues V3–V5 restent ceux du contrat. */
+  R.directeur = {
+    energieLibre: 2.6, energieMin: 3, maxMines: 12, maxTraqueurs: 2,
+    margeVue: 24, anticipee: 1.15, distTete: 70, murs: 16,
+    ecartFile: 14, ecartMeute: 13, ecartMines: 30, ecartBatterie: 24,
+    essaisFormation: 60, remplissageDebut: 2, remplissageMin: 10, remplissagePart: 0.85,
+    quotaPart: 0.9, vagueMin: 5,
+    vagues: [
+      { dureeMax: 23.5, quota: 8, intervalle: 4,
+        plafonds: [{ t: 0, n: 3 }, { t: 8, n: 4 }, { t: 12, n: 6 }],
+        formations: [{ t: 0, f: 'file' }, { t: 8, f: 'file' }, { t: 12, f: 'nuee' }],
+        formationsEffectifs: { file: { fleches: 2 }, nuee: { larves: [2, 3] } } },
+      { dureeMax: 38, intervalle: 2, plafonds: [{ t: 0, n: 4 }, { t: 12, n: 8 }, { t: 26, n: 16 }],
+        formationsEffectifs: { meute: { fleches: 3 }, nuee: { larves: [2, 4] } } },
+      { dureeMax: 44 }
+    ]
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

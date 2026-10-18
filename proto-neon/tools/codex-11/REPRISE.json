@@ -1,0 +1,35 @@
+{
+  "objectif": "codex-11, voir methode.md et ordre10",
+  "phase": "baseline 400 sur instantané avant, en série",
+  "sourceBase": "52fe12d",
+  "sourceFigée": "avant-sources.json",
+  "source79": "aucune édition autorisée ici ; patch si indispensable",
+  "restant": [
+    "baseline50",
+    "implémentation directeur N.R et progression",
+    "exploration bornée et candidat figé",
+    "qualification50 puis R35/R31 Chromium",
+    "livraison et pull boîte"
+  ],
+  "budget": "3 passes exploratoires maximum, arrêt 2 sans nouvelleB ; final unique50graines, plafond540s",
+  "misAJourParis": "18/10/2026 · 03 h 13",
+  "enCours": [
+    {
+      "session": 53009,
+      "pid": 11615,
+      "tache": "400 avant sur source figée ; ne pas relancer",
+      "journal": "/tmp/snake-codex11-avant.log"
+    },
+    {
+      "session": 90732,
+      "pid": 13012,
+      "tache": "file unique qui attend la baseline complète puis passe1 sur20 ; ne pas doubler",
+      "etat": "suite-vm-execution.json"
+    }
+  ],
+  "preuves": "16 contrats VM conformes, effectifs réellement produits1/2 via N.R et plafond tenu après42s ; pas encore de performance candidat ni verdict Chromium",
+  "sourceCandidate": "passe-1-sources.json ; seule02/76-directeur changée, bundle gzip reproductible",
+  "prochaineAction": "attendre les deux sessions existantes ; lire baseline/passe1 avant de choisir une deuxième passe ou figer ; aucun final50 avant ce choix",
+  "banc": "banc/worker/protocole/analyse exacts de p5 ; chargeur ajouté uniquement pour les sources figées",
+  "verrouChromium": "pas encore demandé ; après final VM, criteres.mjs attend chef.lock et zéro headless puis revendique son propre témoin pour équivalence et R31/R35"
+}
