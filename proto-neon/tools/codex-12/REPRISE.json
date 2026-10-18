@@ -1,13 +1,29 @@
 {
   "objectif": "ordre11/codex-12",
-  "phase": "Ordre12 livré d4465c4, en attente de médiation et nouvel ordre Claude",
-  "dateParis": "18/10/2026 · 06 h 33",
+  "phase": "Ordre12 accepté ; ordre13 en cours, suivre elites/REPRISE.json",
+  "dateParis": "18/10/2026 · 06 h 52",
   "base": "76d76e337fab45f246761a500e79dd58760533f8",
-  "processus": [],
+  "processus": [
+    {
+      "pid": 59841,
+      "session": 17589,
+      "tache": "80avant pargraine série, vérifier fin réelle"
+    },
+    {
+      "pid": 60764,
+      "session": 32316,
+      "tache": "qualifier attendavant puis80apres ; son ancienchromiumPid60405 est caduc, surveiller61506 séparément"
+    },
+    {
+      "pid": 61506,
+      "session": 14062,
+      "tache": "criteres.mjs attendChef, R12/R13 avant/après dansunseulcréneau, aucun doublon"
+    }
+  ],
   "restant": [
-    "Arbitrage Claude sur critères restants",
-    "Raccord79 parClaude après p15c",
-    "Nouvel ordre uniquement depuis COORD"
+    "80avant/après puis ecarts",
+    "R12 troisprofils etR13 troisprofils+réduitpaysage avant/après",
+    "Rapport, réserveséventuellesR13, livraison/mediation puisboîte"
   ],
   "interdits": [
     "reprise ciblesB",
@@ -28,10 +44,11 @@
     "ChromiumApres": "Terminé : R14bannières0violation sur165admissions et secousses14,92%échec ; R15annonces1,pics6/10/17,5/20/24,resp90,91% etpicsmanquantséchecs ; R31septconformes ; R35V1conforme,relance2échecs.0erreur.",
     "admissionsReelles": "205/205entrées annoncées par admissioncorrespondante, pas seulementdemande ; 971admissions ordinaires hors CYCLOPE sur60parties et0intervalle<10s. Lecture desmêmesraw, aucunreplay."
   },
-  "prochaineAction": "Pull et relire Ordres pour Codex. Aucun rejeu, aucune nouvelle qualification sans changement ou exigence de Claude. Les séries hud-seul sont closes. Ancien regroupement arrêté, réglageB interdit.",
+  "prochaineAction": "Suivre exclusivement elites/REPRISE.json pour ordre13, aucune nouvelle série HUDseul. Vérifier61506 séparément avantrapport.",
   "rapport": "rapport.mjs préparé, ne le lancer qu’après qualification-execution.phase=fini et4critèresaprès présents",
   "retrait": "Retrait sourcegroupement vérifié strictement :76avant + deux appels facultatifs de réserve seulement ; N.R.rythme retiré, indexrebâti séparément, preuvescandidatefigées.",
   "verrou": "Anciensjobsrootterminés ; seulmaster31811/enfant36639 courant, attenteChef, aucunChromiumboîte à cet instant.",
   "suiteHUD": "hud-seul/REPRISE.json",
-  "livraison": "d4465c4"
+  "livraison": "d4465c4",
+  "suiteElites": "elites/REPRISE.json"
 }

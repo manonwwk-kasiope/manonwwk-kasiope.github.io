@@ -120,7 +120,16 @@ N.scene = (function () {
     var epaisseur = rayon * F.epaisseurFacteur, aire = Math.PI * Math.pow(rayon + epaisseur / 2, 2);
     if (!N.fx.flashGate(aire, { type: 'scene', ci: O.BRASIER })) { planifierImpact(); return false; }
     impactEnAttente = null; empreinteFin = T + F.intervalle;
-    onde(p.charge.x, p.charge.y, rayon, rayon, O.BRASIER, F.duree, { epaisseur: epaisseur });
+    /* L’empreinte peut naître hors du cadrage (une élite devant la tête, près d’un
+       bord). Son aire nominale passe la porte, mais la portion visible ne remplit
+       plus R12. Rentrer son centre dans la vue conserve rayon, durée et admission ;
+       seul cet effet visuel est décalé, jamais la cible ni le point du kill. */
+    var C = N.cam || {}, cx = C.x || 0, cy = C.y || 0;
+    var bord = rayon + epaisseur / 2;
+    var mx = Math.min(G.W / 2, bord), my = Math.min(G.H / 2, bord);
+    var x = O.clamp(p.charge.x, cx + mx, cx + G.W - mx);
+    var y = O.clamp(p.charge.y, cy + my, cy + G.H - my);
+    onde(x, y, rayon, rayon, O.BRASIER, F.duree, { epaisseur: epaisseur });
     shake(RS.impactFort.secousse);
     if (p.charge.elite || p.charge.boss) rappelSecousse(p.imageMort);
     return true;

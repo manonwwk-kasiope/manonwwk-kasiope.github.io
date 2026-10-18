@@ -1,0 +1,44 @@
+{
+  "objectif": "Ordre13 R12 mortsélites / R13 préservé",
+  "dateParis": "18/10/2026 · 06 h 52",
+  "base": "45ef605b9dd0fb8f64a172f08ba540c3f196f06b",
+  "phase": "Qualification en cours, candidat géométrique figé, aucun réglage de règle",
+  "processus": [
+    {
+      "pid": 59841,
+      "session": 17589,
+      "tache": "80avant pargraine série, vérifier fin réelle"
+    },
+    {
+      "pid": 60764,
+      "session": 32316,
+      "tache": "qualifier attendavant puis80apres ; son ancienchromiumPid60405 est caduc, surveiller61506 séparément"
+    },
+    {
+      "pid": 61506,
+      "session": 14062,
+      "tache": "criteres.mjs attendChef, R12/R13 avant/après dansunseulcréneau, aucun doublon"
+    }
+  ],
+  "arreteAvantMesure": {
+    "pid": 60405,
+    "session": 88413,
+    "raison": "fermeture sessions et capture console corrigées avant ouvertureChromium ; fin143 vérifiée"
+  },
+  "preuves": {
+    "contrats": "4/4 contrats producteur conformes ; pas une preuve tampon",
+    "sources": "39sources avant/apres ; seul79-scene, mêmeporte/aire/durée/planification, seuls centres bornésdansvue"
+  },
+  "restant": [
+    "80avant/après puis ecarts",
+    "R12 troisprofils etR13 troisprofils+réduitpaysage avant/après",
+    "Rapport, réserveséventuellesR13, livraison/mediation puisboîte"
+  ],
+  "interdits": [
+    "doublon59841/60764/61506 ouChromium",
+    "rejouer reçus complets",
+    "modifier50/72réservés oucritères",
+    "réglageB/regroupement"
+  ],
+  "prochaineAction": "Lire lesdeux fichiersexecution etps réels. Master60764 ne suitplusChromiumcourant, Qfini peut seulement signifier80terminés ; attendrecriteres-execution.phase=fini etPID61506 mort avant rapport.mjs. Aucun nouveau banc. Scripts/sources/instrumentsfigés, pulls horspaire possibles carcopies complètes, jamaisécraserp35/p38/p44."
+}
