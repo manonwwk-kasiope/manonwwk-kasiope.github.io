@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 02 h 50)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 03 h 23)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -16,9 +16,11 @@
 - Fait depuis 01 h 36 (tout vérifié en navigateur avant intégration) : 01c tranché ; 05b, codex-10 (DÉFILÉ) jugés ; intégrés : p4b,
   codex-09 (aventure), p5 (réglage 8/20, arrêté), p3c (instrument), p8, p10, p11, p13 (photosensibilité 9/9 ≤ 3 flashs/s),
   p4c (871 → 8 apparitions), p12 (défis, déblocages), codex-10 (raccord 79 appliqué à la main). Médiations dans `refonte/mediation/`.
-- En cours à 02 h 50 : sessions `codex exec` p14 (LASSO, APOGÉE : 85-pilote), p15 (explosions des élites, causes de mort : 79-scene),
-  p16 (performance : 10-gfx, 20-crt, 78-hud), p4d (CYCLOPE, R-31 : 73-colosse, 70-joueuse), p17 (finition des bilans : 80-ecrans),
-  p18 (score et habileté : 77-score) ; boîte de Codex : codex-11 (directeur : 76-directeur, 76-defile).
+- Intégrés depuis 02 h 50 : p14 (pilotes LASSO/APOGÉE, 7b86ecf), p18 (score de maîtrise, 8547e48). Médiation `2026-10-18-codex-p14-p18.md`.
+- En cours à 03 h 23 : livrés et en vérification navigateur : p15 (R-13 navigateur 8 flashs/s, rejeu sur la build sans p15 en cours :
+  `chef/proto-neon/tools/verif-p15-avant/`, à supprimer après), p17 (navigateur ok, captures vues, à intégrer), p4d (CYCLOPE 15 → 0
+  apparitions, vérifieur en file). Sessions `codex exec` : p16 (perf), p19 (instrument R-12), p20 (mixage : 30-music), p21 (gestes :
+  90-boot, 03-socle), p22 (R-27/R-03 : 73-arene, 17-vol), p23 (R-28/R-11 : 12-cam, 50-fx, 15-decor) ; boîte : codex-11 (directeur).
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;
