@@ -203,7 +203,12 @@
     } else { capX = Math.cos(tete.ang); capY = Math.sin(tete.ang); }
   }
 
-  function boost() { var s = S(), inp = s && s.input; return !!(inp && inp.boost); }
+  function boost() {
+    var s = S(), inp = s && s.input, j = N.joueuse;
+    // Le boost effectif inclut le manche poussé ; garder l'entrée pour les replis sans joueuse.
+    // Le drapeau de rendu peut rester vrai après une mort : il ne doit pas déplacer la réapparition.
+    return !!((j && (j.etat === 'vivant' || j.etat === 'reapparition') && j.boost) || (inp && inp.boost));
+  }
 
   /* les bornes du centre de la vue : monde ou arène courante, 16 px de débord ; si la vue est plus grande que
      l'arène, on la centre dessus */

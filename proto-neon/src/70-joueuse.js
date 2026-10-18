@@ -55,6 +55,30 @@ N.joueuse = (function () {
   var PV = { id: 'traversee', etat: 'pret', reste: 0, dur: 0, recharge: 0 };   // N.joueuse.pouvoir (même référence)
   var S = null;
   var SEGS = [];                                 // positions à plat [x0, y0, x1, y1, ...], tête comprise
+  var mediaReduit = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function reduit() { return !!(mediaReduit && mediaReduit.matches); }
+  function critique() { return vivante() && st.len <= R.longueur.critique.seuil; }
+
+  // Deux filets ouverts, attachés à la tête : ni projectile rond ni particule autonome.
+  // Géométrie fixe même en mouvement réduit, aucune alternance d'encre.
+  function drawBoost() {
+    if (!N.joueuse.boost || !vivante()) return;
+    var c = R.boost.trainee, dx = Math.cos(P.ang), dy = Math.sin(P.ang), g = N.gfx;
+    for (var i = 0; i < c.branches; i++) {
+      var signe = i ? 1 : -1;
+      g.line(P.x - dx * c.recul - dy * c.demiLargeur * signe,
+        P.y - dy * c.recul + dx * c.demiLargeur * signe,
+        P.x - dx * (c.recul + c.longueur) - dy * c.demiLargeur * signe,
+        P.y - dy * (c.recul + c.longueur) + dx * c.demiLargeur * signe, O.AMBRE);
+    }
+  }
+  function drawCritique() {
+    if (!critique()) return;
+    var c = R.longueur.critique;
+    var v = reduit() || (S.reglages && S.reglages.flashs === false) ? 0 : (1 - Math.cos(O.T.ak * c.hz * O.TAU)) / 2;
+    // Une respiration par seconde, petite couronne cyan ; indépendante de la distance au mur.
+    N.gfx.ring(P.x, P.y, c.rayon + Math.round(c.amplitude * v), O.CYANP, c.trameMin + (1 - c.trameMin) * v);
+  }
 
   /* ============================ la trace : un point par pixel parcouru ============================ */
   var TN = 4096, TX = new Float32Array(TN), TY = new Float32Array(TN), TT = new Float64Array(TN), th = 0, tn = 0, tlx = 0, tly = 0;
@@ -878,7 +902,9 @@ N.joueuse = (function () {
       if (st.repli > 0) N.gfx.ring(SPX, SPY, 5, O.CYAN, 1);                       // REPLI : les perles épaisses
     }
     drawJauge(); drawPouvoir();
+    drawBoost();
     put(sp('tete:' + O.dir16(P.ang), Math.floor(ak * 5)), P.x, P.y);
+    drawCritique();
     /* le BOUCLIER chargé : un anneau pâle qui respire autour de la tête ; un coup absorbé : l'anneau éclate */
     if (st.bcl > 0) N.gfx.ring(P.x, P.y, 7 + (Math.floor(ak * 3) & 1), O.CYANP, 1);
     if (st.bclFx >= 0) N.gfx.ring(P.x, P.y, Math.round(8 + st.bclFx * 40), (Math.floor(st.bclFx * 20) & 1) ? O.CYANP : O.OS, 1);
@@ -891,7 +917,7 @@ N.joueuse = (function () {
     reset: reset, update: update, draw: draw, drawTop: drawTop,
     tete: P, segs: segs, len: function () { return st.len; }, etat: 'absent',
     hitTest: hitTest, tuer: tuer, couper: couper, grandir: grandir,
-    invul: function () { return st.invul > 0; },
+    invul: function () { return st.invul > 0; }, critique: critique,
     pouvoir: PV, apogee: 0, boost: false, degatsMul: 1, traine: function () { return st.etat === 'vivant' || st.etat === 'reapparition'; },
     equiper: equiper, apres: apres, reserve: function () { return st.res; }, lassos: function () { return st.lassos; },
     inversion: function () { return st.inv ? { actif: true, t: st.inv.t, dur: st.inv.dur, devores: st.inv.tot } : { actif: false, t: 0, dur: 0, devores: 0 }; },

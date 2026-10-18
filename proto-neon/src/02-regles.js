@@ -1055,6 +1055,11 @@
   R.cartes.appels = { canon: 'perforation', tourelles: 'perforation', arc: 'surtension', sillage: 'braise', onde: 'epines' };
   R.cartes.poids.appel = 1.5;
 
+  /* codex-p8 : retours locaux de longueur et d'accélération, sans effet sur la simulation. */
+  R.longueur.critique = { seuil: 3, hz: 1, rayon: 7, amplitude: 1, trameMin: 0.5,
+    pastilles: { rayon: 1, pas: 4, recul: 15, marge: 3, fond: 2 } };
+  R.boost.trainee = { recul: 6, longueur: 10, demiLargeur: 5, branches: 2 };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

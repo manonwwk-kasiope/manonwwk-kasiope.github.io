@@ -112,6 +112,25 @@ N.hud = (function () {
   function plate(x, y, w, h) { N.gfx.rect(x, y, w, h, O.NP); N.gfx.rect(x + 1, y + h, w - 2, 1, O.NP); }
   function ecran(x, y) { return { x: x - O.VUE.x, y: y - O.VUE.y }; }
 
+  function drawLongueurCritique() {
+    var j = N.joueuse;
+    if (!j || !j.critique || !j.critique()) return;
+    var c = R.longueur.critique, p = c.pastilles, g = N.gfx, sf = O.geo.safe;
+    var tete = ecran(j.tete.x, j.tete.y), demi = (c.seuil - 1) * p.pas / 2;
+    var x = O.clamp(Math.round(tete.x), sf.l + p.marge + demi, g.W - sf.r - p.marge - demi);
+    var y = O.clamp(Math.round(tete.y - p.recul), sf.t + p.marge, g.H - sf.b - p.marge);
+    // Trois emplacements fixes : seules les perles encore présentes sont cyan, les autres acier.
+    // Placés après la protection du serpent pour rester visibles sous le HUD, sans clignoter.
+    var owner = g.owner ? g.owner() : 0;
+    if (g.owner) g.owner(N.ids.proprietaires.tete);
+    for (var k = 0; k < c.seuil; k++) {
+      var xx = x - demi + k * p.pas;
+      g.circ(xx, y, p.fond, O.NP);
+      g.circ(xx, y, p.rayon, k < j.len() ? O.CYANP : O.ACIER);
+    }
+    if (g.owner) g.owner(owner);
+  }
+
   function drawBoutons() {
     boutons();
     var sf = O.geo.safe, muted = !!(S && S.muted);
@@ -478,6 +497,7 @@ N.hud = (function () {
     drawScore();
     drawBoutons();
     garderJoueuse(true);
+    drawLongueurCritique();
   }
 
   /* ---- les consommateurs de repli (79-scene.js les remplace : il demande ses bannières à ce module) ---- */

@@ -1,0 +1,1755 @@
+{
+  "dateParis": "18/10/2026 02:28:02",
+  "bundleSha256": "f6c32c044f20ee08bc8d0314366fbb7e2a713876463ebdff9cc74a0ac50688a4",
+  "limite": "Chromium émulant iPhone : ne qualifie pas Safari matériel.",
+  "cas": [
+    {
+      "profil": "paysage",
+      "reduced": false,
+      "mesures": {
+        "taille": {
+          "w": 422,
+          "h": 195,
+          "px": 2
+        },
+        "reduit": false,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne bat loin du mur",
+            "ok": true,
+            "mesure": 33
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 112,
+                "y": 92
+              },
+              {
+                "x": 111,
+                "y": 92
+              },
+              {
+                "x": 110,
+                "y": 92
+              },
+              {
+                "x": 109,
+                "y": 92
+              },
+              {
+                "x": 108,
+                "y": 92
+              },
+              {
+                "x": 107,
+                "y": 92
+              },
+              {
+                "x": 106,
+                "y": 92
+              },
+              {
+                "x": 112,
+                "y": 102
+              },
+              {
+                "x": 111,
+                "y": 102
+              },
+              {
+                "x": 110,
+                "y": 102
+              },
+              {
+                "x": 109,
+                "y": 102
+              },
+              {
+                "x": 108,
+                "y": 102
+              },
+              {
+                "x": 107,
+                "y": 102
+              },
+              {
+                "x": 106,
+                "y": 102
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 274,
+              "boost": 300,
+              "delta": 26
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 274,
+              "sans": 274
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "paysage-anime-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "paysage-anime-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "reduced": true,
+      "mesures": {
+        "taille": {
+          "w": 422,
+          "h": 195,
+          "px": 2
+        },
+        "reduit": true,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne fixe en mouvement réduit",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 112,
+                "y": 92
+              },
+              {
+                "x": 111,
+                "y": 92
+              },
+              {
+                "x": 110,
+                "y": 92
+              },
+              {
+                "x": 109,
+                "y": 92
+              },
+              {
+                "x": 108,
+                "y": 92
+              },
+              {
+                "x": 107,
+                "y": 92
+              },
+              {
+                "x": 106,
+                "y": 92
+              },
+              {
+                "x": 112,
+                "y": 102
+              },
+              {
+                "x": 111,
+                "y": 102
+              },
+              {
+                "x": 110,
+                "y": 102
+              },
+              {
+                "x": 109,
+                "y": 102
+              },
+              {
+                "x": 108,
+                "y": 102
+              },
+              {
+                "x": 107,
+                "y": 102
+              },
+              {
+                "x": 106,
+                "y": 102
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 274,
+              "boost": 300,
+              "delta": 26
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 274,
+              "sans": 274
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "paysage-reduit-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "paysage-reduit-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "reduced": false,
+      "mesures": {
+        "taille": {
+          "w": 195,
+          "h": 422,
+          "px": 2
+        },
+        "reduit": false,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne bat loin du mur",
+            "ok": true,
+            "mesure": 33
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 47,
+                "y": 206
+              },
+              {
+                "x": 46,
+                "y": 206
+              },
+              {
+                "x": 45,
+                "y": 206
+              },
+              {
+                "x": 44,
+                "y": 206
+              },
+              {
+                "x": 43,
+                "y": 206
+              },
+              {
+                "x": 42,
+                "y": 206
+              },
+              {
+                "x": 41,
+                "y": 206
+              },
+              {
+                "x": 47,
+                "y": 216
+              },
+              {
+                "x": 46,
+                "y": 216
+              },
+              {
+                "x": 45,
+                "y": 216
+              },
+              {
+                "x": 44,
+                "y": 216
+              },
+              {
+                "x": 43,
+                "y": 216
+              },
+              {
+                "x": 42,
+                "y": 216
+              },
+              {
+                "x": 41,
+                "y": 216
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 127,
+              "boost": 138,
+              "delta": 11
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 127,
+              "sans": 127
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 30,
+              "y": 347,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "portrait-anime-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "portrait-anime-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "reduced": true,
+      "mesures": {
+        "taille": {
+          "w": 195,
+          "h": 422,
+          "px": 2
+        },
+        "reduit": true,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne fixe en mouvement réduit",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 47,
+                "y": 206
+              },
+              {
+                "x": 46,
+                "y": 206
+              },
+              {
+                "x": 45,
+                "y": 206
+              },
+              {
+                "x": 44,
+                "y": 206
+              },
+              {
+                "x": 43,
+                "y": 206
+              },
+              {
+                "x": 42,
+                "y": 206
+              },
+              {
+                "x": 41,
+                "y": 206
+              },
+              {
+                "x": 47,
+                "y": 216
+              },
+              {
+                "x": 46,
+                "y": 216
+              },
+              {
+                "x": 45,
+                "y": 216
+              },
+              {
+                "x": 44,
+                "y": 216
+              },
+              {
+                "x": 43,
+                "y": 216
+              },
+              {
+                "x": 42,
+                "y": 216
+              },
+              {
+                "x": 41,
+                "y": 216
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 127,
+              "boost": 138,
+              "delta": 11
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 127,
+              "sans": 127
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 30,
+              "y": 347,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "portrait-reduit-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "portrait-reduit-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "reduced": false,
+      "mesures": {
+        "taille": {
+          "w": 360,
+          "h": 225,
+          "px": 4
+        },
+        "reduit": false,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne bat loin du mur",
+            "ok": true,
+            "mesure": 33
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 94,
+                "y": 107
+              },
+              {
+                "x": 93,
+                "y": 107
+              },
+              {
+                "x": 92,
+                "y": 107
+              },
+              {
+                "x": 91,
+                "y": 107
+              },
+              {
+                "x": 90,
+                "y": 107
+              },
+              {
+                "x": 89,
+                "y": 107
+              },
+              {
+                "x": 88,
+                "y": 107
+              },
+              {
+                "x": 94,
+                "y": 117
+              },
+              {
+                "x": 93,
+                "y": 117
+              },
+              {
+                "x": 92,
+                "y": 117
+              },
+              {
+                "x": 91,
+                "y": 117
+              },
+              {
+                "x": 90,
+                "y": 117
+              },
+              {
+                "x": 89,
+                "y": 117
+              },
+              {
+                "x": 88,
+                "y": 117
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 234,
+              "boost": 256,
+              "delta": 22
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 234,
+              "sans": 234
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "bureau-anime-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "bureau-anime-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "reduced": true,
+      "mesures": {
+        "taille": {
+          "w": 360,
+          "h": 225,
+          "px": 4
+        },
+        "reduit": true,
+        "checks": [
+          {
+            "nom": "critique L=1",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=2",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=3",
+            "ok": true,
+            "mesure": true
+          },
+          {
+            "nom": "critique L=4",
+            "ok": true,
+            "mesure": false
+          },
+          {
+            "nom": "couronne fixe en mouvement réduit",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "période couronne 1 seconde",
+            "ok": true,
+            "mesure": 0
+          },
+          {
+            "nom": "trois pastilles L=3",
+            "ok": true,
+            "mesure": [
+              8,
+              8,
+              8
+            ]
+          },
+          {
+            "nom": "boost effectif au manche seul",
+            "ok": true,
+            "mesure": {
+              "boost": true,
+              "doigt": false,
+              "vit": 107.4754272364058
+            }
+          },
+          {
+            "nom": "ambre derrière tête après drawTop",
+            "ok": true,
+            "mesure": [
+              {
+                "x": 94,
+                "y": 107
+              },
+              {
+                "x": 93,
+                "y": 107
+              },
+              {
+                "x": 92,
+                "y": 107
+              },
+              {
+                "x": 91,
+                "y": 107
+              },
+              {
+                "x": 90,
+                "y": 107
+              },
+              {
+                "x": 89,
+                "y": 107
+              },
+              {
+                "x": 88,
+                "y": 107
+              },
+              {
+                "x": 94,
+                "y": 117
+              },
+              {
+                "x": 93,
+                "y": 117
+              },
+              {
+                "x": 92,
+                "y": 117
+              },
+              {
+                "x": 91,
+                "y": 117
+              },
+              {
+                "x": 90,
+                "y": 117
+              },
+              {
+                "x": 89,
+                "y": 117
+              },
+              {
+                "x": 88,
+                "y": 117
+              }
+            ]
+          },
+          {
+            "nom": "avance caméra au manche",
+            "ok": true,
+            "mesure": {
+              "croisiere": 234,
+              "boost": 256,
+              "delta": 22
+            }
+          },
+          {
+            "nom": "critique désactivé après mort",
+            "ok": true,
+            "mesure": {
+              "etat": "mort",
+              "critique": false
+            }
+          },
+          {
+            "nom": "drapeau boost résiduel sans avance après mort",
+            "ok": true,
+            "mesure": {
+              "avec": 234,
+              "sans": 234
+            }
+          },
+          {
+            "nom": "zéro erreur",
+            "ok": true,
+            "mesure": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        ],
+        "critique": false,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 7,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 15,
+            "t": 0.12499999999999999,
+            "image": 0,
+            "type": "boost",
+            "d": {
+              "id": "boost",
+              "evt": "on"
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "x": 512,
+              "y": 256,
+              "t": 0,
+              "vague": 1,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 30,
+            "t": 0.24999999999999997,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "mur",
+              "auteur": "mur",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "captures": [
+        {
+          "nom": "bureau-reduit-critique.png",
+          "etat": "jeu",
+          "longueur": 3,
+          "boost": false,
+          "erreurs": 0
+        },
+        {
+          "nom": "bureau-reduit-boost.png",
+          "etat": "jeu",
+          "longueur": 8,
+          "boost": false,
+          "erreurs": 0
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreurs": []
+    }
+  ],
+  "navigateur": "140.0.7339.16",
+  "conforme": true
+}

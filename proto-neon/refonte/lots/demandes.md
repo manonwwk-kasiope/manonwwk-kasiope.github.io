@@ -354,3 +354,18 @@ Aucun fichier src ni chiffre N.R modifié dans ce lot ; seuils existants conserv
 | codex-p3c | `79-jeu.js`, `80-ecrans.js` | produire et rendre l'attraction après l'attente et selon la boucle déjà chiffrées dans N.R | R-19 jamais atteint en 25 s ; la branche titre n'a pas de transition d'inaction |
 | codex-p3c | propriétaires performance / effets | attendre la sonde avant un ordre numérique R-20 ; témoin apparié R-12 pour la caméra ; paire consécutive de gel R-28 ; aucune hausse de force avant validation R-13 | les reçus ne prouvent ni un goulot CRT, ni une perte CPU de 1,804 %, ni un gel continu changeant de 23,974 % |
 | codex-p3c | exécution hors bac | `cd proto-neon && node tools/mesure/verifier.mjs --diagnostic-p3c` | serveur sur port libre, un seul Chromium muet, trois profils, critères prioritaires et traces ; script non exécuté dans le bac |
+
+## codex-p8 — longueur critique et accélération (18/10/2026 · 01 h 48, Paris)
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p8 | `02-regles.js`, ajout `longueur.critique` | seuil **3**, battement **1 Hz**, rayon **7 px**, amplitude **1 px**, trame minimale **0,5** | B1/B3 : longueur critique indépendante du mur, petite couronne cyan pâle en Bayer autour de la tête ; une seule respiration par seconde ; fixe si mouvement réduit ou flashs désactivés. Aucun aplat plein écran. |
+| codex-p8 | `02-regles.js`, ajout `longueur.critique.pastilles` | rayon **1 px**, pas **4 px**, recul vertical **15 px**, marge sûre **3 px**, fond **2 px** | trois emplacements près de la tête ; distinguer longueurs 1/2/3 par le nombre de pastilles cyan pâle, emplacements perdus acier ; rester dans la zone sûre en portrait comme en paysage. |
+| codex-p8 | `02-regles.js`, ajout `boost.trainee` | recul **6 px**, longueur **10 px**, demi-largeur **5 px**, **2 branches** | deux filets ambre parallèles attachés à la tête, dessinés après le corps ; aucune boule de tir, aucune particule autonome ni clignotement. |
+| codex-p8 | `12-cam.js` | lire aussi le boost effectif public `N.joueuse.boost` | l'accélération au manche fonctionne déjà, mais son avance de caméra manquait ; facteur existant `camera.avanceBoost` conservé. |
+| codex-p8 | `15-decor.js` | si le lot décor traite D3, lire aussi `N.joueuse.boost` pour la vitesse du sol | hors des fichiers attribués : la mission p8 couvre la traînée et la caméra ; la couverture mentionne également le sol. Aucune modification de ce module ici. |
+| codex-p8 | banc hors bac | `node proto-neon/tools/codex-p8/verifier.mjs` depuis la racine | script complet pour les trois profils, deux préférences de mouvement, captures L=3/boost, mesures du tampon après dessin et journal, un seul Chromium muet ; non exécuté dans ce bac conformément au cadre commun. |
+
+Interface publique ajoutée : `N.joueuse.critique() -> bool`, dérivée exclusivement de la longueur et de l'état vivant/réapparition ; aucun changement des collisions, du mouvement, du boost ou des événements. Les pastilles sont attribuées au propriétaire `tete` dans le masque public, avec restauration du propriétaire précédent.
+
+Mise à jour codex-p8 à 01 h 55 : 20/20 parties inchangées avant/après, journal complet compris ; 7/20 diffèrent déjà des reçus e1bdc6f avant ce lot (tourneur 1, maladroit 1, kamikaze 3, humain 1–4). Tableau exact dans `tools/codex-p8/rapport.md` et `comparaison20.json` ; aucune cause attribuée ni tolérance ajoutée. Réconciliation historique à faire par les lots de logique concernés ; aucune modification hors périmètre ici. 78 contrôles ciblés VM réussis, zéro erreur ; Playwright non exécuté. La caméra ignore le drapeau de boost résiduel lorsque la joueuse est morte (comportement testé), sans changer sa publication ni la simulation du serpent.
