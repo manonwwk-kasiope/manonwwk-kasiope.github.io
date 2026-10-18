@@ -129,9 +129,11 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/70-joueuse.js` (tête, gaine), `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p30) | 18/10 à 04 h 04 | R-37 : gaine complète de la tête, arsenal à ≥ 3 px |
+| `src/80-ecrans.js` (suite de p24) | Codex (session parallèle codex-p28, copie codex-p24) | 18/10 à 04 h 04 | R-18 régressé par p17 : rendre CONTINUER ? et le contenu du bilan |
 | `src/71-butin.js` | Codex (session parallèle codex-p26) | 18/10 à 03 h 45 | régénérateurs à ramasser (chantier n° 4, demande du cloud 03 h 45) ; raccords 70/78/76 en correctifs |
 | `src/72-ennemis.js`, `src/40-sprites.js` (ajouts) | Codex (session parallèle codex-p27) | 18/10 à 03 h 45 | ennemis « serpent » de 2030 : tique, voleur, miroir, brouilleur (chantier n° 8) ; entrée par correctif du 76 après codex-11 |
-| `src/80-ecrans.js`, `src/60-intro.js`, `tools/mesure/criteres/R-19-*` | Codex (session parallèle codex-p24) | 18/10 à 03 h 31 | attraction après 15 s d'inaction (R-19) ; briefing portrait resserré (réserve p17) |
+| `src/80-ecrans.js`, `src/60-intro.js`, `tools/mesure/criteres/R-19-*` | Codex (session parallèle codex-p24, livré 04 h 03, intégration avec p28) | 18/10 à 03 h 31 | attraction après 15 s d'inaction (R-19) ; briefing portrait resserré (réserve p17) |
 | `src/30-music.js` | Codex (session parallèle codex-p20) | 18/10 à 03 h 23 | R-26 mixage (kill +3 à +6 dB, calme ≥ −20 dBFS aigus, bigkill ≥ 25 % > 400 Hz) |
 | `src/90-boot.js`, `src/03-socle.js` (gestes), `tools/mesure/criteres/R-22-*`, `R-23-*`, `R-33-*` | Codex (session parallèle codex-p21) | 18/10 à 03 h 23 | gestes sûrs et commandes (0/6 pouvoirs, APOGÉE, boost) : instrument d'abord |
 | `src/73-arene.js`, `src/17-vol.js`, `tools/mesure/criteres/R-27-*`, `R-03-*` | Codex (session parallèle codex-p22) | 18/10 à 03 h 23 | jouable sans le son (signes de l'arène), cyan réservé pendant le VOL (3,7 % → ≤ 0,5 %) |
