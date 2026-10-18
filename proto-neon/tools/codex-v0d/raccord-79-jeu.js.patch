@@ -1,0 +1,66 @@
+--- a/proto-neon/src/79-jeu.js
++++ b/proto-neon/src/79-jeu.js
+@@ -260,6 +260,7 @@
+     if (s) { s.enemies = N.ennemis.list; s.shots = N.ennemis.tirs; }
+   }
+   function reset(graine, opts) {
++    if (filmAmiral()) N.cosmos.stop();
+     /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
+     var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
+     if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
+@@ -496,11 +497,19 @@
+   function palier(n) { return ['', 'I', 'II', 'III', 'IV'][n | 0] || String(n); }
+ 
+   /* ============================ la mise à jour ============================ */
++  /* codex-v0d : le panneau est un masque de l'état suspendu, sans transition
++     ni remise à zéro de son chronomètre. L'horloge publique le voit arrêté. */
++  function filmAmiral() { return !!(N.cosmos && N.cosmos.filmActif && N.cosmos.filmActif()); }
+   function update(dt) {
+     var s = S_();
+     if (!s) return;
+     if (!(dt >= 0)) dt = 0;
+     if (dt > 0.05) dt = 0.05;
++    if (filmAmiral()) {
++      QT.length = 0; O.taps.length = 0;
++      appel('cosmos.film', function () { N.cosmos.update(dt); });
++      return;
++    }
+     O.geom();
+     redimensionne();
+     /* Lire le vrai toucher AVANT que le pilote puisse écrire les entrées. Le geste de sortie
+@@ -733,6 +742,7 @@
+   function fondEcran() { return PLEIN[et] === 1; }
+ 
+   function draw() {
++    if (filmAmiral()) { N.cosmos.draw(); return; }
+     var s = S_();
+     if (!s) return;
+     if (et === 'aventure') { O.origine(0, 0); appel('aventure.draw', function () { N.aventure.draw(); }); return; }
+@@ -788,6 +798,7 @@
+   }
+ 
+   function drawTop() {
++    if (filmAmiral()) return;
+     var s = S_();
+     if (!s) return;
+     if (fondEcran() && et !== 'fin') return;
+@@ -878,8 +889,9 @@
+          film) avancent comme dans la boucle de 90-boot.js, qui leur donne S.dt, sans valider ni saut. Le monde, lui, reste figé :
+          ces états n'ont aucune mise à jour du monde, et le temps de jeu N.horloge.t() n'avance pas. */
+       if (nouveau && dt === 0 && N.horloge.arretee() && !(N.S && N.S.paused)) dt = h;
++      var gelAmiral = filmAmiral();
+       N.game.update(dt);
+-      if (N.fx && N.fx.update) N.fx.update(dt);
++      if (N.fx && N.fx.update && !gelAmiral) N.fx.update(dt);
+       /* update() a déjà avancé la caméra, comme dans frame(). */
+     }
+     simulant = false;
+@@ -1071,7 +1083,7 @@
+     return N.gfx.masque(true);
+   };
+ 
+-  function etatCourant() { return et; }
++  function etatCourant() { return filmAmiral() ? 'panneau' : et; }
+ 
+   return {
+     reset: reset, update: update, draw: draw, drawTop: drawTop, tension: tension, etat: etatCourant, dbg: dbg,

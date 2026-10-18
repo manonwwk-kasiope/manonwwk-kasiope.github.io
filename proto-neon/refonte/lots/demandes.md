@@ -923,3 +923,20 @@ Touch ID) : le cloud n'y a pas accès. À faire par la session Mac :
    - tableau de bord : https://claude.ai/artifact/Mnw5e5AefuTyHdsz3uxbyu
    - coordination : `proto-neon/COORDINATION.md` ; branche `claude/snake-game-mobile-17dqpi` ; PR n° 8 ;
 3. lancer `publier.sh` (Touch ID de la propriétaire) et vérifier que la page montre l'entrée.
+
+## codex-v0d — film d'arrivée du vaisseau amiral (VERSION 0)
+
+18/10/2026 · 12 h 08 (Paris). Travail isolé, aucun commit, aucun réseau sortant, aucun serveur ni navigateur lancé dans le bac.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-v0d | `src/67-cosmos.js` | film `amiral-` + personnage de l'époque, une fois par démarrage de cosmos ; temps local, warp et ordonnanceur musical suspendus ; reprise sans saut de combat | les deux clips existaient sans déclencheur ; le personnage transmis par l'aventure reste la référence, comme les autres films personnalisés |
+| codex-v0d | `src/64-aventure.js` | option publique `N.film.jouer(nom, { garde })` ; valeur historique conservée pour tous les autres lecteurs | lire la garde de l'amiral dans N.R sans modifier la politique des autres films |
+| codex-v0d | `src/02-regles.js` (ajout seulement) | `filmAmiral.duree = 5` s ; `garde = 0.3` s ; `gainMusique = 0.62` ; `fonduMusique = 0.05` s | durée du clip, garde exigée par INTERMEDES, niveau et lissage déjà employés par la musique cosmique ; aucune difficulté ni flash nouveau |
+| codex-v0d | `src/79-jeu.js` (réservé) | appliquer `tools/codex-v0d/raccord-79-jeu.js.patch` | horloge commune arrêtée via l'état public panneau pendant le seul film, état interne conservé ; entrées consommées ; rendu plein écran ; simulation alignée sur le gel du boot ; reset annule le film |
+| codex-v0d | `src/50-fx.js` (réservé) | appliquer `tools/codex-v0d/raccord-50-fx.js.patch` | ne pas avancer ni superposer les effets pendant le film ; leurs ralentis sont conservés |
+| codex-v0d | `src/70-joueuse.js`, `src/15-decor.js` (réservés) | aucun changement nécessaire | raccord au niveau de la boucle, aucun champ privé consommé |
+| codex-v0d | `tools/codex-v0d/` | rapport, sources figées, calibration historique, parties appariées et cas construits | traces reproductibles ; les images VM sont des fixtures, pas une mesure du MP4 |
+| codex-v0d | vérification hors bac | `cd proto-neon && node tools/codex-v0d/verifier.mjs` ; après application des raccords et build : ajouter `--integre` | un seul Chrome H.264 `channel:'chrome'`, muet, HTTP local port libre ; iPhone 13 paysage et portrait puis bureau ; deux personnages et repli, images décodées, progression vidéo, pixels du tampon, saut et reprise |
+
+Les raccords réservés sont testés en mémoire uniquement. Sans eux, le témoin conserve une avance indue de l'horloge de **0,3000000000000001 s** pendant la tentative de gel : cette limite n'est pas masquée. Validation locale et limites détaillées dans `tools/codex-v0d/rapport.md` ; aucun verdict Safari réel ou décodage MP4 n'est revendiqué avant le reçu navigateur.

@@ -1208,6 +1208,9 @@
 
   /* codex-12 ordre14 : une crête ordinaire par fenêtre ; impacts forts R12 prioritaires. */
   R.scene.budgets.secousse = { fenetre: 1, forte: R.criteres.R12.camera };
+  /* codex-v0d — film d'arrivée de l'amiral : clip de 5 s, garde INTERMEDES,
+     niveau et fondu déjà employés par la musique de cosmos. */
+  R.filmAmiral = { duree: 5, garde: 0.3, gainMusique: 0.62, fonduMusique: 0.05 };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

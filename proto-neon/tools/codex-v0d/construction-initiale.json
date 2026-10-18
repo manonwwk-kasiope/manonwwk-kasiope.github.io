@@ -1,0 +1,8 @@
+{
+  "essai": "construction du voyage réel par sauter + update(h)",
+  "attendu": "neon",
+  "mesure": "1976",
+  "cause_verifiee": "Le skip de 68-terminal entre dans fissure ; il attend ensuite sa durée au lieu d'appeler immédiatement surFin. La boucle initiale de ETAPES.length * 2 pas était trop courte.",
+  "correction_instrument": "Borne de construction portée à ETAPES.length secondes, sans modifier le jeu, sa durée ni la garde de 300 ms.",
+  "statut_initial": "échec conservé"
+}

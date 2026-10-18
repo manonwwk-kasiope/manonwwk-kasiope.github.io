@@ -1,0 +1,80 @@
+{
+  "dateParis": "18/10/2026 12:10:04",
+  "statut": "Implémentation et VM livrées ; intégration réservée et mesure Chrome en attente.",
+  "build": {
+    "sortie": 0,
+    "sha256": "e58bd09c01873b35f1a1385b0442791178c747135bbc749a7115d06beeb2dd02"
+  },
+  "sources": {
+    "avant": "18cfd429e0ac62721dfbe43d4afd6b7eb08e7a7821ea0822463efa8246c1d286",
+    "apres": "6f7fe27ff805e72ad3d43a75c821cb86ffb6db177aaca32ea51c173672f9f57e"
+  },
+  "calibrationExacte": 10,
+  "parties": {
+    "identiques": 80,
+    "fins": 78,
+    "bornes": [
+      {
+        "pilote": "expert",
+        "graine": 2,
+        "raison": "borne",
+        "tempsJeu": 540.2425000460728,
+        "vague": 5,
+        "score": 276400,
+        "err": 0,
+        "erreursConsole": [],
+        "journalSha256": "e3429edc86604fcf6bf811677ce63d5766fa960254835232c9e432b798111d04",
+        "fichier": "parties/apres-expert-2.json.gz"
+      },
+      {
+        "pilote": "dieu",
+        "graine": 9,
+        "raison": "borne",
+        "tempsJeu": 540.0104166867044,
+        "vague": 4,
+        "score": 109790,
+        "err": 0,
+        "erreursConsole": [],
+        "journalSha256": "0d4591754db3570f41efe9eb61fa5c5ac6cfed39ad8069b5186f035dd7d2fd53",
+        "fichier": "parties/apres-dieu-9.json.gz"
+      }
+    ],
+    "zeroErreur": true
+  },
+  "controlesConstruits": 16,
+  "garde": [
+    {
+      "entree": "touche",
+      "avant": 0.29,
+      "accepte": 0.3,
+      "err": 0
+    },
+    {
+      "entree": "toucher",
+      "avant": 0.29,
+      "accepte": 0.3,
+      "err": 0
+    }
+  ],
+  "checks": [
+    {
+      "commande": "git diff --check",
+      "sortie": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "commande": "git apply --check proto-neon/tools/codex-v0d/raccord-79-jeu.js.patch proto-neon/tools/codex-v0d/raccord-50-fx.js.patch",
+      "sortie": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "commande": "/usr/local/bin/node --check proto-neon/tools/codex-v0d/verifier.mjs",
+      "sortie": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "navigateur": "non exécuté conformément à la consigne du bac"
+}

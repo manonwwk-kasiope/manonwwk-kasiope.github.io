@@ -1,0 +1,59 @@
+{
+  "dateParis": "18/10/2026 12:06:00",
+  "conforme": true,
+  "cas": [
+    {
+      "cas": "arrivée naturelle",
+      "qui": "elle",
+      "pas": 7998,
+      "temps": 66.65,
+      "vt": 57,
+      "identiqueJusquaArrivee": true,
+      "gelPreexistantConserve": 0.3,
+      "err": 0
+    },
+    {
+      "cas": "arrivée naturelle",
+      "qui": "lui",
+      "pas": 7998,
+      "temps": 66.65,
+      "vt": 57,
+      "identiqueJusquaArrivee": true,
+      "gelPreexistantConserve": 0.3,
+      "err": 0
+    },
+    {
+      "cas": "témoin sans raccords",
+      "deltaHorloge": 0.3000000000000001,
+      "etat": "aventure",
+      "conforme": false,
+      "attendu": "échec : confirme que les raccords sont indispensables"
+    },
+    {
+      "cas": "paramètres WebAudio de fixture",
+      "notesGelees": {
+        "nappe": 1,
+        "basse": 1,
+        "arp": 0,
+        "lead": 0,
+        "perc": 0
+      },
+      "sortiePendantFilm": 0,
+      "sortieReprise": {
+        "v": 0.62,
+        "t": 0.5000000000000007,
+        "d": 0.05
+      },
+      "musiqueGelee": true,
+      "err": 0,
+      "limite": "Pas de rendu acoustique ; gain et ordonnanceur réels exécutés avec des AudioParams de fixture."
+    },
+    {
+      "cas": "voyage réel → 2975 → film → 2975",
+      "reprise": true,
+      "etape": "2975",
+      "film": "amiral-lui",
+      "err": 0
+    }
+  ]
+}

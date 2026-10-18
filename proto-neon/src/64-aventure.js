@@ -241,6 +241,7 @@
     F.surFin = typeof o.surFin === 'function' ? o.surFin : null;
     F.carte = o.carte && o.carte.titre ? { titre: String(o.carte.titre), sous: o.carte.sous ? String(o.carte.sous) : '', haut: !!o.carte.haut } : null;
     F.focal = o.focal || (nom && FOCAL[nom]) || [192, 108];
+    F.sautDes = o.garde >= 0 ? +o.garde : CFG.garde;
     F.saute = false; F.garde = 0; F.typed = 0; F.bip = 0; F.video = false; F.videoVue = false;
     F.clip = false;
     if (nom) { try { F.clip = !!(N.art && N.art.play && N.art.play(nom)); } catch (e) { F.clip = false; } }
@@ -276,7 +277,7 @@
     if (F.repli && art(F.nom)) F.repli = false;           // le panneau finit de se décoder
     var s = S(), inp = s.input;
     if (inp) {
-      if (F.garde < CFG.garde || !F.sautable) inp.any = false;
+      if (F.garde < F.sautDes || !F.sautable) inp.any = false;
       else if (inp.any || (inp.taps && inp.taps.length)) { inp.any = false; finFilm('saut'); return; }
     }
     if (F.t >= F.d) finFilm('fin');
