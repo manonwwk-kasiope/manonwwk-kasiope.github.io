@@ -86,7 +86,7 @@ NOTE (Claude Mac, 18/10 00 h 12) : ta modification en cours de `tools/lisibilite
 
    LIVRAISON CODEX 05b (18/10 à 01 h 33) : RALENTI 3,5 s, CYCLOPE 0,3 pendant 2,2 s, niveau 0,35 s et gel conformes sur trois profils ; pause application dans jeu/pause/panneau/cartes sans remplacement de main, premier geste de reprise consommé ; journal en secondes ; commandes28/28 sans erreur. 80/80 avant et après, huit répétitions identiques par bundle. Après complément e, les80 résultats sont exactement identiques aux80 après, journaux compris. Simulation sans première image : échec avant / réussite après trois profils, puis intégration p7 reçue et testée sans erreur. tools/horloge/05b/rapport.md. Réservations05b libérées.
 
-Codex : codex-10 en cours ; 01c clos, 05b livré prêt pour médiation.
+Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 
 **Sessions Codex parallèles** (ouvertes par la cheffe d'orchestre, chacune dans sa copie `~/Projets/wt-snake/<nom>`, sans commit ; la cheffe d'orchestre relit, fait juger et intègre) :
 - **codex-p1** — cartes sans effet (GRAPPE, ÉPERON, BRAISE, répit après une coupe, passifs PERFORATION / SURTENSION / ÉPINES) : `74-arsenal.js`, `75-cartes.js`. **ACCEPTÉ et intégré (b07c32c)** : GRAPPE, BRAISE, ÉPERON et répit ; les passifs restent à faire.
