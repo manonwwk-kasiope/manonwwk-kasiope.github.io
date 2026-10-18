@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 01 h 44)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 02 h 15)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -13,13 +13,19 @@
 - Intégration : jamais dans le dossier principal (Codex y écrit) ; copie `~/Projets/wt-snake/chef` et
   `~/Projets/wt-snake/integrer.sh <copie> <auteur> <message> <chemins…>` (NOPUSH=1 pour vérifier avant de publier) ;
   écritures de suivi dans la copie `~/Projets/wt-snake/integ`.
-- Fait depuis 01 h 36 : codex-01c tranché (candidat non retenu, 01b gardé, porte lisibilité fermée) ; codex-05b relu.
-- En cours à 01 h 44 : batterie R-01..R-38 sur `8f55a91` (tâche de fond, attend la fin du banc 01c de la boîte ;
-  reçu `~/Projets/wt-snake/recus/batterie-8f55a91.log`) ; codex-p5 (réglage) ; codex-p3c (diagnostic, copie codex-08) ;
-  codex-09 (aventure dans le vrai jeu) ; codex-p4b livré, son `tools/codex-p4/verifier.mjs` est à lancer après la batterie.
-- Prochaines actions : verdict 05b sur la batterie ; vérifier puis intégrer p4b (72, 73, 02-regles) ; ordres tirés de p3c ;
-  après p4b : ennemis qui durcissent (72-ennemis) ; quand réglage et aventure sont faits : jury (`tools/jury/partie.mjs`),
-  publication sur gh-pages, demande de JALON.
+- Fait depuis 01 h 36 : codex-01c tranché (01b gardé) ; codex-05b ACCEPTÉ (batterie `8f55a91` : 9 ok, 1 non mesurable) ;
+  intégrés : codex-p4b (`c9fd770`, mines du CYCLOPE), codex-09 (`7a1abc9`, aventure dans le vrai jeu) ; lot H a intégré le mixage (R-26).
+- En cours à 02 h 15 :
+  - vérifieurs navigateur, un Chromium à la fois : p3c (`codex-08`, file `file-verifs.sh`), puis codex-10 (boîte, marqueur
+    `/tmp/snake-chromium-boite`), puis p8 et p10 (`file-suite.sh`) ; reçus dans `~/Projets/wt-snake/recus/<copie>-verif.log` ;
+  - sessions `codex exec` : p5 (réglage), p4c (R-06, R-31 : 72-ennemis, 73-arene), p11 (R-19, R-22, R-33 : 79-jeu, 90-boot,
+    03-socle), p12 (R-16, R-36 : 77-score, 80-ecrans), p13 (R-13 décor, part de l'état de p10 **indexé** : avant d'intégrer
+    p13, `git reset -q` dans sa copie puis intégrer p10 d'abord) ;
+  - boîte de Codex : codex-10 (DÉFILÉ, respiration ; raccord `79-jeu.js` à appliquer par la cheffe d'orchestre).
+- Livrés, à intégrer après leur vérifieur : p8 (longueur critique, traînée, caméra), p10 (gaine, journal des flashs ; R-13 encore
+  en échec à 14/s → p13), p3c (instrument `tools/mesure/` corrigé dans `codex-08`).
+- Prochaines actions : intégrer p3c, p8, p10 puis p13 ; appliquer le raccord de codex-10 ; relancer la batterie ; quand p5
+  rend son réglage : jury (`tools/jury/partie.mjs`), publication sur gh-pages, demande de JALON, notification de fin.
 
 ## État au 17/10/2026 · 23 h 30 (le projet vit désormais sur l'ordinateur)
 
