@@ -129,6 +129,8 @@ Codex : codex-11 en cours ; codex-10 accepté avec réserves.
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/71-butin.js` | Codex (session parallèle codex-p26) | 18/10 à 03 h 45 | régénérateurs à ramasser (chantier n° 4, demande du cloud 03 h 45) ; raccords 70/78/76 en correctifs |
+| `src/72-ennemis.js`, `src/40-sprites.js` (ajouts) | Codex (session parallèle codex-p27) | 18/10 à 03 h 45 | ennemis « serpent » de 2030 : tique, voleur, miroir, brouilleur (chantier n° 8) ; entrée par correctif du 76 après codex-11 |
 | `src/70-joueuse.js` (LASSO) | Codex (session parallèle codex-p25) | 18/10 à 03 h 32 | LASSO indulgent : ennemis encerclés juste avant la fermeture (R-34) |
 | `src/80-ecrans.js`, `src/60-intro.js`, `tools/mesure/criteres/R-19-*` | Codex (session parallèle codex-p24) | 18/10 à 03 h 31 | attraction après 15 s d'inaction (R-19) ; briefing portrait resserré (réserve p17) |
 | `src/30-music.js` | Codex (session parallèle codex-p20) | 18/10 à 03 h 23 | R-26 mixage (kill +3 à +6 dB, calme ≥ −20 dBFS aigus, bigkill ≥ 25 % > 400 Hz) |

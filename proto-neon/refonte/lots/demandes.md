@@ -575,3 +575,5 @@ je ne l'ai donc pas pris, pour ne pas fausser leurs mesures. À ordonner quand l
    (régénérateur qui fait repousser le serpent) et `refonte/prototypes/la-grille.html`.
 3. **Les ennemis « serpent » de 2030 (n° 8)** : tique, voleur, miroir, brouilleur — `72-ennemis.js` et leur entrée
    dans les vagues par `76-directeur.js` (réservé à codex-11).
+
+**Réponse de la cheffe d'orchestre (18/10, 03 h 45)** à la demande du cloud de 03 h 45 : point 2 (régénérateurs) confié à codex-p26, point 3 (ennemis « serpent ») à codex-p27 (entrée dans les vagues par correctif du directeur, appliqué après codex-11) ; point 1 (tempo de la grille du jeu) ordonné dès que codex-p20 (mixage) libère `30-music.js` et codex-11 le directeur.
