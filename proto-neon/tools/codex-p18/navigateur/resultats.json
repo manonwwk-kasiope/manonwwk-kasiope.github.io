@@ -1,0 +1,845 @@
+{
+  "dateParis": "18/10/2026 03:16:34",
+  "bundleSha256": "639a042566c681076bafce005e0fd71ed3ac343151920f1dbf5a1a38510ad349",
+  "profils": [
+    {
+      "nom": "paysage",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "erreurs": [],
+      "mesures": [
+        {
+          "scene": "multiplicateur",
+          "etat": "jeu",
+          "score": 2260,
+          "mult": 2,
+          "chaine": 5,
+          "texte": "×2  ×3 DANS 5",
+          "objectif": {
+            "mult": 3,
+            "reste": 5
+          },
+          "resume": null,
+          "points": {
+            "combat": 1710,
+            "survie": 450,
+            "risque": 100
+          },
+          "w": 422,
+          "h": 195,
+          "px": 2,
+          "hist": [
+            0,
+            15698,
+            5231,
+            4448,
+            2232,
+            65,
+            82,
+            849,
+            327,
+            343,
+            1216,
+            889,
+            580,
+            9226,
+            6348,
+            34756
+          ],
+          "horsPalette": 0,
+          "hud": {
+            "correspondances": [
+              {
+                "x": 3,
+                "y": 22,
+                "requis": 131,
+                "poses": 131
+              }
+            ]
+          },
+          "ligneScore": null,
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "dc4f58ec442675ecc618b8e4e3de33472edcef074b7fe5a159727f2871ea2a4b",
+          "ok": true
+        },
+        {
+          "scene": "fin",
+          "etat": "fin",
+          "score": 115410,
+          "mult": 1,
+          "chaine": 0,
+          "texte": null,
+          "objectif": {
+            "mult": 2,
+            "reste": 5
+          },
+          "resume": {
+            "victoire": false,
+            "score": 115410,
+            "marque": "",
+            "ecart": null,
+            "record": 115410,
+            "nouveauRecord": false,
+            "kills": 192,
+            "maxChaine": 31,
+            "coupes": 4,
+            "lassos": 2,
+            "maxLasso": 1,
+            "pertes": 4,
+            "defisVague": 1,
+            "cause": "ennemi",
+            "auteur": "traqueur",
+            "vague": 5,
+            "quartier": "coeur",
+            "temps": 219.2070833454184,
+            "progression": 0.8537682038933787,
+            "boss": false,
+            "note": "D",
+            "build": {
+              "nom": "ORAGE",
+              "armes": [
+                {
+                  "id": "canon",
+                  "palier": 2
+                },
+                {
+                  "id": "arc",
+                  "palier": 3
+                },
+                {
+                  "id": "missiles",
+                  "palier": 1
+                },
+                {
+                  "id": "drones",
+                  "palier": 1
+                }
+              ],
+              "pouvoir": null,
+              "lasso": 0
+            },
+            "defi": {
+              "nom": "DIX KILLS EN CHAÎNE",
+              "etat": "reussi",
+              "prog": 10,
+              "but": 10,
+              "meilleur": 10
+            },
+            "defis": [
+              {
+                "id": "finir",
+                "nom": "FINIR",
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 1,
+                "jour": 20261017
+              },
+              {
+                "id": "chaine5",
+                "nom": "CHAÎNE ×5",
+                "etat": "reussi",
+                "fait": true,
+                "prog": 5,
+                "but": 5,
+                "jour": 20261017
+              },
+              {
+                "id": "premierJet",
+                "nom": "PREMIER JET",
+                "etat": "reussi",
+                "fait": true,
+                "prog": 25,
+                "but": 25,
+                "jour": 20261017
+              }
+            ],
+            "defisVagues": [
+              {
+                "id": "v1Lasso",
+                "nom": "2 LASSO",
+                "n": 1,
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 2
+              },
+              {
+                "id": "v2Lasso",
+                "nom": "LASSO ×3",
+                "n": 2,
+                "etat": "rate",
+                "fait": false,
+                "prog": 1,
+                "but": 3
+              },
+              {
+                "id": "v3Cote",
+                "nom": "ABATS 3 TOURELLES DE CÔTÉ",
+                "n": 3,
+                "etat": "reussi",
+                "fait": true,
+                "prog": 3,
+                "but": 3
+              },
+              {
+                "id": "v4Broie",
+                "nom": "BROIE 3 ENNEMIS",
+                "n": 4,
+                "etat": "rate",
+                "fait": false,
+                "prog": 1,
+                "but": 3
+              },
+              {
+                "id": "v5Mult",
+                "nom": "×5 AVANT LA PURGE",
+                "n": 5,
+                "etat": "rate",
+                "fait": false,
+                "prog": 2,
+                "but": 5
+              }
+            ],
+            "primesDefis": 11000,
+            "energieGagnee": 198,
+            "energie": 198,
+            "avant": {
+              "id": "ralenti",
+              "reste": 25,
+              "part": 0,
+              "seuil": 25,
+              "prec": 0
+            },
+            "prochain": {
+              "id": "styles",
+              "reste": 152,
+              "part": 0.10588235294117647,
+              "seuil": 350,
+              "prec": 180
+            },
+            "debloques": [
+              "ralenti",
+              "repli"
+            ],
+            "conseil": "SEUL UN LASSO TUE LE TRAQUEUR",
+            "cartes": {
+              "bouclier": 1,
+              "arc": 3,
+              "missiles": 1,
+              "drones": 1,
+              "grappe": 1,
+              "canon": 1,
+              "puissance": 1,
+              "cadence": 1,
+              "aimant": 1
+            }
+          },
+          "points": {
+            "combat": 46830,
+            "survie": 38100,
+            "risque": 880,
+            "continuite": 18600,
+            "defisP12": 11000
+          },
+          "w": 422,
+          "h": 195,
+          "px": 2,
+          "hist": [
+            0,
+            59394,
+            6095,
+            201,
+            100,
+            0,
+            1208,
+            0,
+            0,
+            2284,
+            2760,
+            0,
+            1100,
+            2455,
+            830,
+            5863
+          ],
+          "horsPalette": 0,
+          "hud": null,
+          "ligneScore": {
+            "texte": "SCORE 115410",
+            "x": 5,
+            "y": 23,
+            "w": 142,
+            "h": 14,
+            "echelle": 2,
+            "encre": 10,
+            "pixels": 640,
+            "attendu": "SCORE 115410",
+            "conforme": true
+          },
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "5d42df023a9e1a869d0a024af44a92c529ac092ca051d938f5ed9eff0511f9c7",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "nom": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "erreurs": [],
+      "mesures": [
+        {
+          "scene": "multiplicateur",
+          "etat": "jeu",
+          "score": 2210,
+          "mult": 2,
+          "chaine": 5,
+          "texte": "×2  ×3 DANS 5",
+          "objectif": {
+            "mult": 3,
+            "reste": 5
+          },
+          "resume": null,
+          "points": {
+            "combat": 1610,
+            "survie": 500,
+            "risque": 100
+          },
+          "w": 195,
+          "h": 422,
+          "px": 2,
+          "hist": [
+            363,
+            21489,
+            5368,
+            4349,
+            1635,
+            73,
+            32,
+            1399,
+            226,
+            244,
+            1313,
+            1720,
+            423,
+            5415,
+            2510,
+            35731
+          ],
+          "horsPalette": 0,
+          "hud": {
+            "correspondances": [
+              {
+                "x": 3,
+                "y": 11,
+                "requis": 131,
+                "poses": 131
+              }
+            ]
+          },
+          "ligneScore": null,
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "35590b41f30a55d6f353c9b69f002b1b19fdf102217e826aca27d95ce4791cf5",
+          "ok": true
+        },
+        {
+          "scene": "fin",
+          "etat": "fin",
+          "score": 128090,
+          "mult": 1,
+          "chaine": 0,
+          "texte": null,
+          "objectif": {
+            "mult": 2,
+            "reste": 5
+          },
+          "resume": {
+            "victoire": false,
+            "score": 128090,
+            "marque": "",
+            "ecart": null,
+            "record": 128090,
+            "nouveauRecord": false,
+            "kills": 240,
+            "maxChaine": 38,
+            "coupes": 9,
+            "lassos": 5,
+            "maxLasso": 2,
+            "pertes": 4,
+            "defisVague": 2,
+            "cause": "laser",
+            "auteur": "cyclope",
+            "vague": 5,
+            "quartier": "coeur",
+            "temps": 275.74958336966205,
+            "progression": 1,
+            "boss": true,
+            "note": "C",
+            "build": {
+              "nom": "TIREUSE",
+              "armes": [
+                {
+                  "id": "canon",
+                  "palier": 2
+                },
+                {
+                  "id": "arc",
+                  "palier": 2
+                },
+                {
+                  "id": "onde",
+                  "palier": 1
+                }
+              ],
+              "pouvoir": null,
+              "lasso": 0
+            },
+            "defi": {
+              "nom": "DIX KILLS EN CHAÎNE",
+              "etat": "reussi",
+              "prog": 10,
+              "but": 10,
+              "meilleur": 10
+            },
+            "defis": [
+              {
+                "id": "finir",
+                "nom": "FINIR",
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 1,
+                "jour": 20261017
+              },
+              {
+                "id": "chaine5",
+                "nom": "CHAÎNE ×5",
+                "etat": "reussi",
+                "fait": true,
+                "prog": 5,
+                "but": 5,
+                "jour": 20261017
+              },
+              {
+                "id": "premierJet",
+                "nom": "PREMIER JET",
+                "etat": "rate",
+                "fait": false,
+                "prog": 23,
+                "but": 25,
+                "jour": 20261017
+              }
+            ],
+            "defisVagues": [
+              {
+                "id": "v1Lasso",
+                "nom": "2 LASSO",
+                "n": 1,
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 2
+              },
+              {
+                "id": "v2Lasso",
+                "nom": "LASSO ×3",
+                "n": 2,
+                "etat": "rate",
+                "fait": false,
+                "prog": 2,
+                "but": 3
+              },
+              {
+                "id": "v3Cote",
+                "nom": "ABATS 3 TOURELLES DE CÔTÉ",
+                "n": 3,
+                "etat": "reussi",
+                "fait": true,
+                "prog": 3,
+                "but": 3
+              },
+              {
+                "id": "v4Broie",
+                "nom": "BROIE 3 ENNEMIS",
+                "n": 4,
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 3
+              },
+              {
+                "id": "v5Mult",
+                "nom": "×5 AVANT LA PURGE",
+                "n": 5,
+                "etat": "reussi",
+                "fait": true,
+                "prog": 5,
+                "but": 5
+              }
+            ],
+            "primesDefis": 6000,
+            "energieGagnee": 258,
+            "energie": 258,
+            "avant": {
+              "id": "ralenti",
+              "reste": 25,
+              "part": 0,
+              "seuil": 25,
+              "prec": 0
+            },
+            "prochain": {
+              "id": "styles",
+              "reste": 92,
+              "part": 0.4588235294117647,
+              "seuil": 350,
+              "prec": 180
+            },
+            "debloques": [
+              "ralenti",
+              "repli"
+            ],
+            "conseil": null,
+            "cartes": {
+              "arc": 2,
+              "cadence": 2,
+              "onde": 1,
+              "canon": 1,
+              "puissance": 2,
+              "epines": 1,
+              "braise": 1
+            }
+          },
+          "points": {
+            "combat": 72900,
+            "survie": 41070,
+            "risque": 6450,
+            "lasso": 740,
+            "continuite": 930,
+            "defisP12": 6000
+          },
+          "w": 195,
+          "h": 422,
+          "px": 2,
+          "hist": [
+            7,
+            66158,
+            3338,
+            121,
+            32,
+            0,
+            1520,
+            4,
+            2,
+            2008,
+            2604,
+            0,
+            1268,
+            2763,
+            22,
+            2443
+          ],
+          "horsPalette": 0,
+          "hud": null,
+          "ligneScore": {
+            "texte": "SCORE 128090",
+            "x": 5,
+            "y": 23,
+            "w": 142,
+            "h": 14,
+            "echelle": 2,
+            "encre": 10,
+            "pixels": 696,
+            "attendu": "SCORE 128090",
+            "conforme": true
+          },
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "ce9a6a1d22c2f14f44be0c84ccd3c8f544b7aeca2f05de84e1e96e6a571531ab",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    {
+      "nom": "bureau",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "erreurs": [],
+      "mesures": [
+        {
+          "scene": "multiplicateur",
+          "etat": "jeu",
+          "score": 2000,
+          "mult": 2,
+          "chaine": 5,
+          "texte": "×2  ×3 DANS 5",
+          "objectif": {
+            "mult": 3,
+            "reste": 5
+          },
+          "resume": null,
+          "points": {
+            "combat": 1450,
+            "survie": 550
+          },
+          "w": 360,
+          "h": 225,
+          "px": 4,
+          "hist": [
+            0,
+            6047,
+            7084,
+            4761,
+            2172,
+            37,
+            2,
+            751,
+            139,
+            296,
+            462,
+            997,
+            488,
+            5812,
+            2714,
+            49238
+          ],
+          "horsPalette": 0,
+          "hud": {
+            "correspondances": [
+              {
+                "x": 3,
+                "y": 22,
+                "requis": 131,
+                "poses": 131
+              }
+            ]
+          },
+          "ligneScore": null,
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "a8bd063d11080ff991bda095816d51536f3a0f0a048e285a96cc2d77e4f15f23",
+          "ok": true
+        },
+        {
+          "scene": "fin",
+          "etat": "fin",
+          "score": 41620,
+          "mult": 1,
+          "chaine": 0,
+          "texte": null,
+          "objectif": {
+            "mult": 2,
+            "reste": 5
+          },
+          "resume": {
+            "victoire": false,
+            "score": 41620,
+            "marque": "",
+            "ecart": null,
+            "record": 41620,
+            "nouveauRecord": false,
+            "kills": 99,
+            "maxChaine": 33,
+            "coupes": 2,
+            "lassos": 3,
+            "maxLasso": 2,
+            "pertes": 4,
+            "defisVague": 1,
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "vague": 3,
+            "quartier": "centrale",
+            "temps": 123.0079166762964,
+            "progression": 0.4981796116697674,
+            "boss": false,
+            "note": "D",
+            "build": {
+              "nom": "ORAGE",
+              "armes": [
+                {
+                  "id": "canon",
+                  "palier": 1
+                },
+                {
+                  "id": "arc",
+                  "palier": 2
+                },
+                {
+                  "id": "onde",
+                  "palier": 1
+                }
+              ],
+              "pouvoir": null,
+              "lasso": 0
+            },
+            "defi": {
+              "nom": "DIX KILLS EN CHAÎNE",
+              "etat": "reussi",
+              "prog": 10,
+              "but": 10,
+              "meilleur": 10
+            },
+            "defis": [
+              {
+                "id": "finir",
+                "nom": "FINIR",
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 1,
+                "jour": 20261017
+              },
+              {
+                "id": "chaine5",
+                "nom": "CHAÎNE ×5",
+                "etat": "reussi",
+                "fait": true,
+                "prog": 5,
+                "but": 5,
+                "jour": 20261017
+              },
+              {
+                "id": "premierJet",
+                "nom": "PREMIER JET",
+                "etat": "rate",
+                "fait": false,
+                "prog": 24,
+                "but": 25,
+                "jour": 20261017
+              }
+            ],
+            "defisVagues": [
+              {
+                "id": "v1Lasso",
+                "nom": "2 LASSO",
+                "n": 1,
+                "etat": "rate",
+                "fait": false,
+                "prog": 0,
+                "but": 2
+              },
+              {
+                "id": "v2Lasso",
+                "nom": "LASSO ×3",
+                "n": 2,
+                "etat": "rate",
+                "fait": false,
+                "prog": 2,
+                "but": 3
+              },
+              {
+                "id": "v3Cote",
+                "nom": "ABATS 3 TOURELLES DE CÔTÉ",
+                "n": 3,
+                "etat": "reussi",
+                "fait": true,
+                "prog": 3,
+                "but": 3
+              }
+            ],
+            "primesDefis": 6000,
+            "energieGagnee": 129,
+            "energie": 129,
+            "avant": {
+              "id": "ralenti",
+              "reste": 25,
+              "part": 0,
+              "seuil": 25,
+              "prec": 0
+            },
+            "prochain": {
+              "id": "repli",
+              "reste": 51,
+              "part": 0.6709677419354839,
+              "seuil": 180,
+              "prec": 25
+            },
+            "debloques": [
+              "ralenti"
+            ],
+            "conseil": "LA FLÈCHE SE FIGE AVANT DE FONCER",
+            "cartes": {
+              "arc": 2,
+              "cadence": 1,
+              "onde": 1
+            }
+          },
+          "points": {
+            "combat": 24310,
+            "survie": 8870,
+            "risque": 690,
+            "continuite": 1260,
+            "lasso": 490,
+            "defisP12": 6000
+          },
+          "w": 360,
+          "h": 225,
+          "px": 4,
+          "hist": [
+            0,
+            60759,
+            5706,
+            319,
+            103,
+            0,
+            1060,
+            9,
+            1,
+            2055,
+            2492,
+            7,
+            1268,
+            2671,
+            9,
+            4541
+          ],
+          "horsPalette": 0,
+          "hud": null,
+          "ligneScore": {
+            "texte": "SCORE 41620",
+            "x": 5,
+            "y": 41,
+            "w": 130,
+            "h": 14,
+            "echelle": 2,
+            "encre": 10,
+            "pixels": 608,
+            "attendu": "SCORE 41620",
+            "conforme": true
+          },
+          "err": {
+            "count": 0,
+            "sigs": {}
+          },
+          "tamponSha256": "f248dede2935ae478f3af4e94c3546842874a66b7e96a33b965bbedfd69b04fb",
+          "ok": true
+        }
+      ],
+      "ok": true
+    }
+  ],
+  "limite": "Chromium émulé : Safari sur iPhone reste à vérifier.",
+  "chromium": "140.0.7339.16",
+  "ok": true
+}

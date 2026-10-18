@@ -72,6 +72,8 @@ N.score = (function () {
     m.score = 0; m.chaine = 0; m.dernier = -99; m.vies = (R && R.vies && R.vies.depart) || 3; m.bonus = false; m.newRecord = false; m.gain = null;
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
+    m.scoreCombat = 0; m.sansMortDepuis = O.T.t; m.continuite = 0; m.continuiteDernier = -Infinity;
+    m.lassoKills = {}; m.lassoTemps = -Infinity; m.stats.points = {};
     API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
@@ -91,16 +93,50 @@ N.score = (function () {
   }
   function fenetre() { return (R && R.score && R.score.chaine && R.score.chaine.fenetre) || 2.5; }
 
-  function ajouter(pts, x, y) {
+  function ajouter(pts, x, y, source, maitrise) {
     if (!(pts > 0)) return;
     m.score += pts;
-    m.gain = { x: x, y: y, pts: pts, t: O.T.t };
+    source = source || 'combat';
+    m.stats.points[source] = (m.stats.points[source] || 0) + pts;
+    // Le score reçu commandait aussi une vie. Les nouvelles primes restent purement comptables :
+    // le même cumul de points de combat déclenche la même vie, au même pas qu'avant ce lot.
+    if (!maitrise) m.scoreCombat += pts;
+    if (maitrise && m.gain && m.gain.t === O.T.t && m.gain.x === x && m.gain.y === y) m.gain.pts += pts;
+    else m.gain = { x: x, y: y, pts: pts, t: O.T.t };
     var seuil = (R && R.vies && R.vies.seuilBonus) || 80000, max = (R && R.vies && R.vies.max) || 4;
-    if (!m.bonus && m.score >= seuil) {
+    if (!m.bonus && m.scoreCombat >= seuil) {
       m.bonus = true;
       if (m.vies < max) { m.vies++; if (N.hud && N.hud.banniere) N.hud.banniere('VIE BONUS', { c: 'jaune' }); O.sfx('vie'); }
     }
     publier();
+  }
+
+  /* Une continuité plus accueillante pour le score, sans modifier la chaîne publique de combat,
+     ses effets, les primes de p12, ni le défi historique qui fournit une vie et la surcharge.
+     On ne paie que le supplément au multiplicateur déjà reçu : aucune base comptée deux fois. */
+  function recompensesKill(c, mu) {
+    var cfg = R.score.maitrise, src = c.src;
+    if (!src || (src.genre !== 'arme' && src.genre !== 'joueuse')) return;
+    var t = O.T.t;
+    m.continuite = t - m.continuiteDernier <= cfg.continuiteFenetre ? m.continuite + 1 : 1;
+    m.continuiteDernier = t;
+    var lie = R.f.mult(m.continuite);
+    ajouter(c.base * Math.max(0, lie - mu), c.x, c.y, 'continuite', true);
+    var palier = Math.min(cfg.survie.max, Math.floor(Math.max(0, t - m.sansMortDepuis) / cfg.survie.palier));
+    ajouter(c.base * palier, c.x, c.y, 'survie', true);
+    var J = N.joueuse, P = J && J.tete;
+    if (P && J.etat === 'vivant' && !(J.invul && J.invul())) {
+      var d = R.score.primes.boutPortant.distance, dx = c.x - P.x, dy = c.y - P.y;
+      var mur = J.distMur && J.distMur(P.x, P.y);
+      if (dx * dx + dy * dy < d * d || (mur && mur.d > 0 && mur.d < cfg.danger.mur))
+        ajouter(c.base * mu * (R.score.primes.boutPortant.facteur - 1), c.x, c.y, 'risque', true);
+    }
+    // Les kills arrivent avant l'événement lasso de la fermeture. Mémoriser seulement ces morts,
+    // pas les bases des survivants : refaire un lasso sur une cible vivante ne crée pas de rente.
+    if (src.genre === 'joueuse' && src.type === 'lasso' && cfg.lasso) {
+      if (m.lassoTemps !== t) m.lassoKills = {};
+      m.lassoTemps = t; m.lassoKills[c.id] = { base: c.base, points: c.base * mu };
+    }
   }
 
   /* ---- les défis (repli : DIX KILLS EN CHAÎNE) ---- */
@@ -224,6 +260,7 @@ N.score = (function () {
       var pts = c.base * mult();
       if (c.boss) pts += (R && R.score && R.score.primes && R.score.primes.cyclope && R.score.primes.cyclope.mort) || 25000;
       ajouter(pts, c.x, c.y);
+      recompensesKill(c, mult());
       // État de présentation public : même si plusieurs kills arrivent avant le prochain dessin,
       // le HUD peut reconnaître le palier effectivement franchi, sans effet émis par le score.
       if (mult() > avant) API.palier = { mult: mult(), t: t };
@@ -246,16 +283,24 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('lasso', 20, function (c) {
       m.stats.lassos++; if (c.n > m.stats.maxLasso) m.stats.maxLasso = c.n;
+      var bases = 0, deja = 0;
+      (c.ids || []).forEach(function (id) {
+        var k = m.lassoKills[id];
+        if (k) { bases += k.base; deja += k.points; delete m.lassoKills[id]; }
+      });
+      ajouter(Math.max(0, bases * c.n * mult() - deja), c.x, c.y, 'lasso', true);
       avanceDv('lassos', 1); avanceDv('enfermes', c.n, true);
     }, '77-score');
     N.ev.on('coupe', 20, function () {
       m.stats.coupes++;
       if (!(N.cartes && N.cartes.mods && N.cartes.mods.sangFroid)) m.chaine = Math.floor(m.chaine / ((R && R.score && R.score.chaine && R.score.chaine.coupeDiviseur) || 2));
+      if (!(N.cartes && N.cartes.mods && N.cartes.mods.sangFroid)) m.continuite = Math.floor(m.continuite / R.score.chaine.coupeDiviseur);
       if (m.defi && m.defi.etat === 'actif') m.defi.prog = m.chaine;
     }, '77-score');
     N.ev.on('mort', 20, function (d) {
       m.vies = Math.max(0, m.vies - 1);
       m.chaine = 0;
+      m.continuite = 0; m.continuiteDernier = -Infinity; m.sansMortDepuis = O.T.t; m.lassoKills = {};
       m.stats.morts.push({ cause: d.cause, auteur: d.auteur, t: d.t, vague: d.vague, visibleDepuis: d.visibleDepuis, teleDuree: d.teleDuree });
       publier();
     }, '77-score');
@@ -281,6 +326,7 @@ N.score = (function () {
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    if (t > m.lassoTemps) m.lassoKills = {};
     suivreDefis('temps', {});
     if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
@@ -324,7 +370,7 @@ N.score = (function () {
     });
     if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
     // Bilan seulement : ne pas franchir un seuil de vie bonus pendant une partie.
-    m.score += primes; publier();
+    m.score += primes; m.stats.points.defisP12 = (m.stats.points.defisP12 || 0) + primes; publier();
     journalDefis('fin');
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
@@ -374,6 +420,8 @@ N.score = (function () {
     if (!continuerPossible()) return false;
     m.continuations++;
     m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
+    m.scoreCombat = R.vies.continuer.score; m.stats.points = {}; m.continuite = 0;
+    m.continuiteDernier = -Infinity; m.sansMortDepuis = O.T.t; m.lassoKills = {};
     m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
     API.defis.forEach(function (d) { if (d.etat === 'rate' && d.id !== 'sansCoupe' && d.id !== 'sansFilet' && d.id !== 'premierJet') d.etat = 'actif'; });
     m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;

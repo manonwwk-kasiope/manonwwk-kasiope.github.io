@@ -1,0 +1,81 @@
+{
+  "dateParis": "18/10/2026 02:52:16",
+  "cas": [
+    {
+      "nom": "attendre sans kill ne paie rien",
+      "ok": true,
+      "score": 0,
+      "vies": 3,
+      "points": {}
+    },
+    {
+      "nom": "continuité 5 s au-delà de la chaîne de combat 2,5 s",
+      "ok": true,
+      "score": 300,
+      "vies": 3,
+      "points": {
+        "combat": 250,
+        "continuite": 50
+      }
+    },
+    {
+      "nom": "survie rémunérée uniquement sur kill, plafonnée et remise à zéro par mort",
+      "ok": true,
+      "score": 300,
+      "vies": 2,
+      "points": {
+        "combat": 100,
+        "survie": 200
+      }
+    },
+    {
+      "nom": "LASSO : somme des bases × n × multiplicateur, pas de double paiement",
+      "ok": true,
+      "score": 450,
+      "vies": 3,
+      "points": {
+        "combat": 150,
+        "lasso": 300
+      }
+    },
+    {
+      "nom": "APOGÉE vide ne donne aucun point",
+      "ok": true,
+      "score": 0,
+      "vies": 3,
+      "points": {}
+    },
+    {
+      "nom": "purge sans points ni maîtrise",
+      "ok": true,
+      "score": 0,
+      "vies": 3,
+      "points": {}
+    },
+    {
+      "nom": "primes de maîtrise sans vie bonus, seuil de combat conservé",
+      "ok": true,
+      "score": 160000,
+      "vies": 4,
+      "points": {
+        "combat": 80000,
+        "survie": 80000
+      }
+    },
+    {
+      "nom": "prime de risque absente sous invulnérabilité et présente à bout portant",
+      "ok": true,
+      "score": 150,
+      "vies": 3,
+      "points": {
+        "combat": 100,
+        "risque": 50
+      }
+    }
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "erreurs": []
+}

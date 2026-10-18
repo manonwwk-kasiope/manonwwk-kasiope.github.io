@@ -1104,6 +1104,16 @@
     intervalle: 0.9, ciblePoids: 12, capPoids: 4, apogeeCibles: 2
   };
 
+  /* codex-p18 : primes de maîtrise, sans effet sur la vie bonus ni le défi de combat historique.
+     La chaîne de combat garde sa fenêtre § 2.13 ; la continuité de score tolère l'espacement des cibles. */
+  R.score.maitrise = {
+    continuiteFenetre: 5,
+    survie: { palier: 15, max: 4 },
+    danger: { mur: 12 },
+    // Pas de point pour attendre : chaque palier sans mort ne paie que lors d'un vrai kill de la joueuse.
+    lasso: true
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
