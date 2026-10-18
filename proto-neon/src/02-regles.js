@@ -1078,6 +1078,23 @@
   R.apparitions.naissance = { bord: 1 };
   // Identités stables distinctes des ennemis et des mèches instables de 72.
   R.arene.teleMurs = { ids: [-10001, -10002, -10003, -10004] };
+  /* codex-p12 : défis mesurables sans modifier les flux ni le combat des pilotes. */
+  R.defis.partie = {
+    reserve: ['premierJet', 'lasso6', 'sansCoupe', 'chaine5', 'sansFilet'],
+    finirNom: 'FINIR', finirBut: 1,
+    // Primes versées au bilan : elles ne déclenchent pas de vie bonus pendant le combat.
+    legacy: { nom: 'DIX KILLS EN CHAÎNE', but: 10, prime: 5000, energie: 20 },
+    jourRepli: 20261017
+  };
+  R.defis.retour = {
+    // Seuils du lot R-36 ; les identifiants et options restent ceux de R.deblocages.
+    seuils: [25, 180, 350, 550, 800]
+  };
+  R.ecrans.retour = {
+    echelle: 2, marge: 5, padding: 4, ecart: 8, ligne: 18, barreH: 3,
+    texteH: 14, colonnes: 2, paginationReserve: 2, boutonPt: 44,
+    finNoms: { ralenti: 'RALENTI', repli: 'REPLI', styles: 'STYLES', galerie: 'GALERIE', departV3: 'DÉPART V3' }
+  };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

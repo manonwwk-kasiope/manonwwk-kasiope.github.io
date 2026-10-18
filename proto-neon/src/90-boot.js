@@ -42,6 +42,16 @@ function errLog(where, e) {
 }
 function step(where, fn) { if (!fn) return; try { fn(); } catch (e) { errLog(where, e); } }
 
+/* codex-p12 : la date civile vit au boot, jamais dans le score ni dans les flux de partie. */
+function actualiserJourParis() {
+  try {
+    var p = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+    var champs = {};
+    p.forEach(function (x) { champs[x.type] = x.value; });
+    S.jour = Number(champs.year + champs.month + champs.day);
+  } catch (e) { if (!S.jour) S.jour = N.R.defis.partie.jourRepli; }
+}
+
 /* ---- palette de secours : remplacée par 00-pal.js dès qu'il existe ---- */
 var FALLBACK = ['#0d0221', '#190b28', '#241734', '#541388', '#2d1b69', '#ff2a6d', '#ff8fab', '#05d9e8',
   '#d1f7ff', '#ff9e00', '#ffd319', '#ff5714', '#fffce8', '#8a8fa3', '#8b0f3a', '#01012b'];
@@ -513,6 +523,7 @@ function boot() {
   out = document.getElementById('out');
   if (!out) { errLog('boot', new Error('canvas #out absent')); return; }
   octx = out.getContext('2d', { alpha: false });
+  actualiserJourParis();
   if (typeof window !== 'undefined') {
     window.__S = S; window.__PAL = palTable();
     if (window.__SEED) N.reseed(window.__SEED);
@@ -547,7 +558,7 @@ function boot() {
     if (document.hidden) {
       S.paused = true; keys = {}; stick.id = null; entreeRaz(); stickUpdate();
       step('music.suspend', N.music && N.music.suspend ? function () { N.music.suspend(); } : null);
-    } else step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null);
+    } else { actualiserJourParis(); step('music.resume', N.music && N.music.resume ? function () { N.music.resume(); } : null); }
   });
   app.addEventListener('pointerdown', onPointer);
   app.addEventListener('pointermove', onPointer);

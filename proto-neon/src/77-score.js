@@ -20,8 +20,8 @@
 N.score = (function () {
   'use strict';
   var O = N.outils, R = N.R;
-  var CFG = {                                    // → N.R : le défi de la démo (DIX KILLS EN CHAÎNE), absent de N.R.defis
-    defiNom: 'DIX KILLS EN CHAÎNE', defiBut: 10, defiPrime: 5000, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
+  var CFG = {                                    // Compatibilité du combat reçu ; chiffres dans N.R.defis.partie.legacy
+    defiNom: R.defis.partie.legacy.nom, defiBut: R.defis.partie.legacy.but, defiPrime: R.defis.partie.legacy.prime, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
   };
   var REG0 = { musique: true, effets: true, secousse: 1, flashs: true, ecran: 'riche', texte: 1, manche: 1, actions: 'doigts' };
   var API = null;
@@ -75,7 +75,8 @@ N.score = (function () {
     API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
     API.score = 0; API.vies = m.vies; API.defi = m.defi; API.stats = m.stats;
-    API.defis = { finir: m.defi }; API.defiVague = null;
+    API.defis = defisDuJour(); API.defisVagues = []; API.defiVague = null;
+    journalDefis('selection');
     publier();
   }
   function publier() { if (!S) S = N.S; if (S) { S.score = m.score; S.lives = m.vies; S.challenge = m.defi; } API.score = m.score; API.vies = m.vies; }
@@ -107,7 +108,7 @@ N.score = (function () {
     var d = m.defi;
     d.etat = 'reussi'; d.t = O.T.t; d.prog = d.but;
     ajouter(CFG.defiPrime, null, null);
-    m.stats.energie += 20;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
+    m.stats.energie += R.defis.partie.legacy.energie;                                           // § 2.14 : un défi de la réserve vaut 20 énergie
     if (N.arsenal && N.arsenal.surcharger) N.arsenal.surcharger(true);
     var max = (R && R.vies && R.vies.max) || 4; if (m.vies < max) m.vies++;
     O.sfx('defi');
@@ -124,17 +125,74 @@ N.score = (function () {
     if (N.ev) N.ev.emit('defi', { id: 'finir', ok: false, prime: 0 });
   }
 
+  /* Trois objectifs publics : FINIR et deux du jour. Le flux autonome ne consomme
+     jamais celui des vagues ; aucun effet sur les vies, armes, gardes ou trajectoires. */
+  function defisDuJour() {
+    var jour = Number(S && S.jour) || R.defis.partie.jourRepli;
+    var flux = N.rng.flux(jour, 'defis'), pool = R.defis.partie.reserve.slice();
+    var liste = [{ id: 'finir', nom: R.defis.partie.finirNom, but: R.defis.partie.finirBut,
+      prog: 0, fait: false, etat: 'actif', prime: R.defis.finir.prime, jour: jour }];
+    while (liste.length < R.defis.parPartie && pool.length) {
+      var id = pool.splice(flux.i(0, pool.length - 1), 1)[0], d = R.defis.reserve[id];
+      liste.push({ id: id, nom: d.nom, but: d.destructions || d.enfermes || d.mult ||
+        (d.vagues ? d.vagues.length : R.defis.partie.finirBut), prog: 0, fait: false,
+        etat: 'actif', prime: d.prime, jour: jour });
+    }
+    return liste;
+  }
+  function journalDefi(d, evt, portee) {
+    if (N.journal) N.journal('defi', { id: d.id, ok: d.etat === 'reussi', prime: 0,
+      evt: evt, portee: portee || 'partie', nom: d.nom || d.texte, etat: d.etat,
+      fait: d.etat === 'reussi', prog: d.prog, but: d.but, jour: d.jour, vague: d.n });
+  }
+  function journalDefis(evt) { API.defis.forEach(function (d) { journalDefi(d, evt); }); }
+  function etatDefi(d, etat) {
+    if (d.etat !== 'actif' || etat === 'actif') return;
+    d.etat = etat; d.fait = etat === 'reussi';
+    if (d.fait) d.prog = d.but;
+    journalDefi(d, 'bilan');
+    if (N.hud && N.hud.toast) N.hud.toast((d.fait ? '✓ ' : '✗ ') + d.nom);
+  }
+  function suivreDefis(evt, c) {
+    if (!m.stats || !Array.isArray(API.defis)) return;
+    API.defis.forEach(function (d) {
+      if (d.etat !== 'actif' || d.id === 'finir') return;
+      var cfg = R.defis.reserve[d.id];
+      if (d.id === 'premierJet') {
+        if (O.T.t <= cfg.avant) d.prog = Math.min(d.but, m.stats.kills);
+        if (d.prog >= d.but && O.T.t >= cfg.jamaisAvant && O.T.t <= cfg.avant) etatDefi(d, 'reussi');
+        else if (O.T.t > cfg.avant) etatDefi(d, 'rate');
+      } else if (d.id === 'lasso6' && evt === 'lasso') d.prog = Math.min(d.but, Math.max(d.prog, c.n));
+      else if (d.id === 'chaine5') d.prog = Math.min(d.but, Math.max(d.prog, mult()));
+      else if (d.id === 'sansCoupe') {
+        if (evt === 'coupe' || evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'vague' && c.evt === 'nettoyee' && cfg.vagues.indexOf(c.n) >= 0) {
+          d.vagues = d.vagues || []; if (d.vagues.indexOf(c.n) < 0) d.vagues.push(c.n); d.prog = d.vagues.length;
+        }
+      } else if (d.id === 'sansFilet') {
+        if (evt === 'mort') etatDefi(d, 'rate');
+        else if (evt === 'phase' && c.evt === 'entree') d.prog = d.but;
+      }
+      if (d.prog >= d.but && d.id !== 'premierJet') etatDefi(d, 'reussi');
+    });
+  }
+
   /* ---- le défi de vague (§ 2.14) : un objectif parmi trois, tiré par le flux 'defis' à l'entrée de chaque vague ;
      réussi : 1 000 × le numéro de la vague et 10 énergie. Seuls les objectifs que les événements mesurent aujourd'hui
      sont tirés (lassos, enfermés, cellules, mines, tourelles, broyés, multiplicateur) ; les autres attendent leurs événements. */
   function butDe(d) { return d.lassos || d.enfermes || d.cellules || d.mines || d.tourelles || d.mult || d.broyes || 0; }
-  function tirerDefiVague(n) {
+  function tirerDefiVague(n, flux) {
     var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
     if (!L) return null;
     var ok = L.filter(butDe);
     if (!ok.length) return null;
-    var d = ok[Math.min(ok.length - 1, (O.rf('defis') * ok.length) | 0)];
-    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', n: n };
+    var d = ok[Math.min(ok.length - 1, ((flux ? flux.f() : O.rf('defis')) * ok.length) | 0)];
+    return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', fait: false, n: n };
+  }
+  function apercuVague(n) {
+    var flux = N.rng.flux(N.rng.graine(), 'defis');
+    flux.reprendre(N.rng('defis').etat());
+    return tirerDefiVague(n || R.secteurs[0].vagues[0].n, flux);
   }
   function avanceDv(champ, v, max) {
     var d = m.dv;
@@ -144,7 +202,8 @@ N.score = (function () {
   }
   function dvOk() {
     var d = m.dv, V = R.defis.vague, prime = V.prime * d.n;
-    d.etat = 'reussi'; d.prog = d.but; m.dvFaits++;
+    d.etat = 'reussi'; d.fait = true; d.prog = d.but; m.dvFaits++;
+    journalDefi(d, 'bilan', 'vague');
     ajouter(prime, null, null);
     m.stats.energie += V.energie;
     O.sfx('defi');
@@ -176,6 +235,7 @@ N.score = (function () {
       else if (c.type === 'tourelle') avanceDv('tourelles', 1);       // → N.R : l'angle de 45° (v3Cote) n'est pas mesuré
       var d = m.defi;
       if (d && d.etat === 'actif') { d.prog = m.chaine; if (m.chaine > d.meilleur) d.meilleur = m.chaine; if (m.chaine >= d.but) defiOk(); }
+      suivreDefis('kill', c);
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
@@ -199,29 +259,35 @@ N.score = (function () {
       m.stats.morts.push({ cause: d.cause, auteur: d.auteur, t: d.t, vague: d.vague, visibleDepuis: d.visibleDepuis, teleDuree: d.teleDuree });
       publier();
     }, '77-score');
-    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); }, '77-score');
+    N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); suivreDefis('mort', {}); }, '77-score');
     N.ev.on('vague', 20, function (c) {
       if (c.evt === 'entree') {
         m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
+        if (m.dv) { API.defisVagues.push(m.dv); journalDefi(m.dv, 'selection', 'vague'); }
         if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
         return;
       }
       if (c.evt !== 'nettoyee') return;
-      if (m.dv && m.dv.etat === 'actif') m.dv.etat = 'rate';
+      if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
       ajouter(p * c.n, null, null);
     }, '77-score');
   }
 
+  if (N.ev) ['ramassage', 'lasso', 'coupe', 'vague', 'phase'].forEach(function (evt) {
+    N.ev.on(evt, evt === 'phase' ? N.ids.rangs.score : N.ids.rangs.defis, function (c) { suivreDefis(evt, c); }, '77-score');
+  });
+
   function update(dt) {
     if (!m.stats) return;
     var t = O.T.t;
+    suivreDefis('temps', {});
     if (m.dv && m.dv.etat === 'actif' && m.dv.def.mult) avanceDv('mult', mult(), true);
     if (m.chaine > 0 && t - m.dernier > fenetre()) { m.chaine = 0; if (m.defi && m.defi.etat === 'actif') m.defi.prog = 0; }
   }
 
   /* fin de partie : le record, l'énergie, les déblocages, et le RÉSUMÉ que lit l'écran de fin ; `victoire` vrai si le colosse est tombé */
-  function seuils() { return (R && R.deblocages) || []; }
+  function seuils() { return R.deblocages.map(function (d, i) { return { id: d.id, seuil: R.defis.retour.seuils[i] }; }); }
   function prochainPour(e) {
     var L = seuils(), prec = 0;
     for (var i = 0; i < L.length; i++) { if (e < L[i].seuil) return { id: L[i].id, reste: L[i].seuil - e, part: O.clamp((e - prec) / (L[i].seuil - prec), 0, 1), seuil: L[i].seuil, prec: prec }; prec = L[i].seuil; }
@@ -250,6 +316,16 @@ N.score = (function () {
     if (!lu) charger();
     if (m.resume) return { record: m.resume.record, nouveau: m.newRecord };
     m.stats.victoire = !!victoire;
+    var primes = 0, energieDefis = 0;
+    API.defis.forEach(function (d) {
+      if (d.id === 'finir' && d.etat === 'actif' && victoire) etatDefi(d, 'reussi');
+      if (d.etat === 'actif') etatDefi(d, 'rate');
+      if (d.fait && !d.paye) { primes += d.prime; if (d.id !== 'finir') energieDefis += R.defis.energieReserve; d.paye = true; }
+    });
+    if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
+    // Bilan seulement : ne pas franchir un seuil de vie bonus pendant une partie.
+    m.score += primes; publier();
+    journalDefis('fin');
     var rec = disque.records.length ? Math.max.apply(null, disque.records) : 0, pr = disque.profil;
     m.newRecord = rec > 0 && m.score > rec;
     var dernier = pr.dernier || 0, avantE = pr.energie || 0;
@@ -261,7 +337,7 @@ N.score = (function () {
     disque.records = tableau.map(function (r) { return r.score; });
     disque.marquesRecords = tableau.map(function (r) { return r.marque; });
     if (!m.continuations) pr.parties++;
-    var gagne = m.stats.energie + (victoire ? 50 : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
+    var gagne = m.stats.energie + energieDefis + (victoire ? R.defis.finir.energie : 0), debloques = [], L = seuils(), i;      // FINIR vaut 50 énergie (§ 2.14)
     pr.energie = avantE + gagne; pr.dernier = m.score;
     for (i = 0; i < L.length; i++) if (pr.energie >= L[i].seuil && pr.deblocages.indexOf(L[i].id) < 0) {
       pr.deblocages.push(L[i].id); debloques.push(L[i].id);
@@ -271,14 +347,17 @@ N.score = (function () {
     var d = (S && S.death) || m.stats.morts[m.stats.morts.length - 1] || null, dir = N.dir;
     var tot = dir && dir.nombreVagues ? dir.nombreVagues() : 5, vague = d && d.vague ? d.vague : (dir && dir.vague ? dir.vague() : 1);
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
-    var note = victoire ? 'B' : boss ? 'C' : 'D';
+    var faits = API.defis.filter(function (d) { return d.fait; }).length;
+    var note = victoire ? (faits === R.defis.parPartie && !m.stats.morts.length ? 'S' : faits > R.defis.partie.finirBut ? 'A' : 'B') : boss ? 'C' : 'D';
     m.resume = {
       victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,
       pertes: m.stats.morts.length, defisVague: m.dvFaits, cause: d ? d.cause : null, auteur: d ? d.auteur : null, vague: vague, quartier: d ? d.quartier : null,
       temps: O.T.t, progression: victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), boss: boss, note: note,
       build: build(), defi: m.defi ? { nom: m.defi.nom, etat: m.defi.etat, prog: m.defi.prog, but: m.defi.but, meilleur: m.defi.meilleur } : null,
-      energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
+      defis: API.defis.map(function (d) { return { id: d.id, nom: d.nom, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but, jour: d.jour }; }),
+      defisVagues: API.defisVagues.map(function (d) { return { id: d.id, nom: d.texte, n: d.n, etat: d.etat, fait: d.fait, prog: d.prog, but: d.but }; }),
+      primesDefis: primes, energieGagnee: gagne, energie: pr.energie, avant: prochainPour(avantE), prochain: prochainPour(pr.energie), debloques: debloques,
       conseil: conseil(d ? d.cause : null, d ? d.auteur : null), cartes: N.cartes && N.cartes.prises ? N.cartes.prises() : {}
     };
     return { record: Math.max(rec, m.score), nouveau: m.newRecord };
@@ -296,6 +375,7 @@ N.score = (function () {
     m.continuations++;
     m.score = R.vies.continuer.score; m.vies = R.vies.continuer.vies;
     m.chaine = 0; m.dernier = -Infinity; m.bonus = false; m.gain = null; m.newRecord = false;
+    API.defis.forEach(function (d) { if (d.etat === 'rate' && d.id !== 'sansCoupe' && d.id !== 'sansFilet' && d.id !== 'premierJet') d.etat = 'actif'; });
     m.resume = null; m.stats.victoire = null; m.stats.energie = 0; API.palier = null;
     publier();
     return true;
@@ -305,7 +385,7 @@ N.score = (function () {
     reset: reset, update: update, continuer: continuer, continuerPossible: continuerPossible, classement: classement,
     marque: function () { return m.continuations ? 'C' : ''; },
     palier: null, score: 0, chaine: function () { return m.chaine; }, mult: mult, objectif: objectif, vies: 0,
-    defis: {}, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
+    defis: [], defisVagues: [], apercuVague: apercuVague, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
     profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],

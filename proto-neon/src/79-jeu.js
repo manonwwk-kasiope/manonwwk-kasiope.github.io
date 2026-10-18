@@ -136,9 +136,9 @@ N.game = (function () {
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
     if (u) {
-      if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
+      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
-      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
+      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
     return true;
   }
@@ -275,7 +275,7 @@ N.game = (function () {
     finClip = null;
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
-    aller('plongee');
+    aller('briefing');
   }
   function film(nom, suite, opts) {
     if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
@@ -506,7 +506,12 @@ N.game = (function () {
       if (nouveau) { var a = N.ui.sortie(); if (a && a.action === 'jouer') aller('titre'); } else N.ui.sortie();
       etT += dt; return;
     }
-    if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
+    if (et === 'briefing') {
+      N.ui.update(dt); etT += dt;
+      if (etT >= R.ecrans.briefing.duree) aller('plongee');
+      return;
+    }
+    if (et === 'ouverture') { etT += dt; if (etT > 0.5) aller('titre'); return; }
     if (et === 'titre') {
       if (activiteTitre()) etT = 0;
       s.input.any = false;

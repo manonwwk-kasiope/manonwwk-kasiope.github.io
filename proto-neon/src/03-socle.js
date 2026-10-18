@@ -422,7 +422,7 @@
     for (var k in v) if (L.cartes.indexOf(k) < 0 || !(typeof v[k] === 'number' && (v[k] | 0) === v[k] && v[k] >= 0 && v[k] <= 4)) return false;
     return true;
   }, 'niveaux : { idCarte: palier 0 à 4 } ou tableau de paliers');
-  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b' });
+  SCH.ecran = obj({ nom: '?s', depuis: 'n+', cartes: liste(un(L.cartes)), niveaux: NIVEAUX, choix: 'i+', pret: 'b', fin: '?o', retour: '?o' });
   /* S.vol (lot I) : LE VOL vu par les pilotes, null hors du VOL. Les objets visibles seulement (rayon projeté ≥ 1), dans le plan de la
      tête : x, y = l'endroit où l'objet croisera la tête, dans le repère de `tete` ; z = sa profondeur actuelle ; r = son rayon dans le
      plan de la tête ; avant = les secondes avant qu'il croise la tête ; reste = les secondes qui restent au VOL. */
@@ -459,7 +459,8 @@
   CH.pouvoir = obj({ id: un(L.pouvoirs), evt: un(['debut', 'fin', 'pret']) });
   CH.apogee = obj({ id: un(['apogee']), evt: un(['pleine', 'debut', 'fin']) });
   CH.boost = obj({ id: un(['boost']), evt: un(['on', 'off', 'panne']) });
-  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+' });
+  CH.defi = obj({ id: un(L.defis.concat(L.defisVague)), ok: 'b', prime: 'n+',
+    evt: '?s', portee: '?s', nom: '?s', etat: '?s', fait: '?b', prog: '?n+', but: '?n+', jour: '?i+', vague: '?i+' });
   CH.deblocage = obj({ id: un(L.deblocages) });
 
   /* ---- les enregistrements du journal (§ 7.9) : {pas, t, image, type, d}, d au schéma du type ---- */
