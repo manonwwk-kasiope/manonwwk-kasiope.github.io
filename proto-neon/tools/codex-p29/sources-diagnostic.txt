@@ -1,0 +1,209 @@
+51c9aa1:proto-neon/src/02-regles.js:568-583
+568:       premiereMenaceAvant: 20,
+569:       traqueur: { vagues: [2, 3, 4, 5], inaction: 7, annonce: 1.5, second: 6 },
+570:       elroy: { reste: 0.20, acceleration: 0.30 },
+571:       vitessesFleches: [40, 44, 48, 52, 56],
+572:       plafondDur: { ennemis: 40, tirs: 80 },
+573:       vagues: [
+574:         {
+575:           n: 1, id: 'eveil', nom: 'ÉVEIL', quartier: 'docks', etat: 'calme', vitesse: 68,
+576:           quota: 24, duree: 22, plafond: 12, chargesFleches: 1, tirsEnnemis: false,
+577:           formations: [{ t: 0, f: 'file' }, { t: 5, f: 'file' }, { t: 10, f: 'nuee' }, { t: 14, f: 'duoMines' }, { t: 17, f: 'pince' }],
+578:           remplissage: 'file', travelling: null, convois: null, pastille: null, pic: null
+579:         },
+580:         {
+581:           n: 2, id: 'meute', nom: 'MEUTE', quartier: 'artere', etat: 'montee', vitesse: 72,
+582:           quota: 48, duree: 42, plafond: 16, chargesFleches: 1, tirsEnnemis: true,
+583:           formations: [{ t: 2, f: 'meute' }, { t: 14, f: 'meute' }, { t: 28, f: 'meute' }, { t: 8, f: 'champMines' }, { t: 30, f: 'champMines' },
+
+51c9aa1:proto-neon/src/02-regles.js:634-640
+634:     ennemis: {
+635:       tele: { finRosePale: 0.3, gaine: 1 },
+636:       tir: { taille: 5, rayon: 2, correlationMax: 0.5 },
+637:       codex: { duree: 2, echelle: 2 },
+638:       fleche: {
+639:         nom: 'FLÈCHE', pv: 20, r: 5, sprite: 15, approche: [40, 56], fige: 0.6, distance: [40, 110],
+640:         bond: { vitesse: 160, duree: 0.42, longueur: 67 }, recharge: 1.6,
+
+51c9aa1:proto-neon/src/02-regles.js:733-737
+733:     /* ---------------------------------------------------------------- § 4.8 LE CYCLOPE */
+734:     colosse: {
+735:       corps: [96, 128], tete: [40, 32], main: [24, 24], plaques: 6, plaque: [12, 12],
+736:       silhouettes: { loin: 48, mi: 80 },
+737:       pvPhase: 1200, pvTotal: 3600, pvMain: 300,
+
+51c9aa1:proto-neon/src/72-ennemis.js:723-741
+723:     for (i = 0; i < list.length; i++) {
+724:       e = list[i];
+725:       if (e._dead) continue;
+726:       e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
+727:       if (e._flash > 0) e._flash -= dt;
+728:       if (e._minePosee && e.etat === 'portail') {
+729:         // Une mine hors champ attend aussi les 600 ms de visibilité continue de R-08.
+730:         e.vuDepuis = vu6(e) ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+731:       }
+732:       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
+733:         e._portail -= dt;
+734:         if (e._minePosee && e._portail <= 0 && e.vuDepuis < R.criteres.R08.visible) e._portail = R.temps.h;
+735:         if (e._portail <= 0) { e._portail = 0; apparu(e); }
+736:         continue;
+737:       }
+738:       /* vue : depuis combien de temps l'ennemi est entièrement visible */
+739:       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
+740:       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+741:       if (e._ext) { if (e.etat !== 'mort') e.etat = 'approche'; continue; }       // le CYCLOPE (73-colosse) se pilote seul
+
+51c9aa1:proto-neon/src/72-ennemis.js:1100-1115
+1100:   function drawTele() {
+1101:     var g = N.gfx, i, e;
+1102:     for (i = 0; i < list.length; i++) {
+1103:       e = list[i];
+1104:       if (e._dead) continue;
+1105:       if (e.etat === 'portail') {                       // le portail : croix de visée et anneaux qui se resserrent
+1106:         if (e._minePosee) {
+1107:           // Anneau stable du vrai souffle : aucune alternance lumineuse ni flash ajouté.
+1108:           var mp = R.colosse.minesPosees, mr = conf('mine').souffle || CFG.mineSouffle;
+1109:           g.ring(e.x, e.y, mr + mp.contour, O.NP, mp.densiteAnneau);
+1110:           g.ring(e.x, e.y, mr, O.MAGENTA, mp.densiteAnneau);
+1111:         }
+1112:         var kb = e._portailTotal > 0 ? 1 - e._portail / e._portailTotal : 1;
+1113:         spawnMark(e.x, e.y, kb, e.elite ? 24 : (e.type === 'ruche' ? 22 : 12));
+1114:         continue;
+1115:       }
+
+51c9aa1:proto-neon/src/76-directeur.js:207-220
+207:     } else if (nom === 'duoMines' || nom === 'champMines') {
+208:       var f = (R && R.formations && R.formations[nom]) || {}, mar = f.marqueurs || 1.5, A = O.A, spots = [];
+209:       if (nbMines() > CFG.maxMines - (nom === 'champMines' ? 9 : 2)) return 0;
+210:       if (nom === 'duoMines') {
+211:         var d0 = Math.max(90, f.distanceMin || 90), lat0 = rr(0, 1) < 0.5 ? 1 : -1;
+212:         for (i = 0; i < 2; i++) { var pp = devantTete(d0 + 14 + i * 26); spots.push({ x: pp.x + Math.cos(P.ang + Math.PI / 2) * lat0 * (10 + i * 22), y: pp.y + Math.sin(P.ang + Math.PI / 2) * lat0 * (10 + i * 22) }); }
+213:       } else {
+214:         var cc = devantTete(Math.max(100, f.distanceMin || 100) + 40);
+215:         for (i = 0; i < 9; i++) spots.push({ x: cc.x + ((i % 3) - 1) * 30, y: cc.y + (((i / 3) | 0) - 1) * 30 });
+216:       }
+217:       for (i = 0; i < spots.length; i++) {
+218:         var sx = O.clamp(spots[i].x, A.x0 + 18, A.x1 - 18), sy = O.clamp(spots[i].y, A.y0 + 18, A.y1 - 18);
+219:         if (O.d2(sx, sy, P.x, P.y) < (nom === 'champMines' ? 100 : 90) * (nom === 'champMines' ? 100 : 90)) continue;
+220:         mk('mine', sx, sy, { portail: mar, st: 'pose' }); made++;
+
+318ce61:proto-neon/src/70-joueuse.js:173-183
+173:   }
+174:   function trouver(id) {
+175:     var L = N.ennemis && N.ennemis.list;
+176:     if (!L || id === undefined || id < 0) return null;
+177:     for (var i = 0; i < L.length; i++) if (L[i].id === id) return L[i];
+178:     return null;
+179:   }
+180:   function infoSource(src) {
+181:     var e = src && src.genre === 'ennemi' ? trouver(src.id) : null;
+182:     return { vu: e ? (e.vuDepuis > 0 ? e.vuDepuis : 0) : 0, tele: e && e._teleTotal > 0 ? e._teleTotal : 0, e: e };
+183:   }
+
+318ce61:proto-neon/src/70-joueuse.js:401-424
+401:     }
+402:     /* 4. les tirs : la tête tue, le corps se coupe (et le tir disparaît) */
+403:     var ts = L.tirs, rc = (mort.coupe && mort.coupe.rayonSegment) || 3.5;
+404:     for (i = 0; i < ts.length; i++) {
+405:       var b = ts[i];
+406:       if (b._dead) continue;
+407:       if (st.trav > 0) continue;                                // TRAVERSÉE : les tirs passent
+408:       if (!protege && O.d2(P.x, P.y, b.x, b.y) < (rt + b.r) * (rt + b.r)) { b._dead = true; tuer('tir', b.src); return; }
+409:       for (k = 1; k < st.len; k++) {
+410:         segAt(k);
+411:         if (O.d2(b.x, b.y, SPX, SPY) < (rc + b.r) * (rc + b.r)) {
+412:           if (k <= 1) break;                                     // collé à la tête : c'est la tête qui compte
+413:           b._dead = true; if (st.repli <= 0) couper(k, b.src, 'tir'); break;     // REPLI : le tir meurt sur le corps épais
+414:         }
+415:       }
+416:     }
+417:     /* 5. les lasers actifs croisent la tête */
+418:     var lz = L.lasers;
+419:     if (lz) for (i = 0; i < lz.length; i++) {
+420:       var z = lz[i];
+421:       if (z._dead || protege) continue;
+422:       var hw = z.w / 2 + rt;
+423:       if (O.segDist2(P.x, P.y, z.x0, z.y0, z.x1, z.y1) < hw * hw) { tuer('laser', z.src); return; }
+424:     }
+
+318ce61:proto-neon/src/72-ennemis.js:224-247
+224:   function souffle(x, y, r, dmgEnnemis, e, epargne) {
+225:     var P = tete(), rs = r + ((R && R.mort && R.mort.rayonTete) || 3);
+226:     O.boom(x, y, r > 32 ? 0.6 : 0.5, O.MAGENTA); O.sfx('kill', { pitch: 0 });
+227:     if (!epargne && P && N.joueuse && N.joueuse.etat !== 'mort' && !N.joueuse.invul()) {
+228:       var src = e ? srcDe(e) : { genre: 'ennemi', type: 'mine', id: -1 };
+229:       if (O.d2(x, y, P.x, P.y) < rs * rs) { N.joueuse.tuer('souffle', src); }
+230:       else {
+231:         var q = segsJ(), k, rc = r + 3.5;
+232:         for (k = 2; k * 2 + 1 < q.length; k++) {
+233:           if (O.d2(x, y, q[k * 2], q[k * 2 + 1]) < rc * rc) { N.joueuse.couper(k, src, 'souffle'); break; }
+234:         }
+235:       }
+236:     }
+237:     var snap = list.slice();
+238:     for (var i = 0; i < snap.length; i++) {
+239:       var t = snap[i];
+240:       if (t._dead || t === e || t.boss || t.etat === 'portail') continue;
+241:       var rq = r + t.r;
+242:       if (O.d2(x, y, t.x, t.y) < rq * rq) hit(t, dmgEnnemis, { genre: 'ennemi', type: 'mine', id: -1 });
+243:     }
+244:   }
+245:   function nouvelleFuse(x, y) {
+246:     var I = (R && R.modificateurs && R.modificateurs.instable) || {};
+247:     fuses.push({ x: x, y: y, t: I.meche || 0.8, d: I.meche || 0.8, r: I.souffle || CFG.fuseSouffle });
+
+318ce61:proto-neon/src/72-ennemis.js:777-780
+777:       /* vue : depuis combien de temps l'ennemi est entièrement visible */
+778:       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
+779:       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+780:       if (e._poseAttente) {
+
+318ce61:proto-neon/src/72-ennemis.js:827-831
+827:     /* les mèches des INSTABLES */
+828:     for (i = fuses.length - 1; i >= 0; i--) {
+829:       var fu = fuses[i]; fu.t -= dt;
+830:       if (fu.t <= 0) { fuses.splice(i, 1); souffle(fu.x, fu.y, fu.r, CFG.fuseDegats, null, false); }
+831:     }
+
+318ce61:proto-neon/src/72-ennemis.js:853-858
+853:       if (purgeI >= purgeFile.length) purgeFile = null;
+854:     }
+855:     compact(tirs); compact(lasers);
+856:     for (i = list.length - 1; i >= 0; i--) if (list[i]._dead) list.splice(i, 1);
+857:     vitesses(dt);
+858:     publierTele();
+
+318ce61:proto-neon/src/73-arene.js:196-204
+196:   function lancerConvoi(voie, sens) {
+197:     if (CV.ph !== 'off') return false;
+198:     voie = O.clamp(voie | 0, 0, CFG.voies.length - 1);
+199:     CV.ph = 'annonce'; CV.t = 0; CV.voie = voie; CV.cy = CFG.voies[voie]; CV.sens = sens > 0 ? 1 : -1; CV.broyes = 0; CV.tag = false;
+200:     cv.derniere = voie;
+201:     O.sfx('convoi', { pan: CV.sens > 0 ? -0.8 : 0.8 });                    // le klaxon vient du côté d'arrivée
+202:     emitArene('convoiAnnonce', voie, CV.sens * CFG.vitesse);
+203:     if (N.ev && N.ids) N.ev.emit('arme', { id: N.ids.suivant(), type: 'convoi', forme: 'voie', total: CFG.annonceConvoi, cible: 'tout', shown: true, rallonge: false });
+204:     return true;
+
+318ce61:proto-neon/src/73-colosse.js:234-239
+234:   function visible() {
+235:     var e = st.oeil;
+236:     if (!e) return false;
+237:     if (N.cam && typeof N.cam.shown === 'function') return !!N.cam.shown(e.x, e.y, 6);
+238:     return O.visible(e.x, e.y, -6);
+239:   }
+
+318ce61:proto-neon/src/73-colosse.js:781-794
+781:   function place(dt, P) {
+782:     var bobx = Math.round(Math.sin(st.fl * 0.9 + 1.2) * 1.5), boby = Math.round(Math.sin(st.fl * 1.6) * CFG.flotte);
+783:     st.bx = st.cx + bobx; st.by = st.cy + boby;
+784:     var e = st.oeil, letal = st.mode === 'combat' && st.sol, i, m;
+785:     if (e && !e._dead) {
+786:       e.x = st.bx; e.y = st.by - CFG.dTete - st.z; e.r = CFG.rOeil;
+787:       e._st = letal ? 'actif' : 'naissance';
+788:       e.etat = st.mode === 'repit' ? 'fuite' : st.atk ? (st.atk.phase === 0 ? 'arme' : 'attaque') : 'approche';
+789:       if (P) e.ang = Math.atan2(P.y - e.y, P.x - e.x);
+790:       e.dir = O.dir16(e.ang); e.img = (e.img + 1) | 0;
+791:       var vis = visible();
+792:       e.vuDepuis = vis ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
+793:       if (st.atk && st.atk.phase === 0) e.tele = st.oeil.id; else e.tele = -1;
+794:     }
