@@ -194,12 +194,28 @@ N.game = (function () {
     if (info.premiere) lancer(false);
     else aller(avantAventure);
   }
+  /* les films d'époque au bon moment (demande n° 7) : profondeur au début de la vague 3, warp à la vague 4 ; l'espace
+     et 2975 viennent à la victoire (finirVoyage), après le CYCLOPE. Sans aventure en cours (départs directs, pilotes),
+     rien ne change. */
+  var EPOQUES = [[3, 'profondeur'], [4, 'warp']], epoquesVues = {};
+  function epoqueSuivante() {
+    if (!modOk(N.aventure, 'reprendre') || !N.aventure.enCours() || !N.dir.vague) return;
+    var v = N.dir.vague();
+    for (var i = 0; i < EPOQUES.length; i++) {
+      var e = EPOQUES[i];
+      if (v >= e[0] && !epoquesVues[e[1]]) {
+        epoquesVues[e[1]] = true;
+        if (N.aventure.reprendre(e[1])) { avantAventure = et; aller('aventure'); }
+        return;
+      }
+    }
+  }
   function commencerAventure() {
     if (!modOk(N.aventure, 'demarrer')) { lancer(false); return; }
     if (modOk(N.intro, 'skip')) N.intro.skip();
     if (modOk(N.intro, 'stop')) N.intro.stop();
     if (modOk(N.fx, 'reset')) N.fx.reset();
-    voyageFini = false;
+    voyageFini = false; epoquesVues = {};
     aller('aventure');
     N.aventure.demarrer({ aJouer: entrerDansLeNeon, surFin: function (bilan) {
       musiqueAventure(false);
@@ -544,6 +560,7 @@ N.game = (function () {
         film('reveil', lancerBoss, { nom: 'LE CYCLOPE' });
       } else if (et === 'reapparition' && N.joueuse.etat === 'vivant') aller(etatJeu === 'reapparition' ? 'jeu' : etatJeu);
       if (N.dir.bossMort && N.dir.bossMort() && (et === 'boss' || et === 'jeu')) debutVictoire();
+      if (et === 'jeu') epoqueSuivante();
     } else if (et === 'plongee') {
       O.T.ak += dt;
       appel('decor', function () { if (N.decor && N.decor.update) N.decor.update(dt); });

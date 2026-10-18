@@ -213,6 +213,8 @@ les films par personnage, les fins, les retrouvailles et le teaser.**
    2975 (N.cosmos, environ 2 min, `final: true`), puis le film de fin. Pendant 2975, N.aventure tait elle-même la piste
    principale et cache `N.ennemis.list` à N.warp (`isole: true`), et rend tout à l'étape suivante. Vérifié dans le vrai
    jeu : titre → JOUER → … → victoire → films → 2975 → fin → écran de fin, 0 erreur.
+   FAIT (Claude cloud, 79-jeu.js réservé puis libéré) : profondeur au début de la vague 3, warp à la vague 4 ; l'espace et
+   2975 restent à la victoire, après le CYCLOPE. Texte d'origine de la demande :
    Facultatif, pour que les films d'époque tombent au bon moment plutôt qu'au rattrapage : appeler
    `N.aventure.reprendre('profondeur' | 'warp' | 'espace')` au début des vagues 3, 4 et 5 (et `aller('aventure')`
    si c'est accepté), comme le fait `demo/panneau.html` (`surveiller()`). Après « espace », c'est 2975 puis la fin :

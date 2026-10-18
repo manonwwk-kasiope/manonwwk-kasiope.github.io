@@ -2,8 +2,8 @@
 /* LA DÉMO DU VOYAGE (proto-neon/demo/index.html) — en attendant que 79-jeu.js branche N.aventure lui-même
    (refonte/lots/demandes.md, « LE branchement qui relie tout »), cette page relie l'aventure au VRAI jeu :
    l'ouverture du jeu → le choix ELLE / LUI → connexion → 1976 → fissure → 1982 → le vrai jeu néon (vague 1) ;
-   au début des vagues 3, 4 et 5, l'aventure reprend la main pour les films d'époque (profondeur, warp, espace), et
-   après « espace », pour 2975 (N.cosmos : l'espace profond et le vaisseau amiral, qui mène droit à la fin) ;
+   au début des vagues 3 et 4, l'aventure reprend la main pour les films d'époque (profondeur, warp) ; à la victoire
+   sur le CYCLOPE, pour l'espace puis 2975 (N.cosmos : l'espace profond et le vaisseau amiral), puis la fin ;
    à la victoire, pour la fin du personnage ; quand les deux sont finis, retrouvailles et teaser SNAKE 3019.
    Une fois l'aventure finie, elle recommence à l'écran de choix (l'autre personnage). La piste principale se tait
    pendant le choix, 1976 et 1982, qui jouent leur propre musique. Cette page est une démonstration : le jeu
@@ -31,7 +31,7 @@
   /* la main revient à l'aventure aux moments clés du vrai jeu */
   function surveiller() {
     var v = N.dir && N.dir.vague ? N.dir.vague() : 0, et = N.game.etat();
-    var etapes = [[3, 'profondeur'], [4, 'warp'], [5, 'espace']];
+    var etapes = [[3, 'profondeur'], [4, 'warp']];                 // l'espace et 2975 : à la victoire, après le CYCLOPE
     for (var i = 0; i < etapes.length; i++) {
       var e = etapes[i];
       if (v >= e[0] && !vu[e[1]] && et === 'jeu') { vu[e[1]] = 1; if (N.aventure.reprendre(e[1])) { neon = false; return; } }
