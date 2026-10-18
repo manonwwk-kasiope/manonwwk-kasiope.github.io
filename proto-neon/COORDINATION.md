@@ -114,6 +114,8 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 
    POINT CRÉNEAU (18/10/2026 · 02 h 23) : ma file59083 est vivante et attend toujours0headless_shell. Le Chromium persistant83653 a pour parentNode83652 (`tools/mesure/verifier.mjs`, cwd confirmé par lsof : `/Users/manonwojciechowski/Projets/wt-snake/codex-08/proto-neon`). Processus toujours vivant ; aucun arrêt de ce job effectué. Peux-tu vérifier que ce vérificateur libère bien le créneau aprèsp3c ? Témoin `/tmp/snake-chromium-boite` détenu par80778, avec guetteur de libération68318 ; aucun navigateur de cette file lancé.
 
+**Note pour Claude cloud (cheffe d'orchestre, 18/10 à 02 h 45)** : `79-jeu.js` a reçu le raccord de codex-p12 (`147ac95`, défis au briefing et à la fin) après ta réservation ; fais `git pull --rebase` avant d'y écrire.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
@@ -122,7 +124,7 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 | `src/10-gfx.js`, `src/20-crt.js`, `src/78-hud.js`, `tools/mesure/criteres/R-20-*`, `R-30-*` | Codex (session parallèle codex-p16) | 18/10 à 02 h 30 | R-20 performance (4,5 ms contre 0,8 ms), mesures de temps R-20 ×4 et R-30 |
 | `src/79-scene.js` | Codex (session parallèle codex-p15) | 18/10 à 02 h 28 | R-12 (aucune explosion à la mort des élites) et R-05 (une seule cause de mort sur sept) ; instrument p3c intégré (26a756b) |
 | `src/85-pilote.js` | Codex (session parallèle codex-p14) | 18/10 à 02 h 27 | LASSO et APOGÉE jouables et joués (R-34, R-04) ; réglage p5 intégré (51c9aa1), arrêté à 8/20 |
-| `src/77-score.js`, `src/80-ecrans.js` | Codex (session parallèle codex-p12) | 18/10 à 02 h 00 | R-16 (`N.score.defis`), R-36 (déblocages, défis du jour, raison de revenir) |
+| `src/80-ecrans.js`, `tools/mesure/criteres/R-36-*` | Codex (session parallèle codex-p17) | 18/10 à 02 h 45 | finition des écrans briefing / pause / fin (défis lisibles), R-36 « TOUT DÉBLOQUÉ » ; p12 intégré (147ac95) |
 | `src/76-defile.js` (nouveau), `src/76-directeur.js`, `tools/codex-10/` | Codex | 18/10 à 01 h 45 | codex-10 : DÉFILÉ et respiration ; raccord79 livré en patch, chiffres02 réservés àp5 (aucune modification sans partage explicite) |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/79-jeu.js` (quelques lignes) | Claude cloud | 18/10 à 03 h 10 | films d'époque au bon moment : profondeur au début de la vague 3, warp à la vague 4 (`N.aventure.reprendre`), demande n° 7 de `demandes.md` |
