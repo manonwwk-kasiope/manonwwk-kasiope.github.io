@@ -1069,6 +1069,8 @@
     flash: { fenetre: 1, max: 3, rafale: 0.05, aireCSS: 21824, aire: 0.066 },
     mesure: { images: 600, dt: 1 / 60, luminanceDelta: 0.1, luminanceSombre: 0.8 }
   };
+  // codex-p32 : repère de mur sous le radar/défi en portrait, avant le toast.
+  R.colosse.gaineP32 = { hautPortrait: 40, plaqueMarge: 4, plaqueHauteur: 24 };
   /* codex-p11 : politique publique de la partie d'attraction ; durées existantes inchangées. */
   R.ecrans.attraction.pilote = 'bon';
   R.gestes.msParSeconde = 1000;

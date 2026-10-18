@@ -1,0 +1,26 @@
+{
+  "dateParis": "18/10/2026 · 04 h 32",
+  "objectif": "gaine du CYCLOPE, dessin seul",
+  "statut": "correctif ciblé livré et vérifié en VM ; qualification globale non validée",
+  "sourceSha256": "e88eeaac4d07f56ef7385fbdc8454f8d505cbe759f678d1a5e33e898e327ccd7",
+  "preuves": {
+    "calibration": "10 parties e1bdc6f exactes, journal inclus",
+    "r11SceneColosse": "gaine = 1, séquence réelle des scènes, trois vues VM",
+    "construits": "63/63 gaine = 1, trois phases, sept quartiers, trois vues",
+    "parite": "80/80 parties et journaux identiques, candidat final ; 80 fins, zéro erreur",
+    "r06": "9680 apparitions, zéro dans la vue ; 5468 armements, zéro hors vue",
+    "r13": "neuf essais 600 images valides, maximum 3/s",
+    "build": "sortie 0",
+    "synthese": "bilan.json",
+    "rapport": "rapport.md"
+  },
+  "tachesEngagees": [],
+  "reste": [
+    "cheffe : exécuter le vérifieur navigateur hors bac et relire le diff, sans commit ici",
+    "63 compositions denses conservent des défauts globaux : demande inter-lots, attribution non isolée",
+    "décor portrait sous 18 % dans la VM, déjà hors cible avant : confirmer dans le navigateur"
+  ],
+  "prochaineAction": "node proto-neon/tools/codex-p32/verifier.mjs --criteres",
+  "interditsRespectes": "pas de serveur ni Chromium lancé, pas de réseau sortant, pas de commit ; tirs, morts, journal et logique inchangés",
+  "budget": "pas de dépense ; essais finaux terminés, aucun processus du lot encore attendu"
+}
