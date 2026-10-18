@@ -1059,6 +1059,12 @@
   R.longueur.critique = { seuil: 3, hz: 1, rayon: 7, amplitude: 1, trameMin: 0.5,
     pastilles: { rayon: 1, pas: 4, recul: 15, marge: 3, fond: 2 } };
   R.boost.trainee = { recul: 6, longueur: 10, demiLargeur: 5, branches: 2 };
+  /* codex-p10 — R-13/R-37 : valeurs du limiteur existant et gaine dans la boîte 13×13. */
+  R.lisibiliteP10 = {
+    teteGaine: 1,
+    flash: { fenetre: 1, max: 3, rafale: 0.05, aireCSS: 21824, aire: 0.066 },
+    mesure: { images: 600, dt: 1 / 60, luminanceDelta: 0.1, luminanceSombre: 0.8 }
+  };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

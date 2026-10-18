@@ -26,8 +26,8 @@
      ne les retourne pas et ne leur rajoute pas de contour, demande la direction voulue.
 
    LES NOMS ACCEPTÉS (N.spr.names() rend cette liste) — taille, images d'animation :
-     joueuse, cyan et cyan pâle SEULEMENT (le cyan lui est réservé), sans contour sombre :
-       'tete'          13×13 (tête de 11), 3 images de scintillement ; les yeux sont des trous
+     joueuse, intérieur cyan et cyan pâle (cyan réservé), gaine sombre sur la tête :
+       'tete'          13×13, 3 images de scintillement ; gaine nuit profonde, yeux troués
        'corps'         segment 9×9 ; 'corps:7', 'corps:5', 'corps:3' vers la queue ; 3 images.
                        Pose les segments de la queue vers la tête, la tête en dernier ; passe
                        graine = indice + compteur pour que les données coulent le long du corps
@@ -235,13 +235,13 @@
   }
 
   /* ---------------------------------------------------------------------------------------------- */
-  /* LA JOUEUSE — cyan et cyan pâle seulement                                                         */
+  /* LA JOUEUSE — cyan et cyan pâle, gaine nuit profonde de la tête                                   */
   /* ---------------------------------------------------------------------------------------------- */
   var A16 = Math.PI / 8;
   /* la tête, tournée vers la droite : un coin pâle cerclé de cyan, deux yeux vers l'avant, le museau
      au bout. Trois images : la même tête, et deux éclats de données qui courent sur le liseré. */
   /* Les yeux sont des TROUS (index 0) : sombres sur la tête pâle, ils se lisent à un pixel, et la tête
-     ne pose pourtant que du cyan et du cyan pâle (G-11 : 100 % de ses pixels dessinés). Le trait
+     garde son intérieur cyan et cyan pâle. La gaine nuit profonde est ajoutée après rotation. Le trait
      cyan derrière chaque œil est la bande sombre des vipères. */
   var TETE = [
     '.............',
@@ -259,7 +259,30 @@
     '.............'
   ];
   var TETE_ECLATS = [[], [[4, 1], [9, 3], [2, 10]], [[1, 5], [11, 5], [5, 11]]];
-  var teteBase = [], teteMemo = [{}, {}, {}];
+  var teteBase = [], teteMemo = [{}, {}, {}], teteGaineMemo = [{}, {}, {}];
+  /* Gaine APRÈS la rotation : RotSprite ne peut donc ni l'amincir ni l'ouvrir.
+     Même boîte et même ancrage ; les pixels cyan sur le bord de la boîte cèdent
+     leur place à la gaine. Les détails intérieurs et les trous des yeux restent.
+     Voisinage de huit pour fermer aussi les coins sur une explosion claire. */
+  function gainerTete(s) {
+    var o = spr(s.w, s.h), d = s.data, w = s.w, h = s.h;
+    var ep = N.R && N.R.lisibiliteP10 ? N.R.lisibiliteP10.teteGaine : 1;
+    o.cx = s.cx; o.cy = s.cy;
+    for (var y = ep; y < h - ep; y++) for (var x = ep; x < w - ep; x++) o.data[y * w + x] = d[y * w + x];
+    var cyan = new Uint8Array(o.data);
+    for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) {
+      var j = yy * w + xx;
+      if (cyan[j]) continue;
+      // Un trou intérieur déjà présent (œil) ne devient pas une nouvelle encre.
+      if (d[j] === 0 && xx > ep && xx < w - ep - 1 && yy > ep && yy < h - ep - 1 &&
+          d[j - 1] && d[j + 1] && d[j - w] && d[j + w]) continue;
+      for (var dy = -ep; dy <= ep && !o.data[j]; dy++) for (var dx = -ep; dx <= ep; dx++) {
+        var nx = xx + dx, ny = yy + dy;
+        if (nx >= 0 && nx < w && ny >= 0 && ny < h && cyan[ny * w + nx]) { o.data[j] = NP; break; }
+      }
+    }
+    return o;
+  }
   function genTete(k, f) {
     if (!teteBase[f]) {
       var s0 = fromMap(TETE), e = TETE_ECLATS[f];
@@ -267,7 +290,8 @@
       s0.cx = 6; s0.cy = 6;
       teteBase[f] = s0;
     }
-    return dir16(teteBase[f], k, teteMemo[f]);
+    if (!teteGaineMemo[f][k]) teteGaineMemo[f][k] = gainerTete(dir16(teteBase[f], k, teteMemo[f]));
+    return teteGaineMemo[f][k];
   }
 
   function discMask(d) {

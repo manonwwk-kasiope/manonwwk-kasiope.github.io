@@ -64,7 +64,7 @@
      N.fx.spark(x,y,dx,dy,n,ci)   n étincelles d'impact en éventail de ±60° autour de (dx,dy)
      N.fx.trail(x0,y0,x1,y1,ci)   traînée fixe, de l'ancienne position à la nouvelle, qui s'éclaircit au tramage
                               et disparaît en 0,15 s (derrière un tir, un dash) ; un appel par image suffit
-     N.fx.flashGate(aire)     LE LIMITEUR GLOBAL, pour les autres modules (alerte, dégât plein écran…) :
+     N.fx.flashGate(aire[, {type,ci}])  LE LIMITEUR, pour les autres modules (ci = index de crête) :
                               true si un flash de cette aire (pixels de jeu) est permis maintenant, et il est
                               alors compté ; false : dessine une version sans éclair.
      N.fx.setShake(k)         réglage joueuse 0 / 0,5 / 1 (prime sur prefers-reduced-motion, recherche V-22)
@@ -82,7 +82,7 @@
    d'une seconde, au plus TROIS explosions dépassant ce seuil sont pleines, dont deux moyennes au plus (la
    troisième place reste à une grosse). Au-delà, une grosse est atténuée : anneaux sans aplat, pas de cœur
    blanc, secousse de 3 pixels au plus ; une moyenne est rapetissée juste sous le seuil (ce n'est plus un
-   flash, elle garde son aplat). Des explosions parties à moins de 3 images d'écart
+   flash, elle garde son aplat). Des explosions parties pendant la même image
    forment un seul flash (WCAG compte l'aire combinée des flashs simultanés) : une seule énorme explosion,
    même faite de plusieurs, reste permise ; c'est la répétition qui est dangereuse. Chaque pixel de la boule
    ne monte qu'une fois et ne descend qu'une fois (température unimodale, érosion monotone, Bayer monotone) :
@@ -114,9 +114,14 @@
   var HS_MAX = 30;            /* plafond d'un gel, images */
   var FL_WIN = 1.0;           /* fenêtre glissante du limiteur, secondes */
   var FL_MAX = 3;             /* flashs permis par fenêtre */
-  var FL_BURST = 0.05;        /* départs à moins de 3 images : un seul flash */
+  var FL_BURST = 0.05;        /* borne de regroupement en simulation ; même image obligatoire */
   var FL_CSS = 21824;         /* px CSS², 25 % de 341 x 256 (WCAG G176) */
   var FL_FRAC = 0.066;        /* DIRECTION.md, critère 4 */
+  if (N.R && N.R.lisibiliteP10) {
+    var FL_R = N.R.lisibiliteP10.flash;
+    FL_WIN = FL_R.fenetre; FL_MAX = FL_R.max; FL_BURST = FL_R.rafale;
+    FL_CSS = FL_R.aireCSS; FL_FRAC = FL_R.aire;
+  }
   var HIT_GAP = 0.34;         /* un flash de frappe par objet tous les 0,34 s au plus */
 
   /* champ de température de la couronne : T = Tp (1 - K1 s²) + bruit + Bayer, puis seuils d'encre ;
@@ -228,7 +233,7 @@
 
   /* ---------------- limiteur de flashs ---------------- */
   var flT = new Float64Array(8), flI = 0;
-  var burstT = -1e9, burstA = 0, burstFlash = false;
+  var burstT = -1e9, burstF = null, burstA = 0, burstFlash = false;
   for (var q0 = 0; q0 < 8; q0++) flT[q0] = -1e9;
   function thrArea() {
     var g = N.gfx || {}, W = g.W | 0, H = g.H | 0, P = (g.PX | 0) || 2;
@@ -243,26 +248,45 @@
      Trois places par seconde ; les explosions moyennes n'en prennent que deux, la troisième reste à une
      grosse : sur bureau (seuil 1 364 pixels de jeu), des kills ordinaires épuisaient sinon le budget avant
      la mort du gros ennemi. Flashs coupés par la joueuse : tout reste sous la moitié du seuil. */
-  function admit(area, big) {
+  /* Les deux champs publics restent au schéma journal:flash de 03-socle.
+     Métadonnées locales préfixées, admises par ce schéma : aucune mutation du socle.
+     _compte désigne un NOUVEAU flash, _issue distingue le sous-seuil et la rafale.
+     La luminance est celle de l'encre de crête demandée, pas une mesure du tampon.
+     Un appel externe sans encre garde null : ne pas inventer sa luminance ni son rouge. */
+  function decision(area, k, issue, compte, type, ci) {
+    if (N.journal) N.journal('flash', {
+      aire: area, accepte: k === 1,
+      _type: type || 'externe', _issue: issue, _compte: !!compte, _echelle: k,
+      _temps: clk, _image: frameNo(),
+      _luminance: ci === undefined || !N.pal || !N.pal.L ? null : N.pal.L[ci],
+      _rouge: type === 'explosion' ? true : ci === undefined ? null : ci === MAG || ci === BRAS || ci === SANG
+    });
+    return k;
+  }
+  function admit(area, big, type, ci) {
     var thr = thrArea(), on = flashOn(), cap = on ? thr : thr * 0.5;
-    if (clk - burstT > FL_BURST) { burstT = clk; burstA = 0; burstFlash = false; }
-    if (on && burstFlash) { burstA += area; return 1; }         /* simultané : même flash */
-    if (burstA + area <= cap) { burstA += area; return 1; }     /* sous le seuil : pas un flash */
+    /* Un gel n'avance pas clk : le regroupement temporel seul autorisait une
+       rafale indéfinie sur des images distinctes. Seuls les départs d'une MÊME
+       image peuvent partager un flash ; la borne de temps reste utile en simulation. */
+    var f = frameNo();
+    if (f !== burstF || clk - burstT > FL_BURST) { burstT = clk; burstF = f; burstA = 0; burstFlash = false; }
+    if (on && burstFlash) { burstA += area; return decision(area, 1, 'rafale', false, type, ci); }
+    if (burstA + area <= cap) { burstA += area; return decision(area, 1, 'sous-seuil', false, type, ci); }
     if (on) {
       var used = recent();
       if (used < FL_MAX && (big || used < FL_MAX - 1)) {
         flT[flI] = clk; flI = (flI + 1) & 7; burstFlash = true; burstA += area; ST.flashes++;
-        return 1;
+        return decision(area, 1, 'plein', true, type, ci);
       }
     }
     ST.refused++;
     if (big !== 2) {
       var room = cap * 0.92 - burstA;
-      if (!big && room > area * 0.12) { burstA += room; ST.shrunk++; return Math.sqrt(room / area); }
+      if (!big && room > area * 0.12) { burstA += room; ST.shrunk++; return decision(area, Math.sqrt(room / area), 'reduit', false, type, ci); }
     }
-    return 0;
+    return decision(area, 0, on ? 'budget' : 'reglage', false, type, ci);
   }
-  function gate(area) { return admit(area, 2) > 0; }        /* pour les autres modules : oui ou non */
+  function gate(area, type, ci) { return admit(area, 2, type, ci) > 0; }
 
   /* ---------------- gel d'image, ancré sur S.frame ----------------
      Images gelées : hsSet+1 .. hsEnd. 90-boot.js interroge hitstopLeft() avant S.frame++ ; posé pendant
@@ -322,7 +346,7 @@
     if (clk - lastT < HIT_GAP) return (num ? HITF[k] : o.fxHitF) === f;   /* déjà blanc il y a moins de 0,34 s */
     var A = +aire;
     if (!(A > 0) && !num) A = (o.w > 0 && o.h > 0) ? o.w * o.h : (o.r > 0 ? 3.1416 * o.r * o.r : 0);
-    if (A > thrArea() && !gate(A)) return false;                          /* un gros objet tout blanc est un flash */
+    if (A > thrArea() && !gate(A, 'frappe', OS)) return false;
     if (num) { HITT[k] = clk; HITF[k] = f; } else { o.fxHitT = clk; o.fxHitF = f; }
     return true;
   }
@@ -437,7 +461,7 @@
     var ox = scr && g.ox ? g.ox() : 0, oy = scr && g.oy ? g.oy() : 0;     /* écran : les éclats sont posés dans le monde */
     curVar = vj ? 1 : 0;
     var R = big ? sc * (62 + 60 * (f - 0.6)) : sc * (4 + 50 * f);
-    var k = admit(Math.PI * R * R * 0.75, big), att = k === 0;
+    var k = admit(Math.PI * R * R * 0.75, big, vj ? 'explosion-joueuse' : 'explosion', OS), att = k === 0;
     if (k > 0 && k < 1) R *= k;
     ST.thr = thrArea();
 
@@ -975,7 +999,7 @@
     lpCx = ax / lpN; lpCy = ay / lpN; lpAge = 0; lpNn = n | 0; lpBurst = false;
     var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
     for (i = 0; i < lpN; i++) { if (LP[2 * i] < x0) x0 = LP[2 * i]; if (LP[2 * i] > x1) x1 = LP[2 * i]; if (LP[2 * i + 1] < y0) y0 = LP[2 * i + 1]; if (LP[2 * i + 1] > y1) y1 = LP[2 * i + 1]; }
-    lpOs = gate((x1 - x0) * (y1 - y0) * 0.6);          /* un aplat d'os sur une grande boucle est un flash : le limiteur décide */
+    lpOs = gate((x1 - x0) * (y1 - y0) * 0.6, 'lasso', OS);
     return true;
   }
   function lassoTick(dt) {
@@ -1223,7 +1247,7 @@
     update: update, draw: draw, reset: reset,
     hit: hit, isHit: isHit, HIT: OS, HITOPT: HITOPT,
     spark: spark, trail: trail,
-    flashGate: function (area) { return gate(+area || 0); },
+    flashGate: function (area, opts) { return gate(Math.max(0, +area || 0), opts && opts.type, opts && opts.ci); },
     flashThreshold: thrArea,
     setShake: function (k) { k = +k; userShake = (k >= 0 && k <= 1) ? k : 1; writeShake(); savePrefs(); },
     setFlash: function (b) { userFlash = !!b; savePrefs(); },
