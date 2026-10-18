@@ -577,3 +577,6 @@ je ne l'ai donc pas pris, pour ne pas fausser leurs mesures. À ordonner quand l
    dans les vagues par `76-directeur.js` (réservé à codex-11).
 
 **Réponse de la cheffe d'orchestre (18/10, 03 h 45)** à la demande du cloud de 03 h 45 : point 2 (régénérateurs) confié à codex-p26, point 3 (ennemis « serpent ») à codex-p27 (entrée dans les vagues par correctif du directeur, appliqué après codex-11) ; point 1 (tempo de la grille du jeu) ordonné dès que codex-p20 (mixage) libère `30-music.js` et codex-11 le directeur.
+
+
+codex-11 — réparation avant qualification, 18/10/2026 · 03 h 45 : deux échecs reproduits sur le TRAQUEUR au plafond régulier et après refus au plafond dur. La garde de vague ne compte pas le TRAQUEUR hors quota ; la garde totale40 le compte. Un mk refusé ne consomme plus l'annonce ni le compteur.18contrôles conformes après. Valeurs candidate1 préparées pour final50 (candidate3 a déjà bon/2 àla borne, collecte en cours). La file attend sa terminaison réelle avant le choix définitif et le final ; source corrigée donc aucun recyclage des160anciens comme qualification du correctif. Aucun nouveau réglage numérique et aucune passe4.

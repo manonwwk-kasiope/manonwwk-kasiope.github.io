@@ -414,9 +414,30 @@
         "avant": 38,
         "apres": 34
       },
-      "etat": "en cours"
+      "etat": "terminée, non retenue",
+      "resultat": "passe-3.json",
+      "nbB": 6,
+      "bornes": [
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "temps": 540.1250000458725,
+          "raison": "borne",
+          "recu": "recus/eef3b90d6d4251df-bon-2.json.gz"
+        }
+      ]
     }
   ],
   "limite": 3,
-  "arretSansNouvelleB": 2
+  "arretSansNouvelleB": 2,
+  "selection": {
+    "dateParis": "18/10/2026 03:49:56",
+    "candidate": 1,
+    "motif": "Seule des trois candidates entièrement finie sans erreur ; passes2/3 censurées. Aucun quatrième réglage.",
+    "sources": "apres-sources.json",
+    "correctif": "TRAQUEUR : garde régulière hors quota, garde totale conservée et compteur consommé seulement sur spawn réel",
+    "qualification": "400 nouveaux reçus car nouvelle empreinte, mêmes nombres que1, aucune réutilisation des160comme preuve du correctif",
+    "plafond": 540
+  },
+  "arretReglage": true
 }

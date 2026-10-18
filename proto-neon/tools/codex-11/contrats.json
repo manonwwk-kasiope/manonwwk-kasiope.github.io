@@ -1,5 +1,7 @@
 {
-  "dateParis": "18/10/2026 03:41:56",
+  "sourceFichier": "apres-sources.json",
+  "sourceSha256": "226a80c70e2fd6aa28e6579fd5253e09f3347c5ecece692a6f7eb3fbd0429a3e",
+  "dateParis": "18/10/2026 03:45:44",
   "portee": "VM physique, géométrie paysage. Ni rendu ni mesure Safari.",
   "cas": [
     {
@@ -82,6 +84,17 @@
       "vivants": 3,
       "plafond": 3,
       "tempsVague": 42
+    },
+    {
+      "nom": "TRAQUEUR hors quota quand le plafond régulier est plein",
+      "conforme": true,
+      "traqueurs": 1,
+      "reguliers": 4
+    },
+    {
+      "nom": "refus au plafond dur sans consommer les TRAQUEURS",
+      "conforme": true,
+      "traqueursApresLiberation": 1
     },
     {
       "nom": "paliers croissants de V1 et V2",

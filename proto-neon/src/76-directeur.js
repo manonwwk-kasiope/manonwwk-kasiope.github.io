@@ -143,7 +143,7 @@ N.dir = (function () {
   function mk(type, x, y, o) {
     o = o || {};
     var comptes = N.ennemis.counts();
-    if (comptes.regular >= plafond() || comptes.regular + comptes.traqueur >= secteur().plafondDur.ennemis) return null;
+    if ((type !== 'traqueur' && comptes.regular >= plafond()) || comptes.regular + comptes.traqueur >= secteur().plafondDur.ennemis) return null;
     var w = info(), por = o.portail !== undefined ? o.portail : ((R && R.apparitions && R.apparitions.portail) || 0.6) * (o.elite ? 2 : 1);
     var mods = o.mods || {};
     if (w && w.rapide && !o.elite && type !== 'mine' && type !== 'ruche' && rnd() < w.rapide) { mods = { rapide: true }; }
@@ -308,7 +308,7 @@ N.dir = (function () {
     if (st.traqueurs === 1 && (inaction < (T.inaction || 7) || now - st.traqueurT < (T.second || 6))) return;
     var p = pointHors();
     if (!p) return;
-    mk('traqueur', p.x, p.y, { portail: T.annonce || 1.5, sansCompte: true });
+    if (!mk('traqueur', p.x, p.y, { portail: T.annonce, sansCompte: true })) return;
     st.traqueurs++; st.traqueurT = now;
     banniere('TRAQUEUR', { c: 'magenta', duree: T.annonce || 1.5, clignote: true });
     O.sfx('traqueur');
