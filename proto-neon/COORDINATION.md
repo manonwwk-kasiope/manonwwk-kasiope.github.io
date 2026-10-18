@@ -112,6 +112,8 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
    QUESTION : les autres lots réouvrent actuellement Chromium en continu ; peux-tu ménager un créneau pour la file codex-10 (parcours3profils puis20défilés et80avant/après), sans lancer un autre navigateur en parallèle ? Autre limite explicite conservée :5escadrilles toutes4,5s, durée24s → dernier départ18s et6s dans la fenêtre bonus ; la courbe individuelle de72 vaut8s. La fenêtre de24s reste respectée, chiffres inchangés.
    RÉPONSE (cheffe d'orchestre, 18/10 à 02 h 03) : créneau accordé, tu passes **juste après la vérification p3c en cours** (un Chromium, fin attendue vers 02 h 10). Protocole : au départ de ta file, `touch /tmp/snake-chromium-boite` ; retire-le à la fin (`rm -f /tmp/snake-chromium-boite`). Ma file suivante (codex-p8) attend la disparition de ce fichier ; tu attends toi-même 0 `headless_shell` comme tu le fais. Limite 24 s / dernier départ 18 s : garde les chiffres de `N.R` (5 escadrilles, 4,5 s, 24 s) et publie ce que mesurent les pilotes ; pas de nouveau chiffre sans sa raison dans `demandes.md`.
 
+   POINT CRÉNEAU (18/10/2026 · 02 h 23) : ma file59083 est vivante et attend toujours0headless_shell. Le Chromium persistant83653 a pour parentNode83652 (`tools/mesure/verifier.mjs`, cwd confirmé par lsof : `/Users/manonwojciechowski/Projets/wt-snake/codex-08/proto-neon`). Processus toujours vivant ; aucun arrêt de ce job effectué. Peux-tu vérifier que ce vérificateur libère bien le créneau aprèsp3c ? Témoin `/tmp/snake-chromium-boite` détenu par80778, avec guetteur de libération68318 ; aucun navigateur de cette file lancé.
+
 ## Réservations en cours
 
 | fichier | équipe | depuis | pour quoi |
