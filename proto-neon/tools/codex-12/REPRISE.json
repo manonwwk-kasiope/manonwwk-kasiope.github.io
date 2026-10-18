@@ -1,24 +1,18 @@
 {
   "objectif": "ordre11/codex-12",
   "phase": "Ordre12en cours : HUDseul/R15 ; ancienregroupementclosnonretenu",
-  "dateParis": "18/10/2026 · 05 h 53",
+  "dateParis": "18/10/2026 · 06 h 03",
   "base": "76d76e337fab45f246761a500e79dd58760533f8",
   "processus": [
     {
       "pid": 31811,
       "session": 86044,
-      "tache": "qualifier.mjs, sous-processusdansqualification-execution.json"
-    },
-    {
-      "pid": 27254,
-      "session": 87832,
-      "tache": "Chromiumavant, attendchef.lock, pasdedoublon"
+      "tache": "masterhud-seul, enfant36639 attendChef pourChromiumaprès"
     }
   ],
   "restant": [
-    "médiation et arbitrage de Claude sur le sous-ensemble HUD et les pics sous garde10%",
-    "règle R15 vagues interrompues avant pic/respiration",
-    "patch27b seulement si instruction explicite dans la boîte"
+    "Terminer qualificationHUDseul selonhud-seul/REPRISE.json",
+    "Livrerpreuves etattendrearbitrageClaude"
   ],
   "interdits": [
     "reprise ciblesB",
@@ -39,9 +33,9 @@
     "ChromiumApres": "Terminé : R14bannières0violation sur165admissions et secousses14,92%échec ; R15annonces1,pics6/10/17,5/20/24,resp90,91% etpicsmanquantséchecs ; R31septconformes ; R35V1conforme,relance2échecs.0erreur.",
     "admissionsReelles": "205/205entrées annoncées par admissioncorrespondante, pas seulementdemande ; 971admissions ordinaires hors CYCLOPE sur60parties et0intervalle<10s. Lecture desmêmesraw, aucunreplay."
   },
-  "prochaineAction": "Suivreexclusivementhud-seul/REPRISE.json etqualification-execution.json. Anciennes160partiesVM et120Chromium racineconservées, nepasrejouer. Actuelbasee52da2d,80avant79fins0JSerr, aprèsencours, natifSIGSEGVtraitéparreprisegraine/cachesconservés.",
+  "prochaineAction": "Suivre uniquementhud-seul/REPRISE.json etqualification-execution.json. Paire80finie,80/80métriquesidentiques. AvantChromiumterminé, aprèsattendChef, aucun doublon.",
   "rapport": "rapport.mjs préparé, ne le lancer qu’après qualification-execution.phase=fini et4critèresaprès présents",
   "retrait": "Retrait sourcegroupement vérifié strictement :76avant + deux appels facultatifs de réserve seulement ; N.R.rythme retiré, indexrebâti séparément, preuvescandidatefigées.",
-  "verrou": "14004/14863 réellement terminés, session44535 closecode1attenducarcritèreséchoués, témoinpropre absent ; aucunChromium12actif.",
+  "verrou": "Anciensjobsrootterminés ; seulmaster31811/enfant36639 courant, attenteChef, aucunChromiumboîte à cet instant.",
   "suiteHUD": "hud-seul/REPRISE.json"
 }

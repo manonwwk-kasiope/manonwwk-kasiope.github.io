@@ -1,0 +1,32 @@
+{
+ "id": "R-14",
+ "titre": "Budgets d’effets",
+ "seuil": "≤ 12 % d’images secouées ; ≤ 1 bannière par 10 s hors CYCLOPE",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "0 ok, 1 en échec, 0 indicatives hors cible, 1 non mesurables",
+ "mesures": [
+  {
+   "nom": "images secouées (pire partie)",
+   "valeur": 0.16335,
+   "seuil": "≤ 0.12",
+   "statut": "echec",
+   "mediane": 0.12414565317092721,
+   "parties": 10
+  },
+  {
+   "nom": "bannières admises",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : journal sans hudBanniereAdmise : les demandes brutes ne prouvent pas les bannières vues"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 43.2,
+ "bundle": {
+  "url": "http://127.0.0.1:49679/proto-neon/index.html",
+  "empreinte": "48dd27b9e27d"
+ },
+ "date": "2026-10-18T03:55:24.108Z",
+ "dateParis": "18/10/2026 · 05 h 55"
+}

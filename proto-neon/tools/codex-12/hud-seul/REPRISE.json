@@ -1,18 +1,17 @@
 {
   "objectif": "COORDINATION ordre12 : qualificationHUDseul,R15interrompues",
   "base": "e52da2de1b5f606b6ccbe033f4bcaba30dcb95ef",
-  "dateParis": "18/10/2026 · 05 h 53",
-  "phase": "Avant80 terminé après incidentnatif ; suite31811/86044 déroule80après puis4critèresaprès etdiagnostic siéchec",
+  "dateParis": "18/10/2026 · 06 h 03",
+  "phase": "Paire80avant/après terminée : 80/80 métriques identiques,79fins chacune,même dieu2borné540,0JS ; Chromiumavant terminé, après attend créneau Chef",
   "processus": [
     {
       "pid": 31811,
       "session": 86044,
-      "tache": "qualifier.mjs, sous-processusdansqualification-execution.json"
+      "tache": "qualifier.mjs attend enfant36639, pas de nouvelle file"
     },
     {
-      "pid": 27254,
-      "session": 87832,
-      "tache": "Chromiumavant, attendchef.lock, pasdedoublon"
+      "pid": 36639,
+      "tache": "criteres.mjs apres : attente Chef, puis4critères et diagnostic secousses borné"
     }
   ],
   "interdits": [
@@ -23,16 +22,16 @@
     "doublonVM/Chromium"
   ],
   "restant": [
-    "R15corrigé et2contreexemples",
-    "80avant/après",
-    "4critèresavant/après",
-    "cause secousses siéchec",
-    "livraison etpull"
+    "4critèresChromiumaprès etdiagnostic secousses borné",
+    "posttraiter.mjs etrapport.mjs après fin réelle",
+    "livrer puis pull/reread"
   ],
   "preuves": {
     "avant80": "79/80fins,dieu2borne540,0erreur ; incidentnatiflogconservé, repriscachepargraine",
     "R15": "6/6contreexemplesconformes, exclusionsparprofil, au-delàdupicrestexigé",
-    "HUD": "7/7surbasecourante, mêmesadmissionsavecsansdraw etrendusgéométriques"
+    "HUD": "7/7surbasecourante, mêmesadmissionsavecsansdraw etrendusgéométriques",
+    "ecarts": "ecarts.json : 80/80cas identiques hors chemin reçu,8médianes0%,seulement78/79diffèrent",
+    "ChromiumAvant": "R14/R15/R31/R35 complets,4échecs,0erreur ; secousses16,335%,14vagues perdues avantpic exclues"
   },
-  "prochaineAction": "Observer86044/31811 et87832/27254. Pasdenouveaubanc. Après80complet, comparer80numériques etsource78/79seulement. Attendre4critèresavant/après. Diagnosticsecousses borné1pirecasuniquementsiéchec, sousmêmetémoinaprès ; pasdautreChromium. Puisrapport/livraison/pull."
+  "prochaineAction": "Observer31811/36639 etsession86044. Avant27254/session87832 terminéetclos. Ne créer aucun banc niChromium. Après fin réelle, rapport.mjs sansrejeu, committer/pousserpreuves, publierCOORD, libérerréservation, pull etrelireboîte."
 }

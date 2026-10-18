@@ -1,0 +1,94 @@
+{
+ "id": "R-31",
+ "titre": "Le plateau se déplace",
+ "seuil": "≥ 25 % en mouvement (V2-V5) ; TRAVELLING V2, V3, V5 ; 5 VOLS ; ≥ 4 convois en V4 ; 0 mort par mur mobile non annoncé",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "5 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "arène en mouvement, vagues 2 à 5",
+   "valeur": 0.25237,
+   "seuil": "≥ 0.25",
+   "statut": "ok",
+   "pas": 1354845
+  },
+  {
+   "nom": "TRAVELLING en V2",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 60
+  },
+  {
+   "nom": "TRAVELLING en V3",
+   "valeur": 0.97959,
+   "seuil": 1,
+   "statut": "echec",
+   "parties": 49
+  },
+  {
+   "nom": "TRAVELLING en V5",
+   "valeur": 0.97368,
+   "seuil": 1,
+   "statut": "echec",
+   "parties": 38
+  },
+  {
+   "nom": "VOLS par partie gagnée",
+   "valeur": 5,
+   "seuil": 5,
+   "statut": "ok",
+   "parties": 24,
+   "vols": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+   ]
+  },
+  {
+   "nom": "convois en V4 (minimum par partie)",
+   "valeur": 4,
+   "seuil": "≥ 4",
+   "statut": "ok",
+   "parties": 38
+  },
+  {
+   "nom": "morts par un mur mobile sans annonce",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "mortsMurMobile": 8
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 78.9,
+ "bundle": {
+  "url": "http://127.0.0.1:49679/proto-neon/index.html",
+  "empreinte": "48dd27b9e27d"
+ },
+ "date": "2026-10-18T03:59:15.043Z",
+ "dateParis": "18/10/2026 · 05 h 59"
+}
