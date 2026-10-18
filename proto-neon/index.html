@@ -20939,7 +20939,17 @@ N.joueuse = (function () {
 
    PUBLIE S.butin = la liste vivante (même tableau que N.butin.list), republiée à reset() et à chaque update() (lot I).
    Interface : reset(), update(dt), draw(), lacher(x, y, n, {type, vie, libre, tele}), aspirer(poly), pluie(n),
-   list. Chiffres : N.R.butin ; ceux de la démo qui manquent sont dans CFG, marqués « → N.R ». */
+   list. Chiffres : N.R.butin ; ceux de la démo qui manquent sont dans CFG, marqués « → N.R ».
+
+   LE RÉGÉNÉRATEUR (chantier n° 4, comme 66-grille.js et refonte/prototypes/la-grille.html) : EN AVENTURE SEULEMENT
+   (N.aventure.enCours() vrai : la partie lancée par JOUER depuis le titre). Après une coupe ou une mort qui a coûté des
+   segments, un losange jaune à croix de brasier s'annonce (anneaux qui se resserrent, « RÉGÉNÉRATEUR »), puis attend
+   sur le terrain ; il clignote avant de s'éteindre. Pris par la tête, il fait repousser les segments perdus un à un
+   (N.joueuse.grandir, l'API publique). Au plus un à la fois. Son hasard vient de son propre générateur, semé par
+   N.rng.hash(graine de la partie, 'regenerateur') : il ne tire dans aucun flux de la partie, ne lit aucune horloge,
+   n'émet ni n'écoute aucun événement de plus (il se branche dans le consommateur `coupe` existant). Hors aventure
+   (départs directs, pilotes, attraction), il ne fait RIEN : la partie est identique, tirage pour tirage.
+   Ses chiffres sont dans REGEN ci-dessous (hors N.R : 02-regles.js est réservé). */
 N.butin = (function () {
   'use strict';
   var O = N.outils, R = N.R;
@@ -20955,6 +20965,25 @@ N.butin = (function () {
   var PA = { vague: -1, t: 0, faite: false, auto: true };   // la pastille de la vague, tant que 76-directeur ne la demande pas
   var fusT = 0;
 
+  /* ---- le régénérateur : ses réglages (→ N.R.butin.regenerateur, quand 02-regles.js sera libre) ---- */
+  var REGEN = {
+    seuil: 2,                  // il faut avoir perdu au moins 2 segments pour qu'il vienne
+    delai: 1.2,                // s entre la perte et l'annonce (la coupe a sa propre mise en scène)
+    annonce: 0.9,              // s d'annonce : des anneaux se resserrent sur le point, il n'est pas encore à prendre
+    vie: 11,                   // s sur le terrain une fois allumé
+    clignote: 3,               // il clignote pendant ses 3 dernières secondes
+    recharge: 5,               // s d'attente après qu'il a été pris ou s'est éteint, avant le suivant
+    rendreMax: 30,             // segments rendus au plus par ramassage
+    pas: 0.09,                 // s entre deux segments rendus (la repousse se voit)
+    prise: 10,                 // px : rayon de ramassage par la tête (il n'est pas aimanté)
+    distMin: 60, distMax: 150, // px : là où il naît, par rapport à la tête
+    marge: 18                  // px : loin des murs et des bords de la vue
+  };
+  /* son état : etat 'aucun' | 'attente' (perte notée, délai) | 'annonce' | 'pret' ; perdu = segments à rendre */
+  var RG = { etat: 'aucun', t: 0, x: 0, y: 0, vie: 0, perdu: 0, rendre: 0, pasT: 0, repos: 0, graine: 1, lenVu: 0, mort: null,
+    pris: 0, eteints: 0, rendus: 0, apparus: 0 };
+  var RGP = [];                                        // ses éclats (son propre hasard, jamais le flux 'fx')
+
   function conf(type) { return (R && R.butin && R.butin[type]) || {}; }
   function prise() { return (R && R.butin && R.butin.prise) || 8; }
   function aimant() {
@@ -20967,6 +20996,7 @@ N.butin = (function () {
     S = N.S;
     L.length = 0;
     XP.total = 0; XP.niveau = 0; PA.vague = -1; PA.t = 0; PA.faite = false; fusT = 0;
+    regenReset();
     if (S) S.butin = L;                                            // la vue du contrat : la liste vivante (objets au schéma `butin`), lue par les pilotes
   }
 
@@ -21091,6 +21121,7 @@ N.butin = (function () {
       var A = O.A;
       c.x = O.clamp(c.x, A.x0 - 4, A.x1 + 4); c.y = O.clamp(c.y, A.y0 - 4, A.y1 + 4);
     }
+    if (enAventure()) regenUpdate(dt);                             // hors aventure : rien de plus, pas même un tirage
   }
 
   function draw() {
@@ -21107,6 +21138,7 @@ N.butin = (function () {
       O.put(O.sp(c.type === 'noyau' ? 'butin:noyau' : 'butin', f + c._f), c.x, c.y);
       if (c.valeur > 1 && c.type === 'cellule') g.ring(c.x, c.y, 5, O.AMBRE, 0.6);          // une cellule fusionnée se voit
     }
+    if (RG.etat === 'annonce' || RG.etat === 'pret' || RGP.length) regenDraw();
   }
 
   /* la pastille : disque os à quatre rayons jaunes, qui bat à 2 Hz (§ 2.6) ; repli de N.spr */
@@ -21116,6 +21148,136 @@ N.butin = (function () {
     g.px(x, y, O.JAUNE);
     for (i = 4; i <= 5 + bat; i++) { g.px(x + i, y, O.JAUNE); g.px(x - i, y, O.JAUNE); g.px(x, y + i, O.JAUNE); g.px(x, y - i, O.JAUNE); }
     g.ring(x, y, r + 3, O.JAUNE, bat ? 1 : 0.5);
+  }
+
+  /* ============================ le régénérateur (aventure seulement) ============================ */
+  function enAventure() { return !!(N.aventure && N.aventure.enCours && N.aventure.enCours()); }
+  /* son générateur à lui : la suite congruentielle de N.rng, semée hors registre, jamais tirée ailleurs */
+  function rgf() { RG.graine = (RG.graine * 1664525 + 1013904223) % 4294967296; return RG.graine / 4294967296; }
+  function rgr(a, b) { return a + (b - a) * rgf(); }
+  function regenReset() {
+    var g = (N.rng && N.rng.graine) ? N.rng.graine() : 2975;
+    RG.etat = 'aucun'; RG.t = 0; RG.vie = 0; RG.perdu = 0; RG.rendre = 0; RG.pasT = 0; RG.repos = 0; RG.lenVu = 0; RG.mort = (N.S && N.S.death) || null;
+    RG.pris = 0; RG.eteints = 0; RG.rendus = 0; RG.apparus = 0;
+    RG.graine = (N.rng && N.rng.hash) ? N.rng.hash(g, 'regenerateur') : ((g ^ 0x5e9e) >>> 0) || 1;
+    RGP.length = 0;
+  }
+  /* une perte (coupe ou mort) : les segments s'ajoutent à rendre ; s'il n'y a pas de régénérateur, il viendra */
+  function regenPerte(n) {
+    if (!(n > 0)) return;
+    RG.perdu += n;
+    if (RG.etat === 'aucun' && RG.perdu >= REGEN.seuil) { RG.etat = 'attente'; RG.t = -Math.max(0, RG.repos); }
+  }
+  /* là où il naît : dans l'arène ET dans la vue, à bonne distance de la tête, loin des murs */
+  function regenPlacer() {
+    var A = O.A, V = O.VUE, J = N.joueuse && N.joueuse.tete, m = REGEN.marge, k, x = 0, y = 0;
+    var x0 = Math.max(A.x0, V.x) + m, x1 = Math.min(A.x1, V.x + V.w) - m, y0 = Math.max(A.y0, V.y) + m, y1 = Math.min(A.y1, V.y + V.h) - m;
+    if (x1 < x0) { x0 = x1 = (A.x0 + A.x1) / 2; } if (y1 < y0) { y0 = y1 = (A.y0 + A.y1) / 2; }
+    for (k = 0; k < 24; k++) {
+      x = rgr(x0, x1); y = rgr(y0, y1);
+      if (!J) break;
+      var d2 = O.d2(x, y, J.x, J.y);
+      if (d2 >= REGEN.distMin * REGEN.distMin && d2 <= REGEN.distMax * REGEN.distMax) break;
+    }
+    RG.x = x; RG.y = y;
+  }
+  function regenEclats(x, y, n, v0, v1, vie) {
+    for (var i = 0; i < n && RGP.length < 80; i++) {
+      var a = rgr(0, O.TAU), v = rgr(v0, v1);
+      RGP.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, d: rgr(vie * 0.6, vie), c: (i % 3) ? O.JAUNE : O.AMBRE });
+    }
+  }
+  function regenTexte(s) { if (N.hud && N.hud.pop) O.safe('hud.pop', function () { N.hud.pop(RG.x, RG.y - 22, s, { c: O.JAUNE }); }); }
+  function regenUpdate(dt) {
+    var J = N.joueuse, T = J && J.tete, vivant = !!(J && (J.etat === 'vivant' || J.etat === 'reapparition')), i;
+    /* la mort : ce que la réapparition a pris (la moitié de la longueur) compte aussi comme perte. N.butin n'est pas
+       mis à jour pendant la mort ; on la reconnaît à S.death, un nouvel objet à chaque mort (70-joueuse, tuer) */
+    if (J && J.len && vivant) {
+      var n = J.len(), dm = S && S.death;
+      if (dm && dm !== RG.mort) { RG.mort = dm; if (RG.lenVu > n) regenPerte(RG.lenVu - n); }
+      RG.lenVu = n;
+    }
+    if (RG.repos > 0) RG.repos -= dt;
+    if (RG.etat === 'attente') {
+      if ((RG.t += dt) >= REGEN.delai && vivant) { regenPlacer(); RG.etat = 'annonce'; RG.t = 0; RG.apparus++; regenTexte('RÉGÉNÉRATEUR'); O.sfx('bip'); }
+    } else if (RG.etat === 'annonce') {
+      if ((RG.t += dt) >= REGEN.annonce) { RG.etat = 'pret'; RG.t = 0; RG.vie = REGEN.vie; regenEclats(RG.x, RG.y, 8, 20, 50, 0.35); }
+    } else if (RG.etat === 'pret') {
+      RG.t += dt;
+      if ((RG.vie -= dt) <= 0) {                                 // pas pris : il s'éteint, et reviendra à la prochaine perte
+        RG.etat = 'aucun'; RG.eteints++; RG.repos = REGEN.recharge; regenEclats(RG.x, RG.y, 6, 10, 30, 0.3);
+        if (RG.perdu >= REGEN.seuil) { RG.etat = 'attente'; RG.t = -REGEN.recharge; }
+      } else if (vivant && T && O.d2(RG.x, RG.y, T.x, T.y) < REGEN.prise * REGEN.prise) {
+        RG.rendre += Math.min(RG.perdu, REGEN.rendreMax); RG.perdu -= Math.min(RG.perdu, REGEN.rendreMax);
+        RG.etat = 'aucun'; RG.pris++; RG.repos = REGEN.recharge; RG.pasT = 0;
+        regenEclats(RG.x, RG.y, 18, 30, 90, 0.6);
+        regenTexte('RÉGÉNÉRATION +' + RG.rendre);
+        O.sfx('vie');
+        if (RG.perdu >= REGEN.seuil) { RG.etat = 'attente'; RG.t = -REGEN.recharge; }
+      }
+    }
+    /* la repousse : un segment toutes les 0,09 s, une étincelle à la queue ; la mort l'interrompt (le reste attend) */
+    if (RG.rendre > 0) {
+      if (!vivant) { RG.perdu += RG.rendre; RG.rendre = 0; }
+      else if ((RG.pasT += dt) >= REGEN.pas) {
+        RG.pasT -= REGEN.pas;
+        var avant = J.len();
+        J.grandir(1);
+        if (J.len() > avant) {
+          RG.rendre--; RG.rendus++; RG.lenVu = J.len();
+          if (J.segPos) {                                        // la queue s'allume là où le segment repousse
+            var q = J.segPos(J.len());
+            regenEclats(q.x, q.y, 3, 15, 45, 0.3);
+            if (RGP.length < 80) RGP.push({ x: q.x, y: q.y, vx: 0, vy: 0, t: 0, d: 0.28, c: O.JAUNE, r: 6 });
+          }
+        } else RG.rendre = 0;                                    // la longueur maximale est atteinte
+      }
+    }
+    for (i = RGP.length - 1; i >= 0; i--) {
+      var p = RGP[i]; p.t += dt;
+      if (p.t >= p.d) { RGP.splice(i, 1); continue; }
+      var f = Math.pow(0.08, dt); p.vx *= f; p.vy *= f; p.x += p.vx * dt; p.y += p.vy * dt;
+    }
+  }
+  /* le dessin : un losange jaune qui tourne, une croix de brasier au cœur (le « soin » de la grille), un halo ambre ;
+     l'annonce : deux anneaux qui se resserrent et un point qui s'allume. Jamais de cyan : il est au serpent. */
+  function regenDraw() {
+    var g = N.gfx, ak = O.T.ak, x = Math.round(RG.x), y = Math.round(RG.y), i, k;
+    for (i = 0; i < RGP.length; i++) {
+      var p = RGP[i];
+      if (p.r) { g.ring(p.x, p.y, Math.round(p.r * (0.4 + 0.6 * p.t / p.d)), p.c, 1 - p.t / p.d); continue; }   // l'anneau de repousse
+      if (p.t / p.d > 0.6 && !N.pal.dither(Math.round(p.x), Math.round(p.y), (1 - p.t / p.d) / 0.4)) continue;
+      g.px(p.x, p.y, p.c);
+    }
+    if (RG.etat === 'annonce') {
+      k = RG.t / REGEN.annonce;
+      g.ring(x, y, Math.round(24 - 16 * k), O.JAUNE, 0.5 + 0.5 * k);
+      g.ring(x, y, Math.round(34 - 22 * k), O.AMBRE, 0.3 + 0.5 * k);
+      g.px(x, y, O.OS);
+      if (k > 0.5) { g.px(x - 1, y, O.JAUNE); g.px(x + 1, y, O.JAUNE); g.px(x, y - 1, O.JAUNE); g.px(x, y + 1, O.JAUNE); }
+      regenChevron();
+      return;
+    }
+    if (RG.etat !== 'pret') return;
+    if (RG.vie < REGEN.clignote && (Math.floor(ak * (RG.vie < 1 ? 12 : 6)) & 1)) return;   // il va s'éteindre
+    var bat = (Math.floor(ak * 3) & 1), a = ak * 2.4, r = 6, X = [], Y = [];
+    for (k = 0; k < 4; k++) { X.push(x + Math.round(Math.cos(a + k * Math.PI / 2) * r)); Y.push(y + Math.round(Math.sin(a + k * Math.PI / 2) * r)); }
+    g.ring(x, y, 9 + bat, O.AMBRE, bat ? 0.7 : 0.4);
+    for (k = 0; k < 4; k++) g.line(X[k], Y[k], X[(k + 1) & 3], Y[(k + 1) & 3], bat ? O.OS : O.JAUNE);
+    for (k = 0; k < 4; k++) g.px(X[k], Y[k], O.OS);
+    for (k = -2; k <= 2; k++) { g.px(x + k, y, O.BRASIER); g.px(x, y + k, O.BRASIER); }
+    g.px(x, y, O.OS);
+    regenChevron();
+  }
+  /* hors de la vue : un chevron jaune sur le bord, qui montre où il attend (comme ceux, magenta, des ennemis) */
+  function regenChevron() {
+    var g = N.gfx, V = O.VUE, k;
+    if (V && V.w > 0 && !O.visible(RG.x, RG.y, -4)) {
+      var cx = O.clamp(RG.x, V.x + 6, V.x + V.w - 7), cy = O.clamp(RG.y, V.y + 6, V.y + V.h - 7), an = Math.atan2(RG.y - cy, RG.x - cx);
+      var c = Math.cos(an), s = Math.sin(an);
+      for (k = 0; k < 4; k++) { g.px(cx + c * (2 - k) - s * k, cy + s * (2 - k) + c * k, O.JAUNE); g.px(cx + c * (2 - k) + s * k, cy + s * (2 - k) - c * k, O.JAUNE); }
+      g.px(cx, cy, O.BRASIER);
+    }
   }
 
   /* ---- les consommateurs ---- */
@@ -21150,10 +21312,15 @@ N.butin = (function () {
         var p = J.segPos(base + i);
         lacher(p.x, p.y, 1, { type: 'cellule', vie: cm.expireCellules });
       }
+      if (enAventure()) regenPerte(c.perdus | 0);                  // le régénérateur viendra (aventure seulement)
     }, '71-butin');
   }
 
-  return { reset: reset, update: update, draw: draw, lacher: lacher, aspirer: aspirer, pluie: pluie, libre: libre, nbLibres: nbLibres, pastille: pastille, xp: XP, fusionner: fusionner, list: L };
+  return { reset: reset, update: update, draw: draw, lacher: lacher, aspirer: aspirer, pluie: pluie, libre: libre, nbLibres: nbLibres, pastille: pastille, xp: XP, fusionner: fusionner, list: L,
+    /* le régénérateur, en lecture (bancs, tools/regen) : une copie, jamais l'état lui-même */
+    regenerateur: function () { return { etat: RG.etat, x: RG.x, y: RG.y, vie: RG.vie, perdu: RG.perdu, rendre: RG.rendre, pris: RG.pris, eteints: RG.eteints,
+      rendus: RG.rendus, apparus: RG.apparus, actif: enAventure() }; },
+    regenReglages: REGEN };
 })();
 
 /* ===== 72-ennemis.js ===== */
