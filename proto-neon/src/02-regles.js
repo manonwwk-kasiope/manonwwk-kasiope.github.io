@@ -1201,6 +1201,9 @@
   R.gestes.zoneMorte = 0.08;
   R.gestes.tapMenu = 0.3;
 
+  /* codex-p30 : fréquence historique du sprite, partagée avec le cache visuel de l'arsenal. */
+  R.lisibiliteP30 = { teteHz: 5 };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

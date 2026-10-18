@@ -561,9 +561,71 @@ N.arsenal = (function () {
   }
 
   /* ============================ le dessin : montures sur le corps (sous le serpent), tirs, arcs, mines, drones ============================ */
-  function px(x, y, c) { N.gfx.px(Math.round(x), Math.round(y), c); }
+  /* codex-p30 : fenêtre de silence purement visuelle. Les projectiles et leurs
+     collisions gardent leurs coordonnées ; seuls leurs pixels proches sont omis.
+     La boîte du vrai sprite, arrondie comme O.put, est élargie de silenceTete.
+     Aucun remplacement de N.gfx : les autres modules gardent leur dessinateur. */
+  var silence = { actif: false, x0: 0, y0: 0, x1: 0, y1: 0 };
+  function preparerSilence() {
+    var J = N.joueuse;
+    silence.actif = !!(J && (J.etat === 'vivant' || J.etat === 'reapparition'));
+    if (!silence.actif) return;
+    var s = O.sp('tete:' + O.dir16(J.tete.ang), Math.floor(O.T.ak * R.lisibiliteP30.teteHz));
+    var r = R.armes.lisibilite.silenceTete;
+    var x = Math.round(J.tete.x) - (s.cx === undefined ? (s.w - 1) >> 1 : s.cx);
+    var y = Math.round(J.tete.y) - (s.cy === undefined ? (s.h - 1) >> 1 : s.cy);
+    silence.x0 = x - r; silence.y0 = y - r;
+    silence.x1 = x + s.w - 1 + r; silence.y1 = y + s.h - 1 + r;
+  }
+  function loin(x0, y0, x1, y1) {
+    return !silence.actif || x1 < silence.x0 || x0 > silence.x1 || y1 < silence.y0 || y0 > silence.y1;
+  }
+  function px(x, y, c) {
+    x = Math.round(x); y = Math.round(y);
+    if (loin(x, y, x, y)) N.gfx.px(x, y, c);
+  }
+  var dessin = {
+    px: px,
+    rect: function (x, y, w, h, c) {
+      x = Math.round(x); y = Math.round(y); w = Math.round(w); h = Math.round(h);
+      if (loin(x, y, x + w - 1, y + h - 1)) return N.gfx.rect(x, y, w, h, c);
+      for (var yy = y; yy < y + h; yy++) for (var xx = x; xx < x + w; xx++) px(xx, yy, c);
+    },
+    line: function (x0, y0, x1, y1, c) {
+      x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+      if (loin(Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1), Math.max(y0, y1))) return N.gfx.line(x0, y0, x1, y1, c);
+      var dx = Math.abs(x1 - x0), dy = Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+      var err = dx - dy, guard = dx + dy + 4;
+      for (;;) {
+        px(x0, y0, c); if (x0 === x1 && y0 === y1) break; if (--guard < 0) break;
+        var e = err * 2;
+        if (e > -dy) { err -= dy; x0 += sx; } if (e < dx) { err += dx; y0 += sy; }
+      }
+    },
+    ring: function (x, y, r, c, t) {
+      x = Math.round(x); y = Math.round(y); r = Math.round(r);
+      if (loin(x - r, y - r, x + r, y + r)) return N.gfx.ring(x, y, r, c, t);
+      if (r < 0) return; if (t === undefined) t = 1; if (!(t > 0)) return;
+      function pt(xx, yy) { if (t >= 1 || N.pal.dither(xx - N.gfx.ox(), yy - N.gfx.oy(), t)) px(xx, yy, c); }
+      if (r === 0) { pt(x, y); return; }
+      var ox = r, oy = 0, err = 1 - r;
+      while (ox >= oy) {
+        pt(x + ox, y + oy); pt(x - ox, y + oy); pt(x + ox, y - oy); pt(x - ox, y - oy);
+        pt(x + oy, y + ox); pt(x - oy, y + ox); pt(x + oy, y - ox); pt(x - oy, y - ox);
+        oy++; if (err < 0) err += 2 * oy + 1; else { ox--; err += 2 * (oy - ox) + 1; }
+      }
+    }
+  };
+  function putTir(s, x, y) {
+    x = Math.round(x) - (s.cx === undefined ? (s.w - 1) >> 1 : s.cx);
+    y = Math.round(y) - (s.cy === undefined ? (s.h - 1) >> 1 : s.cy);
+    if (loin(x, y, x + s.w - 1, y + s.h - 1)) return N.gfx.blit(s, x, y);
+    for (var yy = 0; yy < s.h; yy++) for (var xx = 0; xx < s.w; xx++) {
+      var c = s.data[yy * s.w + xx]; if (c) px(x + xx, y + yy, c);
+    }
+  }
   function drawMontures() {
-    var J = N.joueuse, len = J.len(), i, g = N.gfx, f = FL;
+    var J = N.joueuse, len = J.len(), i, g = dessin, f = FL;
     if (st.niv.tourelles > 0) {
       var p = pal('tourelles'), n = Math.min(p.max || 4, Math.floor(len / (p.parSegments || 8)));
       for (i = 0; i < n; i++) {
@@ -584,7 +646,7 @@ N.arsenal = (function () {
     if (st.niv.minesQ > 0) { var t = J.segPos(len); px(t.x, t.y, O.CYANP); px(t.x, t.y + 1, O.CYAN); px(t.x + 1, t.y, O.CYAN); }
   }
   function drawArc(a) {
-    var g = N.gfx, p = a.pts, i;
+    var g = dessin, p = a.pts, i;
     for (i = 0; i + 3 < p.length; i += 2) {
       var x0 = p[i], y0 = p[i + 1], x1 = p[i + 2], y1 = p[i + 3], mx = (x0 + x1) / 2 + (((i * 7) & 3) - 1.5), my = (y0 + y1) / 2 + (((i * 5) & 3) - 1.5);
       g.line(x0, y0, mx, my, O.CYAN); g.line(mx, my, x1, y1, O.CYAN);
@@ -593,7 +655,8 @@ N.arsenal = (function () {
     for (i = 2; i + 1 < p.length; i += 2) g.rect(Math.round(p[i]) - 1, Math.round(p[i + 1]) - 1, 3, 3, O.OS);        // nœud d'os de 3 × 3 à chaque impact
   }
   function draw() {
-    var f = Math.floor(O.T.ak * 12), g = N.gfx, i;
+    preparerSilence();
+    var f = Math.floor(O.T.ak * 12), g = dessin, i;
     if (!S) S = N.S;
     var J = N.joueuse;
     var cs = R.armes.sillage;
@@ -635,7 +698,7 @@ N.arsenal = (function () {
       if (b.kind === 'd' || b.kind === 't') { px(b.x, b.y, O.CYANP); px(b.x - b.vx * 0.01, b.y - b.vy * 0.01, O.CYAN); continue; }
       if (b.kind === 'l') { g.line(b.x - b.vx * 0.02, b.y - b.vy * 0.02, b.x, b.y, O.CYAN); px(b.x, b.y, O.CYANP); continue; }
       if (b._gros) { g.line(b.x - b.vx * 0.016, b.y - b.vy * 0.016, b.x, b.y, O.AMBRE); g.rect(b.x - 1, b.y - 1, 2, 2, O.JAUNE); }
-      else O.put(O.sp('tir:' + O.dir16(b.a), f), b.x, b.y);
+      else putTir(O.sp('tir:' + O.dir16(b.a), f), b.x, b.y);
     }
     for (i = 0; i < missiles.length; i++) {
       var q = missiles[i], c = Math.cos(q.a), s = Math.sin(q.a);

@@ -943,7 +943,6 @@ N.joueuse = (function () {
     }
     drawJauge(); drawPouvoir();
     drawBoost();
-    put(sp('tete:' + O.dir16(P.ang), Math.floor(ak * 5)), P.x, P.y);
     drawCritique();
     /* le BOUCLIER chargé : un anneau pâle qui respire autour de la tête ; un coup absorbé : l'anneau éclate */
     if (st.bcl > 0) N.gfx.ring(P.x, P.y, 7 + (Math.floor(ak * 3) & 1), O.CYANP, 1);
@@ -951,6 +950,8 @@ N.joueuse = (function () {
     /* le cap visé, quand il diffère du cap réel de plus de 20° (J-33) */
     var d = O.wrapA(st.target - P.ang), ch = (R && R.joueuse && R.joueuse.chevron && R.joueuse.chevron.ecartDeg) || 20;
     if (Math.abs(d) > ch * Math.PI / 180) put(sp('chevron:' + O.dir16(st.target), 0), P.x + Math.cos(st.target) * 11, P.y + Math.sin(st.target) * 11);
+    // codex-p30 : la tête reste au-dessus du bouclier, des jauges et du cap visé.
+    put(sp('tete:' + O.dir16(P.ang), Math.floor(ak * R.lisibiliteP30.teteHz)), P.x, P.y);
   }
 
   return {
