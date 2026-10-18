@@ -136,7 +136,7 @@ N.game = (function () {
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
     if (u) {
-      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
+      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' && N.defile ? { rareGarantie: N.defile.prendreRare() } : undefined);
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
       else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
@@ -245,6 +245,7 @@ N.game = (function () {
     if (N.cam && N.cam.reset) appel('cam.reset', function () { N.cam.reset(); });
     N.joueuse.reset();
     N.butin.reset(); N.ennemis.reset(); N.arsenal.reset(); N.score.reset(); N.dir.reset(0, {}); N.hud.reset();
+    if (N.defile) N.defile.reset();
     if (N.arene && N.arene.reset) appel('arene.reset', function () { N.arene.reset(); });
     if (N.cartes && N.cartes.reset) appel('cartes.reset', function () { N.cartes.reset(); });
     if (N.scene && N.scene.reset) appel('scene.reset', function () { N.scene.reset(); });
@@ -377,10 +378,18 @@ N.game = (function () {
   function vol() {
     aller('vol');
     var n = N.dir.vague();
-    if (N.vol && N.vol.start) appel('vol.start', function () { N.vol.start(n, n + 1); });
+    if (N.vol && N.vol.start) appel('vol.start', function () {
+      if (n === 3 && N.defile) {
+        var d = R.secteurs[0].defile;
+        N.vol.start(N.defile.joue() ? d.quartier : N.dir.info().quartier, N.defile.joue() ? R.secteurs[0].vagues[n].quartier : d.quartier);
+      } else N.vol.start(n, n + 1);
+    });
     else if (N.hud) N.hud.banniere('PLONGÉE', { c: 'jaune', duree: CFG.vol - 0.3 });
   }
-  function apresVol() { lancerVague(N.dir.vague() + 1); }
+  function apresVol() {
+    if (N.dir.vague() === 3 && N.defile && !N.defile.joue()) { N.defile.demarrer(); aller('defile'); }
+    else lancerVague(N.dir.vague() + 1);
+  }
   function lancerBoss() {
     memoriserReprise(true);
     aller('boss');
@@ -394,6 +403,7 @@ N.game = (function () {
   function continuer() {
     if (et !== 'fin' || !reprise || !N.ui.finActions().disponible || !N.score.continuer()) return false;
     var r = reprise, s = S_();
+    if (N.defile && r.vague <= 3) N.defile.reset();
     if (modOk(N.intro, 'stop')) N.intro.stop();
     if (finClip && modOk(N.art, 'stop')) N.art.stop(finClip);
     finClip = null; timers.length = 0; suiteFilm = null; filmDemande = null;
@@ -553,7 +563,8 @@ N.game = (function () {
     if (JOUE[et]) {
       O.T.t += dt; O.T.ak += dt;
       pas(dt);
-      if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
+      if (et === 'defile' && N.defile && N.defile.fini()) vol();
+      else if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
       else if (et === 'alerte' && etT >= CFG.alerte) {
         /* N.intro enchaîne déjà réveil → boss (même quand réveil est sauté).
            Relancer boss ici montrait deux fois l'annonce dans la même partie. */
@@ -616,7 +627,8 @@ N.game = (function () {
 
   /* l'ordre des mises à jour d'une image de jeu (§ 7.7) */
   function pas(dt) {
-    var sansApparition = et === 'nettoyage' || et === 'alerte';
+    var sansApparition = et === 'nettoyage' || et === 'alerte' || et === 'defile';
+    if (et === 'defile' && N.defile) N.defile.update(dt);
     if (!sansApparition) appel('dir', function () { N.dir.update(dt); });
     if (N.arene && N.arene.update) appel('arene', function () { N.arene.update(dt); });
     appel('joueuse', function () { N.joueuse.update(dt); });
@@ -787,6 +799,7 @@ N.game = (function () {
       O.origine(0, 0);
       drawNomCause();
     } else appel('joueuse.drawTop', function () { N.joueuse.drawTop(); });
+    if (et === 'defile' && N.defile) N.defile.draw();
     ecranVieux();
   }
   /* l'interface : dessinée ici tant que 90-boot.js n'appelle pas N.hud.draw / N.ui.draw / N.intro.draw lui-même */
