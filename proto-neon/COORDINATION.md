@@ -144,6 +144,7 @@ Codex : **codex-12 à prendre** (ordre n° 11, 04 h 54) ; codex-11 jugé ACCEPT�
 
 | fichier | équipe | depuis | pour quoi |
 |---|---|---|---|
+| `src/50-fx.js` (flashGate), `tools/mesure/criteres/R-13-*` | Codex (session parallèle codex-p35) | 18/10 à 05 h 07 | R-13 : 8 flashs acceptés par seconde au journal contre 0 au tampon ; instrument d'abord |
 | `src/76-directeur.js`, `src/76-defile.js`, ajouts `src/02-regles.js`, `tools/codex-12/` | Codex (boîte) | 18/10 à 05 h 08 | codex-12 R15 rythme/R14 bannières ; correctifs78/79 séparés, aucun réglageB |
 | `tools/mesure/criteres/R-03-*`, `src/17-vol.js` (si en cause) | Codex (session parallèle codex-p22b) | 18/10 à 04 h 48 | R-03 pendant le VOL : 3,4–4,3 % de cyan « hors joueuse » qui semble être la joueuse du VOL |
 | `src/72-serpents.js`, `src/72-ennemis.js` (raccord serpents) | Codex (session parallèle codex-p27b) | 18/10 à 04 h 44 | un seul système d'ennemis de 2030 : base = version du cloud (aventure), apports de p27 (R-06/07/13), entrée dans la partie par correctif du directeur |
