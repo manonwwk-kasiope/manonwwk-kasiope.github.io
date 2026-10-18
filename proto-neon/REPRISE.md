@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 04 h 14)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 05 h 14)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -29,6 +29,11 @@
   Livrés en attente du navigateur : p16b, p20 (audio), p22, p27 (raccord directeur après codex-11). Sessions : p15b, p21, p26, p28 (copie p24, puis
   intégrer p24+p28 avec `tools/codex-p24/raccord-79-jeu.patch`), p30, p32. **À lancer quand 70-joueuse (p30), 72-ennemis (p27), 73-arene (p22),
   73-colosse (p32) sont libres : codex-p31** (`consignes/codex-p31.md`, provenance des morts, R-08). Tempo de la grille : après p20 et codex-11.
+- À 05 h 14 : intégrés aussi p22 (R-27), p24+p28 (écran de fin restauré), p34 (analyse des cibles B), p16c (instruments R-20/R-30).
+  Non retenus : p20 (R-26 déjà tenu), p25 (R-34 arrêté), p27 (doublon des ennemis du cloud → p27b). codex-11 accepté avec réserves ; **réglage par
+  cibles B arrêté** (non-convergence) ; décision de spécification inerte « avant 11 s ». Sessions : p33 (tempo), p35 (R-13 limiteur), p36 (R-04
+  instrument), p37 (pilote humain), p38 (dessiné = simulé) ; boîte : codex-12 (R-15, R-14). File navigateur : p21, p30, p32, rejeu aventure
+  (copie batterie figée 6b040d7, pour juger p26b), p15b, p22b, p27b. Après : p31 (provenance des morts, consigne prête), batterie complète, jury.
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;
