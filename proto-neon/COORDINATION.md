@@ -125,6 +125,7 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 | `src/77-score.js`, `src/80-ecrans.js` | Codex (session parallèle codex-p12) | 18/10 à 02 h 00 | R-16 (`N.score.defis`), R-36 (déblocages, défis du jour, raison de revenir) |
 | `src/76-defile.js` (nouveau), `src/76-directeur.js`, `tools/codex-10/` | Codex | 18/10 à 01 h 45 | codex-10 : DÉFILÉ et respiration ; raccord79 livré en patch, chiffres02 réservés àp5 (aucune modification sans partage explicite) |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
+| `src/79-jeu.js` (quelques lignes) | Claude cloud | 18/10 à 03 h 10 | films d'époque au bon moment : profondeur au début de la vague 3, warp à la vague 4 (`N.aventure.reprendre`), demande n° 7 de `demandes.md` |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
 ## Prochains chantiers (à prendre)
