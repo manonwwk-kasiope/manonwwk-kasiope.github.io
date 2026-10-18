@@ -1464,6 +1464,9 @@ var MUSIQUE_EMBED = null;
   /* codex-p30 : fréquence historique du sprite, partagée avec le cache visuel de l'arsenal. */
   R.lisibiliteP30 = { teteHz: 5 };
 
+  /* codex-12 ordre14 : une crête ordinaire par fenêtre ; impacts forts R12 prioritaires. */
+  R.scene.budgets.secousse = { fenetre: 1, forte: R.criteres.R12.camera };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
