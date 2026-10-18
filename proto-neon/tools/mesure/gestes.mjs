@@ -1,23 +1,17 @@
-/* tools/mesure/gestes.mjs — des doigts simulés par le protocole CDP (Input.dispatchTouchEvent), en points CSS,
+import { installerTrace, horlogeReelle } from './tactile.mjs';
+/* tools/mesure/gestes.mjs — codex-p43 ; horloge réelle uniquement.
+   Contrat de relâchement partiel étalonné sur DOM avant tout verdict.
+   Des doigts simulés par le protocole CDP (Input.dispatchTouchEvent), en points CSS,
    pour les critères des commandes (R-22) et des gestes sûrs (R-33), d'après REFONTE.md § 2.16 et N.R.gestes.
-   Chaque envoi liste tous les doigts posés, comme un vrai écran tactile. Les durées sont en temps réel :
-   90-boot.js classe les gestes sur performance.now. */
+   Chaque envoi liste tous les doigts posés, comme un vrai écran tactile. Les durées sont lues dans la page :
+   performance.now et rAF réels, sans __DT ni horloge Playwright. */
 export class Doigts {
   constructor(session) { this.s = session; this.actifs = new Map(); this.id = 1; }
   async init() {
     this.cdp = await this.s.cdpSession();
-    await this.s.eval(() => {
-      if(window.__TRACE_DOIGTS_INSTALLE)return;
-      window.__TRACE_DOIGTS_INSTALLE=true;window.__TRACE_DOIGTS=[];
-      for(const type of ['touchstart','touchmove','touchend','touchcancel'])
-        window.addEventListener(type,e=>{
-          const r=performance.now(),changes=Array.from(e.changedTouches,c=>({id:c.identifier,x:c.clientX,y:c.clientY}));
-          queueMicrotask(()=>{const S=window.__S,I=S.input,st=I.stick;
-            window.__TRACE_DOIGTS.push({type,r,changes,actifs:e.touches.length,stick:st?{active:st.active,ox:st.ox,oy:st.oy}:null,
-              pouvoir:!!I.pouvoir,apogee:!!I.apogee,boost:!!I.boost,gestes:I.gestes.map(g=>({...g}))});
-          });
-        },{capture:true,passive:true});
-    });
+    if (this.s.horlogeControlee || this.s.__p21Clock) throw Error('instrument p43 : horloge artificielle refusée');
+    if (await this.s.eval(() => typeof window.__DT === 'number')) throw Error('instrument p43 : __DT forcé refusé');
+    await this.s.eval(installerTrace);
     return this;
   }
   points() { return [...this.actifs.entries()].map(([id, p]) => ({ x: p.x, y: p.y, id, radiusX: 8, radiusY: 8, force: 1 })); }
@@ -26,10 +20,18 @@ export class Doigts {
   async bouger(id, x, y) { const p = this.actifs.get(id); if (!p) return; p.x = x; p.y = y; await this.envoyer('touchMove'); }
   async lever(id) {
     const p = this.actifs.get(id); if (!p) return;
-    /* Chromium relâche les points LISTÉS dans un touchEnd : on n'y met que le doigt levé */
     this.actifs.delete(id);
-    await this.cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [{ x: p.x, y: p.y, id, radiusX: 8, radiusY: 8, force: 1 }] });
+    if (!this.actifs.size) return this.envoyer('touchEnd');
+    // Choix validé sur les événements DOM réels du navigateur, jamais deviné du nom CDP.
+    const mode = this.s.contratTactile;
+    if (!mode) throw Error('relâchement partiel CDP non étalonné');
+    const point = { ...p, id, radiusX: 8, radiusY: 8, force: 1 };
+    await this.cdp.send('Input.dispatchTouchEvent', {
+      type: mode === 'mouvement-restants' ? 'touchMove' : 'touchEnd',
+      touchPoints: mode === 'fin-leves' ? [point] : mode === 'fin-vide' ? [] : this.points()
+    });
   }
+
   async toutLever() { for (const id of [...this.actifs.keys()]) await this.lever(id); }
   attendre(ms) { return this.s.page.waitForTimeout(Math.max(0, ms)); }
   /* un glissé de (x0,y0) à (x1,y1) en ms, par pas de 16 ms */
@@ -47,8 +49,8 @@ export async function lireGestes(session) {
   if (!J) return null;
   const d = x => x.d || x;
   return {
-    // Lire les valeurs effectivement livrées au jeu : le journal geste n'est pas produit par boot.
-    gestes: await session.eval(() => (window.__GESTES_MESURE || []).slice()),
+    // Le boot reçu publie désormais geste : on lit la vraie trace plutôt qu'un compteur d'appels.
+    gestes: J.filter(x => x.type === 'geste').map(x => ({...x.d, t:x.t, image:x.image})),
     pouvoirs: J.filter(x => x.type === 'pouvoir' && d(x).evt === 'debut').length,
     apogees: J.filter(x => x.type === 'apogee' && d(x).evt === 'debut').length,
     boosts: J.filter(x => x.type === 'boost').map(x => ({ t: x.t, image: x.image, ...d(x) })),
@@ -59,26 +61,40 @@ export async function lireGestes(session) {
 
 /* met une partie en jeu, invulnérable, pour tester les doigts sans mourir */
 export async function preparerJeu(session) {
+  if (!session.instrumentTactile) {
+    const { validerInstrument } = await import('./etalon-tactile.mjs');
+    session.instrumentTactile = await validerInstrument(session);
+    session.contratTactile = session.instrumentTactile.mode;
+  }
+  if (!session.instrumentTactile.ok) return { ok: false, raison: 'étalon tactile en échec', instrument: session.instrumentTactile };
+  await session.eval(() => window.__N.intro.skip());
   const r = await session.demarrer({ graine: 3, god: true });
   if (!r.ok) return r;
   await session.eval(() => {
     const N=window.__N; window.__S.reglages.actions='doigts';
-    window.__GESTES_MESURE=[];
-    const update=N.game.update;
-    N.game.update=function(dt){
-      const I=window.__S.input, neufs=[];
-      for(const g of I.gestes || []) {
-        const action=g.genre==='toucher'&&I.pouvoir?'pouvoir':g.genre==='glisse'&&I.apogee?'apogee':g.genre==='tenu'&&I.boost?'boost':'aucune';
-        neufs.push({...g,action,t:N.horloge.t(),image:window.__FRAME});
-      }
-      const r=update.apply(this,arguments), p=window.__S.player;
-      for(const g of neufs)window.__GESTES_MESURE.push({...g,sortie:p?{boost:p.boost,apogee:p.apogee,pouvoirPret:p.pouvoirPret,etat:p.etat}:null});
-      return r;
-    };
     try { N.journal.dump({vider:true}); } catch(e){}
   });
   await session.images(20);
+  if (session.attendre && !await session.attendre(() => window.__N.game.etat() === 'jeu'))
+    return { ok: false, raison: 'aucun état jeu réel après la plongée' };
+  await session.eval(installerTrace);
+  await session.eval(() => {window.__TACTILE_P43.images=[];});
+  await session.images(20);
+  const images=await session.eval(()=>window.__TACTILE_P43.images);
+  r.horloge=horlogeReelle(images);
+  if(!r.horloge.ok)return {ok:false,raison:'horloge réelle et déplacement du jeu non validés',horloge:r.horloge};
   return r;
+}
+
+
+/* Position initiale construite pour un cas de commande indépendant. */
+export async function preparerScene(session) {
+  await session.eval(() => {
+    const N=window.__N; N.entree.annuler(); N.game.dbg.scene('calme'); N.joueuse.reset(); N.game.dbg.god(true);
+    window.__S.reglages.actions='doigts';
+    const A=N.outils.A; N.joueuse.force({x:(A.x0+A.x1)/2,y:(A.y0+A.y1)/2,ang:0,trace:true});
+  });
+  await session.images(2);
 }
 
 /* un tirage reproductible pour les séries « humaines » (mulberry32) */
@@ -91,37 +107,46 @@ export function vue(session) { const v = session.page.viewportSize(); return { w
    rend {gestes:{genre:{action:n}}, actions, boosts:[durées en s]} */
 export async function serieSecondDoigt(session, genre, n, o = {}) {
   const d = await new Doigts(session).init(), V = vue(session);
-  await session.eval(() => {
-    try { window.__N.journal.dump({ vider: true }); } catch (e) { }
-    window.__GESTES_MESURE=[]; window.__TRACE_DOIGTS=[];
-    window.__MESURE.parImage('boost', 'return { b: !!(S.input && S.input.boost), p: !!(S.player && S.player.boost), r: performance.now() };');
-    /* les instants de pose et de relâcher vus par la page, par identifiant */
-    window.__DOIGTS = []; if (!window.__DOIGTS_ECOUTE) { window.__DOIGTS_ECOUTE = true;
-      for (const t of ['touchstart', 'touchend']) window.addEventListener(t, e => { for (const c of e.changedTouches) (window.__DOIGTS || []).push({ t, id: c.identifier, r: performance.now() }); }, { capture: true, passive: true }); }
-  });
-  const pouce = await d.manche(V.w * 0.22, V.h * 0.62, 26, 0);
-  await d.attendre(260);
+  const essais = [], J = [], E = [], I = [], runs = [], tenues = [];
   for (let k = 0; k < n; k++) {
-    const x = V.w * (0.6 + 0.2 * ((k * 7) % 5) / 5), y = V.h * (0.3 + 0.3 * ((k * 3) % 5) / 5);
-    const id = await d.poser(x, y);
-    if (genre === 'toucher') await d.attendre(o.duree || 70);
-    else if (genre === 'glisse') await d.glisser(id, x + 70, y - 20, o.duree || 110);
-    else if (genre === 'tenu') await d.attendre((o.duree || 0.5) * 1000);
-    await d.lever(id);
-    await d.attendre(o.pause || 280);
+    await session.eval(() => {
+      const N=window.__N; N.entree.annuler(); N.game.dbg.scene('calme'); N.joueuse.reset(); N.game.dbg.god(true);
+      window.__S.reglages.actions='doigts';
+      const A=N.outils.A; N.joueuse.force({x:(A.x0+A.x1)/2,y:(A.y0+A.y1)/2,ang:0,trace:true});
+      N.joueuse.apogeeAjouter(N.R.apogee.max);
+    });
+    const pouce = await d.manche(V.w * 0.22, V.h * 0.62, 26, 0);
+    await d.attendre(260);
+    await session.eval(() => { window.__N.journal.vider(); window.__TRACE_DOIGTS=[]; window.__TACTILE_P43.images=[]; });
+    const x=V.w*0.7, y=V.h*0.5, id=await d.poser(x,y);
+    if (genre==='toucher') await d.attendre(o.duree || 70);
+    else if (genre==='glisse') await d.glisser(id,x+70,y-20,o.duree || 110);
+    else await d.attendre((o.duree || 0.5)*1000);
+    await d.lever(id); await d.attendre(o.pause || 280);
+    const L=await lireGestes(session), images=await session.eval(()=>window.__TACTILE_P43.images);
+    const debut=L.traceDoigts.find(e=>e.type==='touchstart'&&e.changes.some(p=>p.id===id));
+    const fin=L.traceDoigts.find(e=>e.type==='touchend'&&e.changes.some(p=>p.id===id));
+    tenues.push(debut&&fin?(fin.r-debut.r)/1000:null);
+    let start=null;
+    for (const image of images) {
+      if(image.boost&&start===null)start=image.r;
+      if(!image.boost&&start!==null){runs.push((image.r-start)/1000);start=null;}
+    }
+    // Une suite sans front de fin est conservée comme non mesurable, jamais tronquée en réussite.
+    if(start!==null)runs.push(null);
+    const contrat=!!debut&&!!fin&&fin.ids.length===1&&fin.ids[0]===pouce;
+    essais.push({k,contrat,etat:images.at(-1)?.etat,appui:tenues.at(-1),journal:L.tout,images,evenements:L.traceDoigts});
+    J.push(...L.tout); E.push(...L.traceDoigts); I.push(...images);
+    await d.toutLever(); await d.attendre(200);
   }
-  await d.toutLever(); await d.attendre(200);
-  const I = await session.eval(() => window.__MESURE.arreter('boost'));
-  const L = await lireGestes(session);
-  /* les accélérations : suites d'images où S.input.boost est vrai */
-  const runs = []; let deb = null;
-  for (let i = 0; i < I.length; i++) { if (I[i].b && deb === null) deb = I[i].r; if (!I[i].b && deb !== null) { runs.push((I[i].r - deb) / 1000); deb = null; } }
-  const parGenre = {};
-  for (const g of (L ? L.gestes : [])) { const c = parGenre[g.genre] || (parGenre[g.genre] = {}); c[g.action] = (c[g.action] || 0) + 1; }
-  /* durées d'appui du second doigt vues par la page (le pouce est le premier identifiant posé) */
-  const E = await session.eval(() => window.__DOIGTS || []), pouceId = E.length ? E[0].id : null, tenues = [];
-  for (const e of E) if (e.t === 'touchstart' && e.id !== pouceId) { const f = E.find(x => x.t === 'touchend' && x.id === e.id && x.r >= e.r); if (f) tenues.push((f.r - e.r) / 1000); }
-  const ips = I.length > 2 ? (I.length - 1) / ((I[I.length - 1].r - I[0].r) / 1000) : 60;
-  void pouce;
-  return { source: 'S.input.gestes + impulsions avant update ; sortie S.player après update', entrees: L ? L.gestes : [], traceDoigts: L ? L.traceDoigts : [], gestes: parGenre, journal: !!L, actions: L ? L.gestes.reduce((o2, g) => { o2[g.action] = (o2[g.action] || 0) + 1; return o2; }, {}) : null, boosts: runs, tenues, ips };
+  const gestes=J.filter(x=>x.type==='geste').map(x=>({...x.d,t:x.t,image:x.image})), parGenre={};
+  for(const g of gestes){const t=parGenre[g.genre]||(parGenre[g.genre]={});t[g.action]=(t[g.action]||0)+1;}
+  const intervalles=essais.flatMap(e=>e.images.slice(1).map((im,i)=>im.r-e.images[i].r)).filter(x=>x>0);
+  const ips=intervalles.length?1000/(intervalles.reduce((a,b)=>a+b,0)/intervalles.length):null;
+  if (!session.preuvesGestes) session.preuvesGestes=[];
+  session.preuvesGestes.push({genre,essais});
+  return {source:'CDP étalonné, journal et états réels, essais indépendants ; horloge réelle',sortie:I,essais,
+    entrees:gestes,traceDoigts:E,gestes:parGenre,journal:essais.every(e=>e.contrat),
+    actions:{pouvoir:J.filter(x=>x.type==='pouvoir'&&x.d.evt==='debut').length,
+      apogee:J.filter(x=>x.type==='apogee'&&x.d.evt==='debut').length,boost:J.filter(x=>x.type==='boost'&&x.d.evt==='on').length},boosts:runs,tenues,ips};
 }

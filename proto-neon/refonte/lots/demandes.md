@@ -896,3 +896,16 @@ Codex-p41 — écart conservé dans le lot reçu : `dieu`, graine 2, atteint la 
 | mission | fichier | besoin | raison |
 |---|---|---|---|
 | codex-p41 | `85-pilote.js` / `76-directeur.js` — cheffe et propriétaires | examiner séparément la non-fin du couple dieu/2 dans l'état reçu ; ne pas changer ces fichiers dans p41 | V4 entrée à 154,54416667871038 s, aucune sortie de V4 à la borne ; cause non établie. Reçus complets dans `tools/codex-p41/parties/`, index `parties80.json`. |
+
+## codex-p43 — étalon tactile commun R-22 / R-33
+
+18/10/2026 · 06 h 29 (Paris). Préparation livrée ; instrument navigateur candidat, palier bloqué sur l'exécution hors bac. Aucun fichier `src/` changé ; aucun seuil R-22/R-33 changé ; aucun commit.
+
+| mission | fichier | besoin / raison |
+|---|---|---|
+| codex-p43 | `tools/mesure/gestes.mjs`, `tactile.mjs`, `etalon-tactile.mjs` | vrai temps et vraies images, événements DOM fiables, relâchement partiel CDP étalonné par identifiants, cas connus et témoin ignoré ; le reçu p21 observait deux poses sans relâchement du second doigt |
+| codex-p43 | `tools/mesure/criteres/R-22-*`, `R-33-*` | partager le même instrument ; latence depuis l'événement reçu, cap réel, essais avec réserves prêtes, J-04 direct, fenêtre du slalom à partir du premier mouvement reçu ; seuils conservés |
+| codex-p43 | `src/02-regles.js` (propriétaire, non modifié) | Aucun nouveau chiffre de jeu. Si les données de construction de l'étalon doivent elles aussi vivre dans N.R, ajouter une section `tests.instrumentTactile` pour ses coordonnées CSS (100/130/150/160/180/200/250/285), attentes d'essai reprises de l'instrument (70/80/260/350 ms), cible −π/2 et tolérance 4° reprise de R-22 ; puis remplacer les données de fixture, sans changer les seuils de jeu. La vitesse 68 et la distance de glissé 24 sont déjà lues dans N.R. La mission interdit tout src, cette centralisation n'est pas appliquée ici |
+| codex-p43 | hors bac | `cd proto-neon && node tools/codex-p43/verifier.mjs` ; retourner `tools/codex-p43/navigateur/resultats.json` et les sous-dossiers profils. Un Chromium muet, HTTP port libre, paysage/portrait puis bureau en série, étalons avant verdicts, aucun temps forcé. Dépendance indispensable : serveur et Chromium refusés dans ce bac, aucune tentative ni contournement |
+
+Preuves locales : dix références historiques exactes sur les temps/vague/score, six cas de calcul, douze cas de handlers et trois cas de direction VM avec zéro erreur ; latence VM 1 image, virage VM dans la tolérance après 266,67 ms. Journaux historiques : empreintes intégrales 2/10 identiques seulement, divergence numérique conservée et expliquée sans prétendre à leur identité. Sources et bundle identiques à HEAD reçu après build sortie 0. Rapport et détails : `tools/codex-p43/rapport.md`, `vm.json`, `direction-vm.json`, `verification-locale.json`. R-22/R-33 navigateur : **à vérifier**, aucun résultat inventé.

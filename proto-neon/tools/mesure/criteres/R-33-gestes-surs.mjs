@@ -4,24 +4,28 @@
    50 balayages par bord : 0 navigation, 0 zoom, 0 sélection, et les origines du manche à 20 pt au moins des
    bords. Doigts simulés par CDP, iPhone 13 paysage, en onglet (le mode web app n'est pas émulable ici). */
 import { executer, principal, seuils, exiger } from '../commun.mjs';
-import { Doigts, preparerJeu, serieSecondDoigt, vue, hasard, lireGestes } from '../../codex-p21/gestes.mjs';
+import { Doigts, preparerJeu, preparerScene, serieSecondDoigt, vue, hasard, lireGestes } from '../gestes.mjs';
 
 export const meta = { id: 'R-33', titre: 'Gestes sûrs', seuil: '0 action involontaire ; slalom 0 accélération ; 20/20 ; 0 navigation, zoom, sélection', bloquant: true, exclusif: true };
 
 export async function mesurer(banc, res) {
-  const s = await banc.ouvrir('paysage', {});
+  const s = await banc.ouvrir(banc.o.profilTactile || 'paysage', {});
   const { R } = await seuils(s, 'R33');
   const L = (R.criteres && R.criteres.lots) || { recentrages: 120, recentrageCourt: 0.3, recentrageAutreDoigt: 0.1, gestes: 20, balayages: 50, bordPx: 10 };
   if (!await exiger(s, res, 'entrées', ['S.input', 'S.player'])) return;
   const p = await preparerJeu(s);
-  if (!p.ok) return res.nonMesurable('partie', p.raison);
+  if (!p.ok) return res.nonMesurable('partie', p.raison, { preparation: p });
+  res.verifie('étalon tactile indépendant et témoin ignoré', s.instrumentTactile.ok, true, s.instrumentTactile.ok, { instrument: s.instrumentTactile });
   const V = vue(s), d = await new Doigts(s).init(), alea = hasard(2975);
   /* 1. les recentrages humains */
   const duree = banc.o.rapide ? 20 : L.recentrages;
-  await s.eval(() => { try { window.__N.journal.dump({ vider: true }); } catch (e) { } window.__MESURE.parImage('r33b', 'return !!(S.input && S.input.boost) ? 1 : 0;'); });
+  await s.eval(() => { try { window.__N.journal.dump({ vider: true }); } catch (e) { } window.__MESURE.parImage('r33b', 'return {b:!!(S.input&&S.input.boost),f:window.__FRAME,r:performance.now(),etat:N.game.etat()};'); });
   const t0 = await s.eval(() => performance.now()); let n = 0, courts = 0, autres = 0;
   while ((await s.eval(() => performance.now())) - t0 < duree * 1000) {
     n++;
+    // Cas de commande indépendant ; les journaux et la série de 120 s sont conservés.
+    // Remettre le centre et la réserve évite un faux zéro sur un menu ou contre un mur.
+    await preparerScene(s);
     const x = V.w * (0.1 + 0.35 * alea()), y = V.h * (0.35 + 0.5 * alea()), court = alea() < L.recentrageCourt, autre = alea() < L.recentrageAutreDoigt;
     const id = await d.poser(x, y);
     if (autre) { autres++; await d.attendre(40 + 90 * alea()); const id2 = await d.poser(V.w * (0.55 + 0.35 * alea()), V.h * (0.3 + 0.5 * alea())); await d.attendre(80); await d.lever(id2); }
@@ -36,11 +40,11 @@ export async function mesurer(banc, res) {
     // Même action vue à l'entrée et au journal : ne pas la compter deux fois.
     const involontaires = Math.max(inv, Lg.pouvoirs + Lg.apogees);
     res.verifie(`recentrages humains (${n} poses, ${courts} courtes, ${autres} avec un autre doigt) : actions involontaires`, involontaires, 0, involontaires === 0, { gestes: Lg.gestes.length, pouvoirs: Lg.pouvoirs, apogees: Lg.apogees, entrees: Lg.gestes, traceDoigts: Lg.traceDoigts, journalActions: Lg.tout.filter(x=>['pouvoir','apogee','boost'].includes(x.type)) });
-    const acc = B.reduce((a, b, i) => a + (b && !B[i - 1] ? 1 : 0), 0);
+    const acc = B.reduce((a, b, i) => a + (b.b && !B[i - 1]?.b ? 1 : 0), 0);
     res.verifie('recentrages humains : accélérations par le second doigt', acc, 0, acc === 0);
   }
   await d.toutLever(); await d.attendre(300);
-  await s.eval(() => { window.__N.game.dbg.scene('calme'); window.__N.game.dbg.god(true); window.__S.reglages.actions='doigts'; });
+  await preparerScene(s);
   await d.attendre(300);
   /* 2. le slalom serré : manche à fond, cap qui oscille de ± 40° toutes les 150 ms */
   { await s.eval(() => window.__MESURE.parImage('slalom', 'var p=S.player,I=S.input;return {f:window.__FRAME,r:performance.now(),boost:!!(p&&p.boost),ang:p&&p.ang,vise:p&&p.angVise,mag:I.mag,inputBoost:I.boost};'));
@@ -51,19 +55,24 @@ export async function mesurer(banc, res) {
     const arme = await s.eval(() => !!window.__S.player.boost);
     res.verifie('slalom : poussée droite effectivement armée avant les virages', arme, true, arme === true);
     await s.eval(() => { window.__MESURE.arreter('slalom'); window.__MESURE.parImage('slalom', 'var p=S.player,I=S.input;return {f:window.__FRAME,r:performance.now(),boost:!!(p&&p.boost),ang:p&&p.ang,vise:p&&p.angVise,mag:I.mag,inputBoost:I.boost};'); });
+    await s.eval(()=>{window.__TRACE_DOIGTS=[];});
     for (let k = 0; k < (banc.o.rapide ? 20 : 60); k++) { const a = a0 + (k % 2 ? 1 : -1) * 40 * Math.PI / 180; await d.bouger(id, V.w * 0.3 + R0 * Math.cos(a), V.h * 0.5 + R0 * Math.sin(a)); await d.attendre(150); }
     await d.lever(id);
-    const I = await s.eval(() => window.__MESURE.arreter('slalom'));
+    const toutes = await s.eval(() => window.__MESURE.arreter('slalom'));
+    const evt=await s.eval(()=>window.__TRACE_DOIGTS.find(e=>e.type==='touchmove'));
+    const I=evt?toutes.filter(i=>i.f>evt.f&&i.r>=evt.r):[];
+    res.verifie('slalom : mouvement reçu et images après commande',I.length,'> 0',I.length>0,{evenement:evt,imagesAvantCommande:toutes.length-I.length});
     res.verifie('slalom serré : images en accélération', I.filter(x => x.boost).length, 0, !I.some(x => x.boost), { trace: I }); }
   await d.attendre(300);
   /* 3. 20 sur 20 pour chaque geste du second doigt */
   const ng = banc.o.rapide ? 6 : L.gestes;
   for (const [genre, action] of [['toucher', 'pouvoir'], ['glisse', 'apogee'], ['tenu', 'boost']]) {
     const r = await serieSecondDoigt(s, genre, ng, genre === 'tenu' ? { duree: 0.5 } : {});
-    if (!r.journal) { res.absent(`${genre} : ${ng} sur ${ng}`, 'N.journal.dump'); continue; }
+    if (!r.journal) { res.verifie(`${genre} : relâchements DOM conformes`,r.essais.filter(e=>e.contrat).length,ng,false,{essais:r.essais}); continue; }
     const bon = r.actions[action] || 0, autresA = Object.entries(r.actions).filter(([k]) => k !== action).reduce((a, [, v]) => a + v, 0);
     res.verifie(`${genre} → ${action} : ${ng} sur ${ng}`, bon, ng, bon === ng && autresA === 0, { actions: r.actions, entrees: r.entrees, traceDoigts: r.traceDoigts, source: r.source });
   }
+  await preparerScene(s);
   /* 4. les balayages depuis les bords */
   await s.eval(() => {
     window.__R33 = { prevenus: 0, touches: 0, origines: [] };
