@@ -1,4 +1,4 @@
-18/10/2026 04:51:38 (Paris), mis à jour à 18/10/2026 04:51:38.
+18/10/2026 05:06:09 (Paris), mis à jour à 18/10/2026 05:06:09.
 
 | Pilote | Cible | Avant (50 graines) | Après (50 graines) | Seuil inchangé | B/i | Tenu après ? |
 |---|---|---|---|---|---|---|

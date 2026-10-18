@@ -1,24 +1,15 @@
 {
   "objectif": "codex-11, voir methode.md et ordre10",
-  "phase": "Mesures figées terminées, lot de réglage arrêté ; contrôle console/UI courant en attente du créneau",
+  "phase": "Livraison complète ; accepté avec réserves par Claude04h54 ; réglageB arrêté",
   "sourceBase": "52fe12d pour pairefigée, intégrations p14/p17/p18/p4d et suivantes préservées sur branche mais horspaire",
   "sourceFigée": "avant-sources.json",
   "source79": "aucune édition autorisée ici ; patch si indispensable",
   "restant": [
-    "contrôle console/UI du bundle courant, processus86013 déjà engagé",
-    "livraison des reçus et libération des sources76",
-    "médiation Claude et prochain ordre"
+    "suivre nouvel ordre codex-12 ; ne pas reprendre les ciblesB"
   ],
   "budget": "3 passes exploratoires maximum, arrêt 2 sans nouvelleB ; final unique50graines, plafond540s",
-  "misAJourParis": "18/10/2026 · 04 h 53",
-  "enCours": [
-    {
-      "session": 51892,
-      "pid": 86013,
-      "tache": "console-integration.mjs : attend chef.lock absent et zéro headless ; trois profils et UI R35 seulement",
-      "etat": "console-integration.json"
-    }
-  ],
+  "misAJourParis": "18/10/2026 · 05 h 06",
+  "enCours": [],
   "preuves": {
     "avant": "400 cas,395fins,5bornes,0erreur,source52fe12d",
     "passe1": "160/160fins0erreur,11B ; V1<24s, maladroit56,32, humain213,07 ; dieu médiane379,18 mais plage328,37–457,39",
@@ -29,12 +20,12 @@
     "criteresApres": "R31 sixok/unéchec : bon16 meurt après nettoyageV5 à278,552s, murMobile sans annonce aprèsfintravelling262,017s ; R35 V1=23,89167s conforme, REJOUER2,81667s avecbriefing inchangé. Zéroerreur. Rapport strict publié."
   },
   "sourceCandidate": "apres-sources.json = valeurs1 + correctif TRAQUEUR. Passe3 source figée distincte ; source globale02 est déjà préparée avec valeurs1, ajouts des autres sessions conservés.",
-  "prochaineAction": "Ne pas recréer86013 ni Chromium. Attendre sa fin via session51892 ; compléter rapport courant, commiter reçus, libérer sources76, pull/build/push puis relire boîte. Aucun réglage ni qualification50 supplémentaires.",
+  "prochaineAction": "Codex-11 clos côté auteur. Lire ordre11/codex-12 ; aucune série11 à relancer.",
   "banc": "banc/worker/protocole/analyse exacts de p5 ; chargeur ajouté uniquement pour les sources figées",
   "verrouChromium": "Ancien pipeline34367/72314 réellement terminé04h40 ; témoin propre libéré. Seul86013 attend maintenant.",
   "secondMac": "SSH MacBook-Air-de-Manon.local essayé03h15 : connexion refusée ; aucun calcul ni clé installé à distance. Une seule file VM sur ce Mac.",
-  "sourceReservation": "76-defile encore réservé, non modifié ; cinquièmeVOL déjà prouvé sur référence",
+  "sourceReservation": "Toutes réservations11 libérées,76-defile non modifié",
   "preuveCorrectif": "2contrats échouent avant surTRAQUEUR ;18/18après, sourceSHA dans contrats.json.",
   "diagnosticComparateur": "URL journal=1 réparée,20comparaisons terminées : huit métriques finales exactes, structures événement identiques ; journal strict toujours en échec. Sélection de trois défis initiaux jour17/18, autres écarts numériques seulement ; diagnostic-equivalence.json conserve le maximum et les écarts non numériques. Aucun champ retiré ni tolérance adoptée. Pas de nouveau replay.",
-  "verificationCourante": "Engagée04h50, session51892, PID86013 ; aucun navigateur tant que verrou chef présent."
+  "verificationCourante": "Processus86013 réellement terminé, session51892 close ; console zéro troisprofils, REJOUER2,81667/2,81667/2,83333s avecbriefing. SHA b7caee58b8b4646fe2187940ad03514a53c4cf42092b5b0e1b1d5d053666a68e."
 }

@@ -1,6 +1,6 @@
 # codex-11 — directeur des vagues
 
-18/10/2026 · 04 h 51 (Paris) · mis à jour à 18/10/2026 · 04 h 51.
+18/10/2026 · 05 h 06 (Paris) · mis à jour à 18/10/2026 · 05 h 06.
 
 Source et preuves livrables pour médiation. **Réglage global non validé : 5 → 7/20 cibles B.** 397/400 fins après, 0 erreur(s) VM/console ; 3 cas censuré(s), borne de 540 s conservée. Équivalence VM/Chromium sur dix références par version : NON CONFORME : les métriques VM ne constituent pas une qualification.
 
@@ -35,9 +35,11 @@ R-31 après : six mesures conformes, une mort par mur mobile sans annonce (zéro
 
 Les vingt comparaisons VM/Chromium retrouvent exactement les huit métriques finales et la structure des événements (pas, temps, image, type). Le journal complet reste STRICTEMENT différent : trois sélections de défis au démarrage portent le jour 20261017 en VM contre 20261018 dans Chromium ; les autres écarts observés sont numériques dans les données d’événement. Maximum absolu hors défis : avant = 1.639083038185163e-7 ; apres = 3.745981302927248e-11. Le diagnostic lit les reçus complets existants : aucune tolérance adoptée, aucun champ supprimé, aucune partie relancée. Cela limite la qualification VM revendiquée, malgré la concordance des métriques finales. Détails : diagnostic-equivalence.json, journaux bruts equivalence-*-recus/.
 
+Complément intégré : console zéro sur trois profils (V1 simulée 5 s), SHA b7caee58b8b4646fe2187940ad03514a53c4cf42092b5b0e1b1d5d053666a68e. REJOUER reste avec briefing : paysage 2,82 s ; portrait 2,82 s ; bureau 2,83 s. Échec confirmé sur ce bundle intégré, contrôle limité aux deux volets UI de R35 ; aucune campagne complète supplémentaire. Tous les processus de cette livraison sont terminés.
+
 ## Tableau p5 complet — mêmes cinquante graines
 
-18/10/2026 04:51:38 (Paris), mis à jour à 18/10/2026 04:51:38.
+18/10/2026 05:06:09 (Paris), mis à jour à 18/10/2026 05:06:09.
 
 | Pilote | Cible | Avant (50 graines) | Après (50 graines) | Seuil inchangé | B/i | Tenu après ? |
 |---|---|---|---|---|---|---|
