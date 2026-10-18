@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 06 h 13)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 08 h 06)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -46,6 +46,14 @@
   CYCLOPE, morceau à demi-vitesse ; rejeu H sur la pointe en file pour séparer préexistant/régression), p22d (clips PLONGÉE, planches relues bonnes).
   Sessions : p40 (attraction R-19), p41 (relance R-35), p42 (instruments R-07/R-17) ; boîte : codex-12 ordre 12. File navigateur : p21 en cours,
   puis p30, p32, aventure, p35, p15c, p38, p22d (copie codex-p22c), H sur chef, p39. Ensuite : p31 ; p35 → raccord 15-decor (après p33) ; batterie.
+- À 08 h 06 : intégrés p21 (40357d0), p15c (8969e50), raccord codex-12 79-scene (1a676b3), p30 (6fc61f0, + 40-sprites/70-joueuse 0cc5700), p32 (695ec30),
+  p38 (93ac478 + raccords ed9ed83), p41 (f786ef6 + 13c80af), p43 (instrument tactile, c30fcb8). codex-12 ordre 12 accepté (bannières) ; ordre 13 (morts d'élites,
+  R-12) en cours dans la boîte. Livrés, vérifieur en file (`file-verifs.sh`, ordre) : p44 (difficulté ; raccords 70-joueuse, 73-colosse, 79-jeu), p35 avec raccord
+  15-decor (limiteur R-13 ; plongée portrait 27–28 flashs/s préexistant), p45b (perf −38 %, arrêt ; décision R-20 proposée dans SORTIE.md), p31 (R-08 ; raccords
+  72-ennemis, 03-socle), p33b (frein audio retiré) puis banc aventure sur chef, p40c (attraction), p22d en Chrome (H.264). Sessions : p39b (vérifieur LASSO, puis
+  raccord 70-joueuse de p39), p47 (R-33 : touchers courts pendant un recentrage → pouvoir involontaire). Diagnostic p46 : R-05 = échantillon, aucun code.
+  Ensuite : intégrer dans l'ordre 50-fx/79-jeu/15-decor/70-joueuse avec `git apply --check` ; secousses (trauma 50-fx) après p35 ; batterie ; jury ; publication.
+- **Copie dérivée d'une autre copie : appliquer le diff (`git diff` → `git apply -3`), jamais copier les fichiers** (p44 avait effacé du p21).
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;
