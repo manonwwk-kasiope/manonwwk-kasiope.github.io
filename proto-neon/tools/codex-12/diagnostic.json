@@ -1,0 +1,65 @@
+{
+  "dateParis": "18/10/2026 05:10:16",
+  "sourceSha256": "d248653b8461b4a5e29d68ddf6dc573fa9ff2bc260a35ed371440dab666f5158",
+  "casAvant": 70,
+  "complete": false,
+  "diagnostic": "R15 exige un pic pour toute vague entrée ; ces cas finissent avant son heure prévue, ni fausse apparition ni faux pic ne sont proposés pour les faire passer.",
+  "casSansPic": [
+    {
+      "pilote": "bon",
+      "graine": 4,
+      "vague": 5,
+      "entree": 218.43250001566147,
+      "fin": 230.48250001565052,
+      "dureeDisponible": 12.04999999998904,
+      "heurePicPrevue": 32,
+      "raison": "fin",
+      "recu": "recus/ad234b1a8bcee062-bon-4.json.gz"
+    },
+    {
+      "pilote": "bon",
+      "graine": 9,
+      "vague": 3,
+      "entree": 78.65000000398204,
+      "fin": 91.27500000399209,
+      "dureeDisponible": 12.625000000010047,
+      "heurePicPrevue": 30,
+      "raison": "fin",
+      "recu": "recus/ad234b1a8bcee062-bon-9.json.gz"
+    }
+  ],
+  "R14": {
+    "constat": "Critère compte tous les appels à N.hud.banniere, avant admission ou rejet ; HUD actuel met en file et ne renseigne derniereBan que dans drawBanner, absent du banc nodraw.",
+    "preuveHUD": [
+      {
+        "ligne": 20,
+        "code": "  var temps = 0, derniereBan = -Infinity, palierVu = null, palier = null;"
+      },
+      {
+        "ligne": 28,
+        "code": "    temps = 0; derniereBan = -Infinity; palierVu = null; palier = null;"
+      },
+      {
+        "ligne": 49,
+        "code": "    if (file.length && (file[0].cyclope || temps - derniereBan >= R.scene.budgets.banniereIntervalle)) demarrer(file.shift());"
+      },
+      {
+        "ligne": 58,
+        "code": "    else if (!ban && temps - derniereBan >= R.scene.budgets.banniereIntervalle) demarrer(b);"
+      },
+      {
+        "ligne": 61,
+        "code": "      file.push(b);"
+      },
+      {
+        "ligne": 284,
+        "code": "      if (!b.cyclope) derniereBan = temps;"
+      },
+      {
+        "ligne": 285,
+        "code": "      if (N.journal) N.journal('hudBanniere', { texte: b.lines.join(' / '), cyclope: b.cyclope, temps: temps,"
+      }
+    ],
+    "consigne": "Arbitrage Claude demandé ; aucun instrument, seuil ou reçu retouché."
+  }
+}
