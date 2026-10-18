@@ -19,3 +19,9 @@ Budgets totaux de vague (respiration de8s incluse) : V1 23,5s, V2 38s, V3 44s. C
 V1 quota8, cadence de groupes4s ; plafonds successifs3 à0s,4 à8s,6 à12s ; FILE2, NUÉE2–3 ; entrées FILE0/8s, NUÉE12s. V2 cadence2s ; plafonds4 à0s,8 à12s,16 à26s ; MEUTE3, NUÉE2–4. Formations globales et V3–V5 conservées. Ces valeurs sont des hypothèses de progression, pas des effets déjà mesurés. Chiffres écrits dans N.R.directeur et consignés dans demandes.md.
 
 Priorité du pic : quand son heure est atteinte, les groupes ordinaires attendent sa vraie apparition ; aucune élite fictive ne débloque la respiration. Cette correction structurelle précède toute mesure du candidat.
+
+## Passe exploratoire 2 — décidée le18/10/2026 à03h32 avant exécution
+
+Passe1 : 160/160 fins, zéro erreur ; maladroit56,32s, humain213,07s, bon35% de victoires, expert45%. Dieu médiane379,18s, mais plage328,37–457,39s : le seuil de durée porte sur toutes les parties et reste non validé. Onze B. V1 mesurée sous24s sur les20graines bon.
+
+Une seule variation : le plafond intermédiaire de V2, à12s de vague, passe de8 à10 (`directeur.vagues.1.plafonds.1.n`). Départ4 et palier final16 à26s conservés, cadence et toutes les autres valeurs inchangées. Hypothèse : remettre de la pression après l'entrée calme, pour réduire le léger dépassement humain et le taux de victoire bon, tout en conservant la survie maladroite. Ce n'est pas une cause prouvée avant mesure. Aucune retouche de V4/V5 ni des pilotes ; la paire conserve le85 antérieur àp14. Les ajouts p14 reçus par pull sont conservés dans le checkout, sans modifier les séries figées.

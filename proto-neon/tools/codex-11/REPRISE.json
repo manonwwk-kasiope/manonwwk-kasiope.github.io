@@ -1,6 +1,6 @@
 {
   "objectif": "codex-11, voir methode.md et ordre10",
-  "phase": "baseline 400 sur instantané avant, en série",
+  "phase": "passe2 exploratoire20, seule variation plafond intermédiaireV2 8→10",
   "sourceBase": "52fe12d",
   "sourceFigée": "avant-sources.json",
   "source79": "aucune édition autorisée ici ; patch si indispensable",
@@ -12,25 +12,22 @@
     "livraison et pull boîte"
   ],
   "budget": "3 passes exploratoires maximum, arrêt 2 sans nouvelleB ; final unique50graines, plafond540s",
-  "misAJourParis": "18/10/2026 · 03 h 13",
+  "misAJourParis": "18/10/2026 · 03 h 32",
   "enCours": [
     {
-      "session": 53009,
-      "pid": 11615,
-      "tache": "400 avant sur source figée ; ne pas relancer",
-      "journal": "/tmp/snake-codex11-avant.log"
-    },
-    {
-      "session": 90732,
-      "pid": 13012,
-      "tache": "file unique qui attend la baseline complète puis passe1 sur20 ; ne pas doubler",
-      "etat": "suite-vm-execution.json"
+      "session": 65595,
+      "tache": "passe2, vingt graines ×huit pilotes, source figée, sérieunique",
+      "journal": "tools/codex-11/passe-2.log"
     }
   ],
-  "preuves": "16 contrats VM conformes, effectifs réellement produits1/2 via N.R et plafond tenu après42s ; pas encore de performance candidat ni verdict Chromium",
-  "sourceCandidate": "passe-1-sources.json ; seule02/76-directeur changée, bundle gzip reproductible",
-  "prochaineAction": "attendre les deux sessions existantes ; lire baseline/passe1 avant de choisir une deuxième passe ou figer ; aucun final50 avant ce choix",
+  "preuves": {
+    "avant": "400 cas,395fins,5bornes,0erreur,source52fe12d",
+    "passe1": "160/160fins0erreur,11B ; V1<24s, maladroit56,32, humain213,07 ; dieu médiane379,18 mais plage328,37–457,39"
+  },
+  "sourceCandidate": "passe-2-sources.json ; snapshot dérivé de passe1, p14 exclu des DEUX séries appariées, préservé dans le checkout",
+  "prochaineAction": "observer la seule passe2 en cours ; la comparer àpasse1 et référence20, décider de la candidate avant la qualification50. Aucune reprise de53009/90732 : sessions terminées.",
   "banc": "banc/worker/protocole/analyse exacts de p5 ; chargeur ajouté uniquement pour les sources figées",
   "verrouChromium": "pas encore demandé ; après final VM, criteres.mjs attend chef.lock et zéro headless puis revendique son propre témoin pour équivalence et R31/R35",
-  "secondMac": "SSH MacBook-Air-de-Manon.local essayé03h15 : connexion refusée ; aucun calcul ni clé installé à distance. Une seule file VM sur ce Mac."
+  "secondMac": "SSH MacBook-Air-de-Manon.local essayé03h15 : connexion refusée ; aucun calcul ni clé installé à distance. Une seule file VM sur ce Mac.",
+  "sourceReservation": "76-defile encore réservé, non modifié ; cinquièmeVOL déjà prouvé sur référence"
 }
