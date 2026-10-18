@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import {sources,monde} from './vm.mjs';
+const src=sources(),{c,N,S,stockage}=monde(src);let now=0;c.performance={now:()=>now};
+N.game.reset(7,{depart:'titre'});N.horloge.avancer();
+N.game.dbg.simuler(10);S.input.any=true;N.game.dbg.simuler(N.R.temps.h);N.game.dbg.simuler(10);
+const encoreTitre=N.game.etat();assert.equal(encoreTitre,'titre');N.game.dbg.simuler(5.1);assert.equal(N.game.etat(),'attraction');
+const avant=JSON.stringify([...stockage]);
+N.game.dbg.simuler(45);const boucle={etat:N.game.etat(),err:c.__ERR,disqueIntact:avant===JSON.stringify([...stockage]),pilote:N.pilote.actif(),masterMute:N.music.muted(),canalMusique:N.music.muted('musique'),canalEffets:N.music.muted('effets')};
+assert.equal(boucle.etat,'attraction');assert.equal(boucle.err.count,0);assert.ok(boucle.disqueIntact&&boucle.pilote&&boucle.masterMute&&boucle.canalMusique&&boucle.canalEffets);
+// Sortie souris, puis relâcher tardif (vraies fonctions de boot sans DOM).
+c.__evt={pointerType:'mouse',type:'pointerdown',clientX:200,clientY:150,button:0,buttons:1};vm.runInContext('onPointer(__evt)',c);N.game.update(N.R.temps.h);
+const sortie=N.game.etat();assert.equal(sortie,'titre');N.game.dbg.simuler(0.5);
+c.__evt={pointerType:'mouse',type:'pointerup',clientX:200,clientY:150,button:0,buttons:0};vm.runInContext('onPointer(__evt)',c);N.game.update(N.R.temps.h);
+assert.equal(N.game.etat(),'titre');assert.equal(S.input.taps.length,0);assert.equal(N.pilote.actif(),false);assert.equal(N.music.muted(),false);
+const fin={etat:N.game.etat(),pilote:N.pilote.actif(),masterMute:N.music.muted(),err:c.__ERR};
+const fichier='03-socle.js',texte=src[fichier];
+const candidat={...src,[fichier]:texte.replace("doigt: un(['manche', 'action', 'bouton']), duree: 'n+'", "doigt: un(['manche', 'action', 'bouton']), t0: '?n', t1: '?n', duree: 'n+'")};
+const m=monde(candidat);m.c.__genre='toucher';m.c.__doigt={t0:0,x0:0,y0:0,x:0,y:0};m.c.__t1=50;vm.runInContext('geste(__genre,__doigt,__t1)',m.c);
+const schemaCandidat=m.N.ids.valider('journal:geste',m.N.journal.dernier('geste'));assert.equal(schemaCandidat.length,0);
+const result={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),encoreTitre,boucle,sortie,fin,schemaCandidat:Array.from(schemaCandidat),note:'Extension du schéma validée en copie VM uniquement ; patch non appliqué au socle.'};
+fs.writeFileSync(new URL('./complements.json',import.meta.url),JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));

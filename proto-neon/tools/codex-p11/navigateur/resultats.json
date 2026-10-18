@@ -1,0 +1,2871 @@
+{
+  "dateParis": "18/10/2026 02:28:36",
+  "bundleSha256": "4287bfe657a298317c57c065d86044d7c05a9f2a4a7ca3c5cc5993746b637cf4",
+  "profils": [
+    {
+      "nom": "paysage",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "controles": [
+        {
+          "nom": "titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 18172,
+            "1": 8667,
+            "2": 3067,
+            "4": 3477,
+            "7": 1664,
+            "9": 299,
+            "11": 1423,
+            "12": 2456,
+            "13": 3664,
+            "14": 23540,
+            "15": 15861
+          }
+        },
+        {
+          "nom": "contexte audio actif",
+          "ok": true,
+          "valeur": {
+            "bar": 0,
+            "step": 7,
+            "bpm": 143.759,
+            "tension": 0.12,
+            "key": 0,
+            "over": false,
+            "morceau": false,
+            "layers": 3,
+            "perc": false,
+            "spark": false,
+            "inv": false,
+            "heart": false,
+            "grid": 4,
+            "fill": "none",
+            "brk": "none",
+            "muffle": 0,
+            "gate": 1,
+            "section": "titre",
+            "mode": "on",
+            "state": "running",
+            "muted": false,
+            "sleeping": false,
+            "running": true
+          }
+        },
+        {
+          "nom": "attraction 15 ± 1 s",
+          "ok": true,
+          "valeur": 15
+        },
+        {
+          "nom": "attraction palette",
+          "ok": true,
+          "valeur": {
+            "1": 34917,
+            "2": 1885,
+            "3": 4763,
+            "4": 8531,
+            "5": 930,
+            "7": 262,
+            "8": 87,
+            "9": 11726,
+            "10": 3398,
+            "11": 3387,
+            "12": 591,
+            "13": 461,
+            "14": 6835,
+            "15": 4517
+          }
+        },
+        {
+          "nom": "attraction-suite palette",
+          "ok": true,
+          "valeur": {
+            "1": 32326,
+            "2": 1947,
+            "3": 4651,
+            "4": 10843,
+            "7": 289,
+            "8": 182,
+            "9": 12648,
+            "10": 1654,
+            "11": 4988,
+            "12": 455,
+            "13": 460,
+            "14": 7261,
+            "15": 4586
+          }
+        },
+        {
+          "nom": "partie effectivement jouée",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "x": 389.68666666666667,
+              "y": 256,
+              "ang": 0,
+              "angVise": 0,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                389.1199951171875,
+                256,
+                384.1199951171875,
+                256,
+                379.1199951171875,
+                256,
+                374.1199951171875,
+                256,
+                369.1199951171875,
+                256,
+                364.1199951171875,
+                256,
+                359.1199951171875,
+                256,
+                354.1199951171875,
+                256,
+                349.1199951171875,
+                256
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            },
+            "apres": {
+              "x": 525.6866666666672,
+              "y": 256,
+              "ang": 0,
+              "angVise": 0,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                525.1199951171875,
+                256,
+                520.1199951171875,
+                256,
+                515.1199951171875,
+                256,
+                510.1199951171875,
+                256,
+                505.1199951171875,
+                256,
+                500.1199951171875,
+                256,
+                495.1199951171875,
+                256,
+                490.1199951171875,
+                256,
+                485.1199951171875,
+                256
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            }
+          }
+        },
+        {
+          "nom": "sortie audio démo ≤ titre",
+          "ok": true,
+          "valeur": {
+            "titre": 0.09074716993388128,
+            "demo": 0,
+            "info": {
+              "bar": 3,
+              "step": 8,
+              "bpm": 143.759,
+              "tension": 0.06,
+              "key": 0,
+              "over": true,
+              "morceau": false,
+              "layers": 2,
+              "perc": false,
+              "spark": false,
+              "inv": false,
+              "heart": false,
+              "grid": 4,
+              "fill": "snare",
+              "brk": "beat",
+              "muffle": 0,
+              "gate": 0,
+              "section": "attraction",
+              "mode": "on",
+              "state": "running",
+              "muted": true,
+              "sleeping": false,
+              "running": true
+            }
+          }
+        },
+        {
+          "nom": "démo silencieuse",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "musique": true,
+              "effets": true
+            },
+            "apres": {
+              "musique": true,
+              "effets": true
+            }
+          }
+        },
+        {
+          "nom": "premier toucher → titre",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "relâcher ne lance pas JOUER",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "retour-titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 18172,
+            "1": 8667,
+            "2": 3067,
+            "4": 3477,
+            "7": 1664,
+            "9": 299,
+            "11": 1423,
+            "12": 2456,
+            "13": 3664,
+            "14": 23540,
+            "15": 15861
+          }
+        },
+        {
+          "nom": "six toucher",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt toucher",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 17266.66666666648,
+              "t1": 17316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 17766.66666666648,
+              "t1": 17816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 18266.66666666648,
+              "t1": 18316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 18766.66666666648,
+              "t1": 18816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 19266.66666666648,
+              "t1": 19316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 19766.66666666648,
+              "t1": 19816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            }
+          ]
+        },
+        {
+          "nom": "six glisse",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt glisse",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 20266.66666666648,
+              "t1": 20306.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 20756.66666666648,
+              "t1": 20796.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 21246.66666666648,
+              "t1": 21286.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 21736.66666666648,
+              "t1": 21776.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 22226.66666666648,
+              "t1": 22266.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 22716.66666666648,
+              "t1": 22756.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            }
+          ]
+        },
+        {
+          "nom": "six tenu",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt tenu",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 23206.66666666648,
+              "t1": 23413.333333333147,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 23863.333333333147,
+              "t1": 24069.999999999814,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 24519.999999999814,
+              "t1": 24726.666666666482,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 25176.666666666482,
+              "t1": 25383.33333333315,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 25833.33333333315,
+              "t1": 26039.999999999818,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 26489.999999999818,
+              "t1": 26696.666666666486,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            }
+          ]
+        },
+        {
+          "nom": "contrat journal geste",
+          "ok": true,
+          "valeur": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "nom": "JOUER → aventure",
+          "ok": true,
+          "valeur": {
+            "etat": "aventure",
+            "etape": "choix",
+            "registre": {
+              "horloge": "avance",
+              "section": null,
+              "plein": true
+            }
+          }
+        },
+        {
+          "nom": "aventure palette",
+          "ok": true,
+          "valeur": {
+            "1": 258,
+            "2": 413,
+            "3": 136,
+            "4": 176,
+            "5": 842,
+            "6": 311,
+            "9": 515,
+            "10": 284,
+            "11": 439,
+            "12": 307,
+            "13": 45,
+            "14": 553,
+            "15": 78011
+          }
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "erreurs": []
+          }
+        }
+      ],
+      "captures": [
+        {
+          "label": "titre",
+          "etat": "titre",
+          "w": 422,
+          "h": 195,
+          "histogramme": {
+            "0": 18172,
+            "1": 8667,
+            "2": 3067,
+            "4": 3477,
+            "7": 1664,
+            "9": 299,
+            "11": 1423,
+            "12": 2456,
+            "13": 3664,
+            "14": 23540,
+            "15": 15861
+          },
+          "sha256": "5d913a322435467b2078baafb8cffbba05896a65cd09c8f518f480a4b4f4f21e"
+        },
+        {
+          "label": "attraction",
+          "etat": "attraction",
+          "w": 422,
+          "h": 195,
+          "histogramme": {
+            "1": 34917,
+            "2": 1885,
+            "3": 4763,
+            "4": 8531,
+            "5": 930,
+            "7": 262,
+            "8": 87,
+            "9": 11726,
+            "10": 3398,
+            "11": 3387,
+            "12": 591,
+            "13": 461,
+            "14": 6835,
+            "15": 4517
+          },
+          "sha256": "4390cd49bca51d88eaf830cf697977d372011ca5595beb39a9db24bd443e7f8d"
+        },
+        {
+          "label": "attraction-suite",
+          "etat": "attraction",
+          "w": 422,
+          "h": 195,
+          "histogramme": {
+            "1": 32326,
+            "2": 1947,
+            "3": 4651,
+            "4": 10843,
+            "7": 289,
+            "8": 182,
+            "9": 12648,
+            "10": 1654,
+            "11": 4988,
+            "12": 455,
+            "13": 460,
+            "14": 7261,
+            "15": 4586
+          },
+          "sha256": "c99f64f692e823e45a566ac2a49cf843680780db3e3b756e1d09f16449e29a3b"
+        },
+        {
+          "label": "retour-titre",
+          "etat": "titre",
+          "w": 422,
+          "h": 195,
+          "histogramme": {
+            "0": 18172,
+            "1": 8667,
+            "2": 3067,
+            "4": 3477,
+            "7": 1664,
+            "9": 299,
+            "11": 1423,
+            "12": 2456,
+            "13": 3664,
+            "14": 23540,
+            "15": 15861
+          },
+          "sha256": "5d913a322435467b2078baafb8cffbba05896a65cd09c8f518f480a4b4f4f21e"
+        },
+        {
+          "label": "aventure",
+          "etat": "aventure",
+          "w": 422,
+          "h": 195,
+          "histogramme": {
+            "1": 258,
+            "2": 413,
+            "3": 136,
+            "4": 176,
+            "5": 842,
+            "6": 311,
+            "9": 515,
+            "10": 284,
+            "11": 439,
+            "12": 307,
+            "13": 45,
+            "14": 553,
+            "15": 78011
+          },
+          "sha256": "49309de5aec69ed85a0b9378c34d2a3755140595f1df3019db73a144f1ca98c7"
+        }
+      ],
+      "erreurs": [],
+      "titreAudio": [
+        0.03453581210240004,
+        0.034794489809877906,
+        0.033512230246533575,
+        0.09074716993388128,
+        0.058381616160832324,
+        0.050528770487227787,
+        0.06063484912654324,
+        0.07022963473002124,
+        0.058157851044128635,
+        0.07881251449107265
+      ],
+      "gestes": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 17266.66666666648,
+            "t1": 17316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 17766.66666666648,
+            "t1": 17816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 18266.66666666648,
+            "t1": 18316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 18766.66666666648,
+            "t1": 18816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 19266.66666666648,
+            "t1": 19316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 19766.66666666648,
+            "t1": 19816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 20266.66666666648,
+            "t1": 20306.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 20756.66666666648,
+            "t1": 20796.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 21246.66666666648,
+            "t1": 21286.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 21736.66666666648,
+            "t1": 21776.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 22226.66666666648,
+            "t1": 22266.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 22716.66666666648,
+            "t1": 22756.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1025,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 23206.66666666648,
+            "t1": 23413.333333333147,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 2,
+          "t": 0,
+          "image": 1026,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 23863.333333333147,
+            "t1": 24069.999999999814,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 4,
+          "t": 0,
+          "image": 1027,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 24519.999999999814,
+            "t1": 24726.666666666482,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 6,
+          "t": 0,
+          "image": 1028,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 25176.666666666482,
+            "t1": 25383.33333333315,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 8,
+          "t": 0,
+          "image": 1029,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 25833.33333333315,
+            "t1": 26039.999999999818,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 10,
+          "t": 0,
+          "image": 1030,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 26489.999999999818,
+            "t1": 26696.666666666486,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        }
+      ],
+      "schemasGestes": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "final": {
+        "etat": "aventure",
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "conforme": true
+    },
+    {
+      "nom": "portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controles": [
+        {
+          "nom": "titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 45430,
+            "1": 4926,
+            "2": 1795,
+            "4": 1632,
+            "7": 1293,
+            "9": 111,
+            "11": 422,
+            "12": 1944,
+            "13": 2936,
+            "14": 9762,
+            "15": 12039
+          }
+        },
+        {
+          "nom": "contexte audio actif",
+          "ok": true,
+          "valeur": {
+            "bar": 0,
+            "step": 7,
+            "bpm": 143.759,
+            "tension": 0.12,
+            "key": 0,
+            "over": false,
+            "morceau": false,
+            "layers": 3,
+            "perc": false,
+            "spark": false,
+            "inv": false,
+            "heart": false,
+            "grid": 4,
+            "fill": "none",
+            "brk": "none",
+            "muffle": 0,
+            "gate": 1,
+            "section": "titre",
+            "mode": "on",
+            "state": "running",
+            "muted": false,
+            "sleeping": false,
+            "running": true
+          }
+        },
+        {
+          "nom": "attraction 15 ± 1 s",
+          "ok": true,
+          "valeur": 15
+        },
+        {
+          "nom": "attraction palette",
+          "ok": true,
+          "valeur": {
+            "0": 518,
+            "1": 34945,
+            "2": 998,
+            "3": 5306,
+            "4": 15493,
+            "5": 930,
+            "7": 256,
+            "8": 84,
+            "9": 8807,
+            "10": 3256,
+            "11": 3542,
+            "12": 590,
+            "13": 362,
+            "14": 2615,
+            "15": 4588
+          }
+        },
+        {
+          "nom": "attraction-suite palette",
+          "ok": true,
+          "valeur": {
+            "0": 505,
+            "1": 39993,
+            "2": 988,
+            "3": 5180,
+            "4": 12948,
+            "7": 284,
+            "8": 162,
+            "9": 9364,
+            "10": 1362,
+            "11": 3315,
+            "12": 459,
+            "13": 366,
+            "14": 2722,
+            "15": 4642
+          }
+        },
+        {
+          "nom": "partie effectivement jouée",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "x": 512,
+              "y": 316.87333333333333,
+              "ang": -1.5707963267948966,
+              "angVise": -1.5707963267948966,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                512,
+                317.44000244140625,
+                512,
+                322.44000244140625,
+                512,
+                327.44000244140625,
+                512,
+                332.44000244140625,
+                512,
+                337.44000244140625,
+                512,
+                342.44000244140625,
+                512,
+                347.44000244140625,
+                512,
+                352.44000244140625,
+                512,
+                357.44000244140625
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            },
+            "apres": {
+              "x": 512,
+              "y": 180.87333333333424,
+              "ang": -1.570796326794897,
+              "angVise": -1.570796326794897,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                512,
+                181.44000244140625,
+                512,
+                186.44000244140625,
+                512,
+                191.44000244140625,
+                512,
+                196.44000244140625,
+                512,
+                201.44000244140625,
+                512,
+                206.44000244140625,
+                512,
+                211.44000244140625,
+                512,
+                216.44000244140625,
+                512,
+                221.44000244140625
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            }
+          }
+        },
+        {
+          "nom": "sortie audio démo ≤ titre",
+          "ok": true,
+          "valeur": {
+            "titre": 0.09513964666518343,
+            "demo": 0,
+            "info": {
+              "bar": 3,
+              "step": 7,
+              "bpm": 143.759,
+              "tension": 0.06,
+              "key": 0,
+              "over": true,
+              "morceau": false,
+              "layers": 2,
+              "perc": false,
+              "spark": false,
+              "inv": false,
+              "heart": false,
+              "grid": 4,
+              "fill": "snare",
+              "brk": "beat",
+              "muffle": 0,
+              "gate": 0,
+              "section": "attraction",
+              "mode": "on",
+              "state": "running",
+              "muted": true,
+              "sleeping": false,
+              "running": true
+            }
+          }
+        },
+        {
+          "nom": "démo silencieuse",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "musique": true,
+              "effets": true
+            },
+            "apres": {
+              "musique": true,
+              "effets": true
+            }
+          }
+        },
+        {
+          "nom": "premier toucher → titre",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "relâcher ne lance pas JOUER",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "retour-titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 45430,
+            "1": 4926,
+            "2": 1795,
+            "4": 1632,
+            "7": 1293,
+            "9": 111,
+            "11": 422,
+            "12": 1944,
+            "13": 2936,
+            "14": 9762,
+            "15": 12039
+          }
+        },
+        {
+          "nom": "six toucher",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt toucher",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 17266.66666666648,
+              "t1": 17316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 17766.66666666648,
+              "t1": 17816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 18266.66666666648,
+              "t1": 18316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 18766.66666666648,
+              "t1": 18816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 19266.66666666648,
+              "t1": 19316.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 19766.66666666648,
+              "t1": 19816.66666666648,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            }
+          ]
+        },
+        {
+          "nom": "six glisse",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt glisse",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 20266.66666666648,
+              "t1": 20306.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 20756.66666666648,
+              "t1": 20796.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 21246.66666666648,
+              "t1": 21286.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 21736.66666666648,
+              "t1": 21776.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 22226.66666666648,
+              "t1": 22266.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 22716.66666666648,
+              "t1": 22756.66666666648,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            }
+          ]
+        },
+        {
+          "nom": "six tenu",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt tenu",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 23206.66666666648,
+              "t1": 23413.333333333147,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 23863.333333333147,
+              "t1": 24069.999999999814,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 24519.999999999814,
+              "t1": 24726.666666666482,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 25176.666666666482,
+              "t1": 25383.33333333315,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 25833.33333333315,
+              "t1": 26039.999999999818,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 26489.999999999818,
+              "t1": 26696.666666666486,
+              "duree": 0.2066666666666679,
+              "deplacement": 0,
+              "action": "boost"
+            }
+          ]
+        },
+        {
+          "nom": "contrat journal geste",
+          "ok": true,
+          "valeur": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "nom": "JOUER → aventure",
+          "ok": true,
+          "valeur": {
+            "etat": "aventure",
+            "etape": "choix",
+            "registre": {
+              "horloge": "avance",
+              "section": null,
+              "plein": true
+            }
+          }
+        },
+        {
+          "nom": "aventure palette",
+          "ok": true,
+          "valeur": {
+            "1": 819,
+            "2": 993,
+            "3": 118,
+            "4": 304,
+            "5": 362,
+            "6": 219,
+            "7": 59,
+            "8": 29,
+            "9": 228,
+            "10": 225,
+            "11": 95,
+            "12": 316,
+            "13": 67,
+            "14": 429,
+            "15": 78027
+          }
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "erreurs": []
+          }
+        }
+      ],
+      "captures": [
+        {
+          "label": "titre",
+          "etat": "titre",
+          "w": 195,
+          "h": 422,
+          "histogramme": {
+            "0": 45430,
+            "1": 4926,
+            "2": 1795,
+            "4": 1632,
+            "7": 1293,
+            "9": 111,
+            "11": 422,
+            "12": 1944,
+            "13": 2936,
+            "14": 9762,
+            "15": 12039
+          },
+          "sha256": "3fa3928079e4858ea8abe4e4ebe8db1588887c3a1a1eb8b86a59d11e9c8dbcf9"
+        },
+        {
+          "label": "attraction",
+          "etat": "attraction",
+          "w": 195,
+          "h": 422,
+          "histogramme": {
+            "0": 518,
+            "1": 34945,
+            "2": 998,
+            "3": 5306,
+            "4": 15493,
+            "5": 930,
+            "7": 256,
+            "8": 84,
+            "9": 8807,
+            "10": 3256,
+            "11": 3542,
+            "12": 590,
+            "13": 362,
+            "14": 2615,
+            "15": 4588
+          },
+          "sha256": "bd9bd02fa09a474b5fe80bf660827b4f11da2a090a38f904d07ae56f61ed1bee"
+        },
+        {
+          "label": "attraction-suite",
+          "etat": "attraction",
+          "w": 195,
+          "h": 422,
+          "histogramme": {
+            "0": 505,
+            "1": 39993,
+            "2": 988,
+            "3": 5180,
+            "4": 12948,
+            "7": 284,
+            "8": 162,
+            "9": 9364,
+            "10": 1362,
+            "11": 3315,
+            "12": 459,
+            "13": 366,
+            "14": 2722,
+            "15": 4642
+          },
+          "sha256": "067960eba9e24860fe85af67485307e650839af019d51cd789d5578f9c12c110"
+        },
+        {
+          "label": "retour-titre",
+          "etat": "titre",
+          "w": 195,
+          "h": 422,
+          "histogramme": {
+            "0": 45430,
+            "1": 4926,
+            "2": 1795,
+            "4": 1632,
+            "7": 1293,
+            "9": 111,
+            "11": 422,
+            "12": 1944,
+            "13": 2936,
+            "14": 9762,
+            "15": 12039
+          },
+          "sha256": "3fa3928079e4858ea8abe4e4ebe8db1588887c3a1a1eb8b86a59d11e9c8dbcf9"
+        },
+        {
+          "label": "aventure",
+          "etat": "aventure",
+          "w": 195,
+          "h": 422,
+          "histogramme": {
+            "1": 819,
+            "2": 993,
+            "3": 118,
+            "4": 304,
+            "5": 362,
+            "6": 219,
+            "7": 59,
+            "8": 29,
+            "9": 228,
+            "10": 225,
+            "11": 95,
+            "12": 316,
+            "13": 67,
+            "14": 429,
+            "15": 78027
+          },
+          "sha256": "6a51c48178d118a9e7b3a26a3aead009b6503d37b1c2ec771fb31e69c90b4321"
+        }
+      ],
+      "erreurs": [],
+      "titreAudio": [
+        0.03175310305146303,
+        0.03394882393327368,
+        0.06665947408026539,
+        0.09140729125742676,
+        0.055132250416045483,
+        0.05578006439028874,
+        0.048994209161970184,
+        0.08140837882331071,
+        0.055360110328664,
+        0.09513964666518343
+      ],
+      "gestes": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 17266.66666666648,
+            "t1": 17316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 17766.66666666648,
+            "t1": 17816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 18266.66666666648,
+            "t1": 18316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 18766.66666666648,
+            "t1": 18816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 19266.66666666648,
+            "t1": 19316.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 19766.66666666648,
+            "t1": 19816.66666666648,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 20266.66666666648,
+            "t1": 20306.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 20756.66666666648,
+            "t1": 20796.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 21246.66666666648,
+            "t1": 21286.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 21736.66666666648,
+            "t1": 21776.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 22226.66666666648,
+            "t1": 22266.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1024,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 22716.66666666648,
+            "t1": 22756.66666666648,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1025,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 23206.66666666648,
+            "t1": 23413.333333333147,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 2,
+          "t": 0,
+          "image": 1026,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 23863.333333333147,
+            "t1": 24069.999999999814,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 4,
+          "t": 0,
+          "image": 1027,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 24519.999999999814,
+            "t1": 24726.666666666482,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 6,
+          "t": 0,
+          "image": 1028,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 25176.666666666482,
+            "t1": 25383.33333333315,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 8,
+          "t": 0,
+          "image": 1029,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 25833.33333333315,
+            "t1": 26039.999999999818,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 10,
+          "t": 0,
+          "image": 1030,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 26489.999999999818,
+            "t1": 26696.666666666486,
+            "duree": 0.2066666666666679,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        }
+      ],
+      "schemasGestes": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "final": {
+        "etat": "aventure",
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "conforme": true
+    },
+    {
+      "nom": "bureau",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "controles": [
+        {
+          "nom": "titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 15279,
+            "1": 8235,
+            "2": 2770,
+            "4": 3047,
+            "7": 1619,
+            "9": 302,
+            "11": 1429,
+            "12": 2463,
+            "13": 3772,
+            "14": 22643,
+            "15": 19441
+          }
+        },
+        {
+          "nom": "contexte audio actif",
+          "ok": true,
+          "valeur": {
+            "bar": 0,
+            "step": 7,
+            "bpm": 143.759,
+            "tension": 0.12,
+            "key": 0,
+            "over": false,
+            "morceau": false,
+            "layers": 3,
+            "perc": false,
+            "spark": false,
+            "inv": false,
+            "heart": false,
+            "grid": 4,
+            "fill": "none",
+            "brk": "none",
+            "muffle": 0,
+            "gate": 1,
+            "section": "titre",
+            "mode": "on",
+            "state": "running",
+            "muted": false,
+            "sleeping": false,
+            "running": true
+          }
+        },
+        {
+          "nom": "attraction 15 ± 1 s",
+          "ok": true,
+          "valeur": 15
+        },
+        {
+          "nom": "attraction palette",
+          "ok": true,
+          "valeur": {
+            "1": 35917,
+            "2": 1527,
+            "3": 5046,
+            "4": 7061,
+            "5": 1696,
+            "7": 262,
+            "8": 87,
+            "9": 10474,
+            "10": 4589,
+            "11": 2818,
+            "12": 634,
+            "13": 415,
+            "14": 6034,
+            "15": 4440
+          }
+        },
+        {
+          "nom": "attraction-suite palette",
+          "ok": true,
+          "valeur": {
+            "1": 32595,
+            "2": 1587,
+            "3": 4612,
+            "4": 10068,
+            "7": 289,
+            "8": 182,
+            "9": 13411,
+            "10": 1923,
+            "11": 4738,
+            "12": 458,
+            "13": 432,
+            "14": 6175,
+            "15": 4530
+          }
+        },
+        {
+          "nom": "partie effectivement jouée",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "x": 389.68666666666667,
+              "y": 256,
+              "ang": 0,
+              "angVise": 0,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                389.1199951171875,
+                256,
+                384.1199951171875,
+                256,
+                379.1199951171875,
+                256,
+                374.1199951171875,
+                256,
+                369.1199951171875,
+                256,
+                364.1199951171875,
+                256,
+                359.1199951171875,
+                256,
+                354.1199951171875,
+                256,
+                349.1199951171875,
+                256
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            },
+            "apres": {
+              "x": 525.6866666666672,
+              "y": 256,
+              "ang": 0,
+              "angVise": 0,
+              "vit": 68,
+              "len": 8,
+              "segs": [
+                525.1199951171875,
+                256,
+                520.1199951171875,
+                256,
+                515.1199951171875,
+                256,
+                510.1199951171875,
+                256,
+                505.1199951171875,
+                256,
+                500.1199951171875,
+                256,
+                495.1199951171875,
+                256,
+                490.1199951171875,
+                256,
+                485.1199951171875,
+                256
+              ],
+              "etat": "vivant",
+              "boost": false,
+              "reserve": 100,
+              "apogee": 0,
+              "pouvoirPret": true,
+              "pouvoir": "traversee"
+            }
+          }
+        },
+        {
+          "nom": "sortie audio démo ≤ titre",
+          "ok": true,
+          "valeur": {
+            "titre": 0.0861868106630863,
+            "demo": 0,
+            "info": {
+              "bar": 9,
+              "step": 4,
+              "bpm": 143.759,
+              "tension": 0.06,
+              "key": 0,
+              "over": true,
+              "morceau": false,
+              "layers": 2,
+              "perc": false,
+              "spark": false,
+              "inv": false,
+              "heart": false,
+              "grid": 5,
+              "fill": "none",
+              "brk": "none",
+              "muffle": 0,
+              "gate": 0,
+              "section": "attraction",
+              "mode": "on",
+              "state": "running",
+              "muted": true,
+              "sleeping": false,
+              "running": true
+            }
+          }
+        },
+        {
+          "nom": "démo silencieuse",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "musique": true,
+              "effets": true
+            },
+            "apres": {
+              "musique": true,
+              "effets": true
+            }
+          }
+        },
+        {
+          "nom": "premier toucher → titre",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "relâcher ne lance pas JOUER",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "retour-titre palette",
+          "ok": true,
+          "valeur": {
+            "0": 15279,
+            "1": 8235,
+            "2": 2770,
+            "4": 3047,
+            "7": 1619,
+            "9": 302,
+            "11": 1429,
+            "12": 2463,
+            "13": 3772,
+            "14": 22643,
+            "15": 19441
+          }
+        },
+        {
+          "nom": "seconde attraction bureau",
+          "ok": true,
+          "valeur": {
+            "etat": "attraction",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "souris quitte attraction",
+          "ok": true,
+          "valeur": {
+            "etat": "titre",
+            "err": {
+              "count": 0,
+              "sigs": {}
+            }
+          }
+        },
+        {
+          "nom": "six toucher",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt toucher",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 33300.00000000091,
+              "t1": 33350.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 33800.00000000091,
+              "t1": 33850.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 34300.00000000091,
+              "t1": 34350.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 34800.00000000091,
+              "t1": 34850.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 35300.00000000091,
+              "t1": 35350.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            },
+            {
+              "genre": "toucher",
+              "doigt": "action",
+              "t0": 35800.00000000091,
+              "t1": 35850.00000000091,
+              "duree": 0.05,
+              "deplacement": 0,
+              "action": "pouvoir"
+            }
+          ]
+        },
+        {
+          "nom": "six glisse",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt glisse",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 36300.00000000091,
+              "t1": 36340.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 36790.00000000091,
+              "t1": 36830.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 37280.00000000091,
+              "t1": 37320.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 37770.00000000091,
+              "t1": 37810.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 38260.00000000091,
+              "t1": 38300.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            },
+            {
+              "genre": "glisse",
+              "doigt": "action",
+              "t0": 38750.00000000091,
+              "t1": 38790.00000000091,
+              "duree": 0.04,
+              "deplacement": 30,
+              "action": "apogee"
+            }
+          ]
+        },
+        {
+          "nom": "six tenu",
+          "ok": true,
+          "valeur": 6
+        },
+        {
+          "nom": "dates et doigt tenu",
+          "ok": true,
+          "valeur": [
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 39240.00000000091,
+              "t1": 39446.666666667574,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 39896.666666667574,
+              "t1": 40103.33333333424,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 40553.33333333424,
+              "t1": 40760.0000000009,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 41210.0000000009,
+              "t1": 41416.66666666757,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 41866.66666666757,
+              "t1": 42073.33333333423,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            },
+            {
+              "genre": "tenu",
+              "doigt": "action",
+              "t0": 42523.33333333423,
+              "t1": 42730.000000000895,
+              "duree": 0.20666666666666425,
+              "deplacement": 0,
+              "action": "boost"
+            }
+          ]
+        },
+        {
+          "nom": "contrat journal geste",
+          "ok": true,
+          "valeur": [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+          ]
+        },
+        {
+          "nom": "JOUER → aventure",
+          "ok": true,
+          "valeur": {
+            "etat": "aventure",
+            "etape": "choix",
+            "registre": {
+              "horloge": "avance",
+              "section": null,
+              "plein": true
+            }
+          }
+        },
+        {
+          "nom": "aventure palette",
+          "ok": true,
+          "valeur": {
+            "0": 16,
+            "1": 200,
+            "2": 336,
+            "3": 15,
+            "4": 129,
+            "5": 1160,
+            "6": 497,
+            "8": 2,
+            "9": 330,
+            "10": 243,
+            "11": 277,
+            "12": 277,
+            "13": 50,
+            "14": 797,
+            "15": 76671
+          }
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "erreurs": []
+          }
+        }
+      ],
+      "captures": [
+        {
+          "label": "titre",
+          "etat": "titre",
+          "w": 360,
+          "h": 225,
+          "histogramme": {
+            "0": 15279,
+            "1": 8235,
+            "2": 2770,
+            "4": 3047,
+            "7": 1619,
+            "9": 302,
+            "11": 1429,
+            "12": 2463,
+            "13": 3772,
+            "14": 22643,
+            "15": 19441
+          },
+          "sha256": "def0a585db81363fffce7c424633b15df4c5a9f95aa0375b792eeda7b8a61647"
+        },
+        {
+          "label": "attraction",
+          "etat": "attraction",
+          "w": 360,
+          "h": 225,
+          "histogramme": {
+            "1": 35917,
+            "2": 1527,
+            "3": 5046,
+            "4": 7061,
+            "5": 1696,
+            "7": 262,
+            "8": 87,
+            "9": 10474,
+            "10": 4589,
+            "11": 2818,
+            "12": 634,
+            "13": 415,
+            "14": 6034,
+            "15": 4440
+          },
+          "sha256": "ca02a75cb56f99b1bc76560ba35b84aa9631904af363d77cc2f33037bc367ce2"
+        },
+        {
+          "label": "attraction-suite",
+          "etat": "attraction",
+          "w": 360,
+          "h": 225,
+          "histogramme": {
+            "1": 32595,
+            "2": 1587,
+            "3": 4612,
+            "4": 10068,
+            "7": 289,
+            "8": 182,
+            "9": 13411,
+            "10": 1923,
+            "11": 4738,
+            "12": 458,
+            "13": 432,
+            "14": 6175,
+            "15": 4530
+          },
+          "sha256": "7dd693fc1a7d859196e5e4a827dfaf99174991dfc45ab4d5e1d668d1ad8e756a"
+        },
+        {
+          "label": "retour-titre",
+          "etat": "titre",
+          "w": 360,
+          "h": 225,
+          "histogramme": {
+            "0": 15279,
+            "1": 8235,
+            "2": 2770,
+            "4": 3047,
+            "7": 1619,
+            "9": 302,
+            "11": 1429,
+            "12": 2463,
+            "13": 3772,
+            "14": 22643,
+            "15": 19441
+          },
+          "sha256": "def0a585db81363fffce7c424633b15df4c5a9f95aa0375b792eeda7b8a61647"
+        },
+        {
+          "label": "aventure",
+          "etat": "aventure",
+          "w": 360,
+          "h": 225,
+          "histogramme": {
+            "0": 16,
+            "1": 200,
+            "2": 336,
+            "3": 15,
+            "4": 129,
+            "5": 1160,
+            "6": 497,
+            "8": 2,
+            "9": 330,
+            "10": 243,
+            "11": 277,
+            "12": 277,
+            "13": 50,
+            "14": 797,
+            "15": 76671
+          },
+          "sha256": "c5a5b9cae5a1cd03c5c859a7d4d4802e5a37367edaa3ed05253675102e8e1b91"
+        }
+      ],
+      "erreurs": [],
+      "titreAudio": [
+        0.03253026894401887,
+        0.026743035770335502,
+        0.0800516667155651,
+        0.07919457142292113,
+        0.05237033456323115,
+        0.06371188468045295,
+        0.053234284360461945,
+        0.07151872023075696,
+        0.06860970883435667,
+        0.0861868106630863
+      ],
+      "gestes": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 33300.00000000091,
+            "t1": 33350.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 33800.00000000091,
+            "t1": 33850.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 34300.00000000091,
+            "t1": 34350.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 34800.00000000091,
+            "t1": 34850.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 35300.00000000091,
+            "t1": 35350.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 35800.00000000091,
+            "t1": 35850.00000000091,
+            "duree": 0.05,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 36300.00000000091,
+            "t1": 36340.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 36790.00000000091,
+            "t1": 36830.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 37280.00000000091,
+            "t1": 37320.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 37770.00000000091,
+            "t1": 37810.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 38260.00000000091,
+            "t1": 38300.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1986,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 38750.00000000091,
+            "t1": 38790.00000000091,
+            "duree": 0.04,
+            "deplacement": 30,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 1987,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 39240.00000000091,
+            "t1": 39446.666666667574,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 2,
+          "t": 0,
+          "image": 1988,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 39896.666666667574,
+            "t1": 40103.33333333424,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 4,
+          "t": 0,
+          "image": 1989,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 40553.33333333424,
+            "t1": 40760.0000000009,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 6,
+          "t": 0,
+          "image": 1990,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 41210.0000000009,
+            "t1": 41416.66666666757,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 8,
+          "t": 0,
+          "image": 1991,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 41866.66666666757,
+            "t1": 42073.33333333423,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 10,
+          "t": 0,
+          "image": 1992,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 42523.33333333423,
+            "t1": 42730.000000000895,
+            "duree": 0.20666666666666425,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        }
+      ],
+      "schemasGestes": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "final": {
+        "etat": "aventure",
+        "err": {
+          "count": 0,
+          "sigs": {}
+        }
+      },
+      "conforme": true
+    }
+  ],
+  "chromium": "140.0.7339.16",
+  "conforme": true
+}

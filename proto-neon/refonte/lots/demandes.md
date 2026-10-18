@@ -381,3 +381,23 @@ Mise à jour codex-p8 à 01 h 55 : 20/20 parties inchangées avant/après, journ
 | codex-p10 | exécution hors bac | `cd proto-neon && node tools/codex-p10/verifier.mjs` | script prêt : trois profils, neuf scènes de 600 images, journal complet, transitions et luminance du vrai tampon, pixels de tête réellement dessinée et 48 sprites par profil, captures ; un seul Chromium muet. Ni serveur ni navigateur essayé dans ce bac. Safari réel reste à vérifier |
 
 Preuves détaillées et résultat non clos : `tools/codex-p10/rapport.md`. Aucune correction des modules réservés à leurs propriétaires, aucun commit.
+
+
+## codex-p11 — attraction, gestes et registre aventure
+
+18/10/2026 · 02 h 06 (Paris). État et preuves : `tools/codex-p11/rapport.md`.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p11 | `02-regles.js` (ajouts) | `ecrans.attraction.pilote = 'bon'` ; `gestes.msParSeconde = 1000` | politique publique déjà disponible pour jouer la démo ; conversion des t0/t1 en millisecondes vers la durée du schéma en secondes. Aucun seuil de reconnaissance changé |
+| codex-p11 | `79-jeu.js` | attente et durée reprises de `ecrans.attraction.attente = 15` et `.demo = 20`, graine existante ; démo silencieuse, sans bilan ni sauvegarde ; sortie au premier toucher/clavier/clic | R-19 ; la mort continue de tuer, elle relance uniquement la démo. Les transitions de combat ordinaires restent inchangées hors attraction ; aucun raccord defile modifié |
+| codex-p11 | `90-boot.js` (API publique ajoutée) | `N.entree.annuler()` | consommer le doigt/clic qui quitte la démo, y compris son relâcher, sans lancer JOUER à travers le titre ; reconnaissance inchangée |
+| codex-p11 | `03-socle.js` (registre appliqué) | `aventure`, `{horloge:'avance', section:null, plein:true}` | résout la demande codex-09 ; suppression de l'exception locale de 79-jeu |
+| codex-p11 | `03-socle.js` (schéma journal, hors réservation : à intégrer) | appliquer `tools/codex-p11/raccord-schema.patch`, ajout optionnel de `t0:'?n', t1:'?n'` au journal `geste` | la mission exige t0/t1, absents du schéma gelé ; seuls les états sont réservés à ce lot dans le socle. Les écritures contiennent les champs existants genre/doigt/duree/deplacement/action plus ces deux dates. Le validateur actuel signale exactement ces deux champs ; le raccord est testé en copie VM, non appliqué |
+| codex-p11 | exécution hors bac | `cd proto-neon && node tools/codex-p11/verifier.mjs` | trois profils en série, un Chromium muet, entrée/sortie attraction, vraies entrées CDP, 6 gestes de chaque genre, pixels et journal, JOUER → aventure, zéro erreur ; script non exécuté ici. Le contrôle du schéma reste rouge tant que le raccord n'est pas intégré |
+
+Réemploi des durées existantes ; aucun nouveau seuil de jeu, aucun seuil de test abaissé. Le silence passe par les deux canaux et la coupure globale, pour couvrir également les voix/cues. Aucun réglage persistant modifié. Le test VM des gestes appelle la vraie fonction `geste()` : il valide la journalisation uniquement, pas les TouchEvents ni Safari. Ceux-ci restent à vérifier hors bac.
+
+Codex-p11 — après intégration du raccord de schéma, reconstruire `index.html` par `cd proto-neon && node build.mjs` avant le contrôle navigateur ; sinon le bundle conserve encore le schéma antérieur.
+
+Codex-p11 — mis à jour le 18/10/2026 à 02 h 18 (Paris) : VM calibrée sur 10 références historiques exactes ; 24/24 parties avant/après strictement identiques (temps, vague, score et journal complet), toutes finies sans erreur. Attraction mesurée à 15,008333333333121 s sur les trois formats ; JOUER → aventure intact. Build sortie 0. Détails et limites dans `tools/codex-p11/rapport.md`. Chantier bloqué pour la validation finale sur le raccord de schéma hors réservation et le reçu navigateur hors bac ; aucune exécution serveur/Chromium ici.

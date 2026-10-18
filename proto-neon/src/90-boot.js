@@ -98,7 +98,7 @@ function mire() {
 }
 
 /* ---- entrées : un seul point d'entrée, clavier et doigt ---- */
-var repriseGarde = false;
+var repriseGarde = false, sourisGardeDemo = false;
 var keys = {}, clavierActif = false, sourisActive = false, sourceBureau = null;
 var sourisDernier = 0, curseurCache = false, padAvant = 0;
 function onKey(e, down) {
@@ -146,11 +146,11 @@ function onPointer(e) {
   } else if (e.type === 'pointermove') sourisMaj(e, true);
   else if (e.type === 'pointerup' || e.type === 'pointercancel') {
     sourisMaj(e, e.type !== 'pointercancel');
-    if (!doigts.length && !repriseGarde && e.type === 'pointerup' && e.button === 0) {
+    if (!doigts.length && !repriseGarde && !sourisGardeDemo && e.type === 'pointerup' && e.button === 0) {
       var o = { x: 0, y: 0, t0: performance.now() - 80, t1: performance.now(), doigt: 'action' };
       pxEcran(e.clientX, e.clientY, o); S.input.taps.push(o);
     }
-    repriseGarde = false;
+    repriseGarde = false; sourisGardeDemo = false;
   }
 }
 function onWheel(e) {
@@ -239,6 +239,11 @@ function geste(genre, d, t1) {
   var o = { genre: genre, doigt: 'action', t0: d.t0, t1: t1, x: 0, y: 0, dx: d.x - d.x0, dy: d.y - d.y0 };
   pxEcran(d.x0, d.y0, o);
   S.input.gestes.push(o);
+  if (N.journal) N.journal('geste', {
+    genre: o.genre, doigt: o.doigt, t0: o.t0, t1: o.t1,
+    duree: Math.max(0, t1 - d.t0) / N.R.gestes.msParSeconde,
+    deplacement: deplace(d), action: genre === 'toucher' ? 'pouvoir' : genre === 'glisse' ? 'apogee' : 'boost'
+  });
 }
 function tap(d, t1) {
   var o = { x: 0, y: 0, t0: d.t0, t1: t1, doigt: d.role === 'manche' ? 'manche' : 'action' };
@@ -348,6 +353,11 @@ function drawStick() {
   N.gfx.ring(ox, oy, Math.max(4, Math.round(STICK_R / p)), N.pal.i('acier'), 0.5);
   N.gfx.circ(Math.round((st.x - r.left) / p), Math.round((st.y - r.top) / p), 2, N.pal.i('os'));
 }
+/* Annule le toucher qui quitte une démo : son relâcher ne valide pas JOUER. */
+N.entree = { annuler: function () {
+  sourisGardeDemo = !!S.input.pointer.boutons;
+  entreeRaz(); stick.id = null; stickUpdate();
+} };
 /* chaque geste débloque les vidéos préparées depuis le précédent ; le premier lance aussi le son */
 var audioStarted = false;
 function gesture() {

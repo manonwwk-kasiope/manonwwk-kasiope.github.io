@@ -4,7 +4,7 @@
    GARDIEN du contrat, puis le lot 9. Il applique REFONTE.md § 7.6 (les états), § 7.7 (la boucle d'images et l'ordre
    de dessin), § 5.4 (la mort mise en scène, version simple) et § 7.12 (les crochets de test).
 
-   LES ÉTATS (N.game.etat(), registre N.ids.etats ; ajout local aventure en attente du socle) : demarrage, ouverture, titre, attraction, briefing, plongee,
+   LES ÉTATS (N.game.etat(), registre N.ids.etats) : demarrage, ouverture, titre, attraction, briefing, plongee,
    aventure, jeu, nettoyage, cartes, vol, defile, alerte, panneau, boss, mort, reapparition, victoire, fin, initiales, pause.
    Seul ce module change d'état et appelle N.music.section ; les autres demandent par un événement (`vague`,
    `vol`, `phase`, `mort`). Les modules qui MANQUENT sont remplacés par des REPLIS (arène fixe de la taille de l'écran
@@ -38,6 +38,7 @@ N.game = (function () {
 
   var et = 'demarrage', etT = 0, etatJeu = 'jeu', avant = 'jeu', seed = 2975, partieN = 0;
   var muted = false, muteTick = 0;
+  var demo = false, seedTitre = 0, sonTitreCoupe = false;
   var finV = false, finClip = null, fin = { victoire: false };
   var vieuxLast = { w: 0, h: 0 };
   var god = false, simulant = false, departExplicite = false;
@@ -60,12 +61,13 @@ N.game = (function () {
   function reglagesSon() { var rg = N.score && N.score.profil ? N.score.profil.reglages() : null; return rg ? !(rg.musique && rg.effets) : false; }
   function applyMute() {
     if (!N.music) return;
-    if (N.music.piste && N.music.mute) { N.music.mute('musique', muted); N.music.mute('effets', muted); return; }   // l'interface 1.0
+    var coupe = muted || demo; // démo silencieuse : jamais plus forte que le titre
+    if (N.music.piste && N.music.mute) { N.music.mute('musique', coupe); N.music.mute('effets', coupe); return; }   // l'interface 1.0
     if (N.music.mute) {
-      if (!N.music.muted || N.music.muted() !== muted) appel('music.mute', function () { N.music.mute(muted); });
+      if (!N.music.muted || N.music.muted() !== coupe) appel('music.mute', function () { N.music.mute(coupe); });
       return;
     }
-    if (muted && N.music.stop) appel('music.stop', function () { N.music.stop(); });
+    if (coupe && N.music.stop) appel('music.stop', function () { N.music.stop(); });
   }
   function toggleMute() {
     muted = !muted;
@@ -121,9 +123,8 @@ N.game = (function () {
   /* ============================ les transitions ============================ */
   function sectionDe(nom) { var d = N.ids.tableEtats[nom]; return d ? d.section : null; }
   function aller(nom) {
-    /* Le registre gelé de 03-socle ne connaît pas encore aventure (demande codex-09).
-       Accepter cet état localement, sans modifier le registre d'un autre module. */
-    if (nom !== 'aventure' && N.ids.etats.indexOf(nom) < 0) return false;
+    if (N.ids.etats.indexOf(nom) < 0) return false;
+    if (demo && nom !== 'attraction') arreterAttraction();
     if (nom === 'titre' || nom === 'demarrage') arreterAventure();
     var ancienne = secCourante, prev = et;
     et = nom; etT = 0;
@@ -140,6 +141,36 @@ N.game = (function () {
       else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
     }
     return true;
+  }
+
+  /* Une vraie partie pilotée, sans bilan ni écriture de progression. Les transitions de vague
+     et de mort sont neutralisées dans cet état seulement ; mort ou durée relancent la démo. */
+  function commencerAttraction() {
+    if (!demo) {
+      seedTitre = seed;
+      sonTitreCoupe = modOk(N.music, 'muted') ? N.music.muted() : muted;
+    }
+    // Le silence global couvre aussi les voix et les cues, au-delà des deux canaux.
+    if (modOk(N.music, 'mute')) N.music.mute(true);
+    demo = true;
+    S_().input.any = false;
+    partie(R.ecrans.attraction.graine);
+    N.dir.demarrer(R.secteurs[0].vagues[0].n);
+    aller('attraction');
+    if (modOk(N.pilote, 'lancer')) N.pilote.lancer(R.ecrans.attraction.pilote);
+    applyMute();
+  }
+  function arreterAttraction() {
+    if (!demo) return;
+    demo = false;
+    if (modOk(N.pilote, 'arreter')) N.pilote.arreter();
+    partie(seedTitre); // efface le score de démonstration, jamais score.terminer()
+    if (modOk(N.music, 'mute')) N.music.mute(sonTitreCoupe);
+    applyMute();
+  }
+  function activiteTitre() {
+    var i = S_().input;
+    return !!(i && (i.any || i.valider || i.retour || i.pause || i.taps.length || i.stick && i.stick.active || i.pointer && i.pointer.boutons)) || QT.length > 0;
   }
 
   /* L'aventure possède choix/films/époques ; elle rend la main au même jeu néon.
@@ -212,6 +243,7 @@ N.game = (function () {
     /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
     var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
     if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
+    arreterAttraction();
     arreterAventure();
     voyageFini = false;
     S = N.S;
@@ -300,13 +332,13 @@ N.game = (function () {
       if (c.evt === 'nettoyee') finDeVague(c);
     }, '79-jeu');
     N.ev.on('vol', 10, function (c) { if (c.evt === 'fin' && et === 'vol') apresVol(); }, '79-jeu');
-    N.ev.on('portail', 10, function (c) { if (c.type === 'rival' && JOUE[et]) filmDemande = 'rival'; }, '79-jeu');
+    N.ev.on('portail', 10, function (c) { if (!demo && c.type === 'rival' && JOUE[et]) filmDemande = 'rival'; }, '79-jeu');
     N.ev.on('phase', 10, function (c) { if (c.evt === 'mort' && (et === 'boss' || et === 'jeu')) debutVictoire(); }, '79-jeu');
   }
 
   /* ============================ les enchaînements ============================ */
   function finDeVague(c) {
-    if (!JOUE[et]) return;
+    if (!JOUE[et] || demo) return;
     aller('nettoyage');
     N.ennemis.purge('proche');
     var bu = (R && R.butin && R.butin.largages && R.butin.largages.finVague) || { base: 3, parVague: 1 };
@@ -388,7 +420,7 @@ N.game = (function () {
 
   /* ---- la mort mise en scène (§ 5.4, version simple) ---- */
   function debutMort(d) {
-    if (!JOUE[et]) return;
+    if (!JOUE[et] || demo) return;
     avant = et === 'reapparition' ? etatJeu : et;
     aller('mort');
     mortInfo.chute = null; mortInfo.annonce = false;
@@ -440,6 +472,14 @@ N.game = (function () {
     if (dt > 0.05) dt = 0.05;
     O.geom();
     redimensionne();
+    /* Lire le vrai toucher AVANT que le pilote puisse écrire les entrées. Le geste de sortie
+       est consommé : son relâcher ne doit pas lancer JOUER à travers le titre. */
+    if (demo && activiteTitre()) {
+      aller('titre');
+      if (modOk(N.entree, 'annuler')) N.entree.annuler();
+      s.input.any = false;
+      return;
+    }
     appelerPilote();                                  // AVANT ramasserTaps, à CHAQUE pas et dans TOUS les états (cartes, VOL, mort, panneaux…)
     ramasserTaps();
     if (et === 'aventure') {
@@ -468,8 +508,20 @@ N.game = (function () {
     }
     if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
     if (et === 'titre') {
+      if (activiteTitre()) etT = 0;
+      s.input.any = false;
       N.ui.update(dt); etT += dt;
-      var b = N.ui.sortie(); if (b && b.action === 'jouer') commencerAventure();
+      var b = N.ui.sortie();
+      if (b && b.action === 'jouer') commencerAventure();
+      else if (etT >= R.ecrans.attraction.attente) commencerAttraction();
+      return;
+    }
+    if (et === 'attraction') {
+      etT += dt; O.T.t += dt; O.T.ak += dt;
+      pas(dt);
+      if (!simulant && modOk(N.cam, 'update')) N.cam.update(dt);
+      publier();
+      if (N.joueuse.etat === 'mort' || etT >= R.ecrans.attraction.demo) commencerAttraction();
       return;
     }
     if (hsCd > 0) hsCd -= dt;
@@ -581,6 +633,7 @@ N.game = (function () {
   function tension() {
     if ((++muteTick % 60) === 1) applyMute();
     if (!N.dir) return 0.06;
+    if (demo) return 0;
     if (et === 'fin' || et === 'initiales') return 0.12;
     if (et === 'demarrage' || et === 'titre' || et === 'ouverture' || et === 'briefing') return 0.06;
     return N.dir.tension();
