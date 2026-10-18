@@ -1,6 +1,6 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
-## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 03 h 51)
+## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 04 h 14)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
   d'orchestre, Codex à plein régime. Critères : `refonte/SORTIE.md` (portes et état). **Depuis 01 h 40, la propriétaire
@@ -25,6 +25,10 @@
   R-05 7 → 4), p16b (vérifieur sans mesure). Lancés : p20 à p27 (p26 régénérateurs, p27 ennemis de 2030), p29 (diagnostic R-08). **En attente de
   lancement : codex-p28** (consigne prête `consignes/codex-p28.md`, R-18 régressé par p17) **dans la copie codex-p24 dès que p24 a livré**.
   File navigateur : p16, p23, p20. Batterie `318ce61` : 8 ok (régressions R-08, R-18).
+- À 04 h 14 : intégrés p23 (R-28 ok, R-11 1 échec ; ambiance au jury) et p29 (R-08 = défaut de mesure). Non retenu : p25 (R-34 arrêté, non-convergence).
+  Livrés en attente du navigateur : p16b, p20 (audio), p22, p27 (raccord directeur après codex-11). Sessions : p15b, p21, p26, p28 (copie p24, puis
+  intégrer p24+p28 avec `tools/codex-p24/raccord-79-jeu.patch`), p30, p32. **À lancer quand 70-joueuse (p30), 72-ennemis (p27), 73-arene (p22),
+  73-colosse (p32) sont libres : codex-p31** (`consignes/codex-p31.md`, provenance des morts, R-08). Tempo de la grille : après p20 et codex-11.
 - Outils de nuit : `guetter.sh` (réveil), `file-verifs.sh` (vérifieurs en série, verrou `/tmp/snake-chromium-chef.lock`, respecte
   `/tmp/snake-chromium-boite`), `integrer.sh` (fusionne seul les ajouts de `02-regles.js` et les `.md`, reçus > 5 Mo hors dépôt).
 - À faire ensuite : intégrer chaque livraison après son vérifieur ; `70-joueuse.js` : `quartierCourant()` → `quartier()` (après p4d) ;
