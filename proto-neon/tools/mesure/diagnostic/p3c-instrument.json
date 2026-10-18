@@ -1,0 +1,50 @@
+{
+  "dateParis": "18/10/2026 · 01 h 40",
+  "avantApresFlashAnalytique": {
+    "avant": {
+      "flashs": 2,
+      "maxParSeconde": 2,
+      "a": 1
+    },
+    "apres": {
+      "flashs": 1,
+      "maxParSeconde": 1,
+      "a": 1
+    }
+  },
+  "limite": "Fixtures analytiques de l’instrument uniquement ; aucun après navigateur.",
+  "controles": [
+    {
+      "nom": "Flash lumineux et rouge simultané : un flash, pas deux",
+      "ok": true
+    },
+    {
+      "nom": "Trois flashs simultanément rouges et lumineux : trois",
+      "ok": true
+    },
+    {
+      "nom": "Quatre flashs toujours refusés au seuil de trois",
+      "ok": true
+    },
+    {
+      "nom": "Sept causes naturelles ; morsure exclue des morts",
+      "ok": true
+    },
+    {
+      "nom": "La tête réelle exclut les deux pixels du radar",
+      "ok": true
+    },
+    {
+      "nom": "Une tête corrompue de même surface reste refusée",
+      "ok": true
+    },
+    {
+      "nom": "Silence strictement inférieur à trois pixels : exactement trois est permis",
+      "ok": true
+    },
+    {
+      "nom": "debut/fin/pret du pouvoir : une seule activation",
+      "ok": true
+    }
+  ]
+}

@@ -4,7 +4,22 @@
    90-boot.js classe les gestes sur performance.now. */
 export class Doigts {
   constructor(session) { this.s = session; this.actifs = new Map(); this.id = 1; }
-  async init() { this.cdp = await this.s.cdpSession(); return this; }
+  async init() {
+    this.cdp = await this.s.cdpSession();
+    await this.s.eval(() => {
+      if(window.__TRACE_DOIGTS_INSTALLE)return;
+      window.__TRACE_DOIGTS_INSTALLE=true;window.__TRACE_DOIGTS=[];
+      for(const type of ['touchstart','touchmove','touchend','touchcancel'])
+        window.addEventListener(type,e=>{
+          const r=performance.now(),changes=Array.from(e.changedTouches,c=>({id:c.identifier,x:c.clientX,y:c.clientY}));
+          queueMicrotask(()=>{const S=window.__S,I=S.input,st=I.stick;
+            window.__TRACE_DOIGTS.push({type,r,changes,actifs:e.touches.length,stick:st?{active:st.active,ox:st.ox,oy:st.oy}:null,
+              pouvoir:!!I.pouvoir,apogee:!!I.apogee,boost:!!I.boost,gestes:I.gestes.map(g=>({...g}))});
+          });
+        },{capture:true,passive:true});
+    });
+    return this;
+  }
   points() { return [...this.actifs.entries()].map(([id, p]) => ({ x: p.x, y: p.y, id, radiusX: 8, radiusY: 8, force: 1 })); }
   async envoyer(type) { await this.cdp.send('Input.dispatchTouchEvent', { type, touchPoints: this.points() }); }
   async poser(x, y) { const id = this.id++; this.actifs.set(id, { x, y }); await this.envoyer('touchStart'); return id; }
@@ -32,10 +47,12 @@ export async function lireGestes(session) {
   if (!J) return null;
   const d = x => x.d || x;
   return {
-    gestes: J.filter(x => x.type === 'geste').map(x => ({ t: x.t, image: x.image, ...d(x) })),
-    pouvoirs: J.filter(x => x.type === 'pouvoir').length,
-    apogees: J.filter(x => x.type === 'apogee').length,
+    // Lire les valeurs effectivement livrées au jeu : le journal geste n'est pas produit par boot.
+    gestes: await session.eval(() => (window.__GESTES_MESURE || []).slice()),
+    pouvoirs: J.filter(x => x.type === 'pouvoir' && d(x).evt === 'debut').length,
+    apogees: J.filter(x => x.type === 'apogee' && d(x).evt === 'debut').length,
     boosts: J.filter(x => x.type === 'boost').map(x => ({ t: x.t, image: x.image, ...d(x) })),
+    traceDoigts: await session.eval(() => window.__TRACE_DOIGTS || []),
     tout: J
   };
 }
@@ -44,7 +61,22 @@ export async function lireGestes(session) {
 export async function preparerJeu(session) {
   const r = await session.demarrer({ graine: 3, god: true });
   if (!r.ok) return r;
-  await session.eval(() => { try { window.__N.journal.dump({ vider: true }); } catch (e) { } });
+  await session.eval(() => {
+    const N=window.__N; window.__S.reglages.actions='doigts';
+    window.__GESTES_MESURE=[];
+    const update=N.game.update;
+    N.game.update=function(dt){
+      const I=window.__S.input, neufs=[];
+      for(const g of I.gestes || []) {
+        const action=g.genre==='toucher'&&I.pouvoir?'pouvoir':g.genre==='glisse'&&I.apogee?'apogee':g.genre==='tenu'&&I.boost?'boost':'aucune';
+        neufs.push({...g,action,t:N.horloge.t(),image:window.__FRAME});
+      }
+      const r=update.apply(this,arguments), p=window.__S.player;
+      for(const g of neufs)window.__GESTES_MESURE.push({...g,sortie:p?{boost:p.boost,apogee:p.apogee,pouvoirPret:p.pouvoirPret,etat:p.etat}:null});
+      return r;
+    };
+    try { N.journal.dump({vider:true}); } catch(e){}
+  });
   await session.images(20);
   return r;
 }
@@ -61,6 +93,7 @@ export async function serieSecondDoigt(session, genre, n, o = {}) {
   const d = await new Doigts(session).init(), V = vue(session);
   await session.eval(() => {
     try { window.__N.journal.dump({ vider: true }); } catch (e) { }
+    window.__GESTES_MESURE=[]; window.__TRACE_DOIGTS=[];
     window.__MESURE.parImage('boost', 'return { b: !!(S.input && S.input.boost), p: !!(S.player && S.player.boost), r: performance.now() };');
     /* les instants de pose et de relâcher vus par la page, par identifiant */
     window.__DOIGTS = []; if (!window.__DOIGTS_ECOUTE) { window.__DOIGTS_ECOUTE = true;
@@ -90,5 +123,5 @@ export async function serieSecondDoigt(session, genre, n, o = {}) {
   for (const e of E) if (e.t === 'touchstart' && e.id !== pouceId) { const f = E.find(x => x.t === 'touchend' && x.id === e.id && x.r >= e.r); if (f) tenues.push((f.r - e.r) / 1000); }
   const ips = I.length > 2 ? (I.length - 1) / ((I[I.length - 1].r - I[0].r) / 1000) : 60;
   void pouce;
-  return { gestes: parGenre, journal: !!L, actions: L ? L.gestes.reduce((o2, g) => { o2[g.action] = (o2[g.action] || 0) + 1; return o2; }, {}) : null, boosts: runs, tenues, ips };
+  return { source: 'S.input.gestes + impulsions avant update ; sortie S.player après update', entrees: L ? L.gestes : [], traceDoigts: L ? L.traceDoigts : [], gestes: parGenre, journal: !!L, actions: L ? L.gestes.reduce((o2, g) => { o2[g.action] = (o2[g.action] || 0) + 1; return o2; }, {}) : null, boosts: runs, tenues, ips };
 }

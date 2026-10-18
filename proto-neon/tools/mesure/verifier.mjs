@@ -12,6 +12,7 @@ import { Banc, options, PROTO, ICI, PROFILS, mesurerCritere, dateParis } from '.
 import { cle, comparer } from './criteres/R-30-rejouabilite.mjs';
 
 // La passe p3b n'exécute aucun des anciens précontrôles VM. Elle exige localhost et Chromium.
+if (process.argv.includes('--diagnostic-p3c')) { await import('./diagnostic-p3c-navigateur.mjs'); process.exit(process.exitCode || 0); }
 if (process.argv.includes('--diagnostic-p3b')) { await import('./diagnostic-navigateur.mjs'); process.exit(process.exitCode || 0); }
 
 const sortie = path.join(ICI, 'verification');

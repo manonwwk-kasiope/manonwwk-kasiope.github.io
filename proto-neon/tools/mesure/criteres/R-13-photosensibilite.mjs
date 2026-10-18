@@ -15,7 +15,9 @@ const IMAGE = `
     var ra = a === 5 || a === 11 || a === 14, rc = c === 5 || c === 11 || c === 14; if (rc && !ra) rin++; else if (ra && !rc) rout++; }
   p.set(b); return { f: window.__FRAME, up: up / n, dn: dn / n, rin: rin / n, rout: rout / n };`;
 
-/* compte les flashs : une transition franchit l'aire ; deux transitions opposées font un flash */
+/* Les deux familles simultanées décrivent un même flash : union, sans doubler L/R.
+   Ce compteur agrégé ne prouve pas le recouvrement spatial ; conserver les transitions brutes.
+   compte les flashs : une transition franchit l'aire ; deux transitions opposées font un flash */
 export function flashs(images, aire, dt) {
   const ev = [];
   for (let k = 0; k < images.length; k++) {
@@ -24,7 +26,7 @@ export function flashs(images, aire, dt) {
     if (x.rin > aire) ev.push({ k, s: 'R+' }); if (x.rout > aire) ev.push({ k, s: 'R-' });
   }
   const fl = []; const dernier = {};
-  for (const e of ev) { const fam = e.s[0], opp = fam + (e.s[1] === '+' ? '-' : '+'); if (dernier[opp] !== undefined) { fl.push(e.k); delete dernier[opp]; } else dernier[e.s] = e.k; }
+  for (const e of ev) { const fam = e.s[0], opp = fam + (e.s[1] === '+' ? '-' : '+'); if (dernier[opp] !== undefined) { if (fl[fl.length - 1] !== e.k) fl.push(e.k); delete dernier[opp]; } else dernier[e.s] = e.k; }
   const parSec = Math.round(1 / dt); let max = 0, at = 0;
   for (let i = 0, j = 0; i < fl.length; i++) { while (fl[i] - fl[j] >= parSec) j++; if (i - j + 1 > max) { max = i - j + 1; at = fl[i]; } }
   return { flashs: fl.length, maxParSeconde: max, a: at };
@@ -47,7 +49,8 @@ export async function mesurer(banc, res) {
   await s.images(duree * 60, duree * 3);
   const I = await s.eval(() => window.__MESURE.arreter('r13'));
   const r = flashs(I, S.aire, 1 / 60);
-  res.verifie('flashs par seconde (pire seconde, analyse du tampon)', r.maxParSeconde, '≤ ' + S.flashsParSeconde, r.maxParSeconde <= S.flashsParSeconde, { images: I.length, flashs: r.flashs, image: r.a });
+  res.note('Transitions brutes : analyse agrégée conservatrice, recouvrement spatial non établi.');
+  res.verifie('flashs par seconde (pire seconde, analyse du tampon)', r.maxParSeconde, '≤ ' + S.flashsParSeconde, r.maxParSeconde <= S.flashsParSeconde, { images: I.length, flashs: r.flashs, image: r.a, transitions: I });
   const J = await s.journal();
   const F = J ? J.filter(x => x.type === 'flash').map(x => ({ t: x.t, ...(x.d || x) })) : [];
   if (!F.length) res.nonMesurable('limiteur de flashs (journal `flash`)', 'journal `flash` vide (N.fx.flashGate absent ou jamais sollicité)');

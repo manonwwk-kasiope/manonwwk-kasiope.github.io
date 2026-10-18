@@ -1,0 +1,91 @@
+{
+ "id": "R-37",
+ "titre": "Lisibilité de l’arsenal",
+ "seuil": "cyan hors tête et corps ≤ 8 % ; tête reconnaissable 100 % ; 0 pixel d’arsenal à < 3 px de la tête",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "3 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "cyan et cyan pâle hors tête et corps (pire capture)",
+   "valeur": 0.00868,
+   "seuil": "≤ 0.08",
+   "statut": "ok",
+   "captures": 10
+  },
+  {
+   "nom": "tête présente (code 1) sur les captures",
+   "valeur": 10,
+   "seuil": 10,
+   "statut": "ok"
+  },
+  {
+   "nom": "tête à gaine complète (bord en nuit profonde)",
+   "valeur": 0,
+   "seuil": 1,
+   "statut": "echec",
+   "exemples": [
+    {
+     "bord": 29,
+     "gaine": 0
+    },
+    {
+     "bord": 29,
+     "gaine": 0
+    },
+    {
+     "bord": 29,
+     "gaine": 0
+    }
+   ]
+  },
+  {
+   "nom": "pixels de la tête identiques au sprite réellement dessiné",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "tete": [
+    92,
+    92,
+    92,
+    92,
+    92,
+    92,
+    92,
+    92,
+    92,
+    92
+   ],
+   "sprite": 92,
+   "differences": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "nom": "pixels de l’arsenal à moins de 3 px de la tête (pire capture)",
+   "valeur": 6,
+   "seuil": 0,
+   "statut": "echec"
+  }
+ ],
+ "notes": [],
+ "captures": [
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-37-v5-paysage-tampon.png"
+ ],
+ "duree": 11.6,
+ "bundle": {
+  "url": "http://127.0.0.1:62346/proto-neon/index.html",
+  "empreinte": "7fc90b5a2166"
+ },
+ "date": "2026-10-18T00:11:45.841Z",
+ "dateParis": "18/10/2026 · 02 h 11"
+}

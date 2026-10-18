@@ -85,9 +85,9 @@ export async function mesurer(banc, res) {
   const t = await serieSecondDoigt(s, 'toucher', n);
   if (!t.journal) res.absent('gestes du second doigt', 'N.journal.dump');
   else {
-    res.verifie(`${n} touchers → pouvoirs`, (t.actions.pouvoir || 0), n, (t.actions.pouvoir || 0) === n && !t.actions.apogee && !t.actions.boost, { actions: t.actions });
+    res.verifie(`${n} touchers → pouvoirs`, (t.actions.pouvoir || 0), n, (t.actions.pouvoir || 0) === n && !t.actions.apogee && !t.actions.boost, { actions: t.actions, entrees: t.entrees, source: t.source });
     const g = await serieSecondDoigt(s, 'glisse', n);
-    res.verifie(`${n} glissés → APOGÉE`, (g.actions.apogee || 0), n, (g.actions.apogee || 0) === n && !g.actions.pouvoir, { actions: g.actions });
+    res.verifie(`${n} glissés → APOGÉE`, (g.actions.apogee || 0), n, (g.actions.apogee || 0) === n && !g.actions.pouvoir, { actions: g.actions, entrees: g.entrees, source: g.source });
     const h = await serieSecondDoigt(s, 'tenu', n, { duree: 0.5 });
     /* chaque accélération doit durer l'appui moins le délai de TENU (0,5 − 0,18 = 0,32 s), à une image près ;
        l'appui est relu tel que la page l'a reçu, pour ne pas compter le retard de CDP */

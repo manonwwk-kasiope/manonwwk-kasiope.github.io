@@ -1,0 +1,895 @@
+{
+  "dateParis": "18/10/2026 · 01 h 36",
+  "racine": "/Users/manonwojciechowski/Projets/wt-snake/recus/batterie-15a196a",
+  "source": "batterie exécutée hors bac, bundle 15a196a ; aucune nouvelle mesure de jeu",
+  "criteres": [
+    {
+      "id": "R-13",
+      "sha256": "8556ebcfd7f948e6942b7517629ded4230682578c136e8e398a07d6091a6fa22",
+      "dateParis": "18/10/2026 · 01 h 21",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "flashs par seconde (pire seconde, analyse du tampon)",
+          "valeur": 7,
+          "seuil": "≤ 3",
+          "statut": "echec",
+          "images": 600,
+          "flashs": 15,
+          "image": 54
+        },
+        {
+          "nom": "limiteur de flashs (journal `flash`)",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : journal `flash` vide (N.fx.flashGate absent ou jamais sollicité)"
+        }
+      ]
+    },
+    {
+      "id": "R-33",
+      "sha256": "d67f23a2cba276cac24328f33c445961e135ae6bacdd4bceb424b200b9843cbf",
+      "dateParis": "18/10/2026 · 01 h 27",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "recentrages humains (12 poses, 2 courtes, 2 avec un autre doigt) : actions involontaires",
+          "valeur": 3,
+          "seuil": 0,
+          "statut": "echec",
+          "gestes": 0,
+          "pouvoirs": 3,
+          "apogees": 0
+        },
+        {
+          "nom": "recentrages humains : accélérations par le second doigt",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "slalom serré : images en accélération",
+          "valeur": 30,
+          "seuil": 0,
+          "statut": "echec"
+        },
+        {
+          "nom": "toucher → pouvoir : 6 sur 6",
+          "valeur": 0,
+          "seuil": 6,
+          "statut": "echec",
+          "actions": {}
+        },
+        {
+          "nom": "glisse → apogee : 6 sur 6",
+          "valeur": 0,
+          "seuil": 6,
+          "statut": "echec",
+          "actions": {}
+        },
+        {
+          "nom": "tenu → boost : 6 sur 6",
+          "valeur": 0,
+          "seuil": 6,
+          "statut": "echec",
+          "actions": {}
+        },
+        {
+          "nom": "balayages depuis les bords (5 par bord) : navigations",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "balayages : zoom",
+          "valeur": 1,
+          "seuil": 1,
+          "statut": "ok"
+        },
+        {
+          "nom": "balayages : sélection de texte",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "balayages : touchstart neutralisés (preventDefault, J-28)",
+          "valeur": 1,
+          "seuil": 1,
+          "statut": "ok",
+          "touches": 20
+        },
+        {
+          "nom": "origines du manche à 20 pt au moins des bords gauche, droit et bas",
+          "valeur": 20,
+          "seuil": 20,
+          "statut": "ok",
+          "exemples": []
+        }
+      ]
+    },
+    {
+      "id": "R-03",
+      "sha256": "cd663481af8b5a00e20c24a6e86e22ff9c77c526280b55004d19da721ce90bcd",
+      "dateParis": "18/10/2026 · 01 h 18",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "calme",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+        },
+        {
+          "nom": "montee",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.004338315712723296,
+          "etat": "jeu"
+        },
+        {
+          "nom": "chaos",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.004508445740673229,
+          "etat": "jeu"
+        },
+        {
+          "nom": "colosse",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.004678575768623162,
+          "etat": "boss"
+        },
+        {
+          "nom": "charge",
+          "valeur": 0.0004,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.008956130757078625,
+          "etat": "boss"
+        },
+        {
+          "nom": "v5",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.02589622068295054,
+          "etat": "jeu"
+        },
+        {
+          "nom": "boss3",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.005055292259083728,
+          "etat": "boss"
+        },
+        {
+          "nom": "travelling",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.0043140114230161624,
+          "etat": "jeu"
+        },
+        {
+          "nom": "convoi",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.004301859278162595,
+          "etat": "jeu"
+        },
+        {
+          "nom": "lasso6",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.010864017499088588,
+          "etat": "jeu"
+        },
+        {
+          "nom": "mort",
+          "valeur": 0.00067,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.01009843237331389,
+          "etat": "mort"
+        },
+        {
+          "nom": "vol",
+          "valeur": 0.03723,
+          "seuil": 0.005,
+          "statut": "echec",
+          "cyanTotal": 0.037938996232835094,
+          "etat": "vol"
+        },
+        {
+          "nom": "inversion",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.004119577105359096,
+          "etat": "jeu"
+        },
+        {
+          "nom": "cartes",
+          "valeur": 0,
+          "seuil": 0.005,
+          "statut": "ok",
+          "cyanTotal": 0.0015068659618422652,
+          "etat": "cartes"
+        }
+      ]
+    },
+    {
+      "id": "R-37",
+      "sha256": "d8f6f3a4761fe299fa1ce30c4a9d56d6ccc2c1699919cb149d4538b42aef1d72",
+      "dateParis": "18/10/2026 · 01 h 24",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "cyan et cyan pâle hors tête et corps (pire capture)",
+          "valeur": 0.00873,
+          "seuil": "≤ 0.08",
+          "statut": "ok",
+          "captures": 9
+        },
+        {
+          "nom": "tête présente (code 1) sur les captures",
+          "valeur": 9,
+          "seuil": 9,
+          "statut": "ok"
+        },
+        {
+          "nom": "tête à gaine complète (bord en nuit profonde)",
+          "valeur": 0,
+          "seuil": 1,
+          "statut": "echec",
+          "exemples": [
+            {
+              "bord": 31,
+              "gaine": 0
+            },
+            {
+              "bord": 31,
+              "gaine": 0
+            },
+            {
+              "bord": 31,
+              "gaine": 0
+            }
+          ]
+        },
+        {
+          "nom": "pixels de la tête = sprite de tête (nombre)",
+          "valeur": 0,
+          "seuil": 1,
+          "statut": "echec",
+          "tete": [
+            94,
+            94,
+            94,
+            94,
+            94,
+            94,
+            94,
+            94,
+            94
+          ],
+          "sprite": 92
+        },
+        {
+          "nom": "pixels de l’arsenal à moins de 3 px de la tête (pire capture)",
+          "valeur": 7,
+          "seuil": 0,
+          "statut": "echec"
+        }
+      ]
+    },
+    {
+      "id": "R-20",
+      "sha256": "5b158e650eea74c788f94cbd89122b4a72b18b92f5a5b04083c0979cface4667",
+      "dateParis": "18/10/2026 · 01 h 25",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "scène charge, ×1, sans qualité adaptative : p95 (ms)",
+          "valeur": 4.5,
+          "seuil": "≤ 11",
+          "statut": "ok",
+          "images": 240,
+          "p50": 2.600000023841858,
+          "p99": 5.183000007271763,
+          "max": 7.199999988079071
+        },
+        {
+          "nom": "scène v5, ×1, sans qualité adaptative : p95 (ms)",
+          "valeur": 3.505,
+          "seuil": "≤ 11",
+          "statut": "ok",
+          "images": 240,
+          "p50": 2.899999976158142,
+          "p99": 4,
+          "max": 4.300000011920929
+        },
+        {
+          "nom": "scène vol, ×1, sans qualité adaptative : p95 (ms)",
+          "valeur": 3.205,
+          "seuil": "≤ 11",
+          "statut": "ok",
+          "images": 240,
+          "p50": 2.099999964237213,
+          "p99": 4.444000009894365,
+          "max": 5
+        },
+        {
+          "nom": "scène charge meilleure que SNAKE 2030 en jeu (p95, ms)",
+          "valeur": {
+            "snake2975": 4.5,
+            "snake2030": 0.7
+          },
+          "seuil": "snake2975 < snake2030",
+          "statut": "echec",
+          "imagesSnake2030": 241
+        },
+        {
+          "nom": "scène charge, processeur ×4, qualité adaptative : p95 (ms)",
+          "valeur": 14.66,
+          "seuil": "≤ 25",
+          "statut": "ok",
+          "images": 223
+        },
+        {
+          "nom": "temps de jeu / temps réel au profil ×4",
+          "valeur": 0.98196,
+          "seuil": "≥ 0,99",
+          "statut": "echec",
+          "etat": "boss"
+        },
+        {
+          "nom": "vrai iPhone de la propriétaire",
+          "statut": "hors-banc",
+          "raison": "p95 ≤ 16.7 ms à lire sur ?perf=1&scene=charge aux jalons A et B (REFONTE.md § 8.4)"
+        }
+      ]
+    },
+    {
+      "id": "R-22",
+      "sha256": "e1cec74b191726a75d4c01f473e25bd5fff2b7c8e2f6e77daa02754ec823644a",
+      "dateParis": "18/10/2026 · 01 h 25",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "J-01 : manche flottant, cap vers le haut depuis les quatre quarts",
+          "valeur": 4,
+          "seuil": "4 sur 4",
+          "statut": "ok"
+        },
+        {
+          "nom": "J-02 : dérive du cap 2 s après le relâcher (°)",
+          "valeur": 0,
+          "seuil": "≤ 2",
+          "statut": "ok"
+        },
+        {
+          "nom": "J-03 : pouce immobile 3 s, dérive du cap visé (°)",
+          "valeur": 0,
+          "seuil": "< 2",
+          "statut": "ok"
+        },
+        {
+          "nom": "J-05 : latence toucher → cap visé (images, pire cas)",
+          "valeur": 1,
+          "seuil": "≤ 1",
+          "statut": "ok",
+          "essais": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "nom": "J-06 : virage de 90° (s, pire cas)",
+          "valeur": 0.3108,
+          "seuil": "≤ 0,35",
+          "statut": "ok",
+          "essais": [
+            0.2622999999523163,
+            0.2775,
+            0.2801999999880791,
+            0.31080000001192093
+          ]
+        },
+        {
+          "nom": "accélération par la poussée droit devant (S.player.boost)",
+          "valeur": true,
+          "seuil": true,
+          "statut": "ok"
+        },
+        {
+          "nom": "coupure de l’accélération en virage de 50°",
+          "valeur": false,
+          "seuil": false,
+          "statut": "ok"
+        },
+        {
+          "nom": "6 touchers → pouvoirs",
+          "valeur": 0,
+          "seuil": 6,
+          "statut": "echec",
+          "actions": {}
+        },
+        {
+          "nom": "6 glissés → APOGÉE",
+          "valeur": 0,
+          "seuil": 6,
+          "statut": "echec",
+          "actions": {}
+        },
+        {
+          "nom": "6 appuis de 0,5 s → accélérations de 0,32 s ± 1 image",
+          "valeur": 6,
+          "seuil": 6,
+          "statut": "ok",
+          "durees": [
+            0.348,
+            0.349,
+            0.352,
+            0.383,
+            0.365,
+            0.348
+          ],
+          "appuis": [
+            0.532,
+            0.533,
+            0.532,
+            0.551,
+            0.534,
+            0.532
+          ],
+          "actions": {}
+        }
+      ]
+    },
+    {
+      "id": "R-12",
+      "sha256": "28659e49dd1e750c689fbce878fcd2fbd480333016ae852fe5d5f395b2f08973",
+      "dateParis": "18/10/2026 · 01 h 21",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "mort du CYCLOPE",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : la cible n’a pas été détruite par N.ennemis.hit ({\"coups\":200,\"tues\":0,\"reste\":1})"
+        },
+        {
+          "nom": "mort de l’élite flecheBlindee",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : la cible n’a pas été détruite par N.ennemis.hit ({\"coups\":0,\"tues\":0,\"reste\":0})"
+        },
+        {
+          "nom": "mort de l’élite rival",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : la cible n’a pas été détruite par N.ennemis.hit ({\"coups\":0,\"tues\":0,\"reste\":0})"
+        },
+        {
+          "nom": "mort de l’élite rucheInstable : images à plus de 8 % de brasier (suite la plus longue)",
+          "valeur": 0,
+          "seuil": "≥ 4",
+          "statut": "echec",
+          "brasierMax": 0.04663993194798882
+        },
+        {
+          "nom": "mort de l’élite rucheInstable : mouvement de caméra imputable au coup (px)",
+          "valeur": 0.4752,
+          "seuil": "≥ 6",
+          "statut": "echec",
+          "brut": 12,
+          "temoin": 11.524799999999999
+        }
+      ]
+    },
+    {
+      "id": "R-05",
+      "sha256": "43457431c08583198f74841846b3413725da53130e61807cc58a0327882bcbc9",
+      "dateParis": "18/10/2026 · 01 h 18",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "causes distinctes produites",
+          "valeur": 1,
+          "seuil": 8,
+          "statut": "echec",
+          "parCause": {
+            "ennemi": 30
+          },
+          "manquantes": [
+            "mur",
+            "morsure",
+            "tir",
+            "laser",
+            "souffle",
+            "convoi",
+            "traine"
+          ],
+          "parties": 10
+        },
+        {
+          "nom": "causes hors de N.ids.causes",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok",
+          "inconnues": []
+        }
+      ]
+    },
+    {
+      "id": "R-11",
+      "sha256": "7c133898ad373412e2dc235464671f165b70ca2da2a82d6ae6a2d3f83732b327",
+      "dateParis": "18/10/2026 · 01 h 21",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "partie à t = 1 s (calme) : pixels lumineux",
+          "valeur": 0.13883,
+          "seuil": "≥ 0.25",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "partie à t = 1 s (calme) : luminance moyenne",
+          "valeur": 0.06544,
+          "seuil": "≥ 0.075",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "partie à t = 1 s (calme) : vide",
+          "valeur": 0,
+          "seuil": "< 0.3",
+          "statut": "ok"
+        },
+        {
+          "nom": "partie à t = 1 s (calme) : décor seul, cyan et magenta du décor, gaine",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+        },
+        {
+          "nom": "scène calme : pixels lumineux",
+          "valeur": 0.14508,
+          "seuil": "≥ 0.25",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène calme : luminance moyenne",
+          "valeur": 0.06813,
+          "seuil": "≥ 0.075",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène calme : vide",
+          "valeur": 0,
+          "seuil": "< 0.3",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène calme : décor seul lumineux (code 8)",
+          "valeur": 0.10423,
+          "seuil": [
+            0.18,
+            0.28
+          ],
+          "statut": "echec"
+        },
+        {
+          "nom": "scène calme : cyan dans le décor (pixels)",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "scène calme : magenta et rose pâle du décor",
+          "valeur": 0,
+          "seuil": "< 0.005",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène calme : gaine des menaces",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : aucun pixel d’ennemi (code 5) dans l’image"
+        },
+        {
+          "nom": "scène montee : pixels lumineux",
+          "valeur": 0.14389,
+          "seuil": "≥ 0.28",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène montee : luminance moyenne",
+          "valeur": 0.06805,
+          "seuil": "≥ 0.085",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène montee : vide",
+          "valeur": 0,
+          "seuil": "< 0.3",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène montee : décor seul lumineux (code 8)",
+          "valeur": 0.10148,
+          "seuil": [
+            0.18,
+            0.28
+          ],
+          "statut": "echec"
+        },
+        {
+          "nom": "scène montee : cyan dans le décor (pixels)",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "scène montee : magenta et rose pâle du décor",
+          "valeur": 0,
+          "seuil": "< 0.005",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène montee : gaine des menaces",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : aucun pixel d’ennemi (code 5) dans l’image"
+        },
+        {
+          "nom": "scène chaos : pixels lumineux",
+          "valeur": 0.13846,
+          "seuil": "≥ 0.32",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène chaos : luminance moyenne",
+          "valeur": 0.06694,
+          "seuil": "≥ 0.095",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène chaos : vide",
+          "valeur": 0,
+          "seuil": "< 0.3",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène chaos : décor seul lumineux (code 8)",
+          "valeur": 0.0968,
+          "seuil": [
+            0.18,
+            0.28
+          ],
+          "statut": "echec"
+        },
+        {
+          "nom": "scène chaos : cyan dans le décor (pixels)",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "scène chaos : magenta et rose pâle du décor",
+          "valeur": 0,
+          "seuil": "< 0.005",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène chaos : gaine des menaces",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : aucun pixel d’ennemi (code 5) dans l’image"
+        },
+        {
+          "nom": "scène colosse : pixels lumineux",
+          "valeur": 0.17625,
+          "seuil": "≥ 0.25",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "scène colosse : luminance moyenne",
+          "valeur": 0.07659,
+          "seuil": "≥ 0.075",
+          "statut": "ok",
+          "indicatif": true
+        },
+        {
+          "nom": "scène colosse : vide",
+          "valeur": 0,
+          "seuil": "< 0.3",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène colosse : décor seul lumineux (code 8)",
+          "valeur": 0.14609,
+          "seuil": [
+            0.18,
+            0.28
+          ],
+          "statut": "echec"
+        },
+        {
+          "nom": "scène colosse : cyan dans le décor (pixels)",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "scène colosse : magenta et rose pâle du décor",
+          "valeur": 0,
+          "seuil": "< 0.005",
+          "statut": "ok"
+        },
+        {
+          "nom": "scène colosse : gaine des menaces (pixels de bord en nuit profonde)",
+          "valeur": 0.42793,
+          "seuil": 1,
+          "statut": "echec",
+          "bord": 888
+        },
+        {
+          "nom": "part lumineuse à t = 30 s (capture), SNAKE 2975 / SNAKE 2030",
+          "valeur": {
+            "snake2975": 0.16721,
+            "snake2030": 0.04643
+          },
+          "seuil": "snake2975 ≥ snake2030",
+          "statut": "ok",
+          "indicatif": true
+        }
+      ]
+    },
+    {
+      "id": "R-28",
+      "sha256": "8d474fceec95e2ca464c3e4198c66aa778b145734631f7f3959afaa4b22da759",
+      "dateParis": "18/10/2026 · 01 h 23",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "prefers-reduced-motion vu par la page",
+          "valeur": true,
+          "seuil": true,
+          "statut": "ok"
+        },
+        {
+          "nom": "poussée de caméra à la mort de l’élite (px)",
+          "valeur": 0,
+          "seuil": "≤ 0,5",
+          "statut": "ok",
+          "temoin": 8.50000000000017
+        },
+        {
+          "nom": "secousse S.shake à la mort de l’élite (px)",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "pixels changés d’une image à l’autre pendant le gel",
+          "valeur": 0.23974,
+          "seuil": "≤ 0.005",
+          "statut": "echec",
+          "imagesGelees": 11
+        },
+        {
+          "nom": "lumière gardée (scène calme, pixels lumineux)",
+          "valeur": 0.17081,
+          "seuil": "≥ 0.25",
+          "statut": "hors-cible",
+          "indicatif": true
+        },
+        {
+          "nom": "jeu complet en mouvement réduit",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : horloge de jeu figée dans jeu : N.horloge.t()=0, N.horloge.pas()=0"
+        }
+      ]
+    },
+    {
+      "id": "R-19",
+      "sha256": "e60224e6ed8317f645b7f6e291e527854d2dbbb796d884d227070f9085079839",
+      "dateParis": "18/10/2026 · 01 h 24",
+      "bundle": {
+        "url": "http://127.0.0.1:53821/proto-neon/index.html",
+        "empreinte": "230a830df01c"
+      },
+      "statut": "echec",
+      "mesures": [
+        {
+          "nom": "attraction après 15 s d’inaction",
+          "valeur": null,
+          "seuil": "15 ± 1 s",
+          "statut": "echec",
+          "raison": "jamais atteinte en 25 s"
+        }
+      ]
+    }
+  ],
+  "captures": [
+    {
+      "nom": "R-03-vol-paysage-tampon.png",
+      "w": 422,
+      "h": 195,
+      "cyan": 2912,
+      "partCyan": 0.0353870458135861,
+      "sha256": "d95e8358452d2a104c4fbdde7b026d7cd1d2c368c4d3f03e0781fa6647bc4cdd"
+    },
+    {
+      "nom": "R-37-v5-paysage-tampon.png",
+      "w": 422,
+      "h": 195,
+      "cyan": 1286,
+      "partCyan": 0.015627658281686718,
+      "sha256": "2142936f7215acb9f8dbaea9c5dbc22ad2e0ef1aa84ea111b12be3469101257b"
+    },
+    {
+      "nom": "R-11-colosse-paysage-tampon.png",
+      "w": 422,
+      "h": 195,
+      "cyan": 477,
+      "partCyan": 0.005796573095151294,
+      "sha256": "39d516d25935b2110495b820eca451cdef70a6ba1705b93ba6c12a0c05e9fb95"
+    }
+  ]
+}

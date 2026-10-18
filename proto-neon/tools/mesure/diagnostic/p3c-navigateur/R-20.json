@@ -1,0 +1,78 @@
+{
+ "id": "R-20",
+ "titre": "Performance",
+ "seuil": "p95 ≤ 11 ms (×1, sans adaptatif) et < SNAKE 2030 ; p95 ≤ 25 ms (×4) sans perte de temps ; p95 ≤ 16,7 ms sur iPhone",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "4 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "scène charge, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 4.6,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 601,
+   "p50": 2.800000011920929,
+   "p99": 5.400000035762787,
+   "max": 8.699999988079071
+  },
+  {
+   "nom": "scène v5, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 4.2,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 601,
+   "p50": 3,
+   "p99": 5,
+   "max": 11.5
+  },
+  {
+   "nom": "scène vol, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 3.8,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 600,
+   "p50": 2.5,
+   "p99": 4.5,
+   "max": 6.399999976158142
+  },
+  {
+   "nom": "scène charge meilleure que SNAKE 2030 en jeu (p95, ms)",
+   "valeur": {
+    "snake2975": 4.6,
+    "snake2030": 0.6
+   },
+   "seuil": "snake2975 < snake2030",
+   "statut": "echec",
+   "imagesSnake2030": 595
+  },
+  {
+   "nom": "scène charge, processeur ×4, qualité adaptative : p95 (ms)",
+   "valeur": 16.715,
+   "seuil": "≤ 25",
+   "statut": "ok",
+   "images": 518
+  },
+  {
+   "nom": "temps de jeu / temps réel au profil ×4",
+   "valeur": 0.95672,
+   "seuil": "≥ 0,99",
+   "statut": "echec",
+   "etat": "boss"
+  },
+  {
+   "nom": "vrai iPhone de la propriétaire",
+   "statut": "hors-banc",
+   "raison": "p95 ≤ 16.7 ms à lire sur ?perf=1&scene=charge aux jalons A et B (REFONTE.md § 8.4)"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 66.4,
+ "bundle": {
+  "url": "http://127.0.0.1:62346/proto-neon/index.html",
+  "empreinte": "7fc90b5a2166"
+ },
+ "date": "2026-10-18T00:12:52.254Z",
+ "dateParis": "18/10/2026 · 02 h 12"
+}

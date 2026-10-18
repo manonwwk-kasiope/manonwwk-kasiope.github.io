@@ -33,19 +33,21 @@ export async function mesurer(banc, res) {
   if (!Lg) res.absent('recentrages humains', 'N.journal.dump');
   else {
     const inv = Lg.gestes.filter(g => g.action && g.action !== 'aucune').length;
-    res.verifie(`recentrages humains (${n} poses, ${courts} courtes, ${autres} avec un autre doigt) : actions involontaires`, inv + Lg.pouvoirs + Lg.apogees, 0, inv + Lg.pouvoirs + Lg.apogees === 0, { gestes: Lg.gestes.length, pouvoirs: Lg.pouvoirs, apogees: Lg.apogees });
+    // Même action vue à l'entrée et au journal : ne pas la compter deux fois.
+    const involontaires = Math.max(inv, Lg.pouvoirs + Lg.apogees);
+    res.verifie(`recentrages humains (${n} poses, ${courts} courtes, ${autres} avec un autre doigt) : actions involontaires`, involontaires, 0, involontaires === 0, { gestes: Lg.gestes.length, pouvoirs: Lg.pouvoirs, apogees: Lg.apogees, entrees: Lg.gestes, traceDoigts: Lg.traceDoigts, journalActions: Lg.tout.filter(x=>['pouvoir','apogee','boost'].includes(x.type)) });
     const acc = B.reduce((a, b, i) => a + (b && !B[i - 1] ? 1 : 0), 0);
     res.verifie('recentrages humains : accélérations par le second doigt', acc, 0, acc === 0);
   }
   await d.toutLever(); await d.attendre(300);
   /* 2. le slalom serré : manche à fond, cap qui oscille de ± 40° toutes les 150 ms */
-  { await s.eval(() => window.__MESURE.parImage('slalom', 'return !!(S.player && S.player.boost) ? 1 : 0;'));
+  { await s.eval(() => window.__MESURE.parImage('slalom', 'var p=S.player,I=S.input;return {f:window.__FRAME,r:performance.now(),boost:!!(p&&p.boost),ang:p&&p.ang,vise:p&&p.angVise,mag:I.mag,inputBoost:I.boost};'));
     const R0 = await s.eval(() => (window.__S.input.stick && window.__S.input.stick.r) || 44), a0 = await s.eval(() => window.__S.player.ang);
     const id = await d.poser(V.w * 0.3, V.h * 0.5);
     for (let k = 0; k < (banc.o.rapide ? 20 : 60); k++) { const a = a0 + (k % 2 ? 1 : -1) * 40 * Math.PI / 180; await d.bouger(id, V.w * 0.3 + R0 * Math.cos(a), V.h * 0.5 + R0 * Math.sin(a)); await d.attendre(150); }
     await d.lever(id);
     const I = await s.eval(() => window.__MESURE.arreter('slalom'));
-    res.verifie('slalom serré : images en accélération', I.filter(x => x).length, 0, !I.some(x => x)); }
+    res.verifie('slalom serré : images en accélération', I.filter(x => x.boost).length, 0, !I.some(x => x.boost), { trace: I }); }
   await d.attendre(300);
   /* 3. 20 sur 20 pour chaque geste du second doigt */
   const ng = banc.o.rapide ? 6 : L.gestes;
@@ -53,7 +55,7 @@ export async function mesurer(banc, res) {
     const r = await serieSecondDoigt(s, genre, ng, genre === 'tenu' ? { duree: 0.5 } : {});
     if (!r.journal) { res.absent(`${genre} : ${ng} sur ${ng}`, 'N.journal.dump'); continue; }
     const bon = r.actions[action] || 0, autresA = Object.entries(r.actions).filter(([k]) => k !== action).reduce((a, [, v]) => a + v, 0);
-    res.verifie(`${genre} → ${action} : ${ng} sur ${ng}`, bon, ng, bon === ng && autresA === 0, { actions: r.actions });
+    res.verifie(`${genre} → ${action} : ${ng} sur ${ng}`, bon, ng, bon === ng && autresA === 0, { actions: r.actions, entrees: r.entrees, traceDoigts: r.traceDoigts, source: r.source });
   }
   /* 4. les balayages depuis les bords */
   await s.eval(() => {

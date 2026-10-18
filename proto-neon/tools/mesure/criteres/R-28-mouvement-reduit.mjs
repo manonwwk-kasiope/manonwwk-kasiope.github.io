@@ -5,7 +5,7 @@ import { executer, principal, seuils, exiger } from '../commun.mjs';
 import { lot, bilanLot } from '../parties.mjs';
 
 export const meta = { id: 'R-28', titre: 'Mouvement réduit', seuil: 'caméra et plans immobiles à la mort d’une élite ; jeu complet ; lumière gardée', bloquant: true };
-const IMAGE = 'var p = S.player || {x:0,y:0}; return { b: M.b64(N.gfx.buf()), cx: N.cam.x, cy: N.cam.y, px: p.x, py: p.y, sh: +S.shake || 0, g: N.horloge && N.horloge.gele ? !!N.horloge.gele() : false };';
+const IMAGE = 'var p = S.player || {x:0,y:0}; return { f: window.__FRAME, h: N.horloge.etat(), etat: M.etat(), b: M.b64(N.gfx.buf()), cx: N.cam.x, cy: N.cam.y, px: p.x, py: p.y, sh: +S.shake || 0, g: N.horloge && N.horloge.gele ? !!N.horloge.gele() : false };';
 
 export async function mesurer(banc, res) {
   const s = await banc.ouvrir('paysage', { dt: 1 / 60, reducedMotion: 'reduce' });
@@ -33,8 +33,9 @@ export async function mesurer(banc, res) {
       res.verifie('secousse S.shake à la mort de l’élite (px)', Math.max(0, ...apres.map(x => x.sh)), 0, apres.every(x => x.sh === 0));
       const geles = apres.filter(x => x.g);
       if (geles.length >= 2) {
-        let maxCh = 0; for (let k = 1; k < geles.length; k++) { let n = 0; for (let i = 0; i < geles[k].b.length; i++) if (geles[k].b[i] !== geles[k - 1].b[i]) n++; maxCh = Math.max(maxCh, n / geles[k].b.length); }
-        res.verifie('pixels changés d’une image à l’autre pendant le gel', maxCh, '≤ ' + (L.reduit || 0.005), maxCh <= (L.reduit || 0.005), { imagesGelees: geles.length });
+        let maxCh = 0, paires = 0, pire = null; for (let k = 1; k < geles.length; k++) { if (geles[k].f !== geles[k-1].f + 1) continue; paires++; let n = 0; for (let i = 0; i < geles[k].b.length; i++) if (geles[k].b[i] !== geles[k - 1].b[i]) n++; if(!pire || n/geles[k].b.length>maxCh){maxCh=n/geles[k].b.length;pire=[geles[k-1],geles[k]].map(x=>({...x,b:x.b.toString('base64')}));} }
+        if (!paires) res.nonMesurable('plans immobiles pendant le gel', 'aucune paire de deux images gelées consécutives');
+        else res.verifie('pixels changés d’une image à l’autre pendant le gel', maxCh, '≤ ' + (L.reduit || 0.005), maxCh <= (L.reduit || 0.005), { imagesGelees: geles.length, pairesConsecutives: paires, pairePire: pire });
       } else res.nonMesurable('plans immobiles pendant le gel', 'moins de deux images gelées après la mort de l’élite');
     }
   }

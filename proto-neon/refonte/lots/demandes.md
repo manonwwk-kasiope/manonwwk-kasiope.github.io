@@ -333,3 +333,24 @@ Nombres retenus appliqués le 18/10/2026, mis à jour à 02 h 05 (Paris), candid
 | codex-p5 | `02-regles.js` · `N.R.ennemis.fleche.approche.1` | 70 → 56 | Réduire la pression d’approche ; variante isolée et candidate 2 font entrer la durée humaine dans sa cible sur vingt graines. |
 | codex-p5 | `02-regles.js` · `N.R.colosse.pvPhase` | 1500 → 1200 | Réduire la difficulté du CYCLOPE : 1 200 PV par phase, combinaison candidate 2 donne 10 % de victoires bon sur vingt graines. |
 | codex-p5 | `02-regles.js` · `N.R.colosse.pvTotal` | 4500 → 3600 | Total cohérent avec les trois phases de 1 200 PV ; pas de modification du nombre de phases ni des répits. |
+
+
+## codex-p3c — diagnostic de la batterie 15a196a (18/10/2026 · 01 h 41 Paris)
+
+Tableau détaillé, valeurs reçues et limites : `tools/mesure/DIAGNOSTIC-ECHECS-2.md`.
+Aucun fichier src ni chiffre N.R modifié dans ce lot ; seuils existants conservés. R-05 applique la décision explicite de SORTIE.md, sans prétendre que les six causes encore absentes ont été produites.
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-p3c | `50-fx.js` | `admit()` : journal réel `flash {aire,accepte}` sur chaque issue ; conserver le budget N.R de trois flashs par seconde ; corriger les pixels seulement après lecture des transitions | R-13 : 7/s dans l'ancien compteur qui doublait L/R, journal vide ; pas de feu vert sécurité sans nouveau reçu |
+| codex-p3c | `70-joueuse.js` | `majBoost()` : maintien aligné continu avant reprise du boost par poussée ; réinitialiser le maintien hors `R.boost.ecartDeg`, conserver second doigt tenu | R-33 : 30 images réellement accélérées pendant le slalom ; détails de cap/course maintenant collectés |
+| codex-p3c | `90-boot.js` | journaliser les vrais gestes selon le schéma de `03-socle`, ou conserver l'observation des entrées livrées par le banc ; aucun événement synthétique | les 0/6 de R-22 et R-33 viennent du journal geste absent ; reconnaissance et activation du pouvoir sont distinctes |
+| codex-p3c | `79-jeu.js`, `90-boot.js` | synchroniser la fin de l'interlude PLONGÉE et le vrai VOL ; vérifier `intro.state/current`, état et pixels au même instant ; fond de fin non bloquant réservé à fin | R-03 : la capture en échec est un panneau illustré, pas les seules bannières signalées par p2 ; le banc refuse désormais un panneau actif comme mesure de jeu |
+| codex-p3c | `40-sprites.js` | `genTete/dir16` : gaine nuit profonde d'un pixel sur chaque orientation et animation | R-37 : silhouette cyan sans gaine ; l'erreur de 94 contre 92 inclut aussi les deux pixels du radar, séparés dans le banc |
+| codex-p3c | `74-arsenal.js` | si le nouveau reçu confirme des pixels strictement trop proches, exclure les dessins à distance strictement inférieure à `R.armes.lisibilite.silenceTete` de la vraie silhouette | R-37 : l'ancien compteur incluait la borne exactement égale à trois pixels et le radar ; aucun nouveau seuil arbitraire |
+| codex-p3c | `02-regles.js`, `03-socle.js` (gardien) | mettre `mort.causes` et `criteres.R05.causes` à sept ; distinguer les causes naturelles de mort de la liste de coupe sans supprimer morsure des coupes | décision SORTIE.md du 18/10 à 00 h 41 ; l'instrument exige désormais les sept causes naturelles et refuse une mort par morsure |
+| codex-p3c | `15-decor.js` | `pal/taireFondJeu` : préserver la lumière neutre spatiale nécessaire au décor code 8 entre les bornes R existantes, avec cyan zéro et magenta/rose sous la borne | quatre parts reçues 0,10423 / 0,10148 / 0,09680 / 0,14609 restent sous 0,18 ; la lumière globale reste indicative |
+| codex-p3c | `73-colosse.js` | `corps/teles/drawTop` : gaine sur le bord final des menaces selon `R.ennemis.tele.gaine`, mesurer les couches en défaut avant réglage | R-11 colosse : 380 pixels de bord gainés sur 888 ; export masque/tampon préparé |
+| codex-p3c | `79-jeu.js`, `80-ecrans.js` | produire et rendre l'attraction après l'attente et selon la boucle déjà chiffrées dans N.R | R-19 jamais atteint en 25 s ; la branche titre n'a pas de transition d'inaction |
+| codex-p3c | propriétaires performance / effets | attendre la sonde avant un ordre numérique R-20 ; témoin apparié R-12 pour la caméra ; paire consécutive de gel R-28 ; aucune hausse de force avant validation R-13 | les reçus ne prouvent ni un goulot CRT, ni une perte CPU de 1,804 %, ni un gel continu changeant de 23,974 % |
+| codex-p3c | exécution hors bac | `cd proto-neon && node tools/mesure/verifier.mjs --diagnostic-p3c` | serveur sur port libre, un seul Chromium muet, trois profils, critères prioritaires et traces ; script non exécuté dans le bac |

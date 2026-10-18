@@ -15,6 +15,16 @@ export async function mesurer(banc, res) {
   for (const m of MOMENTS) {
     const r = await atteindre(s, m);
     if (!r.ok) { res.nonMesurable(m, r.raison); continue; }
+    // Un panneau encore visible n'est pas un tampon de jeu admissible (CONTRAT.md).
+    // Garder la capture et signaler la superposition, sans l'exclure pour obtenir un OK.
+    const film = await s.eval(() => window.__N.intro && window.__N.intro.current ? window.__N.intro.current() : null);
+    if (film) {
+      res.capture(await s.captureTampon('R-03-' + m));
+      res.nonMesurable(m, 'panneau ' + film + ' encore dessiné dans état ' + await s.etat());
+      continue;
+    }
+    await s.eval(() => window.__MESURE.masque());
+    await s.images(1);
     const a = await s.analyse();
     if (!a.masque) { res.nonMesurable(m, await s.eval(() => window.__MESURE.raisonMasque)); continue; }
     pire = Math.max(pire, a.cyanHorsMasque);
