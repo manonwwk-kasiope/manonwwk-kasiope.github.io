@@ -1,5 +1,5 @@
 {
-  "dateParis": "18/10/2026 05:17:50",
+  "dateParis": "18/10/2026 05:21:27",
   "conforme": true,
   "controles": [
     {
@@ -23,12 +23,17 @@
       "ok": true
     },
     {
+      "nom": "chaque admission dessinée correspond à un rendu géométrique réel",
+      "ok": true
+    },
+    {
       "nom": "zéro erreur",
       "ok": true
     }
   ],
   "sans": {
     "dessine": false,
+    "rendus": [],
     "erreurs": [],
     "err": 0,
     "demandes": [
@@ -97,6 +102,51 @@
   },
   "avec": {
     "dessine": true,
+    "rendus": [
+      {
+        "t": 0.008333333333333333,
+        "texte": "A",
+        "cyclope": false,
+        "temps": 0.008333333333333333,
+        "x": 193,
+        "y": 56,
+        "w": 37,
+        "h": 57,
+        "echelle": 5,
+        "lignes": [
+          "A"
+        ]
+      },
+      {
+        "t": 10.000000000000073,
+        "texte": "B",
+        "cyclope": false,
+        "temps": 10.000000000000073,
+        "x": 193,
+        "y": 56,
+        "w": 37,
+        "h": 57,
+        "echelle": 5,
+        "lignes": [
+          "B"
+        ]
+      },
+      {
+        "t": 22.999999999999336,
+        "texte": "VAGUE 2 / MEUTE",
+        "cyclope": false,
+        "temps": 22.999999999999336,
+        "x": 103,
+        "y": 56,
+        "w": 217,
+        "h": 105,
+        "echelle": 5,
+        "lignes": [
+          "VAGUE 2",
+          "MEUTE"
+        ]
+      }
+    ],
     "erreurs": [],
     "err": 0,
     "demandes": [

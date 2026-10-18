@@ -1134,7 +1134,6 @@
     ecartFile: 14, ecartMeute: 13, ecartMines: 30, ecartBatterie: 24,
     essaisFormation: 60, remplissageDebut: 2, remplissageMin: 10, remplissagePart: 0.85,
     quotaPart: 0.9, vagueMin: 5,
-    rythme: { regrouperSalves: [1, 1, 1, 1, 2] }, // codex-12 : même nombre de salves, V5 groupées par deux
     vagues: [
       { dureeMax: 23.5, quota: 8, intervalle: 4,
         plafonds: [{ t: 0, n: 3 }, { t: 8, n: 4 }, { t: 12, n: 6 }],

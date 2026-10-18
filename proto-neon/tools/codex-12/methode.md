@@ -17,3 +17,9 @@ Regroupement V5 uniquement : neuf salves nominales inchangées, groupées à11/2
 R14 original avant terminé : l’instrument après compte les admissions, selon arbitrage Claude05h08, et rend non mesurable une référence sans journal d’admission ; jamais substitution par les demandes. Les résultats avant d’origine restent conservés et leurs demandes ne sont pas comparables à des admissions. Aucun des60reçus Chromium avant n’est rejoué pour masquer cette limite. R15 reste original en attendant arbitrage des vagues perdues avant pic ; ses échecs seront conservés.
 
 Une collecte80 après avec mêmes pilotes/graines pour mesurer les écarts et la limite10%, sans recherche de ciblesB. Aucun ajustement numérique après cette collecte ; si les durées ou pics manquent leur condition, publier et soumettre à Claude.
+
+## Arrêt du regroupement — 18/10/2026 · 05 h 23
+
+80après terminés :78fins, expert/2 et dieu/2 censurés à540s, zéroerreur. Les pics bon10graines deviennent6/9,5/15/20/22, mais médianes d’arrêt humain−18,99%, bon−33,18% ; garde±10% échouée. Vagues1–4 inchangées, V5 +3,11%. Le regroupement est NON RETENU et retiré du code courant ; sa sourceapres-sources.json et son bundle restent figés pour lire ses résultats. Aucun quatrième réglageB, aucune autre valeur de regroupement essayée. La suite Chromium14863/session44535 mesure ce candidat rejeté pour publier les quatre critères, sans remplacer ses sources ni refaire ses80.
+
+Les ajouts de réserve de bannières et les correctifs78/79 sont conservés en préparation. Ils ne sont pas une version après80 qualifiée séparément : la mesure80porte sur le candidat avec regroupement. Attendre arbitrage Claude sur ce sous-ensemble et sur R15avantpic avant nouvellequalification.
