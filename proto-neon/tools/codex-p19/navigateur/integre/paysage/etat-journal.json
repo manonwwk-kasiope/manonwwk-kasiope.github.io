@@ -1,0 +1,5857 @@
+{
+  "etat": "jeu",
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansFilet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS FILET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansCoupe",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS COUPE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "v5Mult",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "×5 AVANT LA PURGE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "vague": 5
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 5,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "DÉFERLANTE",
+        "quartier": "coeur"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 0,
+      "type": "section",
+      "d": {
+        "nom": "boss"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 0,
+      "type": "apparition",
+      "d": {
+        "id": 1,
+        "type": "cyclope",
+        "x": 389.12,
+        "y": 208,
+        "elite": false,
+        "vue": {
+          "x": 178,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 256,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 48
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 1,
+        "evt": "arrivee"
+      }
+    },
+    {
+      "pas": 266,
+      "t": 0.6766666928927093,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 10884.593900870706,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 0.6600000262260428,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 266,
+      "t": 0.6766666928927093,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 1,
+        "evt": "entree"
+      }
+    },
+    {
+      "pas": 412,
+      "t": 1.8933333595593718,
+      "image": 0,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "cyclope",
+        "forme": "secteur",
+        "total": 0.9,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 667,
+      "t": 4.0183333595593655,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 1,
+        "evt": "repit"
+      }
+    },
+    {
+      "pas": 667,
+      "t": 4.0183333595593655,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 2721.1484752176766,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 4.001666692892698,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 2,
+        "evt": "entree"
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "cyclope",
+        "x": 322.33,
+        "y": 250,
+        "elite": false,
+        "vue": {
+          "x": 207,
+          "y": 158,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 207,
+          "y": 158,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 67.75618126783712
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "apparition",
+      "d": {
+        "id": 11,
+        "type": "cyclope",
+        "x": 454.33,
+        "y": 250,
+        "elite": false,
+        "vue": {
+          "x": 207,
+          "y": 158,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 207,
+          "y": 158,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 64.78842566384832
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.01000002622606,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 17409.70079819199,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 11.01000002622606,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "kill",
+      "d": {
+        "id": 10,
+        "type": "cyclope",
+        "x": 322.33,
+        "y": 250,
+        "elite": false,
+        "boss": true,
+        "base": 0,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": 0
+        },
+        "distTete": 67.75618126783712,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.01000002622606,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 17409.70079819199,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.01000002622606,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1507,
+      "t": 11.018333359559392,
+      "image": 0,
+      "type": "kill",
+      "d": {
+        "id": 11,
+        "type": "cyclope",
+        "x": 454.33,
+        "y": 250,
+        "elite": false,
+        "boss": true,
+        "base": 0,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": 0
+        },
+        "distTete": 64.78842566384832,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 1556,
+      "t": 11.026666692892725,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 2,
+        "evt": "repit"
+      }
+    },
+    {
+      "pas": 1556,
+      "t": 11.026666692892725,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 2721.1484752176766,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.01000002622606,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1576,
+      "t": 11.193333359559382,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 10503.821429113603,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 11.18500002622605,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1576,
+      "t": 11.193333359559382,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 10503.821429113603,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.18500002622605,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1592,
+      "t": 11.326666692892708,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 11666.476839909034,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 11.318333359559375,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1592,
+      "t": 11.326666692892708,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 11666.476839909034,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 11.318333359559375,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1616,
+      "t": 11.526666692892697,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 12890.146237276815,
+        "accepte": false,
+        "_type": "explosion",
+        "_issue": "budget",
+        "_compte": false,
+        "_echelle": 0,
+        "_temps": 11.518333359559364,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1616,
+      "t": 11.526666692892697,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 12890.146237276815,
+        "accepte": false,
+        "_type": "explosion",
+        "_issue": "budget",
+        "_compte": false,
+        "_echelle": 0,
+        "_temps": 11.518333359559364,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1640,
+      "t": 11.726666692892685,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 14174.829621216952,
+        "accepte": false,
+        "_type": "explosion",
+        "_issue": "budget",
+        "_compte": false,
+        "_echelle": 0,
+        "_temps": 11.718333359559352,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 1640,
+      "t": 11.726666692892685,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 14174.829621216952,
+        "accepte": false,
+        "_type": "explosion",
+        "_issue": "budget",
+        "_compte": false,
+        "_echelle": 0,
+        "_temps": 11.718333359559352,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2396,
+      "t": 18.026666692892327,
+      "image": 0,
+      "type": "phase",
+      "d": {
+        "n": 3,
+        "evt": "entree"
+      }
+    },
+    {
+      "pas": 2542,
+      "t": 19.243333359558925,
+      "image": 73,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "cyclope",
+        "forme": "disque",
+        "total": 1,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 2663,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 15065.181869717242,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 20.235000026225535,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 849.7704148387381,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "flash",
+      "d": {
+        "aire": 17409.70079819199,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.243333359558868,
+        "_image": 134,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2664,
+      "t": 20.2516666928922,
+      "image": 134,
+      "type": "kill",
+      "d": {
+        "id": 1,
+        "type": "cyclope",
+        "x": 493.01999999999833,
+        "y": 210,
+        "elite": false,
+        "boss": true,
+        "base": 0,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": 0
+        },
+        "distTete": 95.33231351436027,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 2665,
+      "t": 20.2516666928922,
+      "image": 135,
+      "type": "section",
+      "d": {
+        "nom": "victoire"
+      }
+    },
+    {
+      "pas": 2733,
+      "t": 20.42666669289219,
+      "image": 169,
+      "type": "flash",
+      "d": {
+        "aire": 10503.821429113603,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 20.418333359558858,
+        "_image": 169,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2749,
+      "t": 20.560000026225516,
+      "image": 177,
+      "type": "flash",
+      "d": {
+        "aire": 11666.476839909034,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 20.551666692892184,
+        "_image": 177,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 2773,
+      "t": 20.760000026225505,
+      "image": 189,
+      "type": "flash",
+      "d": {
+        "aire": 12890.146237276815,
+        "accepte": false,
+        "_type": "explosion",
+        "_issue": "budget",
+        "_compte": false,
+        "_echelle": 0,
+        "_temps": 20.751666692892172,
+        "_image": 189,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 194,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 194,
+      "type": "defi",
+      "d": {
+        "id": "v5Mult",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "×5 AVANT LA PURGE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "vague": 5
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 194,
+      "type": "vague",
+      "d": {
+        "n": 5,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "DÉFERLANTE",
+        "quartier": "coeur"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 194,
+      "type": "arene",
+      "d": {
+        "evt": "travellingAnnonce",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "arene",
+      "d": {
+        "evt": "travelling",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "x": 362,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 129.63892162464174
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "x": 382,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 402,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.98950339626452
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 4,
+        "type": "mine",
+        "x": 422,
+        "y": 127.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.38525747007824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 5,
+        "type": "tourelle",
+        "x": 442,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 149.15176834352317
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "x": 462,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 160.01953005805262
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 7,
+        "type": "ruche",
+        "x": 491,
+        "y": 122.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 181.52479169523926
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 8,
+        "type": "sentinelle",
+        "x": 518.5,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 198.54596445155966
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 9,
+        "type": "rival",
+        "x": 341.5,
+        "y": 128.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.22480562473493
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "planeur",
+        "x": 324,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 133.93375228074513
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 11,
+        "type": "traqueur",
+        "x": 402,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 134.85640511299417
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 422,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.23119343827693
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 442,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 150.020831886775
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 462,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.40533450613336
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 610.5,
+        "y": 246,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 242.70609798684498
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 16,
+        "type": "tourelle",
+        "x": 611.5,
+        "y": 214.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.01113335232486
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 362,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.63785821881802
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 18,
+        "type": "ruche",
+        "x": 331,
+        "y": 390.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.4964157245626
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 19,
+        "type": "sentinelle",
+        "x": 486.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 176.27393454507106
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "x": 517.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 197.1357400371632
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 21,
+        "type": "planeur",
+        "x": 548,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 220.58161754779113
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 22,
+        "type": "traqueur",
+        "x": 611.5,
+        "y": 266,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 243.70525230285867
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "x": 611.5,
+        "y": 293,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 246.2950466412185
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 24,
+        "type": "dard",
+        "x": 611.5,
+        "y": 309,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 249.20122391352737
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 307.5,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.12583037842504
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 382,
+        "y": 385.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 27,
+        "type": "tourelle",
+        "x": 278.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.24190342636808
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "x": 566,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 237.13761827259714
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 29,
+        "type": "ruche",
+        "x": 615.5,
+        "y": 331,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 258.6140947435
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 30,
+        "type": "sentinelle",
+        "x": 611.5,
+        "y": 358.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 264.1940574653412
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "x": 597.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 263.0256641470562
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "apparition",
+      "d": {
+        "id": 32,
+        "type": "planeur",
+        "x": 608.5,
+        "y": 196,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.87143845146824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "arene",
+      "d": {
+        "evt": "convoiAnnonce",
+        "voie": 2,
+        "vx": 240
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 194,
+      "type": "armement",
+      "d": {
+        "id": 33,
+        "type": "convoi",
+        "forme": "voie",
+        "total": 1.5,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 195,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.8600000262255,
+        "_image": 195,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 195,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.016666666666666666,
+        "x": 144,
+        "y": 120,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 224,
+      "type": "flash",
+      "d": {
+        "aire": 941.5738668573276,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.335000026225472,
+        "_image": 224,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 224,
+      "type": "kill",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 442.0119392200995,
+        "y": 375.09410992330686,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 123.32141448692553,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 227,
+      "type": "apparition",
+      "d": {
+        "id": 35,
+        "type": "fleche",
+        "x": 494.11666666666713,
+        "y": 384.5,
+        "elite": true,
+        "vue": {
+          "x": 242,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 305,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 152.82112728430135
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 227,
+      "type": "flash",
+      "d": {
+        "aire": 12890.146237276815,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 21.36000002622547,
+        "_image": 227,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 227,
+      "type": "kill",
+      "d": {
+        "id": 35,
+        "type": "fleche",
+        "x": 494.11666666666713,
+        "y": 384.5,
+        "elite": true,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": 0
+        },
+        "distTete": 152.82112728430135,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 255,
+      "type": "flash",
+      "d": {
+        "aire": 1245.2314389188157,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.73500002622545,
+        "_image": 255,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 255,
+      "type": "kill",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 400.2354392376842,
+        "y": 353.5616749862829,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 106.76500155124607,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 255,
+      "type": "flash",
+      "d": {
+        "aire": 1412.949283952777,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.73500002622545,
+        "_image": 255,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 255,
+      "type": "kill",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 280.903744111791,
+        "y": 351.0815109101772,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 188.44247238083915,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 731,
+      "t": 5.941666666666752,
+      "image": 259,
+      "type": "armement",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 735,
+      "t": 5.975000000000087,
+      "image": 261,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 738,
+      "t": 6.000000000000088,
+      "image": 263,
+      "type": "armement",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 739,
+      "t": 6.008333333333422,
+      "image": 263,
+      "type": "flash",
+      "d": {
+        "aire": 1591.2598349888835,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.835000026225444,
+        "_image": 263,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 739,
+      "t": 6.008333333333422,
+      "image": 263,
+      "type": "kill",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 363.97479332414036,
+        "y": 155.11291911742052,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 133.89040331306683,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 264,
+      "type": "flash",
+      "d": {
+        "aire": 1780.1630920271348,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.843333359558777,
+        "_image": 264,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 264,
+      "type": "kill",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 599.9269704930366,
+        "y": 258.0087904072375,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 147.24067399824713,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 264,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 21.843333359558777,
+        "_image": 264,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 741,
+      "t": 6.025000000000089,
+      "image": 264,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "forme": "losange",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 764,
+      "t": 6.216666666666765,
+      "image": 276,
+      "type": "flash",
+      "d": {
+        "aire": 352,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.043333359558765,
+        "_image": 276,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 769,
+      "t": 6.258333333333434,
+      "image": 278,
+      "type": "armement",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.135000026225427,
+        "_image": 281,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "kill",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "x": 541.4533212272719,
+        "y": 275.6307355311945,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 67.18522952428546,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "flash",
+      "d": {
+        "aire": 2189.7477241100723,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.135000026225427,
+        "_image": 281,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "kill",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 423.03891010611716,
+        "y": 330.9421448238934,
+        "elite": false,
+        "boss": false,
+        "base": 80,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 92.4648513182089,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "flash",
+      "d": {
+        "aire": 2410.4290991547587,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 22.135000026225427,
+        "_image": 281,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "kill",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 374.4311522430068,
+        "y": 366.26920036132776,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 150.7339796383892,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.135000026225427,
+        "_image": 281,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "flash",
+      "d": {
+        "aire": 2563.434852519074,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.135000026225427,
+        "_image": 281,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "kill",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 372.3926079937585,
+        "y": 354.90888245956046,
+        "elite": false,
+        "boss": false,
+        "base": 120,
+        "src": {
+          "genre": "ennemi",
+          "type": "mine",
+          "id": -1
+        },
+        "distTete": 144.10952934677414,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 281,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": true,
+        "prime": 5000
+      }
+    },
+    {
+      "pas": 780,
+      "t": 6.31666666666677,
+      "image": 284,
+      "type": "armement",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 784,
+      "t": 6.350000000000105,
+      "image": 286,
+      "type": "armement",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 287,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 287,
+      "type": "defi",
+      "d": {
+        "id": "v5Mult",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "×5 AVANT LA PURGE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "vague": 5
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 287,
+      "type": "vague",
+      "d": {
+        "n": 5,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "DÉFERLANTE",
+        "quartier": "coeur"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 287,
+      "type": "arene",
+      "d": {
+        "evt": "travellingAnnonce",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "arene",
+      "d": {
+        "evt": "travelling",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "x": 362,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 129.63892162464174
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "x": 382,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 402,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.98950339626452
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 4,
+        "type": "mine",
+        "x": 422,
+        "y": 127.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.38525747007824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 5,
+        "type": "tourelle",
+        "x": 442,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 149.15176834352317
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "x": 462,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 160.01953005805262
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 7,
+        "type": "ruche",
+        "x": 491,
+        "y": 122.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 181.52479169523926
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 8,
+        "type": "sentinelle",
+        "x": 518.5,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 198.54596445155966
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 9,
+        "type": "rival",
+        "x": 341.5,
+        "y": 128.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.22480562473493
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "planeur",
+        "x": 324,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 133.93375228074513
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 11,
+        "type": "traqueur",
+        "x": 402,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 134.85640511299417
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 422,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.23119343827693
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 442,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 150.020831886775
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 462,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.40533450613336
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 610.5,
+        "y": 246,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 242.70609798684498
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 16,
+        "type": "tourelle",
+        "x": 611.5,
+        "y": 214.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.01113335232486
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 362,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.63785821881802
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 18,
+        "type": "ruche",
+        "x": 331,
+        "y": 390.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.4964157245626
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 19,
+        "type": "sentinelle",
+        "x": 486.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 176.27393454507106
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "x": 517.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 197.1357400371632
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 21,
+        "type": "planeur",
+        "x": 548,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 220.58161754779113
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 22,
+        "type": "traqueur",
+        "x": 611.5,
+        "y": 266,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 243.70525230285867
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "x": 611.5,
+        "y": 293,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 246.2950466412185
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 24,
+        "type": "dard",
+        "x": 611.5,
+        "y": 309,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 249.20122391352737
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 307.5,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.12583037842504
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 382,
+        "y": 385.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 27,
+        "type": "tourelle",
+        "x": 278.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.24190342636808
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "x": 566,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 237.13761827259714
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 29,
+        "type": "ruche",
+        "x": 615.5,
+        "y": 331,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 258.6140947435
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 30,
+        "type": "sentinelle",
+        "x": 611.5,
+        "y": 358.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 264.1940574653412
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "x": 597.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 263.0256641470562
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "apparition",
+      "d": {
+        "id": 32,
+        "type": "planeur",
+        "x": 608.5,
+        "y": 196,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.87143845146824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "arene",
+      "d": {
+        "evt": "convoiAnnonce",
+        "voie": 2,
+        "vx": 240
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 287,
+      "type": "armement",
+      "d": {
+        "id": 33,
+        "type": "convoi",
+        "forme": "voie",
+        "total": 1.5,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 288,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.22666669289209,
+        "_image": 288,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 288,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.016666666666666666,
+        "x": 144,
+        "y": 120,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 317,
+      "type": "flash",
+      "d": {
+        "aire": 941.5738668573276,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 22.70166669289206,
+        "_image": 317,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 317,
+      "type": "kill",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 442.0119392200995,
+        "y": 375.09410992330686,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 123.32141448692553,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 320,
+      "type": "apparition",
+      "d": {
+        "id": 35,
+        "type": "rival",
+        "x": 460.61666666666713,
+        "y": 382.5,
+        "elite": true,
+        "vue": {
+          "x": 242,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 305,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 135.73698934991114
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 320,
+      "type": "flash",
+      "d": {
+        "aire": 12890.146237276815,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 22.72666669289206,
+        "_image": 320,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 320,
+      "type": "kill",
+      "d": {
+        "id": 35,
+        "type": "rival",
+        "x": 460.61666666666713,
+        "y": 382.5,
+        "elite": true,
+        "boss": false,
+        "base": 300,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": 0
+        },
+        "distTete": 135.73698934991114,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 348,
+      "type": "flash",
+      "d": {
+        "aire": 1245.2314389188157,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.10166669289204,
+        "_image": 348,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 348,
+      "type": "kill",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 400.2354392376842,
+        "y": 353.5616749862829,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 106.76500155124607,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 348,
+      "type": "flash",
+      "d": {
+        "aire": 1412.949283952777,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.10166669289204,
+        "_image": 348,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 723,
+      "t": 5.908333333333417,
+      "image": 348,
+      "type": "kill",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 280.903744111791,
+        "y": 351.0815109101772,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 188.44247238083915,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 731,
+      "t": 5.941666666666752,
+      "image": 352,
+      "type": "armement",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 735,
+      "t": 5.975000000000087,
+      "image": 354,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 738,
+      "t": 6.000000000000088,
+      "image": 356,
+      "type": "armement",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 739,
+      "t": 6.008333333333422,
+      "image": 356,
+      "type": "flash",
+      "d": {
+        "aire": 1591.2598349888835,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.201666692892033,
+        "_image": 356,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 739,
+      "t": 6.008333333333422,
+      "image": 356,
+      "type": "kill",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 363.97479332414036,
+        "y": 155.11291911742052,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 133.89040331306683,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 357,
+      "type": "flash",
+      "d": {
+        "aire": 1780.1630920271348,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.210000026225366,
+        "_image": 357,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 357,
+      "type": "kill",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 599.9269704930366,
+        "y": 258.0087904072375,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 147.24067399824713,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 740,
+      "t": 6.016666666666755,
+      "image": 357,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.210000026225366,
+        "_image": 357,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 741,
+      "t": 6.025000000000089,
+      "image": 357,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "forme": "losange",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 764,
+      "t": 6.216666666666765,
+      "image": 369,
+      "type": "flash",
+      "d": {
+        "aire": 352,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.410000026225354,
+        "_image": 369,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 769,
+      "t": 6.258333333333434,
+      "image": 371,
+      "type": "armement",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.501666692892016,
+        "_image": 374,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "kill",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "x": 541.4533212272719,
+        "y": 275.6307355311945,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 67.18522952428546,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "flash",
+      "d": {
+        "aire": 2189.7477241100723,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.501666692892016,
+        "_image": 374,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "kill",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 423.03891010611716,
+        "y": 330.9421448238934,
+        "elite": false,
+        "boss": false,
+        "base": 80,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 92.4648513182089,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "flash",
+      "d": {
+        "aire": 2410.4290991547587,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 23.501666692892016,
+        "_image": 374,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "kill",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 374.4311522430068,
+        "y": 366.26920036132776,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 150.7339796383892,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.501666692892016,
+        "_image": 374,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "flash",
+      "d": {
+        "aire": 2563.434852519074,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.501666692892016,
+        "_image": 374,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "kill",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 372.3926079937585,
+        "y": 354.90888245956046,
+        "elite": false,
+        "boss": false,
+        "base": 120,
+        "src": {
+          "genre": "ennemi",
+          "type": "mine",
+          "id": -1
+        },
+        "distTete": 144.10952934677414,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.308333333333437,
+      "image": 374,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": true,
+        "prime": 5000
+      }
+    },
+    {
+      "pas": 780,
+      "t": 6.31666666666677,
+      "image": 377,
+      "type": "armement",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 784,
+      "t": 6.350000000000105,
+      "image": 379,
+      "type": "armement",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 380,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 380,
+      "type": "defi",
+      "d": {
+        "id": "v5Mult",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "×5 AVANT LA PURGE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "vague": 5
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 380,
+      "type": "vague",
+      "d": {
+        "n": 5,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "DÉFERLANTE",
+        "quartier": "coeur"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 380,
+      "type": "arene",
+      "d": {
+        "evt": "travellingAnnonce",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "arene",
+      "d": {
+        "evt": "travelling",
+        "voie": -1,
+        "vx": 14
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "x": 362,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 129.63892162464174
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "x": 382,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 402,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.98950339626452
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 4,
+        "type": "mine",
+        "x": 422,
+        "y": 127.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.38525747007824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 5,
+        "type": "tourelle",
+        "x": 442,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 149.15176834352317
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "x": 462,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 160.01953005805262
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 7,
+        "type": "ruche",
+        "x": 491,
+        "y": 122.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 181.52479169523926
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 8,
+        "type": "sentinelle",
+        "x": 518.5,
+        "y": 126.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 198.54596445155966
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 9,
+        "type": "rival",
+        "x": 341.5,
+        "y": 128.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.22480562473493
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "planeur",
+        "x": 324,
+        "y": 129.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 133.93375228074513
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 11,
+        "type": "traqueur",
+        "x": 402,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 134.85640511299417
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 422,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.23119343827693
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 442,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 150.020831886775
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 462,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.40533450613336
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 610.5,
+        "y": 246,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 242.70609798684498
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 16,
+        "type": "tourelle",
+        "x": 611.5,
+        "y": 214.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.01113335232486
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 362,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.63785821881802
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 18,
+        "type": "ruche",
+        "x": 331,
+        "y": 390.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 139.4964157245626
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 19,
+        "type": "sentinelle",
+        "x": 486.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 176.27393454507106
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "x": 517.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 197.1357400371632
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 21,
+        "type": "planeur",
+        "x": 548,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 220.58161754779113
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 22,
+        "type": "traqueur",
+        "x": 611.5,
+        "y": 266,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 243.70525230285867
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "x": 611.5,
+        "y": 293,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 246.2950466412185
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 24,
+        "type": "dard",
+        "x": 611.5,
+        "y": 309,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 249.20122391352737
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 307.5,
+        "y": 383.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 141.12583037842504
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 382,
+        "y": 385.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 130.25455846149876
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 27,
+        "type": "tourelle",
+        "x": 278.5,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 158.24190342636808
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "x": 566,
+        "y": 386.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 237.13761827259714
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 29,
+        "type": "ruche",
+        "x": 615.5,
+        "y": 331,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 258.6140947435
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 30,
+        "type": "sentinelle",
+        "x": 611.5,
+        "y": 358.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 264.1940574653412
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "x": 597.5,
+        "y": 384.5,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 263.0256641470562
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "apparition",
+      "d": {
+        "id": 32,
+        "type": "planeur",
+        "x": 608.5,
+        "y": 196,
+        "elite": false,
+        "vue": {
+          "x": 157,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 254,
+          "y": 159,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 247.87143845146824
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "arene",
+      "d": {
+        "evt": "convoiAnnonce",
+        "voie": 2,
+        "vx": 240
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 380,
+      "type": "armement",
+      "d": {
+        "id": 33,
+        "type": "convoi",
+        "forme": "voie",
+        "total": 1.5,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 381,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 23.593333359558677,
+        "_image": 381,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 603,
+      "t": 5.025000000000039,
+      "image": 381,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.016666666666666666,
+        "x": 144,
+        "y": 120,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 410,
+      "type": "flash",
+      "d": {
+        "aire": 941.5738668573276,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.06833335955865,
+        "_image": 410,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 410,
+      "type": "kill",
+      "d": {
+        "id": 14,
+        "type": "larve",
+        "x": 442.0119392200995,
+        "y": 375.09410992330686,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 123.32141448692553,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 667,
+      "t": 5.525000000000064,
+      "image": 413,
+      "type": "apparition",
+      "d": {
+        "id": 35,
+        "type": "ruche",
+        "x": 468.11666666666713,
+        "y": 390,
+        "elite": true,
+        "vue": {
+          "x": 242,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "anticipee": {
+          "x": 305,
+          "y": 157,
+          "w": 422,
+          "h": 195
+        },
+        "distTete": 145.50869485284346
+      }
+    },
+    {
+      "pas": 713,
+      "t": 5.908333333333417,
+      "image": 436,
+      "type": "flash",
+      "d": {
+        "aire": 1088.1062998869993,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.468333359558628,
+        "_image": 436,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 713,
+      "t": 5.908333333333417,
+      "image": 436,
+      "type": "kill",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 400.2354392376842,
+        "y": 353.5616749862829,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 106.76500155124607,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 713,
+      "t": 5.908333333333417,
+      "image": 436,
+      "type": "flash",
+      "d": {
+        "aire": 1245.2314389188157,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.468333359558628,
+        "_image": 436,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 713,
+      "t": 5.908333333333417,
+      "image": 436,
+      "type": "kill",
+      "d": {
+        "id": 25,
+        "type": "larve",
+        "x": 280.903744111791,
+        "y": 351.0815109101772,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 188.44247238083915,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 721,
+      "t": 5.941666666666752,
+      "image": 440,
+      "type": "armement",
+      "d": {
+        "id": 20,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 725,
+      "t": 5.975000000000087,
+      "image": 442,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 728,
+      "t": 6.000000000000088,
+      "image": 444,
+      "type": "armement",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 729,
+      "t": 6.008333333333422,
+      "image": 444,
+      "type": "flash",
+      "d": {
+        "aire": 1412.949283952777,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.568333359558622,
+        "_image": 444,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 729,
+      "t": 6.008333333333422,
+      "image": 444,
+      "type": "kill",
+      "d": {
+        "id": 3,
+        "type": "larve",
+        "x": 363.97479332414036,
+        "y": 155.11291911742052,
+        "elite": false,
+        "boss": false,
+        "base": 20,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 133.89040331306683,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 730,
+      "t": 6.016666666666755,
+      "image": 445,
+      "type": "flash",
+      "d": {
+        "aire": 1591.2598349888835,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.576666692891955,
+        "_image": 445,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 730,
+      "t": 6.016666666666755,
+      "image": 445,
+      "type": "kill",
+      "d": {
+        "id": 15,
+        "type": "mine",
+        "x": 599.9269704930366,
+        "y": 258.0087904072375,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 147.24067399824713,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 730,
+      "t": 6.016666666666755,
+      "image": 445,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.576666692891955,
+        "_image": 445,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 731,
+      "t": 6.025000000000089,
+      "image": 445,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "dard",
+        "forme": "losange",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 754,
+      "t": 6.216666666666765,
+      "image": 457,
+      "type": "flash",
+      "d": {
+        "aire": 352,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.776666692891943,
+        "_image": 457,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 759,
+      "t": 6.258333333333434,
+      "image": 459,
+      "type": "armement",
+      "d": {
+        "id": 28,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "flash",
+      "d": {
+        "aire": 1780.1630920271348,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.868333359558605,
+        "_image": 462,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "kill",
+      "d": {
+        "id": 13,
+        "type": "dard",
+        "x": 423.03891010611716,
+        "y": 330.9421448238934,
+        "elite": false,
+        "boss": false,
+        "base": 80,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 92.4648513182089,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.868333359558605,
+        "_image": 462,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "kill",
+      "d": {
+        "id": 26,
+        "type": "mine",
+        "x": 374.4311522430068,
+        "y": 366.26920036132776,
+        "elite": false,
+        "boss": false,
+        "base": 40,
+        "src": {
+          "genre": "arme",
+          "type": "arc",
+          "id": null
+        },
+        "distTete": 150.7339796383892,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "flash",
+      "d": {
+        "aire": 1979.659055067531,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "plein",
+        "_compte": true,
+        "_echelle": 1,
+        "_temps": 24.868333359558605,
+        "_image": 462,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "flash",
+      "d": {
+        "aire": 2189.7477241100723,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "rafale",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.868333359558605,
+        "_image": 462,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 765,
+      "t": 6.308333333333437,
+      "image": 462,
+      "type": "kill",
+      "d": {
+        "id": 17,
+        "type": "lame",
+        "x": 372.3926079937585,
+        "y": 354.90888245956046,
+        "elite": false,
+        "boss": false,
+        "base": 120,
+        "src": {
+          "genre": "ennemi",
+          "type": "mine",
+          "id": -1
+        },
+        "distTete": 144.10952934677414,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 770,
+      "t": 6.31666666666677,
+      "image": 465,
+      "type": "armement",
+      "d": {
+        "id": 6,
+        "type": "lame",
+        "forme": "ligne",
+        "total": 0.8,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 774,
+      "t": 6.350000000000105,
+      "image": 467,
+      "type": "armement",
+      "d": {
+        "id": 31,
+        "type": "rival",
+        "forme": "losange",
+        "total": 0.5,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 775,
+      "t": 6.358333333333439,
+      "image": 467,
+      "type": "armement",
+      "d": {
+        "id": 23,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 782,
+      "t": 6.416666666666775,
+      "image": 471,
+      "type": "flash",
+      "d": {
+        "aire": 2410.4290991547587,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 24.976666692891932,
+        "_image": 471,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 782,
+      "t": 6.416666666666775,
+      "image": 471,
+      "type": "kill",
+      "d": {
+        "id": 1,
+        "type": "fleche",
+        "x": 387.8684869751011,
+        "y": 173.1817286604436,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 128.63758713549802,
+        "gen": 0
+      }
+    }
+  ],
+  "erreurs": {
+    "err": 0,
+    "sigs": [],
+    "console": [],
+    "pageErreurs": [],
+    "zero": true
+  },
+  "tampon": {
+    "W": 422,
+    "H": 195,
+    "PX": 2,
+    "sha256": "a1f34a18ae8e9c0777ebe5ed1753b999c7397c581c4c2554ab650b7d4d92d4c0"
+  },
+  "profil": {
+    "width": 844,
+    "height": 390
+  }
+}

@@ -531,3 +531,17 @@ Codex-p17 — finition finale : suppression du titre PROCHAIN isolé et des grou
 État détaillé, campagne complète et écarts de durée : `tools/codex-p4d/rapport.md`. La comparaison des parties bon/humain reste publiée même si les changements du boss la font diverger ; aucun échantillon favorable ne la remplace.
 
 Codex-p4d — mis à jour le 18/10/2026 · 03 h 21 (Paris) : 60 parties avant et 60 après, toutes finies, zéro erreur. Apparitions dans la vue : **15 → 0** sur l’état réellement reçu (les huit de p4c relevaient de son état antérieur). Armements hors vue : 0 → 0 ; morts sans annonce, prédicat final : 0 → 0. Trois collisions contrôlées : durée attribuée 0 → 2 s, ancien comptage erroné 3 → 0 avec le critère corrigé ; annonce physiquement observée ≥ 2 s. **Parité des vingt bon/humain paysage : 17/20, échec publié** (bon/3, bon/6, humain/6 ; vagues identiques, durées différentes). Vingt témoins inerte/tourneur identiques, journaux compris, ne remplacent pas cet échec. Build sortie 0 ; Playwright prêt, non exécuté. R-06 qualifié sur l’échantillon VM seulement ; R-31 global et intégration restent non validés sur parité, cinquième VOL et reçu navigateur.
+
+
+## codex-p19 — caméra R-12 appariée image par image
+
+18/10/2026 · 03 h 22 (Paris).
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p19 | `tools/mesure/criteres/R-12-explosion.mjs` | mesurer `max(0, max_i(S.shake_impact[i] - S.shake_sans_coup[i]))` sur les 30 images suivant le même coup ; refuser les branches différentes avant coup et les traces incomplètes | éliminer la différence de deux maxima non appariés et le mouvement de suivi. `S.shake` est l'amplitude publique en pixels de jeu, pas une mesure certifiée du déplacement CRT |
+| codex-p19 | `02-regles.js` | aucun changement ; seuil lu dans `N.R.criteres.R12.camera = 6`, brasier et durée inchangés | aucun nouveau chiffre de jeu. 0/8/3 px sont les entrées des cas construits expressément demandés ; 3/30/60 images, 70 px, dégâts ×4 et graine 2975 reprennent la fixture reçue ; jour 20261017 reprend le protocole officiel. Les constantes FNV décrivent une empreinte d'instrument, pas une règle du jeu |
+| codex-p19 | `tools/codex-p19/verifier.mjs` (exécution hors bac) | `cd proto-neon && node tools/codex-p19/verifier.mjs` | deux bundles reconstruits sans écrire dans p15, trois profils en série, un Chromium muet ; journal, vraies valeurs caméra par image, brasier du tampon, captures et erreurs. Script préparé, navigateur non exécuté ici |
+| codex-p19 | propriétaires `50-fx.js` / `79-scene.js` (diagnostic à confirmer hors bac) | examiner les échecs conservés, sans baisse de seuil ni correction prescrite à l'aveugle | VM p15 : élites caméra 3,6864 / 4,2240 / 4,5787 px (<6), flèche brasier 0 image. VM intégrée : caméra élites 10,1606 px (≥6), brasier 0 image pour les trois. Résultats réels VM, pas une qualification navigateur ; reçus `tools/codex-p19/*-vm.json` |
+
+Aucun fichier `src/`, aucun `sonde.js`, aucun seuil changé ; aucun commit. Build intégré : sortie 0, `index.html` sans différence Git. Build p15 : sortie 0 vers un fichier du dossier codex-p19, copie p15 en lecture seule. Rapport et limites : `tools/codex-p19/rapport.md`.

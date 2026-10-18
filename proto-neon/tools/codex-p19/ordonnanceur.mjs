@@ -1,0 +1,14 @@
+import {monde,sources,ICI} from './vm.mjs';
+import {installerImagesCamera} from '../mesure/criteres/R-12-explosion.mjs';
+import vm from 'node:vm';
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+const m=monde(sources(),{camera:true}),premier=m.c.__R12Avancer;
+vm.runInContext('('+installerImagesCamera.toString()+')()',m.c);
+m.c.requestAnimationFrame(premier);
+const avant=m.c.__FRAME||0;
+for(let k=0;k<3;k++)m.c.__R12Avancer();
+assert.equal(m.c.__FRAME,avant+3);assert.equal(m.c.__ERR.count,0);assert.deepEqual(m.erreurs,[]);
+fs.writeFileSync(path.join(ICI,'ordonnanceur-vm.json'),JSON.stringify({dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),avant,apres:m.c.__FRAME,err:m.c.__ERR.count,console:m.erreurs,limite:'Vraie frame Node sans DOM ; pas Chromium'},null,2)+'\n');
+console.log('Ordonnanceur RAF :',avant,'→',m.c.__FRAME,'erreurs',m.c.__ERR.count);
