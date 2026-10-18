@@ -1372,6 +1372,12 @@ var MUSIQUE_EMBED = null;
     lasso: true
   };
 
+  /* codex-p17 : une marque, un nom et un compteur aligné, à l'échelle 2. */
+  R.ecrans.retour.finition = {
+    marqueW: 18,
+    defisCourts: { finir: 'FINIR', premierJet: '1ER JET', lasso6: 'LASSO', sansCoupe: 'INTACT', chaine5: 'CHAÎNE', sansFilet: 'UNE VIE' }
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {
@@ -27025,27 +27031,31 @@ N.ui = (function () {
     }
     var score = N.score, r = score && score.resume ? score.resume() : null;
     var v = r ? r.victoire : !!cur_opts.victoire, yy = y;
+    var blocs = [], debut = lignes.length;
     if (nom === 'fin') {
-      yy = ligne(v ? 'GAGNÉ · BILAN >' : 'PERDU · BILAN >', x, yy, v ? O.JAUNE : O.ROSE);
-      yy = ligne('SCORE ' + (r ? r.score : score ? score.score : 0) + (r && r.marque ? ' C' : ''), x, yy, O.JAUNE);
-      if (r) {
-        yy = ligne(r.debloques.length ? '✓ ' + C.finNoms[r.debloques[r.debloques.length - 1]] + (r.debloques.length > 1 ? ' +' + (r.debloques.length - 1) : '') : 'V' + r.vague + ' ' + mmss(r.temps) + ' NOTE ' + r.note, x, yy, r.debloques.length ? O.JAUNE : O.OS);
-        if (r.cause) yy = ligne(N.ids.texte(r.cause, r.auteur), x, yy, O.ROSE);
-        yy = ligne('ÉNERGIE ' + r.energie, x, yy, O.AMBRE);
-        // Le prochain seuil est montré MÊME si une option vient de se débloquer.
-        if (r.prochain) {
-          yy = ligne('PROCHAIN', x, yy, O.ACIER);
-          yy = ligne(C.finNoms[r.prochain.id] + ' : ' + r.prochain.reste, x, yy, O.JAUNE);
-          barres.push({ x: x, y: yy, w: col, h: C.barreH, part: r.prochain.part }); yy += C.padding;
-        } else yy = ligne('TOUT DÉBLOQUÉ', x, yy, O.JAUNE);
-      }
+      yy = ligne(v ? 'GAGNÉ · BILAN' : 'PERDU · BILAN', x, yy, v ? O.JAUNE : O.ROSE);
+      yy = ligne('SCORE' + (r && r.marque ? ' C' : '') + ' ' + (r ? r.score : score ? score.score : 0), x, yy, O.JAUNE);
+      // La cause reste lisible ; le temps et le libellé complet sont aussi dans BILAN.
+      if (r) yy = ligne(r.cause ? N.ids.texte(r.cause, r.auteur).replace(/ INSTABLE$/, '') : 'V' + r.vague + ' · ' + mmss(r.temps), x, yy, O.OS);
     } else {
-      yy = ligne(nom === 'pause' ? 'PAUSE · TOUCHE' : 'OBJECTIFS', x, yy, O.JAUNE);
+      yy = ligne(nom === 'pause' ? 'PAUSE' : 'OBJECTIFS', x, yy, O.JAUNE);
       if (nom === 'pause') yy = ligne('POUR REPRENDRE', x, yy, O.OS);
-      yy = ligne('FINIR + ' + R.defis.duJour + ' DU JOUR', x, yy, O.OS);
-      var p = score && score.prochain ? score.prochain() : null;
-      if (p) { yy = ligne('PROCHAIN', x, yy, O.ACIER); yy = ligne(C.finNoms[p.id] + ' : ' + p.reste, x, yy, O.AMBRE); }
+      yy = ligne(nom === 'pause' ? "TOUCHE L'ÉCRAN" : 'FINIR', x, yy, O.OS);
+      if (nom !== 'pause') yy = ligne(R.defis.duJour + ' DÉFIS', x, yy, O.AMBRE);
     }
+    blocs.push({ debut: debut, fin: lignes.length, y: y, bas: yy, barre: null });
+    yy += C.ecart; debut = lignes.length;
+    var py = yy, p = nom === 'fin' && r ? r.prochain : score && score.prochain ? score.prochain() : null;
+    yy = ligne('ÉNERGIE ' + (nom === 'fin' && r ? r.energie : score ? score.energie : 0), x, yy, O.AMBRE);
+    if (p) {
+      // Le prochain palier et son reste forment UNE expression, sans titre orphelin.
+      yy = ligne(C.finNoms[p.id] + ' +' + p.reste, x, yy, O.JAUNE);
+      barres.push({ x: x, y: yy, w: col, h: C.barreH, part: p.part }); yy += C.barreH + C.padding;
+    } else {
+      var tout = score && R.deblocages.every(function (d) { return score.deblocages.indexOf(d.id) >= 0; });
+      yy = ligne(tout ? 'TOUT DÉBLOQUÉ' : 'AUCUN PALIER', x, yy, tout ? O.JAUNE : O.ACIER);
+    }
+    blocs.push({ debut: debut, fin: lignes.length, y: py, bas: yy, barre: barres[0] || null });
     if (nom === 'fin' && cur_opts.bilan && r) {
       lignes = []; barres = []; yy = y;
       function detail(t, ink) { yy = ligne(t, x, yy, ink || O.OS, w); }
@@ -27053,6 +27063,8 @@ N.ui = (function () {
       var recs = score.classement ? score.classement() : [], marque = recs.length && recs[0].marque ? ' ' + recs[0].marque : '';
       detail('RECORD ' + r.record + marque + (r.nouveauRecord ? ' NOUVEAU' : ''), O.JAUNE);
       if (r.ecart !== null) detail('ÉCART ' + (r.ecart >= 0 ? '+' : '') + r.ecart);
+      detail('V' + r.vague + ' · ' + mmss(r.temps));
+      if (r.cause) detail(N.ids.texte(r.cause, r.auteur), O.ROSE);
       detail((r.victoire ? 'SECTEUR NETTOYÉ' : 'SECTEUR ' + Math.round(r.progression * 100) + ' %') + ' · NOTE ' + r.note);
       if (r.build) {
         detail(r.build.nom, O.AMBRE);
@@ -27072,24 +27084,47 @@ N.ui = (function () {
       ligne('BILAN ' + (page + 1) + '/' + pages + ' >', x, yy, O.JAUNE, w);
       return { nom: nom, bilan: true, page: page, pages: pages, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions, debloques: r.debloques.slice() };
     }
-    var dx = port ? x : x + col + C.ecart, dy = port ? yy + C.padding : y;
+    var dx = port ? x : x + col + C.ecart, dy = port ? yy + C.ecart : y;
+    debut = lignes.length;
     var defis = r && nom === 'fin' ? r.defis : score && score.defis;
     dy = ligne('DÉFIS DU JOUR', dx, dy, O.AMBRE);
-    (defis || []).forEach(function (d) {
-      if (d.id === 'finir') { dy = ligne('FINIR ' + (d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.JAUNE : O.OS); return; }
-      dy = ligne((d.fait ? '✓ ' : '· ') + d.nom, dx, dy, d.fait ? O.JAUNE : O.OS);
-      dy = ligne((d.fait ? 'FAIT ' : 'NON ') + d.prog + '/' + d.but, dx, dy, d.fait ? O.AMBRE : O.ACIER);
-    });
+    // Même bord droit et même réserve de largeur pour TOUS les compteurs.
     var dv = score && score.defiVague;
     if (!dv && nom === 'briefing' && score && score.apercuVague) dv = score.apercuVague();
+    var compteW = 0;
+    (defis || []).concat(dv ? [dv] : []).forEach(function (d) { compteW = Math.max(compteW, O.textW(d.prog + '/' + d.but, C.echelle)); });
+    function defi(d, nomDefi, court) {
+      var ink = d.fait ? O.JAUNE : O.OS, compte = d.prog + '/' + d.but;
+      var nx = dx + C.finition.marqueW, cx = dx + col - O.textW(compte, C.echelle);
+      var place = col - C.finition.marqueW - compteW - C.padding;
+      var lib = O.textW(nomDefi, C.echelle) <= place ? nomDefi : court;
+      ligne(d.fait ? '✓' : '·', dx, dy, ink);
+      ligne(lib, nx, dy, ink, place);
+      ligne(compte, cx, dy, d.fait ? O.AMBRE : O.ACIER, compteW);
+      dy += C.ligne;
+    }
+    (defis || []).forEach(function (d) { defi(d, d.nom, C.finition.defisCourts[d.id] || d.nom); });
     if (dv) {
-      dy = ligne('V' + dv.n + ' ' + (dv.fait ? 'FAIT ' : 'NON ') + dv.prog + '/' + dv.but, dx, dy, dv.fait ? O.JAUNE : O.OS);
-      var d = dv.def, lib = d.lassos ? 'LASSO' : d.enfermes ? 'ENFERMÉS' : d.cellules ? 'CELLULES' : d.mines ? 'MINES' : d.tourelles ? 'TOURELLES' : d.mult ? 'MULTIPLICATEUR' : 'BROYÉS';
-      dy = ligne(lib, dx, dy, O.ACIER);
+      dy = ligne('VAGUE ' + dv.n, dx, dy + C.padding, O.AMBRE);
+      var d = dv.def, lib = d.lassos ? 'LASSO' : d.enfermes ? 'ENFERMÉS' : d.cellules ? 'CELLULES' : d.mines ? 'MINES' : d.tourelles ? 'TOURELLES' : d.mult ? 'MULTI' : d.devores ? 'DÉVORÉS' : 'BROYÉS';
+      defi(dv, lib, lib);
+    }
+    if (port) {
+      blocs.push({ debut: debut, fin: lignes.length, y: yy + C.ecart, bas: dy, barre: null });
+      var hauteur = blocs.reduce(function (h, b) { return h + b.bas - b.y; }, 0);
+      var gap = Math.max(C.ecart, Math.floor((bas - y - hauteur) / (blocs.length - 1)));
+      var by = y;
+      blocs.forEach(function (b) {
+        var delta = by - b.y;
+        for (var i = b.debut; i < b.fin; i++) lignes[i].y += delta;
+        if (b.barre) b.barre.y += delta;
+        by += b.bas - b.y + gap;
+      });
     }
     return { nom: nom, x: x, y: y, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions,
       debloques: r && nom === 'fin' ? r.debloques.slice() : [] };
   }
+
   function peindreRetour(nom) {
     var m = retourModele(nom), C = R.ecrans.retour, g = N.gfx;
     g.rect(m.x - C.padding, m.y - C.padding, m.w + C.padding * 2, m.bas - m.y + C.padding, O.NUIT);
