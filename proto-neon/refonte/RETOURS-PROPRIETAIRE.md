@@ -14,3 +14,8 @@ de la démo.
 4. **« Il faut pouvoir mourir aussi ! »** La démo protège trop : le serpent glisse le long des murs
    au lieu de mourir, son corps absorbe les tirs, et il a trois vies avec deux secondes
    d'invulnérabilité. Il faut une vraie mort, lisible et juste, qui fait peur.
+5. **« J'aimerais que le jeu soit au rythme de la musique, que les moments où le break arrive, ou le drop, il se passe
+   des trucs à l'écran. Ça doit envoyer du lourd, de l'action rythmée. »** (18/10/2026 · 13 h 31) Le jeu suit la
+   musique : décor, ennemis et effets calés sur le temps et la mesure ; les montées s'intensifient, chaque drop déclenche
+   un moment fort synchronisé, chaque break une retenue. Dans les bornes de photosensibilité (R-13) et de secousses (R-14).
+   Chantiers : codex-r1 (carte des drops, breaks et montées), codex-r2 (module `31-rythme.js` et chorégraphie).
