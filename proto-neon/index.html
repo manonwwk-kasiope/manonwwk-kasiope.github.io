@@ -28613,7 +28613,9 @@ N.game = (function () {
     finClip = null;
     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
     partieN++;
-    aller('briefing');
+    /* REJOUER rend la main sans rejouer le briefing ni la plongée d'ouverture. */
+    if (nouvelle === true) lancerVague(R.secteurs[0].vagues[0].n);
+    else aller('briefing');
   }
   function film(nom, suite, opts) {
     if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
