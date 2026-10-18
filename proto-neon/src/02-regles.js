@@ -1193,6 +1193,9 @@
       intervalle: 1.5, rayonMin: 26, margeCible: 16, gainRadial: 1.2,
       correctionMax: 0.7, rotationFin: 0.6, tempsMarge: 1.0 }
   };
+  /* codex-p21 : valeurs du boot reçues, centralisées sans modifier les seuils. */
+  R.gestes.zoneMorte = 0.08;
+  R.gestes.tapMenu = 0.3;
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

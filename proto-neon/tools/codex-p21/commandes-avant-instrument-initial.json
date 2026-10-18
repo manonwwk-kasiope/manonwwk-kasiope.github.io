@@ -1,0 +1,892 @@
+{
+  "dateParis": "18/10/2026 03:33:16",
+  "limite": "Transposition VM des 28 scénarios de tools/commandes/banc.mjs : vrais handlers/frame et sorties ; DOM, événements OS et pixels à vérifier hors bac.",
+  "conforme": false,
+  "cas": [
+    {
+      "nom": "clavier-boost-Space",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 92.99999999999989,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 25,
+          "t": 0.20833333333333331,
+          "image": 13,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "clavier-boost-ShiftLeft",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 92.99999999999989,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 25,
+          "t": 0.20833333333333331,
+          "image": 13,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "clavier-boost-ShiftRight",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 92.99999999999989,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 25,
+          "t": 0.20833333333333331,
+          "image": 13,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "clavier-E-pouvoir",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "repli",
+          "etat": "actif",
+          "reste": 6.93333333333333,
+          "dur": 7,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "pouvoir",
+          "d": {
+            "id": "repli",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "clavier-R-apogee",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "pleine"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "clavier-pause-KeyP",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": []
+    },
+    {
+      "nom": "clavier-pause-Escape",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-ArrowRight",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyD",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-ArrowDown",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyS",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-ArrowLeft",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 3.141592653589793
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyA",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 3.141592653589793
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyQ",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 3.141592653589793
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-ArrowUp",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyW",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "direction-KeyZ",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "souris-direction-et-zone-morte",
+      "conforme": false,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 2.941959798215685
+      },
+      "journal": []
+    },
+    {
+      "nom": "souris-boost-gauche",
+      "conforme": false,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 99.41666666666666,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -0.02236101364160037
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 25,
+          "t": 0.20833333333333331,
+          "image": 13,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "souris-pouvoir-droit",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "actif",
+          "reste": 1.3333333333333335,
+          "dur": 1.4,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -3.138021285427471
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "souris-molette-apogee",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "pleine"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "souris-curseur",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0.0038314176195305993
+      },
+      "journal": []
+    },
+    {
+      "nom": "manette-stick-une-lecture-par-image",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": -1.5707963267948966
+      },
+      "journal": []
+    },
+    {
+      "nom": "manette-A-boost",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 92.99999999999989,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 25,
+          "t": 0.20833333333333331,
+          "image": 13,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "manette-X-pouvoir",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "actif",
+          "reste": 1.2333333333333338,
+          "dur": 1.4,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "manette-Y-apogee",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "pleine"
+          }
+        },
+        {
+          "pas": 1,
+          "t": 0.008333333333333333,
+          "image": 1,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "manette-Start-pause",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 100,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "pret",
+          "reste": 0,
+          "dur": 0,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": []
+    },
+    {
+      "nom": "iphone-manche-second-doigt",
+      "conforme": true,
+      "err": 0,
+      "erreurs": [],
+      "sortie": {
+        "etat": "jeu",
+        "boost": false,
+        "reserve": 91.24999999999986,
+        "pouvoir": {
+          "id": "traversee",
+          "etat": "actif",
+          "reste": 1.3083333333333336,
+          "dur": 1.4,
+          "recharge": 0
+        },
+        "apogee": 0,
+        "cible": 0
+      },
+      "journal": [
+        {
+          "pas": 44,
+          "t": 0.366666666666667,
+          "image": 23,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 193.33333333333334,
+            "t1": 374.33333333333337,
+            "duree": 0.18100000000000002,
+            "deplacement": 0,
+            "action": "boost"
+          }
+        },
+        {
+          "pas": 45,
+          "t": 0.37500000000000033,
+          "image": 23,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "on"
+          }
+        },
+        {
+          "pas": 75,
+          "t": 0.6250000000000002,
+          "image": 38,
+          "type": "boost",
+          "d": {
+            "id": "boost",
+            "evt": "off"
+          }
+        },
+        {
+          "pas": 88,
+          "t": 0.7333333333333332,
+          "image": 44,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 641.0000000000001,
+            "t1": 711.0000000000001,
+            "duree": 0.07,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        },
+        {
+          "pas": 89,
+          "t": 0.7416666666666665,
+          "image": 45,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        },
+        {
+          "pas": 92,
+          "t": 0.7666666666666664,
+          "image": 46,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "pleine"
+          }
+        },
+        {
+          "pas": 98,
+          "t": 0.8166666666666662,
+          "image": 49,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 744.3333333333335,
+            "t1": 794.3333333333335,
+            "duree": 0.05,
+            "deplacement": 41.23105625617661,
+            "action": "apogee"
+          }
+        },
+        {
+          "pas": 99,
+          "t": 0.8249999999999995,
+          "image": 50,
+          "type": "apogee",
+          "d": {
+            "id": "apogee",
+            "evt": "debut"
+          }
+        }
+      ]
+    }
+  ]
+}

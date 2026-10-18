@@ -1,0 +1,2877 @@
+{
+  "dateParis": "18/10/2026 · 06 h 09",
+  "phase": "avant",
+  "raccord": false,
+  "bundleSha256": "78944398392e3cb495fa9141a926c7f2fce3ebd864882ade735efefd8ffdf66c",
+  "navigateur": "140.0.7339.16",
+  "limite": "Chromium émulé, Safari physique reste à vérifier.",
+  "fixtures": [
+    {
+      "nom": "canal-pouvoir-connu-paysage",
+      "conforme": true,
+      "pouvoirs": 1,
+      "etat": "actif",
+      "journal": [
+        {
+          "pas": 100,
+          "t": 0.8333333333333328,
+          "image": 56,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "contrat-CDP-et-horloge-paysage",
+      "conforme": false,
+      "avant": {
+        "r": 0,
+        "t": 0.8333333333333328,
+        "x": 390.82,
+        "y": 256
+      },
+      "reste": {
+        "r": 347,
+        "t": 1.1833333333333316,
+        "x": 414.61999999999983,
+        "y": 256,
+        "stick": {
+          "active": true,
+          "ox": 185.67999267578125,
+          "oy": 241.8000030517578,
+          "x": 185.67999267578125,
+          "y": 241.8000030517578,
+          "r": 44
+        },
+        "trace": [
+          {
+            "type": "touchstart",
+            "r": 0,
+            "changes": [
+              {
+                "id": 1,
+                "x": 185.67999267578125,
+                "y": 241.8000030517578
+              }
+            ],
+            "actifs": 1,
+            "stick": {
+              "active": false,
+              "ox": 0,
+              "oy": 0
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          },
+          {
+            "type": "touchstart",
+            "r": 260,
+            "changes": [
+              {
+                "id": 2,
+                "x": 590.7999877929688,
+                "y": 195
+              }
+            ],
+            "actifs": 2,
+            "stick": {
+              "active": true,
+              "ox": 185.67999267578125,
+              "oy": 241.8000030517578
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          }
+        ],
+        "journal": [
+          {
+            "pas": 100,
+            "t": 0.8333333333333328,
+            "image": 56,
+            "type": "defi",
+            "d": {
+              "id": "v1Rafle",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "RAMASSE 15 CELLULES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 15,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 100,
+            "t": 0.8333333333333328,
+            "image": 56,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 100,
+            "t": 0.8333333333333328,
+            "image": 56,
+            "type": "defi",
+            "d": {
+              "id": "v1Mines",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "ABATS LES 2 MINES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 100,
+            "t": 0.8333333333333328,
+            "image": 56,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          }
+        ]
+      },
+      "libere": true,
+      "horloge": true
+    },
+    {
+      "nom": "pixels-et-erreurs-paysage",
+      "conforme": true,
+      "W": 422,
+      "H": 195,
+      "PX": 2,
+      "sha256": "fdf3a2a550fe73e96f416957fe97baed70f61a7d8d2dc44ae7270779606713c5",
+      "palette": [
+        15,
+        1,
+        13,
+        3,
+        4,
+        10,
+        12,
+        2,
+        8,
+        14,
+        11,
+        9,
+        7
+      ],
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    },
+    {
+      "nom": "canal-pouvoir-connu-portrait",
+      "conforme": true,
+      "pouvoirs": 1,
+      "etat": "actif",
+      "journal": [
+        {
+          "pas": 98,
+          "t": 0.8166666666666662,
+          "image": 54,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "contrat-CDP-et-horloge-portrait",
+      "conforme": false,
+      "avant": {
+        "r": 0,
+        "t": 0.8166666666666662,
+        "x": 512,
+        "y": 316.87333333333333
+      },
+      "reste": {
+        "r": 347,
+        "t": 1.1833333333333316,
+        "x": 512,
+        "y": 291.94000000000017,
+        "stick": {
+          "active": true,
+          "ox": 85.80000305175781,
+          "oy": 523.280029296875,
+          "x": 85.80000305175781,
+          "y": 523.280029296875,
+          "r": 44
+        },
+        "trace": [
+          {
+            "type": "touchstart",
+            "r": 0,
+            "changes": [
+              {
+                "id": 1,
+                "x": 85.80000305175781,
+                "y": 523.280029296875
+              }
+            ],
+            "actifs": 1,
+            "stick": {
+              "active": false,
+              "ox": 0,
+              "oy": 0
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          },
+          {
+            "type": "touchstart",
+            "r": 260,
+            "changes": [
+              {
+                "id": 2,
+                "x": 273,
+                "y": 422
+              }
+            ],
+            "actifs": 2,
+            "stick": {
+              "active": true,
+              "ox": 85.80000305175781,
+              "oy": 523.280029296875
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          }
+        ],
+        "journal": [
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 54,
+            "type": "defi",
+            "d": {
+              "id": "v1Rafle",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "RAMASSE 15 CELLULES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 15,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 54,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 54,
+            "type": "defi",
+            "d": {
+              "id": "v1Mines",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "ABATS LES 2 MINES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 98,
+            "t": 0.8166666666666662,
+            "image": 54,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          }
+        ]
+      },
+      "libere": true,
+      "horloge": true
+    },
+    {
+      "nom": "pixels-et-erreurs-portrait",
+      "conforme": true,
+      "W": 195,
+      "H": 422,
+      "PX": 2,
+      "sha256": "001de537d8ff0567f6a7cd2617d4c45f3e2fd3ac598d45f84a643424741d3d1c",
+      "palette": [
+        15,
+        1,
+        13,
+        3,
+        2,
+        10,
+        12,
+        4,
+        8,
+        0,
+        14,
+        11,
+        9,
+        7
+      ],
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    },
+    {
+      "nom": "canal-pouvoir-connu-bureau",
+      "conforme": true,
+      "pouvoirs": 1,
+      "etat": "actif",
+      "journal": [
+        {
+          "pas": 104,
+          "t": 0.866666666666666,
+          "image": 60,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ]
+    },
+    {
+      "nom": "contrat-CDP-et-horloge-bureau",
+      "conforme": false,
+      "avant": {
+        "r": 7,
+        "t": 0.866666666666666,
+        "x": 393.08666666666664,
+        "y": 256
+      },
+      "reste": {
+        "r": 354,
+        "t": 1.2333333333333314,
+        "x": 418.0199999999998,
+        "y": 256,
+        "stick": {
+          "active": true,
+          "ox": 316.79998779296875,
+          "oy": 558,
+          "x": 316.79998779296875,
+          "y": 558,
+          "r": 44
+        },
+        "trace": [
+          {
+            "type": "touchstart",
+            "r": 7,
+            "changes": [
+              {
+                "id": 1,
+                "x": 316.79998779296875,
+                "y": 558
+              }
+            ],
+            "actifs": 1,
+            "stick": {
+              "active": false,
+              "ox": 0,
+              "oy": 0
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          },
+          {
+            "type": "touchstart",
+            "r": 267,
+            "changes": [
+              {
+                "id": 2,
+                "x": 1008,
+                "y": 450
+              }
+            ],
+            "actifs": 2,
+            "stick": {
+              "active": true,
+              "ox": 316.79998779296875,
+              "oy": 558
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false,
+            "gestes": []
+          }
+        ],
+        "journal": [
+          {
+            "pas": 104,
+            "t": 0.866666666666666,
+            "image": 60,
+            "type": "defi",
+            "d": {
+              "id": "v1Rafle",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "RAMASSE 15 CELLULES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 15,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 104,
+            "t": 0.866666666666666,
+            "image": 60,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 104,
+            "t": 0.866666666666666,
+            "image": 60,
+            "type": "defi",
+            "d": {
+              "id": "v1Mines",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "ABATS LES 2 MINES",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 104,
+            "t": 0.866666666666666,
+            "image": 60,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          }
+        ]
+      },
+      "libere": true,
+      "horloge": true
+    },
+    {
+      "nom": "pixels-et-erreurs-bureau",
+      "conforme": true,
+      "W": 360,
+      "H": 225,
+      "PX": 4,
+      "sha256": "1bffafbd05eb428252412941636b7e2dd9ea4ab3e1638c0360a8f7cb61924c97",
+      "palette": [
+        15,
+        3,
+        4,
+        1,
+        13,
+        10,
+        12,
+        2,
+        8,
+        14,
+        11,
+        9,
+        7
+      ],
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    }
+  ],
+  "criteres": [
+    {
+      "id": "R-22",
+      "titre": "Commandes",
+      "seuil": "J-01 à J-06 ; 1 image de latence ; accélération droit devant ; gestes 20/20",
+      "bloquant": true,
+      "statut": "non-mesurable",
+      "resume": "non mesurable : canal connu, contrat CDP ou horloge avec mouvement réel non validé ; aucun verdict sur le jeu",
+      "mesures": [
+        {
+          "nom": "instrument tactile",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : canal connu, contrat CDP ou horloge avec mouvement réel non validé ; aucun verdict sur le jeu"
+        }
+      ],
+      "notes": [],
+      "captures": [],
+      "duree": 0,
+      "bundle": {
+        "url": "http://127.0.0.1:50648/index.html",
+        "empreinte": "78944398392e3cb495fa9141a926c7f2fce3ebd864882ade735efefd8ffdf66c"
+      },
+      "date": "2026-10-18T04:09:33.725Z",
+      "dateParis": "18/10/2026 · 06 h 09"
+    },
+    {
+      "id": "R-33",
+      "titre": "Gestes sûrs",
+      "seuil": "0 action involontaire ; slalom 0 accélération ; 20/20 ; 0 navigation, zoom, sélection",
+      "bloquant": true,
+      "statut": "non-mesurable",
+      "resume": "non mesurable : canal connu, contrat CDP ou horloge avec mouvement réel non validé ; aucun verdict sur le jeu",
+      "mesures": [
+        {
+          "nom": "instrument tactile",
+          "statut": "non-mesurable",
+          "raison": "non mesurable : canal connu, contrat CDP ou horloge avec mouvement réel non validé ; aucun verdict sur le jeu"
+        }
+      ],
+      "notes": [],
+      "captures": [],
+      "duree": 0,
+      "bundle": {
+        "url": "http://127.0.0.1:50648/index.html",
+        "empreinte": "78944398392e3cb495fa9141a926c7f2fce3ebd864882ade735efefd8ffdf66c"
+      },
+      "date": "2026-10-18T04:09:33.725Z",
+      "dateParis": "18/10/2026 · 06 h 09"
+    },
+    {
+      "id": "R-23",
+      "titre": "Un pouce",
+      "seuil": "expert « diriger » ≥ 15 % ; expert « auto » ≥ 35 %",
+      "bloquant": true,
+      "statut": "echec",
+      "resume": "3 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+      "mesures": [
+        {
+          "nom": "expert « diriger » : parties terminées sans erreur",
+          "valeur": 50,
+          "seuil": 50,
+          "statut": "ok"
+        },
+        {
+          "nom": "expert « diriger » : secteurs gagnés",
+          "valeur": 0.1,
+          "seuil": "≥ 0.15",
+          "statut": "echec",
+          "parties": 50,
+          "resumes": [
+            {
+              "graine": 1,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 116.09625001181001,
+              "tempsCombat": 102.75333334309644,
+              "score": 41710,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 2,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 62.941666670637574,
+              "tempsCombat": 54.732083335268115,
+              "score": 1940,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 3,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 225.77458335082756,
+              "tempsCombat": 204.4258333449346,
+              "score": 75810,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 4,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 384.10166671258173,
+              "tempsCombat": 357.6350000419661,
+              "score": 240960,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 5,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 85.02625000205033,
+              "tempsCombat": 76.81791666871047,
+              "score": 3660,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 6,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 65.48458333536811,
+              "tempsCombat": 57.27625000203398,
+              "score": 1790,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 7,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 121.10333334112399,
+              "tempsCombat": 107.75458333917643,
+              "score": 23540,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 8,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 82.98583333741864,
+              "tempsCombat": 74.77625000204218,
+              "score": 8370,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 9,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 122.55833334132399,
+              "tempsCombat": 109.20833333733984,
+              "score": 24690,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 10,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 69.1108333374076,
+              "tempsCombat": 59.766666666663916,
+              "score": 8940,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 11,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 325.353333378706,
+              "tempsCombat": 298.87833337078206,
+              "score": 197740,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 12,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 405.0008333795289,
+              "tempsCombat": 383.0695833693652,
+              "score": 255410,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 13,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 81.51666667065146,
+              "tempsCombat": 73.307083335275,
+              "score": 1780,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 14,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 87.737083339459,
+              "tempsCombat": 78.39416667074832,
+              "score": 17970,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 15,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 59.76791666870051,
+              "tempsCombat": 51.55833333333105,
+              "score": 1350,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 16,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 75.31916667074587,
+              "tempsCombat": 67.10958333536941,
+              "score": 5430,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 17,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 220.31041668029104,
+              "tempsCombat": 198.96875000966963,
+              "score": 72890,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 18,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 134.39791667689107,
+              "tempsCombat": 121.05500000818812,
+              "score": 35830,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 19,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 393.3541667126725,
+              "tempsCombat": 368.0183333713152,
+              "score": 319310,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 20,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 64.56791666870072,
+              "tempsCombat": 56.358333333330776,
+              "score": 2590,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 21,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 60.19166667063773,
+              "tempsCombat": 51.98208333526827,
+              "score": 1620,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 22,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 67.60250000407306,
+              "tempsCombat": 59.39166666666394,
+              "score": 2670,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 23,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 135.60250001206057,
+              "tempsCombat": 122.25375001012632,
+              "score": 42030,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 24,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 396.7633333790392,
+              "tempsCombat": 373.6966667084204,
+              "score": 229920,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 25,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 370.0012500455815,
+              "tempsCombat": 345.80000003959213,
+              "score": 311330,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 26,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 76.19291666870997,
+              "tempsCombat": 67.9833333333335,
+              "score": 2140,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 27,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 77.4941666707476,
+              "tempsCombat": 69.28333333333454,
+              "score": 2160,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 28,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 56.669166670737276,
+              "tempsCombat": 48.45958333536782,
+              "score": 2960,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 29,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 71.18333333333605,
+              "tempsCombat": 62.97499999999707,
+              "score": 1770,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 30,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 122.67625000605382,
+              "tempsCombat": 109.32750000410627,
+              "score": 11870,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 31,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 221.3687500136234,
+              "tempsCombat": 200.01875000966803,
+              "score": 82440,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 32,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 119.23125001022325,
+              "tempsCombat": 105.88833334150938,
+              "score": 35810,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 33,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 71.30958333537275,
+              "tempsCombat": 63.09999999999706,
+              "score": 1180,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 34,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 63.07625000203365,
+              "tempsCombat": 54.866666666664194,
+              "score": 2050,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 35,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 141.20125001001918,
+              "tempsCombat": 127.85708333929158,
+              "score": 33900,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 36,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 293.1416666864331,
+              "tempsCombat": 267.8083333531233,
+              "score": 108000,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 37,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 75.34416667074589,
+              "tempsCombat": 67.13333333333283,
+              "score": 1380,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 38,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 392.3904167111334,
+              "tempsCombat": 365.9237500405185,
+              "score": 210550,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 39,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 64.19291666870042,
+              "tempsCombat": 55.9833333333308,
+              "score": 1960,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 40,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 139.56666667465112,
+              "tempsCombat": 126.22375000595697,
+              "score": 58900,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 41,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 62.98083333720489,
+              "tempsCombat": 54.772500003872025,
+              "score": 2000,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 42,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 140.78791667648792,
+              "tempsCombat": 127.4450000077952,
+              "score": 41450,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 43,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 63.14416667073691,
+              "tempsCombat": 54.93333333333086,
+              "score": 1540,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 44,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 26.273750001936257,
+              "tempsCombat": 22.05708333526983,
+              "score": 1340,
+              "vague": 1,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 45,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 139.7604166763895,
+              "tempsCombat": 126.40916667038883,
+              "score": 32870,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 46,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 67.56083333740636,
+              "tempsCombat": 59.35250000407046,
+              "score": 3810,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 47,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 86.10833333732145,
+              "tempsCombat": 76.76666667064735,
+              "score": 13720,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 48,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 446.58250004576036,
+              "tempsCombat": 422.381250039771,
+              "score": 256990,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 49,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 66.40958333536885,
+              "tempsCombat": 58.19999999999734,
+              "score": 2640,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 50,
+              "variante": "diriger",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 225.54916668182705,
+              "tempsCombat": 204.20041667593472,
+              "score": 108080,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            }
+          ],
+          "source": "protocole pilotes officiel ; manche virtuel actif, actions du pilote inchangées"
+        },
+        {
+          "nom": "expert « diriger » : impulsions de pouvoir, APOGÉE ou accélération du pilote",
+          "valeur": 0,
+          "seuil": 0,
+          "statut": "ok"
+        },
+        {
+          "nom": "expert « auto » : parties terminées sans erreur",
+          "valeur": 50,
+          "seuil": 50,
+          "statut": "ok"
+        },
+        {
+          "nom": "expert « auto » : secteurs gagnés",
+          "valeur": 0.12,
+          "seuil": "≥ 0.35",
+          "statut": "echec",
+          "parties": 50,
+          "resumes": [
+            {
+              "graine": 1,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 387.1558333789987,
+              "tempsCombat": 364.08916670837874,
+              "score": 268910,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 40,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 2,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 61.70833333730431,
+              "tempsCombat": 53.49875000193485,
+              "score": 1890,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 3,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 60.226250002033815,
+              "tempsCombat": 52.01666666666436,
+              "score": 1370,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 4,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 407.1370833792292,
+              "tempsCombat": 381.80375004194536,
+              "score": 338790,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 46,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 5,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 85.02625000205033,
+              "tempsCombat": 76.81791666871047,
+              "score": 3660,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 6,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 66.26166667044062,
+              "tempsCombat": 58.053333337105826,
+              "score": 5980,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 7,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 119.63458334112272,
+              "tempsCombat": 106.28583333917517,
+              "score": 27840,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 8,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 82.98583333741864,
+              "tempsCombat": 74.77625000204218,
+              "score": 8370,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 4,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 9,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 141.64666667658616,
+              "tempsCombat": 128.2966666726247,
+              "score": 31440,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 10,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 62.99416667073692,
+              "tempsCombat": 54.783333333330866,
+              "score": 2140,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 11,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 334.4608333789954,
+              "tempsCombat": 307.9941667083799,
+              "score": 170050,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 16,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 12,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 421.09125004638025,
+              "tempsCombat": 399.1625000402889,
+              "score": 249510,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 54,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 13,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 79.13333333731623,
+              "tempsCombat": 70.92375000193977,
+              "score": 1780,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 14,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 85.38708333945713,
+              "tempsCombat": 76.04416667074645,
+              "score": 23480,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 15,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 58.684583335367236,
+              "tempsCombat": 50.47499999999778,
+              "score": 1350,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 16,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 83.75250000408592,
+              "tempsCombat": 75.54291666870945,
+              "score": 5430,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 17,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 471.7362500446451,
+              "tempsCombat": 446.40291670735985,
+              "score": 236010,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 87,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 18,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 261.87333335322825,
+              "tempsCombat": 236.53166668260982,
+              "score": 133600,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 4,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 19,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 264.82166668268394,
+              "tempsCombat": 239.4704166727224,
+              "score": 136140,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 20,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 64.56791666870072,
+              "tempsCombat": 56.358333333330776,
+              "score": 2590,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 21,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 60.19166667063773,
+              "tempsCombat": 51.98208333526827,
+              "score": 1620,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 6,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 22,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 67.60250000407306,
+              "tempsCombat": 59.39166666666394,
+              "score": 2670,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 23,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 411.56833337922535,
+              "tempsCombat": 386.2362500439778,
+              "score": 206950,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 40,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 24,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 270.5133333510851,
+              "tempsCombat": 245.17166668046735,
+              "score": 102350,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 5,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 25,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 371.7891667130919,
+              "tempsCombat": 348.7283333757065,
+              "score": 305760,
+              "vague": 5,
+              "victoire": true,
+              "err": 0,
+              "manche": true,
+              "impulsions": 29,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 26,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 66.06791666870191,
+              "tempsCombat": 57.85833333333069,
+              "score": 1700,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 27,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 72.06083333740995,
+              "tempsCombat": 63.84999999999702,
+              "score": 2160,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 28,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 56.669166670737276,
+              "tempsCombat": 48.45958333536782,
+              "score": 2960,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 29,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 121.7679166744579,
+              "tempsCombat": 108.41916667251034,
+              "score": 61640,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 5,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 30,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 122.67625000605382,
+              "tempsCombat": 109.32750000410627,
+              "score": 11870,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 31,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 130.19541667456022,
+              "tempsCombat": 116.85250000585008,
+              "score": 25840,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 32,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 260.3804166862648,
+              "tempsCombat": 235.03166668037557,
+              "score": 108000,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 4,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 33,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 66.39291666870217,
+              "tempsCombat": 58.18333333333067,
+              "score": 1410,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 34,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 60.35958333536714,
+              "tempsCombat": 52.14999999999768,
+              "score": 2130,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 2,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 35,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 278.3066666860501,
+              "tempsCombat": 252.96500001543342,
+              "score": 126330,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 36,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 204.81958334717038,
+              "tempsCombat": 183.4708333452516,
+              "score": 67440,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 37,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 63.8525000040702,
+              "tempsCombat": 55.64166666666415,
+              "score": 1170,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 38,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 209.37333334706554,
+              "tempsCombat": 188.03041667838167,
+              "score": 80940,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 39,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 60.66791666870046,
+              "tempsCombat": 52.458333333331,
+              "score": 1920,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 4,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 40,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 71.76083333740971,
+              "tempsCombat": 62.41791666870036,
+              "score": 11800,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 4,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 41,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 62.98083333720489,
+              "tempsCombat": 54.772500003872025,
+              "score": 2000,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 42,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 139.64416667648888,
+              "tempsCombat": 126.29416667252394,
+              "score": 39380,
+              "vague": 3,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 43,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 63.14416667073691,
+              "tempsCombat": 54.93333333333086,
+              "score": 1540,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 44,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 26.273750001936257,
+              "tempsCombat": 22.05708333526983,
+              "score": 1340,
+              "vague": 1,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 45,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 226.86208334859083,
+              "tempsCombat": 204.37875000733027,
+              "score": 716900,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 46,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 59.752500004070434,
+              "tempsCombat": 51.54416667073757,
+              "score": 3030,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 3,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 47,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 86.10833333732145,
+              "tempsCombat": 76.76666667064735,
+              "score": 13720,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 48,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 467.34333337867804,
+              "tempsCombat": 440.8754167060234,
+              "score": 305860,
+              "vague": 5,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 111,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 49,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 66.40958333536885,
+              "tempsCombat": 58.19999999999734,
+              "score": 2640,
+              "vague": 2,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 1,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            },
+            {
+              "graine": 50,
+              "variante": "auto",
+              "raison": "fin",
+              "fin": true,
+              "tempsJeu": 225.07083334695403,
+              "tempsCombat": 203.72208334106162,
+              "score": 99440,
+              "vague": 4,
+              "victoire": false,
+              "err": 0,
+              "manche": true,
+              "impulsions": 0,
+              "piloteConforme": true,
+              "erreurs": {
+                "err": 0,
+                "sigs": [],
+                "console": [],
+                "pageErreurs": [],
+                "zero": true
+              }
+            }
+          ],
+          "source": "protocole pilotes officiel ; manche virtuel actif, actions du pilote inchangées"
+        }
+      ],
+      "notes": [],
+      "captures": [],
+      "duree": 240.5,
+      "bundle": {
+        "url": "http://127.0.0.1:50648/index.html",
+        "empreinte": "78944398392e3cb495fa9141a926c7f2fce3ebd864882ade735efefd8ffdf66c"
+      },
+      "date": "2026-10-18T04:13:34.194Z",
+      "dateParis": "18/10/2026 · 06 h 13"
+    }
+  ],
+  "instrumentGestes": false,
+  "instruments": {
+    "paysage": false,
+    "portrait": false,
+    "bureau": false
+  },
+  "conforme": false
+}

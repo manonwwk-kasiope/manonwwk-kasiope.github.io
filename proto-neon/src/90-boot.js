@@ -217,7 +217,7 @@ function bureauUpdate() {
    au repos. La direction est le vecteur depuis ce point d'origine ; l'origine suit le pouce quand il
    dépasse le rayon, pour qu'un demi-tour soit immédiat. Le doigt est suivi par son identifiant : un
    second doigt qui se pose ou se lève ne vole jamais la direction. */
-var STICK_R = 44, STICK_MORT = 0.08;             // rayon en pixels CSS et zone morte : non sourcés, à régler au jury
+var STICK_R = N.R.joueuse.courseCSS, STICK_MORT = N.R.gestes.zoneMorte; // pixels CSS, réglage reçu
 var stick = { id: null, ox: 0, oy: 0, x: 0, y: 0 };
 S.input.stick = { active: false, ox: 0, oy: 0, x: 0, y: 0, r: STICK_R };   // pixels CSS, pour l'indicateur
 function stickUpdate() {
@@ -235,11 +235,18 @@ function stickUpdate() {
    de 10 pt : pouvoir), GLISSÉ (24 pt ou plus en moins de 220 ms : apogée, dès le seuil), TENU (encore posé à 180 ms,
    moins de 24 pt : boost tant qu'il reste posé). Tout autre geste ne fait rien. Unités : les seuils en pt (px CSS) ;
    x, y des gestes et des taps en px ÉCRAN (pixels du tampon), dx, dy en pt. Chiffres de § 2.16, → N.R.entree. */
-var G_ATTENTE = 150, G_TOUCHER_T = 180, G_TOUCHER_D = 10, G_GLISSE_D = 24, G_GLISSE_T = 220, G_BORD = 20, G_TAP_T = 300;   // ms, pt
+var G_ATTENTE = N.R.gestes.delaiAction * N.R.gestes.msParSeconde,
+  G_TOUCHER_T = N.R.gestes.toucher.duree * N.R.gestes.msParSeconde, G_TOUCHER_D = N.R.gestes.toucher.deplacementPt,
+  G_GLISSE_D = N.R.gestes.glisse.distancePt, G_GLISSE_T = N.R.gestes.glisse.duree * N.R.gestes.msParSeconde,
+  G_BORD = N.R.gestes.bordPt, G_TAP_T = N.R.gestes.tapMenu * N.R.gestes.msParSeconde;
 var doigts = [], stickT0 = 0;
 function doigtDe(id) { for (var i = 0; i < doigts.length; i++) if (doigts[i].id === id) return doigts[i]; return null; }
 function retirer(d) { var i = doigts.indexOf(d); if (i >= 0) doigts.splice(i, 1); }
-function deplace(d) { return Math.hypot(d.x - d.x0, d.y - d.y0); }
+/* Un retour à l'origine n'efface jamais l'excursion déjà parcourue. */
+function deplace(d) { return Math.max(d.distanceMax || 0, Math.hypot(d.x - d.x0, d.y - d.y0)); }
+function positionDoigt(d, t) {
+  d.x = t.clientX; d.y = t.clientY; d.distanceMax = deplace(d);
+}
 function pxEcran(cx, cy, o) {
   var r = out ? out.getBoundingClientRect() : { left: 0, top: 0 }, p = (N.gfx && N.gfx.PX) || 1;
   o.x = Math.round((cx - r.left) / p); o.y = Math.round((cy - r.top) / p);
@@ -280,7 +287,7 @@ function entreeUpdate() {
     var d = doigts[i];
     if (d.role === 'attente' && stick.id !== null && now - stickT0 >= G_ATTENTE) d.role = 'rien';
     if (d.role !== 'action') continue;
-    if (d.classe === null && now - d.t0 >= G_TOUCHER_T) { d.classe = 'tenu'; geste('tenu', d, now); }
+    if (d.classe === null && now - d.t0 >= G_TOUCHER_T && deplace(d) < N.R.gestes.tenu.deplacementPt) { d.classe = 'tenu'; geste('tenu', d, now); }
     if (d.classe === 'tenu') boost = true;
   }
   S.input.boost = boost;
@@ -304,7 +311,7 @@ function onTouchStart(e) {
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
     var t = e.changedTouches[i];
     if (doigtDe(t.identifier)) continue;
-    var d = { id: t.identifier, role: 'rien', x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, t0: now, classe: null };
+    var d = { id: t.identifier, role: 'rien', x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, t0: now, classe: null, distanceMax: 0 };
     doigts.push(d);
     if (stick.id === null) prendreManche(d, now);                 // le premier doigt posé est le manche, jamais une action
     else d.role = (now - stickT0 >= G_ATTENTE) ? 'action' : 'attente';
@@ -315,7 +322,7 @@ function onTouchMove(e) {
   var now = performance.now();
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
     var t = e.changedTouches[i], d = doigtDe(t.identifier);
-    if (d) { d.x = t.clientX; d.y = t.clientY; }
+    if (d) positionDoigt(d, t);
     if (t.identifier !== stick.id) {
       if (d && d.role === 'action' && d.classe === null && deplace(d) >= G_GLISSE_D && now - d.t0 < G_GLISSE_T) {
         d.classe = 'glisse'; geste('glisse', d, now); S.input.apogee = true;       // dès que le seuil est franchi
@@ -334,7 +341,7 @@ function onTouchEnd(e) {
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
     var t = e.changedTouches[i], d = doigtDe(t.identifier);
     if (!d) continue;
-    d.x = t.clientX; d.y = t.clientY;
+    positionDoigt(d, t);
     retirer(d);
     var court = now - d.t0 < G_TAP_T && deplace(d) < G_TOUCHER_D;
     if (d.role === 'manche') {

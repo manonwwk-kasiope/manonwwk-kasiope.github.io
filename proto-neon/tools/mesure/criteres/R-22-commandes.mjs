@@ -3,7 +3,7 @@
    (20 touchers → 20 pouvoirs, 20 glissés → 20 APOGÉE, 20 appuis de 0,5 s → 20 accélérations de 0,32 s ± 1
    image). Doigts simulés par CDP, iPhone 13 paysage, temps réel, partie invulnérable. */
 import { executer, principal, seuils, exiger, stats } from '../commun.mjs';
-import { Doigts, preparerJeu, serieSecondDoigt, vue } from '../gestes.mjs';
+import { Doigts, preparerJeu, serieSecondDoigt, vue } from '../../codex-p21/gestes.mjs';
 
 export const meta = { id: 'R-22', titre: 'Commandes', seuil: 'J-01 à J-06 ; 1 image de latence ; accélération droit devant ; gestes 20/20', bloquant: true, exclusif: true };
 const deg = r => r * 180 / Math.PI;

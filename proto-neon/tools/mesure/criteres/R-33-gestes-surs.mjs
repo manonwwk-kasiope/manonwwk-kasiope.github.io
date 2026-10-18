@@ -4,7 +4,7 @@
    50 balayages par bord : 0 navigation, 0 zoom, 0 sélection, et les origines du manche à 20 pt au moins des
    bords. Doigts simulés par CDP, iPhone 13 paysage, en onglet (le mode web app n'est pas émulable ici). */
 import { executer, principal, seuils, exiger } from '../commun.mjs';
-import { Doigts, preparerJeu, serieSecondDoigt, vue, hasard, lireGestes } from '../gestes.mjs';
+import { Doigts, preparerJeu, serieSecondDoigt, vue, hasard, lireGestes } from '../../codex-p21/gestes.mjs';
 
 export const meta = { id: 'R-33', titre: 'Gestes sûrs', seuil: '0 action involontaire ; slalom 0 accélération ; 20/20 ; 0 navigation, zoom, sélection', bloquant: true, exclusif: true };
 
@@ -19,8 +19,8 @@ export async function mesurer(banc, res) {
   /* 1. les recentrages humains */
   const duree = banc.o.rapide ? 20 : L.recentrages;
   await s.eval(() => { try { window.__N.journal.dump({ vider: true }); } catch (e) { } window.__MESURE.parImage('r33b', 'return !!(S.input && S.input.boost) ? 1 : 0;'); });
-  const t0 = Date.now(); let n = 0, courts = 0, autres = 0;
-  while (Date.now() - t0 < duree * 1000) {
+  const t0 = await s.eval(() => performance.now()); let n = 0, courts = 0, autres = 0;
+  while ((await s.eval(() => performance.now())) - t0 < duree * 1000) {
     n++;
     const x = V.w * (0.1 + 0.35 * alea()), y = V.h * (0.35 + 0.5 * alea()), court = alea() < L.recentrageCourt, autre = alea() < L.recentrageAutreDoigt;
     const id = await d.poser(x, y);
@@ -40,10 +40,17 @@ export async function mesurer(banc, res) {
     res.verifie('recentrages humains : accélérations par le second doigt', acc, 0, acc === 0);
   }
   await d.toutLever(); await d.attendre(300);
+  await s.eval(() => { window.__N.game.dbg.scene('calme'); window.__N.game.dbg.god(true); window.__S.reglages.actions='doigts'; });
+  await d.attendre(300);
   /* 2. le slalom serré : manche à fond, cap qui oscille de ± 40° toutes les 150 ms */
   { await s.eval(() => window.__MESURE.parImage('slalom', 'var p=S.player,I=S.input;return {f:window.__FRAME,r:performance.now(),boost:!!(p&&p.boost),ang:p&&p.ang,vise:p&&p.angVise,mag:I.mag,inputBoost:I.boost};'));
     const R0 = await s.eval(() => (window.__S.input.stick && window.__S.input.stick.r) || 44), a0 = await s.eval(() => window.__S.player.ang);
     const id = await d.poser(V.w * 0.3, V.h * 0.5);
+    // Armer d'abord la poussée : le slalom doit aussi couper un boost déjà engagé.
+    await d.bouger(id, V.w * 0.3 + R0 * Math.cos(a0), V.h * 0.5 + R0 * Math.sin(a0)); await d.attendre(500);
+    const arme = await s.eval(() => !!window.__S.player.boost);
+    res.verifie('slalom : poussée droite effectivement armée avant les virages', arme, true, arme === true);
+    await s.eval(() => { window.__MESURE.arreter('slalom'); window.__MESURE.parImage('slalom', 'var p=S.player,I=S.input;return {f:window.__FRAME,r:performance.now(),boost:!!(p&&p.boost),ang:p&&p.ang,vise:p&&p.angVise,mag:I.mag,inputBoost:I.boost};'); });
     for (let k = 0; k < (banc.o.rapide ? 20 : 60); k++) { const a = a0 + (k % 2 ? 1 : -1) * 40 * Math.PI / 180; await d.bouger(id, V.w * 0.3 + R0 * Math.cos(a), V.h * 0.5 + R0 * Math.sin(a)); await d.attendre(150); }
     await d.lever(id);
     const I = await s.eval(() => window.__MESURE.arreter('slalom'));

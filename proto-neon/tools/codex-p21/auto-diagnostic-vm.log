@@ -1,0 +1,66 @@
+[
+  {
+    phase: 'avant',
+    nom: 'tir-entrant',
+    attendu: true,
+    actif: true,
+    conforme: true,
+    err: 0
+  },
+  {
+    phase: 'avant',
+    nom: 'tir-qui-seloigne',
+    attendu: false,
+    actif: true,
+    conforme: false,
+    err: 0
+  },
+  {
+    phase: 'avant',
+    nom: 'tir-lateral-sans-contact',
+    attendu: false,
+    actif: true,
+    conforme: false,
+    err: 0
+  },
+  {
+    phase: 'avant',
+    nom: 'ralenti-3-telegraphes-publics-construits-en-vue',
+    attendu: true,
+    actif: false,
+    conforme: false,
+    err: 0
+  },
+  {
+    phase: 'apres-raccord',
+    nom: 'tir-entrant',
+    attendu: true,
+    actif: true,
+    conforme: true,
+    err: 0
+  },
+  {
+    phase: 'apres-raccord',
+    nom: 'tir-qui-seloigne',
+    attendu: false,
+    actif: true,
+    conforme: false,
+    err: 0
+  },
+  {
+    phase: 'apres-raccord',
+    nom: 'tir-lateral-sans-contact',
+    attendu: false,
+    actif: true,
+    conforme: false,
+    err: 0
+  },
+  {
+    phase: 'apres-raccord',
+    nom: 'ralenti-3-telegraphes-publics-construits-en-vue',
+    attendu: true,
+    actif: false,
+    conforme: false,
+    err: 0
+  }
+]

@@ -1,0 +1,10 @@
+import fs from 'node:fs';import {sources,partie,sauver,hash,dateParis} from './vm.mjs';import {avecRaccord} from './raccord.mjs';import {figer,lancer,file} from './processus.mjs';
+const ref=JSON.parse(fs.readFileSync(new URL('./pilotes-avant.json',import.meta.url))),src=avecRaccord(sources()),fichier=figer(src),cas=[],jobs=[];
+const chemin=new URL('./conservation-finale.json',import.meta.url);let cache=[];
+if(fs.existsSync(chemin)){const r=JSON.parse(fs.readFileSync(chemin));if(r.sourceSha256===hash(src)&&r.protocoleSha256===hash(partie.toString()))cache=r.cas;}
+for(const a of ref.cas){const r=cache.find(c=>c.pilote===a.pilote&&c.graine===a.graine);if(r&&!r.exception)cas.push(r);else jobs.push({pilote:a.pilote,graine:a.graine});}
+const champs=['raison','etat','tempsJeu','tempsCombat','tempsSimule','pas','score','vague','morts','cartes','journalSha256','err','erreurs','erreursConsole'];
+const bilan=()=>{const rows=cas.toSorted((a,b)=>a.pilote.localeCompare(b.pilote)||a.graine-b.graine).map(r=>{const a=ref.cas.find(a=>a.pilote===r.pilote&&a.graine===r.graine),ecarts=champs.filter(k=>JSON.stringify(r[k])!==JSON.stringify(a[k]));return {...r,ecarts,identique:!r.exception&&!ecarts.length};});
+return {dateParis:dateParis(),sourceAvantSha256:ref.sourceSha256,protocoleSha256:hash(partie.toString()),sourceSha256:hash(src),patchSha256:hash(fs.readFileSync(new URL('./raccord-70-joueuse.patch',import.meta.url))),calcul:'Reçus VM achevés réutilisés ; nouveaux cas dans un processus Node distinct par partie.',conforme:rows.length===80&&rows.every(c=>c.identique&&c.raison==='fin'&&!c.err&&!c.erreursConsole.length),cas:rows};};
+const concurrence=Math.max(1,Math.min(2,Number(process.argv.find(a=>a.startsWith('--workers='))?.split('=')[1]||1)));
+await file(jobs,concurrence,j=>lancer(fichier,'pilotes',j),r=>{cas.push(r);sauver('conservation-finale.json',bilan());console.log(cas.length+'/80',bilan().cas.filter(r=>!r.identique).length,'écarts');});const r=bilan();sauver('conservation-finale.json',r);if(!r.conforme)process.exitCode=1;
