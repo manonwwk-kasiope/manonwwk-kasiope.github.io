@@ -1,19 +1,9 @@
 {
   "objectif": "COORDINATION ordre12 : qualificationHUDseul,R15interrompues",
   "base": "e52da2de1b5f606b6ccbe033f4bcaba30dcb95ef",
-  "dateParis": "18/10/2026 · 06 h 14",
-  "phase": "Paire80avant/après terminée : 80/80 métriques identiques,79fins chacune,même dieu2borné540,0JS ; Chromiumavant terminé, après attend créneau Chef",
-  "processus": [
-    {
-      "pid": 31811,
-      "session": 86044,
-      "tache": "qualifier.mjs attend enfant36639, pas de nouvelle file"
-    },
-    {
-      "pid": 36639,
-      "tache": "criteres.mjs apres : attente Chef, puis4critères et diagnostic secousses borné"
-    }
-  ],
+  "dateParis": "18/10/2026 · 06 h 31",
+  "phase": "Qualification terminée, preuves et rapport prêts ; livraison à pousser après pull/build",
+  "processus": [],
   "interdits": [
     "réglageB ou regroupement",
     "édition76/02/85",
@@ -22,18 +12,24 @@
     "doublonVM/Chromium"
   ],
   "restant": [
-    "4critèresChromiumaprès etdiagnostic secousses borné",
-    "posttraiter.mjs etrapport.mjs après fin réelle",
-    "livrer puis pull/reread"
+    "Commit/push preuves aprèspull/build",
+    "LivrerCOORD etlibérer réservations",
+    "79-scene à appliquerparClaudeaprès p15c, arbitrageseuilsrestants"
   ],
   "preuves": {
     "avant80": "79/80fins,dieu2borne540,0erreur ; incidentnatiflogconservé, repriscachepargraine",
     "R15": "6/6contreexemplesconformes, exclusionsparprofil, au-delàdupicrestexigé",
     "HUD": "7/7surbasecourante, mêmesadmissionsavecsansdraw etrendusgéométriques",
     "ecarts": "ecarts.json : 80/80cas identiques hors chemin reçu,8médianes0%,seulement78/79diffèrent",
-    "ChromiumAvant": "R14/R15/R31/R35 complets,4échecs,0erreur ; secousses16,335%,14vagues perdues avantpic exclues"
+    "ChromiumAvant": "R14/R15/R31/R35 complets,4échecs,0erreur ; secousses16,335%,14vagues perdues avantpic exclues",
+    "ChromiumApres": "60reçus,zéroerreur,60/60finsappariéesidentiques ; R14bannières0violation/943admissionsordinaires,203/203entréesavecadmission ; R14secousses16,335%échec ; R15annonces1,resp94,505%,pics6/11/18/22/19échecs,14exclusionsavant/après ; R31TRAVELLINGV3/V5échecs ; R35relance2,81667s+briefingéchecs",
+    "secousses": "Un seul contrôle bon/6 SECOUSSE=0 :16,335%→0%, t/score/état/vies identiques,0erreur. Trauma50-fx alimenté par boom/shake et décroissance sans budgettemporel, piles observées ; aucune fraction parémetteur attribuée."
   },
-  "prochaineAction": "Observer31811/36639 etsession86044. Avant27254/session87832 terminéetclos. Ne créer aucun banc niChromium. Après fin réelle, rapport.mjs sansrejeu, committer/pousserpreuves, publierCOORD, libérerréservation, pull etrelireboîte.",
-  "attente": "Créneau Chef encore occupé, enfant36639 attend sans créerChromium. La file Chef est réellement active, ne toucher aucunmarqueur. AutomatisationexistanteACTIVE miseàjour, aucun doublon.",
-  "git": "Fetch distant contrôlé pendant attente, ordre12 inchangé. Pull/rebase reporté jusqu’à fin des instruments appariés pour ne pas intégrer parties.mjs p36 entre avant et après. Commits locaux de reprise à pousser avec livraison après rebase/build."
+  "prochaineAction": "Aucun nouveau banc. Commit preuves, pull/rebase (désormais sûr, mesures finies), build etbundle séparé si besoin, push. LivraisonCOORD avec hashpreuves, libérer78/R14R15/tools, push puispull/relireordres. Aucun regroupement ni réglageB. Raccord79 reste patch à Claude.",
+  "attente": "Plus aucune attente de processus de ce lot, session86044 fermée avecsuccès ; pas de marqueurpropre conservé.",
+  "git": "Instruments SHA vérifiés identiques avant/après ; intégrations distantes après lespreuves seulement.",
+  "processusTermines": [
+    31811,
+    36639
+  ]
 }
