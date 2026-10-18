@@ -124,7 +124,6 @@ Codex : codex-10 en cours ; 01c clos, 05b accepté par Claude.
 | `src/72-ennemis.js`, `src/73-arene.js` | Codex (session parallèle codex-p4c) | 18/10 à 01 h 55 | R-06 (127 apparitions dans la vue) et R-31 (mur mobile qui tue sans annonce) ; p4b intégré (c9fd770) |
 | `src/74-arsenal.js`, `src/75-cartes.js` | Codex (session parallèle codex-p1b) | 18/10 à 00 h 48 | ONDE DE CHOC, SILLAGE, passifs PERFORATION / SURTENSION / ÉPINES |
 | `src/02-regles.js` (chiffres) , `tools/reglage/` | Codex (session parallèle codex-p5) | 18/10 à 00 h 37 | réglage de la difficulté par les pilotes (§ 4.10) |
-| `src/67-cosmos.js`, `tools/cosmos/` (nouveaux) | Claude cloud | 18/10 à 02 h 05 | l'époque 2975, l'intergalactique (vision § 1), module autonome |
 | `cine/` (ajouts), `art/` (ajouts) | Claude cloud | 18/10 à 00 h 50 | films et portraits des deux pilotes (Higgsfield) |
 
 ## Prochains chantiers (à prendre)
@@ -158,6 +157,7 @@ Repris du tableau de bord du 17 octobre (ordre de priorité) :
 
 ## Livré par la session cloud (à brancher)
 
+- `src/67-cosmos.js` — N.cosmos, l'époque 2975 (l'intergalactique : armada, escadrilles au WARP, débris, vaisseau amiral en deux phases, détonation ; musique épique propre, tempos mis en scène). Déjà branché dans N.aventure (étape « 2975 » après le film « espace », mène droit à la fin) et dans la démo. Banc `tools/cosmos/`, trois profils, zéro erreur. Pour le vrai branchement : taire la piste principale pendant l'étape 2975, ne pas dessiner `N.warp.draw('dessus')` pendant `N.cosmos.actif()`, cacher `N.ennemis.list` à N.warp (modèle : `demo/panneau.html`, `cache()`). Réservation libérée.
 - `src/63-themes.js` — N.themes, le thème musical de chaque pilote (ELLE : arpèges rapides ; LUI : basse lente et nappes ; « deux » : les deux superposés, même tonalité et même horloge). Déjà branché dans 62-choix (les deux tant que personne n'est pointé) et 64-aventure (connexion, fin, « l'autre t'attend », retrouvailles, teaser) : rien à faire de plus que brancher N.aventure.
 - **`demo/index.html` — la démo du voyage entier, jouable dès maintenant** (https://raw.githack.com/manonwwk-kasiope/manonwwk-kasiope.github.io/claude/snake-game-mobile-17dqpi/proto-neon/demo/index.html) : `demo/panneau.html` relie N.aventure au vrai jeu sans toucher 79-jeu.js (choix → 1976 → 1982 → néon ; films profondeur / warp / espace aux vagues 3, 4, 5 ; fin à la victoire). Construire avec `node build.mjs demo/index.html`. Modèle à suivre pour le vrai branchement.
 - **`src/64-aventure.js` — PRIORITÉ : brancher N.aventure dans 79-jeu.js relie d'un coup tout le reste** (choix, 1976, 1982, films par personnage, fins, retrouvailles, teaser) : voir `refonte/lots/demandes.md`, « LE branchement qui relie tout ».

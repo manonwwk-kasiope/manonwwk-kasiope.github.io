@@ -1,0 +1,138 @@
+<script>
+/* page d'essai de l'époque 2975 : le jeu principal reste à l'arrêt, N.cosmos prend la main sur la boucle.
+   ?pilote=1 : le pilote automatique du banc (tools/cosmos/banc.mjs) tient le manche et touche les cibles du warp.
+   ?qui=lui : le pilote (sinon elle). Touche N : saute à l'amiral.
+   window.__COSMOS_MES : coût de update + draw du module à chaque image, couleurs du tampon (une image sur six, par
+   phase), part de cyan hors du serpent (une image sur trente). */
+(function () {
+  var N = window.__N, q = location.search || '';
+  var PILOTE = /[?&]pilote=1\b/.test(q), QUI = /[?&]qui=lui\b/.test(q) ? 'lui' : 'elle';
+  var MES = window.__COSMOS_MES = { images: 0, couts: [], parPhase: {}, couleurs: {}, max: {}, horsPalette: 0, cyanHors: [], cyanMax: 0, taps: 0 };
+  var horloge = (window.performance && performance.now) ? function () { return performance.now(); } : function () { return 0; };
+
+  /* le pilote : une cible (point faible, cellule, ennemi à abattre), puis le cap candidat le plus proche du cap voulu
+     qui survit 0,9 s de monde aux dangers prévus (ennemis en ligne droite, balles, obus, rayons, coque, arène) */
+  function ang(a) { while (a > Math.PI) a -= 2 * Math.PI; while (a < -Math.PI) a += 2 * Math.PI; return a; }
+  function segD2(px, py, x0, y0, x1, y1) {
+    var dx = x1 - x0, dy = y1 - y0, l = dx * dx + dy * dy, u = l > 0 ? ((px - x0) * dx + (py - y0) * dy) / l : 0;
+    u = Math.max(0, Math.min(1, u)); var ex = px - x0 - dx * u, ey = py - y0 - dy * u; return ex * ex + ey * ey;
+  }
+  var dernierTap = 0, passe = 0;
+  function pilote(st) {
+    var I = N.S.input;
+    if (st.phase !== 'voyage' && st.phase !== 'boss' && st.phase !== 'explosion') return;
+    var h = st.tete, cap = st.cap, v = st.vitesse, w = st.virage, b = st.boss, tgt = null, i;
+    if (b && (b.etat === 'p1' || b.etat === 'p2' || b.etat === 'transition')) {
+      var best = null, bd = 1e12;
+      b.parts.forEach(function (p) { if (!p.actif || p.mort) return; var d = (p.x - h[0]) * (p.x - h[0]) + (p.y - h[1]) * (p.y - h[1]); if (d < bd) { bd = d; best = p; } });
+      if (best) {
+        /* des passes de mitraillage : on fonce vers le point faible, on se dégage à 50 px, on revient de loin */
+        var ox = best.x - b.x, oy = best.y - b.y, ol = Math.hypot(ox, oy) || 1, dist = Math.hypot(best.x - h[0], best.y - h[1]);
+        if (best.type === 'coeur') { ox = h[0] - best.x; oy = h[1] - best.y; ol = Math.hypot(ox, oy) || 1; }
+        if (dist < (best.type === 'coeur' ? 70 : 50)) passe = 1.1;
+        if (passe > 0) { passe -= 1 / 60; tgt = { x: best.x + ox / ol * 150 + (-oy / ol) * 60, y: best.y + oy / ol * 150 + (ox / ol) * 60 }; }
+        else tgt = { x: best.x, y: best.y };
+      } else tgt = { x: b.x + (h[0] - b.x) * 1.1, y: b.y + (h[1] - b.y) * 1.1 };
+    } else {
+      var c = null, cd = 160 * 160;
+      st.cellules.forEach(function (q) { var d = (q[0] - h[0]) * (q[0] - h[0]) + (q[1] - h[1]) * (q[1] - h[1]); if (d < cd) { cd = d; c = q; } });
+      if (c) tgt = { x: c[0], y: c[1] };
+      else {
+        var e = null, ed = 220 * 220;
+        st.ennemis.forEach(function (q) { if (q.k !== 'chasseur' && q.k !== 'fregate') return; var d = (q.x - h[0]) * (q.x - h[0]) + (q.y - h[1]) * (q.y - h[1]); if (d < ed && d > 40 * 40) { ed = d; e = q; } });
+        tgt = e ? { x: e.x, y: e.y } : { x: st.cam[0] + Math.cos(st.t * 0.3) * 60, y: st.cam[1] - 40 };
+      }
+    }
+    var want = Math.atan2(tgt.y - h[1], tgt.x - h[0]);
+    var dangers = [];
+    st.ennemis.forEach(function (q) {
+      var r = (q.k === 'fregate' ? 20 : q.r) + 6;
+      dangers.push({ x: q.x, y: q.y, vx: q.vx || 0, vy: q.vy || 0, r: r });
+    });
+    st.balles.forEach(function (q) { dangers.push({ x: q[0], y: q[1], vx: q[2], vy: q[3], r: 6 }); });
+    st.obus.forEach(function (o) { if (o.reste < 1.6) dangers.push({ x: o.x, y: o.y, vx: 0, vy: 0, r: 17, des: o.reste - 0.2 }); });
+    if (b && b.etat !== 'arrivee' && b.etat !== 'mort') b.coque.forEach(function (c) { dangers.push({ x: c[0], y: c[1], vx: 0, vy: 0, r: c[2] + 3, coque: true }); });
+    function survie(a) {
+      var x = h[0], y = h[1], cc = cap, dt = 0.05, sens = 1;
+      for (var t = dt; t <= 0.9; t += dt) {
+        var d = ang(a - cc); cc += Math.max(-w * dt, Math.min(w * dt, d)); x += Math.cos(cc) * v * dt; y += Math.sin(cc) * v * dt;
+        for (var k = 0; k < dangers.length; k++) {
+          var q = dangers[k]; if (q.des !== undefined && t < q.des) continue;
+          var px = q.x + q.vx * t, py = q.y + q.vy * t;
+          if ((px - x) * (px - x) + (py - y) * (py - y) < q.r * q.r) return t;
+        }
+        for (k = 0; k < st.rayons.length; k++) {
+          var r = st.rayons[k]; if (!r.actif && r.reste > t + 0.15) continue;
+          var aa = r.a + (r.balaye || 0) * Math.max(0, t - Math.max(0, r.reste));
+          if (segD2(x, y, r.x, r.y, r.x + Math.cos(aa) * r.l, r.y + Math.sin(aa) * r.l) < 81) return t;
+        }
+        if (b && b.etat !== 'mort' && Math.hypot(x - b.x, y - b.y) > b.arene - 10) return t + 0.3;
+      }
+      return 1;
+    }
+    var choix = cap, bs = -1e9;
+    for (var k = -12; k <= 12; k++) {
+      var a = cap + k * 0.26, sv = survie(a), ec = Math.abs(ang(want - a)), sc = sv * 10 - ec;
+      if (sc > bs) { bs = sc; choix = a; }
+    }
+    if (survie(want) >= 1) choix = want;
+    I.x = Math.cos(choix); I.y = Math.sin(choix); I.mag = 1;
+    /* le warp : un toucher du second doigt sur une cible, toutes les 0,2 s */
+    if (st.warp.phase === 'visee' && st.t - dernierTap > 0.2) {
+      var cands = [];
+      st.ennemis.forEach(function (q) { if (q.k === 'eclair' || q.k === 'chasseur' || q.k === 'fregate') cands.push(q); });
+      if (b) b.parts.forEach(function (p) { if (p.actif && !p.mort) cands.push(p); });
+      if (cands.length) {
+        var tq = cands[(Math.floor(st.t * 5)) % cands.length], sx = tq.x - st.cam[0] + st.W / 2, sy = tq.y - st.cam[1] + st.H / 2;
+        if (sx > 0 && sy > 0 && sx < st.W && sy < st.H) { I.taps.push({ x: sx, y: sy, doigt: 'action' }); MES.taps++; dernierTap = st.t; }
+      }
+    }
+  }
+  function mesurer(st, cout) {
+    MES.images++;
+    var ph = st.phase;
+    MES.couts.push(cout);
+    (MES.parPhase[ph] || (MES.parPhase[ph] = [])).push(cout);
+    if (MES.images % 6) return;
+    var B = N.gfx.buf(), vu = new Uint8Array(256), n = 0, l = [];
+    for (var i = 0; i < B.length; i++) vu[B[i]] = 1;
+    for (var c = 0; c < 256; c++) if (vu[c]) { n++; l.push(c); if (c > 15) MES.horsPalette++; }
+    MES.max[ph] = Math.max(MES.max[ph] || 0, n);
+    var u = MES.couleurs[ph] || (MES.couleurs[ph] = []); l.forEach(function (c) { if (u.indexOf(c) < 0) u.push(c); });
+    if (MES.images % 30) return;
+    /* le cyan hors du serpent : plus de 6 px de toute perle, de la tête et du sillage des morceaux */
+    var W = N.gfx.W, H = N.gfx.H, cy = N.pal.i('cyan'), cp = N.pal.i('cyanPale'), pts = [st.tete].concat(st.segments), hors = 0, tot = 0;
+    var ox = st.cam[0] - W / 2, oy = st.cam[1] - H / 2;
+    for (var y = 0; y < H; y += 1) for (var x = 0; x < W; x += 1) {
+      var v = B[y * W + x]; if (v !== cy && v !== cp) continue; tot++;
+      var wx = x + ox, wy = y + oy, pres = false;
+      for (var k = 0; k < pts.length; k++) { var dx = pts[k][0] - wx, dy = pts[k][1] - wy; if (dx * dx + dy * dy < 36) { pres = true; break; } }
+      if (!pres) hors++;
+    }
+    var part = hors / (W * H);
+    MES.cyanHors.push(part); MES.cyanMax = Math.max(MES.cyanMax, part);
+  }
+  function lancer() {
+    var S = N.S; S.phase = 'cosmos';
+    N.cosmos.start({ graine: window.__SEED || 2975, qui: QUI, surFin: function () { window.__COSMOS_FINI = true; window.__COSMOS_FIN_T = N.cosmos.state().t; } });
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop, piste = false, cout = 0;
+    g.update = function (dt) {
+      if (!piste && N.music && N.music.context && N.music.context() && N.music.stop) { piste = true; try { N.music.stop(); } catch (e) { } }
+      if (N.cosmos.actif()) { var st = PILOTE ? N.cosmos.state() : null; if (PILOTE) pilote(st); var a = horloge(); N.cosmos.update(dt); cout = horloge() - a; }
+      else u0.call(g, dt);
+    };
+    g.draw = function () {
+      if (N.cosmos.actif() || N.cosmos.phase() === 'fini') { var a = horloge(); N.cosmos.draw(); cout += horloge() - a; mesurer(N.cosmos.state(), cout); }
+      else d0.call(g);
+    };
+    g.drawTop = function () { if (!N.cosmos.actif() && N.cosmos.phase() !== 'fini') t0.call(g); };
+    /* les écrans et le HUD du jeu principal se taisent tant que l'époque tient l'écran */
+    function couvre() { return N.cosmos.actif() || N.cosmos.phase() === 'fini'; }
+    if (N.ui) { if (N.ui.fermer) N.ui.fermer(); var ua = N.ui.actif; N.ui.actif = function () { return !couvre() && ua.call(N.ui); }; }
+    if (N.hud && N.hud.draw) { var hd = N.hud.draw; N.hud.draw = function () { if (!couvre()) hd.apply(N.hud, arguments); }; }
+    if (N.fx && N.fx.drawEcran) { var fe = N.fx.drawEcran; N.fx.drawEcran = function () { if (!couvre()) fe.apply(N.fx, arguments); }; }
+    window.addEventListener('keydown', function (e) { if (e.code === 'KeyN') N.cosmos.skip(); });
+  }
+  if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
+})();
+</script>
