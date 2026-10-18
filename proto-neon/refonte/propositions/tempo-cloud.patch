@@ -1,0 +1,653 @@
+diff --git a/proto-neon/src/02-regles.js b/proto-neon/src/02-regles.js
+index 6855740..cd8bd6b 100644
+--- a/proto-neon/src/02-regles.js
++++ b/proto-neon/src/02-regles.js
+@@ -891,6 +891,9 @@
+       accents: { stingerMesures: 1, drop: 0.25, plongee: { niveau: 0.10, duree: 0.09, retour: 1.28 } },
+       repli: { refrain: { notes: 8, mesures: 2 }, centroide: [900, 1500], couches: 4 },
+       calage: { barreMs: 10 },
++      /* le tempo mis en scène (chantier n° 1, en aventure seulement) : varispeed en demi-tons, k = 2^(n/12), toujours sur une
++         barre ; la grille de jeu (directeur, décor, VOL, onde) suit N.music.tempo() en aventure */
++      tempoScene: { montee: 1, demi: -12, cyclope: 2 },
+       demarrage: { mesures: 1, releve: 3 },
+       reprise: 1                                  // coupure, suspension et reprise sous 1 s (J-19)
+     },
+diff --git a/proto-neon/src/15-decor.js b/proto-neon/src/15-decor.js
+index b7632b7..c5a87ba 100644
+--- a/proto-neon/src/15-decor.js
++++ b/proto-neon/src/15-decor.js
+@@ -477,6 +477,11 @@
+     return ((N.S && N.S.t) || 0) / 1000;
+   }
+   var TEMPS = 60 / 144.6;                  // → N.R.horloge.dureeTemps
++  /* chantier n° 1 (le tempo change pendant la partie) : EN AVENTURE, le décor bat au tempo de ce qui joue (N.music.tempoJeu,
++     tempo mis en scène compris) ; la phase des temps se cumule image par image, puisque le tempo peut changer. Hors aventure,
++     tempoJeu(0) rend 0 et tout reste calé sur TEMPS, comme avant. */
++  var phaseT = 0, phaseT0 = 0, soleilPhase = -1;
++  function bpmDecor() { return N.music && N.music.tempoJeu ? N.music.tempoJeu(0) : 0; }
+ 
+   function etat(nom) {
+     if (nom === undefined) return cur.e;
+@@ -666,7 +671,7 @@
+   function soleil(buf, W, H, yh, sx, R, kHaut, t, eclipse, e) {
+     sunTable(R);
+     var B = N.pal.BAYER, cyD = yh - Math.round(R * kHaut), top = cyD - R, D = 2 * R;
+-    var shift = mouvementCoupe() ? 0 : Math.floor(t / (8 * TEMPS));    // une rangée toutes les 2 mesures (8 temps)
++    var shift = mouvementCoupe() ? 0 : (soleilPhase >= 0 ? Math.floor(soleilPhase / 8) : Math.floor(t / (8 * TEMPS)));    // une rangée toutes les 2 mesures (8 temps)
+     for (var j = 0; j <= D; j++) {
+       var y = top + j;
+       if (y < 0) continue;
+@@ -737,7 +742,9 @@
+     if (yh - Math.round(R * kHaut) - R < -4) kHaut = (yh + R - 4) / R;      // le disque ne sort pas par le haut de plus de 4 px
+     var ecl = E.eclipse ? 1 : (eclipseK > 0 ? 1 : 0);
+     var eclP = eclipseK > 0 ? eclipseK : (E.eclipse ? 1 : 0);
++    soleilPhase = bpmDecor() > 0 ? phaseT : -1;
+     soleil(buf, W, H, yh, sx, R, kHaut, t, eclP > 0.55, e);
++    soleilPhase = -1;
+     g.layer(mont, { x: -Math.round(camX * F_P2), y: yh - MH + 1, wrapX: true });
+     /* P3 : la cité, une table de couleurs par rangée (fenêtres, enseignes, éclipse) */
+     poserCite(ville.phases[(Math.round(camX * F_P3) + yh - CH + 1) & 1], -Math.round(camX * F_P3), yh - CH + 1);
+@@ -849,6 +856,7 @@
+     var t = tempsJeu();
+     var dt = lastT < 0 ? 0 : t - lastT; lastT = t; if (dt < 0) dt = 0; if (dt > 0.25) dt = 0.25;
+     tDecor = t;
++    var bpmD = bpmDecor(); phaseT0 = phaseT; if (bpmD > 0) phaseT += dt * bpmD / 60;
+     /* La caméra de jeu garde son suivi immédiat. Le lointain rejoint sa cible à
+        vitesse bornée : même sans clignotement, un ciel tramé déplacé de plusieurs
+        lignes par image peut ajouter un flash aux explosions. Pendant un gel il tient. */
+@@ -864,7 +872,7 @@
+     /* le sol avance d'une case par temps de jeu (deux au chaos, six pendant LE VOL), plus vite en accélération */
+     var E = ET[cur.e], mult = E.avance * accelK;
+     if (N.S && N.S.input && N.S.input.boost) mult *= (RD().sol && RD().sol.avanceBoost) || 1.6;
+-    if (!mouvementCoupe()) avZ += dt * (PAS_Z / TEMPS) * mult;
++    if (!mouvementCoupe()) avZ += bpmD > 0 ? dt * (PAS_Z * bpmD / 60) * mult : dt * (PAS_Z / TEMPS) * mult;
+     if (fenT > 0) fenT -= dt;
+     if (eclairT > 0) eclairT -= dt;
+     if (g.mask && g.mask()) g.mask().fill(8);
+@@ -946,7 +954,7 @@
+         for (var sx2 = ax0 - cx; sx2 <= ax1 - cx; sx2++) if (lim25 * 2 > B[((sy2 & 3) << 2) | (sx2 & 3)]) buf[ro + sx2] = vi;
+       }
+       /* les intersections : des points d'indigo, qui ondulent autour des explosions (Geometry Wars) et passent au violet sur la grosse caisse */
+-      var beat = N.horloge && N.horloge.franchi ? N.horloge.franchi().temps : false;
++      var beat = bpmDecor() > 0 ? Math.floor(phaseT) !== Math.floor(phaseT0) : (N.horloge && N.horloge.franchi ? N.horloge.franchi().temps : false);
+       var dotc = ind;
+       for (var iy = gy0; iy <= ay1; iy += 16) for (var ix = gx0; ix <= ax1; ix += 16) {
+         var dx = 0, dy = 0;
+@@ -1142,7 +1150,7 @@
+     if (N.gfx && N.gfx.W) { verifierVue(); ensure(q, e); }
+     trans = null; cur.q = q; cur.e = e;
+   }
+-  function reset() { camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
++  function reset() { phaseT = phaseT0 = 0; camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
+ 
+   N.decor = {
+     build: build, reset: reset, fixer: fixer, etat: etat, quartier: quartier, preparer: preparer,
+diff --git a/proto-neon/src/17-vol.js b/proto-neon/src/17-vol.js
+index 2bc8c48..5e83c53 100644
+--- a/proto-neon/src/17-vol.js
++++ b/proto-neon/src/17-vol.js
+@@ -130,6 +130,10 @@
+     }
+     if (s) { D.pas = ou(s.pasTransversal, 24); if (s.avance) D.avance = ou(s.avance.vol, D.avance); }
+     D.temps = (tp && ou(tp.dureeTemps, 0)) ? tp.dureeTemps : 60 / 144.6;
++    /* en aventure, le VOL prend le tempo de ce qui joue à son départ (chantier n° 1) ; il le garde jusqu'au bout (la géométrie du
++       couloir en dépend) */
++    var bpmJ = N.music && N.music.tempoJeu ? N.music.tempoJeu(0) : 0;
++    if (bpmJ > 0) D.temps = 60 / bpmJ;
+     if (D.echelle < 1) D.echelle = 2;
+     if (D.nPorte < 1) D.nPorte = 1;
+     if (D.nPorte > 8) D.nPorte = 8;
+diff --git a/proto-neon/src/30-music.js b/proto-neon/src/30-music.js
+index 0989896..ee8da3b 100644
+--- a/proto-neon/src/30-music.js
++++ b/proto-neon/src/30-music.js
+@@ -90,7 +90,11 @@ if (typeof window !== 'undefined') window.__N = N;
+   var MZ_TIQUE = 0.04;                            /* la preuve de lecture se fait 40 ms avant la barre : après, il est trop tard pour annuler */
+ 
+   /* ================================ outils ================================ */
+-  function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
++  /* TRANSPO : la transposition du TEMPO MIS EN SCÈNE (en demi-tons). Toute la musique y est lue en varispeed « bande » (le tempo
++     et la hauteur bougent ensemble, d'un intervalle juste) : le moteur génératif et les sons se transposent d'autant pour rester
++     accordés. 0 hors aventure, toujours. */
++  var TRANSPO = 0;
++  function hz(m) { return 440 * Math.pow(2, (m + TRANSPO - 69) / 12); }
+   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+   function noop() {}
+   function settle(pr) { if (pr && typeof pr.then === 'function') pr.then(noop, noop); }
+@@ -270,7 +274,7 @@ if (typeof window !== 'undefined') window.__N = N;
+ 
+     /* ---- bus ----
+        gen : couches génératives -> musicBus -> musicLevel -+
+-       piste : items -> trackBus -> étagère -> passe-bas -> trackLevel -+-> musicDuck -> musicCut -> musicChan -> secLP -> muffle -> master
++       piste : items -> trackBus -> étagère -> passe-bas -> trackLevel -+-> musicDuck -> musicCut -> freinG -> musicChan -> secLP -> muffle -> master
+        sons : sfxBus -> master                                                                     (esquive : musicDuck) */
+     var master = ctx.createGain(); master.gain.value = MIX.master * 0.5;
+     var shaper = ctx.createWaveShaper();
+@@ -288,7 +292,8 @@ if (typeof window !== 'undefined') window.__N = N;
+     var muffle = ctx.createBiquadFilter(); muffle.type = 'lowpass'; muffle.frequency.value = OPEN; muffle.Q.value = 0.6;
+     var genHP = ctx.createBiquadFilter(); genHP.type = 'highpass'; genHP.frequency.value = 460; genHP.Q.value = 0.8;   /* repli éclairci : pas de grave sous 460 Hz (le haut-parleur d'un téléphone ne les rend pas) */
+     musicBus.connect(genHP); genHP.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(musicCut);
+-    musicCut.connect(musicChan); musicChan.connect(secLP); secLP.connect(muffle); muffle.connect(master);
++    var freinG = ctx.createGain(); freinG.gain.value = 1;              /* le COUP DE FREIN du tempo mis en scène (1 hors de lui) */
++    musicCut.connect(freinG); freinG.connect(musicChan); musicChan.connect(secLP); secLP.connect(muffle); muffle.connect(master);
+ 
+     var trackBus = ctx.createGain(); trackBus.gain.value = 1;
+     var trackShelf = ctx.createBiquadFilter(); trackShelf.type = 'highshelf'; trackShelf.frequency.value = 6000; trackShelf.gain.value = -3;
+@@ -1341,6 +1346,7 @@ if (typeof window !== 'undefined') window.__N = N;
+       trackPump(horizon);
+       var guard = 0;
+       while (cur < horizon && guard++ < 20000) {
++        if (VS.tTr >= 0 && cur >= VS.tTr - 0.0004) { TRANSPO = VS.nTr; VS.tTr = -1; }   /* la transposition du tempo mis en scène tombe sur sa barre */
+         var a = anchors[0];
+         if (a && cur >= a.t - 0.0004) { anchors.shift(); doAnchor(a); continue; }
+         if (a && cur + stepDur * 0.55 > a.t) { cur = a.t; continue; }   /* ne pas déborder sur la jointure */
+@@ -1455,14 +1461,18 @@ if (typeof window !== 'undefined') window.__N = N;
+       return null;
+     }
+     function mzCoupe(t) { return !!M.sansCouches || (M.G.length > 0 && t >= M.G[0].from - 1e-3 && t < M.layersFin); }
++    /* Horloge du fichier -> horloge audio. Sans tempo mis en scène : t = off + f. Avec (varispeed k, couche publique) : la carte
++       est affine par morceaux, sg.tf(f) et sg.ft(t) (avant / après la barre du changement). */
++    function segTf(sg, f) { return sg.tf ? sg.tf(f) : sg.off() + f; }
++    function segFt(sg, t) { return sg.ft ? sg.ft(t) : t - sg.off(); }
+     function segTime(sg, i) {                        /* début de la barre i (extrapolée au-delà des extrémités de la carte) */
+-      var B = sg.bars, n = B.length, o = sg.off();
+-      if (i < 0) return o + B[0] + i * (B[1] - B[0]);
+-      if (i >= n) return o + B[n - 1] + (i - n + 1) * (B[n - 1] - B[n - 2]);
+-      return o + B[i];
++      var B = sg.bars, n = B.length;
++      if (i < 0) return segTf(sg, B[0] + i * (B[1] - B[0]));
++      if (i >= n) return segTf(sg, B[n - 1] + (i - n + 1) * (B[n - 1] - B[n - 2]));
++      return segTf(sg, B[i]);
+     }
+     function segIdx(sg, t) {                         /* indice de la première barre qui commence à t ou après */
+-      var B = sg.bars, n = B.length, u = t - sg.off() - 1e-6;
++      var B = sg.bars, n = B.length, u = segFt(sg, t) - 1e-6;
+       if (u <= B[0]) return Math.ceil((u - B[0]) / (B[1] - B[0]));
+       if (u > B[n - 1]) return n - 1 + Math.ceil((u - B[n - 1]) / (B[n - 1] - B[n - 2]));
+       var lo = 0, hi = n - 1;
+@@ -1477,6 +1487,10 @@ if (typeof window !== 'undefined') window.__N = N;
+       return t0 + k * bt;
+     }
+     function segTempo(sg, t) { var i = segIdx(sg, t); return 240 / Math.max(0.2, segTime(sg, i + 1) - segTime(sg, i)); }
++    function segTempoIci(sg, t) {                    /* le tempo de la barre qui sonne à t (et non de la suivante) : le tempo mis en scène change sur une barre */
++      var i = segIdx(sg, t); if (segTime(sg, i) > t + 1e-6) i--;
++      return 240 / Math.max(0.2, segTime(sg, i + 1) - segTime(sg, i));
++    }
+     function eqp(p, v0, v1, t, dur) {                /* fondu à puissance constante : sinus en montée, cosinus en descente */
+       var n = 48, a = new Float32Array(n);
+       for (var i = 0; i < n; i++) { var x = i / (n - 1) * Math.PI / 2; a[i] = v1 > v0 ? v0 + (v1 - v0) * Math.sin(x) : v1 + (v0 - v1) * Math.cos(x); }
+@@ -1488,8 +1502,97 @@ if (typeof window !== 'undefined') window.__N = N;
+       return { entree: en, fondu: fo, sonde: offline ? null : tap(en) };
+     }
+     function tempoCourant() {                        /* le BPM de ce qui joue : le morceau long (tempo local de sa carte), sinon la piste */
+-      var sg = mzSeg(ctx.currentTime);
+-      return sg ? segTempo(sg, ctx.currentTime) : bpm;
++      var now = ctx.currentTime, sg = mzSeg(now);
++      if (sg && VS.n === 0 && VS.tb < 0) return segTempo(sg, now);   /* sans tempo mis en scène : exactement comme avant */
++      var b = sg ? segTempoIci(sg, now) : bpm * vsK(now);
++      return (VS.freinA > now && now >= VS.freinDe) ? b * 0.5 : b;      /* pendant le coup de frein, la grille de jeu freine aussi */
++    }
++
++    /* ================================ LE TEMPO MIS EN SCÈNE (chantier n° 1) ================================
++       Décidé par la couche publique (en aventure seulement : hors aventure, rien ne change, n = 0, k = 1). Tout ce qui joue
++       partage une vitesse de lecture k = 2^(n/12), n en demi-tons : varispeed « bande », le tempo et la hauteur bougent
++       ensemble d'un intervalle juste, donc tout reste accordé (le moteur génératif et les sons sont transposés de n).
++       Toujours SUR UNE BARRE de ce qui joue (tb), et annoncé par la musique :
++         'montee'  une mesure de montée (souffle qui grimpe, roulement de quatre notes), puis le tempo change sur la barre suivante ;
++         'coupure' 250 ms de vide posés sur la barre, puis le tempo change (le demi-temps de l'INVERSION et du RALENTI) ;
++         'stinger' l'accord et la montée du stinger sur la barre où le tempo change (le retour) ;
++         frein()   le COUP DE FREIN : sur une barre, la piste ralentit jusqu'à l'arrêt (bande qui s'arrête) et la musique
++                   s'éteint en une mesure ; la barre suivante, impact et stinger, la musique repart au tempo nouveau.
++       La piste en blocs est reposée sur la barre (reseat) : ses items repartent de la même position du fichier, à la nouvelle
++       vitesse ; le morceau long change de vitesse (playbackRate) par la couche publique, sa carte des barres suit (tf/ft). */
++    var VS = { n: 0, k: 1, k0: 1, tb: -1, tTr: -1, nTr: 0, reseatAt: 0, freinDe: -1, freinA: -1, log: [] };
++    function vsK(t) { return (VS.tb >= 0 && t < VS.tb - 1e-4) ? VS.k0 : VS.k; }
++    function vsEnCours() { return VS.tb >= 0 && ctx.currentTime < VS.tb + 0.05 || VS.freinA > ctx.currentTime; }
++    /* la piste en blocs repart sur la barre tb, de la même position du fichier, à la vitesse vsK(tb) */
++    function reseat(tb) {
++      var list = T.items.filter(function (it) { return !it.dead && it.tEnd > tb + 1e-3; }).sort(function (a, b) { return a.tJoin - b.tJoin; });
++      if (!list.length) return;
++      var t = tb, specs = [];
++      list.forEach(function (it) {
++        if (it.tJoin >= tb - 1e-3) { specs.push({ bloc: it.bloc, fromRel: it.from, toRel: it.to, fam: it.fam, lead: false }); killItem(it); }
++        else { specs.push({ bloc: it.bloc, fromRel: it.from + (tb - it.tCore) * it.k, toRel: it.to, fam: it.fam, lead: false }); trimItem(it, tb); }
++      });
++      anchors = anchors.filter(function (a) { return a.sg || a.t < tb - 1e-3; });
++      for (var i = 0; i < specs.length; i++) { var n = startItem(specs[i], t); if (!n) break; t = n.tEnd; }
++      T.nextPlanned = null;
++    }
++    /* change le tempo sur la barre tb (au moins 0,45 s devant : l'ordonnanceur génératif, LOOKAHEAD plus un pas, n'y est pas encore) */
++    function vsAppliquer(n, tb) {
++      var k = Math.pow(2, n / 12);
++      VS.k0 = vsK(tb); VS.n = n; VS.k = k; VS.tb = tb; VS.tTr = tb; VS.nTr = n;
++      VS.log.push({ t: +tb.toFixed(3), n: n, k: +k.toFixed(4) }); if (VS.log.length > 64) VS.log.shift();
++      if (hooks.vitesse) hooks.vitesse(tb, k);                 /* le morceau long : sa vitesse et sa carte (couche publique) */
++      M.G.forEach(function (sg) { sg.ia = null; });
++      anchors = anchors.filter(function (a) { return a.t < tb - 1e-3; });
++      var sg = mzSeg(tb);
++      if (sg) {                                                /* un morceau long : le moteur se recale sur sa barre tb, à sa nouvelle carte */
++        var i = segIdx(sg, tb - 1e-3), ta = segTime(sg, i);
++        anchors.push({ t: ta, over: true, dur: Math.max(0.2, segTime(sg, i + 1) - ta), sg: sg }); sg.ia = i + 8;
++      } else if (T.mode === 'on' && T.items.length) {         /* la piste : reposée 0,6 s avant la barre (tout ce qui la couvre est alors planifié) */
++        if (tb - ctx.currentTime < 0.6) reseat(tb); else VS.reseatAt = tb;
++      }
++      else anchors.push({ t: tb, over: false, dur: 240 / bpm / k });     /* le repli seul : sa grille repart sur la barre */
++      anchors.sort(function (x, y) { return x.t - y.t; });
++    }
++    function vsBarre(t) { return barAfter(t); }
++    function varier(n, annonce) {
++      var now = ctx.currentTime, b1 = vsBarre(now + 0.45), tb = b1, bd;
++      if (n === VS.n || vsEnCours()) return false;
++      if (annonce === 'montee') {                              /* une mesure de montée, le changement sur la barre suivante */
++        tb = vsBarre(b1 + 0.05); bd = tb - b1;
++        sweepNoise(b1, 300, 4200, 1.2, bd, 0.12, bd * 0.85);
++        for (var i = 0; i < 4; i++) voice(b1 + i * bd / 4, 'triangle', hz(keyNote(62, i * 2)), hz(keyNote(62, i * 2)), 0, 0.004, bd / 4 * 0.85, 0.07 + 0.02 * i, 2600, sfxBus);
++        accLog.push({ nom: 'tempoMontee', t: b1 });
++      } else if (annonce === 'coupure') {                      /* 250 ms de vide sur la barre, le tempo change dans le vide */
++        var p = musicDuck.gain;
++        p.cancelScheduledValues(tb - 0.01); p.setValueAtTime(1, tb - 0.01); p.linearRampToValueAtTime(0.04, tb);
++        p.setValueAtTime(0.04, tb + 0.24); p.linearRampToValueAtTime(1, tb + 0.27);
++        sweepNoise(tb - 0.3, 3200, 400, 0.9, 0.3, 0.08, 0.01);
++        accLog.push({ nom: 'tempoCoupure', t: tb });
++      }
++      vsAppliquer(n, tb);
++      if (annonce === 'stinger') { stinger('stinger', tb, n); accLog.push({ nom: 'tempoStinger', t: tb }); }
++      return true;
++    }
++    function frein(nApres) {
++      var now = ctx.currentTime, tb1 = vsBarre(now + 0.45), tb2 = vsBarre(tb1 + 0.05), bd = tb2 - tb1;
++      if (vsEnCours()) return false;
++      VS.freinDe = tb1; VS.freinA = tb2;
++      var g = freinG.gain;
++      g.cancelScheduledValues(tb1); g.setValueAtTime(1, tb1); g.setTargetAtTime(0, tb1 + bd * 0.15, bd * 0.22);
++      g.setValueAtTime(0, tb2 - 0.012); g.linearRampToValueAtTime(1, tb2);
++      T.items.forEach(function (it) {                          /* la bande s'arrête : la piste ralentit vraiment */
++        if (it.dead || it.tEnd <= tb1 || it.tJoin > tb1 + 1e-3) return;
++        try { it.src.playbackRate.setValueAtTime(it.k, tb1); it.src.playbackRate.exponentialRampToValueAtTime(it.k * 0.12, tb1 + bd * 0.9); } catch (e) { /* ignoré */ }
++      });
++      if (hooks.frein) hooks.frein(tb1, tb2);
++      /* le son du frein : un accord qui descend d'une octave et demie, puis l'impact de la reprise */
++      [62, 69, 74].forEach(function (m) { voice(tb1, 'sawtooth', hz(m), hz(m - 19), bd * 0.85, 0.006, bd * 0.9, 0.06, 1600, sfxBus); });
++      voice(tb2, 'sine', 140, 36, 0.3, 0.002, 0.6, 0.34, 0, sfxBus);
++      accLog.push({ nom: 'tempoFrein', t: tb1 });
++      vsAppliquer(nApres, tb2);
++      stinger('vague', tb2, nApres);
++      return true;
+     }
+     function mzPret() { var f = famFirst(T.want); return !!(P && T.want && f >= 0 && ready(f)); }
+     function mzAncres(horizon) {                     /* repose la grille du moteur sur le morceau : une ancre toutes les 8 barres */
+@@ -1607,7 +1710,7 @@ if (typeof window !== 'undefined') window.__N = N;
+       return barT0 + Math.max(0, k2) * bd;
+     }
+     gridApi.snap = function (t) { return beatAfter(t); };
+-    gridApi.bd = function () { var sg = mzSeg(ctx.currentTime); return sg ? 60 / segTempo(sg, ctx.currentTime) : 60 / BPM; };
++    gridApi.bd = function () { var now = ctx.currentTime, sg = mzSeg(now); return sg ? 60 / segTempo(sg, now) : 60 / (BPM * vsK(now)); };
+ 
+     function famSpec(fam, afterDeath) {       /* premier item en entrant dans une famille */
+       var F = T.FAMS[fam]; if (!F || !F.order.length) return null;
+@@ -1653,6 +1756,8 @@ if (typeof window !== 'undefined') window.__N = N;
+     function startItem(spec, tJoin) {
+       var b = P.blocs[spec.bloc], buf = T.bufs[spec.bloc];
+       if (!buf) return null;
++      var k = vsK(tJoin);                                      /* la vitesse du tempo mis en scène (1 hors aventure) */
++      if (k !== 1) return startItemK(spec, tJoin, b, buf, k);
+       var barD = b.dureeMesure, coreLen = b.coeurFin - b.coeurDeb, off = T.offs[spec.bloc] || 0;
+       var from = spec.fromRel || 0, to = spec.toRel != null ? spec.toRel : coreLen;
+       var leadD = spec.lead ? Math.min(b.avant, 1) * barD : 0;
+@@ -1661,14 +1766,29 @@ if (typeof window !== 'undefined') window.__N = N;
+       if (fileStart < 0) { tSrc -= fileStart; fileStart = 0; }
+       var len = (tEnd + XF + 0.02) - tSrc;
+       var src = ctx.createBufferSource(); src.buffer = buf;
++      return poserItem(spec, tJoin, tCore, tEnd, barD, src, tSrc, fileStart, len, from, to, leadD, 1);
++    }
++    /* le même item, lu à la vitesse k : les durées de l'horloge audio sont celles du fichier divisées par k */
++    function startItemK(spec, tJoin, b, buf, k) {
++      var barD = b.dureeMesure / k, coreLen = b.coeurFin - b.coeurDeb, off = T.offs[spec.bloc] || 0;
++      var from = spec.fromRel || 0, to = spec.toRel != null ? spec.toRel : coreLen;
++      var leadD = spec.lead ? Math.min(b.avant, 1) * barD : 0;
++      var tCore = tJoin + leadD, tEnd = tCore + (to - from) / k;
++      var fileStart = b.coeurDeb + off + from - (leadD + XF) * k, tSrc = tJoin - XF;
++      if (fileStart < 0) { tSrc -= fileStart / k; fileStart = 0; }
++      var src = ctx.createBufferSource(); src.buffer = buf; src.playbackRate.value = k;
++      return poserItem(spec, tJoin, tCore, tEnd, barD, src, tSrc, fileStart, -1, from, to, leadD, k);
++    }
++    function poserItem(spec, tJoin, tCore, tEnd, barD, src, tSrc, fileStart, len, from, to, leadD, k) {
+       var g = ctx.createGain();
+       g.gain.setValueAtTime(0, tSrc);
+       g.gain.linearRampToValueAtTime(1, Math.max(tSrc + 0.001, tJoin));        /* fondu d'entrée de 10 ms, posé sur la barre */
+       g.gain.setValueAtTime(1, tEnd - XF);
+       g.gain.linearRampToValueAtTime(0, tEnd);                                  /* fondu de sortie, posé sur la barre */
+       src.connect(g); g.connect(trackBus);
+-      src.start(tSrc, fileStart, len);
+-      var it = { bloc: spec.bloc, fam: spec.fam, spec: spec, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, src: src, g: g, from: from, to: to, leadD: leadD };
++      if (len >= 0) src.start(tSrc, fileStart, len);
++      else { src.start(tSrc, fileStart); src.stop(tEnd + XF + 0.02); }   /* à la vitesse k : l'arrêt en horloge audio, sans ambiguïté */
++      var it = { bloc: spec.bloc, fam: spec.fam, spec: spec, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, src: src, g: g, from: from, to: to, leadD: leadD, k: k };
+       T.items.push(it); T.last = it; T.tNext = tEnd; T.fam = spec.fam; T.mode = 'on';
+       itemLog.push({ bloc: spec.bloc, fam: spec.fam, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, from: from, to: to, lead: leadD > 0 });
+       T.recent.push(spec.bloc); if (T.recent.length > 12) T.recent.shift();
+@@ -1739,6 +1859,7 @@ if (typeof window !== 'undefined') window.__N = N;
+       if (!P || !T.want) return;
+       var now = ctx.currentTime;
+       gcItems(now);
++      if (VS.reseatAt && now >= VS.reseatAt - 0.6) { var rs = VS.reseatAt; VS.reseatAt = 0; reseat(rs); }   /* le tempo mis en scène : la piste repart sur sa barre */
+       if (M.hold) {                              /* un morceau long tient l'antenne : la piste ne planifie plus rien ; la coupure de mort se lève ci-dessous */
+         if (T.cut && T.resumeReq) { T.resumeReq = false; T.afterDeath = false; musicCut.gain.cancelScheduledValues(0); musicCut.gain.setTargetAtTime(1, now, 0.01); T.cut = false; }
+         return;
+@@ -1837,15 +1958,19 @@ if (typeof window !== 'undefined') window.__N = N;
+         musicCut.gain.cancelScheduledValues(0); musicCut.gain.setTargetAtTime(1, ctx.currentTime, 0.01); T.cut = false;
+       }
+     }
+-    function stinger(nom) {
+-      var tb = barAfter(ctx.currentTime + 0.05), bd = barDurCur, k = 0;
++    function stinger(nom, tbForce, nTr) {
++      var tb = tbForce != null ? tbForce : barAfter(ctx.currentTime + 0.05), bd = barDurCur, k = 0, h = hz;
++      if (tbForce != null) {                                   /* le stinger d'un tempo mis en scène : à la barre tb, au tempo et dans la tonalité d'après */
++        bd = barDurCur * vsK(ctx.currentTime) / vsK(tb);
++        h = function (m) { return 440 * Math.pow(2, (m + nTr - 69) / 12); };
++      }
+       accLog.push({ nom: nom, t: tb });
+       var big = nom === 'vague';
+       /* une mesure : accord de ré (ré, la, ré) sur le premier temps, puis une montée de quatre notes, un temps chacune */
+-      [62, 69, 74].forEach(function (m) { voice(tb, 'sawtooth', hz(m), hz(m), 0, 0.006, bd * 0.28, 0.1, 2200, sfxBus); });
+-      voice(tb, 'triangle', hz(50), hz(38), 0.25, 0.005, 0.4, 0.2, 900, sfxBus);
++      [62, 69, 74].forEach(function (m) { voice(tb, 'sawtooth', h(m), h(m), 0, 0.006, bd * 0.28, 0.1, 2200, sfxBus); });
++      voice(tb, 'triangle', h(50), h(38), 0.25, 0.005, 0.4, 0.2, 900, sfxBus);
+       var deg = big ? [0, 2, 3, 4] : [0, 1, 2, 4];
+-      for (k = 0; k < 4; k++) voice(tb + k * bd / 4, 'triangle', hz(keyNote(74, deg[k])), hz(keyNote(74, deg[k])), 0, 0.004, bd / 4 * 0.9, 0.12, 3000, sfxBus);
++      for (k = 0; k < 4; k++) voice(tb + k * bd / 4, 'triangle', h(keyNote(74, deg[k])), h(keyNote(74, deg[k])), 0, 0.004, bd / 4 * 0.9, 0.12, 3000, sfxBus);
+       sweepNoise(tb, 500, 3000, 0.9, bd * 0.9, 0.08, bd * 0.5);
+     }
+     function dropAccent() {                     /* 250 ms de vide au WARNING, posés sur la barre */
+@@ -1909,6 +2034,8 @@ if (typeof window !== 'undefined') window.__N = N;
+       setPiste: setPiste, setBuffer: setBuffer, dropBuffer: dropBuffer, needs: needs, hasBuffer: function (i) { return !!T.bufs[i]; },
+       /* les morceaux longs */
+       hooks: hooks, tempo: tempoCourant,
++      varier: varier, frein: frein, vsK: vsK,
++      vs: function () { return { n: VS.n, k: VS.k, tb: VS.tb, enCours: vsEnCours(), frein: VS.freinA > ctx.currentTime, journal: VS.log }; },
+       mzSlot: mzSlot, mzEntrer: mzEntrer, mzAnnuler: mzAnnuler, mzRetour: mzRetour, mzFinir: mzFinir, mzPret: mzPret, mzSnap: mzSnap,
+       mzBarre: function (t) { return barAfter(t); },
+       mzTenu: function () { return M.hold; },
+@@ -1958,7 +2085,7 @@ if (typeof window !== 'undefined') window.__N = N;
+         if (it) { var b = P.blocs[it.bloc]; r.mesure = Math.floor(b.mesures[0] + Math.max(0, (now - it.tCore + it.from) / it.barD)); }
+         return r;
+       },
+-      trackState: function () { return { decOff: T.decOff, items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
++      trackState: function () { return { decOff: T.decOff, items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD, k: it.k }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
+       trackRms: function () { return trackTap ? trackTap() : 0; },
+       info: function () {
+         return {
+@@ -2131,7 +2258,10 @@ if (typeof window !== 'undefined') window.__N = N;
+       var el = new Audio(), node = null, sl = null;
+       try { el.preload = 'auto'; el.loop = false; el.setAttribute('playsinline', ''); node = E.ctx.createMediaElementSource(el); sl = E.mzSlot(); node.connect(sl.entree); }
+       catch (e) { Z.slots = []; return false; }
+-      var s = { i: i, el: el, node: node, sl: sl, id: null, url: null, occupe: null, ring: [], off: 0, joue: false, vu: false, fini: false, erreur: null, maxRms: 0, tPlay: 0, depart: 0, pos0: 0 };
++      /* le tempo mis en scène lit le morceau en varispeed « bande » : la hauteur suit la vitesse, comme la piste en blocs */
++      try { el.preservesPitch = false; el.mozPreservesPitch = false; el.webkitPreservesPitch = false; } catch (e5) { /* ignoré */ }
++      var s = { i: i, el: el, node: node, sl: sl, id: null, url: null, occupe: null, ring: [], off: 0, joue: false, vu: false, fini: false, erreur: null, maxRms: 0, tPlay: 0, depart: 0, pos0: 0,
++        k: 1, off0: 0, k0: 1, tAt: 0, fAt: 0, ringAp: true };
+       (function (q) {
+         q.el.addEventListener('ended', function () { q.fini = true; });
+         q.el.addEventListener('error', function () { q.erreur = (q.el.error && q.el.error.message) || 'lecture refusée'; });
+@@ -2243,9 +2373,19 @@ if (typeof window !== 'undefined') window.__N = N;
+     var m = Z.cat[id], now = E.ctx.currentTime, c = Z.cur;
+     var tb = tbImpose != null ? tbImpose : E.mzBarre(now + LEAD_MZ + 0.3);
+     dur = dur || FONDU_MZ;
+-    s.depart = depart; s.off = tb - depart; s.ring.length = 0; s.joue = false; s.vu = false; s.fini = false; s.maxRms = 0;
+-    try { s.el.pause(); s.el.currentTime = Math.max(0, depart - LEAD_MZ + Z.lat); } catch (e) { /* ignoré */ }
+-    var sg = { id: id, bars: m.bars, off: function () { return s.off; } };
++    var k = E.vsK(tb), vs = E.vs();                                     /* le tempo mis en scène à la barre d'entrée (1 hors aventure) */
++    s.depart = depart; s.ring.length = 0; s.joue = false; s.vu = false; s.fini = false; s.maxRms = 0;
++    s.k = k; s.k0 = k; s.tAt = 0; s.fAt = 0; s.ringAp = true;
++    if (k === 1) {
++      s.off = tb - depart;
++      try { s.el.pause(); s.el.playbackRate = 1; s.el.currentTime = Math.max(0, depart - LEAD_MZ + Z.lat); } catch (e) { /* ignoré */ }
++    } else {
++      s.off = tb - depart / k;
++      try { s.el.pause(); s.el.playbackRate = k; s.el.currentTime = Math.max(0, depart - (LEAD_MZ - Z.lat) * k); } catch (e0) { /* ignoré */ }
++    }
++    s.off0 = s.off;
++    if (vs.tb > tb + 1e-3 && vs.k !== k) zVitesseSlot(s, vs.tb, vs.k);  /* un changement attend sa barre, après l'entrée */
++    var sg = { id: id, bars: m.bars, off: function () { return s.off; }, tf: function (f) { return zTf(s, f); }, ft: function (t) { return zFt(s, t); } };
+     s.occupe = 'entrant'; if (c) c.slot.occupe = 'sortant';
+     Z.plan = { type: type, id: id, slot: s, tb: tb, dur: dur, sg: sg, sortant: c ? c.slot : null, joue: false, valide: false, mi: false, depart: depart, t0: now };
+     E.mzEntrer(tb, dur, s.sl, sg, c ? c.slot.sl : null);
+@@ -2310,15 +2450,15 @@ if (typeof window !== 'undefined') window.__N = N;
+       zArmerRetourBrusque(c);
+       return;
+     }
+-    var dur = m.duree, pos = el.currentTime, fin = s.off + dur, bd = 240 / Math.max(60, m.bpm || 120);
++    var dur = m.duree, pos = el.currentTime, fin = zTf(s, dur), bd = 240 / Math.max(60, m.bpm || 120);
+     if (zEnBoucle() && m.boucle && !c.arme) {
+-      var tA = s.off + m.boucle.a;
++      var tA = zTf(s, m.boucle.a);
+       if (tA - now < 1.4 && tA - now > -3) {
+         var sl2 = zSlotAvec(c.id, true);
+         if (!sl2 || sl2 === s) sl2 = zAffecter(c.id);
+         if (!sl2 || !zPret(sl2)) return;
+         c.arme = true;
+-        var tb = E.mzBarre(Math.max(now + LEAD_MZ + 0.3, tA - 0.01)), d = tb - tA;
++        var tb = E.mzBarre(Math.max(now + LEAD_MZ + 0.3, tA - 0.01)), d = zFt(s, tb) - m.boucle.a;   /* d : en secondes du fichier */
+         var ib = m.boucle.ide + Math.round(d / bd);
+         var depart = ib < m.bars.length ? m.bars[ib] : m.boucle.de + d;
+         zArmerEntree(c.id, sl2, 'boucle', depart, tb, FONDU_MZ);
+@@ -2327,7 +2467,7 @@ if (typeof window !== 'undefined') window.__N = N;
+       return;
+     }
+     if (!zEnBoucle() && !c.arme && isFinite(dur) && dur > 0) {
+-      var tbC = E.mzBarre(fin - FONDU_MZ - bd);
++      var tbC = E.mzBarre(fin - FONDU_MZ - bd / s.k);
+       if (tbC - now < 1.2) {
+         c.arme = true; Z.rang++;
+         var suiv = zSouhait();
+@@ -2377,12 +2517,35 @@ if (typeof window !== 'undefined') window.__N = N;
+       if (pr && pr.then) pr.then(noop, function (err) { s.erreur = 'reprise refusée : ' + (err && err.name || err); });
+     });
+   }
++  /* la carte d'un emplacement : horloge du fichier f -> horloge audio, et l'inverse. k = 1 (hors aventure) : t = off + f. */
++  function zTf(s, f) { return (s.tAt && f < s.fAt) ? s.off0 + f / s.k0 : (s.k === 1 ? s.off + f : s.off + f / s.k); }
++  function zFt(s, t) { return (s.tAt && t < s.tAt) ? (t - s.off0) * s.k0 : (s.k === 1 ? t - s.off : (t - s.off) * s.k); }
++  /* le tempo mis en scène change la vitesse des morceaux qui jouent, sur la barre tb (appelé par le moteur) */
++  function zVitesseSlot(s, tb, k) {
++    if (k === s.k) return;
++    s.k0 = s.k; s.off0 = s.off; s.fAt = (tb - s.off) * s.k; s.tAt = tb; s.k = k; s.off = tb - s.fAt / k; s.ringAp = false; s.ring.length = 0;
++  }
++  function zVitesse(tb, k) { Z.slots.forEach(function (s) { if (s.id) zVitesseSlot(s, tb, k); }); }
+   function zSync(s, now) {                                              /* horloge audio - horloge du fichier, médiane des 21 derniers relevés */
+     var el = s.el;
+     if (!s.joue || el.paused || el.ended || el.readyState < 2) return;
+     var ct = el.currentTime;
+     if (!s.vu) { if (!(ct > (s.pos0 || 0) + 0.012)) return; s.vu = true; if (s.tPlay) Z.lat = clamp(0.6 * Z.lat + 0.4 * (now - s.tPlay), 0.04, 0.5); }
+-    var smp = now - ct, r = s.ring;
++    var r = s.ring;
++    if (s.tAt) {                                                        /* un tempo mis en scène : avant sa barre, l'ancienne carte ; après, la nouvelle */
++      var ap = now >= s.tAt - 0.02;
++      if (ap && s.el.playbackRate !== s.k) { try { s.el.playbackRate = s.k; } catch (e) { /* ignoré */ } }
++      if (ap !== s.ringAp) { r.length = 0; s.ringAp = ap; }
++      if (!ap) {
++        var smp0 = now - ct / s.k0;
++        r.push(smp0); if (r.length > 21) r.shift();
++        var a0 = r.slice().sort(zNum); s.off0 = a0[a0.length >> 1];
++        s.fAt = (s.tAt - s.off0) * s.k0; s.off = s.tAt - s.fAt / s.k;    /* la nouvelle carte reste continue sur la barre */
++        if (s.sl.sonde) { var v0 = s.sl.sonde(); if (v0 > s.maxRms) s.maxRms = v0; }
++        return;
++      }
++    }
++    var smp = s.k === 1 ? now - ct : now - ct / s.k;
+     if (r.length && Math.abs(smp - s.off) > 0.35 && r.length > 3) r.length = 0;        /* un saut (déplacement, calage) : on repart */
+     r.push(smp); if (r.length > 21) r.shift();
+     var a = r.slice().sort(zNum); s.off = a[a.length >> 1];
+@@ -2443,6 +2606,7 @@ if (typeof window !== 'undefined') window.__N = N;
+     if (cs.cut && now - cs.at > 2.2) E.resumeAfterCut();   /* personne n'a redemandé de section : la musique reprend seule */
+     if (!E.isRunning()) return;
+     zSafe(function () { zTick(now); });
++    zSafe(tsPompe);
+     if (wantMute) { needResync = true; return; }
+     if (E.cursor() < now - 0.25) needResync = true;
+     if (needResync) { needResync = false; if (E.cursor() < now + 0.06) E.resync(now + 0.06); }
+@@ -2461,6 +2625,7 @@ if (typeof window !== 'undefined') window.__N = N;
+       Z.sec = nom; if (nom !== 'jeu' && nom !== 'alerte' && nom !== 'boss' && nom !== 'repit') Z.vague = 0;
+       zSafe(zEval);
+     };
++    E.hooks.vitesse = function (tb, k) { zSafe(function () { zVitesse(tb, k); }); };   /* le tempo mis en scène : la vitesse des morceaux */
+     zSafe(zSlots);                                           /* dans le geste : les trois emplacements de lecture sont débloqués ici */
+     if (wantMute || sleeping) E.gate(0, 0);
+     if (chanMute.musique) E.channel('musique', true);
+@@ -2477,11 +2642,57 @@ if (typeof window !== 'undefined') window.__N = N;
+   /* le numéro de vague arrive par le bus (émetteur : 76-directeur). Inscrit au chargement : N.ev existe (03-socle), la vérification du
+      contrat n'est pas encore active ; le contrat (EVT.vague.conso de 03-socle.js) devrait lister [60, '30-music']. */
+   function zVague(c) {
++    tsEv('vague', c);
+     if (!c || c.evt !== 'entree') return;
+     Z.vague = c.n | 0; Z.boss = false;                       /* une vague commence : le combat contre le CYCLOPE est fini */
+     if (E) zSafe(zEval);
+   }
+-  if (typeof N.ev === 'object' && N.ev && typeof N.ev.on === 'function') { try { N.ev.on('vague', 60, zVague, '30-music'); } catch (e) { /* le bus est absent : sans lui, la piste en blocs seule */ } }
++
++  /* ================================ LE TEMPO MIS EN SCÈNE : ce que la partie demande ================================
++     EN AVENTURE SEULEMENT (N.aventure.enCours()) : hors aventure, n reste 0, la musique et la grille de jeu sont celles
++     d'avant, octet pour octet. Le tempo voulu, en demi-tons de varispeed (N.R.musique.tempoScene) :
++       INVERSION ou RALENTI en cours        demi-temps (−12 : k = 0,5), annoncé par une coupure sur la barre ;
++       CYCLOPE arrivé                       coup de frein sur une barre, puis reprise plus rapide (+2 : k = 1,12) ;
++       pic de la vague (l'élite arrive)     accélération (+1 : k = 1,06), annoncée par une mesure de montée ;
++       sinon                                le tempo du morceau (0).
++     Le retour d'un demi-temps est annoncé par un stinger ; la fin d'une vague (« nettoyée ») ramène le tempo sur une barre,
++     après le stinger de 79-scene. Un seul changement à la fois : le suivant attend que le précédent soit posé. */
++  var TS = { pic: false, inv: false, ral: false, boss: false, frein: false };
++  function enAventure() { return !!(N.aventure && N.aventure.enCours && N.aventure.enCours()); }
++  function tsCfg() { return (N.R && N.R.musique && N.R.musique.tempoScene) || { montee: 1, demi: -12, cyclope: 2 }; }
++  function tsRaz() { TS.pic = TS.inv = TS.ral = TS.boss = TS.frein = false; }
++  function tsEv(nom, c) {
++    if (!c) return;
++    if (nom === 'vague') { if (c.evt === 'entree') { TS.pic = false; TS.boss = false; TS.frein = false; } else if (c.evt === 'pic') TS.pic = true; else if (c.evt === 'nettoyee' || c.evt === 'soupape') TS.pic = false; }
++    else if (nom === 'inversion') { if (c.evt === 'debut') TS.inv = true; else if (c.evt === 'fin') TS.inv = false; }
++    else if (nom === 'pouvoir') { if (c.id === 'ralenti' && c.evt === 'debut') TS.ral = true; else if (c.id === 'ralenti' && c.evt === 'fin') TS.ral = false; }
++    else if (nom === 'phase') { if (c.evt === 'arrivee') { TS.boss = true; TS.frein = true; } else if (c.evt === 'mort') { TS.boss = false; TS.frein = false; } }
++  }
++  function tsVoulu() {
++    var c = tsCfg();
++    if (TS.inv || TS.ral) return c.demi;
++    if (TS.boss) return c.cyclope;
++    if (TS.pic) return c.montee;
++    return 0;
++  }
++  function tsPompe() {
++    if (!E || !E.isRunning() || sleeping) return;
++    var av = enAventure(), sec = Z.sec;
++    if (!av || (sec && sec !== 'jeu' && sec !== 'alerte' && sec !== 'boss' && sec !== 'repit')) tsRaz();
++    var v = E.vs();
++    if (v.enCours || E.cutState().cut) return;                 /* un changement attend sa barre, ou la musique est coupée (mort) */
++    var n = av ? tsVoulu() : 0;
++    if (TS.frein) { TS.frein = false; if (n > v.n && E.frein(n)) return; }
++    if (n === v.n) return;
++    var demi = tsCfg().demi;
++    E.varier(n, n === demi ? 'coupure' : v.n === demi ? 'stinger' : n > v.n ? 'montee' : 'sans');
++  }
++  if (typeof N.ev === 'object' && N.ev && typeof N.ev.on === 'function') {
++    try {
++      N.ev.on('vague', 60, zVague, '30-music');
++      ['inversion', 'pouvoir', 'phase'].forEach(function (nom) { N.ev.on(nom, 60, function (c) { tsEv(nom, c); }, '30-music'); });
++    } catch (e) { /* le bus est absent : sans lui, la piste en blocs seule */ }
++  }
+ 
+   N.music = {
+     init: init,
+@@ -2593,13 +2804,25 @@ if (typeof window !== 'undefined') window.__N = N;
+       return { id: c.id, t: +t.toFixed(3), duree: Z.cat[c.id] ? Z.cat[c.id].duree : 0 };
+     },
+     tempo: function () { return E ? E.tempo() : bpmPiste(); },     /* le BPM de ce qui joue : le tempo local du morceau long, sinon celui de la piste */
++    /* LA GRILLE DE JEU (directeur, décor, VOL, onde) : en aventure, le tempo de ce qui joue (tempo mis en scène compris) ;
++       hors aventure, la constante passée par l'appelant (N.R.temps.bpm) : les parties directes ne changent pas. */
++    tempoJeu: function (defaut) {
++      if (!enAventure()) return defaut;
++      var b = +N.music.tempo();
++      return (b > 30 && b < 400) ? b : defaut;
++    },
++    tempoScene: function () {                                /* diagnostic : le tempo mis en scène (voulu, posé, journal des changements) */
++      var v = E ? E.vs() : { n: 0, k: 1, tb: -1, enCours: false, frein: false, journal: [] };
++      return { aventure: enAventure(), voulu: enAventure() ? tsVoulu() : 0, n: v.n, k: v.k, tb: v.tb, enCours: v.enCours, frein: v.frein,
++        drapeaux: { pic: TS.pic, inversion: TS.inv, ralenti: TS.ral, cyclope: TS.boss }, journal: v.journal.slice(), bpm: N.music.tempo() };
++    },
+     morceaux: function () {                                  /* diagnostic : catalogue, emplacements, programme, échecs */
+       return {
+         etat: Z.etat, erreur: Z.erreur, ids: Object.keys(Z.cat), vague: Z.vague, section: Z.sec, cle: Z.cle, rang: Z.rang, ko: Z.ko, stats: Z.stats,
+         latence: +Z.lat.toFixed(3), enPause: Z.enPause || false, charge: Z.charge,
+         historique: Z.hist, boss: Z.boss,
+         plan: Z.plan ? { type: Z.plan.type, id: Z.plan.id, tb: Z.plan.tb, joue: Z.plan.joue, valide: Z.plan.valide } : null,
+-        emplacements: Z.slots.map(function (s) { return { i: s.i, id: s.id, occupe: s.occupe, pret: zPret(s), joue: s.joue, vu: s.vu, t: +s.el.currentTime.toFixed(2), off: +s.off.toFixed(3), maxRms: +s.maxRms.toFixed(5), erreur: s.erreur }; }),
++        emplacements: Z.slots.map(function (s) { return { i: s.i, id: s.id, occupe: s.occupe, pret: zPret(s), joue: s.joue, vu: s.vu, t: +s.el.currentTime.toFixed(2), off: +s.off.toFixed(3), maxRms: +s.maxRms.toFixed(5), erreur: s.erreur, k: s.k, vitesse: s.el.playbackRate }; }),
+         grille: E ? E.mzGrille() : []
+       };
+     },
+diff --git a/proto-neon/src/74-arsenal.js b/proto-neon/src/74-arsenal.js
+index 2abb5c1..46b7490 100644
+--- a/proto-neon/src/74-arsenal.js
++++ b/proto-neon/src/74-arsenal.js
+@@ -454,7 +454,8 @@ N.arsenal = (function () {
+       for (var ai = 0; ai < aura.length; ai++) if (actif(aura[ai])) E.hit(aura[ai], p.auraDps * dt * mul(), source('onde'));
+     }
+     if (ondeT > 0 || !E) return;
+-    ondeT += cf.mesures * R.temps.dureeMesure / cad();
++    var bpmJ = N.music && N.music.tempoJeu ? N.music.tempoJeu(0) : 0;     /* en aventure, la mesure du tempo qui joue (chantier n° 1) */
++    ondeT += cf.mesures * (bpmJ > 0 ? 240 / bpmJ : R.temps.dureeMesure) / cad();
+     anneauOnde(P, p);
+     var L = E.pres(P.x, P.y, p.rayon), A = O.A, marge = R.armes.controle.margeMur;
+     for (var i = 0; i < L.length; i++) {
+diff --git a/proto-neon/src/76-directeur.js b/proto-neon/src/76-directeur.js
+index 184941e..3655783 100644
+--- a/proto-neon/src/76-directeur.js
++++ b/proto-neon/src/76-directeur.js
+@@ -10,7 +10,8 @@
+    avec 24 px de marge, à 70 px au moins de la tête, à 16 px au moins à l'intérieur des murs courants (donc devant le mur arrière
+    pendant un TRAVELLING). Faute de point valide, la formation attend. Tout passe par un portail de 600 ms ; les deux seules
+    exceptions annoncées par leur propre marqueur de 1,5 s sont le DUO et le CHAMP DE MINES (sur la trajectoire anticipée). Les
+-   formations tombent sur la grille des temps de jeu (144,6 BPM) : au plus tard au temps suivant.
++   formations tombent sur la grille des temps de jeu (144,6 BPM ; en aventure, le tempo de ce qui joue, N.music.tempoJeu) : au plus
++   tard au temps suivant.
+ 
+    ÉMET `vague` (seul émetteur) : { n, etape: 'vague', evt: 'entree'|'pic'|'nettoyee'|'soupape', nom, quartier } et `portail`
+    (élites, traqueur). C'est 79-jeu.js (rang 10) qui en déduit NETTOYAGE, CARTES, VOL ; ce module ne change jamais d'état de jeu.
+@@ -63,7 +64,7 @@ N.dir = (function () {
+     VAGUES = null;
+     st.n = 0; st.tw = 0; st.phase = 'attente'; st.entrees = 0; st.fini = false; st.nettoye = false; st.bossMort = false;
+     st.queue.length = 0; st.spawned = 0; st.freeCd = 2; st.pic = null; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99;
+-    st.prochainGroupe = 0; st.melangeT = 0; st.lastBeat = -1; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
++    st.prochainGroupe = 0; st.melangeT = 0; st.lastBeat = -1; st.phaseTemps = 0; st.turn = 0; st.angPrec = null; st.vus = {}; st.alive = 0; st.elroy = false; st.premiere = true;
+     repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
+     st.secteur = secteur | 0; st.tuto = !(opts && opts.sansTuto);
+     stats.spawns.length = 0; stats.inView = 0; stats.minDistSpawn = 1e9; stats.parVague.length = 0; stats.maxAlive = 0; stats.minDistTele = 1e9;
+@@ -355,8 +356,12 @@ N.dir = (function () {
+     if (c.regular > stats.maxAlive) stats.maxAlive = c.regular;
+     var picEnAttente = w.pic && !st.picFait && st.tw >= w.pic.t;
+     var chassePause = repos.demande || picEnAttente || (N.ennemis.inversion && N.ennemis.inversion() > 0);
+-    /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard) */
+-    var b = Math.floor(O.T.t / secteur().grilleTemps); st.beat = b !== st.lastBeat; st.lastBeat = b;
++    /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard). En aventure, les
++       temps suivent le tempo de ce qui joue (N.music.tempoJeu, chantier n° 1) : on cumule la phase, le tempo pouvant changer. */
++    var b, bpmJ = N.music && N.music.tempoJeu ? N.music.tempoJeu(0) : 0;
++    if (bpmJ > 0) { st.phaseTemps = (st.phaseTemps || 0) + dt * bpmJ / 60; b = Math.floor(st.phaseTemps); }
++    else b = Math.floor(O.T.t / secteur().grilleTemps);
++    st.beat = b !== st.lastBeat; st.lastBeat = b;
+     /* le virage de plus de 45° du premier ennemi de la première partie */
+     if (st.gate > 0 && P) {
+       if (st.angPrec !== null) st.turn += Math.abs(O.wrapA(P.ang - st.angPrec));
+diff --git a/proto-neon/tools/H/morceaux.mjs b/proto-neon/tools/H/morceaux.mjs
+index f8ae2c8..25140b2 100644
+--- a/proto-neon/tools/H/morceaux.mjs
++++ b/proto-neon/tools/H/morceaux.mjs
+@@ -173,8 +173,14 @@ async function scenario(nom, prof) {
+   s = await ts(p);
+   dit(s.m && s.m.id === 'voix-duo', 'section boss : voix-duo continue sans repartir (t = ' + (s.m && s.m.t.toFixed(1)) + ' s)');
+   if (s.m && s.m.t > 0) await avance(p, 'voix-duo', 'CYCLOPE');
++  /* chantier n° 1 (le tempo mis en scène) : en aventure, l'arrivée du CYCLOPE freine sur une barre puis reprend plus vite (k > 1) ;
++     le tempo publié est celui du morceau multiplié par k, une fois le coup de frein passé */
++  const scene = () => p.evaluate(() => { const M = window.__N.music; return M.tempoScene ? M.tempoScene() : { k: 1, frein: false, n: 0 }; });
++  let sc = await scene();
++  for (let i = 0; i < 40 && (sc.frein || sc.enCours); i++) { await sleep(150); sc = await scene(); }
+   s = await ts(p);
+-  dit(s.tempo > 126 && s.tempo < 131, 'CYCLOPE : tempo publié ' + s.tempo + ' BPM (mesuré ' + fiche('voix-duo').bpm + ')');
++  const tk = +(s.tempo / sc.k).toFixed(2);
++  dit(tk > 126 && tk < 131, 'CYCLOPE : tempo publié ' + s.tempo + ' BPM, soit ' + tk + ' BPM à vitesse 1 (tempo mis en scène n = ' + sc.n + ', k = ' + (+sc.k.toFixed(4)) + ' ; mesuré ' + fiche('voix-duo').bpm + ')');
+   await attendre(p, s => s.dg.emplacements.some(e => e.id === 'electro-titan' && e.pret), 15000);
+   await p.evaluate(d => window.__N.music.morceauSaut(d - 9), fiche('voix-duo').duree);
+   s = await attendre(p, s => s.m && s.m.id === 'electro-titan', 20000);
