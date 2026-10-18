@@ -2,7 +2,7 @@
 from pathlib import Path
 import difflib, json, hashlib
 root=Path(__file__).resolve().parents[2]
-a=Path('/tmp/snake-codex10-79-avant.js').read_text(); b=a
+a=(root/'src/79-jeu.js').read_text(); b=a
 changes=[
 ("if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);", "if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' && N.defile ? { rareGarantie: N.defile.prendreRare() } : undefined);"),
 ("N.butin.reset(); N.ennemis.reset(); N.arsenal.reset(); N.score.reset(); N.dir.reset(0, {}); N.hud.reset();", "N.butin.reset(); N.ennemis.reset(); N.arsenal.reset(); N.score.reset(); N.dir.reset(0, {}); N.hud.reset();\n    if (N.defile) N.defile.reset();"),
@@ -20,5 +20,5 @@ p.write_text(''.join(difflib.unified_diff(a.splitlines(keepends=True),b.splitlin
 h=(root/'index.html').read_text(); start='/* ===== 79-jeu.js ===== */\n';end='/* ===== 79-scene.js ===== */'
 i=h.index(start)+len(start);j=h.index(end,i);h=h[:i]+b+'\n'+h[j:]
 Path('/tmp/snake-codex10-apres.html').write_text(h)
-p.with_name('raccord-manifest.json').write_text(json.dumps({'fichierSource':'src/79-jeu.js','sourceAvantSha256':hashlib.sha256(a.encode()).hexdigest(),'sourceApresSha256':hashlib.sha256(b.encode()).hexdigest(),'bundleCandidatSha256':hashlib.sha256(h.encode()).hexdigest(),'sourcePartageeModifiee':False,'limite':'patch candidat sur la base avant intégration09 ; Claude applique et requalifie après09'},ensure_ascii=False,indent=2)+'\n')
+p.with_name('raccord-manifest.json').write_text(json.dumps({'fichierSource':'src/79-jeu.js','sourceAvantSha256':hashlib.sha256(a.encode()).hexdigest(),'sourceApresSha256':hashlib.sha256(b.encode()).hexdigest(),'bundleCandidatSha256':hashlib.sha256(h.encode()).hexdigest(),'sourcePartageeModifiee':False,'limite':'patch préparé après intégration09 sur7a1abc9 ; aucune écriture du79partagé, toujours réservé àune autre session'},ensure_ascii=False,indent=2)+'\n')
 print('patch généré ; src/79-jeu.js intact')
