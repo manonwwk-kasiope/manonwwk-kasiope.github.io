@@ -617,3 +617,20 @@ Livré : TIQUE, VOLEUR, MIROIR, BROUILLEUR (`72-ennemis.js`, `72-serpents.js`, e
 demande du cloud ne laissait que leur entrée dans les vagues ; codex-p27 a refait les quatre ennemis dans `72-ennemis.js`. Ils ne sont pas
 intégrés. codex-p27b garde la version du cloud (`72-serpents.js`) comme base, y reporte les apports mesurés de p27 et prépare l'entrée dans
 la partie. Claude cloud : merci de ne plus toucher `72-serpents.js` pendant p27b.
+
+## codex-p22 — sans le son, cyan réservé (R-27, R-03)
+
+18/10/2026 · 04 h 05 (Paris), mis à jour à 04 h 05. 80 paires vérifiées ; qualification navigateur à vérifier hors bac. Statut et chiffres dans tools/codex-p22/rapport.md. Aucun seuil modifié.
+
+| mission | fichier | besoin / changement | raison |
+|---|---|---|---|
+| codex-p22 | `02-regles.js`, ajout seul `arene.signaux = {hz:1,marge:7,pasY:20,pasX:6,colonnes:4}` | accent à 1 pas/s, marge 7 px, lignes espacées de 20 px, colonnes de 6 px, quatre chevrons persistants | remplacer l'apparition/disparition rapide par un signe permanent, rabattu dans la vue quand le mur arrière est hors champ ; conserver les dimensions déjà présentes dans le dessin, ralentir son accent, sans changer annonce, délai ou déplacement |
+| codex-p22 | `73-arene.js` | retirer le clignotement d'extinction du chevron convoi ; sillage ambre/jaune ; publier l'interface `battement(actif)` | maintenir l'information visuelle sans le son, réserver le cyan à la joueuse ; garder 73-arene seul émetteur des événements d'arène |
+| codex-p22 | `17-vol.js` | réaffecter cyan/cyan pâle du fond à indigo/ardoise AVANT le dessin de la joueuse ; marquer le fond comme décor | fermer les deux entrées du décor (poursuite/destination) à une fuite de cyan ; palette existante, aucun pixel de joueuse recoloré, aucun propriétaire inventé d'après sa couleur ; test par mutation volontaire du producteur |
+| codex-p22 | `79-scene.js`, `tools/codex-p22/raccord-79-scene.patch` | appliquer le raccord de journal : à l'entrée et à chaque cycle de la vignette, appeler `N.arene.battement(true)` ; à la sortie, `false` | le son `music.danger` et les bords existent déjà dans ce module réservé ; même déclencheur et même phase, sans ajouter de nouveau danger ni modifier le son ; le fichier réservé n'a pas été modifié |
+| codex-p22 | `03-socle.js`, `tools/codex-p22/raccord-03-socle.patch` | ajouter les valeurs `battement` et `battementFin` à l'enum `CH.arene.evt` | accepter les vraies entrées de journal sans erreur de schéma ; appliquer ce raccord avec celui de la scène |
+| codex-p22 | `tools/mesure/criteres/R-27-sans-le-son.mjs` | reconnaître annonce ET départ du travelling ; reconnaître `vol.debut` pour le souffle de VOL ; compléter l'absence de convoi naturel par un vrai cas construit ; mesurer les pixels et le journal du battement | ne pas confondre début de l'annonce, départ effectif et souffle du VOL ; une absence ou un journal sans dessin ne vaut jamais réussite ; seuil 1 et tolérance 0,1 s inchangés |
+| codex-p22 | `tools/mesure/criteres/R-03-cyan-reserve.mjs` | armer le masque avant la première scène, examiner trois profils et les deux balayages du VOL | régler le cas calme par l'interface de propriété et observer le rendu complet ; seuil strict 0,005 inchangé |
+| codex-p22 | hors bac | après raccords et build : `cd proto-neon && node tools/codex-p22/verifier.mjs --criteres` ; renvoyer `tools/codex-p22/navigateur/resultats.json` | serveur HTTP et Chromium impossibles ici : aucune tentative. Script complet, un Chromium muet, profils successifs paysage/portrait/bureau, captures des vrais tampons, journaux et R-27/R-03 avant/après |
+
+Les raccords sont essayés ensemble en mémoire par `raccords.mjs`, sans écrire les modules réservés. La référence e1bdc6f valide seulement l'instrument ; les 80 parties appariées se comparent sur l'état reçu. La batterie navigateur historique n'est pas présentée comme une mesure VM actuelle. Les sources avant, les échecs du banc et les reçus sont conservés dans le dossier de mission.

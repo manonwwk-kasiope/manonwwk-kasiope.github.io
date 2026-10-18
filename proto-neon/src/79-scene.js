@@ -32,7 +32,7 @@ N.scene = (function () {
   var DISSOLUTION = 0.73;                       // → N.R : durée de la désintégration en temps de jeu, celle de 79-jeu.js (CFG.mort.dissolution)
   var TAU = Math.PI * 2;
 
-  var T = 0, hsCd = 0, banFin = -99, banDeb = -99, voixFin = -99, voixPrio = -1, portailCd = 0, armeCd = 0, dangerT = 0;
+  var T = 0, hsCd = 0, banFin = -99, banDeb = -99, voixFin = -99, voixPrio = -1, portailCd = 0, armeCd = 0, dangerT = 0, dangerCycle = -1;
   var mt = -1, mortN = 0, mortLen = 0, mortP = new Float32Array(128), mortHX = 0, mortHY = 0, mortGO = false, mortTete = false;
   /* ce que la scène a produit, pour les tests (« chaque effet attendu au § 5.3 exactement une fois ») */
   var ST = { booms: 0, gels: 0, ondes: 0, bannieres: 0, voix: 0, poussees: 0, sons: {} };
@@ -275,6 +275,10 @@ N.scene = (function () {
   }
 
   /* ============================ la mise à jour : danger proche, minuteries ============================ */
+  // Le journal suit le même état et la même phase que la vignette et music.danger.
+  function journalDanger(evt) {
+    if (N.arene && N.arene.battement) N.arene.battement(evt === 'battement');
+  }
   function update(dt) {
     if (!(dt >= 0)) dt = 0;
     T += dt;
@@ -288,20 +292,22 @@ N.scene = (function () {
     }
     /* danger proche : les bords battent à 1,2 Hz près d'un mur ; le battement de la musique suit */
     var J = N.joueuse, P = J && J.tete;
-    if (!P || J.etat !== 'vivant') { if (dangerT > 0) { dangerT = 0; if (N.music && N.music.danger) N.music.danger(0); } return; }
+    if (!P || J.etat !== 'vivant') { if (dangerT > 0) { dangerT = 0; dangerCycle = -1; journalDanger('battementFin'); if (N.music && N.music.danger) N.music.danger(0); } return; }
     var m = J.distMur ? J.distMur(P.x, P.y) : null, al = (R.monde && R.monde.mur && R.monde.mur.alerte) || 24;
     var k = m && m.d < al ? 1 - Math.max(0, m.d) / al : 0;
     if (k > 0.05) {
       dangerT += dt;
       var hz = (RS.danger && RS.danger.bordsHz) || 1.2, pulse = 0.55 + 0.45 * Math.sin(TAU * hz * dangerT);
+      var cycle = Math.floor(dangerT * hz);
+      if (cycle !== dangerCycle) { dangerCycle = cycle; journalDanger('battement'); }
       var ang = m.pan === 'g' ? Math.PI : m.pan === 'd' ? 0 : m.pan === 'h' ? -Math.PI / 2 : Math.PI / 2;
       if (N.fx && N.fx.vignette) N.fx.vignette(ang, 0.55 * k * pulse);
       if (N.music && N.music.danger) N.music.danger(k);
-    } else if (dangerT > 0) { dangerT = 0; if (N.music && N.music.danger) N.music.danger(0); }
+    } else if (dangerT > 0) { dangerT = 0; dangerCycle = -1; journalDanger('battementFin'); if (N.music && N.music.danger) N.music.danger(0); }
   }
 
   function reset() {
-    T = 0; hsCd = 0; banFin = -99; banDeb = -99; voixFin = -99; voixPrio = -1; portailCd = 0; armeCd = 0; dangerT = 0; mt = -1; mortN = 0; mortLen = 0;
+    T = 0; hsCd = 0; banFin = -99; banDeb = -99; voixFin = -99; voixPrio = -1; portailCd = 0; armeCd = 0; dangerT = 0; dangerCycle = -1; mt = -1; mortN = 0; mortLen = 0;
     ST.booms = 0; ST.gels = 0; ST.ondes = 0; ST.bannieres = 0; ST.voix = 0; ST.poussees = 0; ST.sons = {};
     onVague.coupes0 = 0;
   }

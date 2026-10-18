@@ -1,0 +1,171 @@
+{
+ "id": "R-27",
+ "titre": "Jouable sans le son",
+ "seuil": "chaque signal sonore utile a son signe visuel",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "17 ok, 3 en échec, 0 indicatives hors cible, 3 non mesurables",
+ "mesures": [
+  {
+   "nom": "arme → télégraphe (journal tele ou armement)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "sons": 2332
+  },
+  {
+   "nom": "portail → chevron (journal portail, dessiné par 78-hud)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "sons": 92
+  },
+  {
+   "nom": "traqueur → bannière",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "sons": 50
+  },
+  {
+   "nom": "convoi → voie hachurée (journal arene convoiAnnonce)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "sons": 222
+  },
+  {
+   "nom": "travelling → chevrons du mur arrière ou vue de VOL (journal annonce/départ)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "sons": 191
+  },
+  {
+   "nom": "paysage convoi signe et journal",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "pixels": 2430,
+   "traces": 1
+  },
+  {
+   "nom": "paysage convoi erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "paysage travelling signe et journal",
+   "valeur": 0,
+   "seuil": 1,
+   "statut": "echec",
+   "pixels": 0,
+   "traces": 1
+  },
+  {
+   "nom": "paysage travelling erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "paysage battement journal",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : aucun événement arene battement"
+  },
+  {
+   "nom": "paysage battement erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "portrait convoi signe et journal",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "pixels": 1132,
+   "traces": 1
+  },
+  {
+   "nom": "portrait convoi erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "portrait travelling signe et journal",
+   "valeur": 0,
+   "seuil": 1,
+   "statut": "echec",
+   "pixels": 0,
+   "traces": 1
+  },
+  {
+   "nom": "portrait travelling erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "portrait battement journal",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : aucun événement arene battement"
+  },
+  {
+   "nom": "portrait battement erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "bureau convoi signe et journal",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "pixels": 2072,
+   "traces": 1
+  },
+  {
+   "nom": "bureau convoi erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "bureau travelling signe et journal",
+   "valeur": 0,
+   "seuil": 1,
+   "statut": "echec",
+   "pixels": 0,
+   "traces": 1
+  },
+  {
+   "nom": "bureau travelling erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "bureau battement journal",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : aucun événement arene battement"
+  },
+  {
+   "nom": "bureau battement erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 69.3,
+ "bundle": {
+  "url": "http://127.0.0.1:59559/avant/index.html",
+  "empreinte": "78944398392e3cb495fa9141a926c7f2fce3ebd864882ade735efefd8ffdf66c"
+ },
+ "date": "2026-10-18T02:43:35.112Z",
+ "dateParis": "18/10/2026 · 04 h 43"
+}

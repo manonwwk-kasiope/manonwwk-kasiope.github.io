@@ -1146,6 +1146,8 @@
   };
   /* codex-p23 : contre-jour froid du lointain, Bayer fixe ; le sol garde les plafonds 01b. */
   R.decorContrejour = { rangs: 4, rangsPortrait: 8, encre: 'acier' };
+  /* codex-p22 : chevrons persistants, accent lent ; aucun seuil de mesure changé. */
+  R.arene.signaux = { hz: 1, marge: 7, pasY: 20, pasX: 6, colonnes: 4 };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {

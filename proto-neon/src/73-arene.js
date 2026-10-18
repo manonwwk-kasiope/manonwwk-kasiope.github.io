@@ -38,7 +38,8 @@
      convois(cfg) : { voie: 0..4, sens: ±1 } lance un convoi tout de suite avec son annonce ; { t, periode, alea } programme
         la suite (chronomètre de vague). -> true si lancé.
 
-   ÉMET (seul émetteur) `arene` { evt: travellingAnnonce | travelling | convoiAnnonce | convoiPasse | fin, voie, vx }
+   battement(actif) : publie le signe de danger déclenché par 79-scene (un événement par cycle visuel).
+   ÉMET (seul émetteur) `arene` { evt: travellingAnnonce | travelling | convoiAnnonce | convoiPasse | fin | battement | battementFin, voie, vx }
    (voie 0..4 pour un convoi, −1 pour le plateau ; vx signé) et `arme` { id, type:'convoi', forme:'voie', total:1.5,
    cible:'tout', shown:true, rallonge:false } à l'annonce d'un convoi.
    CONSOMME : aucun événement. Il est appelé par 76-directeur (entree, pic, nettoyee) et par 79-jeu (reset, update).
@@ -93,6 +94,7 @@ N.arene = (function () {
   function vivante() { var J = N.joueuse, e = J && J.etat; return e === 'vivant' || e === 'reapparition'; }
   function qsegs() { if (QN !== frame) { QS = N.joueuse.segs(); QN = frame; } return QS; }
   function emitArene(evt, voie, vx) { if (N.ev) N.ev.emit('arene', { evt: evt, voie: voie | 0, vx: +vx || 0 }); }
+  function battement(actif) { emitArene(actif ? 'battement' : 'battementFin', -1, 0); }
   function vitesseVague(n) { return (CFG.vitesses && CFG.vitesses[n]) || 12; }
 
   /* ============================ le TRAVELLING ============================ */
@@ -479,7 +481,7 @@ N.arene = (function () {
     } else G.ditherRect(x0, y0, x1 - x0, hh, O.MAGENTA, CFG.hachure * 0.5);        // la voie reste marquée pendant le passage
   }
   function chevronBord() {
-    if (!((Math.floor(O.T.ak * 6) & 1) === 0 || CV.t > CFG.annonceConvoi - 0.35)) return;
+    // Le signe reste visible même sans son et lorsque les animations sont réduites.
     var A = O.A, V = O.VUE, s = CV.sens, y = CV.cy, vert = 0, bx;
     bx = s > 0 ? Math.max(A.x0, V.x) + 7 : Math.min(A.x1, V.x + V.w) - 7;
     bx += s * ((Math.floor(O.T.ak * 8) & 3) * 2);
@@ -496,7 +498,7 @@ N.arene = (function () {
     G.ditherRect(s > 0 ? fr : fr - 36, CV.cy - 6, 36, 12, O.ROSE, 0.22);
     G.ditherRect(s > 0 ? fr : fr - 18, CV.cy - 3, 18, 6, O.ROSE, 0.3);
     var D = CFG.sillageDistance, seg = D / 5, j;
-    for (j = 0; j < 5; j++) G.ditherRect(s > 0 ? rear - (j + 1) * seg : rear + j * seg, CV.cy - 9, seg, 18, inWake ? O.CYANP : O.CYAN, (inWake ? 0.4 : 0.26) * (1 - j / 5));
+    for (j = 0; j < 5; j++) G.ditherRect(s > 0 ? rear - (j + 1) * seg : rear + j * seg, CV.cy - 9, seg, 18, inWake ? O.JAUNE : O.AMBRE, (inWake ? 0.4 : 0.26) * (1 - j / 5));
     for (k = 0; k < CFG.wagons; k++) {
       cx = s > 0 ? CV.xf - w / 2 - k * (w + gap) : CV.xf + w / 2 + k * (w + gap);
       if (cx < V.x - w || cx > V.x + V.w + w) continue;
@@ -506,12 +508,13 @@ N.arene = (function () {
   function drawTrav() {
     var G = N.gfx, A = O.A, V = O.VUE, mur = murArriere();
     if (!mur) return;
-    var s = mur.sens, y, j, f = Math.floor(O.T.ak * 8);
+    var s = mur.sens, y, j, SV = RA.signaux, f = Math.floor(O.T.ak * SV.hz);
     if (tv.ann && tv.t < tv.departAt + 0.4) {                                        // les chevrons qui battent sur le mur arrière
-      var sp = O.sp('chevron:' + (s > 0 ? 0 : 8), 0), ya = Math.max(mur.y0 + 12, Math.floor((V.y - 8) / 20) * 20 + 12), yb = Math.min(mur.y1 - 8, V.y + V.h + 8);
-      for (y = ya; y < yb; y += 20) for (j = 0; j < 4; j++) {
-        if (j > (f & 3)) continue;
-        O.putInk(sp, mur.x + s * (7 + j * 6), y, j === (f & 3) ? O.ROSE : O.MAGENTA);
+      var sp = O.sp('chevron:' + (s > 0 ? 0 : 8), 0), ya = Math.max(mur.y0 + SV.marge, V.y + SV.marge), yb = Math.min(mur.y1 - SV.marge, V.y + V.h - SV.marge);
+      // Un mur hors champ garde son annonce au bord correspondant de la vue.
+      var bord = O.clamp(mur.x, V.x, V.x + V.w);
+      for (y = ya; y < yb; y += SV.pasY) for (j = 0; j < SV.colonnes; j++) {
+        O.putInk(sp, bord + s * (SV.marge + j * SV.pasX), y, j === f % SV.colonnes ? O.ROSE : O.MAGENTA);
       }
     }
     if (mur.actif && panD < CFG.alerte) {                                             // le pan s'allume
@@ -543,6 +546,6 @@ N.arene = (function () {
 
   return {
     reset: reset, update: update, draw: draw, travelling: travelling, convois: convois, voies: voies, sillage: sillage, actif: actif, publierTele: publierTele,
-    entree: entree, pic: pic, nettoyee: nettoyee, murArriere: murArriere, etat: etat
+    battement: battement, entree: entree, pic: pic, nettoyee: nettoyee, murArriere: murArriere, etat: etat
   };
 })();

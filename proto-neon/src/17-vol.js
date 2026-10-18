@@ -141,6 +141,7 @@
   /* ---- couleurs et propriétaires : résolus au start(), jamais au chargement ---- */
   var cVide = 0, cNuit = 0, cViolet = 0, cMagenta = 0, cRose = 0, cCyan = 0, cCyanP = 0, cAmbre = 0, cJaune = 0,
     cBrasier = 0, cOs = 0, cSang = 0, cNuitP = 0;
+  var fondEncres = null, oDecor = 0;
   var oTete = 0, oCorps = 0, oEnnemi = 0, oButin = 0, oEffet = 0;
   function couleurs() {
     var P = N.pal;
@@ -148,9 +149,15 @@
       cVide = P.i('vide'); cNuit = P.i('nuit'); cViolet = P.i('violet'); cMagenta = P.i('magenta'); cRose = P.i('rosePale');
       cCyan = P.i('cyan'); cCyanP = P.i('cyanPale'); cAmbre = P.i('ambre'); cJaune = P.i('jaune'); cBrasier = P.i('brasier');
       cOs = P.i('os'); cSang = P.i('sang'); cNuitP = P.i('nuitProfonde');
+      // La vue de poursuite ne reçoit jamais du cyan de son fond. La joueuse est dessinée ensuite.
+      if (!fondEncres) {
+        fondEncres = new Uint8Array(P.C.length);
+        for (var ci = 0; ci < fondEncres.length; ci++) fondEncres[ci] = ci;
+        fondEncres[cCyan] = P.i('indigo'); fondEncres[cCyanP] = P.i('ardoise');
+      }
     }
     var pr = N.ids && N.ids.proprietaires;
-    if (pr) { oTete = pr.tete | 0; oCorps = pr.corps | 0; oEnnemi = pr.ennemi | 0; oButin = pr.butin | 0; oEffet = pr.effet | 0; }
+    if (pr) { oDecor = pr.decor | 0; oTete = pr.tete | 0; oCorps = pr.corps | 0; oEnnemi = pr.ennemi | 0; oButin = pr.butin | 0; oEffet = pr.effet | 0; }
   }
 
   /* ---- l'état du VOL ---- */
@@ -668,6 +675,7 @@
     }
   }
   function fond() {
+    own(oDecor);
     var d = N.decor;
     if (d && typeof d.drawVol === 'function') {
       var t = Q[T];
@@ -675,10 +683,12 @@
       DV.montee = t >= 2 ? 1 : t * 0.5;
       d.drawVol(DV);
     } else fondRepli();
+    if (fondEncres && G.remap) G.remap(fondEncres);
   }
 
   function preparerDestination() {                               // la vue de face du quartier d'arrivée, dans un second tampon
     var d = N.decor;
+    own(oDecor);
     G.rect(0, 0, W, H, cVide);
     if (d) {
       if (typeof d.fixer === 'function') d.fixer(ver, 'calme');          // sans balayage : la vue de face est entière dès cette image
@@ -688,6 +698,7 @@
       }
       if (typeof d.drawFar === 'function') d.drawFar(N.cam);
     }
+    if (fondEncres && G.remap) G.remap(fondEncres);
     dest = copie(dest); destW = W; destH = H; destPret = true;
   }
 

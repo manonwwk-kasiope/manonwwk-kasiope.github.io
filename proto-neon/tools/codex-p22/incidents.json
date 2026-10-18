@@ -1,0 +1,20 @@
+{
+  "dateParis": "18/10/2026 03:35:21",
+  "limite": "Incidents de l'instrument Node, distincts du compteur __ERR du jeu",
+  "incidents": [
+    {
+      "phase": "première série avant multi-contextes",
+      "sessionExec": 42032,
+      "exitCode": 139,
+      "recu": "avant.log",
+      "action": "reprise des parties manquantes dans un processus Node par partie, reçus écrits conservés"
+    },
+    {
+      "phase": "cas VM multi-contextes",
+      "sessionExec": 7727,
+      "exitCode": 139,
+      "recu": "cas-vm-interrompu.json et cas-vm-interrompu.log",
+      "action": "un processus Node par cas, bilan complet ensuite dans cas-vm.json"
+    }
+  ]
+}
