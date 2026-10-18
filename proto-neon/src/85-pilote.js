@@ -1,4 +1,4 @@
-/* ===== 85-pilote.js — huit politiques, humain/bon/expert révisés par codex-p14 =====
+/* ===== 85-pilote.js — huit politiques, bon/expert révisés par codex-p14 ; humain conforme au contrat (p37) =====
    Lecture : vues publiques de S, N.R, N.ids, N.game.etat(), N.horloge.H/pas().
    Écriture du jeu : S.input seulement ; hasard : flux pilote ; journal : N.journal('pilote', …).
    Le raccord window.__PILOT ignore son snapshot (il contient des objets hors contrat).
@@ -9,7 +9,7 @@
   'use strict';
   var N = window.__N || (window.__N = {});
   var NOMS = ['inerte', 'tourneur', 'maladroit', 'kamikaze', 'humain', 'bon', 'expert', 'dieu'];
-  var REACTION = { inerte: 0, tourneur: 0, maladroit: 0, kamikaze: 0.08, humain: 0.12, bon: 0.08, expert: 0.05, dieu: 0.08 };
+  var REACTION = { inerte: 0, tourneur: 0, maladroit: 0, kamikaze: 0.08, humain: N.R.pilotes.humain.reaction, bon: 0.08, expert: 0.05, dieu: 0.08 };
   var ORDRE = ['tourelles', 'canon', 'missiles', 'bouclier', 'croissance', 'arc', 'puissance', 'cadence', 'drones', 'traversee', 'reparation', 'aimant', 'minesQ', 'grappe', 'sangFroid', 'braise', 'eperon', 'ralenti', 'repli'];
   var EXPERT = ['canon', 'tourelles', 'missiles', 'grappe', 'puissance', 'cadence', 'bouclier', 'arc', 'croissance', 'traversee', 'reparation', 'sangFroid', 'aimant', 'drones', 'braise', 'minesQ', 'eperon', 'ralenti', 'repli'];
   var COMBAT = { jeu: 1, nettoyage: 1, defile: 1, alerte: 1, boss: 1, reapparition: 1, attraction: 1, plongee: 1 };
@@ -140,7 +140,7 @@
     for (var i = 0; i < enemies.length; i++) {
       var seed = enemies[i]; if (!danger(seed)) continue;
       var group = [];
-      for (var j = 0; j < enemies.length; j++) if (danger(enemies[j]) && distance(seed, enemies[j]) <= 60) group.push(enemies[j]);
+      for (var j = 0; j < enemies.length; j++) if (danger(enemies[j]) && distance(seed, enemies[j]) <= N.R.pilotageContrat.lasso.groupeRayon) group.push(enemies[j]);
       var d = distance(seed, S.player);
       if (group.length > best.length || (group.length === best.length && d < near)) { best = group; near = d; }
     }
@@ -162,18 +162,19 @@
     return true;
   }
   function guide(c, radius, sens, p) {
-    var phi = Math.atan2(c.y - p.y, c.x - p.x), k = clamp(1.2 * (distance(c, p) - radius) / radius, -0.7, 0.7);
+    var C = N.R.pilotageContrat.lasso;
+    var phi = Math.atan2(c.y - p.y, c.x - p.x), k = clamp(C.gainRadial * (distance(c, p) - radius) / radius, -C.correctionMax, C.correctionMax);
     return phi - sens * (PI / 2 - k);
   }
   function finirLasso(raison) { note('lassoFin', { raison: raison }); P.lasso = null; }
   function lassoAncien(S) {
-    var p = S.player, L = P.lasso, i;
-    if (!L && p.len >= 8 && P.t - P.dernierLasso > 1.5) {
+    var C = N.R.pilotageContrat.lasso, p = S.player, L = P.lasso, i;
+    if (!L && p.len >= C.longueurMin && P.t - P.dernierLasso > C.intervalle) {
       var group = groupe(S);
-      if (group.length >= 4) {
-        var c = centre(group), radius = 26;
-        for (i = 0; i < group.length; i++) radius = Math.max(radius, distance(group[i], c) + 16);
-        var possible = distance(p, c) <= 140;
+      if (group.length >= C.groupeMin) {
+        var c = centre(group), radius = C.rayonMin;
+        for (i = 0; i < group.length; i++) radius = Math.max(radius, distance(group[i], c) + C.margeCible);
+        var possible = distance(p, c) <= C.entreeDistance;
         if (P.nom === 'expert') {
           var feasible = 0.9 * (p.vit * N.R.f.traine(p.len) + 5 * (p.len - 3)) / TAU;
           radius = Math.min(radius, feasible); possible = possible && radius >= 20 && planSur(c, radius, S);
@@ -192,8 +193,8 @@
     L.tourne += Math.abs(angle(p.ang - L.ang)); L.ang = p.ang;
     if (!members.length) { finirLasso('vide'); return null; }
     L.c = centre(members);
-    if (L.tourne >= TAU + 0.6) { finirLasso('boucle'); return null; }
-    if (P.t - L.t >= TAU * L.r / p.vit + 1) { finirLasso('temps'); return null; }
+    if (L.tourne >= TAU + C.rotationFin) { finirLasso('boucle'); return null; }
+    if (P.t - L.t >= TAU * L.r / p.vit + C.tempsMarge) { finirLasso('temps'); return null; }
     var cap = guide(L.c, L.r, L.s, p);
     if (cout(cap, S, true) >= CERT) { finirLasso('danger'); return null; }
     P.cout = cout(cap, S, false); return cap;
@@ -201,7 +202,9 @@
   /* Un centre mémorisé, choisi de côté : le doigt trace une boucle, il ne poursuit pas
      le barycentre mouvant d'un groupe. La tête est la seule source de géométrie de la
      trajectoire ; aucune lecture de la trace privée, aucune activation du LASSO. */
-  function lassoDoigt() { return P.nom === 'humain' || P.nom === 'bon' || P.nom === 'expert'; }
+  // L'humain garde le groupe, le guidage et le danger du contrat §4.1 :
+  // aucun cercle planifié ni compensation de ses 120 ms de réaction.
+  function lassoDoigt() { return P.nom === 'bon' || P.nom === 'expert'; }
   function rayonLasso(p) {
     var C = N.R.pilotageLasso, corps = p.len * N.R.longueur.espacement;
     return Math.max(N.R.joueuse.rayonVirage * C.rayonVirageMarge,
@@ -272,8 +275,8 @@
     var menace = dangerBoucle(S, L), traverse = menace && menace !== 'mur' && menace !== 'tele';
     L.menace = menace;
     if (menace && !(traverse && (P.t < L.protege || p.pouvoir === 'traversee' && p.pouvoirPret))) { finirLasso('danger'); return null; }
-    // Viser là où sera le pouce à la sortie de sa file de réaction ; le bruit humain
-    // et les 120 ms restent appliqués ensuite, sans prédire les mouvements ennemis cachés.
+    // Bon/expert : viser le pouce à la sortie de sa file de réaction.
+    // Cette compensation ne concerne pas le guidage humain du contrat.
     var tau = REACTION[P.nom], avance = p.vit * tau / L.r, a = p.ang + L.s * avance;
     var q = { x: p.x + (Math.sin(a) - Math.sin(p.ang)) * L.r / L.s,
       y: p.y - (Math.cos(a) - Math.cos(p.ang)) * L.r / L.s };
@@ -302,7 +305,7 @@
     if (!p.pouvoirPret) P.pouvoirEnFile = false;
     if (p.apogee < 100) P.apogeeEnFile = false;
     if (P.nom === 'expert' && (P.opts.variante === 'auto' || P.opts.variante === 'diriger')) return;
-    if (P.nom !== 'bon' && P.nom !== 'expert' && P.nom !== 'dieu' && P.nom !== 'kamikaze' && P.nom !== 'humain') return;
+    if (P.nom !== 'bon' && P.nom !== 'expert' && P.nom !== 'dieu' && P.nom !== 'kamikaze') return;
     var pouvoir = false, apogee = false, nVue = 0, nPres = 0, nTele = 0, oeil = false;
     for (i = 0; i < enemies.length; i++) {
       var e = enemies[i]; if (!danger(e)) continue;
@@ -381,7 +384,7 @@
       } else { var cap = lasso(S); P.cap = cap === null ? champ(S) : cap; }
       P.decision = P.t + (P.nom === 'maladroit' ? 0.7 : 0);
     }
-    var erreur = P.nom === 'humain' ? 10 : P.nom === 'maladroit' ? 35 : 0;
+    var erreur = P.nom === 'humain' ? N.R.pilotes.humain.erreurDeg : P.nom === 'maladroit' ? 35 : 0;
     if (erreur && (P.t + 1e-9 >= P.prochainBruit || (P.nom === 'maladroit' && decide))) {
       P.bruit = N.rng('pilote').r(-erreur, erreur) * PI / 180; P.prochainBruit = P.t + 0.25;
     }

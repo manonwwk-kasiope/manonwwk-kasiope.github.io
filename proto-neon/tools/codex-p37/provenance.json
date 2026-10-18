@@ -1,0 +1,58 @@
+{
+  "dateParis": "18/10/2026 05:26:33",
+  "headRecu": "0ac28eb76550033717647d4486ece94b09709a20",
+  "sourcesAvantSha256": "d248653b8461b4a5e29d68ddf6dc573fa9ff2bc260a35ed371440dab666f5158",
+  "sourcesApresSha256": "9251c198993b3f8fc91abc970810191f2da18427667207881ebd7f3455fa5aeb",
+  "candidatToujoursFige": true,
+  "modifications": [
+    {
+      "fichier": "02-regles.js",
+      "avantSha256": "880b3d0e5b300da0a7ffb74cecc7533a493ed9bf9436d7ffbe58d7cb90b547ca",
+      "apresSha256": "f716358a4096666d59265a819f85300df24903975ee238e6b670f3ab073d02a0"
+    },
+    {
+      "fichier": "85-pilote.js",
+      "avantSha256": "85e972d289ede4403890e6bea536662fca64d1db5ae12b4423b656093207f065",
+      "apresSha256": "0e15575ffc16161a1b3be7b05e832e1def883da1cb1b5e888c9a5aeba2e6f16c"
+    }
+  ],
+  "instrumentAvantSha256": "553f92c75042531dfaeee911cdf2ee33f9c40841d98c1fafdf4af573645348c7",
+  "instrumentApresSha256": "715391176ec85ea55d2b3201e63c91e5d05f5190f3dd742a8f41a7b27620c647",
+  "corpsPartieSha256": "b47c6f033921ceb71807b5236bdebc77bdad4e73b1897040fef53907a4751afd",
+  "differenceInstrument": "Seule la ligne du mode optionnel synthese passe de await import à import ; aucune branche avant/apres/valider ni corps de simulation changé.",
+  "bundleSha256": "c581ea4e07ca58e701792f43b5933074c6baee329bc2c8bdea1fb4f1d9ff65b8",
+  "instruments": [
+    {
+      "f": "mesurer.mjs",
+      "sha256": "715391176ec85ea55d2b3201e63c91e5d05f5190f3dd742a8f41a7b27620c647"
+    },
+    {
+      "f": "analyser.mjs",
+      "sha256": "6a0d9a67019a96de81e57439660be7a74bf3b2010ffc0f7e54a028a428e5fbea"
+    },
+    {
+      "f": "conformite.mjs",
+      "sha256": "b4f9e03111765ea79a54288c9c28c67c69fae99371db7b877a1053aba40ed889"
+    },
+    {
+      "f": "profils.mjs",
+      "sha256": "a4a5fb7926fe782ee30b95a5ac9cf98168ad7a4f60f1bb872914f2bf202289fa"
+    },
+    {
+      "f": "verifier.mjs",
+      "sha256": "2d7363dc48a015d63e8505f730fc95bae4915c11fed9a6e4ca670b6308ea937e"
+    },
+    {
+      "f": "rapport.mjs",
+      "sha256": "874dbbd39960d61fa69f0072a6006b9e0ab9727a3590888103958f9dc2391c36"
+    },
+    {
+      "f": "provenance.mjs",
+      "sha256": "633354baafb24dc0dab080a57c82b14923158ab76a8936cd7cee26de01e8d313"
+    },
+    {
+      "f": "../codex-p14/vm.mjs",
+      "sha256": "fb01e37f7cded1a0e45277eca456596998e24c5dc2862617d1a989d6eeee12bf"
+    }
+  ]
+}

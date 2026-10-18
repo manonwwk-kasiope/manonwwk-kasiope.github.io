@@ -1185,6 +1185,15 @@
     journalMax: 400
   };
 
+  /* codex-p37 : constantes inchangées de pilotes.md §4.1, désormais centralisées.
+     L'humain réutilise le guidage contractuel sans plan et sans compensation du retard.
+     Le dieu conserve exactement ces mêmes valeurs historiques ; bon/expert restent p14. */
+  R.pilotageContrat = {
+    lasso: { groupeRayon: 60, groupeMin: 4, entreeDistance: 140, longueurMin: 8,
+      intervalle: 1.5, rayonMin: 26, margeCible: 16, gainRadial: 1.2,
+      correctionMax: 0.7, rotationFin: 0.6, tempsMarge: 1.0 }
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

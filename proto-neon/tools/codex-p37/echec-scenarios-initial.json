@@ -1,0 +1,246 @@
+{
+  "dateParis": "18/10/2026 05:14:29",
+  "sourceSha256": "9251c198993b3f8fc91abc970810191f2da18427667207881ebd7f3455fa5aeb",
+  "conforme": false,
+  "controles": [
+    {
+      "nom": "§2, §5 : 14 pas de retard, bruit ±10°, course 0,80, aucune compensation LASSO",
+      "ok": true,
+      "mesure": {
+        "R": 14,
+        "premierActif": 15,
+        "capVise": -0.8323537367737086,
+        "capContractuel": -0.8323537367737086,
+        "sortieAngle": -0.699776527878901,
+        "bruit": 0.13257720889480765,
+        "retard": 0.12
+      }
+    },
+    {
+      "nom": "§4.1 entrée refusée : 3 cibles",
+      "ok": true,
+      "mesure": {
+        "tentatives": 0
+      }
+    },
+    {
+      "nom": "§4.1 entrée refusée : longueur 7",
+      "ok": true,
+      "mesure": {
+        "tentatives": 0
+      }
+    },
+    {
+      "nom": "§4.1 entrée refusée : groupe trop loin",
+      "ok": true,
+      "mesure": {
+        "tentatives": 0
+      }
+    },
+    {
+      "nom": "§4.1 : groupe à quatre, rayon et sens du contrat, sans contrôle de faisabilité",
+      "ok": true,
+      "mesure": {
+        "nom": "humain",
+        "evt": "lassoTente",
+        "n": 4,
+        "rayon": 26,
+        "longueur": 8,
+        "sens": 1
+      }
+    },
+    {
+      "nom": "§4.1 : plus grand groupe puis graine la plus proche ; exclusions portail/mort/proie",
+      "ok": true,
+      "mesure": {
+        "tentative": {
+          "nom": "humain",
+          "evt": "lassoTente",
+          "n": 4,
+          "rayon": 26,
+          "longueur": 20,
+          "sens": 1
+        },
+        "cap": -0.8385494443596426
+      }
+    },
+    {
+      "nom": "§4.1 : centre recalculé à chaque décision sur les membres vivants",
+      "ok": true,
+      "mesure": {
+        "centre": {
+          "x": 559.3333333333334,
+          "y": 252.66666666666666
+        },
+        "cap": -0.8258827313251075
+      }
+    },
+    {
+      "nom": "§4.1 sortie : vide",
+      "ok": true,
+      "mesure": [
+        {
+          "t": 0.016666666666666666,
+          "nom": "humain",
+          "evt": "lassoFin",
+          "raison": "vide"
+        }
+      ]
+    },
+    {
+      "nom": "§4.1 sortie : boucle",
+      "ok": true,
+      "mesure": [
+        {
+          "t": 0.06666666666666667,
+          "nom": "humain",
+          "evt": "lassoFin",
+          "raison": "boucle"
+        }
+      ]
+    },
+    {
+      "nom": "§4.1 sortie : temps",
+      "ok": true,
+      "mesure": [
+        {
+          "t": 3.416666666666657,
+          "nom": "humain",
+          "evt": "lassoFin",
+          "raison": "temps"
+        }
+      ]
+    },
+    {
+      "nom": "§4.1 sortie : danger",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(fins.some(e=>e.d.raison===raison))\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:57:33\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:8:40)\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:51:56\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async node:internal/modules/esm/loader:639:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    },
+    {
+      "nom": "§4.1 : intervalle strict >1,5 s entre entrées",
+      "ok": true,
+      "mesure": {
+        "delta": 1.5083333333333304
+      }
+    },
+    {
+      "nom": "§4.2–3 : aucun pouvoir/APOGÉE/boost manuel même si prêts et menace certaine",
+      "ok": true,
+      "mesure": {
+        "pas": 180,
+        "pouvoirs": 0,
+        "apogees": 0,
+        "boosts": 0
+      }
+    },
+    {
+      "nom": "§2, §5 : bruit uniforme conservé 0,25 s ; moyenne et écart type sur deux minutes",
+      "ok": true,
+      "mesure": {
+        "n": 480,
+        "moyenneDeg": -0.1235717567615211,
+        "ecartTypeDeg": 5.843128034800568,
+        "ecartTypeAttendu": 5.773502691896258,
+        "min": -9.943583239801228,
+        "max": 9.99302291776985
+      }
+    },
+    {
+      "nom": "§4.4 : ordre fixe, délai 0,45 s et impulsion de choix",
+      "ok": true,
+      "mesure": {
+        "decisions": [
+          {
+            "pas": 31,
+            "t": 0,
+            "nom": "humain",
+            "evt": "carte",
+            "id": "tourelles",
+            "rang": 3
+          },
+          {
+            "pas": 56,
+            "t": 0,
+            "nom": "humain",
+            "evt": "carte",
+            "id": "tourelles",
+            "rang": 3
+          }
+        ],
+        "sorties": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "nom": "§4.5 : états sans action, jamais de validation",
+      "ok": true,
+      "mesure": {
+        "etats": [
+          "mort",
+          "panneau",
+          "pause",
+          "fin",
+          "initiales",
+          "titre",
+          "ouverture",
+          "briefing",
+          "demarrage"
+        ]
+      }
+    },
+    {
+      "nom": "§4.5 : VOL vers la première porte/cellule temporelle, esquive de mine",
+      "ok": true,
+      "mesure": {
+        "angleEsquive": 3.141592653589793
+      }
+    },
+    {
+      "nom": "§1 : aucune lecture de module de jeu privé, flux pilote seul et écritures S.input seules",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!/N\\.(?:ennemis|joueuse|cam|dir|colosse|score|arsenal|butin)\\b|\\._\\w+/.test(src))\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:102:2\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:8:40)\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-p37/proto-neon/tools/codex-p37/conformite.mjs:101:1\n    at ModuleJob.run (node:internal/modules/esm/module_job:437:25)\n    at async node:internal/modules/esm/loader:639:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  ]
+}
