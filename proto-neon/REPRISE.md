@@ -1,5 +1,16 @@
 # SNAKE 2975 — reprendre le projet sur ton ordinateur
 
+## Chantier « jeu incroyable » — point de reprise (24/10 · 01 h 59)
+
+- Demande (24/10, 01 h 55) et critères : `refonte/chantiers/INCROYABLE.md` (portes 1 à 7, arrêts). Boucle d'au moins 6 h (jusqu'à 08 h au plus tôt).
+- Version 0 publiée le 18/10 à 13 h 40 (gh-pages 9733710, tag `snake2975-v0`). Rien n'a bougé du 18/10 13 h 53 au 24/10 01 h 55.
+- Sessions Codex lancées à 02 h 00 (copies `~/Projets/wt-snake/<nom>`, consignes `consignes/<nom>.md`) : **i1** (report p35, p44, p45b, p33b, p47),
+  **r2b** (rythme, à partir de r1 + r2), **d1** (difficulté adaptative, `32-adapte.js`), **j1** (banc et dossier du jury, `tools/jury2/`).
+  À lancer quand la mémoire le permet (≤ 4 sessions à la fois, 2,3 Go libres à 02 h) : **t1** (tempo accéléré par scènes, `30-music.js`), **w1** (WARP, `78-warp.js`).
+- Cycle : livraison → vérifieur au navigateur par la cheffe (un Chromium, verrou `/tmp/snake-chromium-chef.lock`) → intégration (`integrer.sh`,
+  raccords par `git apply -3`) → dossier j1 → jury (5 jurés Claude neufs Sonnet xhigh + 1 juré Codex) → corrections. Arrêt de piste : 3 passes, même porte échouée 2 fois.
+- Attention guetteurs : un `pgrep -f "<motif>"` lancé dans une commande qui contient ce motif se trouve lui-même (bug du 18/10 : 45 min perdues).
+
 ## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 08 h 06)
 
 - Objectif (délégation de la propriétaire, 00 h 22) : jusqu'à la sortie finale, décisions prises par la cheffe
