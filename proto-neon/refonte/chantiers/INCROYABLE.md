@@ -58,3 +58,22 @@ l'intérêt du jeu. il doit être supérieur à 9,5/10. »
   familles ≤ 1 point. Sinon publiée « non interprétable ».
 - **Instrument (D5)** : écrit par un agent Claude, relu par une session Codex (les auteurs du jeu ne mesurent pas leur travail). **Graines (D6)** :
   TUNE visible, VALID agrégée, TEST scellée et lue une fois. **Machine (D7)** : 1 Chromium + 1 VM. **Horaire (D8)** : boucle de 02 h 30 à 09 h 05 au moins.
+
+## Point chiffré — 24/10/2026 · 04 h 00 (Paris)
+
+Durée écoulée : 2 h 05 sur ≥ 6 h (boucle jusqu'à ≥ 09 h 05). Quota Claude : 76 % de la semaine (remise 24/10 19 h), 28 % de la fenêtre de 5 h (`get_usage`, 03 h 58). Sessions Codex en cours : 7 (f1, p44b, r2c, d1b, g1, m1, w1c).
+
+| Piste | État | Mesure qui fait foi |
+|---|---|---|
+| j1 jury | intégré (bd06d4e, 42 contrôles locaux) | étalonnage à lancer sur la candidate |
+| u1 interface | **intégré** (5b29c30 / b270d8f) | navigateur conforme 3 profils, 0 chevauchement, 0 erreur ; VM 80/80 |
+| i1 lots du 18/10 | livré 03 h 30 (p35, p45b, p33b, p47 ; p44 écarté) | VM 80/80 par lot, 0 erreur ; navigateur en cours depuis 03 h 44 (91 min) |
+| t1 tempo des scènes | vert navigateur 03 h 39 | H 180/180, 0 erreur ; ×1,0801 / < 10 cents / raccord 1,27 ms (VM) ; entre par f1 |
+| s1 scènes, secousses | livré 03 h 31, arrêté sur la fin CYCLOPE (2 échecs : fichier 79 réservé) | R-14 Chrome paysage 2,40–7,61 % (≤ 12 %) ; films à revérifier (Chromium sans H.264 → Chrome) |
+| w1 WARP | geste réel réparé (w1b : défaut du banc CDP) ; **W-02 échoue au navigateur** | 9/9 armements, 0 erreur ; écart à la grille 9–17 ms et 0,31–0,70 s (réduit, portrait) pour ≤ 12 ms → w1c |
+| f1 fusion n° 1 | lancée 03 h 33, propriétaire de tous les fichiers | réalise S-01, S-02, S-05, fin CYCLOPE dans 79 |
+| p44b préavis visibles | lancé 03 h 32 | coups sans préavis 181/265 → 25/259 dans p44, à rendre compatible |
+| r2c, d1b, g1 | en cours | — |
+| instruments mesure2 | écrits (agent Claude), relus par Codex m1 depuis 03 h 41 | témoins 69/69, 207/207, 50/50, 14/14 |
+
+Série autonome sur b270d8f (80 parties, 03 h 28, paysage) : médianes de survie inerte 45 s, maladroit 54 s, humain 175 s, bon 243 s, expert 367 s, dieu 385 s ; 78/80 fins, 2 bornes (expert/2, dieu/9), 0 « bloque », 0 erreur. Portes fermées à ce point : aucune des 7 (le jury n'a pas encore noté). Arrêts : s1 (fin CYCLOPE) arrêté à 2 échecs, cause structurelle traitée par f1 ; W-02 premier échec au navigateur.
