@@ -1,0 +1,919 @@
+{
+  "base": "a294e2b618d87139352ca1f2fbb5970bc8d61b0c",
+  "verification": {
+    "dateParis": "24/10/2026 11:55:05 (Paris)",
+    "portee": "Instrument et construction uniquement ; aucun jeu simulé, aucun serveur, aucun navigateur, aucune sortie réseau.",
+    "controles": [
+      {
+        "nom": "Syntaxe de tous les modules ESM",
+        "ok": true,
+        "valeur": [
+          "analyse.mjs",
+          "aventure.mjs",
+          "banc.mjs",
+          "canaris.mjs",
+          "echantillon.mjs",
+          "etalonnage.mjs",
+          "images.mjs",
+          "jure.mjs",
+          "protocole.mjs",
+          "sonde.mjs",
+          "tapis.mjs",
+          "temoin.mjs",
+          "tests-jury.mjs",
+          "tests-temoins.mjs",
+          "verifier.mjs",
+          "vm-temoins.mjs"
+        ]
+      },
+      {
+        "nom": "Import du banc sans lancement",
+        "ok": true,
+        "valeur": "Aucun effet de bord à l’import"
+      },
+      {
+        "nom": "Fonctions navigateur sérialisables",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Un flash rouge et lumineux simultané compte une fois",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Trois flashs restent trois ; quatre sont refusés",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "R-13 emploie la seconde réelle malgré les images manquantes",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Synchronisation : ±40 ms et 95 % inclusifs",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Un audio inconnu ne disparaît pas du dénominateur",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Le RMS avant mute ne prouve jamais la musique audible",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Carte r1 : mesures numérotées à partir de 1",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Planches : phase quelconque du drop, sans élargir le seuil de 150 ms",
+        "ok": true,
+        "valeur": {
+          "synthetique": true,
+          "pireSec": 0.125,
+          "seuilSec": 0.15
+        }
+      },
+      {
+        "nom": "Alignement : latence retirée une seule fois ; curseur accéléré suivi",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Boucle musicale : aucun faux drop en remontant le curseur",
+        "ok": true,
+        "valeur": [
+          {
+            "type": "drop",
+            "id": "x",
+            "tFichier": 1,
+            "w": 1.8,
+            "encadrement": [
+              1,
+              2
+            ],
+            "incertitudeSec": 1,
+            "repere": {
+              "t": 1
+            }
+          }
+        ]
+      },
+      {
+        "nom": "Difficulté : victoires et censures ne sont pas des défaites",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Sensibilité : le témoin connu dégradé est distingué sur deux axes",
+        "ok": true,
+        "valeur": {
+          "ratio": 0.005,
+          "perteSync": 0.6
+        }
+      },
+      {
+        "nom": "Deux dossiers identiques invalident l’instrument",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Un seul axe ou aucune donnée ne suffisent pas",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Capteur dans une fixture VM indépendante du jeu : pixels et objets réels",
+        "ok": true,
+        "valeur": {
+          "synthetique": true,
+          "images": 4,
+          "flashs": 1,
+          "tirsEffectivementInseres": 1
+        }
+      },
+      {
+        "nom": "PNG du tampon : aller-retour RGB exact et planche",
+        "ok": true,
+        "valeur": {
+          "sha256": "645175796f4c9c10fa00dc0e6fbdb1869f94079847d590ad2dbcde19fd560ce9",
+          "synthetique": true
+        }
+      },
+      {
+        "nom": "Mesure audio du fichier réel : sinusoïde et silence décodés sans lecture",
+        "ok": true,
+        "valeur": {
+          "synthetique": true,
+          "sinusRms": 0.07071016227886011,
+          "silenceRms": 0
+        }
+      },
+      {
+        "nom": "Serveur : Range 206 et gel des actifs, sans ouvrir de port",
+        "ok": true,
+        "valeur": null
+      },
+      {
+        "nom": "Build du jeu reçu : sortie 0, dans une copie temporaire (la copie de travail n’est pas reconstruite)",
+        "ok": true,
+        "valeur": {
+          "avant": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+          "apres": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+          "identique": true,
+          "code": 0
+        }
+      },
+      {
+        "nom": "Témoin construit dans une copie temporaire, syntaxe valide",
+        "ok": true,
+        "valeur": {
+          "code": 0,
+          "sha256": "eb4d94bcdba68cb9d9c9ee96795bf1c49f8f16a753fdb9bdb5a2d98a24c1fb42",
+          "srcInchanges": true
+        }
+      },
+      {
+        "nom": "Témoin reproductible, actifs identiques à la pointe, aucun chemin temporaire",
+        "ok": true,
+        "valeur": {
+          "sha256": "eb4d94bcdba68cb9d9c9ee96795bf1c49f8f16a753fdb9bdb5a2d98a24c1fb42",
+          "referencesTemporaires": 0,
+          "identiqueHorsAjout": true
+        }
+      },
+      {
+        "nom": "Intervalle de Wilson et médiane de Kaplan–Meier : valeurs connues",
+        "ok": true,
+        "valeur": {
+          "wilson35sur100": {
+            "part": 0.35,
+            "bas": 0.2636410465347802,
+            "haut": 0.4474573957080203,
+            "demiLargeur": 0.09190817458662004
+          }
+        }
+      },
+      {
+        "nom": "Séries de graines : étalonnage hors réglage ; alpha et beta tirées, scellées, disjointes, jamais écrasées",
+        "ok": true,
+        "valeur": {
+          "alpha": [
+            10000,
+            17919,
+            25838
+          ],
+          "beta": [
+            33757,
+            41676,
+            49595
+          ]
+        }
+      },
+      {
+        "nom": "Échantillon : instants uniformes stratifiés et reproductibles, temps de jeu → temps réel, pires cas",
+        "ok": true,
+        "valeur": {
+          "pires": 6
+        }
+      },
+      {
+        "nom": "Échantillon : événements désignés par la règle écrite (drops, breaks, vagues, WARP, CYCLOPE, fin, toutes les morts)",
+        "ok": true,
+        "valeur": {
+          "evenements": [
+            "vague",
+            "warp-entree",
+            "break",
+            "drop",
+            "warp-sortie",
+            "vague",
+            "mort",
+            "vol",
+            "drop",
+            "cyclope",
+            "fin"
+          ]
+        }
+      },
+      {
+        "nom": "Tapis rythmique : grille des temps, écarts signés, événements verts/rouges, PNG exact",
+        "ok": true,
+        "valeur": {
+          "evenements": 3
+        }
+      },
+      {
+        "nom": "Défauts plantés : liste écrite, tirage borné par le rôle, altérations réelles sur des copies",
+        "ok": true,
+        "valeur": {
+          "types": [
+            "image-gelee",
+            "temps-incoherent",
+            "trou-couverture",
+            "mesure-contradictoire",
+            "decalage-rythme",
+            "flash-plein-ecran"
+          ]
+        }
+      },
+      {
+        "nom": "Paquet : noms neutres, passes séparées, échantillon appliqué par script, canaris tirés et consignés dans la clé seule",
+        "ok": true,
+        "valeur": {
+          "fichiers": 240,
+          "canaris": [
+            "trou-couverture",
+            "mesure-contradictoire",
+            "temps-incoherent",
+            "decalage-rythme"
+          ],
+          "manques": []
+        }
+      },
+      {
+        "nom": "Paquet : refus d’écraser ; rôle verdict exige série, validation de l’instrument et dossier complet",
+        "ok": true,
+        "valeur": {
+          "verdictA": [
+            "temps-incoherent",
+            "trou-couverture",
+            "mesure-contradictoire"
+          ]
+        }
+      },
+      {
+        "nom": "Paquet : un doublon renomme les séquences sans changer le contenu (test de stabilité)",
+        "ok": true,
+        "valeur": {
+          "correspondance": {
+            "S01": "S01",
+            "S02": "S04",
+            "S03": "S02",
+            "S04": "S03"
+          }
+        }
+      },
+      {
+        "nom": "Preuves vérifiables par script : fichier, temps, champ, case ; tout le reste est introuvable",
+        "ok": true,
+        "valeur": {
+          "planche": "S01/planche-uniforme-1.png"
+        }
+      },
+      {
+        "nom": "Verdict : schéma, deux passes, annexe interdite avant la note 1, plafonds de la grille appliqués par le script",
+        "ok": true,
+        "valeur": {
+          "complaisant": 8.5
+        }
+      },
+      {
+        "nom": "Défauts plantés : retrouvés seulement par une preuve rangée parmi les défauts ou les anomalies",
+        "ok": true,
+        "valeur": {
+          "retrouves": 4,
+          "sur": 4
+        }
+      },
+      {
+        "nom": "Étalonnage : un juré complaisant, plat, instable ou ancré par les chiffres est écarté ; accord de rang ; cellules",
+        "ok": true,
+        "valeur": {
+          "jures": 16
+        }
+      },
+      {
+        "nom": "Porte 7 : réussite seulement si tout tient ; sinon échec ou « non interprétable » (accord des familles, troisième jury, graines communes)",
+        "ok": true,
+        "valeur": {
+          "statut": "reussite"
+        }
+      },
+      {
+        "nom": "Consolidation sur fichiers : verdicts écrits, relus, validés, plafonnés, canaris comptés",
+        "ok": true,
+        "valeur": {
+          "note1": 8.5,
+          "brute1": 9.9
+        }
+      },
+      {
+        "nom": "Témoin : source du module dégradé et du témoin positif, exécutée dans un contexte VM (retards, doublons, calage sur le temps)",
+        "ok": true,
+        "valeur": {
+          "doublons": 121
+        }
+      },
+      {
+        "nom": "Sensibilité : la pointe désynchronisée ne fait pas échouer l’instrument ; témoin positif et dégradé requis",
+        "ok": true,
+        "valeur": {
+          "ok": true
+        }
+      },
+      {
+        "nom": "Sonde : images denses autour des drops, des morts et du WARP seulement (fixture VM indépendante du jeu)",
+        "ok": true,
+        "valeur": {
+          "densite": 20,
+          "base": 8
+        }
+      },
+      {
+        "nom": "Audio VM : préparation réelle, applyMute et reset — synchro",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:30:38\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:16:11)\n    at statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Audio VM : préparation réelle, applyMute et reset — desync",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:30:38\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:16:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : émission réelle — synchro — échéance absente",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Émission attendue à 11 s, obtenue 11.25\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:61:33\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:58:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : émission réelle — synchro — échéance présente",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Émission attendue à 11 s, obtenue 11.25\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:61:33\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:58:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : émission réelle — desync — échéance absente",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Échéance indépendante non livrée : 11.25\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:62:14\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:58:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : émission réelle — desync — échéance présente",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Échéance indépendante non livrée : 11.25\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:62:14\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:58:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : minimum contractuel du portail, même sans option",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(Math.abs(t - 11) <= .005001)\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:68:79\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:66:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Temps VM : changement de morceau annule, aucun faux positif",
+        "ok": true,
+        "valeur": {
+          "mode": "synchro",
+          "opts": {
+            "portail": 0.6
+          },
+          "debut": 10.125,
+          "emissions": [],
+          "journal": [
+            {
+              "pas": 0,
+              "t": 0,
+              "image": 0,
+              "type": "rythme-annulation",
+              "d": {
+                "id": 1,
+                "type": "planeur",
+                "raison": "transport"
+              }
+            }
+          ],
+          "restant": []
+        }
+      },
+      {
+        "nom": "Temps VM : placement impossible reporte réellement l’émission",
+        "ok": true,
+        "valeur": {
+          "mode": "synchro",
+          "opts": {
+            "portail": 0.6
+          },
+          "debut": 10.125,
+          "emissions": [
+            {
+              "id": 1,
+              "t": 11.75,
+              "x": 450,
+              "y": 150,
+              "morceau": "fixture"
+            }
+          ],
+          "journal": [
+            {
+              "pas": 0,
+              "t": 0,
+              "image": 0,
+              "type": "rythme-action",
+              "d": {
+                "type": "apparition",
+                "id": 1,
+                "morceau": "fixture",
+                "demande": 11.305,
+                "attendu": 11.75,
+                "observe": 11.75,
+                "ecart": 0,
+                "attente": 0.4450000000000003,
+                "dureeTemps": 0.5,
+                "changementPiste": false
+              }
+            }
+          ],
+          "restant": [],
+          "empeche": true,
+          "ecartAuTempsMs": 250
+        }
+      },
+      {
+        "nom": "Temps VM : livraison au pas suivant, pas de rétrodatage",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n+   11.255\n-   11.005\n  ]\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:88:20\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:80:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      },
+      {
+        "nom": "Traçabilité : les deux modes ont chacun leur dossier brut",
+        "ok": false,
+        "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r[0].endsWith('-synchro'))\n\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:93:13\n    at file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:12:7\n    at test (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:25:52)\n    at controle (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:10:11)\n    at testsTemoins (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/tests-temoins.mjs:89:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async statique (file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:107:3)\n    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/verifier.mjs:118:8"
+      }
+    ],
+    "bundle": {
+      "avant": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+      "apres": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+      "identique": true,
+      "code": 0
+    },
+    "temoin": {
+      "dateParis": "24/10/2026 11:55:05 (Paris)",
+      "buildCode": 0,
+      "sha256": "eb4d94bcdba68cb9d9c9ee96795bf1c49f8f16a753fdb9bdb5a2d98a24c1fb42",
+      "fichier": "/Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/temoin/index.html",
+      "modes": [
+        "desync",
+        "synchro"
+      ],
+      "modifications": [
+        "mode desync : musique coupée par le canal public musique",
+        "mode desync : portails prolongés par un retard pseudo-aléatoire indépendant de 0 à 0.9 s",
+        "mode desync : 60 % des fleche, dard, larve doublés",
+        "mode synchro (témoin positif) : portails calés sur le prochain temps audio, musique conservée"
+      ],
+      "srcOriginalModifie": false,
+      "executionNavigateur": false,
+      "limite": "Construction et syntaxe seulement ; sensibilité à mesurer sur les sorties réelles, jamais déduite de la présence de ce patch."
+    },
+    "reussi": false,
+    "nombre": 53,
+    "echecs": 9,
+    "navigateur": "non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe"
+  },
+  "observations": [
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — synchro",
+      "valeur": {
+        "mode": "synchro",
+        "ancienEfface": true,
+        "profil": null,
+        "etapes": [
+          {
+            "nom": "préparation",
+            "canaux": {
+              "musique": false,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute",
+            "canaux": {
+              "musique": false,
+              "effets": false
+            }
+          },
+          {
+            "nom": "reset réel",
+            "canaux": {
+              "musique": false,
+              "effets": false
+            }
+          },
+          {
+            "nom": "100 applyMute après reset",
+            "canaux": {
+              "musique": false,
+              "effets": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — desync",
+      "valeur": {
+        "mode": "desync",
+        "ancienEfface": true,
+        "profil": null,
+        "etapes": [
+          {
+            "nom": "préparation",
+            "canaux": {
+              "musique": true,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute",
+            "canaux": {
+              "musique": true,
+              "effets": false
+            }
+          },
+          {
+            "nom": "reset réel",
+            "canaux": {
+              "musique": true,
+              "effets": false
+            }
+          },
+          {
+            "nom": "100 applyMute après reset",
+            "canaux": {
+              "musique": true,
+              "effets": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance absente",
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.25,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.25,
+              "attendu": 11.25,
+              "observe": 11.25,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance présente",
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6,
+          "rythmeFin": 11.25
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.25,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.25,
+              "attendu": 11.25,
+              "observe": 11.25,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance absente",
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.25,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.25,
+              "attendu": 11.25,
+              "observe": 11.25,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance présente",
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6,
+          "rythmeFin": 11.25
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.25,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.25,
+              "attendu": 11.25,
+              "observe": 11.25,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : minimum contractuel du portail, même sans option",
+      "valeur": {
+        "mode": "synchro",
+        "opts": {},
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 10.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 10.75,
+              "attendu": 10.75,
+              "observe": 10.75,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : changement de morceau annule, aucun faux positif",
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-annulation",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "raison": "transport"
+            }
+          }
+        ],
+        "restant": []
+      }
+    },
+    {
+      "nom": "Temps VM : placement impossible reporte réellement l’émission",
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.305,
+              "attendu": 11.75,
+              "observe": 11.75,
+              "ecart": 0,
+              "attente": 0.4450000000000003,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [],
+        "empeche": true,
+        "ecartAuTempsMs": 250
+      }
+    },
+    {
+      "nom": "Temps VM : livraison au pas suivant, pas de rétrodatage",
+      "valeur": {
+        "emissions": [
+          11.255
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.255,
+              "attendu": 11.25,
+              "observe": 11.255,
+              "ecart": 0.005000000000000782,
+              "attente": -0.005000000000000782,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Traçabilité : les deux modes ont chacun leur dossier brut",
+      "valeur": [
+        "sync-probe-paysage-bon-101",
+        "sync-probe-paysage-bon-101"
+      ]
+    }
+  ]
+}

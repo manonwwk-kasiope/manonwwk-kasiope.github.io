@@ -120,6 +120,11 @@ function scenesMoments(data,carte) {
   return moments;
 }
 export { carteAlignee };
+/* Revalidation ciblée : deux prises audio et les sondes temporelles du témoin.
+   Le dossier reste réduit et ne peut jamais devenir une qualification pour le jury. */
+export function optionsInstrumentSeul(opts) {
+  return {...opts,instrumentSeul:true,profils:[],pilotes:[],sansAventures:true,sansPerformance:true};
+}
 async function medias(dir,data,cdpFrames,carte) {
   const out={clips:[],planches:[],manques:[],carte:carteAlignee(data.frames,carte)};
   json(path.join(dir,'carte-alignee.json'),out.carte);
@@ -174,8 +179,27 @@ function installerNV(data,piste) {
     if(b)f.sourceNV={id:'neon-velocity',t:piste.premiereMesure+b.temps[0]*piste.dureeMesure/4+(f.audioCtx-it.tCore+it.from)};
   }
 }
+/* Préparation sérialisée commune au navigateur et aux contrôles VM. */
+export function preparerCas(cas) {
+  const N=window.__N,S=window.__S;
+  if(!cas.conserverProfil)localStorage.clear();S.jour=20261017;
+  // Isoler durablement la musique, même après applyMute() et reset().
+  if(cas.genre==='audio-probe')N.score.profil.reglages({effets:false,musique:true});
+  if(S.reglages)S.reglages.actions=cas.pilote==='humain'?'auto':'doigts';
+  N.intro.skip();N.game.reset(cas.graine,{depart:cas.genre==='aventure'?'titre':'plongee'});
+  if(cas.genre!=='aventure'&&N.game.etat()==='demarrage')N.game.dbg.etat('plongee');
+  N.journal.actif(true);N.journal.vider();
+  if(cas.genre==='performance'||cas.genre==='charge'){
+    if(!N.game.dbg.scene(cas.scene))throw Error('Scène absente : '+cas.scene);
+    N.game.dbg.god(true);N.pilote.lancer('bon');
+  }else if(cas.genre==='sync-probe'){
+    N.game.dbg.god(true);N.pilote.lancer('bon');
+  }else if(cas.genre==='audio-probe'){
+    N.game.dbg.god(true);N.pilote.lancer('inerte');
+  }else if(cas.genre!=='aventure')N.pilote.lancer(cas.pilote);
+}
 async function run(browser,origin,opts,cas,carte,piste,context=null) {
-  const dir=path.join(opts.out,`${cas.genre}-${cas.profil}-${cas.pilote}-${cas.graine}${cas.qui?'-'+cas.qui:''}`);
+  const dir=path.join(opts.out,`${cas.genre}-${cas.profil}-${cas.pilote}-${cas.graine}${cas.qui?'-'+cas.qui:''}${cas.genre==='sync-probe'?'-'+safe(cas.modeTemoin):''}`);
   fs.mkdirSync(path.join(dir,'tampons'),{recursive:true});fs.mkdirSync(path.join(dir,'cdp'),{recursive:true});
   const profils={paysage:{...devices['iPhone 13 landscape'],viewport:{width:844,height:390}},portrait:{...devices['iPhone 13'],viewport:{width:390,height:844}},bureau:{viewport:{width:1440,height:900}}};
   const ctx=context||await browser.newContext({...profils[cas.profil],serviceWorkers:'block'});
@@ -212,22 +236,7 @@ async function run(browser,origin,opts,cas,carte,piste,context=null) {
   try {
     await page.goto(origin+'/index.html?journal=1&auto=0',{waitUntil:'load'});
     await page.waitForFunction(()=>window.__N?.game&&window.__S&&window.__jury);
-    await page.evaluate(cas=>{
-      const N=window.__N,S=window.__S;
-      if(!cas.conserverProfil)localStorage.clear();S.jour=20261017;
-      if(S.reglages)S.reglages.actions=cas.pilote==='humain'?'auto':'doigts';
-      N.intro.skip();N.game.reset(cas.graine,{depart:cas.genre==='aventure'?'titre':'plongee'});
-      if(cas.genre!=='aventure'&&N.game.etat()==='demarrage')N.game.dbg.etat('plongee');
-      N.journal.actif(true);N.journal.vider();
-      if(cas.genre==='performance'||cas.genre==='charge'){
-        if(!N.game.dbg.scene(cas.scene))throw Error('Scène absente : '+cas.scene);
-        N.game.dbg.god(true);N.pilote.lancer('bon');
-      }else if(cas.genre==='sync-probe'){
-        N.game.dbg.god(true);N.pilote.lancer('bon');
-      }else if(cas.genre==='audio-probe'){
-        N.game.dbg.god(true);N.pilote.lancer('inerte');N.music.mute('effets',true);
-      }else if(cas.genre!=='aventure')N.pilote.lancer(cas.pilote);
-    },cas);
+    await page.evaluate(preparerCas,cas);
     /* Le premier vrai geste déverrouille Web Audio. Hors aventure il ne change
        aucune direction : touche M interdite car elle couperait la musique. */
     await page.keyboard.press('Shift');
@@ -387,19 +396,24 @@ export async function produire(browser,opts) {
   }finally{await new Promise(r=>server.close(r));}
 }
 export async function main(args=process.argv.slice(2)) {
-  if(args.includes('--help')){console.log(`node tools/jury2/banc.mjs [--serie etalonnage|alpha|beta] [--bundle index.html] [--build ID] [--carte structure.json] [--graines N] [--profils paysage,portrait] [--pilotes humain,bon] [--aventures-profils paysage] [--max 720] [--valider-instrument] [--sans-aventures] [--sans-performance]
+  if(args.includes('--help')){console.log(`node tools/jury2/banc.mjs [--serie etalonnage|alpha|beta] [--bundle index.html] [--build ID] [--carte structure.json] [--graines N] [--profils paysage,portrait] [--pilotes humain,bon] [--aventures-profils paysage] [--max 720] [--valider-instrument] [--instrument-seul] [--sans-aventures] [--sans-performance]
 Exécution réelle hors bac seulement. Verrou Chef exclusif ; aucune requête externe.
 --serie : liste de graines (étalonnage : 101… hors réglage ; alpha et beta : tirées et scellées au premier usage, jamais relues par l’orchestratrice).
 --valider-instrument : bâtit le témoin sur src/ (le bundle doit être l’index.html de cette copie), rejoue la même série dessus, puis les sondes de synchronisation positive et dégradée.
+--instrument-seul : avec --valider-instrument, collecte seulement les sondes audio et temporelles ; dossier réduit, jamais prêt pour jury.
 Toute option qui réduit la série rend le dossier « réduit » : jamais une qualification complète.`);return;}
   const arg=(k,d)=>{const i=args.indexOf(k);if(i>=0&&!args[i+1])throw Error('Valeur manquante '+k);return i<0?d:args[i+1];};
   const liste=(k,permis)=>{const v=arg(k,null);if(v===null)return null;const l=v.split(',').filter(Boolean);for(const x of l)if(!permis.includes(x))throw Error(k+' : valeur inconnue '+x);return l;};
   const grainesArg=arg('--graines',null),maxArg=arg('--max',null);
-  const opts={bundle:path.resolve(arg('--bundle',path.join(ROOT,'index.html'))),build:arg('--build',null),serie:arg('--serie','etalonnage'),
+  let opts={bundle:path.resolve(arg('--bundle',path.join(ROOT,'index.html'))),build:arg('--build',null),serie:arg('--serie','etalonnage'),
     carte:arg('--carte',fs.existsSync(path.join(ROOT,'musique/morceaux/structure.json'))?path.join(ROOT,'musique/morceaux/structure.json'):null),
     graines:grainesArg===null?null:Number(grainesArg),max:maxArg===null?null:Number(maxArg),
     profils:liste('--profils',P.profils),pilotes:liste('--pilotes',P.pilotes),profilsAventure:liste('--aventures-profils',P.profils),
     sansAventures:args.includes('--sans-aventures'),sansPerformance:args.includes('--sans-performance')};
+  if(args.includes('--instrument-seul')){
+    if(!args.includes('--valider-instrument'))throw Error('--instrument-seul exige --valider-instrument ; aucun navigateur lancé.');
+    opts=optionsInstrumentSeul(opts);
+  }
   if(opts.graines!==null&&(!Number.isInteger(opts.graines)||opts.graines<1)||opts.max!==null&&!(opts.max>0))throw Error('Bornes invalides');
   if(!P.series[opts.serie])throw Error('Série inconnue : '+opts.serie);
   if(!opts.carte)throw Error('Carte r1 absente : préciser --carte /chemin/structure.json ; aucun navigateur lancé.');
@@ -433,7 +447,7 @@ Toute option qui réduit la série rend le dossier « réduit » : jamais une qu
       if(!validation.valide)process.exitCode=1;
       console.log(JSON.stringify({validationInstrument:validation}));
     }
-    if(!pointe.manifest.complet)process.exitCode=1;
+    if(!pointe.manifest.complet&&!opts.instrumentSeul)process.exitCode=1;
   }finally{process.off('SIGINT',interrompre);process.off('SIGTERM',interrompre);if(browser)await browser.close();if(lock&&fs.existsSync(marque)&&fs.readFileSync(marque,'utf8').trim()===String(process.pid)){fs.unlinkSync(marque);fs.rmdirSync(P.verrou);}}
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await main();

@@ -1,0 +1,552 @@
+[
+  {
+    "nom": "Audio VM : préparation réelle, applyMute et reset — synchro",
+    "valeur": {
+      "mode": "synchro",
+      "ancienEfface": true,
+      "profil": {
+        "musique": true,
+        "effets": false,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "doigts"
+      },
+      "etapes": [
+        {
+          "nom": "préparation",
+          "canaux": {
+            "musique": false,
+            "effets": true
+          }
+        },
+        {
+          "nom": "100 applyMute",
+          "canaux": {
+            "musique": false,
+            "effets": true
+          }
+        },
+        {
+          "nom": "reset réel",
+          "canaux": {
+            "musique": false,
+            "effets": true
+          }
+        },
+        {
+          "nom": "100 applyMute après reset",
+          "canaux": {
+            "musique": false,
+            "effets": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Audio VM : préparation réelle, applyMute et reset — desync",
+    "valeur": {
+      "mode": "desync",
+      "ancienEfface": true,
+      "profil": {
+        "musique": true,
+        "effets": false,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "doigts"
+      },
+      "etapes": [
+        {
+          "nom": "préparation",
+          "canaux": {
+            "musique": true,
+            "effets": true
+          }
+        },
+        {
+          "nom": "100 applyMute",
+          "canaux": {
+            "musique": true,
+            "effets": true
+          }
+        },
+        {
+          "nom": "reset réel",
+          "canaux": {
+            "musique": true,
+            "effets": true
+          }
+        },
+        {
+          "nom": "100 applyMute après reset",
+          "canaux": {
+            "musique": true,
+            "effets": true
+          }
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : émission réelle — synchro — échéance absente",
+    "valeur": {
+      "mode": "synchro",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11,
+            "attendu": 11,
+            "observe": 11,
+            "ecart": 0,
+            "attente": 0,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : émission réelle — synchro — échéance présente",
+    "valeur": {
+      "mode": "synchro",
+      "opts": {
+        "portail": 0.6,
+        "rythmeFin": 11.25
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11,
+            "attendu": 11,
+            "observe": 11,
+            "ecart": 0,
+            "attente": 0,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : émission réelle — desync — échéance absente",
+    "valeur": {
+      "mode": "desync",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11.08,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.08,
+            "attendu": 11.075132799195126,
+            "observe": 11.08,
+            "ecart": 0.004867200804874017,
+            "attente": -0.004867200804874017,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : émission réelle — desync — échéance présente",
+    "valeur": {
+      "mode": "desync",
+      "opts": {
+        "portail": 0.6,
+        "rythmeFin": 11.25
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11.08,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.08,
+            "attendu": 11.075132799195126,
+            "observe": 11.08,
+            "ecart": 0.004867200804874017,
+            "attente": -0.004867200804874017,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : minimum contractuel du portail, même sans option — synchro",
+    "valeur": {
+      "mode": "synchro",
+      "opts": {},
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11,
+            "attendu": 11,
+            "observe": 11,
+            "ecart": 0,
+            "attente": 0,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : changement de morceau annule, aucun faux positif — synchro",
+    "valeur": {
+      "mode": "synchro",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-annulation",
+          "d": {
+            "id": 1,
+            "type": "planeur",
+            "raison": "transport"
+          }
+        }
+      ],
+      "restant": []
+    }
+  },
+  {
+    "nom": "Temps VM : placement impossible reporte réellement l’émission — synchro",
+    "valeur": {
+      "mode": "synchro",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11.75,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.305,
+            "attendu": 11.75,
+            "observe": 11.75,
+            "ecart": 0,
+            "attente": 0.4450000000000003,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [],
+      "empeche": true,
+      "ecartAuTempsMs": 250
+    }
+  },
+  {
+    "nom": "Temps VM : minimum contractuel du portail, même sans option — desync",
+    "valeur": {
+      "mode": "desync",
+      "opts": {},
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11.08,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.08,
+            "attendu": 11.075132799195126,
+            "observe": 11.08,
+            "ecart": 0.004867200804874017,
+            "attente": -0.004867200804874017,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [
+        {
+          "id": 1,
+          "etat": "approche"
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Temps VM : changement de morceau annule, aucun faux positif — desync",
+    "valeur": {
+      "mode": "desync",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-annulation",
+          "d": {
+            "id": 1,
+            "type": "planeur",
+            "raison": "transport"
+          }
+        }
+      ],
+      "restant": []
+    }
+  },
+  {
+    "nom": "Temps VM : placement impossible reporte réellement l’émission — desync",
+    "valeur": {
+      "mode": "desync",
+      "opts": {
+        "portail": 0.6
+      },
+      "debut": 10.125,
+      "emissions": [
+        {
+          "id": 1,
+          "t": 11.75,
+          "x": 450,
+          "y": 150,
+          "morceau": "fixture"
+        }
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.305,
+            "attendu": 11.75,
+            "observe": 11.75,
+            "ecart": 0,
+            "attente": 0.4450000000000003,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ],
+      "restant": [],
+      "empeche": true,
+      "ecartAuTempsMs": 250
+    }
+  },
+  {
+    "nom": "Temps VM : livraison au pas suivant, pas de rétrodatage",
+    "valeur": {
+      "emissions": [
+        11.005
+      ],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "rythme-action",
+          "d": {
+            "type": "apparition",
+            "id": 1,
+            "morceau": "fixture",
+            "demande": 11.005,
+            "attendu": 11,
+            "observe": 11.005,
+            "ecart": 0.005000000000000782,
+            "attente": -0.005000000000000782,
+            "dureeTemps": 0.5,
+            "changementPiste": false
+          }
+        }
+      ]
+    }
+  },
+  {
+    "nom": "Audio VM : aucune coupure persistée hors audio-probe",
+    "valeur": {
+      "reglages": {
+        "musique": true,
+        "effets": true,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "doigts"
+      },
+      "canaux": {
+        "musique": false,
+        "effets": false
+      }
+    }
+  },
+  {
+    "nom": "Traçabilité : les deux modes ont chacun leur dossier brut",
+    "valeur": [
+      "sync-probe-paysage-bon-101-synchro",
+      "sync-probe-paysage-bon-101-desync"
+    ]
+  }
+]

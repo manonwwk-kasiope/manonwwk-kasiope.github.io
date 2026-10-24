@@ -11,11 +11,12 @@ import { fileURLToPath } from 'node:url';
 import { P,paris } from './protocole.mjs';
 import { flashs,sync,sensibilite,repereCarte,alignerSources,difficulte,mediane } from './analyse.mjs';
 import { testsJury } from './tests-jury.mjs';
+import { testsTemoins } from './tests-temoins.mjs';
 import { installer } from './sonde.mjs';
 import { conduireAventure } from './aventure.mjs';
 import { tampon,lireTampon,planche } from './images.mjs';
 import { construireTemoin,batirCopie } from './temoin.mjs';
-import { main,carteAlignee,audioPhysique,fichierStatique } from './banc.mjs';
+import { main,carteAlignee,audioPhysique,fichierStatique,optionsInstrumentSeul } from './banc.mjs';
 const HERE=path.dirname(fileURLToPath(import.meta.url)),ROOT=path.resolve(HERE,'../..');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const j=(f,v)=>fs.writeFileSync(path.join(HERE,f),JSON.stringify(v,null,2)+'\n');
@@ -90,7 +91,7 @@ export async function statique() {
   await test('Témoin construit dans une copie temporaire, syntaxe valide',()=>{
     const sources=()=>sha(Buffer.concat(fs.readdirSync(path.join(ROOT,'src')).filter(f=>f.endsWith('.js')).sort().map(f=>fs.readFileSync(path.join(ROOT,'src',f)))));
     const avant=sources(),t=construireTemoin();const html=fs.readFileSync(t.fichier,'utf8'),script=html.match(/<script>([\s\S]*)<\/script>/)[1];new vm.Script(script);
-    assert.equal(sources(),avant);assert.notEqual(t.sha256,preuve.bundle.apres);assert(html.includes('__JURY_TEMOIN'));assert(html.includes('o.portail=(o.portail||0)+rnd()'));
+    assert.equal(sources(),avant);assert.notEqual(t.sha256,preuve.bundle.apres);assert(html.includes('__JURY_TEMOIN'));assert(html.includes('o.rythmeFin=maintenant+o.portail'));
     preuve.temoin=t;return {code:t.buildCode,sha256:t.sha256,srcInchanges:true};
   });
   await test('Témoin reproductible, actifs identiques à la pointe, aucun chemin temporaire',()=>{
@@ -103,6 +104,19 @@ export async function statique() {
     preuve.temoin=second;return {sha256:second.sha256,referencesTemporaires:0,identiqueHorsAjout:true};
   });
   await testsJury({test,fixtures,preuve,HERE,ROOT});
+  await test('VM : dix références e1bdc6f identiques, reçu du chargeur courant',()=>{
+    const r=JSON.parse(fs.readFileSync(path.join(HERE,'validation-vm.json')));
+    assert.equal(r.harnaisSha256,sha(fs.readFileSync(path.join(HERE,'vm-temoins.mjs'))));
+    assert.equal(r.valide,true);assert(r.cas.length>=10);assert(r.cas.every(c=>c.identique&&!c.erreurs&&!c.erreursConsole.length));
+    return {reference:r.reference,identiques:r.cas.length};
+  });
+  await testsTemoins({test,ROOT,HERE});
+  await test('Revalidation ciblée : seules les sondes, aucun verdict de campagne',async()=>{
+    const r=optionsInstrumentSeul({serie:'etalonnage'});
+    assert.deepEqual(r.profils,[]);assert.deepEqual(r.pilotes,[]);assert(r.sansAventures&&r.sansPerformance&&r.instrumentSeul);
+    await assert.rejects(main(['--instrument-seul']),/exige --valider-instrument/);
+    return {profilsParties:r.profils,pilotesParties:r.pilotes,aventure:false,performance:false,qualificationComplete:false};
+  });
   preuve.reussi=preuve.controles.every(x=>x.ok);preuve.nombre=preuve.controles.length;preuve.echecs=preuve.controles.filter(x=>!x.ok).length;
   preuve.navigateur='non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe';j('verification-locale.json',preuve);
   console.log(JSON.stringify({reussi:preuve.reussi,controles:preuve.nombre,echecs:preuve.echecs,bundle:preuve.bundle,temoin:preuve.temoin?.sha256},null,2));

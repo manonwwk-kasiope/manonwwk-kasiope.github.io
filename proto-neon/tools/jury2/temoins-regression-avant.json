@@ -1,0 +1,215 @@
+{
+  "dateParis": "24/10/2026 12:05:48",
+  "avant": true,
+  "controles": [
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — synchro",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n"
+    },
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — desync",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- false\n"
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance absente",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Émission attendue à 11 s, obtenue 11.25"
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance présente",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Émission attendue à 11 s, obtenue 11.25"
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance absente",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Échéance indépendante non livrée : 11.25"
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance présente",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Échéance indépendante non livrée : 11.25"
+    },
+    {
+      "nom": "Temps VM : minimum contractuel du portail, même sans option — synchro",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(Math.abs(t - (mode === 'synchro' ? 11 : 11.075132799195126)) <= .005001)\n"
+    },
+    {
+      "nom": "Temps VM : changement de morceau annule, aucun faux positif — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-annulation",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "raison": "transport"
+            }
+          }
+        ],
+        "restant": []
+      }
+    },
+    {
+      "nom": "Temps VM : placement impossible reporte réellement l’émission — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.305,
+              "attendu": 11.75,
+              "observe": 11.75,
+              "ecart": 0,
+              "attente": 0.4450000000000003,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [],
+        "empeche": true,
+        "ecartAuTempsMs": 250
+      }
+    },
+    {
+      "nom": "Temps VM : minimum contractuel du portail, même sans option — desync",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(Math.abs(t - (mode === 'synchro' ? 11 : 11.075132799195126)) <= .005001)\n"
+    },
+    {
+      "nom": "Temps VM : changement de morceau annule, aucun faux positif — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-annulation",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "raison": "transport"
+            }
+          }
+        ],
+        "restant": []
+      }
+    },
+    {
+      "nom": "Temps VM : placement impossible reporte réellement l’émission — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.305,
+              "attendu": 11.75,
+              "observe": 11.75,
+              "ecart": 0,
+              "attente": 0.4450000000000003,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [],
+        "empeche": true,
+        "ecartAuTempsMs": 250
+      }
+    },
+    {
+      "nom": "Temps VM : livraison au pas suivant, pas de rétrodatage",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n+   11.255\n-   11.005\n  ]\n"
+    },
+    {
+      "nom": "Audio VM : aucune coupure persistée hors audio-probe",
+      "ok": true,
+      "valeur": {
+        "reglages": {
+          "musique": true,
+          "effets": true,
+          "secousse": 1,
+          "flashs": true,
+          "ecran": "riche",
+          "texte": 1,
+          "manche": 1,
+          "actions": "doigts"
+        },
+        "canaux": {
+          "musique": false,
+          "effets": false
+        }
+      }
+    },
+    {
+      "nom": "Traçabilité : les deux modes ont chacun leur dossier brut",
+      "ok": false,
+      "erreur": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(r[0].endsWith('-synchro'))\n"
+    }
+  ],
+  "echecs": 10
+}

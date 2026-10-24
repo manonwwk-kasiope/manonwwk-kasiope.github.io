@@ -12,16 +12,23 @@
    if(d<=reste)return reste;
    return reste+Math.ceil((d-reste)/T-1e-9)*T;
  }
+ /* 31 lit le curseur transport.rythme (version jouée), pas celui du fichier original.
+    L'échéance explicite évite le recalage demi-temps de dateNaissance(). */
+ function dater(o){
+   var tr=N.music.transport&&N.music.transport();
+   tr=tr&&(tr.rythme||tr);
+   var maintenant=tr&&isFinite(tr.t)?tr.t:N.rythme.lire().t;
+   var minimum=Math.max(N.R.apparitions.portail,o.portail||0);
+   o.portail=mode==='synchro'?versTemps(minimum):minimum+rnd()*0.9;
+   o.rythmeFin=maintenant+o.portail;
+   return o;
+ }
  N.ennemis.spawn=function(type,x,y,opts){
-   var o=Object.assign({},opts||{}),e;
-   if(mode==='synchro'){
-     o.portail=versTemps(o.portail||0.05);
-     return spawn.call(this,type,x,y,o);
-   }
-   o.portail=(o.portail||0)+rnd()*0.9;
+   var o=dater(Object.assign({},opts||{})),e;
+   if(mode==='synchro')return spawn.call(this,type,x,y,o);
    e=spawn.call(this,type,x,y,o);
    if(!o.ext&&DOUBLES.indexOf(type)>=0&&rnd()<0.6){
-     spawn.call(this,type,x+6,y+6,Object.assign({},o,{portail:(opts&&opts.portail||0)+rnd()*0.9}));
+     spawn.call(this,type,x+6,y+6,dater(Object.assign({},opts||{})));
    }
    return e;
  };

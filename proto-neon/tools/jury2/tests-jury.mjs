@@ -309,7 +309,7 @@ export async function testsJury({ test, fixtures, preuve, HERE }) {
     });
     await test('Témoin : source du module dégradé et du témoin positif, exécutée dans un contexte VM (retards, doublons, calage sur le temps)', () => {
       const monde = (mode, phase = .3, bpm = 120) => {
-        const appels = [], muet = []; const N = { ennemis: { spawn: (type, x, y, o) => { appels.push({ type, x, y, o }); return { type }; } }, music: { mute: (a, b) => { muet.push([a, b]); return true; }, beat: () => ({ phase }), tempo: () => bpm } };
+        const appels = [], muet = []; const N = { R: { apparitions: { portail: .6 } }, rythme: { lire: () => ({ t: 0 }) }, ennemis: { spawn: (type, x, y, o) => { appels.push({ type, x, y, o }); return { type }; } }, music: { mute: (a, b) => { muet.push([a, b]); return true; }, beat: () => ({ phase }), tempo: () => bpm } };
         const w = { __N: N, __JURY_TEMOIN_MODE: mode }; vm.runInNewContext(sourceAjout(), { window: w, Math, Object, isFinite, Number }); return { N, appels, muet, w };
       };
       const d = monde('desync'); for (let k = 0; k < 200; k++) d.N.ennemis.spawn('fleche', 0, 0, { portail: .6 });

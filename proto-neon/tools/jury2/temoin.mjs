@@ -1,6 +1,6 @@
 /* Fabrique un vrai bundle dégradé dans une copie temporaire, sans modifier src/.
    Deux modes, choisis à l'exécution par window.__JURY_TEMOIN_MODE (posé par le banc avant le chargement) :
-   - « desync » (par défaut, le témoin remis aux jurés) : musique coupée, apparitions retardées de 0 à retardMax s
+   - « desync » (par défaut, le témoin remis aux jurés) : musique coupée, échéances retardées de 0 à retardMax s
      par un générateur indépendant, et une part des poursuivants doublée (difficulté nettement plus haute,
      visible à l'image et dans la durée des parties) ;
    - « synchro » (témoin POSITIF, jamais remis aux jurés) : musique conservée, apparitions calées sur le prochain
@@ -30,16 +30,23 @@ export function sourceAjout(T = P.temoin) {
    if(d<=reste)return reste;
    return reste+Math.ceil((d-reste)/T-1e-9)*T;
  }
+ /* 31 lit le curseur transport.rythme (version jouée), pas celui du fichier original.
+    L'échéance explicite évite le recalage demi-temps de dateNaissance(). */
+ function dater(o){
+   var tr=N.music.transport&&N.music.transport();
+   tr=tr&&(tr.rythme||tr);
+   var maintenant=tr&&isFinite(tr.t)?tr.t:N.rythme.lire().t;
+   var minimum=Math.max(N.R.apparitions.portail,o.portail||0);
+   o.portail=mode==='synchro'?versTemps(minimum):minimum+rnd()*${T.retardMax};
+   o.rythmeFin=maintenant+o.portail;
+   return o;
+ }
  N.ennemis.spawn=function(type,x,y,opts){
-   var o=Object.assign({},opts||{}),e;
-   if(mode==='synchro'){
-     o.portail=versTemps(o.portail||0.05);
-     return spawn.call(this,type,x,y,o);
-   }
-   o.portail=(o.portail||0)+rnd()*${T.retardMax};
+   var o=dater(Object.assign({},opts||{})),e;
+   if(mode==='synchro')return spawn.call(this,type,x,y,o);
    e=spawn.call(this,type,x,y,o);
    if(!o.ext&&DOUBLES.indexOf(type)>=0&&rnd()<${T.doublonProba}){
-     spawn.call(this,type,x+6,y+6,Object.assign({},o,{portail:(opts&&opts.portail||0)+rnd()*${T.retardMax}}));
+     spawn.call(this,type,x+6,y+6,dater(Object.assign({},opts||{})));
    }
    return e;
  };
@@ -73,7 +80,7 @@ export function construireTemoin(sortie=path.join(HERE,'temoin')) {
   fs.mkdirSync(sortie,{recursive:true});
   const fichier=path.join(sortie,'index.html');fs.writeFileSync(fichier,html);
   const preuve={dateParis:paris(),buildCode:b.status,sha256:crypto.createHash('sha256').update(html).digest('hex'),
-    fichier,modes:MODES,modifications:['mode desync : musique coupée par le canal public musique','mode desync : portails prolongés par un retard pseudo-aléatoire indépendant de 0 à '+P.temoin.retardMax+' s','mode desync : '+Math.round(100*P.temoin.doublonProba)+' % des '+P.temoin.typesDoublables.join(', ')+' doublés','mode synchro (témoin positif) : portails calés sur le prochain temps audio, musique conservée'],
+    fichier,modes:MODES,modifications:['mode desync : musique coupée par le canal public musique','mode desync : portails prolongés par un retard pseudo-aléatoire indépendant de 0 à '+P.temoin.retardMax+' s','mode desync : '+Math.round(100*P.temoin.doublonProba)+' % des '+P.temoin.typesDoublables.join(', ')+' doublés','mode synchro (témoin positif) : rythmeFin imposé au prochain temps audio après le préavis minimal, musique conservée'],
     srcOriginalModifie:false,executionNavigateur:false,
     limite:'Construction et syntaxe seulement ; sensibilité à mesurer sur les sorties réelles, jamais déduite de la présence de ce patch.'};
   fs.writeFileSync(path.join(sortie,'preuve.json'),JSON.stringify(preuve,null,2)+'\n');
