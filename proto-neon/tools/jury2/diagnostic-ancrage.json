@@ -1,0 +1,957 @@
+{
+  "dateParis": "24/10/2026 12:17:48 (Paris)",
+  "source": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2",
+  "code": "J-625ea38c",
+  "attendus": 4,
+  "trouves": 5,
+  "annexe": {
+    "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/paquets/J-625ea38c/annexe/annexe.json",
+    "sha256": "e4fa8eda4e0ef783bb4cb60f5ff3bfe8cb6d1b263afa66061001d123f02258ae",
+    "champs": [
+      {
+        "champ": "/sequences/S02/mesures/R13/maxParSeconde",
+        "valeur": 13
+      },
+      {
+        "champ": "/sequences/S03/mesures/R13/maxParSeconde",
+        "valeur": 8
+      },
+      {
+        "champ": "/sequences/S04/mesures/R13/maxParSeconde",
+        "valeur": 13
+      },
+      {
+        "champ": "/sequences/S05/mesures/R13/maxParSeconde",
+        "valeur": 13
+      },
+      {
+        "champ": "/sequences/S06/mesures/R13/maxParSeconde",
+        "valeur": 5
+      },
+      {
+        "champ": "/sequences/S07/mesures/R13/maxParSeconde",
+        "valeur": 13
+      },
+      {
+        "champ": "/sequences/S02/mesures/R13/seuil",
+        "valeur": 3
+      },
+      {
+        "champ": "/sequences/S05/morts",
+        "valeur": [
+          {
+            "t": 116.35375000614783,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 3,
+            "y": 200.55578981275644,
+            "vague": 3,
+            "quartier": "ciel",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          {
+            "t": 155.7037500061319,
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 930.1454663148295,
+            "y": 253.8931135801465,
+            "vague": 4,
+            "quartier": "tours",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          {
+            "t": 180.37166667481307,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 260.32017807883466,
+            "vague": 4,
+            "quartier": "tours",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          {
+            "t": 217.6216666747792,
+            "cause": "ennemi",
+            "auteur": "traqueur",
+            "auteurId": 408,
+            "x": 522.4161258060208,
+            "y": 181.4196123853814,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 11.141666666666675,
+            "teleDuree": 0
+          },
+          {
+            "t": 244.09791667679204,
+            "cause": "ennemi",
+            "auteur": "traqueur",
+            "auteurId": 408,
+            "x": 343.60200740602716,
+            "y": 112.9015633510993,
+            "vague": 5,
+            "quartier": "coeur",
+            "visibleDepuis": 19.416666666666206,
+            "teleDuree": 0
+          }
+        ]
+      },
+      {
+        "champ": "/seuilsDuJeu/R08",
+        "valeur": {
+          "visible": 0.6,
+          "part": 0.95
+        }
+      },
+      {
+        "champ": "/synchronisationAgregee",
+        "valeur": {
+          "total": 1998,
+          "mesurables": 1980,
+          "dans40ms": 315,
+          "part": 0.1590909090909091,
+          "seuilMs": 40,
+          "seuilPart": 0.95
+        }
+      },
+      {
+        "champ": "/sequences/S08/mesures/R13/maxParSeconde",
+        "valeur": 6
+      },
+      {
+        "champ": "/sequences/S08/mesures/R13/conforme",
+        "valeur": true
+      }
+    ]
+  },
+  "jures": [
+    {
+      "jure": "C-joueuse",
+      "fichiers": [
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/C-joueuse/J-625ea38c.p1.json",
+          "sha256": "fc0ba8271515c5369915562a5f1c3733fff8ba33632a39bef1ff309b3f574161"
+        },
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/C-joueuse/J-625ea38c.p2.json",
+          "sha256": "de407565f22d16ae6ebf9ae3ceae54577bf992507b1398db5330ec27c835f585"
+        }
+      ],
+      "notePasse1": 7,
+      "notePasse2": 6,
+      "ecart": -1,
+      "defautsGravesPasse1": [],
+      "defautsMineursPasse1": [
+        {
+          "constat": "Des textes d'annonce ou d'aide (V2 : LASSO x3, V5 : x5 AVANT LA PURGE, VOL PARFAIT, LE PLATEAU AVANCE) sont posés sur la tête du serpent, en portrait comme en paysage.",
+          "preuves": [
+            "p9",
+            "p10",
+            "p11",
+            "p12"
+          ]
+        },
+        {
+          "constat": "Des piles de chiffres de score et des explosions recouvrent la tête dans les moments chargés (S07 mort-1, S05 mort-5, S02 mort-2).",
+          "preuves": [
+            "p13",
+            "p14",
+            "p21"
+          ]
+        },
+        {
+          "constat": "L'ennemi TRAQUEUR est un point rose d'une dizaine de pixels, parfois sous un bandeau ou des explosions ; sa règle (seul un lasso le tue) n'est lue qu'après la mort, dans trois séquences.",
+          "preuves": [
+            "p15",
+            "p16",
+            "p17"
+          ]
+        },
+        {
+          "constat": "Le mur électrifié et le laser de sentinelle sont des traits d'un pixel, peu contrastés, avant la mort ; la cause n'est nommée qu'après.",
+          "preuves": [
+            "p5",
+            "p7",
+            "p8"
+          ]
+        },
+        {
+          "constat": "Dans l'aventure en paysage (S04), le joueur est un trait de quelques pixels devant un vaisseau géant.",
+          "preuves": [
+            "p18"
+          ]
+        }
+      ],
+      "defautsGravesPasse2": [
+        {
+          "constat": "Le seuil R13 (3 flashs par seconde) est dépassé dans six séquences : S02 13, S03 8, S04 13, S05 13, S06 5, S07 13 (conforme=false) ; dépassement de seuil = défaut grave pour la joueuse.",
+          "preuves": [
+            "g1",
+            "g2",
+            "g3",
+            "g4",
+            "g5",
+            "g6"
+          ]
+        },
+        {
+          "constat": "Trois morts de S05 (deux murs, un convoi) surviennent sans menace visible ni télégraphe (visibleDepuis=0, teleDuree=0) ; part de menaces vues 85 % pour 95 % exigés. Les cases 13 des planches mort-1 et mort-3 de S05 montrent un mur d'un pixel avant l'impact.",
+          "preuves": [
+            "g7",
+            "g8",
+            "p7",
+            "p8"
+          ]
+        }
+      ],
+      "preuvesAnnexePasse2": [
+        {
+          "id": "g1",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13/maxParSeconde",
+          "observation": "S02 : 13 flashs par seconde mesurés pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g2",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S03/mesures/R13/maxParSeconde",
+          "observation": "S03 : 8 flashs par seconde pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g3",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S04/mesures/R13/maxParSeconde",
+          "observation": "S04 : 13 flashs par seconde pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g4",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/mesures/R13/maxParSeconde",
+          "observation": "S05 : 13 flashs par seconde pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g5",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S06/mesures/R13/maxParSeconde",
+          "observation": "S06 : 5 flashs par seconde pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g6",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/R13/maxParSeconde",
+          "observation": "S07 : 13 flashs par seconde pour un seuil de 3 (conforme=false)."
+        },
+        {
+          "id": "g7",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/morts",
+          "observation": "S05 : trois morts (mur à 116,4 s_jeu, convoi à 155,7 s_jeu, mur à 180,4 s_jeu) avec visibleDepuis=0 et teleDuree=0, contre un seuil R08 de 0,6 s ; 17 morts sur 20 ont une menace visible, soit 85 % pour une part exigée de 95 %."
+        },
+        {
+          "id": "g8",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R08",
+          "observation": "Seuil R08 : visible 0,6 s, part 0,95."
+        },
+        {
+          "id": "a7",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/conforme",
+          "observation": "S08 : maxParSeconde=6 (seuil 3) mais conforme=true, alors que S02 à S07 sont marquées conforme=false pour un dépassement du même seuil."
+        },
+        {
+          "id": "a8",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/conformeP95",
+          "observation": "Performance paysage scène « charge » : p95Ms=4,1 ms, seuil R20 x1 de 11 ms, et pourtant conformeP95=false."
+        }
+      ],
+      "diagnostic": "7 → 6 : mixte, l’annexe révèle le dépassement R13 non établi sur les images échantillonnées (g1–g6) et requalifie aussi en grave une faible lisibilité des murs déjà signalée en passe 1 grâce aux visibleDepuis/teleDuree nuls des morts S05 (g7–g8)."
+    },
+    {
+      "jure": "X-da",
+      "fichiers": [
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-da/J-625ea38c.p1.json",
+          "sha256": "063c94ea0b82574a544c6daab53dd5840e7bff139cf633637d87aac1601d54ff"
+        },
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-da/J-625ea38c.p2.json",
+          "sha256": "cf33104b5f1cfea7d4db229e0fe0fa1cadce8371300087dc2c9304a48cf37a77"
+        }
+      ],
+      "notePasse1": 8,
+      "notePasse2": 7,
+      "ecart": -1,
+      "defautsGravesPasse1": [],
+      "defautsMineursPasse1": [
+        {
+          "constat": "Les bandeaux opaques de vague et d'avertissement coupent ponctuellement la silhouette du serpent dans l'aire de jeu.",
+          "preuves": [
+            "d1",
+            "d2"
+          ]
+        },
+        {
+          "constat": "Les gains chiffrés, explosions et libellés se superposent autour du serpent ; leur empilement concurrence la lecture de sa tête et des petits ennemis.",
+          "preuves": [
+            "d3",
+            "d4"
+          ]
+        },
+        {
+          "constat": "À l'entrée du WARP, les soucoupes violet sombre se détachent peu du fond spatial et des éléments de décor de teinte voisine.",
+          "preuves": [
+            "d5"
+          ]
+        }
+      ],
+      "defautsGravesPasse2": [
+        {
+          "constat": "La porte visuelle R-13 dépasse son seuil de 3 flashs par seconde : maximum 13 en S02, S04, S05 et S07, 8 en S03, 5 en S06. Ces mesures cohérentes entre maximum, seuil et instants constituent un défaut grave des effets visuels.",
+          "preuves": [
+            "g1",
+            "g2",
+            "g3",
+            "g4",
+            "g5",
+            "g6",
+            "g7"
+          ]
+        }
+      ],
+      "preuvesAnnexePasse2": [
+        {
+          "id": "g1",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; maximum daté a=31,0462 s_reel. La liste des instants confirme 13 transitions sur une seconde."
+        },
+        {
+          "id": "g2",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S03/mesures/R13",
+          "observation": "maxParSeconde=8, seuil=3, conforme=false ; recomptage des instants : maximum 8."
+        },
+        {
+          "id": "g3",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S04/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; recomptage des instants : maximum 13."
+        },
+        {
+          "id": "g4",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; recomptage des instants : maximum 13."
+        },
+        {
+          "id": "g5",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S06/mesures/R13",
+          "observation": "maxParSeconde=5, seuil=3, conforme=false ; recomptage des instants : maximum 5."
+        },
+        {
+          "id": "g6",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; recomptage des instants : maximum 13."
+        },
+        {
+          "id": "a7",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/maxParSeconde",
+          "observation": "Maximum annoncé 6, alors que le seuil voisin est 3."
+        },
+        {
+          "id": "a8",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/conforme",
+          "observation": "conforme=true malgré maxParSeconde=6 > seuil=3."
+        },
+        {
+          "id": "a9",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/instants",
+          "observation": "Treize instants se trouvent dans ]28,0949 ; 29,0949] s_reel, de 28,0955 à 29,0949 ; ils contredisent le maximum 6."
+        },
+        {
+          "id": "a10",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/echantillon/21",
+          "observation": "Le pire cas conserve flashsParSeconde=13 et la fenêtre [28,095 ; 29,095] s_reel, cohérents avec les instants mais pas avec le maximum 6."
+        },
+        {
+          "id": "a12",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/p95Ms",
+          "observation": "p95Ms=4,099999999627471 pour la scène charge en paysage."
+        },
+        {
+          "id": "a13",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/conformeP95",
+          "observation": "conformeP95=false malgré une valeur inférieure aux seuils R-20 publiés."
+        },
+        {
+          "id": "a14",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R20/x1",
+          "observation": "Plafond x1=11 ms ; 4,10 ms lui est inférieur."
+        },
+        {
+          "id": "a15",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R20/x4",
+          "observation": "Plafond x4=25 ms ; 4,10 ms lui est inférieur."
+        }
+      ],
+      "diagnostic": "8 → 7 : nouveau dépassement R13 de l’annexe (g1–g6), absent des défauts de passe 1 ; les trois défauts mineurs restent identiques et S08 contradictoire est écarté."
+    },
+    {
+      "jure": "X-gd",
+      "fichiers": [
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-gd/J-625ea38c.p1.json",
+          "sha256": "0cc709fec36e84102b77c33c8cdc8bfe6e0b5d68265d492458b83b34c4094eec"
+        },
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-gd/J-625ea38c.p2.json",
+          "sha256": "354a748a92e1344876890c009f40f1c6e604d44ef05ce353ac04c29b29527f7b"
+        }
+      ],
+      "notePasse1": 7.5,
+      "notePasse2": 7,
+      "ecart": -0.5,
+      "defautsGravesPasse1": [],
+      "defautsMineursPasse1": [
+        {
+          "constat": "Creux récurrent : entre 20 et 25,4 s_video dans S05 et S07, les images décodées montrent cellules et tirs de la joueuse, sans ennemi ni télégraphe visible ; la collecte remplace la pression pendant plus de 4 s.",
+          "preuves": [
+            "p1",
+            "p2",
+            "p3",
+            "p4"
+          ]
+        },
+        {
+          "constat": "L'annonce « LE PLATEAU AVANCE » recouvre une bande de l'arène alors que menaces et déplacement restent actifs, avant les morts S02-3 et S05-4.",
+          "preuves": [
+            "p5",
+            "p6"
+          ]
+        },
+        {
+          "constat": "Les nombres de récompense et explosions se superposent au voisinage immédiat de la tête et des menaces dans S05 et S07 ; la lecture du contact est localement encombrée.",
+          "preuves": [
+            "p7",
+            "p8"
+          ]
+        }
+      ],
+      "defautsGravesPasse2": [
+        {
+          "constat": "La porte de confort R-13 échoue pendant le parcours : 13 transitions détectées par seconde pour un seuil de 3 dans S02, S04, S05 et S07. Le dépassement concerne le confort de lecture du jeu ; ce détecteur ne constitue pas à lui seul une certification de risque WCAG.",
+          "preuves": [
+            "p26",
+            "p27",
+            "p28",
+            "p29",
+            "p30",
+            "p31"
+          ]
+        }
+      ],
+      "preuvesAnnexePasse2": [
+        {
+          "id": "p26",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13/maxParSeconde",
+          "observation": "13 transitions détectées dans une seconde."
+        },
+        {
+          "id": "p27",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13/seuil",
+          "observation": "Seuil R-13 : 3 par seconde ; conforme=false."
+        },
+        {
+          "id": "p28",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/mesures/R13/maxParSeconde",
+          "observation": "13 par seconde, pour seuil 3 et conforme=false."
+        },
+        {
+          "id": "p29",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/R13/maxParSeconde",
+          "observation": "13 par seconde, pour seuil 3 et conforme=false."
+        },
+        {
+          "id": "p30",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S04/mesures/R13/maxParSeconde",
+          "observation": "13 par seconde, pour seuil 3 et conforme=false, pendant la visite de contenu."
+        },
+        {
+          "id": "p31",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13/limite",
+          "observation": "Transitions agrégées du tampon ; recouvrement spatial non prouvé, pas une certification WCAG."
+        },
+        {
+          "id": "p32",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/maxParSeconde",
+          "observation": "Maximum annoncé 6, en contradiction avec les treize instants de la fenêtre et l'échantillon."
+        },
+        {
+          "id": "p33",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/seuil",
+          "observation": "Seuil 3, inférieur au maximum annoncé de 6."
+        },
+        {
+          "id": "p34",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/conforme",
+          "observation": "true, malgré maxParSeconde=6 et seuil=3."
+        },
+        {
+          "id": "p35",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/instants",
+          "observation": "Les treize premiers instants vont de 28,0955 à 29,0949 s_reel, tous compris dans une seconde."
+        },
+        {
+          "id": "p36",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/echantillon/21/flashsParSeconde",
+          "observation": "13 dans la fenêtre [28,095 ; 29,095], et non 6."
+        },
+        {
+          "id": "p37",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/p95Ms",
+          "observation": "4,099999999627471 ms."
+        },
+        {
+          "id": "p38",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/conformeP95",
+          "observation": "false, contrairement à la valeur sous les trois seuils R20."
+        },
+        {
+          "id": "p39",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R20",
+          "observation": "x1=11 ms, x4=25 ms, iphone=16,7 ms ; 4,10 ms est inférieur à chacun."
+        },
+        {
+          "id": "p40",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/morts/1/teleDuree",
+          "observation": "Le préavis du convoi est donné à 0."
+        },
+        {
+          "id": "p41",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/echantillon/16/w",
+          "observation": "Mort par convoi rattachée à S05/planche-mort-2.png, w=195,002 s_reel."
+        },
+        {
+          "id": "p45",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/difficulte",
+          "observation": "Huit cellules pilote/profil, n=1 chacune ; conforme=null et statut indéterminé ; absence de comparaison mesurée à difficulté fixe."
+        },
+        {
+          "id": "p46",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/adapte",
+          "observation": "existe=false ; raison : N.adapte absent de cette build."
+        },
+        {
+          "id": "p47",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/echantillon/18/teleDuree",
+          "observation": "Préavis du laser de sentinelle : 2,1865559478458074 s ; raccord par w=271,565 s_reel à la planche-mort-1."
+        },
+        {
+          "id": "p48",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/echantillon/18/visibleDepuis",
+          "observation": "Menace visible depuis 1,3749999999999976 s avant la mort."
+        }
+      ],
+      "diagnostic": "7,5 → 7 : nouveau dépassement R13 de l’annexe (p26–p31), seul défaut devenu grave ; les trois défauts mineurs de passe 1 sont maintenus et le teleDuree nul du convoi S05 est explicitement écarté comme anomalie."
+    },
+    {
+      "jure": "X-joueuse",
+      "fichiers": [
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-joueuse/J-625ea38c.p1.json",
+          "sha256": "b9bef43f686b81210e67e5feb645bf70b172f28e3143b0baf6b128a61aff401a"
+        },
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-joueuse/J-625ea38c.p2.json",
+          "sha256": "e6ca593045b28e88250a81d57c78b79bfb09a65e0e6a23b921e63e7d49f4bd7c"
+        }
+      ],
+      "notePasse1": 7.5,
+      "notePasse2": 7,
+      "ecart": -0.5,
+      "defautsGravesPasse1": [],
+      "defautsMineursPasse1": [
+        {
+          "constat": "Des annonces opaques recouvrent le terrain pendant l'action : « LE PLATEAU AVANCE » en paysage et « VAGUE 4 ESSAIM » sur le corps en portrait.",
+          "preuves": [
+            "d1",
+            "d2"
+          ]
+        },
+        {
+          "constat": "Les explosions et gains de points se superposent à la tête ou au corps cyan, réduisant localement la lecture de la joueuse et des menaces proches.",
+          "preuves": [
+            "d3",
+            "d4"
+          ]
+        },
+        {
+          "constat": "Les choix affichent plusieurs lignes de caractéristiques en petits caractères gris sur fond sombre ; la lecture des effets et recharges est moins nette que celle des titres.",
+          "preuves": [
+            "d5",
+            "d6"
+          ]
+        }
+      ],
+      "defautsGravesPasse2": [
+        {
+          "constat": "La porte de confort R-13 est dépassée : maximum de 13 flashs/s en S02, S04, S05 et S07, de 8 en S03 et de 5 en S06, pour un seuil de 3. Ces mesures cohérentes abaissent la note de 7,5 à 7 ; la valeur contradictoire S08 est écartée.",
+          "preuves": [
+            "g1",
+            "g2",
+            "g3",
+            "g4",
+            "g5",
+            "g6",
+            "g7"
+          ]
+        }
+      ],
+      "preuvesAnnexePasse2": [
+        {
+          "id": "g1",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; maximum recompté à 13 sur les instants fournis."
+        },
+        {
+          "id": "g2",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S03/mesures/R13",
+          "observation": "Portrait : maxParSeconde=8, seuil=3, conforme=false ; liste d'instants cohérente."
+        },
+        {
+          "id": "g3",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S04/mesures/R13",
+          "observation": "Paysage, visite d'aventure : maxParSeconde=13, seuil=3, conforme=false ; aucun usage pour mesurer la difficulté."
+        },
+        {
+          "id": "g4",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; liste d'instants cohérente."
+        },
+        {
+          "id": "g5",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S06/mesures/R13",
+          "observation": "Portrait : maxParSeconde=5, seuil=3, conforme=false ; liste d'instants cohérente."
+        },
+        {
+          "id": "g6",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/R13",
+          "observation": "maxParSeconde=13, seuil=3, conforme=false ; liste d'instants cohérente."
+        },
+        {
+          "id": "g7",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R13/flashsParSeconde",
+          "observation": "Seuil du jeu : 3 flashs par seconde."
+        },
+        {
+          "id": "a12",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13",
+          "observation": "Le même bloc annonce maxParSeconde=6, seuil=3 et conforme=true."
+        },
+        {
+          "id": "a13",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/instants",
+          "observation": "13 instants dans la fenêtre ]28,0949 ; 29,0949] s_reel ; contredit le maximum annoncé de 6."
+        },
+        {
+          "id": "a14",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/echantillon/21/flashsParSeconde",
+          "observation": "La pièce de pire seconde annonce 13 flashs/s, contre 6 dans mesures/R13."
+        },
+        {
+          "id": "a15",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/conforme",
+          "observation": "true est incompatible avec 6>3."
+        },
+        {
+          "id": "a16",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/p95Ms",
+          "observation": "p95=4,0999999996 ms pour la scène charge."
+        },
+        {
+          "id": "a17",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0/conformeP95",
+          "observation": "false alors que 4,10 ms est sous les seuils p95 fournis."
+        },
+        {
+          "id": "a18",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R20",
+          "observation": "Seuils : x1=11 ms, x4=25 ms, iPhone=16,7 ms."
+        }
+      ],
+      "diagnostic": "7,5 → 7 : nouvel élément chiffré de l’annexe, R13 maxParSeconde de 5 à 13 contre seuil 3 sur S02–S07 (g1–g7), explicitement donné comme raison de la baisse ; S08 contradictoire exclu."
+    },
+    {
+      "jure": "X-rythme",
+      "fichiers": [
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-rythme/J-625ea38c.p1.json",
+          "sha256": "33a55986278ab1b0c53a75b91aae075be111f8131a0eae1702ef024125d8fb52"
+        },
+        {
+          "fichier": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2/verdicts/X-rythme/J-625ea38c.p2.json",
+          "sha256": "e5d590c5acb03b566b4f7dfd3643f92e8f023d81a9597d30b74da2c3b27cf52e"
+        }
+      ],
+      "notePasse1": 6.5,
+      "notePasse2": 5,
+      "ecart": -1.5,
+      "defautsGravesPasse1": [],
+      "defautsMineursPasse1": [
+        {
+          "constat": "Les apparitions restent hors des temps : 0/11 dans ±40 ms au début de S02 et 0/6 dans S08 ; le calage majoritaire demandé par l'ancre 7 manque dans ces fenêtres.",
+          "preuves": [
+            "p1",
+            "p2"
+          ]
+        },
+        {
+          "constat": "Le premier départ de vague arrive à 163,85 ms d'un temps dans S05 et à 175,46 ms dans S07, au-delà des ±40 ms du tapis.",
+          "preuves": [
+            "p3",
+            "p4"
+          ]
+        },
+        {
+          "constat": "Au cyclope, seulement 28 des 56 tirs ennemis sont dans ±40 ms dans chacune des fenêtres S04 et S07 ; des salves entières restent décalées.",
+          "preuves": [
+            "p5",
+            "p6"
+          ]
+        },
+        {
+          "constat": "Dans S07, le premier break ne produit pas de retenue visuelle nette : explosions et ennemis persistent après le repère, et l'énergie moyenne passe de 0,23027 à 0,24020 entre les 1,5 s avant et après.",
+          "preuves": [
+            "p7",
+            "p8",
+            "p9"
+          ]
+        }
+      ],
+      "defautsGravesPasse2": [
+        {
+          "constat": "La synchronisation échoue au seuil de 95 % à ±40 ms : les parties ordinaires n'atteignent que 315/1980 événements mesurables (15,91 %). Les apparitions, tirs et vagues déjà signalés en passe 1 relèvent de ce même défaut de calage.",
+          "preuves": [
+            "p18",
+            "p19",
+            "p20",
+            "p21",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6"
+          ]
+        },
+        {
+          "constat": "La porte R-13 est dépassée : 13 flashs par seconde pour un seuil de 3 dans S02, S04, S05 et S07. Ce dépassement mesuré touche les accents visuels rythmiques ; la mesure de S08, contradictoire, est écartée.",
+          "preuves": [
+            "p22",
+            "p23",
+            "p24",
+            "p25"
+          ]
+        }
+      ],
+      "preuvesAnnexePasse2": [
+        {
+          "id": "p18",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/synchronisationAgregee",
+          "observation": "total=1998 ; mesurables=1980 ; dans40ms=315 ; part=0,1590909091 ; seuilMs=40 ; seuilPart=0,95. Sommes reproduites sur les seules séquences de genre partie."
+        },
+        {
+          "id": "p19",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/synchronisation/apparition",
+          "observation": "0/34 apparitions mesurables dans40ms, part=0, conforme=false ; prolonge le constat du tapis de début."
+        },
+        {
+          "id": "p20",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/synchronisation/tir-ennemi",
+          "observation": "112/301 tirs dans40ms ; part=0,3720930233 ; conforme=false."
+        },
+        {
+          "id": "p21",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/synchronisation/vague",
+          "observation": "4/5 départs dans40ms ; part=0,8 ; conforme=false."
+        },
+        {
+          "id": "p22",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S02/mesures/R13",
+          "observation": "maxParSeconde=13 ; seuil=3 ; conforme=false ; borne a=31,0462 s_reel."
+        },
+        {
+          "id": "p23",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S04/mesures/R13",
+          "observation": "maxParSeconde=13 ; seuil=3 ; conforme=false ; borne a=111,4064 s_reel."
+        },
+        {
+          "id": "p24",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S05/mesures/R13",
+          "observation": "maxParSeconde=13 ; seuil=3 ; conforme=false ; borne a=29,3939 s_reel."
+        },
+        {
+          "id": "p25",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S07/mesures/R13",
+          "observation": "maxParSeconde=13 ; seuil=3 ; conforme=false ; borne a=29,3764 s_reel."
+        },
+        {
+          "id": "p26",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13",
+          "observation": "Contradiction interne : maxParSeconde=6, seuil=3, conforme=true."
+        },
+        {
+          "id": "p27",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/sequences/S08/mesures/R13/instants",
+          "observation": "Les 13 premiers instants vont de 28,0955 à 29,0949 s_reel : 13 transitions dans 0,9994 s, ce qui contredit aussi maxParSeconde=6."
+        },
+        {
+          "id": "p28",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/performance/0",
+          "observation": "p95Ms=4,0999999996 ; conformeP95=false ; genre=performance, scène=charge."
+        },
+        {
+          "id": "p29",
+          "fichier": "annexe/annexe.json",
+          "temps": null,
+          "champ": "/seuilsDuJeu/R20",
+          "observation": "Seuils x1=11 ms, x4=25 ms ; la valeur 4,10 ms est inférieure aux deux."
+        }
+      ],
+      "diagnostic": "6,5 → 5 : mixte, nouveau dépassement R13 révélé par l’annexe (p22–p25) et reclassement en grave d’un défaut de synchronisation déjà chiffré en passe 1 sur les tapis (p1–p6), agrégé en passe 2 à 315/1980 (p18–p21) ; ventilation de la baisse non fournie."
+    }
+  ],
+  "reste": null,
+  "notePerimetre": "Trois paires à la première lecture ; cinq paires disponibles à la relève de 12 h 17. Toutes les cinq sont incluses."
+}

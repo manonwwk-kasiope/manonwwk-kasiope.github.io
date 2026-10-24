@@ -1,5 +1,5 @@
 {
-  "dateParis": "24/10/2026 12:05:59 (Paris)",
+  "dateParis": "24/10/2026 12:20:58 (Paris)",
   "portee": "Instrument et construction uniquement ; aucun jeu simulé, aucun serveur, aucun navigateur, aucune sortie réseau.",
   "controles": [
     {
@@ -18,6 +18,7 @@
         "sonde.mjs",
         "tapis.mjs",
         "temoin.mjs",
+        "tests-canaris-regards.mjs",
         "tests-jury.mjs",
         "tests-temoins.mjs",
         "valider-vm.mjs",
@@ -363,6 +364,191 @@
       "valeur": {
         "densite": 20,
         "base": 8
+      }
+    },
+    {
+      "nom": "Accessibilité : fixture montée, chaque regard reçoit tous les défauts de passe 1",
+      "ok": true,
+      "valeur": {
+        "code": "J-3f9a1c7e",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 229
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 222
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 222
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 229
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 236
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-625ea38c, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-b632cd0a, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-611ad6f4, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : noms neutres, tirage crypto, listes indépendantes des défauts et doublon préservé",
+      "ok": true,
+      "valeur": {
+        "code": "J-1c31d1a5",
+        "doublon": "J-245bc2c6",
+        "listesIndependantes": true
       }
     },
     {
@@ -957,10 +1143,10 @@
     "code": 0
   },
   "temoin": {
-    "dateParis": "24/10/2026 12:06:00 (Paris)",
+    "dateParis": "24/10/2026 12:20:59 (Paris)",
     "buildCode": 0,
     "sha256": "6802c5fea9f16fe47351ff6ce5a596645f2f4e7be01ef6c41602d86fff00c41d",
-    "fichier": "/Users/manonwojciechowski/Projets/wt-snake/codex-di2/proto-neon/tools/jury2/temoin/index.html",
+    "fichier": "/Users/manonwojciechowski/Projets/wt-snake/codex-di3/proto-neon/tools/jury2/temoin/index.html",
     "modes": [
       "desync",
       "synchro"
@@ -975,8 +1161,451 @@
     "executionNavigateur": false,
     "limite": "Construction et syntaxe seulement ; sensibilité à mesurer sur les sorties réelles, jamais déduite de la présence de ce patch."
   },
+  "accessibilite": {
+    "dateParis": "24/10/2026 12:21:00 (Paris)",
+    "sourceReelle": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2",
+    "temporaire": "/private/var/folders/bp/283k11m11rq76sjc8c_wg97r0000gn/T/snake-codex-di3-FRDFm4",
+    "fixture": {
+      "code": "J-3f9a1c7e",
+      "regards": {
+        "joueuse iPhone": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 229
+        },
+        "game design": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 222
+        },
+        "rythme et musique": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 222
+        },
+        "direction artistique": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 229
+        },
+        "avocat du diable": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 236
+        }
+      }
+    },
+    "originaux": [
+      {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 399
+          },
+          "game design": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 167
+          },
+          "rythme et musique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 247
+          },
+          "direction artistique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 201
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S08/planche-vague-1.png",
+                "fichierJson": "S08/planche-vague-1.json"
+              }
+            ],
+            "fichiers": 385
+          }
+        }
+      },
+      {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 399
+          },
+          "game design": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              },
+              {
+                "id": "flash-plein-ecran",
+                "fichier": "S09/planche-uniforme-4.png",
+                "fichierJson": "S09/planche-uniforme-4.json"
+              }
+            ],
+            "fichiers": 167
+          },
+          "rythme et musique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              },
+              {
+                "id": "flash-plein-ecran",
+                "fichier": "S09/planche-uniforme-4.png",
+                "fichierJson": "S09/planche-uniforme-4.json"
+              }
+            ],
+            "fichiers": 247
+          },
+          "direction artistique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 201
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 385
+          }
+        }
+      },
+      {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              }
+            ],
+            "fichiers": 433
+          },
+          "game design": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 179
+          },
+          "rythme et musique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 267
+          },
+          "direction artistique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 209
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              }
+            ],
+            "fichiers": 407
+          }
+        }
+      }
+    ],
+    "reconstructions": [
+      {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      },
+      {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      },
+      {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          }
+        }
+      }
+    ]
+  },
   "reussi": true,
-  "nombre": 59,
+  "nombre": 64,
   "echecs": 0,
   "navigateur": "non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe"
 }

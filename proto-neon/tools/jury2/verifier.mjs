@@ -12,6 +12,7 @@ import { P,paris } from './protocole.mjs';
 import { flashs,sync,sensibilite,repereCarte,alignerSources,difficulte,mediane } from './analyse.mjs';
 import { testsJury } from './tests-jury.mjs';
 import { testsTemoins } from './tests-temoins.mjs';
+import { testsCanarisRegards } from './tests-canaris-regards.mjs';
 import { installer } from './sonde.mjs';
 import { conduireAventure } from './aventure.mjs';
 import { tampon,lireTampon,planche } from './images.mjs';
@@ -104,6 +105,7 @@ export async function statique() {
     preuve.temoin=second;return {sha256:second.sha256,referencesTemporaires:0,identiqueHorsAjout:true};
   });
   await testsJury({test,fixtures,preuve,HERE,ROOT});
+  await testsCanarisRegards({test,preuve});
   await test('VM : dix références e1bdc6f identiques, reçu du chargeur courant',()=>{
     const r=JSON.parse(fs.readFileSync(path.join(HERE,'validation-vm.json')));
     assert.equal(r.harnaisSha256,sha(fs.readFileSync(path.join(HERE,'vm-temoins.mjs'))));

@@ -180,7 +180,7 @@ export async function testsJury({ test, fixtures, preuve, HERE }) {
       assert(!tous.some(f => f.startsWith('..')) && !fs.existsSync(path.join(racine, 'cles')), 'la clé n’est jamais dans le paquet');
       assert(!JSON.stringify(pq).includes(cle.bundleSha256)); assert(!pq.fichiers.some(f => f.chemin.startsWith('annexe/')), 'passe 1 : l’annexe n’est pas listée');
       const aff = new Set(Object.keys(pq.parRegard)); for (const r of REGARDS) { assert(aff.has(r)); assert(pq.parRegard[r].length > 0, 'regard sans fichier : ' + r); assert(!pq.parRegard[r].some(f => f.startsWith('annexe/'))); }
-      assert(pq.parRegard['rythme et musique'].some(f => /tapis-/.test(f)), 'le regard rythme reçoit les tapis'); assert(!pq.parRegard['joueuse iPhone'].some(f => /tapis-/.test(f)));
+      for (const r of REGARDS) assert(pq.parRegard[r].some(f => /tapis-/.test(f)), r + ' reçoit aussi les tapis du socle commun');
       assert(!pq.parRegard['joueuse iPhone'].some(f => /\/bureau|S\d\d\/.*bureau/.test(f)) || true);
       for (const f of pq.fichiers) assert.equal(sha(fs.readFileSync(path.join(racine, f.chemin))), f.sha256, 'empreinte : ' + f.chemin);
       const plJson = pq.fichiers.filter(f => f.categorie === 'planche-meta').map(f => fs.readFileSync(path.join(racine, f.chemin), 'utf8')).join('\n'); assert(!/"cause"|visibleDepuis|teleDuree|coutMs|flashsParSeconde/.test(plJson), 'aucun chiffre d’annexe en passe 1');

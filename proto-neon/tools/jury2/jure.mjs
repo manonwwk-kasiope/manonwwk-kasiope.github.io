@@ -198,10 +198,21 @@ export async function construirePaquet(o) {
   for (const f of ['grille.md', 'consigne-jure.md']) S.copier(path.join(HERE, f), f, 'regle');
   const parRegard = {};
   const plancheMeta = S.fichiers.filter(f => f.categorie === 'planche');
+  /* Socle commun indépendant du tirage : toutes les pièces candidates aux défauts de passe 1,
+     PNG ET JSON, tous profils. Ajouter seulement les pièces plantées les désignerait aux jurés.
+     L'intersection des affectations spécialisées est vide (catégories/profils/tapis différents).
+     Les clips et fiches restent affectés par spécialité ; l'annexe reste réservée à la passe 2.
+     Ce socle vaut aussi sans canaris et ne change ni le tirage crypto ni les noms neutres. */
+  const commun = S.fichiers.filter(f => ['planche', 'planche-meta', 'tapis', 'tapis-meta'].includes(f.categorie));
   for (const r of REGARDS) {
     const a = AFFECTATION[r], profilsDispo = new Set(plancheMeta.map(f => f.profil)), profils = a.profils.filter(p => profilsDispo.has(p)), pp = profils.length ? profils : [...profilsDispo];
     const sel = S.fichiers.filter(f => pp.includes(f.profil) && ((f.categorie === 'planche' && a.categories.includes(f.regardCat)) || (a.tapis && ['tapis', 'tapis-meta'].includes(f.categorie)) || f.categorie === 'planche-meta' && a.categories.includes(f.regardCat) || ['clip', 'clip-meta', 'fiche'].includes(f.categorie)));
-    parRegard[r] = sel.map(f => f.chemin).sort();
+    parRegard[r] = [...new Set([...sel, ...commun].map(f => f.chemin))].sort();
+  }
+  for (const c of plantes.filter(c => c.passe === 1)) for (const r of REGARDS) {
+    if (![c.fichier, c.fichierJson].every(f => f && parRegard[r].includes(f))) {
+      throw Error('Défaut de passe 1 inaccessible à un regard : ' + r + ' / ' + c.id);
+    }
   }
   const passe1 = S.fichiers.filter(f => !['annexe'].includes(f.categorie)), empreinte = sha(passe1.map(f => f.chemin + '\t' + f.sha256).sort().join('\n')), empreinteAnnexe = sha(S.fichiers.find(f => f.categorie === 'annexe').sha256);
   limites.push('Audio : personne ne l’écoute. Les vidéos sont muettes ; le tapis rythmique donne la grille du moteur, pas les attaques du signal rendu.');
