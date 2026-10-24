@@ -41,3 +41,20 @@ l'intérêt du jeu. il doit être supérieur à 9,5/10. »
 - **Études Claude** (5 agents neufs, lecture seule, 02 h 04) : game design et sensations, rythme et tempo, WARP et scènes, joueuse iPhone et
   difficulté adaptative, méthode d'autotest. Rendus dans `~/Projets/wt-snake/etudes/`, synthétisés par la cheffe en consignes Codex.
 - **Boucle** : étude → consigne Codex → livraison → vérifieur navigateur → intégration → série de mesure → dossier j1 → jury → nouvelles consignes.
+
+## Amendements de 02 h 22, avant toute mesure (étude de méthode `etude-autotest.md`, décisions D1 à D8 retenues par la cheffe)
+
+- **Porte 3 (rythme)** : mesurée sur le son réel (prise du rendu WebAudio dans la page, détection des attaques), pas sur l'horloge de la VM,
+  qui la rend vraie par construction ; banc validé avant usage par un décalage connu injecté, retrouvé à ± 8 ms. Carte r1 = entrée du jeu,
+  jamais étalon : l'étalon des drops est recalculé sur le son rendu. Plancher de visibilité du rythme (on ne passe pas R-13 en éteignant le rythme).
+- **Porte 4 (tempo)** : mesurée sur le signal (rapport de tempo ≥ 1,08, hauteur ≤ 10 cents, raccord ≤ 10 ms), banc validé à ± 3 cents.
+- **Porte 5 (D1)** : survie censurée à 540 s (médiane de Kaplan–Meier), part CYCLOPE comptée sur `phase/arrivee` seule, n = 100 graines puis 300 si
+  indéterminé ; « dieu » (invulnérable par `dbg.god`) remplacé par un pilote « surhumain » vulnérable ; écart entre pilotes réduit de 40 à 80 % ;
+  rang des pilotes préservé (τ de Kendall = 1) ; sandbagging (mourir exprès pour baisser la difficulté) : gain ≤ 10 % ; 12 pilotes hold-out tirés au gel.
+- **Porte 7 (D2, D3, D4)** : cinq regards (joueuse iPhone, game design, rythme et musique, direction artistique, avocat du diable), chacun tenu par
+  deux familles (Claude Sonnet 5.5 xhigh, Codex GPT-6.1 Sol très élevé) ; « confort et performance » devient des seuils mesurés. Réussite = moyenne
+  ≥ 9,5 **dans chaque famille** et aucune moyenne de regard < 9, sur deux jurys A et B de la même build gelée (dossiers différents), jamais de troisième.
+  Note valide seulement si : l'étalonnage distingue témoin saboté, V0 et build (≥ 1,5 point), ≥ 70 % des défauts plantés retrouvés, écart entre
+  familles ≤ 1 point. Sinon publiée « non interprétable ».
+- **Instrument (D5)** : écrit par un agent Claude, relu par une session Codex (les auteurs du jeu ne mesurent pas leur travail). **Graines (D6)** :
+  TUNE visible, VALID agrégée, TEST scellée et lue une fois. **Machine (D7)** : 1 Chromium + 1 VM. **Horaire (D8)** : boucle de 02 h 30 à 09 h 05 au moins.
