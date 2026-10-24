@@ -352,3 +352,9 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - fichiers : `61-tuto.js`, raccords dans `79-jeu.js` et `80-ecrans.js`, bloc `R.tu1` ;
   - **jtu1** (02 h 00) : juge VM indépendant ; vérification Chrome de tu1 en file derrière mu1.
 - **Chrome candidate** : bureau à 11–13 min par partie, contre 2–3 min en paysage. Coût proportionnel aux pixels, rendu probablement sans GPU (hypothèse). Coût réel par image à lire dans les résultats.
+- **an1 arrêté (01 h 58), résultats provisoires solides** (`codex-an1/proto-neon/tools/codex-an1/rapport.md`, VM qualifiée 10/10) :
+  - pixels ennemis sous les annonces : 4 288 / 238 / 2 996 → **0** (scène de charge, trois formats), boss3 : 3 252 / 2 175 → **0** ;
+  - chevauchements de gains : 23 → **0**, somme affichée 66 712,5 → 82 012,5 (exacte) ;
+  - READY! et alertes anciennes pendant la mort : absents ; victoire sans cause de mort en vue courte ; conseil VOLEUR présent ; 24 comparaisons de score, vies et pertes identiques.
+  - Seule preuve manquante : la traînée du RIVAL en portrait, que la scène posée à la main n'a pas fait apparaître.
+- **jan1 (02 h 05)** : juge sur des **parties réelles** (méthode imposée après les échecs des scènes posées à la main) : 80 parties identiques, masquage mesuré sur 20 parties dans trois formats, RIVAL en portrait, annonces reportées, bilans.
