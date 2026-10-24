@@ -123,3 +123,17 @@ Durée écoulée : 4 h 05 sur ≥ 6 h. Sessions Codex en cours : 1 (f1, fusion n
 **i1b dans Chrome** : R-13 paysage 0/s, R-33 14/14 ; cas de geste « retour-origine » (second doigt pendant le retour du pouce) en échec : second échec de R-33 au navigateur → i1 arrêté, cas transmis à la vérification de f2.
 **p44b dans Chrome** : 0 annonce courte ; 13 % des coups reçus sans préavis à l'endroit → p44c (ventilation par auteur et correction à la source).
 **Étalonnage du jury lancé sur la pointe f1** (06 h 56, `tools/jury2/banc.mjs --serie etalonnage --valider-instrument`, 3–5 h hypothèse).
+
+## Point chiffré — 24/10/2026 · 07 h 58 (Paris)
+
+Durée écoulée : 6 h 03 (le plancher de 6 h est atteint ; la boucle continue jusqu'au verdict du jury, ≥ 09 h 05). Quota Claude : 80 % de la semaine (remise 24/10 19 h), 9 % de la fenêtre de 5 h (`get_usage`, 07 h 58). Sessions Codex : 2 (f2 fusion n° 2 — en VM, 60/60 cas identiques hors traces sur sa dernière étape ; p44c coups sans préavis). Navigateur : étalonnage du jury depuis 06 h 55 (candidate jouée, témoin dégradé en cours, toutes les parties finies sans erreur).
+
+| Porte | État à 07 h 58 |
+|---|---|
+| 1 jouabilité (zéro erreur, partie complète) | candidate f1 : 33/33 parties Chrome sans erreur, CYCLOPE 22/33 — **tenue sur f1** |
+| 2 rythme visible | r2d intégré (drops 13/13, apparitions 99,78 % sur la croche, moment fort ≥ 97,9 % des drops) — mesure VM, instrument navigateur non qualifié |
+| 3 calage audio-image | **non qualifiable** (instrument arrêté, mesures brutes seulement) |
+| 4 tempo des scènes | t1 intégré (×1,0801, < 10 cents, H 180/180 Chrome) ; raccord au signal non qualifié |
+| 5 difficulté adaptative | **arrêtée** (d1, d1b) ; joueuse occasionnelle 58–73 s ; méthode proposée, attend la propriétaire |
+| 6 photosensibilité et secousses | f1 Chrome : R-13 ≤ 3/s, R-14 ≤ 8 % — **tenue sur f1** |
+| 7 jury ≥ 9,5 (A et B) | étalonnage en cours ; jurys après f2 |
