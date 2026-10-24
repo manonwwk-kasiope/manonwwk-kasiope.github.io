@@ -77,3 +77,10 @@ Durée écoulée : 2 h 05 sur ≥ 6 h (boucle jusqu'à ≥ 09 h 05). Quota Claud
 | instruments mesure2 | écrits (agent Claude), relus par Codex m1 depuis 03 h 41 | témoins 69/69, 207/207, 50/50, 14/14 |
 
 Série autonome sur b270d8f (80 parties, 03 h 28, paysage) : médianes de survie inerte 45 s, maladroit 54 s, humain 175 s, bon 243 s, expert 367 s, dieu 385 s ; 78/80 fins, 2 bornes (expert/2, dieu/9), 0 « bloque », 0 erreur. Portes fermées à ce point : aucune des 7 (le jury n'a pas encore noté). Arrêts : s1 (fin CYCLOPE) arrêté à 2 échecs, cause structurelle traitée par f1 ; W-02 premier échec au navigateur.
+
+## Décisions de la cheffe pour la fusion n° 2 — 24/10/2026 · 04 h 36 (Paris)
+
+- **g1 (puissance)** : accepté avec réserves. Prendre le candidat de la passe 2 de g1 **plus** la correction du plafond de naissances de g1b (`72-ennemis.js` : recontrôle du plafond dur à chaque éclosion, max 42 → 40) ; **ne pas prendre** le service des cartes en combat de g1b (essai de la cheffe, échoué : délai max 11,785 s, 10 niveaux non servis, morts dans les 2 s après fermeture 0 → 15). Retour au service des cartes de g1 passe 2 (VOLS et DÉFILÉ ouverts, seuil d'XP abaissé). La porte « carte ≤ 10 s » de l'étude game-design reste ouverte, non bloquante pour les 7 portes. Équilibre du pilote bon (KM 238 → 320 s) : rendu à d1b.
+- **r2c (rythme)** : ne pas intégrer tel quel ; attendre r2d (propriétaire de 31/72/73 : fin de carte, portail orphelin, annonces jamais raccourcies, télégraphes du CYCLOPE sur la croche). 72 est touché par g1b et r2d : fusion par `git apply -3`, garder les deux intentions.
+- **i1** : au navigateur, R-13 portrait 6/s et bureau 4/s (bloquant, invariant) et 2 contrats tactiles R-33 → i1b ; R-14 bon 12,6 % réglé par s1.
+- **w1** : geste réparé ; W-02 recalé par w1c (cause principale : banc qui suspendait les images) ; confirmation Chrome en file.
