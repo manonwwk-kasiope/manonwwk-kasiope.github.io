@@ -1,0 +1,205 @@
+{
+  "dateParis": "24/10/2026 02:34:34 (Paris)",
+  "portee": "Instrument et construction uniquement ; aucun jeu simulé, aucun serveur, aucun navigateur, aucune sortie réseau.",
+  "controles": [
+    {
+      "nom": "Syntaxe de tous les modules ESM",
+      "ok": true,
+      "valeur": [
+        "analyse.mjs",
+        "aventure.mjs",
+        "banc.mjs",
+        "images.mjs",
+        "protocole.mjs",
+        "sonde.mjs",
+        "temoin.mjs",
+        "verifier.mjs"
+      ]
+    },
+    {
+      "nom": "Import du banc sans lancement",
+      "ok": true,
+      "valeur": "Aucun effet de bord à l’import"
+    },
+    {
+      "nom": "Fonctions navigateur sérialisables",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un flash rouge et lumineux simultané compte une fois",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Trois flashs restent trois ; quatre sont refusés",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "R-13 emploie la seconde réelle malgré les images manquantes",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Synchronisation : ±40 ms et 95 % inclusifs",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un audio inconnu ne disparaît pas du dénominateur",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Le RMS avant mute ne prouve jamais la musique audible",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Carte r1 : mesures numérotées à partir de 1",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Planches : phase quelconque du drop, sans élargir le seuil de 150 ms",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "pireSec": 0.125,
+        "seuilSec": 0.15
+      }
+    },
+    {
+      "nom": "Alignement : latence retirée une seule fois ; curseur accéléré suivi",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Boucle musicale : aucun faux drop en remontant le curseur",
+      "ok": true,
+      "valeur": [
+        {
+          "type": "drop",
+          "id": "x",
+          "tFichier": 1,
+          "w": 1.8,
+          "encadrement": [
+            1,
+            2
+          ],
+          "incertitudeSec": 1,
+          "repere": {
+            "t": 1
+          }
+        }
+      ]
+    },
+    {
+      "nom": "Difficulté : victoires et censures ne sont pas des défaites",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Sensibilité : le témoin connu dégradé est distingué sur deux axes",
+      "ok": true,
+      "valeur": {
+        "ratio": 0.005,
+        "perteSync": 0.6
+      }
+    },
+    {
+      "nom": "Deux dossiers identiques invalident l’instrument",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un seul axe ou aucune donnée ne suffisent pas",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Capteur dans une fixture VM indépendante du jeu : pixels et objets réels",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "images": 4,
+        "flashs": 1,
+        "tirsEffectivementInseres": 1
+      }
+    },
+    {
+      "nom": "PNG du tampon : aller-retour RGB exact et planche",
+      "ok": true,
+      "valeur": {
+        "sha256": "645175796f4c9c10fa00dc0e6fbdb1869f94079847d590ad2dbcde19fd560ce9",
+        "synthetique": true
+      }
+    },
+    {
+      "nom": "Mesure audio du fichier réel : sinusoïde et silence décodés sans lecture",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "sinusRms": 0.07071016227886011,
+        "silenceRms": 0
+      }
+    },
+    {
+      "nom": "Serveur : Range 206 et gel des actifs, sans ouvrir de port",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Build du jeu reçu : sortie 0",
+      "ok": true,
+      "valeur": {
+        "avant": "d6bc16210e5729e9b1ae94c3a3db133e074a8ccdda9ddfac42472f7516ec725c",
+        "apres": "d6bc16210e5729e9b1ae94c3a3db133e074a8ccdda9ddfac42472f7516ec725c",
+        "identique": true,
+        "code": 0
+      }
+    },
+    {
+      "nom": "Témoin construit dans une copie temporaire, syntaxe valide",
+      "ok": true,
+      "valeur": {
+        "code": 0,
+        "sha256": "0b39414c37232ba4220415b695ea901d93686d11ab3153b16d7ccea16b8abee1",
+        "srcInchanges": true
+      }
+    },
+    {
+      "nom": "Témoin reproductible, actifs identiques à la pointe, aucun chemin temporaire",
+      "ok": true,
+      "valeur": {
+        "sha256": "0b39414c37232ba4220415b695ea901d93686d11ab3153b16d7ccea16b8abee1",
+        "referencesTemporaires": 0,
+        "identiqueHorsAjout": true
+      }
+    }
+  ],
+  "bundle": {
+    "avant": "d6bc16210e5729e9b1ae94c3a3db133e074a8ccdda9ddfac42472f7516ec725c",
+    "apres": "d6bc16210e5729e9b1ae94c3a3db133e074a8ccdda9ddfac42472f7516ec725c",
+    "identique": true,
+    "code": 0
+  },
+  "temoin": {
+    "dateParis": "24/10/2026 02:34:36 (Paris)",
+    "buildCode": 0,
+    "sha256": "0b39414c37232ba4220415b695ea901d93686d11ab3153b16d7ccea16b8abee1",
+    "fichier": "/Users/manonwojciechowski/Projets/wt-snake/codex-j1/proto-neon/tools/jury2/temoin/index.html",
+    "modifications": [
+      "musique coupée par le canal public musique",
+      "portails prolongés par un retard pseudo-aléatoire indépendant de 0 à 0.9 s"
+    ],
+    "srcOriginalModifie": false,
+    "executionNavigateur": false,
+    "limite": "Construction et syntaxe seulement ; sensibilité à mesurer sur les sorties réelles, jamais déduite de la présence de ce patch."
+  },
+  "reussi": true,
+  "nombre": 24,
+  "echecs": 0,
+  "navigateur": "non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe"
+}
