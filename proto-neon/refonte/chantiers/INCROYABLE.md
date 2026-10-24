@@ -115,3 +115,11 @@ Durée écoulée : 4 h 05 sur ≥ 6 h. Sessions Codex en cours : 1 (f1, fusion n
 971 morts classées (`~/Projets/wt-snake/codex-a1/proto-neon/tools/codex-a1/rapport.md`, `morts.csv`). Occasionnel, morts avant 90 s : **mur + FLÈCHE = 92,0 % en paysage, 80,8 % en portrait** (paysage : mur fixe 48 %, FLÈCHE 22 %) ; première mort médiane 34,6 s paysage / 28,4 s portrait, surtout en V2. Maladroit : FLÈCHE 42,8 %, dard 33,3 %, mur fixe 12,9 %.
 
 **Méthode précisée pour la propriétaire (toujours non lancée)** — leviers ciblés sur ces deux causes, invariants intacts (le mur tue toujours, la morsure coupe sans tuer) : (1) **mur annoncé** : liseré qui s'allume quand la tête est à moins de 1 s du mur à sa vitesse, plus fort sous 0,5 s ; (2) **FLÈCHES apprenables en V1–V2** : élan télégraphié ≥ 0,8 s (trait au sol sur sa trajectoire), pas de FLÈCHE avant 20 s, au plus deux à la fois en V1 ; (3) réapparition protégée 2 s après chaque mort. Pilote : occasionnel, maladroit, humain, bon, 20 graines × paysage + portrait ; critères écrits avant : occasionnel ≥ 120 s et ≥ 60 % en V3, part mur + FLÈCHE des morts < 90 s divisée par deux, bon et expert à ± 10 % de leur survie fixe. Coût Claude ≈ 0.
+
+## Candidate f1 intégrée — 24/10/2026 · 06 h 56 (Paris)
+
+**Intégrée** (e4b2428, bundle 5f7dbb3) : u1, i1 (sans i1b), t1, r2d, g1c, raccord audio commun. **Chrome, 33 parties** (bon 1–10 + dieu 2 × paysage, portrait, bureau) : 0 erreur ; R-14 2,5–8,0 % (≤ 12 %) ; R-13 0 / 3 / 1 flashs/s (≤ 3) ; palette fermée (0 pixel hors palette) ; catalogue six morceaux + neuf versions ; CYCLOPE atteint dans 22/33. Scènes S-01–S-05, WARP et préavis non inclus (écartés par f1, repris par f2).
+**WARP (w1c) conforme dans Chrome** (06 h 52) : 9/9 cas, écart à la grille ≤ 11,84 ms (≤ 12 ms), 0 erreur, ≤ 1 flash/s.
+**i1b dans Chrome** : R-13 paysage 0/s, R-33 14/14 ; cas de geste « retour-origine » (second doigt pendant le retour du pouce) en échec : second échec de R-33 au navigateur → i1 arrêté, cas transmis à la vérification de f2.
+**p44b dans Chrome** : 0 annonce courte ; 13 % des coups reçus sans préavis à l'endroit → p44c (ventilation par auteur et correction à la source).
+**Étalonnage du jury lancé sur la pointe f1** (06 h 56, `tools/jury2/banc.mjs --serie etalonnage --valider-instrument`, 3–5 h hypothèse).
