@@ -254,7 +254,7 @@ async function run(browser,origin,opts,cas,carte,piste,context=null) {
       acceptCDP=true;await cdp.send('Page.startScreencast',{format:'jpeg',quality:P.jpegQualite,everyNthFrame:P.screencastNth,maxWidth:profils[cas.profil].viewport.width,maxHeight:profils[cas.profil].viewport.height});
       let timer;try{await Promise.race([pret,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Aucune image CDP initiale')),10000);})]);}finally{clearTimeout(timer);}
     }
-    clock=await page.evaluate(()=>window.__jury.commencer());data.regles=clock.regles;data.origine=clock;
+    clock=await page.evaluate(()=>window.__jury.commencer());data.regles=clock.regles;data.rythmeRegles=clock.rythmeRegles;data.origine=clock;
     for(const f of cdpFrames)f.w=f.metadata.timestamp-(clock.performanceTimeOrigin+clock.originePerformanceMs)/1000;
     if(cas.genre==='aventure') {
       await page.waitForFunction(()=>window.__jury.horloge().w>=.3);
@@ -346,7 +346,7 @@ export async function produire(browser,opts) {
   if(fs.existsSync(out))throw Error('Dossier déjà présent, refus d’écraser : '+out);
   fs.mkdirSync(out,{recursive:true});opts={...opts,out};
   const carte=opts.carte?JSON.parse(fs.readFileSync(opts.carte)):null,piste=JSON.parse(fs.readFileSync(path.join(ROOT,'musique','piste.json')));
-  const files=['banc.mjs','analyse.mjs','sonde.mjs','images.mjs','protocole.mjs','aventure.mjs'];
+  const files=['banc.mjs','analyse.mjs','sonde.mjs','images.mjs','protocole.mjs','aventure.mjs','temoin.mjs'];
   const manifest={dateParis:paris(),dossier:nom,build:id,serie:serie.nom,graineListe,sceauSha256:serie.sceau,spec,reduit,
     bundleSha256:sha(bundle),protocoleSha256:sha(Buffer.concat(files.map(f=>fs.readFileSync(path.join(HERE,f))))),
     navigateur:browser.version(),plateforme:'Chrome émulé ; Safari et iPhone physique à vérifier',

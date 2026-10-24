@@ -11,7 +11,10 @@ import { dossierSynthetique } from './tests-jury.mjs';
 import { oracle, observer } from './oracle.mjs';
 import { contextePaquet, validerVerdict, retrouverCanaris, consolider, analyserEtalonnage, controleJure } from './etalonnage.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const REELS = path.resolve(process.env.JURY2_ORACLE_REELS || path.join(HERE, '../../../../jury-etal/proto-neon/tools/jury2'));
+const COURANT=path.join(HERE,'../../../../jury-etal/proto-neon/tools/jury2');
+// Les paquets du tour précédent ont été archivés par l’orchestratrice.
+const REELS = path.resolve(process.env.JURY2_ORACLE_REELS ||
+  (fs.existsSync(path.join(COURANT,'cles/J-4ed1eb86.json'))?COURANT:path.join(HERE,'../../../../jury-etal/archives-v2')));
 const CODES = ['J-4ed1eb86', 'J-69cf5913', 'J-c053a476'];
 const lire = f => JSON.parse(fs.readFileSync(f));
 const ecrire = (f, v) => fs.writeFileSync(f, JSON.stringify(v, null, 2) + '\n');

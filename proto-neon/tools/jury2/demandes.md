@@ -13,3 +13,9 @@ Aucun chiffre de gameplay ajouté, aucune modification de N.R. Les paramètres
 d’acquisition et du témoin sont confinés à `protocole.mjs`, comme les paramètres
 d’analyse r1 ; ils ne sont pas chargés par le jeu livré. Les seuils du jeu sont
 lus dans N.R ; les portes de rythme et difficulté reprennent INCROYABLE.md.
+
+24/10/2026 · 15 h 24 (Paris), codex-di7
+
+codex-di7 | tools/jury2 seulement | aucune règle du jeu ajoutée ni seuil modifié | grille lue dans le bundle observé, acquisitions et indices hors jeu.
+codex-di7 | nouveaux bruts Chrome | reprendre le témoin avec échéance explicite et la sonde de réservations | le témoin filmé historique est encore recalé sur la croche et ne permet pas d'attribuer les doublons.
+codex-di7 | jury tous regards | ne pas exiger une baisse artistique ou ergonomique depuis une coupure musicale seule | aucun lien mesuré entre ces sabotages et les défauts visuels de ces regards ; indice absent reste non mesurable.

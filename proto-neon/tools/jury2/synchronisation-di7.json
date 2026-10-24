@@ -1,0 +1,336 @@
+[
+  {
+    "code": "J-897bbde4",
+    "grille": {
+      "actif": true,
+      "version": 1,
+      "phraseMesures": 8,
+      "subdivisions": 2,
+      "epsilon": 0.000001,
+      "bpmRepli": 143.759,
+      "secondesMinute": 60,
+      "latenceMax": 0.2,
+      "pulseDuree": 0.14,
+      "dropDuree": 0.9,
+      "monteeMesures": 2,
+      "breakMesures": 2,
+      "repliBreakPhrase": 3,
+      "repliDropPhrase": 4,
+      "attenteMaxTemps": 0.5,
+      "repriseForce": 0.7,
+      "decor": {
+        "gainMontee": 0.3,
+        "gainDrop": 0.65,
+        "retenue": 0.72
+      },
+      "ennemis": {
+        "retenue": 0.86
+      },
+      "visuel": {
+        "aireMax": 0.025,
+        "pas": 16,
+        "seuilPulse": 0.25,
+        "rayonOnde": 0.7,
+        "pointsOnde": 240,
+        "etincelles": 64,
+        "longueurTrait": 4,
+        "margeHud": 4,
+        "hudLargeur": 48,
+        "contourPoints": 8,
+        "contourMarge": 3,
+        "trauma": 0
+      },
+      "verification": {
+        "audioMaxMs": 20,
+        "duree": 60,
+        "hz": 60,
+        "destructionNombre": 30,
+        "destructionPas": 4
+      },
+      "partition": {
+        "divisionsSon": 4,
+        "divisionsCascade": 2,
+        "cascadeNombre": 4,
+        "divisionsSalve": 8,
+        "tempsTirs": [
+          1,
+          3
+        ],
+        "roulement": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "trouTemps": 0.25,
+        "rampeSon": 0.004,
+        "avanceSon": 0.002,
+        "gelDropImages": 3,
+        "zoomDrop": 1.06,
+        "zoomDropImages": 8,
+        "ondeEpaisseur": 2,
+        "flashPart": 0.04,
+        "ondeRayon": 0.7,
+        "luminanceLointainMax": 0.09,
+        "encreLointain": "violet",
+        "aireSombreMax": 1,
+        "vignettePart": 0.18,
+        "traitsMax": 32,
+        "secoussePlancher": 1,
+        "mouvementDropImagesMax": 12,
+        "warpEntree": 0.3,
+        "warpFacteur": 0.15,
+        "warpFiltre": 900,
+        "warpDuckDb": -6,
+        "warpMesures": 2,
+        "warpSortieTemps": 1,
+        "warpRechargeTemps": 2,
+        "volMesures": 2,
+        "volEntreeTemps": 1,
+        "volSortieTemps": 1,
+        "repriseTemps": 4,
+        "autoTirsParTemps": 3,
+        "autoCasesParTemps": 4,
+        "echo": [
+          "tir",
+          "tirEnnemi",
+          "kill",
+          "bigkill",
+          "butin",
+          "portail",
+          "lasso",
+          "salve",
+          "arme"
+        ],
+        "gamme": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "calendrier": {
+          "3": {
+            "formationDrop": "pince"
+          },
+          "4": {
+            "respirationBreak": true
+          },
+          "5": {
+            "picDrop": true
+          }
+        }
+      },
+      "verificationAudio": {
+        "audioMaxMs": 40,
+        "tauxSync": 0.95,
+        "medianeMs": 15,
+        "p99Ms": 60,
+        "audioDuree": 540
+      },
+      "origine": "N.R.rythme du build.html figé",
+      "sourceSha256": "be82d74168ec9177ed098cbc4214cc1cdedf21009f5398e205daf20f646bb4b0"
+    },
+    "apres": {
+      "apparition": {
+        "total": 1304,
+        "mesurables": 1287,
+        "inconnus": 17,
+        "dans40ms": 1274,
+        "part": 0.98989898989899,
+        "p50Ms": 7.091929705232703,
+        "p95Ms": 16.70850425168167,
+        "conforme": false
+      },
+      "tir-ennemi": {
+        "total": 666,
+        "mesurables": 665,
+        "inconnus": 1,
+        "dans40ms": 455,
+        "part": 0.6842105263157895,
+        "p50Ms": 11.944350907057885,
+        "p95Ms": 104.6682970521147,
+        "conforme": false
+      },
+      "vague": {
+        "total": 28,
+        "mesurables": 28,
+        "inconnus": 0,
+        "dans40ms": 26,
+        "part": 0.9285714285714286,
+        "p50Ms": 14.402655324703526,
+        "p95Ms": 44.832529574132025,
+        "conforme": false
+      }
+    }
+  },
+  {
+    "code": "J-5ea97f8e",
+    "grille": {
+      "actif": true,
+      "version": 1,
+      "phraseMesures": 8,
+      "subdivisions": 2,
+      "epsilon": 0.000001,
+      "bpmRepli": 143.759,
+      "secondesMinute": 60,
+      "latenceMax": 0.2,
+      "pulseDuree": 0.14,
+      "dropDuree": 0.9,
+      "monteeMesures": 2,
+      "breakMesures": 2,
+      "repliBreakPhrase": 3,
+      "repliDropPhrase": 4,
+      "attenteMaxTemps": 0.5,
+      "repriseForce": 0.7,
+      "decor": {
+        "gainMontee": 0.3,
+        "gainDrop": 0.65,
+        "retenue": 0.72
+      },
+      "ennemis": {
+        "retenue": 0.86
+      },
+      "visuel": {
+        "aireMax": 0.025,
+        "pas": 16,
+        "seuilPulse": 0.25,
+        "rayonOnde": 0.7,
+        "pointsOnde": 240,
+        "etincelles": 64,
+        "longueurTrait": 4,
+        "margeHud": 4,
+        "hudLargeur": 48,
+        "contourPoints": 8,
+        "contourMarge": 3,
+        "trauma": 0
+      },
+      "verification": {
+        "audioMaxMs": 20,
+        "duree": 60,
+        "hz": 60,
+        "destructionNombre": 30,
+        "destructionPas": 4
+      },
+      "partition": {
+        "divisionsSon": 4,
+        "divisionsCascade": 2,
+        "cascadeNombre": 4,
+        "divisionsSalve": 8,
+        "tempsTirs": [
+          1,
+          3
+        ],
+        "roulement": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "trouTemps": 0.25,
+        "rampeSon": 0.004,
+        "avanceSon": 0.002,
+        "gelDropImages": 3,
+        "zoomDrop": 1.06,
+        "zoomDropImages": 8,
+        "ondeEpaisseur": 2,
+        "flashPart": 0.04,
+        "ondeRayon": 0.7,
+        "luminanceLointainMax": 0.09,
+        "encreLointain": "violet",
+        "aireSombreMax": 1,
+        "vignettePart": 0.18,
+        "traitsMax": 32,
+        "secoussePlancher": 1,
+        "mouvementDropImagesMax": 12,
+        "warpEntree": 0.3,
+        "warpFacteur": 0.15,
+        "warpFiltre": 900,
+        "warpDuckDb": -6,
+        "warpMesures": 2,
+        "warpSortieTemps": 1,
+        "warpRechargeTemps": 2,
+        "volMesures": 2,
+        "volEntreeTemps": 1,
+        "volSortieTemps": 1,
+        "repriseTemps": 4,
+        "autoTirsParTemps": 3,
+        "autoCasesParTemps": 4,
+        "echo": [
+          "tir",
+          "tirEnnemi",
+          "kill",
+          "bigkill",
+          "butin",
+          "portail",
+          "lasso",
+          "salve",
+          "arme"
+        ],
+        "gamme": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ],
+        "calendrier": {
+          "3": {
+            "formationDrop": "pince"
+          },
+          "4": {
+            "respirationBreak": true
+          },
+          "5": {
+            "picDrop": true
+          }
+        }
+      },
+      "verificationAudio": {
+        "audioMaxMs": 40,
+        "tauxSync": 0.95,
+        "medianeMs": 15,
+        "p99Ms": 60,
+        "audioDuree": 540
+      },
+      "origine": "N.R.rythme du build.html figé",
+      "sourceSha256": "be82d74168ec9177ed098cbc4214cc1cdedf21009f5398e205daf20f646bb4b0"
+    },
+    "apres": {
+      "apparition": {
+        "total": 1808,
+        "mesurables": 0,
+        "inconnus": 1808,
+        "dans40ms": 0,
+        "part": null,
+        "p50Ms": null,
+        "p95Ms": null,
+        "conforme": false
+      },
+      "tir-ennemi": {
+        "total": 784,
+        "mesurables": 0,
+        "inconnus": 784,
+        "dans40ms": 0,
+        "part": null,
+        "p50Ms": null,
+        "p95Ms": null,
+        "conforme": false
+      },
+      "vague": {
+        "total": 34,
+        "mesurables": 0,
+        "inconnus": 34,
+        "dans40ms": 0,
+        "part": null,
+        "p50Ms": null,
+        "p95Ms": null,
+        "conforme": false
+      }
+    }
+  }
+]

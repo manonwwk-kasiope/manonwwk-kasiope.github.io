@@ -1,0 +1,364 @@
+{
+  "dateParis": "24/10/2026 15:30:46 (Paris)",
+  "avant": [
+    {
+      "code": "J-897bbde4",
+      "resultat": {
+        "joueuse iPhone": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "game design": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Doublons non attribuables : les bruts ne contiennent pas les réservations et identifiants des objets réellement apparus."
+        },
+        "rythme et musique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Porte musicale et grille N.R absentes des pièces de passe 1 : le silence ne peut pas être distingué d’une inconnue."
+        },
+        "direction artistique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "avocat du diable": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        }
+      },
+      "annexe": {
+        "total": 1998,
+        "mesurables": 1980,
+        "dans40ms": 315,
+        "part": 0.1590909090909091,
+        "seuilMs": 40,
+        "seuilPart": 0.95
+      }
+    },
+    {
+      "code": "J-5ea97f8e",
+      "resultat": {
+        "joueuse iPhone": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "game design": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Doublons non attribuables : les bruts ne contiennent pas les réservations et identifiants des objets réellement apparus."
+        },
+        "rythme et musique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Porte musicale et grille N.R absentes des pièces de passe 1 : le silence ne peut pas être distingué d’une inconnue."
+        },
+        "direction artistique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "avocat du diable": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        }
+      },
+      "annexe": {
+        "total": 2626,
+        "mesurables": 0,
+        "dans40ms": 0,
+        "part": null,
+        "seuilMs": 40,
+        "seuilPart": 0.95
+      }
+    }
+  ],
+  "apres": [
+    {
+      "code": "J-897bbde4",
+      "synchronisation": {
+        "apparition": {
+          "total": 1304,
+          "mesurables": 1287,
+          "inconnus": 17,
+          "dans40ms": 1274,
+          "part": 0.98989898989899,
+          "p50Ms": 7.091929705232703,
+          "p95Ms": 16.70850425168167,
+          "conforme": false
+        },
+        "tir-ennemi": {
+          "total": 666,
+          "mesurables": 665,
+          "inconnus": 1,
+          "dans40ms": 455,
+          "part": 0.6842105263157895,
+          "p50Ms": 11.944350907057885,
+          "p95Ms": 104.6682970521147,
+          "conforme": false
+        },
+        "vague": {
+          "total": 28,
+          "mesurables": 28,
+          "inconnus": 0,
+          "dans40ms": 26,
+          "part": 0.9285714285714286,
+          "p50Ms": 14.402655324703526,
+          "p95Ms": 44.832529574132025,
+          "conforme": false
+        }
+      },
+      "resultat": {
+        "joueuse iPhone": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "game design": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Doublons non attribuables : les bruts ne contiennent pas les réservations et identifiants des objets réellement apparus."
+        },
+        "rythme et musique": {
+          "score": 8.709677419354838,
+          "statut": "mesuré",
+          "axe": "fraction des sorties reliées à une grille musicale non muette, à ± 40 ms",
+          "total": 2697,
+          "mesurables": 2679,
+          "inconnus": 18,
+          "dans40ms": 2349,
+          "evenementsMuets": 0,
+          "preuves": [
+            {
+              "fichier": "S01/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S02/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S03/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S04/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S05/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S06/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S07/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S08/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S09/observations.json",
+              "champ": "/evenements"
+            }
+          ],
+          "limite": "Indice physique de liaison ; aucun jugement du timbre, du plaisir ni de la qualité globale."
+        },
+        "direction artistique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "avocat du diable": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        }
+      }
+    },
+    {
+      "code": "J-5ea97f8e",
+      "synchronisation": {
+        "apparition": {
+          "total": 1808,
+          "mesurables": 0,
+          "inconnus": 1808,
+          "dans40ms": 0,
+          "part": null,
+          "p50Ms": null,
+          "p95Ms": null,
+          "conforme": false
+        },
+        "tir-ennemi": {
+          "total": 784,
+          "mesurables": 0,
+          "inconnus": 784,
+          "dans40ms": 0,
+          "part": null,
+          "p50Ms": null,
+          "p95Ms": null,
+          "conforme": false
+        },
+        "vague": {
+          "total": 34,
+          "mesurables": 0,
+          "inconnus": 34,
+          "dans40ms": 0,
+          "part": null,
+          "p50Ms": null,
+          "p95Ms": null,
+          "conforme": false
+        }
+      },
+      "resultat": {
+        "joueuse iPhone": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "game design": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Doublons non attribuables : les bruts ne contiennent pas les réservations et identifiants des objets réellement apparus."
+        },
+        "rythme et musique": {
+          "score": 0,
+          "statut": "mesuré",
+          "axe": "fraction des sorties reliées à une grille musicale non muette, à ± 40 ms",
+          "total": 3164,
+          "mesurables": 0,
+          "inconnus": 3164,
+          "dans40ms": 0,
+          "evenementsMuets": 3164,
+          "preuves": [
+            {
+              "fichier": "S01/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S02/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S03/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S04/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S05/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S06/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S07/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S08/observations.json",
+              "champ": "/evenements"
+            },
+            {
+              "fichier": "S09/observations.json",
+              "champ": "/evenements"
+            }
+          ],
+          "limite": "Indice physique de liaison ; aucun jugement du timbre, du plaisir ni de la qualité globale."
+        },
+        "direction artistique": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        },
+        "avocat du diable": {
+          "score": null,
+          "statut": "non mesurable",
+          "preuves": [],
+          "limite": "Aucun lien causal établi entre ces sabotages et la lisibilité, l’ergonomie ou la composition. Ne pas convertir une densité en défaut visuel."
+        }
+      }
+    }
+  ],
+  "limites": [
+    "Le témoin positif historique passe, mais la perte temporelle du témoin dégradé est nulle : validation physique historique en échec.",
+    "Game design : pas de réservations dans les bruts historiques ; nouveau Chrome nécessaire. Trois regards visuels : aucune baisse de qualité prouvée par les seuls sabotages."
+  ],
+  "sondes": [
+    {
+      "mode": "synchro",
+      "n": 96,
+      "part": 0.9895833333333334
+    },
+    {
+      "mode": "desync",
+      "n": 96,
+      "part": 0.9895833333333334
+    }
+  ],
+  "perteHistorique": 0,
+  "instrumentHistoriqueValide": false,
+  "comparaison": {
+    "joueuse iPhone": {
+      "avant": null,
+      "temoin": null,
+      "ecart": null,
+      "conforme": null
+    },
+    "game design": {
+      "avant": null,
+      "temoin": null,
+      "ecart": null,
+      "conforme": null
+    },
+    "rythme et musique": {
+      "avant": 8.709677419354838,
+      "temoin": 0,
+      "ecart": 8.709677419354838,
+      "conforme": true
+    },
+    "direction artistique": {
+      "avant": null,
+      "temoin": null,
+      "ecart": null,
+      "conforme": null
+    },
+    "avocat du diable": {
+      "avant": null,
+      "temoin": null,
+      "ecart": null,
+      "conforme": null
+    }
+  },
+  "pretPourJury": false
+}

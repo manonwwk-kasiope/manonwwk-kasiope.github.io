@@ -12,14 +12,15 @@ function installerInterne(cfg) {
   function horloge() {
     const N=window.__N,ctx=N?.music?.context?.(),b=N?.music?.beat?.(),tempo=N?.music?.tempo?.();
     const lat=ctx?Math.min(.2,(ctx.outputLatency||0)+(ctx.baseLatency||0)):null;
-    const ecart=b&&tempo>0?Math.min(b.phase,1-b.phase)*60000/tempo:null;
+    const subdivisions=N?.R?.rythme?.subdivisions;
+    const ecart=b&&tempo>0&&subdivisions>0?Math.abs(b.phase*subdivisions-Math.round(b.phase*subdivisions))*60000/tempo/subdivisions:null;
     const moteur=N?.music?.moteur?.(),track=moteur?.trackState?.();
     const it=track?.items?.findLast(it=>it.tJoin<=ctx.currentTime&&ctx.currentTime<it.tEnd);
     const detail=it&&moteur.itemLog?.().findLast(x=>x.bloc===it.bloc&&x.tCore===it.tCore);
     return {w:(performance.now()-origine)/1000,tempsJeu:N?.horloge?.t?.(),pas:N?.horloge?.pas?.(),
       audioCtx:ctx?.currentTime??null,audioRunning:ctx?.state==='running',latence:lat,
       /* N.music.beat() compense déjà baseLatency + outputLatency. Ne pas les soustraire deux fois. */
-      beat:b?{...b}:null,bpm:tempo??null,ecartAudioMs:ecart,
+      beat:b?{...b}:null,bpm:tempo??null,subdivisions,ecartAudioMs:ecart,
       rmsMusique:N?.music?.rms?.()??null,rmsSortie:N?.music?.rmsOut?.()??null,
       musiqueMuette:!!(N?.music?.muted?.()||N?.music?.muted?.('musique')),
       morceau:clone(N?.music?.morceau?.()),sonde:clone(N?.music?.morceauSonde?.()),piste:clone(N?.music?.piste?.()),
@@ -84,6 +85,16 @@ function installerInterne(cfg) {
         ennemi:N.ennemis.list.some(e=>e.id===d.id&&e.etat!=='mort'),
         x:d.x,y:d.y}:null),'jury2-sonde');
     }
+    const spawn=N.ennemis.spawn;
+    N.ennemis.spawn=function(type,x,y,opts){
+      if(!actif)return spawn.apply(this,arguments);
+      const avant=new Set(N.ennemis.list.map(e=>e.id)),h=horloge();
+      const resultat=spawn.apply(this,arguments);
+      const objets=N.ennemis.list.filter(e=>!avant.has(e.id)).map(e=>({id:e.id,type:e.type,x:e.x,y:e.y,etat:e.etat}));
+      ev('reservation',{type,demande:{x,y,portail:opts?.portail??null},objets},
+        {source:'différence du tableau public N.ennemis.list avant/après spawn',observe:h.w});
+      return resultat;
+    };
     const tirs=N.ennemis.tirs,push=tirs.push;
     tirs.push=function(...objets){
       const resultat=push.apply(this,objets);
@@ -144,7 +155,7 @@ function installerInterne(cfg) {
   window.__jury={
     commencer(){poserHooks();origine=performance.now();actif=true;previous=null;previousDim=null;lastStamp=null;snapAt=0;denseJusque=-Infinity;dernierWarp=null;
       for(const r of recorders.values())if(!r.started)startRecorder(r);
-      return {performanceTimeOrigin:performance.timeOrigin,originePerformanceMs:origine,regles:clone(window.__N.R.criteres),audio};},
+      return {performanceTimeOrigin:performance.timeOrigin,originePerformanceMs:origine,regles:clone(window.__N.R.criteres),rythmeRegles:clone(window.__N.R.rythme),audio};},
     vider(){const d={frames,evenements,images,adapte,erreurs};frames=[];evenements=[];images=[];adapte=[];erreurs=[];return d;},
     horloge,
     async finir(){actif=false;for(const r of recorders.values())if(r.started&&r.recorder.state!=='inactive'){

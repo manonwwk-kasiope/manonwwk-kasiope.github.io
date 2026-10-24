@@ -13,6 +13,7 @@ import { P,paris } from './protocole.mjs';
 import { flashs,sync,sensibilite,repereCarte,alignerSources,difficulte,mediane } from './analyse.mjs';
 import { testsJury } from './tests-jury.mjs';
 import { testsTemoins } from './tests-temoins.mjs';
+import { testsDiscriminant } from './tests-discriminant.mjs';
 import { testsOracle } from './tests-oracle.mjs';
 import { testsCanarisRegards } from './tests-canaris-regards.mjs';
 import { installer } from './sonde.mjs';
@@ -56,7 +57,7 @@ export async function statique() {
     const buf=new Uint8Array(4),ctx={state:'running',baseLatency:.01,outputLatency:0,get currentTime(){return now/1000;}};
     const N={pal:{C:['#000000','#ffffff'],L:[0,1]},gfx:{buf:()=>buf,W:2,H:2,PX:2},
       music:{context:()=>ctx,beat:()=>({phase:.1,bar:0,beat:0}),tempo:()=>120,rms:()=>.25,rmsOut:()=>.2,muted:()=>false},
-      ev:{on:(type,rank,f)=>{handlers[type]=f;}},ennemis:{list:[],tirs:[],count:()=>0},dir:{vague:()=>1},score:{score:0,resume:()=>({victoire:false})},
+      ev:{on:(type,rank,f)=>{handlers[type]=f;}},ennemis:{list:[],tirs:[],count:()=>0,spawn(type,x,y){const a={id:20,type,x,y,etat:'portail'},b={id:21,type,x:x+6,y:y+6,etat:'portail'};this.list.push(a,b);return a;}},dir:{vague:()=>1},score:{score:0,resume:()=>({victoire:false})},
       game:{etat:()=> 'jeu',tension:()=>{throw Error('L’observateur ne doit pas rappeler tension()');},dbg:()=>({vague:1,score:0,stats:{}})},horloge:{t:()=>now/1000,pas:()=>id},R:{criteres:{R13:{aire:.066,flashsParSeconde:3},R14:{secouees:.12,banniere:10}}}};
     const w={__N:N,__S:{shake:0,tension:.2},__ERR:{count:0},__FRAME:0,requestAnimationFrame:f=>{queue.push(f);return ++id;}};
     const fixture={window:w,AudioNode:AN,HTMLMediaElement:HM,HTMLVideoElement:HV,performance:{now:()=>now,timeOrigin:0},cfg:{media:false,pixels:true,capturePas:.5},Uint8Array,WeakSet,Map,Set,JSON,btoa:s=>Buffer.from(s,'binary').toString('base64')};
@@ -64,9 +65,13 @@ export async function statique() {
     w.__jury.commencer();const draw=value=>{now+=16;buf.fill(value);w.requestAnimationFrame(()=>w.__FRAME++);queue.shift()(now);};
     draw(0);draw(1);draw(0);
     const tir={id:2,x:3,y:4,vx:5,vy:6};assert.equal(N.ennemis.tirs.push(tir),1);
-    handlers.apparition({id:7,x:1,y:1});N.ennemis.list.push({id:7,etat:'vivant'});draw(0);
+    handlers.apparition({id:7,x:1,y:1});N.ennemis.list.push({id:7,etat:'vivant'});
+    N.ennemis.spawn('fixture',1,2,{portail:.6});
+    handlers.apparition({id:20,type:'fixture',x:1,y:2});handlers.apparition({id:21,type:'fixture',x:7,y:8});draw(0);
     const r=w.__jury.vider();assert.equal(r.frames[1].up,1);assert.equal(r.frames[2].dn,1);assert.equal(flashs(r.frames,.066).flashs,1);
     assert.equal(r.evenements.find(e=>e.type==='tir-ennemi').d.vx,5);assert.equal(r.evenements.find(e=>e.type==='apparition').preuve.apresRendu,true);assert.equal(r.erreurs.length,0);assert.equal(r.frames[0].tension,.2);
+    const reservation=r.evenements.find(e=>e.type==='reservation');assert.deepEqual(Array.from(reservation.d.objets,o=>o.id),[20,21]);
+    assert(r.evenements.filter(e=>e.type==='apparition'&&[20,21].includes(e.d.id)).every(e=>e.preuve.apresRendu));
     return {synthetique:true,images:r.frames.length,flashs:1,tirsEffectivementInseres:N.ennemis.tirs.length};
   });
   await test('PNG du tampon : aller-retour RGB exact et planche',()=>{
@@ -106,6 +111,7 @@ export async function statique() {
     const file=path.join(HERE,'correction-actifs-temoin.json');if(fs.existsSync(file)){const p=JSON.parse(fs.readFileSync(file));p.apres={sha256:second.sha256,referencesAuDossierTemporaire:0,identiteHorsDegradation:true,reproductible:true};j('correction-actifs-temoin.json',p);}
     preuve.temoin=second;return {sha256:second.sha256,referencesTemporaires:0,identiqueHorsAjout:true};
   });
+  await testsDiscriminant({test,preuve});
   await testsJury({test,fixtures,preuve,HERE,ROOT});
   await testsCanarisRegards({test,preuve});
   await testsOracle({test,preuve});

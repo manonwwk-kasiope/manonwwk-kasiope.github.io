@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url';
 import { P, REGARDS, paris } from './protocole.mjs';
 import { flashs, borneHistorique, nonQualifiable } from '../codex-di5/r13.mjs';
 import { carteAlignee } from './analyse.mjs';
+import { grilleBundle, grilleDonnees } from './grille-sync.mjs';
+import { observations } from './observations.mjs';
 import { planEchantillon, imagesAutour, prng, hashTexte } from './echantillon.mjs';
 import { tapisRythmique, rendreTapis } from './tapis.mjs';
 import { tirerTypes, imageGelee, bandeauMasquant, flashPleinEcran, retirerCases, incoherenceTemps, decalerTapis, contredireMesure, mesureQualifiee } from './canaris.mjs';
@@ -119,6 +121,7 @@ export async function construirePaquet(o) {
     if (!manifest.complet) throw Error('Dossier brut incomplet pour sa série : aucun paquet de verdict.');
   }
   const carte = fs.existsSync(path.join(dossier, 'structure-r1.json')) ? lireJSON(path.join(dossier, 'structure-r1.json')) : null;
+  const grilleHistorique=grilleBundle(dossier);
   const code = o.code || 'J-' + crypto.randomBytes(4).toString('hex'), graineTirage = o.graineTirage || crypto.randomBytes(16).toString('hex');
   const rng = prng(hashTexte(graineTirage)), racine = path.join(o.sortie || DOSSIER_PAQUETS, code), cleFichier = path.join(o.cles || DOSSIER_CLES, code + '.json');
   if (fs.existsSync(racine) || fs.existsSync(cleFichier)) throw Error('Paquet ou clé déjà présents, refus d’écraser : ' + code);
@@ -136,6 +139,10 @@ export async function construirePaquet(o) {
     const s = seqs[i], { c, dir } = s, data = gunzipJSON(path.join(dir, 'brut.json.gz')), index = lireJSON(path.join(dir, 'tampons', 'index.json'));
     const croisements = carteAlignee(data.frames, carte);
     const mesuresRaw = lireJSON(path.join(dir, 'mesures.json')), fich = [];
+    const grille=grilleDonnees(data,grilleHistorique),obs=observations(data,grille);
+    // Passe 1 : trace des sorties, comme le tapis ; agrégats réservés à l’annexe.
+    S.ecrire(`${s.id}/observations.json`,{version:obs.version,grille:obs.grille,horloges:obs.horloges,
+      evenements:obs.evenements,reservations:{details:obs.reservations.details,limite:obs.reservations.limite},limites:obs.limites},'observations',{profil:c.profil,genre:c.genre});
     const canarisIci = choix.filter(x => x.seq === i), echantillonAnnexe = []; let denseAbsente = false;
     /* planches de l'échantillon */
     for (let k = 0; k < s.plan.length; k++) {
@@ -183,7 +190,7 @@ export async function construirePaquet(o) {
         trousAvecMouvement: m.trousAvecMouvement, carte: m.carte, tempsAudio: m.tempsAudio, note: m.note, horloges: 'tVideo = s_video depuis le début du clip ; w = s_reel ; tFichier = s_fichier_audio' }, 'clip-meta', { profil: c.profil, genre: c.genre });
       if (!sansTrou) limites.push(`${s.id} : vidéo ${m.moment} avec ${(m.trousAvecMouvement || []).length} trou(s) de capture alors que le jeu bougeait (voir clip-${m.moment}.json)`);
       if (!m.conforme) limites.push(`${s.id} : vidéo ${m.moment} non conforme (durée ou trou de plus de ${P.maxTrouVideoTolere} s)`);
-      let tapis = tapisRythmique({ frames: data.frames, evenements: data.evenements, croisements, debut: m.debut, fin: m.fin, moment: m.moment });
+      let tapis = tapisRythmique({ frames: data.frames, evenements: data.evenements, croisements, debut: m.debut, fin: m.fin, moment: m.moment,regles:grille });
       const ct = canarisIci.find(x => x.type.id === 'decalage-rythme' && x.moment === m.moment);
       if (ct && tapis.evenements.length >= 3) {
         tapis = decalerTapis(tapis); plantes.push({ ...ct.type, fichier: `${s.id}/tapis-${m.moment}.png`, fichierJson: `${s.id}/tapis-${m.moment}.json`, fenetre: [m.debut, m.fin], decalageMs: P.canaris.decalageMs, description: 'decalage-rythme' });
@@ -195,7 +202,7 @@ export async function construirePaquet(o) {
     S.ecrire(`${s.id}/fiche.md`, ficheNeutre(s, c, data, mesuresRaw), 'fiche', { profil: c.profil, genre: c.genre });
     sequencesJSON.push({ id: s.id, genre: c.genre, profil: c.profil, pilote: c.pilote, dureeReelle: +data.duree.toFixed(3), tempsJeu: data.final?.tempsJeu ?? null, arret: data.raison, etatFinal: data.final?.etat ?? null,
       moments: (c.moments || []).map(m => ({ nom: m.nom, w: +m.w.toFixed(3), t: m.t, etat: m.etat })), clips: clipsMeta, aventureComplete: c.aventureComplete });
-    annexeSeq[s.id] = { echantillon: echantillonAnnexe, regleEchantillon: s.regle, genre: c.genre, profil: c.profil, pilote: c.pilote, issue: mesuresRaw.mesures.issue, mesures: { ...propre(mesuresRaw.mesures), R13:r13Annexe(data) }, morts: mesuresRaw.mesures.morts, manques: mesuresRaw.manques,
+    annexeSeq[s.id] = { echantillon: echantillonAnnexe, regleEchantillon: s.regle, genre: c.genre, profil: c.profil, pilote: c.pilote, issue: mesuresRaw.mesures.issue, mesures: { ...propre(mesuresRaw.mesures), R13:r13Annexe(data),synchronisation:obs.synchronisation,audio:{...propre(mesuresRaw.mesures).audio,porte:obs.audio} }, observations:{reservations:obs.reservations}, morts: mesuresRaw.mesures.morts, manques: mesuresRaw.manques,
       adapte: fs.existsSync(path.join(dir, 'adapte.json')) ? lireJSON(path.join(dir, 'adapte.json')) : null };
     const ca = choix.find(x => x.seq === i && x.type.id === 'mesure-contradictoire');
     if (ca) {
@@ -223,10 +230,10 @@ export async function construirePaquet(o) {
      L'intersection des affectations spécialisées est vide (catégories/profils/tapis différents).
      Les clips et fiches restent affectés par spécialité ; l'annexe reste réservée à la passe 2.
      Ce socle vaut aussi sans canaris et ne change ni le tirage crypto ni les noms neutres. */
-  const commun = S.fichiers.filter(f => ['planche', 'planche-meta', 'tapis', 'tapis-meta'].includes(f.categorie));
+  const commun = S.fichiers.filter(f => ['planche', 'planche-meta', 'tapis', 'tapis-meta','observations'].includes(f.categorie));
   for (const r of REGARDS) {
     const a = AFFECTATION[r], profilsDispo = new Set(plancheMeta.map(f => f.profil)), profils = a.profils.filter(p => profilsDispo.has(p)), pp = profils.length ? profils : [...profilsDispo];
-    const sel = S.fichiers.filter(f => pp.includes(f.profil) && ((f.categorie === 'planche' && a.categories.includes(f.regardCat)) || (a.tapis && ['tapis', 'tapis-meta'].includes(f.categorie)) || f.categorie === 'planche-meta' && a.categories.includes(f.regardCat) || ['clip', 'clip-meta', 'fiche'].includes(f.categorie)));
+    const sel = S.fichiers.filter(f => pp.includes(f.profil) && ((f.categorie === 'planche' && a.categories.includes(f.regardCat)) || (a.tapis && ['tapis', 'tapis-meta','observations'].includes(f.categorie)) || f.categorie === 'planche-meta' && a.categories.includes(f.regardCat) || ['clip', 'clip-meta', 'fiche'].includes(f.categorie)));
     parRegard[r] = [...new Set([...sel, ...commun].map(f => f.chemin))].sort();
   }
   for (const c of plantes.filter(c => c.passe === 1)) for (const r of REGARDS) {

@@ -109,3 +109,34 @@ référence audio. Amendement de tolérance : un clip est conforme jusqu'à 2 s 
   temps réel, aventure jusqu'à 30 min).
 - Deux modèles peuvent se tromper ensemble : l'orchestratrice relit un court échantillon des notes du jury.
 - Un neuf et demi sur dossier ne remplace pas l'iPhone de la propriétaire, qui reste le juge final.
+
+Mise à jour DI7, 24/10/2026 · 15 h 24 (Paris)
+
+La mesure historique à la noire était inadéquate pour les apparitions : `31-rythme.js:246`
+utilise `N.R.rythme.subdivisions`. `grille-sync.mjs` lit maintenant cette règle dans le
+`build.html` figé pour les bruts historiques, et la sonde la capture pour les nouvelles prises.
+Sans règle identifiable, l'écart est inconnu. ± 40 ms et 95 % restent inchangés.
+Le monteur recalcule l'annexe depuis les bruts ; les anciennes valeurs des mesures ne font pas foi.
+Les tapis publient séparément l'écart géométrique et la liaison musicale non muette.
+Une croix rouge dans la voie de grille marque une porte musicale coupée ; aucun événement muet n'est vert.
+
+`observations.json` est une trace publique de passe 1 : horloges et sorties réelles, statut de la
+porte musicale, objets insérés par réservation et ensuite apparus après rendu. Ses agrégats vont en passe 2.
+Les anciens bruts ne contiennent pas les réservations ; leurs doublons restent non attribuables.
+Le témoin filmé historique a été recalé par le jeu ; le `temoin.mjs` reçu dans cette copie corrige déjà
+ce défaut par `rythmeFin` explicite. Reconstruire les anciens paquets ne remplace donc pas une nouvelle prise.
+
+```sh
+node tools/jury2/discriminant.mjs CHEMIN_PAQUET
+node tools/jury2/discriminant.mjs CHEMIN_PAQUET --passe2
+```
+
+Ce juge-code ne reçoit et ne lit que le paquet ; aucune clé. Il produit des **indices physiques**,
+pas des notes esthétiques : rythme = dix fois la fraction des sorties sur la grille musicale non muette ;
+game design = dix fois le rapport réservations/sorties apparues de la classe la plus altérée, avec toutes
+les classes publiées. Une absence d'axe reste `null`. Une densité supplémentaire ne prouve ni une mort
+injuste ni un défaut graphique : joueuse iPhone, direction artistique et avocat du diable restent à juger
+sur leurs pièces visuelles. Ne pas utiliser ces indices pour qualifier les jurés ou ouvrir la porte 7.
+Le contrôle réel conserve le constat de non-discrimination restant ; aucun seuil n'est assoupli.
+
+Rapport et commandes de reprise : `../codex-di7/rapport.md`.
