@@ -233,3 +233,7 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - **codex-di7 (15 h 28), commit d8e6d65** : jury2 mesurait l'écart à la noire (`sonde.mjs:15`, `tapis.mjs:21-23`) alors que le jeu cale sur la croche (`src/31-rythme.js:246-250`, `N.R` subdivisions = 2). Grille lue désormais dans le `N.R` du bundle observé : **V0 passe de 15,9 % à 98,99 %** des apparitions mesurables à ± 40 ms. Juge-code discriminant (aucun accès aux clés, testé) : indice « rythme » **V0 8,71 / témoin 0**. 73/73, rejoués par la cheffe.
 - **Ce qui manque** : les anciens bruts du témoin ne sont pas réellement désynchronisés (défaut du témoin corrigé seulement depuis 26bd4b9) et les doublons de poursuivants n'y sont pas attribuables ; les autres regards ne sont pas mesurables par un code. **Aucun nouveau juré sur ces anciens paquets.**
 - **Prochaine étape, qui attend l'ordre de la propriétaire** (arrêt de non-convergence) : une prise d'étalonnage complète en Chrome (instrument + bruts du jury, 90 à 180 min, hypothèse ; un Chrome muet), de préférence sur la fusion f4b une fois vérifiée et intégrée.
+
+## Ordre de la propriétaire — 24/10/2026 · 15 h 38 (Paris)
+
+« Oui, lance la prise d'étalonnage complète dans Chrome (instrument et bruts du jury) dès que f4b est vérifié et intégré. » Portée : une prise `banc.mjs --serie etalonnage --valider-instrument` (instrument son-image avec témoins corrigés + bruts du jury), sur la build f4b intégrée, après sa vérification Chrome et sa relecture adverse (rv2). Seuils inchangés ; un Chrome muet à la fois.
