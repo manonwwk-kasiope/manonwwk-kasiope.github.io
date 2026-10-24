@@ -332,3 +332,13 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - **pv1** (lot 7) : vérifier d'abord, corriger seulement un défaut reproduit.
 - **Plafond de sessions Codex porté de 4 à 7** sur l'ordre de parallélisme : mu1, sf1, tu1, an1, fx1, ca1, pv1. Une VM à la fois pour les quatre derniers, `memory_pressure` > 25 % exigé ; 34 % libres à 00 h 30.
 - Lots 5 et 6 après mu1 (ils dépendent de son contrat rythmique), lot 8 après mesure.
+
+## mu1 livré, fx1 arrêté sur un défaut de banc — 25/10/2026 · 00 h 50 (Paris)
+
+- **mu1** (`codex-mu1/proto-neon/tools/codex-mu1/rapport.md`, 00 h 37) :
+  - Neon Velocity coupé partout : `piste.json` n'est plus chargé, le séquenceur de blocs est désactivé, la synthèse musicale et la nappe permanente ne sont plus créées (candidate probable du bruit de fond ; hypothèse jusqu'à l'écoute) ;
+  - six morceaux Suno ajoutés, choisis d'après la régularité du tempo : titre-b, ouverture-b, jeu-calme-b (V1), jeu-tension-a (V2), victoire-b, defaite-a ; tous à −16,0 LUFS ;
+  - grille rythmique tirée du morceau joué ;
+  - **validation bloquée** : la VM de l'auteur ne retrouve pas les parties de référence (0/10 identiques).
+  - **jmu1** (00 h 45) : juge indépendant avec la VM calibrée de jdv1 : grille contre barres, 80 parties avant/après. La vérification Chrome de mu1 (rendu audio hors ligne, muet) est en file derrière la candidate.
+- **fx1** (00 h 39) : arrêt correct après deux échecs de la même preuve, sans modification. La scène d'essai n'avançait pas `N.rythme`, les ennemis restaient au portail, d'où un masque des menaces à 0 pixel : défaut du banc, pas du jeu. **fx2** (00 h 50) : méthode changée, prouvée d'abord par un pilote (masque non nul sur les cinq situations), une seule passe, sans troisième essai.
