@@ -312,3 +312,23 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - **tu1** : tutoriel jouable au premier lancement, `61-tuto.js` ;
   - **ec1** : étude des verdicts des jurés pour 9/10, sans toucher au jeu.
 - Chrome sur la candidate (22 h 20) : paysage et portrait terminés, bureau en cours.
+
+## ec1 livré et quatre lots en parallèle — 25/10/2026 · 00 h 30 (Paris)
+
+- **Ordre de la propriétaire, 00 h 22** : « travail en multiagents parallèles. /goal 9/10 minimum ».
+- **ec1** (`etudes/ec1/rapport.md`) : reproches des jurés sourcés pièce par pièce, et huit lots classés par gain par heure (hypothèses) :
+  1. annonces hors combat ;
+  2. mort, reprise et victoire cohérentes ;
+  3. gains et explosions ;
+  4. cartes ;
+  5. raccords et VOL ;
+  6. creux ;
+  7. préavis ;
+  8. pointes de coût.
+- **Lancés à 00 h 30**, une copie et des fichiers disjoints chacun :
+  - **an1** (lots 1, 2 et gains du lot 3) : `78-hud.js`, bilan de `80-ecrans.js`, `77-score.js` ;
+  - **fx1** (effets du lot 3) : `50-fx.js` ;
+  - **ca1** (lot 4) : cartes de `80-ecrans.js` ;
+  - **pv1** (lot 7) : vérifier d'abord, corriger seulement un défaut reproduit.
+- **Plafond de sessions Codex porté de 4 à 7** sur l'ordre de parallélisme : mu1, sf1, tu1, an1, fx1, ca1, pv1. Une VM à la fois pour les quatre derniers, `memory_pressure` > 25 % exigé ; 34 % libres à 00 h 30.
+- Lots 5 et 6 après mu1 (ils dépendent de son contrat rythmique), lot 8 après mesure.
