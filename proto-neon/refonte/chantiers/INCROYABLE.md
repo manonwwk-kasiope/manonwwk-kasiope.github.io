@@ -158,3 +158,10 @@ Durée écoulée : 8 h 03. Quota Claude : 83 % de la semaine (remise 24/10 19 h)
 | 7 jury ≥ 9,5 | étalonnage en cours (essai 1 depuis 09 h 47) ; jurys A et B sur f3 après sa vérification Chrome |
 
 Prochaines actions : à la livraison de f3, vérification Chrome (après l'étalonnage, un Chromium à la fois), intégration par `integrer.sh` avec p44c, puis paquets d'étalonnage, banc alpha/beta et jurys.
+
+## Étalonnage terminé, instrument du jury non validé — 24/10/2026 · 11 h 50 (Paris)
+
+- **Prise d'étalonnage finie à 11 h 40** (copie figée `jury-f1`, build 3eaf75cf) : pointe 11 séquences, témoin 13 séquences, **0 erreur partout** ; dossier pointe marqué incomplet (sonde audio inerte non terminée, 27,9 s), témoin complet.
+- **Validation de l'instrument : échouée sur ses deux axes** (`dossiers/etalonnage-3eaf75cf596e5e10-temoin/validation-instrument.json`) : audio, ratio RMS témoin/pointe **0,266** (seuil ≤ 0,1) ; temps, témoin positif à **3,7 %** d'apparitions à ± 40 ms (seuil ≥ 50 %), perte **0,006** (seuil ≥ 0,2). Conséquence écrite dans `jure.mjs` : **aucun paquet de verdict (porte 7) tant que l'instrument n'est pas validé**.
+- **Alarme de non-convergence** : c'est le troisième instrument du calage son-image qui ne voit pas la synchronisation (m1, m2, puis celui-ci, déjà amendé à 02 h 50 après son premier dossier). Pas de nouveau passage en Chrome sans l'ordre de la propriétaire. Diagnostic en lecture seule confié à Codex (`codex-di1`, une cause prouvée par axe, correction minimale et contrôle par code sans navigateur), aucun seuil touché.
+- **Ce qui continue, indépendant de l'instrument** : trois paquets d'étalonnage montés (J-625ea38c v0, J-b632cd0a pointe, J-611ad6f4 témoin ; 4 canaris chacun, 0 manqué). Pilote avant passage à l'échelle (règle « tester la méthode ») : un juré Codex (très élevé) et un juré Claude (Sonnet 5.5 xhigh), regard « joueuse iPhone », sur J-625ea38c ; coût et durée mesurés avant de lancer les 38 autres jugements.
