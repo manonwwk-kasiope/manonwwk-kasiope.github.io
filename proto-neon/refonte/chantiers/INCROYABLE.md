@@ -32,3 +32,12 @@ l'intérêt du jeu. il doit être supérieur à 9,5/10. »
 - Chaque piste : 3 passes au plus. Si la même porte échoue à deux passes consécutives, la piste s'arrête et la méthode est mise en cause (diagnostic écrit), sans « tour de plus ».
 - Durée : au moins 6 h de boucle d'autotest et d'optimisation (de 02 h 00 à 08 h 00 au plus tôt), point chiffré toutes les 2 h dans ce fichier.
 - Le jury est un jugement de modèles, pas de joueurs humains : la partie de la propriétaire sur son iPhone reste le juge final.
+
+## Séries autonomes de tests, améliorations, optimisations (ajout de 02 h 06, demande de la propriétaire à 02 h 05)
+
+- **Séries de mesure** : `~/Projets/wt-snake/serie-autotest.sh` rejoue 80 parties de pilotes (8 pilotes × 10 graines) au navigateur sur chaque
+  nouvelle pointe, ou toutes les 40 min, jusqu'à 11 h ; reçus horodatés `~/Projets/wt-snake/recus/series/<date-heure>-<commit>.json`.
+  Chaque série est comparée à la précédente (mêmes graines) : une régression d'une porte part en consigne Codex, sans attendre.
+- **Études Claude** (5 agents neufs, lecture seule, 02 h 04) : game design et sensations, rythme et tempo, WARP et scènes, joueuse iPhone et
+  difficulté adaptative, méthode d'autotest. Rendus dans `~/Projets/wt-snake/etudes/`, synthétisés par la cheffe en consignes Codex.
+- **Boucle** : étude → consigne Codex → livraison → vérifieur navigateur → intégration → série de mesure → dossier j1 → jury → nouvelles consignes.
