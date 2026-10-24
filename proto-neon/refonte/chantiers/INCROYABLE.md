@@ -180,3 +180,17 @@ Prochaines actions : à la livraison de f3, vérification Chrome (après l'étal
 - **Diagnostic codex-di4 (12 h 31), verdict C** : les deux compteurs (jury2 et critère R-13 du projet utilisé par f1) apparient une hausse et une baisse **sur des zones disjointes, au même rendu** ; un contrôle sans aucun aller-retour lumineux leur fait annoncer 4 flashs/s. Le pic vient de l'intermède **« TRAQUÉE »** (film « chasse », images changeant à 12 Hz, plein écran). Le « 13 » n'est pas un dépassement démontré ; le « ≤ 3 » de f1 ne portait que sur la minute de charge, jamais sur les intermèdes.
 - **Conséquence honnête** : la porte 6 n'est plus « tenue » ; elle est **non qualifiée pour les intermèdes** tant que le compteur n'est pas corrigé. Lancé à 12 h 40 : **codex-di5** (compteur unique corrigé — paire aux mêmes pixels sur des rendus distincts, aire commune > 0,066, temps réel ; acquisition des masques ; annexe « non qualifiable » sans masques ; qualification de chaque film tel que le jeu le rend, sans navigateur). Seuils inchangés.
 - Remontage des paquets et reprise des jurés : après di5, pour que l'annexe ne porte plus un chiffre faux.
+
+## Point chiffré — 24/10/2026 · 13 h 00 (Paris)
+
+Durée écoulée : 11 h 05. Quota Claude : **88 % de la semaine** (remise 24/10 19 h), 17 % de la fenêtre de 5 h (`get_usage`, 12 h 58) ; la délégation passe en priorité à Codex. Sessions Codex SNAKE : 2 (f3 en contrôle de livraison, di5 compteur R-13 et films). Mémoire libre + inactive : 3,8 Go (12 h 15).
+
+| Porte | État à 13 h 00 |
+|---|---|
+| 1 jouabilité | tenue sur f1 ; f3 (10 défauts rv1) : parcours paysage 3 068 captures, 0 cyan hors joueuse, 0 couleur hors palette, 0 erreur (journal f3, 12 h 17) ; livraison attendue |
+| 2 rythme visible | inchangé |
+| 3 calage audio-image | instrument du jury : cause trouvée (témoins), corrigé et prouvé par code (26bd4b9, 59/59) ; **revalidation Chrome (8–12 min) attend l'ordre de la propriétaire** |
+| 4 tempo des scènes | inchangé |
+| 5 difficulté adaptative | arrêtée ; essai « première minute apprenable » attend la propriétaire |
+| 6 photosensibilité et secousses | **non qualifiée pour les intermèdes** (compteur faux, di4) ; R-14 inchangé ; di5 en cours |
+| 7 jury ≥ 9,5 | étalon corrigé (défauts plantés accessibles, 7f025ed) ; remontage des paquets après di5 ; jurés Codex d'abord, Claude après 19 h |
