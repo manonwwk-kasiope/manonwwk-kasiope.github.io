@@ -1,5 +1,7 @@
 # codex-j1 — banc d’autotest et dossier du jury
 
+> 24/10/2026 · 03 h 15 (Paris) : rapport d'origine de codex-j1, conservé. Le banc a été relu et corrigé par une session indépendante ; ce qui change (séries de graines, échantillon écrit avant, images denses, paquet neutre, défauts plantés, étalonnage des jurés, témoin positif) est dans `README.md`. La commande ci-dessous reste valable : sans autre option, `banc.mjs` prend la série « étalonnage » (graine 101, profils paysage et portrait).
+
 24/10/2026 · 02 h 37 (Paris). Préparation livrée ; validation navigateur à faire par la cheffe.
 
 Commande complète **hors bac**, depuis cette copie :

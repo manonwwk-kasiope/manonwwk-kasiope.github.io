@@ -3,7 +3,7 @@
 export function installer(cfg) {
   const natRAF=window.requestAnimationFrame.bind(window), natConnect=AudioNode.prototype.connect;
   const clone=x=>x==null?null:JSON.parse(JSON.stringify(x));
-  let actif=false, origine=0, previous=null, lastStamp=null, snapAt=-Infinity;
+  let actif=false, origine=0, previous=null, lastStamp=null, snapAt=-Infinity, denseJusque=-Infinity, dernierWarp=null;
   let frames=[],evenements=[],images=[],adapte=[],audio=[],pending=[],erreurs=[];
   let dernierAdapte='',courantFrame=0, hooks=false;
   const recorders=new Map();
@@ -24,9 +24,21 @@ export function installer(cfg) {
       morceau:clone(N?.music?.morceau?.()),sonde:clone(N?.music?.morceauSonde?.()),piste:clone(N?.music?.piste?.()),
       blocAudio:it&&detail?{bloc:it.bloc,tCore:it.tCore,from:detail.from}:null};
   }
+  /* Images denses (cfg.denses) : après chaque mort, entrée de vague, phase, vol ; autour des drops de la carte
+     (curseur du fichier musical) ; à chaque transition du WARP. Le reste de la partie reste à cfg.capturePas. */
+  const TEMPS_FORTS=['mort','vague','phase','vol'];
+  function dense(h) {
+    if(!cfg.media||!cfg.denses)return false;
+    if(h.w<denseJusque)return true;
+    const m=h.morceau,ds=m&&cfg.denses.drops?cfg.denses.drops[m.id]:null;
+    if(ds&&Number.isFinite(m.t))for(const t of ds)if(m.t>=t-cfg.denses.avant&&m.t<=t+cfg.denses.apres)return true;
+    return false;
+  }
   function ev(type,d,preuve) {
     if(!actif)return;
-    evenements.push({...horloge(),type,d:clone(d),preuve});
+    const h=horloge();
+    evenements.push({...h,type,d:clone(d),preuve});
+    if(cfg.media&&cfg.denses&&TEMPS_FORTS.includes(type))denseJusque=Math.max(denseJusque,h.w+cfg.denses.apresEvenement);
   }
   function capterContexte(ctx,source) {
     if(!cfg.media||!ctx.createMediaStreamDestination)return;
@@ -98,6 +110,7 @@ export function installer(cfg) {
       if(!previous||previous.length!==n)previous=new Uint8Array(n);previous.set(b);
     }
     const adv=N.aventure?.state?.(),w=N.warp?.state?.();
+    if(cfg.media&&cfg.denses&&w&&w.phase!==dernierWarp){if(dernierWarp!==null)denseJusque=Math.max(denseJusque,h.w+cfg.denses.apresEvenement);dernierWarp=w.phase;}
     for(const e of evenements)if(e.type==='apparition'&&e.preuve?.apresRendu===undefined){
       const objet=N.ennemis.list.find(x=>x.id===e.d.id);
       e.preuve.apresRendu=!!objet;e.preuve.etat=objet?.etat??null;e.preuve.frame=window.__FRAME;
@@ -118,7 +131,7 @@ export function installer(cfg) {
     }
     if(cfg.media&&h.w>=snapAt) {
       images.push({w:h.w,t:h.tempsJeu,etat:N.game.etat(),W:N.gfx.W,H:N.gfx.H,buf:b64(b),pal:N.pal.C});
-      snapAt=h.w+cfg.capturePas;
+      snapAt=h.w+(dense(h)?cfg.denses.pas:cfg.capturePas);
     }
   }
   window.requestAnimationFrame=f=>natRAF(stamp=>{
@@ -129,7 +142,7 @@ export function installer(cfg) {
     }
   });
   window.__jury={
-    commencer(){poserHooks();origine=performance.now();actif=true;previous=null;lastStamp=null;snapAt=0;
+    commencer(){poserHooks();origine=performance.now();actif=true;previous=null;lastStamp=null;snapAt=0;denseJusque=-Infinity;dernierWarp=null;
       for(const r of recorders.values())if(!r.started)startRecorder(r);
       return {performanceTimeOrigin:performance.timeOrigin,originePerformanceMs:origine,regles:clone(window.__N.R.criteres),audio};},
     vider(){const d={frames,evenements,images,adapte,erreurs};frames=[];evenements=[];images=[];adapte=[];erreurs=[];return d;},

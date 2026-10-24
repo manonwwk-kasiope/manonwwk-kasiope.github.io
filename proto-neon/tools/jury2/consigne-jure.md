@@ -1,59 +1,71 @@
 # Consigne à un juré indépendant
 
-24/10/2026 · 02 h 15 (Paris).
+24/10/2026 · 02 h 15 (Paris), réécrite à 03 h 02 (paquet neutre, deux passes, anomalies de dossier).
 
+Tu évalues un paquet de SNAKE 2975 identifié par un code (`J-…`). Tu n'es ni l'auteur du jeu, ni l'auteur du banc. Ton regard et ta famille te sont
+donnés par l'orchestratrice. Tu n'as lu aucun rapport, aucune note antérieure, aucun avis d'un autre juré, et tu ne contactes personne pendant la notation.
+Tu ne cherches pas à savoir quelle version du jeu tu juges : rien dans le paquet ne le dit, et ta note ne doit pas en dépendre.
 
-Mis à jour à 02 h 37 le 24/10/2026 (Paris).
-Tu évalues un dossier de SNAKE 2975. Tu n’es ni son auteur, ni l’auteur du banc.
-Ton regard est celui indiqué par l’orchestratrice parmi les cinq de `grille.md`,
-ou « Codex transversal ». Ne contacte pas les constructeurs pendant la notation.
+**Ce que tu ouvres.** Seulement le dossier du paquet (`paquet.json`, `grille.md`, les fichiers de ton regard listés dans `paquet.json › parRegard`).
+Tu peux en ouvrir d'autres du même paquet : déclare-les dans `fichiersInspectes`. Rien hors du paquet.
 
-1. Lis `fiche.md`, `manifeste.json`, `validation-instrument.json` et `grille.md`.
-   Vérifie l’empreinte de la build, la complétude et la validation de l’instrument.
-   Si le dossier est incomplet ou si le témoin n’a pas été distingué sur les deux
-   axes physiques annoncés, rends `note: null`, `statut: "dossier_insuffisant"`.
-2. Ouvre les planches PNG, y compris celles des drops et du portrait. Lis leurs
-   JSON : ordre des cases, temps observés et images manquantes. Regarde les vidéos
-   si tu disposes d’un lecteur muet ; sinon inspecte leurs planches et signale
-   cette limite. Aucune lecture avec son. N’attribue jamais aux vidéos une fluidité
-   qu’un échantillonnage CDP ne peut prouver.
-3. Pour les rythmes, lis les fichiers `.alignement.json`, les cartes alignées et
-   les séries d’événements dans `brut.json.gz`. Les MP3 sont les sources musicales
-   exportées à part ; `audio-sortie-*.webm` est la sortie calculée pendant la prise,
-   musique et effets. Dans `audio-probe` seulement, les effets sont coupés pour
-   mesurer la musique en sortie. Tu ne les entends pas : ne prétends pas juger
-   leur agrément, leur timbre ou leur fatigue à l’écoute.
-4. Les parties ordinaires renseignent durée, difficulté et morts. Les aventures
-   sont des visites au pilote dieu, avec invulnérabilité principale et conducteur
-   des époques écrivant uniquement les entrées ; aucun saut n’est permis. Elles
-   montrent du contenu et des transitions, sans prouver la difficulté naturelle. Les états publics des époques, leurs morts et leurs journaux sont conservés dans les bruts.
-   Un voyage arrêté avant la fin n’est jamais une aventure complète.
-5. Sépare défaut grave, défaut mineur et limite de preuve. Chaque constat cite
-   un fichier existant et un temps, ou une ligne/champ pour une mesure. N’invente
-   pas un geste humain, un résultat Safari, une synchronisation sonore, une
-   invariance du cyan ou une mesure de hauteur qui n’ont pas de reçu.
-6. Choisis ta note à partir des ancres. N’essaie pas d’atteindre 9,5 ; ce nombre
-   est une porte de décision de la propriétaire, pas ton objectif. Rends seulement
-   le JSON ci-dessous. Aucun autre avis de juré, note antérieure ou recommandation
-   du constructeur ne doit t’être montré avant ton verdict.
+## Passe 1 : les images seules
+
+1. Lis `paquet.json` (limites, horloges, séquences) et `grille.md`. Ouvre les planches PNG (cases de gauche à droite puis de haut en bas) et leur JSON
+   (temps `w` en s_reel, `t` en s_jeu, images manquantes). Regarde les clips seulement si tu disposes d'un lecteur muet ; sinon inspecte les planches et dis-le.
+   Aucune lecture avec son. Un clip peut avoir un trou de capture (`clip-*.json › trousAvecMouvement`) : n'attribue jamais aux vidéos une fluidité qu'un
+   échantillonnage ne peut prouver.
+2. Les tapis rythmiques (`tapis-*.png` et `.json`) te donnent la grille des temps du moteur, les événements du jeu (vert : à ± 40 ms d'un temps ; rouge : au-delà),
+   l'énergie visuelle et les repères de la carte. Tu n'entends rien : ne juge ni timbre, ni agrément, ni hauteur.
+3. **L'annexe de chiffres n'existe pas pour toi à ce stade.** Tu la recevras après avoir remis ta note.
+4. Quelques pièces du paquet peuvent avoir été altérées pour contrôler la vigilance des jurés (deux pièces qui se contredisent). Quand tu en trouves une,
+   range-la dans `anomaliesDossier` avec sa preuve ; écarte-la de ton évaluation sans baisser ta note pour elle. Ne devine pas lesquelles : ne cherche que
+   ce que tu peux prouver.
+5. **Liste d'abord au moins cinq éléments** parmi défauts graves, défauts mineurs et limites de preuve, dont **trois défauts (graves ou mineurs) avec preuve**
+   (fichier et temps, ou fichier et champ). Puis tes forces : un moment fort n'existe que s'il a une preuve.
+6. Choisis ta note à partir des ancres de `grille.md`. N'essaie pas d'atteindre 9,5 : ce nombre est une porte de décision de la propriétaire, pas ton objectif.
+   Une note au-dessus de 9 exige zéro défaut grave et trois moments forts prouvés ; le script de contrôle ramène sinon ta note à son plafond et publie l'écart.
+7. Rends le JSON ci-dessous avec `passe: 1`, et seulement lui. Aucun raisonnement, aucun récit : des constats courts, chacun adossé à une preuve.
+
+## Passe 2 : avec l'annexe
+
+Après réception de ta note 1, on te remet `annexe/annexe.json` (mesures par séquence, portes R-13, R-14, p95, morts et causes, difficulté, courbes d'adaptation,
+audio capté). Relis ta note à la lumière des chiffres. Rends le même JSON avec `passe: 2`, `note_passe1` recopiée à l'identique et une `empreinte` qui est celle
+de l'annexe. Un chiffre qui dépasse son seuil est un défaut grave pour le regard qu'il touche. Un chiffre contredit par une autre pièce est une anomalie de dossier.
+Les aventures sont des visites au pilote dieu (invulnérabilité principale, conducteur d'époque, aucun saut) : elles montrent du contenu, jamais la difficulté.
+La difficulté se lit dans les parties ordinaires (n indicatif tant qu'il est inférieur à 100). Ne juge pas ce qui n'a pas de reçu : un résultat Safari, un geste humain,
+une écoute, une invariance du cyan, une mesure de hauteur.
+
+## Le JSON
 
 ```json
 {
-  "jure": "identifiant indépendant fourni par l’orchestratrice",
-  "regard": "joueuse iPhone | game design | rythme et musique | direction artistique | confort et performance | Codex transversal",
-  "buildSha256": "empreinte du manifeste",
+  "jure": "identifiant fourni par l'orchestratrice",
+  "famille": "claude | codex",
+  "regard": "joueuse iPhone | game design | rythme et musique | direction artistique | avocat du diable",
+  "code": "J-…",
+  "passe": 1,
+  "empreinte": "valeur de paquet.json › empreinte (passe 1) ou paquet.json › empreinteAnnexe (passe 2)",
   "statut": "evalue | dossier_insuffisant",
-  "note": null,
-  "forces": [{"constat": "...", "preuves": ["p1"]}],
-  "défauts graves": [{"constat": "...", "preuves": ["p2"]}],
-  "défauts mineurs": [{"constat": "...", "preuves": ["p3"]}],
-  "preuves": [{"id": "p1", "fichier": "chemin relatif au dossier", "temps": {"valeur": 12.5, "unite": "s_video"}, "observation": "..."}],
-  "limites": ["..."],
-  "fichiersInspectes": ["..."]
+  "note": 7.5,
+  "note_passe1": null,
+  "forces": [{"constat": "…", "preuves": ["p1"]}],
+  "défauts graves": [{"constat": "…", "preuves": ["p2"]}],
+  "défauts mineurs": [{"constat": "…", "preuves": ["p3"]}],
+  "anomaliesDossier": [{"constat": "…", "preuves": ["p4"]}],
+  "preuves": [
+    {"id": "p1", "fichier": "S03/planche-drop-1.png", "temps": {"valeur": 12.5, "unite": "s_reel"}, "observation": "…"},
+    {"id": "p5", "fichier": "annexe/annexe.json", "temps": null, "champ": "/sequences/S03/mesures/R13/maxParSeconde", "observation": "…"}
+  ],
+  "limites": ["…"],
+  "fichiersInspectes": ["…"]
 }
 ```
 
-`note` est un nombre de 0 à 10 quand `statut` vaut `evalue`, sinon `null`.
-Unités admises pour `temps` : `s_video`, `s_reel`, `s_jeu`, `s_fichier_audio` ;
-pour une preuve sans temps, utiliser `temps: null` et préciser le champ JSON ou
-la ligne dans `observation`. Ne mélange pas ces quatre horloges.
+- `note` est un nombre de 0 à 10 quand `statut` vaut `evalue`, sinon `null` (dossier réellement inexploitable pour ton regard : dis pourquoi dans `limites`).
+  `note_passe1` vaut `null` en passe 1.
+- Une preuve cite **un fichier du paquet** (chemin relatif à la racine du paquet) et soit un temps, soit un champ JSON (pointeur `/a/b/c`), soit une ligne, soit un
+  numéro de case (`"case": 3`, planche PNG, à partir de 0). Unités de temps : `s_video` (depuis le début d'un clip ou d'un tapis), `s_reel`, `s_jeu`,
+  `s_fichier_audio` ; ne mélange pas ces quatre horloges. Le script vérifie que le fichier existe et que le temps ou le champ désigne quelque chose de réel dans ce fichier.
+- Les constats portent un fait vérifiable (un nombre, une séquence, un fichier, un temps), pas une impression générale.
+- Codex : tu travailles dans un dossier vide ; la liste des fichiers que tu ouvres est relue dans ton journal.

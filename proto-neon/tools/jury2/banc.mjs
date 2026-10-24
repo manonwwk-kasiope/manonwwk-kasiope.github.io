@@ -1,6 +1,6 @@
 /* Hors bac uniquement. Depuis proto-neon :
-   node tools/jury2/banc.mjs --carte ../CHEMIN/structure.json
-   node tools/jury2/banc.mjs --valider-instrument --graines 1 --carte CHEMIN
+   node tools/jury2/banc.mjs --serie etalonnage --valider-instrument --carte ../CHEMIN/structure.json
+   node tools/jury2/banc.mjs --serie alpha --carte CHEMIN        (graines tirées et scellées au premier usage)
    Importer ce module ne démarre ni serveur ni navigateur. */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium, devices } from 'playwright';
 import { P, paris } from './protocole.mjs';
 import { installer } from './sonde.mjs';
-import { bilan, difficulte, sensibilite, repereCarte, quantile, alignerSources } from './analyse.mjs';
+import { bilan, difficulte, sensibilite, repereCarte, quantile, alignerSources, carteAlignee } from './analyse.mjs';
 import { tampon, planche, lireTampon } from './images.mjs';
 import { construireTemoin } from './temoin.mjs';
 import { conduireAventure } from './aventure.mjs';
@@ -21,6 +21,32 @@ const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const json=(f,v)=>fs.writeFileSync(f,JSON.stringify(v,null,2)+'\n');
 const dormir=ms=>new Promise(r=>setTimeout(r,ms));
 const safe=s=>{if(!/^[a-zA-Z0-9_-]+$/.test(s))throw Error('Identifiant invalide : '+s);return s;};
+/* Séries de graines : étalonnage (liste écrite dans protocole.mjs, hors réglage) ; alpha et beta tirées au
+   hasard au premier usage (crypto), scellées dans sceaux/<série>.json créé sans écrasement, disjointes entre
+   elles et des graines de réglage. n > longueur de la liste de l'étalonnage : la liste est prolongée. */
+export function resoudreSerie(nom,{dir=HERE,n=null,tirer=(min,max)=>crypto.randomInt(min,max+1)}={}) {
+  const spec=P.series[nom];if(!spec)throw Error('Série inconnue : '+nom+' ('+Object.keys(P.series).join(', ')+')');
+  if(Array.isArray(spec.graines)) {
+    const g=spec.graines.slice(),k=n??g.length;while(g.length<k)g.push(g.at(-1)+1);
+    return{nom,spec,graines:g.slice(0,k),sceau:null,scelle:false};
+  }
+  const fichier=path.join(dir,'sceaux',nom+'.json');
+  if(fs.existsSync(fichier)) {
+    const s=JSON.parse(fs.readFileSync(fichier,'utf8')),attendu=sha(Buffer.from(JSON.stringify({serie:s.serie,graines:s.graines,nonce:s.nonce})));
+    if(attendu!==s.sceauSha256)throw Error('Sceau altéré : '+fichier);
+    if(n!==null&&n!==s.graines.length)throw Error(`Série ${nom} déjà scellée avec ${s.graines.length} graines ; refus d'en retirer ${n} (une série scellée est lue telle quelle).`);
+    return{nom,spec,graines:s.graines,sceau:s.sceauSha256,scelle:true,fichier};
+  }
+  const autres=Object.keys(P.series).filter(x=>x!==nom&&!Array.isArray(P.series[x].graines)),exclues=new Set();
+  for(let g=P.grainesReglage.min;g<=P.grainesReglage.max;g++)exclues.add(g);
+  for(const a of autres){const f=path.join(dir,'sceaux',a+'.json');if(fs.existsSync(f))for(const g of JSON.parse(fs.readFileSync(f,'utf8')).graines)exclues.add(g);}
+  const k=n??spec.graines.n,graines=[];
+  while(graines.length<k){const g=tirer(spec.graines.min,spec.graines.max);if(!exclues.has(g)&&!graines.includes(g))graines.push(g);}
+  const nonce=crypto.randomBytes(16).toString('hex'),sceauSha256=sha(Buffer.from(JSON.stringify({serie:nom,graines,nonce})));
+  fs.mkdirSync(path.dirname(fichier),{recursive:true});
+  fs.writeFileSync(fichier,JSON.stringify({serie:nom,graines,nonce,sceauSha256,dateParis:paris(),note:'Série scellée : à ne pas lire ni committer avant la fin du jury ; jamais régénérée.'},null,2)+'\n',{flag:'wx'});
+  return{nom,spec,graines,sceau:sceauSha256,scelle:true,fichier};
+}
 export function fichierStatique(root,req,res,bundle,actifs,out) {
   try {
     const u=new URL(req.url,'http://local'),p=decodeURIComponent(u.pathname);
@@ -93,25 +119,7 @@ function scenesMoments(data,carte) {
   }
   return moments;
 }
-/* Carte r1 associée à chaque image, jamais avancée depuis le début de la partie.
-   Les blocs NV demandent le trackState public du moteur : voir sonde. */
-export function carteAlignee(frames,carte) {
-  let prev=null;const crossings=[];
-  for(const f of frames) {
-    const r=repereCarte(carte,f.sourceCarte);
-    if(r&&prev&&r.id===prev.r.id&&r.t>=prev.r.t) {
-      for(const [type,items]of [['drop',r.drops],['break',r.breaks]])for(const d of items) {
-        if(d.t>prev.r.t&&d.t<=r.t) {
-          const alpha=(d.t-prev.r.t)/(r.t-prev.r.t||1);
-          crossings.push({type,id:r.id,tFichier:d.t,w:prev.w+(f.w-prev.w)*alpha,
-            encadrement:[prev.w,f.w],incertitudeSec:f.w-prev.w,repere:d});
-        }
-      }
-    }
-    prev=r?{r,w:f.w}:null;
-  }
-  return crossings;
-}
+export { carteAlignee };
 async function medias(dir,data,cdpFrames,carte) {
   const out={clips:[],planches:[],manques:[],carte:carteAlignee(data.frames,carte)};
   json(path.join(dir,'carte-alignee.json'),out.carte);
@@ -124,6 +132,7 @@ async function medias(dir,data,cdpFrames,carte) {
     const avant=cdpFrames.findLast(f=>f.w<debut);if(avant)ff.unshift({...avant,w:debut});
     if(!ff.length||duree<20||duree>40){out.manques.push({moment:m.nom,raison:'fenêtre vidéo hors 20–40 s ou sans image CDP',duree,images:ff.length});continue;}
     const gaps=ff.slice(1).map((f,i)=>({de:ff[i].w,a:f.w,sec:f.w-ff[i].w})).filter(g=>g.sec>P.maxTrouVideo&&data.frames.some(x=>x.w>g.de&&x.w<g.a&&x.changes>0));
+    const gravesTrous=gaps.filter(g=>g.sec>P.maxTrouVideoTolere);
     const liste=path.join(dir,`${m.nom}.concat.txt`);
     let texte='';for(let i=0;i<ff.length;i++){
       const dureeImage=(i+1<ff.length?ff[i+1].w:fin)-ff[i].w;
@@ -134,7 +143,8 @@ async function medias(dir,data,cdpFrames,carte) {
     const sonde=spawnSync('ffprobe',['-v','error','-show_entries','format=duration','-of','json',path.join(dir,video)],{encoding:'utf8'});
     const dureeEncodee=sonde.status===0?+JSON.parse(sonde.stdout).format.duration:null;
     const entree={moment:m.nom,video,debut,fin,dureeEncodee,instantMomentDansVideo:m.w-debut,
-      trousAvecMouvement:gaps,conforme:dureeEncodee>=20&&dureeEncodee<=40&&!gaps.length,
+      trousAvecMouvement:gaps,sansTrou:!gaps.length,trousAuDelaDuSeuilTolere:gravesTrous.length,
+      conforme:dureeEncodee>=20&&dureeEncodee<=40&&!gravesTrous.length,
       carte:out.carte.filter(x=>x.w>=debut&&x.w<=fin).map(x=>({...x,tVideo:x.w-debut})),
       audio:data.audio.map(a=>({...a,debutDansAudio:debut-a.w})),
       tempsAudio:data.frames.filter(f=>f.w>=debut&&f.w<=fin).filter((f,i,a)=>i===0||f.beat?.bar!==a[i-1].beat?.bar||f.beat?.beat!==a[i-1].beat?.beat).map(f=>({tVideo:f.w-debut,w:f.w,tempsJeu:f.tempsJeu,audioCtx:f.audioCtx,latence:f.latence,bpm:f.bpm,beat:f.beat,source:f.sourceCarte})),
@@ -180,8 +190,9 @@ async function run(browser,origin,opts,cas,carte,piste,context=null) {
     if(e.cause!=='net::ERR_ABORTED')errors.push('requête:'+e.url+':'+e.cause);
   });
   await page.exposeBinding('__juryAudio',(_,x)=>{fs.appendFileSync(path.join(dir,`audio-sortie-${x.id}.webm`),Buffer.from(x.data,'base64'));});
-  await page.addInitScript(({graine})=>{window.__SEED=graine;},cas);
-  await page.addInitScript(installer,{...P,media,pixels:cas.genre!=='performance',performance:cas.genre==='performance'});
+  await page.addInitScript(({graine,modeTemoin})=>{window.__SEED=graine;if(modeTemoin)window.__JURY_TEMOIN_MODE=modeTemoin;},cas);
+  const drops=media&&carte?Object.fromEntries(Object.entries(carte.morceaux).map(([id,m])=>[id,m.drops.map(d=>d.t)])):null;
+  await page.addInitScript(installer,{...P,media,pixels:!['performance','sync-probe'].includes(cas.genre),performance:cas.genre==='performance',denses:media?{...P.denses,drops}:null});
   async function drain() {
     const part=await page.evaluate(genre=>{
       const N=window.__N,x=window.__jury.vider(),J=N.journal;x.journalN=J.compte();x.journalTaille=J.taille();x.journal=J.dump({vider:true});
@@ -210,6 +221,8 @@ async function run(browser,origin,opts,cas,carte,piste,context=null) {
       N.journal.actif(true);N.journal.vider();
       if(cas.genre==='performance'||cas.genre==='charge'){
         if(!N.game.dbg.scene(cas.scene))throw Error('Scène absente : '+cas.scene);
+        N.game.dbg.god(true);N.pilote.lancer('bon');
+      }else if(cas.genre==='sync-probe'){
         N.game.dbg.god(true);N.pilote.lancer('bon');
       }else if(cas.genre==='audio-probe'){
         N.game.dbg.god(true);N.pilote.lancer('inerte');N.music.mute('effets',true);
@@ -264,7 +277,7 @@ async function run(browser,origin,opts,cas,carte,piste,context=null) {
       if(finW!==null&&(!media||f.w-finW>=P.queueFin)){data.raison='fin';break;}
       const err=await page.evaluate(()=>window.__ERR.count);if(err){data.raison='erreur jeu';break;}
     }
-    if(['performance','audio-probe','charge'].includes(cas.genre)&&data.raison==='borne')data.raison='fenêtre complète';
+    if(['performance','audio-probe','charge','sync-probe'].includes(cas.genre)&&data.raison==='borne')data.raison='fenêtre complète';
     const final=await page.evaluate(()=>window.__jury.finir());data.audio=final.audio;data.final=final.final;
     await drain();data.duree=data.frames.at(-1)?.w||0;
     if(cdp){await cdp.send('Page.stopScreencast');acceptCDP=false;}
@@ -313,14 +326,22 @@ function exporterAudio(out) {
   json(path.join(dest,'index.json'),index);
 }
 export async function produire(browser,opts) {
-  const bundle=fs.readFileSync(opts.bundle),id=safe(opts.build||sha(bundle).slice(0,16)),out=path.join(HERE,'dossiers',id);
+  const bundle=fs.readFileSync(opts.bundle),id=safe(opts.build||sha(bundle).slice(0,16));
+  const serie=opts.serieResolue||resoudreSerie(opts.serie||'etalonnage',{n:opts.graines??null}),spec=serie.spec;
+  const profils=opts.profils||spec.profils,pilotes=opts.pilotes||P.pilotes,graineListe=serie.graines;
+  const aventures=opts.sansAventures?[]:(spec.aventures||[]).filter(a=>profils.includes(a.profil)&&(!opts.profilsAventure||opts.profilsAventure.includes(a.profil)));
+  const perfProfils=(spec.performance||[]).filter(x=>profils.includes(x)),g0=graineListe[0];
+  const nSerie=Array.isArray(spec.graines)?spec.graines.length:spec.graines.n;
+  const reduit=!!opts.sansAventures||!!opts.sansPerformance||!!opts.profils||!!opts.pilotes||!!opts.profilsAventure||!!opts.max||graineListe.length<nSerie;
+  const nom=`${serie.nom}-${id}`,out=path.join(HERE,'dossiers',nom);
   if(fs.existsSync(out))throw Error('Dossier déjà présent, refus d’écraser : '+out);
   fs.mkdirSync(out,{recursive:true});opts={...opts,out};
   const carte=opts.carte?JSON.parse(fs.readFileSync(opts.carte)):null,piste=JSON.parse(fs.readFileSync(path.join(ROOT,'musique','piste.json')));
   const files=['banc.mjs','analyse.mjs','sonde.mjs','images.mjs','protocole.mjs','aventure.mjs'];
-  const manifest={dateParis:paris(),build:id,bundleSha256:sha(bundle),protocoleSha256:sha(Buffer.concat(files.map(f=>fs.readFileSync(path.join(HERE,f))))),
+  const manifest={dateParis:paris(),dossier:nom,build:id,serie:serie.nom,graineListe,sceauSha256:serie.sceau,spec,reduit,
+    bundleSha256:sha(bundle),protocoleSha256:sha(Buffer.concat(files.map(f=>fs.readFileSync(path.join(HERE,f))))),
     navigateur:browser.version(),plateforme:'Chrome émulé ; Safari et iPhone physique à vérifier',
-    protocole:P,graines:opts.graines,carte:opts.carte?{sha256:sha(fs.readFileSync(opts.carte)),fichier:'structure-r1.json'}:null,
+    protocole:P,graines:graineListe.length,carte:opts.carte?{sha256:sha(fs.readFileSync(opts.carte)),fichier:'structure-r1.json'}:null,
     cas:[],performance:[],complet:false};
   const save=()=>json(path.join(out,'manifeste.json'),manifest);
   fs.writeFileSync(path.join(out,'build.html'),bundle);if(carte)json(path.join(out,'structure-r1.json'),carte);
@@ -330,46 +351,57 @@ export async function produire(browser,opts) {
   try {
     await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
     const origin=`http://127.0.0.1:${server.address().port}`;
-    for(const profil of P.profils)for(const pilote of P.pilotes)for(let graine=1;graine<=opts.graines;graine++) {
-      const r=await run(browser,origin,opts,{genre:'partie',profil,pilote,graine,max:opts.max||P.maxPartie,media:graine===1},carte,piste);
+    for(const profil of profils)for(const pilote of pilotes)for(const graine of graineListe) {
+      const r=await run(browser,origin,opts,{genre:'partie',profil,pilote,graine,max:opts.max||P.maxPartie,media:graine===g0},carte,piste);
       manifest.cas.push(r);save();console.log(JSON.stringify({build:id,cas:r.dossier,tempsJeu:r.mesures.tempsJeu,fin:r.mesures.fin,zeroErreur:r.mesures.zeroErreur}));
     }
     /* Test physique de coupure musicale, effets coupés dans LES DEUX builds,
        uniquement dans cette fenêtre, pour que rmsOut mesure la musique seule. */
-    manifest.cas.push(await run(browser,origin,opts,{genre:'audio-probe',profil:'paysage',pilote:'inerte',graine:1,max:P.performanceSec,media:true},carte,piste));save();
-    if(!opts.sansAventures)for(const profil of P.profils) {
+    manifest.cas.push(await run(browser,origin,opts,{genre:'audio-probe',profil:'paysage',pilote:'inerte',graine:g0,max:P.performanceSec,media:true},carte,piste));save();
+    /* Sondes de synchronisation du bundle témoin : positif (apparitions calées) puis négatif (dégradé), mêmes graines. */
+    if(opts.sondesSync)for(const modeTemoin of ['synchro','desync'])for(const graine of graineListe.slice(0,2))
+      {manifest.cas.push(await run(browser,origin,opts,{genre:'sync-probe',profil:'paysage',pilote:'bon',graine,modeTemoin,max:P.probeSyncSec,media:false},carte,piste));save();}
+    for(const {profil,qui} of aventures) {
       const options=profil==='bureau'?{viewport:{width:1440,height:900}}:{...devices[profil==='paysage'?'iPhone 13 landscape':'iPhone 13'],viewport:profil==='paysage'?{width:844,height:390}:{width:390,height:844}};
       const ctx=await browser.newContext({...options,serviceWorkers:'block'});
-      try{for(const qui of ['elle','lui']){manifest.cas.push(await run(browser,origin,opts,{genre:'aventure',profil,pilote:'dieu',graine:1,qui,conserverProfil:qui==='lui',media:true,max:P.maxAventure},carte,piste,ctx));save();}}finally{await ctx.close();}
+      try{for(const q of qui){manifest.cas.push(await run(browser,origin,opts,{genre:'aventure',profil,pilote:'dieu',graine:g0,qui:q,conserverProfil:q==='lui',media:true,max:P.maxAventure},carte,piste,ctx));save();}}finally{await ctx.close();}
     }
-    if(!opts.sansPerformance)for(const profil of P.profils)for(const scene of ['charge','v5','vol']) {
-      const r=await run(browser,origin,opts,{genre:'performance',profil,pilote:'bon',graine:1,scene,media:false,max:P.performanceSec},carte,piste);
+    if(!opts.sansPerformance)for(const profil of perfProfils)for(const scene of ['charge','v5','vol']) {
+      const r=await run(browser,origin,opts,{genre:'performance',profil,pilote:'bon',graine:g0,scene,media:false,max:P.performanceSec},carte,piste);
       manifest.performance.push(r);save();
     }
     /* Stress R-13 distinct des parties naturelles. */
-    if(!opts.sansPerformance)for(const profil of P.profils){manifest.cas.push(await run(browser,origin,opts,{genre:'charge',profil,pilote:'bon',graine:1,scene:'charge',media:false,max:P.chargeSec},carte,piste));save();}
+    if(!opts.sansPerformance)for(const profil of perfProfils){manifest.cas.push(await run(browser,origin,opts,{genre:'charge',profil,pilote:'bon',graine:g0,scene:'charge',media:false,max:P.chargeSec},carte,piste));save();}
     manifest.difficulte=difficulte(manifest.cas);
     manifest.actifs=[...actifs.entries()].map(([f,b])=>({fichier:path.relative(ROOT,f),octets:b.length,sha256:sha(b)}));
     manifest.manques=P.moments.filter(m=>!manifest.cas.some(c=>c.medias?.clips.some(x=>x.moment===m&&x.conforme)));
     manifest.collecteTerminee=true;
-    manifest.complet=!!carte&&opts.graines>=P.graines&&!opts.sansAventures&&!opts.sansPerformance&&
-      manifest.manques.length===0&&manifest.cas.every(c=>c.mesures.zeroErreur&&
+    /* « complet » est relatif à la série : toutes ses graines, tous ses profils, toutes ses aventures. */
+    manifest.complet=!!carte&&!reduit&&manifest.manques.length===0&&manifest.cas.every(c=>c.mesures.zeroErreur&&
         (c.genre!=='partie'||c.mesures.fin)&&(c.genre!=='aventure'||c.aventureComplete)&&
         (!c.medias||(c.medias.clips.every(x=>x.conforme)&&c.medias.manques.length===0&&c.medias.planches.every(x=>x.complet!==false)&&c.mesures.audio.captures.length>0)));
     manifest.validationInstrument='À vérifier par la paire pointe/témoin ; aucun jury ne doit utiliser un dossier incomplet.';
     save();
-    fs.writeFileSync(path.join(out,'fiche.md'),`# Dossier ${id}\n\n${paris()}\n\nSHA-256 build : ${manifest.bundleSha256}.\nNavigateur ${manifest.navigateur}. Dossier complet : **${manifest.complet}**. Validation de l’instrument : ${manifest.validationInstrument}\n\n${manifest.cas.length} séquences ; ${manifest.performance.length} fenêtres de performance séparées. Carte r1 ${carte?'copiée et empreintée':'ABSENTE : drops et breaks non qualifiables'}. Moments absents : ${manifest.manques.join(', ')||'aucun'}.\n\n| Séquence | Durée jeu s | Fin | Zéro erreur |\n|---|---:|---|---|\n${manifest.cas.map(c=>`| [${c.dossier}](${c.dossier}/fiche.md) | ${c.mesures.tempsJeu} | ${c.mesures.fin} | ${c.mesures.zeroErreur} |`).join('\n')}\n\nLire grille.md et consigne-jure.md. Les dossiers aventure sont des visites au pilote dieu avec invulnérabilité principale, sans saut : ils montrent du contenu ; la difficulté se lit exclusivement dans les parties ordinaires. Les valeurs de difficulté, la courbe N.adapte et les journaux sont dans manifeste.json et les bruts. Les portes manquantes ou échouées restent publiées ; aucune note constructeur.\n`);
+    fs.writeFileSync(path.join(out,'fiche.md'),`# Dossier ${nom}\n\n${paris()}\n\nSHA-256 build : ${manifest.bundleSha256}.\nSérie ${serie.nom}${serie.scelle?' (scellée '+serie.sceau.slice(0,12)+')':''}, graines ${graineListe.join(', ')}. Navigateur ${manifest.navigateur}. Dossier complet : **${manifest.complet}**${reduit?' (essai réduit : jamais une qualification complète)':''}. Validation de l’instrument : ${manifest.validationInstrument}\n\n${manifest.cas.length} séquences ; ${manifest.performance.length} fenêtres de performance séparées. Carte r1 ${carte?'copiée et empreintée':'ABSENTE : drops et breaks non qualifiables'}. Moments absents : ${manifest.manques.join(', ')||'aucun'}.\n\n| Séquence | Durée jeu s | Fin | Zéro erreur |\n|---|---:|---|---|\n${manifest.cas.map(c=>`| [${c.dossier}](${c.dossier}/fiche.md) | ${c.mesures.tempsJeu} | ${c.mesures.fin} | ${c.mesures.zeroErreur} |`).join('\n')}\n\nCe dossier est BRUT : il porte l’identité de la build. Les jurés ne le reçoivent jamais ; ils reçoivent un paquet neutre monté par jure.mjs. Les dossiers aventure sont des visites au pilote dieu avec invulnérabilité principale, sans saut : ils montrent du contenu ; la difficulté se lit exclusivement dans les parties ordinaires. Les valeurs de difficulté, la courbe N.adapte et les journaux sont dans manifeste.json et les bruts. Les portes manquantes ou échouées restent publiées ; aucune note constructeur.\n`);
     return{out,manifest};
   }finally{await new Promise(r=>server.close(r));}
 }
 export async function main(args=process.argv.slice(2)) {
-  if(args.includes('--help')){console.log('node tools/jury2/banc.mjs [--bundle index.html] [--build ID] [--carte structure.json] [--graines 10] [--max 720] [--valider-instrument] [--sans-aventures] [--sans-performance]\nExécution réelle hors bac seulement. Verrou Chef exclusif ; aucune requête externe. --valider-instrument rejoue la même sélection sur le témoin construit. --graines 1 est un essai réduit, jamais une qualification complète.');return;}
+  if(args.includes('--help')){console.log(`node tools/jury2/banc.mjs [--serie etalonnage|alpha|beta] [--bundle index.html] [--build ID] [--carte structure.json] [--graines N] [--profils paysage,portrait] [--pilotes humain,bon] [--aventures-profils paysage] [--max 720] [--valider-instrument] [--sans-aventures] [--sans-performance]
+Exécution réelle hors bac seulement. Verrou Chef exclusif ; aucune requête externe.
+--serie : liste de graines (étalonnage : 101… hors réglage ; alpha et beta : tirées et scellées au premier usage, jamais relues par l’orchestratrice).
+--valider-instrument : bâtit le témoin sur src/ (le bundle doit être l’index.html de cette copie), rejoue la même série dessus, puis les sondes de synchronisation positive et dégradée.
+Toute option qui réduit la série rend le dossier « réduit » : jamais une qualification complète.`);return;}
   const arg=(k,d)=>{const i=args.indexOf(k);if(i>=0&&!args[i+1])throw Error('Valeur manquante '+k);return i<0?d:args[i+1];};
-  const opts={bundle:path.resolve(arg('--bundle',path.join(ROOT,'index.html'))),build:arg('--build',null),
+  const liste=(k,permis)=>{const v=arg(k,null);if(v===null)return null;const l=v.split(',').filter(Boolean);for(const x of l)if(!permis.includes(x))throw Error(k+' : valeur inconnue '+x);return l;};
+  const grainesArg=arg('--graines',null),maxArg=arg('--max',null);
+  const opts={bundle:path.resolve(arg('--bundle',path.join(ROOT,'index.html'))),build:arg('--build',null),serie:arg('--serie','etalonnage'),
     carte:arg('--carte',fs.existsSync(path.join(ROOT,'musique/morceaux/structure.json'))?path.join(ROOT,'musique/morceaux/structure.json'):null),
-    graines:Number(arg('--graines',P.graines)),max:Number(arg('--max',P.maxPartie)),
+    graines:grainesArg===null?null:Number(grainesArg),max:maxArg===null?null:Number(maxArg),
+    profils:liste('--profils',P.profils),pilotes:liste('--pilotes',P.pilotes),profilsAventure:liste('--aventures-profils',P.profils),
     sansAventures:args.includes('--sans-aventures'),sansPerformance:args.includes('--sans-performance')};
-  if(!Number.isInteger(opts.graines)||opts.graines<1||!Number.isFinite(opts.max)||!(opts.max>0))throw Error('Bornes invalides');
+  if(opts.graines!==null&&(!Number.isInteger(opts.graines)||opts.graines<1)||opts.max!==null&&!(opts.max>0))throw Error('Bornes invalides');
+  if(!P.series[opts.serie])throw Error('Série inconnue : '+opts.serie);
   if(!opts.carte)throw Error('Carte r1 absente : préciser --carte /chemin/structure.json ; aucun navigateur lancé.');
   const carte=JSON.parse(fs.readFileSync(opts.carte));
   if(!carte.morceaux||!Object.keys(carte.morceaux).length)throw Error('Carte r1 sans morceaux ; aucun navigateur lancé.');
@@ -378,6 +410,10 @@ export async function main(args=process.argv.slice(2)) {
     if(!Array.isArray(m.drops)||!Array.isArray(m.breaks))throw Error('Drops/breaks r1 absents pour '+id);
   }
   for(const cmd of ['ffmpeg','ffprobe'])if(spawnSync(cmd,['-version'],{stdio:'ignore'}).status!==0)throw Error(cmd+' absent ; aucun navigateur lancé');
+  if(args.includes('--valider-instrument')&&sha(fs.readFileSync(opts.bundle))!==sha(fs.readFileSync(path.join(ROOT,'index.html'))))
+    throw Error('--valider-instrument : le témoin est bâti sur src/ de cette copie ; --bundle doit être son index.html (sinon le témoin ne serait pas celui de la pointe). Aucun navigateur lancé.');
+  /* Les graines (et le sceau éventuel) sont fixées avant tout lancement : pointe et témoin partagent la même série. */
+  const serie=resoudreSerie(opts.serie,{n:opts.graines});opts.serieResolue=serie;
   let lock=false,browser;const marque=path.join(P.verrou,'jury2.pid'),controller=new AbortController();
   const interrompre=()=>controller.abort();process.once('SIGINT',interrompre);process.once('SIGTERM',interrompre);opts.signal=controller.signal;
   try {
@@ -386,10 +422,10 @@ export async function main(args=process.argv.slice(2)) {
     browser=await chromium.launch({channel:'chrome',headless:true,args:['--mute-audio','--autoplay-policy=no-user-gesture-required','--disable-background-networking']});
     const pointe=await produire(browser,opts);
     if(args.includes('--valider-instrument')) {
-      const temoin=construireTemoin(),b=await produire(browser,{...opts,bundle:temoin.fichier,build:pointe.manifest.build+'-temoin'});
-      const validation=sensibilite(pointe.manifest,b.manifest);json(path.join(pointe.out,'validation-instrument.json'),validation);json(path.join(b.out,'validation-instrument.json'),validation);
+      const temoin=construireTemoin(),b=await produire(browser,{...opts,bundle:temoin.fichier,build:pointe.manifest.build+'-temoin',sondesSync:true});
+      const validation=sensibilite(pointe.manifest,b.manifest,b.manifest);json(path.join(pointe.out,'validation-instrument.json'),validation);json(path.join(b.out,'validation-instrument.json'),validation);
       for(const d of [pointe,b]){
-        d.manifest.validationInstrument=validation.valide?'validé par les deux sorties physiques pointe/témoin':'échec de sensibilité ; voir validation-instrument.json';
+        d.manifest.validationInstrument=validation.valide?'validé par les deux sorties physiques (témoin positif / dégradé ; audio pointe / témoin)':'échec de sensibilité ; voir validation-instrument.json';
         d.manifest.pretPourJury=d.manifest.complet&&validation.valide;
         json(path.join(d.out,'manifeste.json'),d.manifest);
         fs.appendFileSync(path.join(d.out,'fiche.md'),`\nMis à jour à ${paris()} : instrument ${validation.valide?'validé':'non validé'} ; dossier prêt pour jury : **${d.manifest.pretPourJury}**. Voir validation-instrument.json (valeurs physiques et seuils figés).\n`);

@@ -1,7 +1,8 @@
 {
   "synthetique": true,
-  "dateParis": "24/10/2026 02:34:35",
+  "dateParis": "24/10/2026 03:16:29",
   "pairs": 1,
+  "protocoleSha256": "fixture",
   "comparable": true,
   "rmsPointe": 0.2,
   "rmsTemoin": 0.2,
@@ -27,11 +28,13 @@
     }
   },
   "perteSync": 0,
+  "positif": null,
   "seuils": {
     "ratioAudioMax": 0.1,
     "perteSyncMin": 0.2,
-    "evenementsMin": 30
+    "evenementsMin": 30,
+    "positifPartMin": 0.5
   },
   "valide": false,
-  "limite": "Deux axes physiques requis : RMS de sortie musicale (fenêtre audio-probe, effets coupés dans les deux builds) et phase des sorties réelles. Le RMS public music est avant la porte de mute : il ne prouve pas la coupure. Un patch ou un compteur d’appels ne valide jamais l’instrument."
+  "limite": "Deux axes physiques requis : RMS de sortie musicale (fenêtre audio-probe, effets coupés dans les deux builds) et phase des sorties réelles (apparitions présentes, témoin positif contre témoin dégradé). Le RMS public music est avant la porte de mute : il ne prouve pas la coupure. Un patch ou un compteur d’appels ne valide jamais l’instrument."
 }

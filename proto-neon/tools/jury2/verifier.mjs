@@ -10,10 +10,11 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { P,paris } from './protocole.mjs';
 import { flashs,sync,sensibilite,repereCarte,alignerSources,difficulte,mediane } from './analyse.mjs';
+import { testsJury } from './tests-jury.mjs';
 import { installer } from './sonde.mjs';
 import { conduireAventure } from './aventure.mjs';
 import { tampon,lireTampon,planche } from './images.mjs';
-import { construireTemoin } from './temoin.mjs';
+import { construireTemoin,batirCopie } from './temoin.mjs';
 import { main,carteAlignee,audioPhysique,fichierStatique } from './banc.mjs';
 const HERE=path.dirname(fileURLToPath(import.meta.url)),ROOT=path.resolve(HERE,'../..');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
@@ -41,7 +42,7 @@ export async function statique() {
   await test('Planches : phase quelconque du drop, sans élargir le seuil de 150 ms',()=>{let pire=0;for(let phase=0;phase<.5;phase+=.001){for(let k=0;k<9;k++){const t=phase+k*.5,pas=Math.ceil(P.capturePas*60)/60,proche=Math.round(t/pas)*pas;pire=Math.max(pire,Math.abs(t-proche));}}assert(pire<=P.tolerancePlanche);return {synthetique:true,pireSec:pire,seuilSec:P.tolerancePlanche};});
   await test('Alignement : latence retirée une seule fois ; curseur accéléré suivi',()=>{const frames=[0,1,2].map(w=>({w,latence:.1,morceau:{id:'x',t:w*2}}));alignerSources(frames);assert(Math.abs(frames[1].sourceCarte.t-1.8)<1e-9);assert.equal(frames[0].sourceCarte,null);});
   await test('Boucle musicale : aucun faux drop en remontant le curseur',()=>{const c={morceaux:{x:{barres:[0,1,2],drops:[{t:1}],breaks:[]}}},f=[{w:0,sourceCarte:{id:'x',t:1.9}},{w:1,sourceCarte:{id:'x',t:.2}},{w:2,sourceCarte:{id:'x',t:1.2}}];const a=carteAlignee(f,c);assert.equal(a.length,1);assert(a[0].w>1);return a;});
-  await test('Difficulté : victoires et censures ne sont pas des défaites',()=>{const c=(issue,t)=>({genre:'partie',profil:'paysage',pilote:'humain',moments:[],mesures:{fin:issue!=='censure',issue,tempsJeu:t}});const b=difficulte([c('defaite',150),c('defaite',240),c('victoire',10),c('censure',999)])[1];assert.equal(b.medianeDefaite,195);assert.equal(b.defaites,2);assert.equal(b.conforme,false);assert.equal(mediane([]),null);});
+  await test('Difficulté : victoires et censures ne sont pas des défaites',()=>{const c=(issue,t)=>({genre:'partie',profil:'paysage',pilote:'humain',moments:[],mesures:{fin:issue!=='censure',issue,tempsJeu:t}});const b=difficulte([c('defaite',150),c('defaite',240),c('victoire',10),c('censure',999)])[1];assert.equal(b.medianeDefaite,195);assert.equal(b.defaites,2);assert.equal(b.conforme,null,'n = 4 : indéterminé, jamais conforme');assert.match(b.statut,/indéterminé/);assert.equal(mediane([]),null);});
   function dossier(rms,decales=false){return{protocoleSha256:'fixture',cas:[{genre:'partie',profil:'paysage',pilote:'humain',graine:1,syncGeometrique:Array.from({length:50},(_,i)=>decales&&i>=20?100:0),mesures:{synchronisation:sync(events()),audio:{rmsMusique:1}}},{genre:'audio-probe',mesures:{audio:{captureRms:rms,rmsMusique:1,rmsSortie:rms}}}]};}
   await test('Sensibilité : le témoin connu dégradé est distingué sur deux axes',()=>{const r=sensibilite(dossier(.2),dossier(.001,true));assert.equal(r.valide,true);j('fixture-sensibilite-positive.json',{synthetique:true,...r});return {ratio:r.ratioAudio,perteSync:r.perteSync};});
   await test('Deux dossiers identiques invalident l’instrument',()=>{const r=sensibilite(dossier(.2),dossier(.2));assert.equal(r.valide,false);j('fixture-sensibilite-negative.json',{synthetique:true,...r});});
@@ -80,10 +81,11 @@ export async function statique() {
     const actifs=new Map(),call=(url,range)=>{let code=200,body;const heads={};fichierStatique(root,{url,headers:{range}},{setHeader:(k,v)=>heads[k]=v,writeHead:(c,h)=>{code=c;Object.assign(heads,h);},end:b=>body=b},Buffer.from('bundle'),actifs,out);return{code,body,heads};};
     const a=call('/sample.mp3','bytes=2-4');assert.equal(a.code,206);assert.equal(a.body.toString(),'234');assert.equal(a.heads['Content-Range'],'bytes 2-4/10');fs.writeFileSync(file,'changed');assert.equal(call('/sample.mp3').body.toString(),'0123456789');assert.equal(call('/sample.mp3','bytes=20-').code,416);assert.equal(call('/%2e%2e%2fsecret').code,404);
   });
-  await test('Build du jeu reçu : sortie 0',()=>{
-    const before=sha(fs.readFileSync(path.join(ROOT,'index.html'))),r=spawnSync(process.execPath,['build.mjs'],{cwd:ROOT,encoding:'utf8'});
-    fs.writeFileSync(path.join(HERE,'build.log'),r.stdout+r.stderr);assert.equal(r.status,0,r.stderr);const after=sha(fs.readFileSync(path.join(ROOT,'index.html')));
-    preuve.bundle={avant:before,apres:after,identique:before===after,code:r.status};return preuve.bundle;
+  await test('Build du jeu reçu : sortie 0, dans une copie temporaire (la copie de travail n’est pas reconstruite)',()=>{
+    const avant=sha(fs.readFileSync(path.join(ROOT,'index.html'))),r=batirCopie(null),apres=sha(Buffer.from(r.html));
+    fs.writeFileSync(path.join(HERE,'build.log'),r.journal);assert.equal(r.status,0);
+    assert.equal(sha(fs.readFileSync(path.join(ROOT,'index.html'))),avant);
+    preuve.bundle={avant,apres,identique:avant===apres,code:r.status};assert.equal(preuve.bundle.identique,true,'index.html n’est pas à jour avec src/');return preuve.bundle;
   });
   await test('Témoin construit dans une copie temporaire, syntaxe valide',()=>{
     const sources=()=>sha(Buffer.concat(fs.readdirSync(path.join(ROOT,'src')).filter(f=>f.endsWith('.js')).sort().map(f=>fs.readFileSync(path.join(ROOT,'src',f)))));
@@ -100,6 +102,7 @@ export async function statique() {
     const file=path.join(HERE,'correction-actifs-temoin.json');if(fs.existsSync(file)){const p=JSON.parse(fs.readFileSync(file));p.apres={sha256:second.sha256,referencesAuDossierTemporaire:0,identiteHorsDegradation:true,reproductible:true};j('correction-actifs-temoin.json',p);}
     preuve.temoin=second;return {sha256:second.sha256,referencesTemporaires:0,identiqueHorsAjout:true};
   });
+  await testsJury({test,fixtures,preuve,HERE,ROOT});
   preuve.reussi=preuve.controles.every(x=>x.ok);preuve.nombre=preuve.controles.length;preuve.echecs=preuve.controles.filter(x=>!x.ok).length;
   preuve.navigateur='non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe';j('verification-locale.json',preuve);
   console.log(JSON.stringify({reussi:preuve.reussi,controles:preuve.nombre,echecs:preuve.echecs,bundle:preuve.bundle,temoin:preuve.temoin?.sha256},null,2));
