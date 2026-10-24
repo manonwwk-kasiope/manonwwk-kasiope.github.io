@@ -142,3 +142,19 @@ Durée écoulée : 6 h 03 (le plancher de 6 h est atteint ; la boucle continue j
 
 - **f2 livrée (08 h 26)** : f1 + i1b + s1 + w1c + p44b + o1 + journal des tirs (D1/D2) ; d1b exclu. VM : 211 parties, 0 erreur ; R-13 1/0/1 flash/s ; R-14 ≤ 8,71 % ; p44b 24/24, 9/9 scènes. Vérification Chrome en file après l'étalonnage du jury ; relecture adverse du code par Codex rv1 en cours.
 - **p44c (08 h 26), accepté avec réserves, lot arrêté** (second échec de R-07 à 100 %) : coups reçus sans préavis à l'endroit **13 % → 1,06 %** (39/3 674 sur 480 parties) ; reliquat : 34 convois, 4 lasers CYCLOPE, 1 souffle INSTABLE ; aucun contact ni projectile non annoncé ; 0 erreur, 9/9 scènes. À inclure dans la fusion n° 3 (`~/Projets/wt-snake/codex-p44b/proto-neon/tools/codex-p44c/combine.patch`) ; le reliquat est consigné, sans troisième essai.
+
+## Point chiffré — 24/10/2026 · 09 h 58 (Paris)
+
+Durée écoulée : 8 h 03. Quota Claude : 83 % de la semaine (remise 24/10 19 h), 21 % de la fenêtre de 5 h (`get_usage`, 09 h 58). Coupure de session vers 09 h 06 : f3, l'étalonnage et la file f2 tués ; f3 relancé en reprise (consigne `codex-f3r.md`, 28 fichiers déjà modifiés dans sa copie), étalonnage relancé à 09 h 47 dans la copie figée `jury-f1` (dossiers partiels mis de côté dans `recus/etalonnage-interrompu-0906*`). Sessions Codex SNAKE : 1 (f3). Mémoire libre + inactive : 3,6 Go (`vm_stat`), donc aucune session de plus.
+
+| Porte | État à 09 h 58 |
+|---|---|
+| 1 jouabilité | **tenue sur f1** ; f2 0 erreur en VM (211 parties) ; f3 corrige les 10 défauts de la relecture rv1 (dont cyan hors joueuse, bloquant) |
+| 2 rythme visible | inchangé (r2d intégré, instrument navigateur non qualifié) |
+| 3 calage audio-image | **non qualifiable** (instrument arrêté ; méthode « mesure séparée du verdict » proposée, attend la propriétaire) |
+| 4 tempo des scènes | inchangé (t1 intégré) |
+| 5 difficulté adaptative | **arrêtée** ; essai « première minute apprenable » proposé avec ses critères écrits, attend la propriétaire |
+| 6 photosensibilité et secousses | **tenue sur f1** ; f2 VM R-13 ≤ 1/s, R-14 ≤ 8,71 % |
+| 7 jury ≥ 9,5 | étalonnage en cours (essai 1 depuis 09 h 47) ; jurys A et B sur f3 après sa vérification Chrome |
+
+Prochaines actions : à la livraison de f3, vérification Chrome (après l'étalonnage, un Chromium à la fois), intégration par `integrer.sh` avec p44c, puis paquets d'étalonnage, banc alpha/beta et jurys.
