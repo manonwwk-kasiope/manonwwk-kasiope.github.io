@@ -1,0 +1,54 @@
+--- a/proto-neon/src/79-jeu.js
++++ b/proto-neon/src/79-jeu.js
+@@ -58,11 +58,11 @@
+   function modOk(m, f) { return m && typeof m[f] === 'function'; }
+ 
+   /* ============================ le son : coupure mémorisée ============================ */
+-  function reglagesSon() { var rg = N.score && N.score.profil ? N.score.profil.reglages() : null; return rg ? !(rg.musique && rg.effets) : false; }
++  function reglagesSon() { var rg = N.score && N.score.profil ? N.score.profil.reglages() : null; return rg ? !(rg.musique || rg.effets) : false; }
+   function applyMute() {
+     if (!N.music) return;
+     var coupe = muted || demo; // démo silencieuse : jamais plus forte que le titre
+-    if (N.music.piste && N.music.mute) { N.music.mute('musique', coupe); N.music.mute('effets', coupe); return; }   // l'interface 1.0
++    if (N.music.piste && N.music.mute) { var rg = N.score.profil.reglages(); N.music.mute(false); N.music.mute('musique', coupe || !rg.musique); N.music.mute('effets', coupe || !rg.effets); return; }   // l'interface 1.0
+     if (N.music.mute) {
+       if (!N.music.muted || N.music.muted() !== coupe) appel('music.mute', function () { N.music.mute(coupe); });
+       return;
+@@ -70,7 +70,7 @@
+     if (coupe && N.music.stop) appel('music.stop', function () { N.music.stop(); });
+   }
+   function toggleMute() {
+-    muted = !muted;
++    muted = !reglagesSon();
+     if (N.score && N.score.profil) N.score.profil.reglages({ musique: !muted, effets: !muted });
+     if (S_()) S.muted = muted;
+     if (N.music && !N.music.mute && N.music.start && !muted && N.music.info && N.music.info()) appel('music.start', function () { N.music.start(); });
+@@ -100,7 +100,7 @@
+     var T = O.taps, s = S_(), inp = s && s.input, i;
+     T.length = 0;
+     while (QT.length) T.push(QT.shift());
+-    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
++    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: inp.taps[i].key || null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
+     if (inp) {
+       if (inp.valider) T.push({ x: -1, y: -1, key: 'Enter' });
+       if (inp.retour) T.push({ x: -1, y: -1, key: 'Escape' });
+@@ -109,7 +109,9 @@
+     }
+     /* les boutons du HUD et les touches de commodité : traités ici, le reste va à N.ui */
+     for (i = T.length - 1; i >= 0; i--) {
+-      var q = T[i], b = (q.key === null && modOk(N.hud, 'toucher') && JOUE_OU_PAUSE()) ? N.hud.toucher(q.x, q.y) : null;
++      var q = T[i];
++      if (N.ui && N.ui.ecran && N.ui.ecran() === 'reglages') continue;
++      var b = (q.key === null && modOk(N.hud, 'toucher') && JOUE_OU_PAUSE()) ? N.hud.toucher(q.x, q.y) : null;
+       if (q.key === 'KeyM' || b === 'son') { toggleMute(); T.splice(i, 1); }
+       else if (b === 'pause' || ((q.key === 'KeyP' || q.key === 'Escape') && (JOUE[et] || et === 'pause'))) { basculerPause(); T.splice(i, 1); }
+     }
+@@ -558,7 +560,7 @@
+       N.ui.update(dt); etT += dt;
+       var b = N.ui.sortie();
+       if (b && b.action === 'jouer') commencerAventure();
+-      else if (etT >= R.ecrans.attraction.attente) commencerAttraction();
++      else if (N.ui.ecran() !== 'reglages' && etT >= R.ecrans.attraction.attente) commencerAttraction();
+       return;
+     }
+     if (et === 'attraction') {

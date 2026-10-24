@@ -1,0 +1,396 @@
+{
+  "conforme": true,
+  "captures": [
+    {
+      "v": "avant",
+      "p": "paysage",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "paysage",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "paysage",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "portrait",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "portrait",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "portrait",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "bureau",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "bureau",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "avant",
+      "p": "bureau",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "paysage",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "paysage",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "paysage",
+      "n": "reglages",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "paysage",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "portrait",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "portrait",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "portrait",
+      "n": "reglages",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "portrait",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "bureau",
+      "n": "demarrage",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "bureau",
+      "n": "titre",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "bureau",
+      "n": "reglages",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    },
+    {
+      "v": "apres",
+      "p": "bureau",
+      "n": "fin",
+      "overlap": 0,
+      "deborde": [],
+      "err": 0
+    }
+  ],
+  "reglages": [
+    {
+      "profil": "paysage",
+      "initial": {
+        "musique": true,
+        "effets": true,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "doigts"
+      },
+      "modifies": [
+        "actions",
+        "manche",
+        "secousse",
+        "flashs",
+        "ecran",
+        "texte",
+        "musique",
+        "effets"
+      ],
+      "g": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "auto"
+      },
+      "recharge": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "auto"
+      },
+      "memorises": true,
+      "applique": {
+        "rayon": 55,
+        "fx": {
+          "shake": 0.5,
+          "flash": false,
+          "reduced": false
+        },
+        "ecran": "sobre",
+        "musiqueCoupee": true,
+        "effetsCoupes": true
+      },
+      "err": 0,
+      "console": []
+    },
+    {
+      "profil": "portrait",
+      "initial": {
+        "musique": true,
+        "effets": true,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "auto"
+      },
+      "modifies": [
+        "actions",
+        "manche",
+        "secousse",
+        "flashs",
+        "ecran",
+        "texte",
+        "musique",
+        "effets"
+      ],
+      "g": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "doigts"
+      },
+      "recharge": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "doigts"
+      },
+      "memorises": true,
+      "applique": {
+        "rayon": 55,
+        "fx": {
+          "shake": 0.5,
+          "flash": false,
+          "reduced": false
+        },
+        "ecran": "sobre",
+        "musiqueCoupee": true,
+        "effetsCoupes": true
+      },
+      "err": 0,
+      "console": []
+    },
+    {
+      "profil": "bureau",
+      "initial": {
+        "musique": true,
+        "effets": true,
+        "secousse": 1,
+        "flashs": true,
+        "ecran": "riche",
+        "texte": 1,
+        "manche": 1,
+        "actions": "doigts"
+      },
+      "modifies": [
+        "actions",
+        "manche",
+        "secousse",
+        "flashs",
+        "ecran",
+        "texte",
+        "musique",
+        "effets"
+      ],
+      "g": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "auto"
+      },
+      "recharge": {
+        "musique": false,
+        "effets": false,
+        "secousse": 0.5,
+        "flashs": false,
+        "ecran": "sobre",
+        "texte": 2,
+        "manche": 1.25,
+        "actions": "auto"
+      },
+      "memorises": true,
+      "applique": {
+        "rayon": 55,
+        "fx": {
+          "shake": 0.5,
+          "flash": false,
+          "reduced": false
+        },
+        "ecran": "sobre",
+        "musiqueCoupee": true,
+        "effetsCoupes": true
+      },
+      "err": 0,
+      "console": []
+    }
+  ],
+  "retours": [
+    {
+      "profil": "paysage",
+      "t": 5.549999999999986,
+      "etat": "jeu",
+      "etape": "neon",
+      "err": 0
+    },
+    {
+      "profil": "portrait",
+      "t": 5.549999999999986,
+      "etat": "jeu",
+      "etape": "neon",
+      "err": 0
+    },
+    {
+      "profil": "bureau",
+      "t": 5.549999999999986,
+      "etat": "jeu",
+      "etape": "neon",
+      "err": 0
+    }
+  ],
+  "primes": [
+    {
+      "nom": "inerte",
+      "delta": 0,
+      "err": 0
+    },
+    {
+      "nom": "4 ramassages",
+      "delta": 0,
+      "err": 0
+    },
+    {
+      "nom": "5 ramassages",
+      "delta": 1000,
+      "err": 0
+    },
+    {
+      "nom": "1 ennemi",
+      "delta": 1000,
+      "err": 0
+    },
+    {
+      "nom": "purge",
+      "delta": 0,
+      "err": 0
+    }
+  ]
+}

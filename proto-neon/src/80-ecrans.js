@@ -27,6 +27,13 @@ N.ui = (function () {
   var DARK = null, FINBUF = null;
   var main = [], restant = 1, nChoix = 1, gardeJ = 0, bruit = false;
   var niv = {}, NIV_VIDE = {};                       // S.ecran.niveaux : { idCarte: palier que la carte donnerait } (1 à 4 ; 4 = l'ULTIME d'une arme)
+  var retourReglages = 'titre', pageReglages = 0, retourToucher = null;
+  var OPTIONS = [
+    ['actions', 'ACTIONS', ['DOIGTS', 'AUTO']], ['manche', 'MANCHE', ['PETIT', 'NORMAL', 'GRAND']],
+    ['secousse', 'SECOUSSES', ['PLEINES', 'DOUCES', 'NON']], ['flashs', 'FLASHS', ['OUI', 'NON']],
+    ['ecran', 'ÉCRAN', ['RICHE', 'SOBRE', 'PUR']], ['texte', 'TEXTE', ['NORMAL', 'GRAND']],
+    ['musique', 'MUSIQUE', ['OUI', 'NON']], ['effets', 'EFFETS', ['OUI', 'NON']]
+  ];
 
   function garde() { return (R && R.cartes && R.cartes.garde) || 0.4; }
   function ouvrir(nom, opts) {
@@ -65,16 +72,101 @@ N.ui = (function () {
   function update(dt) {
     if (!cur) return;
     T += dt;
+    if (retourToucher) { retourToucher.t -= dt; if (retourToucher.t <= 0) retourToucher = null; }
     var taps = O.taps, i;
     for (i = 0; i < taps.length; i++) {
       var q = taps[i];
       if (q.key === 'KeyM' || (q.key === null && q.bouton === 'son')) continue;         // le bouton son est au HUD
-      if (cur === 'demarrage' || cur === 'titre') { if (T >= 0.15) out = { ecran: cur, action: 'jouer' }; }
-      else if (cur === 'pause') { if (q.key !== 'Tab') out = { ecran: cur, action: 'reprendre' }; }
+      if (cur === 'reglages') entreeReglages(q);
+      else if (cur === 'titre' || cur === 'pause') {
+        var rb = boutonReglages();
+        if (T >= R.accueilU1.garde && (q.key === 'KeyR' || dedans(q, rb))) {
+          retourReglages = cur; pageReglages = 0; ouvrir('reglages');
+        } else if (cur === 'titre' && T >= R.accueilU1.garde) out = { ecran: cur, action: 'jouer' };
+        else if (cur === 'pause' && q.key !== 'Tab') out = { ecran: cur, action: 'reprendre' };
+      }
+      else if (cur === 'demarrage') { if (T >= R.accueilU1.garde) out = { ecran: cur, action: 'jouer' }; }
       else if (cur === 'fin') entreeFin(q);
       else if (cur === 'cartes') entreeCartes(q);
     }
     publier();
+  }
+  function dedans(q, b) { return q.key === null && q.x >= b.x && q.x < b.x + b.w && q.y >= b.y && q.y < b.y + b.h; }
+  function tailleTitre() {
+    var sf = O.geo.safe, disponible = O.geo.W - Math.ceil(sf.l) - Math.ceil(sf.r) - R.accueilU1.marge * 2;
+    var k = R.accueilU1.titreMax;
+    while (k > 1 && O.textW('SNAKE 2975', k) + k * 2 > disponible) k--;
+    return k;
+  }
+  function boutonReglages() {
+    var C = R.accueilU1, sf = O.geo.safe;
+    var h = Math.max(Math.ceil(C.ciblePt / px()), C.entete);
+    return { x: Math.ceil(sf.l) + C.marge, y: O.geo.H - Math.ceil(sf.b) - C.marge - h,
+      w: O.geo.W - Math.ceil(sf.l) - Math.ceil(sf.r) - C.marge * 2, h: h };
+  }
+  function boutonUI(b, lib, actif, sc) {
+    var C = R.accueilU1, g = N.gfx;
+    g.rect(b.x, b.y, b.w, b.h, actif ? O.INDIGO : O.ARDOISE);
+    g.rect(b.x, b.y, b.w, 1, actif ? O.JAUNE : O.ACIER);
+    O.textC(lib, b.x + b.w / 2, b.y + Math.ceil((b.h - C.texteH * sc) / 2) + sc, O.OS, false, sc);
+  }
+  function peindreBoutonReglages() {
+    var b = boutonReglages(); boutonUI(b, 'RÉGLAGES', false, R.accueilU1.echelle);
+    if (N.S.ecran) N.S.ecran.reglagesBouton = b;
+  }
+  function modeleReglages() {
+    O.geom();
+    var C = R.accueilU1, sf = O.geo.safe, g = N.score.profil.reglages();
+    var sc = g.texte === R.reglagesValeurs.texte[1] ? C.grandTexte : C.echelle;
+    var x = Math.ceil(sf.l) + C.marge, y = Math.ceil(sf.t) + C.marge;
+    var w = O.geo.W - Math.ceil(sf.r) - C.marge - x, bas = O.geo.H - Math.ceil(sf.b) - C.marge;
+    var cols = O.geo.portrait ? 1 : C.colonnes, cw = Math.floor((w - C.ecart * (cols - 1)) / cols);
+    // Le grand texte passe sur davantage de pages, jamais dans une cible réduite.
+    var rh = Math.max(Math.ceil(C.ciblePt / px()), C.ligneReglage, C.texteH * sc * 2 + C.padding * 3);
+    var rows = Math.max(1, Math.floor((bas - y - C.entete - C.pied - C.ecart) / (rh + C.ecart)));
+    var nb = rows * cols, pages = Math.ceil(OPTIONS.length / nb);
+    pageReglages = Math.min(pageReglages, pages - 1);
+    var boutons = [];
+    OPTIONS.slice(pageReglages * nb, (pageReglages + 1) * nb).forEach(function (o, i) {
+      var vals = R.reglagesValeurs[o[0]] || [true, false], k = vals.indexOf(g[o[0]]);
+      var b = { x: x + Math.floor(i / rows) * (cw + C.ecart), y: y + C.entete + (i % rows) * (rh + C.ecart), w: cw, h: rh,
+        id: o[0], label: o[1], valeur: o[2][Math.max(0, k)], echelle: sc };
+      while (b.echelle > 1 && Math.max(O.textW(b.label, b.echelle), O.textW(b.valeur, b.echelle)) > cw - C.padding * 2) b.echelle--;
+      boutons.push(b);
+    });
+    var bw = Math.floor((w - C.ecart) / C.colonnes), by = bas - C.pied;
+    return { x: x, y: y, w: w, bas: bas, page: pageReglages, pages: pages, boutons: boutons,
+      retour: { x: x, y: by, w: pages > 1 ? bw : w, h: C.pied }, suite: { x: x + bw + C.ecart, y: by, w: bw, h: C.pied } };
+  }
+  function entreeReglages(q) {
+    if (T < R.accueilU1.garde) return;
+    var m = modeleReglages();
+    if (q.key === 'Escape' || q.key === 'KeyR' || dedans(q, m.retour)) { ouvrir(retourReglages); return; }
+    if (q.key === 'Tab' || dedans(q, m.suite) && m.pages > 1) { pageReglages = (pageReglages + 1) % m.pages; choix = 0; return; }
+    if (q.key === 'ArrowDown' || q.key === 'ArrowRight') { choix = (choix + 1) % m.boutons.length; return; }
+    if (q.key === 'ArrowUp' || q.key === 'ArrowLeft') { choix = (choix + m.boutons.length - 1) % m.boutons.length; return; }
+    m.boutons.forEach(function (b, i) {
+      if (!(dedans(q, b) || i === choix && (q.key === 'Enter' || q.key === 'Space'))) return;
+      var vals = R.reglagesValeurs[b.id] || [true, false], g = N.score.profil.reglages(), o = {};
+      o[b.id] = vals[(vals.indexOf(g[b.id]) + 1) % vals.length]; N.score.profil.reglages(o);
+      retourToucher = { id: b.id, t: R.accueilU1.retourVisible }; choix = i;
+      if (N.journal) N.journal('reglage', { id: b.id, valeur: o[b.id] });
+    });
+  }
+  function reglages() {
+    var m = modeleReglages(), C = R.accueilU1, g = N.gfx;
+    g.rect(0, 0, O.geo.W, O.geo.H, O.NUIT);
+    O.textC('RÉGLAGES', m.x + m.w / 2, m.y + C.padding, O.JAUNE, false, C.echelle);
+    m.boutons.forEach(function (b, i) {
+      var actif = retourToucher && retourToucher.id === b.id;
+      g.rect(b.x, b.y, b.w, b.h, actif ? O.INDIGO : O.ARDOISE);
+      g.rect(b.x, b.y, b.w, 1, actif || i === choix ? O.JAUNE : O.ACIER);
+      O.text(b.label, b.x + C.padding, b.y + C.padding + b.echelle, O.OS, false, b.echelle);
+      O.text(b.valeur, b.x + C.padding, b.y + b.h - C.texteH * b.echelle - C.padding, O.JAUNE, false, b.echelle);
+    });
+    boutonUI(m.retour, 'RETOUR', false, C.echelle);
+    if (m.pages > 1) boutonUI(m.suite, (m.page + 1) + '/' + m.pages + ' >', false, C.echelle);
+    if (N.S.ecran) N.S.ecran.reglages = m;
   }
   function finActions() {
     var f = R.ecrans.fin, a = f.actions, sf = (N.S && N.S.safe) || O.geo.safe, W = O.geo.W, H = O.geo.H;
@@ -182,7 +274,7 @@ N.ui = (function () {
   }
 
   /* ============================ la pause ============================ */
-  function pause() { veil(); peindreRetour('pause'); }
+  function pause() { veil(); peindreRetour('pause'); peindreBoutonReglages(); }
 
   /* ============================ les cartes ============================ */
   /* la disposition : paysage = plaques côte à côte (120 × 80 ; plus étroites et plus hautes au-delà de trois) ; portrait = plaques empilées 180 × 48 */
@@ -262,7 +354,7 @@ N.ui = (function () {
   /* ============================ démarrage et titre ============================ */
   function demarrage() {
     var W = O.geo.W, H = O.geo.H, hz = (R && R.ecrans && R.ecrans.demarrage && R.ecrans.demarrage.clignoteHz) || 1;
-    O.textC('SNAKE 2975', W / 2, Math.round(H / 2 - 24), O.OS, false, 4);
+    O.textC('SNAKE 2975', W / 2, Math.round(H / 2 - 24), O.OS, false, tailleTitre());
     if ((T * hz) % 1 < 0.7) O.textC(O.hasTouch() ? 'TOUCHE POUR COMMENCER' : 'ESPACE POUR COMMENCER', W / 2, Math.round(H / 2 + 10), O.ACIER, false, 1);
   }
   /* l'affiche des deux pilotes dos à dos (art/affiche-duo.png, son film en boucle s'il est dans cine/) ;
@@ -278,7 +370,7 @@ N.ui = (function () {
     if (a && a.data) duo(true);
     else a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get('affiche'); }) : null;
     if (a && a.data) fond(a, 0.7);
-    O.textC('SNAKE 2975', W / 2, Math.round(H * 0.28), O.OS, true, 4);
+    O.textC('SNAKE 2975', W / 2, Math.round(H * R.accueilU1.titreY), O.OS, true, tailleTitre());
     var rec = N.score ? N.score.record() : 0, y = Math.round(H * 0.28 + 38);
     if (rec > 0) {
       var cr = N.score.classement ? N.score.classement()[0] : null;
@@ -287,6 +379,7 @@ N.ui = (function () {
       if (e > 0) O.textC('ÉNERGIE ' + e + (p ? '  ·  ' + (DEBNOMS[p.id] || p.id) + ' DANS ' + p.reste : ''), W / 2, y + 11, O.ACIER, true, 1);
     }
     if ((T * 1.25) % 1 < 0.8) O.textC(O.hasTouch() ? 'TOUCHE POUR JOUER' : 'ESPACE POUR JOUER', W / 2, Math.round(H * 0.72), O.OS, true, 1);
+    peindreBoutonReglages();
   }
   /* La partie demeure pilotée ; les volets de la borne ne touchent ni le score ni le profil. */
   function attraction() {
@@ -354,138 +447,32 @@ N.ui = (function () {
      Même police entière que p17, avec un pas calculé entre texteH et ligne. */
   function finResumeModele() {
     O.geom();
-    var C = R.ecrans.retour, sf = (N.S && N.S.safe) || O.geo.safe, actions = finActions();
+    var C = R.ecrans.retour, U = R.accueilU1, sf = (N.S && N.S.safe) || O.geo.safe, actions = finActions();
     var x = Math.ceil(sf.l) + C.marge, y = Math.ceil(sf.t) + C.marge;
-    var w = O.geo.W - Math.ceil(sf.r) - C.marge - x, port = O.geo.portrait;
-    var col = port ? w : Math.floor((w - C.ecart) / C.colonnes);
+    var w = O.geo.W - Math.ceil(sf.r) - C.marge - x;
     var bas = Math.min(actions.continuer.y, actions.rejouer.y) - C.padding;
     var score = N.score, r = score && score.resume ? score.resume() : null;
-    var v = r ? r.victoire : !!cur_opts.victoire, blocs = [], lignes = [], barres = [];
-    function bloc() { var b = { lignes: [], barre: null }; blocs.push(b); return b; }
-    function lignesLiees(t, largeur) {
-      var ls = coupe(t, largeur / C.echelle);
-      // Une préposition ou un article ne reste pas seul au bord d'un bloc.
-      for (var i = 0; i < ls.length - 1; i++) {
-        var mots = ls[i].split(' '), fin = mots[mots.length - 1];
-        if (/^(DU|LE|LA|DE|À|EN|LES|DES)$/.test(fin) && mots.length > 1 && O.textW(fin + ' ' + ls[i + 1], C.echelle) <= largeur) {
-          mots.pop(); ls[i] = mots.join(' '); ls[i + 1] = fin + ' ' + ls[i + 1];
-        }
-      }
-      if (ls.length > 1 && ls[ls.length - 1].split(' ').length === 1) {
-        var mots = ls[ls.length - 2].split(' '), dernier = mots[mots.length - 1];
-        if (mots.length > 1 && O.textW(dernier + ' ' + ls[ls.length - 1], C.echelle) <= largeur) {
-          mots.pop(); ls[ls.length - 2] = mots.join(' '); ls[ls.length - 1] = dernier + ' ' + ls[ls.length - 1];
-        }
-      }
-      return ls;
-    }
-    function texte(b, t, ink) {
-      var ls = lignesLiees(t, col);
-      var prefixe = '';
-      ls.forEach(function (ligne) {
-        b.lignes.push({ texte: ligne, phrase: ls.length > 1 ? t : null, prefixe: prefixe, x: 0, y: 0, w: O.textW(ligne, C.echelle), h: C.texteH, echelle: C.echelle, encre: ink });
-        prefixe += ligne + ' ';
-      });
-    }
-    var debutY = y, cause = r && r.cause ? N.ids.texte(r.cause, r.auteur).replace(/ INSTABLE$/, '') : null;
-    if (cause && O.textW(cause, C.echelle) > col) {
-      lignesLiees(cause, w).forEach(function (t) { lignes.push({ texte: t, phrase: cause, prefixe: lignes.map(function (l) { return l.texte; }).join(' ') + (lignes.length ? ' ' : ''), x: x, y: y, w: O.textW(t, C.echelle), h: C.texteH, echelle: C.echelle, encre: O.OS }); y += C.ligne; });
-      cause = null;
-    }
-    var bilan = bloc(), statistiques = { lignes: [], barre: null };
-    texte(bilan, (v ? 'GAGNÉ' : 'PERDU') + (r ? ' · NOTE ' + r.note : ' · BILAN'), v ? O.JAUNE : O.ROSE);
-    texte(bilan, 'SCORE' + (r && r.marque ? ' C' : '') + ' ' + (r ? r.score : score ? score.score : 0), O.JAUNE);
-    if (r) {
-      if (cause) texte(bilan, cause, O.OS);
-      var noms = N.ids && N.ids.noms;
-      if (r.quartier) texte(bilan, noms && noms[r.quartier] || String(r.quartier).toUpperCase(), O.OS);
-      texte(bilan, 'V' + r.vague + ' · ' + mmss(r.temps), O.OS);
-      texte(bilan, 'SECTEUR ' + Math.round(r.progression * 100) + ' %', O.OS);
-      if (r.ecart !== null) texte(statistiques, 'ÉCART ' + (r.ecart >= 0 ? '+' : '') + r.ecart, O.OS);
-      texte(statistiques, 'RECORD ' + r.record + (r.nouveauRecord ? ' +' : ''), O.JAUNE);
-      if (r.build) texte(statistiques, r.build.nom, O.AMBRE);
-    }
-    var defis = bloc(), ds = r ? r.defis : score && score.defis, dv = score && score.defiVague, compteW = 0;
-    (ds || []).concat(dv ? [dv] : []).forEach(function (d) { compteW = Math.max(compteW, O.textW(d.prog + '/' + d.but, C.echelle)); });
-    texte(defis, 'DÉFIS DU JOUR', O.AMBRE);
-    function defi(d, nom, court) {
-      var ink = d.fait ? O.JAUNE : O.OS, place = col - C.finition.marqueW - compteW - C.padding;
-      var lib = O.textW(nom, C.echelle) <= place ? nom : court;
-      var row = defis.lignes.length;
-      texte(defis, d.fait ? '✓' : '·', ink); defis.lignes[row].rang = row;
-      texte(defis, lib, ink); defis.lignes[row + 1].rang = row; defis.lignes[row + 1].x = C.finition.marqueW;
-      texte(defis, d.prog + '/' + d.but, d.fait ? O.AMBRE : O.ACIER);
-      defis.lignes[row + 2].rang = row; defis.lignes[row + 2].x = col - defis.lignes[row + 2].w;
-    }
-    (ds || []).forEach(function (d) { defi(d, d.nom, C.finition.defisCourts[d.id] || d.nom); });
-    if (dv) {
-      texte(defis, 'VAGUE ' + dv.n, O.AMBRE);
-      var d = dv.def, lib = d.lassos ? 'LASSO' : d.enfermes ? 'ENFERMÉS' : d.cellules ? 'CELLULES' : d.mines ? 'MINES' : d.tourelles ? 'TOURELLES' : d.mult ? 'MULTI' : d.devores ? 'DÉVORÉS' : 'BROYÉS';
-      defi(dv, lib, lib);
-    }
-    // Les rangs des trois fragments d'un défi restent communs, sans rangs vides.
-    var rang = 0;
-    defis.lignes.forEach(function (l, i) { if (i && (l.rang === undefined || l.rang !== defis.lignes[i - 1].ancienRang)) rang++; l.ancienRang = l.rang; l.rang = rang; });
-    blocs.push(statistiques);
-    var energie = bloc(), p = r ? r.prochain : score && score.prochain ? score.prochain() : null;
-    texte(energie, 'ÉNERGIE ' + (r ? r.energie : score ? score.energie : 0), O.AMBRE);
-    if (p) { texte(energie, C.finNoms[p.id] + ' +' + p.reste, O.JAUNE); energie.barre = { w: col, h: C.barreH, part: p.part }; }
-    else texte(energie, score && R.deblocages.every(function (d) { return score.deblocages.indexOf(d.id) >= 0; }) ? 'TOUT DÉBLOQUÉ' : 'AUCUN PALIER', O.JAUNE);
-    // Le conseil utilise toute la largeur : il reste une phrase, sans morceau
-    // isolé sous une colonne de compteurs.
-    var conseil = r && r.conseil ? lignesLiees(r.conseil, w) : [];
-    var basCorps = bas - conseil.length * C.texteH - (conseil.length ? C.padding : 0);
-    blocs.forEach(function (b) {
-      b.rangs = b.lignes.reduce(function (n, l, i) { if (l.rang === undefined) l.rang = i; return Math.max(n, l.rang + 1); }, 0);
-      b.hauts = []; b.bas = [];
-      b.lignes.forEach(function (l) {
-        var haut = 0, bas = C.texteH - 1;
+    var v = r ? r.victoire : !!cur_opts.victoire, lignes = [], yy = y;
+    function ajouter(t, ink) {
+      coupe(t, w / C.echelle).forEach(function (txt) {
+        var h = C.texteH, top = 0;
         if (N.spr && N.spr.text) {
-          var s = N.spr.text(l.texte, { ci: l.encre, echelle: l.echelle, contour: false, ombre: false });
-          for (var yy = 0; yy < s.h; yy++) for (var xx = 0; xx < s.w; xx++) if (s.data[yy * s.w + xx]) { haut = Math.min(haut, yy - s.top); bas = Math.max(bas, yy - s.top); }
+          var s = N.spr.text(txt, { ci: ink, echelle: C.echelle, contour: false, ombre: false });
+          h = s.h; top = s.top;
         }
-        b.hauts[l.rang] = Math.min(b.hauts[l.rang] || 0, haut);
-        b.bas[l.rang] = Math.max(b.bas[l.rang] || 0, bas);
+        // Le y publié est la ligne de base attendue par O.text. Chaque sprite a sa propre boîte.
+        lignes.push({ texte: txt, x: x, y: yy + top, w: O.textW(txt, C.echelle), h: h, echelle: C.echelle, encre: ink });
+        yy += Math.max(C.ligne, h + U.ecart);
       });
-    });
-    function positions(b, pas) {
-      var ys = [0];
-      for (var i = 1; i < b.rangs; i++) ys[i] = ys[i - 1] + Math.max(pas, b.bas[i - 1] - b.hauts[i] + 1);
-      return ys;
     }
-    function hautBloc(b, pas) { var ys = positions(b, pas); return (ys[ys.length - 1] || 0) + C.texteH + (b.barre ? C.barreH : 0); }
-    function hauteur(bs, pas) { return bs.reduce(function (s, b) { return s + hautBloc(b, pas); }, 0) + (bs.length - 1) * C.padding; }
-    var colonnes = [blocs];
-    if (!port) {
-      var meilleur = Infinity;
-      // Les deux petits blocs vont dans les colonnes qui laissent le plus de
-      // hauteur utile, barre et séparations comprises (pas seulement les lignes).
-      for (var a = 0; a < C.colonnes; a++) for (var e = 0; e < C.colonnes; e++) {
-        var cs = [[bilan], [defis]]; cs[a].push(statistiques); cs[e].push(energie);
-        var h = Math.max(hauteur(cs[0], C.texteH), hauteur(cs[1], C.texteH));
-        if (h < meilleur) { meilleur = h; colonnes = cs; }
-      }
+    ajouter(v ? 'GAGNÉ · BILAN' : 'PERDU · BILAN', v ? O.JAUNE : O.ROSE);
+    ajouter('SCORE ' + (r ? r.score : score ? score.score : 0) + (r && r.marque ? ' C' : ''), O.JAUNE);
+    if (r) {
+      ajouter('V' + r.vague + ' · ' + mmss(r.temps) + (r.cause ? ' · ' + N.ids.texte(r.cause, r.auteur).replace(/ INSTABLE$/, '') : ''), O.OS);
+      if (r.conseil) ajouter(r.conseil, O.OS);
     }
-    var pas = C.ligne;
-    while (pas > C.texteH && colonnes.some(function (bs) { return hauteur(bs, pas) > basCorps - y; })) pas--;
-    colonnes.forEach(function (bs, k) {
-      var yy = y, xx = x + k * (col + C.ecart);
-      var h = bs.reduce(function (s, b) { return s + hautBloc(b, pas); }, 0);
-      var ecart = bs.length > 1 ? Math.max(0, Math.min(C.ecart, Math.floor((basCorps - y - h) / (bs.length - 1)))) : 0;
-      bs.forEach(function (b) {
-        var ys = positions(b, pas);
-        b.lignes.forEach(function (l) { l.x += xx; l.y = yy + ys[l.rang]; lignes.push(l); });
-        yy += (ys[ys.length - 1] || 0) + C.texteH;
-        if (b.barre) { b.barre.x = xx; b.barre.y = yy; barres.push(b.barre); yy += C.barreH; }
-        yy += ecart;
-      });
-    });
-    var prefixe = '';
-    conseil.forEach(function (t, i) {
-      lignes.push({ texte: t, phrase: r.conseil, prefixe: prefixe, x: x, y: basCorps + C.padding + i * C.texteH, w: O.textW(t, C.echelle), h: C.texteH, echelle: C.echelle, encre: O.OS });
-      prefixe += t + ' ';
-    });
-    return { nom: 'fin', x: x, y: debutY, w: w, bas: bas, port: port, lignes: lignes, barres: barres, actions: actions, debloques: r ? r.debloques.slice() : [] };
+    return { nom: 'fin', x: x, y: y, w: w, bas: bas, port: O.geo.portrait, lignes: lignes, barres: [], actions: actions,
+      debloques: r ? r.debloques.slice() : [] };
   }
   function retourModele(nom) {
     if (nom === 'fin' && !cur_opts.bilan) return finResumeModele();
@@ -549,7 +536,10 @@ N.ui = (function () {
       detail('DÉTRUITS ' + r.kills + ' · CHAÎNE ' + r.maxChaine);
       detail('COUPES ' + r.coupes + ' · LASSO ' + r.maxLasso);
       detail('VAGUES RÉUSSIES ' + r.defisVague, O.AMBRE);
+      (r.defis || []).forEach(function (d) { detail((d.fait ? '✓ ' : '· ') + d.nom + ' ' + d.prog + '/' + d.but, O.AMBRE); });
+      (r.defisVagues || []).forEach(function (d) { detail('V' + d.n + ' ' + d.nom + ' ' + d.prog + '/' + d.but, O.ACIER); });
       detail('ÉNERGIE +' + r.energieGagnee + ' · TOTAL ' + r.energie, O.AMBRE);
+      if (r.prochain) detail('PROCHAIN ' + C.finNoms[r.prochain.id] + ' +' + r.prochain.reste, O.JAUNE);
       if (r.debloques.length) detail('OUVERT : ' + r.debloques.map(function (id) { return C.finNoms[id]; }).join(', '), O.JAUNE);
       if (r.conseil) detail(r.conseil, O.ACIER);
       var corps = lignes.slice(1), capacite = Math.max(1, Math.floor((bas - y) / C.ligne) - C.paginationReserve);
@@ -638,7 +628,8 @@ N.ui = (function () {
 
   function draw() {
     if (!cur) return;
-    if (cur === 'pause') pause();
+    if (cur === 'reglages') reglages();
+    else if (cur === 'pause') pause();
     else if (cur === 'cartes') cartes();
     else if (cur === 'demarrage') demarrage();
     else if (cur === 'titre') titre();
@@ -648,5 +639,6 @@ N.ui = (function () {
   }
 
   return { ouvrir: ouvrir, fermer: fermer, actif: actif, update: update, draw: draw, sortie: sortie, ecran: ecran, cartes: CARTES, veil: veil, icone: icone,
-    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions, retourModele: retourModele };
+    rect: function (i) { return rectCarte(i, main.length); }, main: function () { return main.slice(); }, bouton: function () { return { h: cible() }; }, finActions: finActions, retourModele: retourModele,
+    modeleReglages: modeleReglages, boutonReglages: boutonReglages, tailleTitre: tailleTitre };
 })();

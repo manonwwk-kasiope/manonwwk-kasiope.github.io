@@ -174,7 +174,7 @@
   function clipPrep(nom) { try { if (N.art && N.art.prepare) N.art.prepare(nom); } catch (e) {} }
   function sfx(nom, o) { try { if (N.music && N.music.sfx) N.music.sfx(nom, o); } catch (e) {} }
   function secousse(a) {
-    if (reduced()) return;
+    if (reduced() || S().reglages && S().reglages.secousse === 0) return;
     if (N.fx && N.fx.shake) { try { N.fx.shake(a); return; } catch (e) {} }
     var s = S(); if ((s.shake || 0) < a) s.shake = a;
   }

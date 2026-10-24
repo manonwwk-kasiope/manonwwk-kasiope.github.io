@@ -1,0 +1,12 @@
+--- a/proto-neon/src/78-hud.js
++++ b/proto-neon/src/78-hud.js
+@@ -209,7 +209,8 @@
+     var lines = b.lines.slice();
+     if (b.icon) lines[0] = b.icon + ' ' + lines[0];
+     function largeur(l) { return O.textW(l, 1); }
+-    var k = Math.min(plafond || Infinity, O.geo.portrait ? B.echellePortrait : B.echellePaysage);
++    var demandeTexte = N.S && N.S.reglages && N.S.reglages.texte;
++    var k = Math.min(plafond || Infinity, (demandeTexte || R.reglages.texte) * (O.geo.portrait ? B.echellePortrait : B.echellePaysage));
+     while (k > cfg.echelleMin && lines.some(function (l) { return largeur(l) * k > disponible - cfg.padding * 2; })) k--;
+     // À ×2, on revient à la ligne par mots ; même un identifiant sans espace est conservé en entier.
+     var wrapped = [];

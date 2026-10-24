@@ -132,6 +132,9 @@ function onKey(e, down) {
    les lettres tapées s'accumulent dans car (initiales). Chaque champ ne dure qu'un pas (entreeFin). */
 function clavierMenus(e) {
   var c = e.code, m = /^(?:Digit|Numpad)([1-4])$/.exec(c);
+  var menu = N.ui && N.ui.ecran && N.ui.ecran();
+  if ((menu === 'titre' || menu === 'pause' || menu === 'reglages') && /^(Arrow(?:Left|Right|Up|Down)|Tab|KeyR)$/.test(c))
+    S.input.taps.push({ x: -1, y: -1, key: c });
   if (c === 'Space' || c === 'Enter' || c === 'NumpadEnter') S.input.valider = true;
   else if (c === 'Escape' || c === 'Backspace') S.input.retour = true;
   else if (c === 'KeyP') S.input.pause = true;
@@ -221,7 +224,9 @@ var STICK_R = N.R.joueuse.courseCSS, STICK_MORT = N.R.gestes.zoneMorte; // pixel
 var stick = { id: null, ox: 0, oy: 0, x: 0, y: 0 };
 S.input.stick = { active: false, ox: 0, oy: 0, x: 0, y: 0, r: STICK_R };   // pixels CSS, pour l'indicateur
 function stickUpdate() {
+  STICK_R = N.R.joueuse.courseCSS * ((S.reglages && S.reglages.manche) || N.R.reglages.manche);
   var st = S.input.stick;
+  st.r = STICK_R;
   st.active = stick.id !== null; st.ox = stick.ox; st.oy = stick.oy; st.x = stick.x; st.y = stick.y;
   if (!st.active) { S.input.mag = 0; return; }
   var dx = stick.x - stick.ox, dy = stick.y - stick.oy, m = Math.hypot(dx, dy), a = Math.min(1, m / STICK_R);
@@ -444,6 +449,22 @@ function drawPauseApplication() {
 
 /* ---- boucle ---- */
 var last = null, SANS_DESSIN = false;
+var reglagesAppliques = '';
+function appliquerReglages() {
+  var r = S.reglages;
+  if (!r) return;
+  var cle = JSON.stringify(r);
+  if (cle === reglagesAppliques) return;
+  reglagesAppliques = cle;
+  stickUpdate();
+  step('reglages.secousse', N.fx && N.fx.setShake ? function () { N.fx.setShake(r.secousse); } : null);
+  step('reglages.flashs', N.fx && N.fx.setFlash ? function () { N.fx.setFlash(r.flashs); } : null);
+  step('reglages.ecran', N.crt && N.crt.preset ? function () { N.crt.preset(r.ecran); } : null);
+  step('reglages.son', N.music && N.music.mute ? function () {
+    N.music.mute(false); N.music.mute('musique', !r.musique); N.music.mute('effets', !r.effets);
+  } : null);
+  S.muted = !r.musique && !r.effets;
+}
 function frame(now) {
   requestAnimationFrame(frame);
   var t0 = maintenant(), dtReel = last === null ? 1 / 60 : (now - last) / 1000;
@@ -455,6 +476,7 @@ function frame(now) {
   var dtImage = Math.min(dtReel, 0.05), h = N.horloge, n = 0;
   S.frame++;
   if (typeof window !== 'undefined') window.__FRAME = S.frame;
+  appliquerReglages();
   entreeUpdate();
   step('horloge.image', function () { n = h.image(dtReel); });
   for (var i = 0; i < n; i++) {
@@ -582,5 +604,6 @@ function boot() {
      ne doit pas lancer une seconde machine d'états au-dessus de 80-ecrans. */
   S.phase = 'play';
   step('game.reset', N.game && N.game.reset ? function () { N.game.reset(S.seed); } : null);
+  appliquerReglages();
   requestAnimationFrame(frame);
 }

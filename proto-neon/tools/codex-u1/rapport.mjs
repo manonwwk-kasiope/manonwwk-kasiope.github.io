@@ -1,0 +1,82 @@
+import fs from 'node:fs';import zlib from 'node:zlib';import assert from 'node:assert/strict';
+import {ICI,sources,hash,dateParis}from './vm.mjs';
+const lire=n=>JSON.parse(fs.readFileSync(ICI+'/'+n+'.json')),cal=lire('calibration'),m=lire('mesures'),c=lire('controles'),t=lire('texte'),co=lire('conseils'),b=lire('comparaison80');
+assert(cal.conforme&&m.conforme&&c.conforme&&t.conforme&&co.conforme&&b.complete);
+const avant=JSON.parse(zlib.gunzipSync(fs.readFileSync(ICI+'/sources-avant.json.gz'))),actuel=sources();
+const reserves=['64-aventure.js','70-joueuse.js','78-hud.js','79-jeu.js'].map(f=>({fichier:f,identique:hash(avant.find(x=>x[0]===f)[1])===hash(actuel.find(x=>x[0]===f)[1])}));assert(reserves.every(c=>c.identique));
+fs.writeFileSync(ICI+'/perimetre.json',JSON.stringify({dateParis:dateParis(),reserves,sourcesSha256:hash(actuel)},null,2)+'\n');
+const fin=(v,p)=>m.captures.find(c=>c.version===v&&c.profil===p&&c.nom==='fin');
+const pAvant=fin('avant','portrait').boites.slice(-2),pApres=fin('apres','portrait').boites.slice(-2);
+const gap=a=>a[1].y0-a[0].y1-1;
+const bornes=b.bornes.map(c=>`- ${c.pilote}, graine ${c.graine} : ${c.tempsAvant} s → ${c.tempsApres} s, V${c.vagueAvant} → V${c.vagueApres}, arrêt « ${c.raisonAvant} » → « ${c.raisonApres} ».`).join('\n');
+const delta=b.cas.map(c=>c.deltaScore),min=Math.min(...delta),max=Math.max(...delta),date=dateParis();
+const text=`# codex-u1 — prise en main iPhone
+
+${date.split(" ")[0]} · ${date.split(" ")[1].slice(0,5).replace(":"," h ")} (Paris) · mis à jour à ${date.split(" ")[1].slice(0,5).replace(":"," h ")}.
+
+**Commande indispensable hors bac :** \`cd proto-neon && node tools/codex-u1/verifier.mjs\`.
+Après intégration des trois raccords et reconstruction : \`cd proto-neon && node tools/codex-u1/verifier.mjs --integre\`.
+
+**Sous-tâche locale livrée ; palier iPhone non validé, chantier bloqué sur le contrôle navigateur hors bac.** Aucun serveur, Chromium ni réseau sortant lancé ici ; aucun commit. Le script navigateur est complet et son analyse syntaxique passe, mais son exécution et le contrôle Safari réel restent à faire. L'absence de reçu navigateur ne devient pas une validation visuelle Safari.
+
+## Ce qui change
+
+- Titre à échelle entière calculée d'après la largeur sûre, sur le démarrage et le titre. Les illustrations existantes sont conservées.
+- RÉGLAGES accessible au titre et en pause : ACTIONS, MANCHE, SECOUSSES, FLASHS, ÉCRAN, TEXTE, MUSIQUE, EFFETS. Cibles au moins 44 pt, pagination selon la place, retour jaune/violet au toucher, clavier par R/flèches/Entrée/Tab/Échap. Les valeurs existantes de N.R sont reprises. Le profil est écrit seulement par N.score ; les API publiques appliquent les effets. TEXTE agrandit les réglages et les prochaines bannières ; les compteurs de combat gardent leur taille reçue.
+- ACTIONS AUTO pour un nouveau profil tactile portrait ; un choix mémorisé n'est pas remplacé. MANCHE influe réellement sur la déflexion, pas seulement sur son dessin. Musique et effets restent indépendants, y compris au retour d'un reset avec le raccord 79.
+- Fin allégée : score, vague/temps/cause et conseil. Le bilan détaillé conserve records, note, défis, statistiques, énergie et prochain palier. La note D demeure dans le détail. Chaque ligne du résumé réserve la hauteur réelle de son sprite et une séparation.
+- Au premier passage, 1976 et 1982 sont conservés. L'arrivée au néon mémorise le droit au retour ; les voyages suivants passent du choix du pilote au néon. Les films et époques ultérieurs restent en place. Ce comportement exige le raccord 64.
+- Prime de fin de vague seulement après une destruction attribuée à la joueuse ou cinq ramassages dans cette vague. Purge/décor exclus. V1 ne tire plus le défi LASSO tant que sa qualification à L=8 manque. Tirage et aperçu suivent le même filtre ; ces deux effets comptables sont intentionnels.
+
+## Avant / après mesuré
+
+Les images sont de vrais tampons N.gfx.buf() des sources exécutées en VM, exportés en PNG sans lissage. Elles ont été regardées : titre, réglages et fin sur les trois formats, ainsi que le grand texte portrait. La VM utilise le repli procédural des illustrations : elle ne décode ni PNG via le DOM ni MP4. Les captures avec les vrais actifs décodés sont demandées au navigateur.
+
+| Sortie réelle | Avant | Après |
+|---|---:|---:|
+| Largeur du titre portrait, tampon 195 px | 236 px, tronqué | 177 px, échelle 3, complet |
+| Largeur du titre paysage / bureau | 236 / 236 px | 236 / 236 px, échelle 4 |
+| Séparation visible des lignes du conseil portrait | ${gap(pAvant)} px | ${gap(pApres)} px |
+| Recouvrement strict des boîtes de texte du résumé, fixture mesurée | 0 sur les trois profils | 0 sur les trois profils |
+| Cas de fin avec marges construites | non mesurés avant | ${co.cas.length}/${co.cas.length} sans débordement ni recouvrement |
+| Huit réglages modifiés puis rechargés depuis le stockage | écran absent | 8/8, sur les trois profils |
+| Manche, déflexion de 22 px CSS | rayon fixe 44 px CSS | rayons 35,2 / 44 / 55 ; intensités 0,625 / 0,5 / 0,4 |
+| Retour, démarrage → combat de V1 | époques imposées | 3 touchers, 5,55 s de boucle, chaque profil |
+| Prime : inerte / 4 prises / 5 prises / 1 destruction / purge | prime de vague inconditionnelle | 0 / 0 / 1 000 / 1 000 / 0 points |
+
+Le défaut de recouvrement strict de la capture de l'étude n'est pas reproduit tel quel dans cette fixture : avant, les deux lignes portrait se touchent mais leurs boîtes n'ont pas de pixel commun. Le gain mesuré est leur séparation ${gap(pAvant)} → ${gap(pApres)} px, pas un taux de recouvrement inventé. Les marges construites utilisent la règle de bord du jeu ; elles ne prétendent pas mesurer l'encoche Safari.
+
+Preuves : [mesures.json](mesures.json), [controles.json](controles.json), [conseils.json](conseils.json), [texte.json](texte.json). Le titre reste en RÉGLAGES après 20 s ; en pause, temps et position restent strictement fixes, puis reprise en jeu, sur les trois profils. Les 16 cibles de réglages par profil (deux tailles de texte) restent dans la vue et dépassent 44 pt. Premiers passages 1976 et 1982 observés, drapeau mémorisé seulement à l'entrée au néon, puis relu depuis le stockage. Défi V1 : 0 LASSO parmi 80 aperçus de graines. Le test de bannière PRÊTE constate des échelles standard/grand 5→7 en paysage, 4→5 en portrait, 5→8 sur bureau ; les protections de place continuent à borner la taille.
+
+Images : [titre portrait](captures-vm/apres-portrait-titre.png), [réglages portrait](captures-vm/apres-portrait-reglages.png), [fin portrait](captures-vm/apres-portrait-fin.png), [fin paysage](captures-vm/apres-paysage-fin.png). Les fichiers des trois profils, pages et tailles de texte sont dans captures-vm/ ; les .bin conservent les indices bruts.
+
+## Parties et preuve de non-régression
+
+Calibration préalable sur les sources de e1bdc6f obtenues par git show : **10/10** identiques sur temps de jeu, temps de combat, temps simulé, vague et score, zéro erreur. Les empreintes intégrales de journaux historiques ne sont identiques que pour **${cal.cas.filter(c=>c.journalIdentique).length}/10** : cette limite est publiée, aucune identité historique de tous les journaux n'est revendiquée. [calibration.json](calibration.json).
+
+Même protocole officiel : stockage vide, jour 20261017, humain AUTO/autres DOIGTS, intro skip, reset plongée, pilote, journal actif, premier pas d'horloge, tranches de 0,25 s, bornes reçues. Trois campagnes de 80 parties, toutes complètes : témoin reçu, candidat avec les trois raccords en mémoire, candidat avec uniquement les deux changements comptables rétablis à l'ancien comportement **en mémoire** pour l'ablation. Aucune source de jeu n'est rétablie sur disque. Chaque reçu intégral est conservé gzip dans parties/.
+
+- Candidat réel : **${b.mesures.trajectoiresIdentiques}/80 trajectoires identiques** (temps, pas, vague, morts, cartes et échantillons de longueur) ; **${b.mesures.resumesIdentiques}/80 résumés temps/vague/score identiques**, **${b.mesures.journauxIdentiques}/80 journaux intégralement identiques**. Écarts de score ${min} à ${max} points. Les défis V1 et la prime conditionnelle expliquent les changements attendus ; les premiers événements divergents restent dans comparaison80.json.
+- Journaux de combat : **${b.mesures.combatIdentique}/80 identiques**, pas et données compris, en excluant explicitement les événements défi et les annonces de présentation hudBanniere/hudBanniereAdmise.
+- Ablation des deux seuls effets comptables : **${b.mesures.horsScoreStrictIdentiques}/80 reçus strictement identiques au témoin**, journaux complets compris. Cela isole les effets d'interface, de réglages et de raccord du combat simulé avec la même comptabilité.
+- Erreurs jeu et console : **${b.mesures.erreurs}** sur les 240 reçus, zéro aussi dans les cas construits. Le build sort **0**. Les fichiers réservés sont inchangés ([perimetre.json](perimetre.json)) ; \`git apply --check\` accepte les trois raccords sans modifier les sources ; \`git diff --check\` passe.
+
+Deux non-fins préexistantes à la borne restent des **non-fins**, sans allongement du temps ni censure :
+
+${bornes}
+
+Sources et valeurs : [comparaison80.json](comparaison80.json), avant.json, apres.json, hors-score.json. Le candidat et le témoin sont figés dans sources-candidat.json.gz et sources-avant.json.gz. Le test ne qualifie ni l'adaptation de difficulté du lot d1 ni la note du jury du chantier global.
+
+## Essais d'instrumentation corrigés, valeurs conservées
+
+Le premier scénario de retour, sans dessin du choix des pilotes en VM, reste à « choix » à 12,05 s : ses zones n'avaient pas été calculées. Le scénario corrigé dessine le vrai module avant de lire ses zones publiques, puis mesure jusqu'au combat ; seuil de 12 s inchangé. Le premier contrôle de premier passage ne laissait que 0,33 s à la transition du terminal (drapeau false sur les trois profils), puis la seconde instrumentation observait les étapes seulement entre des lots de pas (1976 manqué dans l'observation portrait malgré un drapeau true). Reçus conservés : controles-passe1.json et controles-passe2.json. Le contrôle final observe chaque pas des vraies transitions ; aucun réglage du jeu ni seuil n'a été modifié pour le faire passer. Un premier pied de réglages « RETOUR / SUITE 1/2 » débordait en portrait : le libellé du suivant est désormais « 1/2 > » ; les cibles gardent leur taille.
+
+## Raccords et dépendance restante
+
+Fichiers locaux : 02-regles, 60-intro, 77-score, 80-ecrans, 90-boot et index.html reconstruit. Les nouveaux chiffres et leurs raisons sont dans la section codex-u1 de refonte/lots/demandes.md. Aucune modification de 64, 70-joueuse, 78-hud ou 79 sur disque.
+
+La cheffe doit intégrer et relire [raccord-79-jeu.patch](raccord-79-jeu.patch), [raccord-64-aventure.patch](raccord-64-aventure.patch), [raccord-78-hud.patch](raccord-78-hud.patch), reconstruire, lancer verifier.mjs hors bac et renvoyer navigateur/resultats.json avec les PNG. Sans ces raccords, le retour des époques, les touches des réglages et les canaux audio après reset ne sont pas entièrement raccordés. Le script propose par défaut un candidat assemblé en mémoire, puis --integre contrôle le vrai bundle intégré. Un seul Chromium headless muet, HTTP local sur port libre, profils iPhone 13 paysage 844×390, portrait 390×844, bureau 1440×900, captures du tampon et de l'écran, gestes DOM, persistance après reload, pause/reprise et retour en trois gestes. Les chemins locaux sont les seuls autorisés dans son routage réseau.
+
+**Reste : exécution et revue navigateur, puis partie sur iPhone Safari réel. Aucun verdict Safari, audio entendu, décodage de film, ni chantier global achevé n'est annoncé.**
+`;
+fs.writeFileSync(ICI+'/rapport.md',text);console.log('rapport écrit',date);

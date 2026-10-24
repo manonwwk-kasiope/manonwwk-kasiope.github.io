@@ -1212,6 +1212,19 @@
      niveau et fondu déjà employés par la musique de cosmos. */
   R.filmAmiral = { duree: 5, garde: 0.3, gainMusique: 0.62, fonduMusique: 0.05 };
 
+  /* codex-u1 : prise en main. Les réglages existants gardent leurs valeurs. */
+  R.accueilU1 = {
+    titreMax: 4, marge: 6, titreY: 0.28, titreEcart: 38,
+    ciblePt: 44, echelle: 2, grandTexte: 3, texteH: 7, ligne: 18,
+    padding: 4, ecart: 4, entete: 28, pied: 28, ligneReglage: 40,
+    garde: 0.15, retourVisible: 0.3, colonnes: 2,
+    primeKills: 1, primeRamassages: 5, premiereVague: 1,
+    // Jusqu'à la qualification géométrique du LASSO à L=8, pas de défi LASSO en V1.
+    defiV1Lasso: false,
+    retourEpoques: ['connexion', '1976', 'fissure', '1982', 'eclat'],
+    retourEtape: 'neon', entreeTouchersMax: 3, entreeSecondesMax: 12
+  };
+
   /* gel profond : N.R se lit, il ne s'écrit pas */
   (function geler(o) {
     if (o && typeof o === 'object' && !Object.isFrozen(o)) {

@@ -23,7 +23,7 @@ N.score = (function () {
   var CFG = {                                    // Compatibilité du combat reçu ; chiffres dans N.R.defis.partie.legacy
     defiNom: R.defis.partie.legacy.nom, defiBut: R.defis.partie.legacy.but, defiPrime: R.defis.partie.legacy.prime, cle: 'snake2975.v1', cleAncienne: 'snake2975.record', ancienSon: 'snake2975.son'
   };
-  var REG0 = { musique: true, effets: true, secousse: 1, flashs: true, ecran: 'riche', texte: 1, manche: 1, actions: 'doigts' };
+  var REG0 = R.reglages;
   var API = null;
   var S = null;
   var m = {                                       // l'état de la partie
@@ -48,6 +48,8 @@ N.score = (function () {
     } catch (e) { /* stockage refusé ou corrompu : on joue quand même */ }
     var g = {}, k;
     for (k in REG0) g[k] = REG0[k];
+    // Le défaut une main ne remplace jamais un choix déjà mémorisé.
+    if ((!disque.reglages || !Object.prototype.hasOwnProperty.call(disque.reglages, 'actions')) && O.hasTouch() && N.gfx.H > N.gfx.W) g.actions = 'auto';
     if (disque.reglages) for (k in disque.reglages) if (k in REG0) g[k] = disque.reglages[k];
     disque.reglages = g;
     if (!S) S = N.S;
@@ -60,8 +62,17 @@ N.score = (function () {
   /* reglages(obj?) : lit (sans argument) ou change et mémorise les réglages ; S.reglages est TOUJOURS le même objet */
   function reglages(o) {
     if (!lu) charger();
-    if (o) { for (var k in o) if (k in REG0) disque.reglages[k] = o[k]; if (S) S.reglages = disque.reglages; sauver(); }
+    if (o) { for (var k in o) if (k in REG0) {
+      var valeurs = R.reglagesValeurs[k];
+      if (valeurs ? valeurs.indexOf(o[k]) >= 0 : typeof o[k] === 'boolean') disque.reglages[k] = o[k];
+    } if (S) S.reglages = disque.reglages; sauver(); }
     return disque.reglages;
+  }
+  // La traversée du début est mémorisée dans le profil existant, jamais dans une seconde clé.
+  function epoquesVues(b) {
+    if (!lu) charger();
+    if (b === true) { disque.profil.epoquesVues = true; sauver(); }
+    return disque.profil.epoquesVues === true;
   }
 
   /* ============================ la partie ============================ */
@@ -73,6 +84,7 @@ N.score = (function () {
     m.defi = nouveauDefi();
     m.stats = { kills: 0, killsBy: {}, morts: [], coupes: 0, maxChaine: 0, ramassages: 0, tirs: 0, t0: O.T.t, victoire: null, energie: 0, lassos: 0, maxLasso: 0 };
     m.scoreCombat = 0; m.sansMortDepuis = O.T.t; m.continuite = 0; m.continuiteDernier = -Infinity;
+    m.activiteVague = { kills: 0, ramassages: 0 };
     m.lassoKills = {}; m.lassoTemps = -Infinity; m.stats.points = {};
     API.palier = null;
     m.resume = null; m.dv = null; m.dvFaits = 0; m.continuations = 0;
@@ -220,7 +232,7 @@ N.score = (function () {
   function tirerDefiVague(n, flux) {
     var V = R && R.defis && R.defis.vague, L = V && V.liste[n];
     if (!L) return null;
-    var ok = L.filter(butDe);
+    var ok = L.filter(function (d) { return butDe(d) && !(n === R.accueilU1.premiereVague && !R.accueilU1.defiV1Lasso && d.lassos); });
     if (!ok.length) return null;
     var d = ok[Math.min(ok.length - 1, ((flux ? flux.f() : O.rf('defis')) * ok.length) | 0)];
     return { id: d.id, texte: d.texte, def: d, but: butDe(d), prog: 0, etat: 'actif', fait: false, n: n };
@@ -257,6 +269,7 @@ N.score = (function () {
       m.dernier = t;
       if (m.chaine > st.maxChaine) st.maxChaine = m.chaine;
       st.kills++; st.killsBy[c.type] = (st.killsBy[c.type] || 0) + 1;
+      if (c.src && (c.src.genre === 'arme' || c.src.genre === 'joueuse')) m.activiteVague.kills++;
       var pts = c.base * mult();
       if (c.boss) pts += (R && R.score && R.score.primes && R.score.primes.cyclope && R.score.primes.cyclope.mort) || 25000;
       ajouter(pts, c.x, c.y);
@@ -276,6 +289,7 @@ N.score = (function () {
     }, '77-score');
     N.ev.on('ramassage', 20, function (c) {
       m.stats.ramassages++;
+      m.activiteVague.ramassages++;
       if (c.type === 'cellule') avanceDv('cellules', 1);
       m.stats.energie += (R && R.butin && R.butin[c.type] && R.butin[c.type].energie) || 0;      // § 2.6 : 1 par cellule, 5 par noyau
       var pts = ((R && R.butin && R.butin[c.type] && R.butin[c.type].points) || 0) * mult();
@@ -307,6 +321,7 @@ N.score = (function () {
     N.ev.on('mort', 80, function () { if (m.vies <= 0) defiRate(); suivreDefis('mort', {}); }, '77-score');
     N.ev.on('vague', 20, function (c) {
       if (c.evt === 'entree') {
+        m.activiteVague = { kills: 0, ramassages: 0 };
         m.dv = tirerDefiVague(c.n); API.defiVague = m.dv;
         if (m.dv) { API.defisVagues.push(m.dv); journalDefi(m.dv, 'selection', 'vague'); }
         if (m.dv && N.hud && N.hud.toast) N.hud.toast('V' + c.n + ' : ' + m.dv.texte);
@@ -315,7 +330,7 @@ N.score = (function () {
       if (c.evt !== 'nettoyee') return;
       if (m.dv && m.dv.etat === 'actif') { m.dv.etat = 'rate'; journalDefi(m.dv, 'bilan', 'vague'); }
       var p = (R && R.score && R.score.primes && R.score.primes.vague && R.score.primes.vague.parVague) || 1000;
-      ajouter(p * c.n, null, null);
+      if (m.activiteVague.kills >= R.accueilU1.primeKills || m.activiteVague.ramassages >= R.accueilU1.primeRamassages) ajouter(p * c.n, null, null);
     }, '77-score');
   }
 
@@ -436,7 +451,7 @@ N.score = (function () {
     defis: [], defisVagues: [], apercuVague: apercuVague, defiVague: null, defi: null, stats: null, gain: function () { return m.gain; },
     build: build, resume: function () { return m.resume; },
     energie: 0, deblocages: [], prochain: function () { if (!lu) charger(); return prochainPour(disque.profil.energie || 0); },
-    profil: { charger: charger, sauver: sauver, reglages: reglages }, records: [],
+    profil: { charger: charger, sauver: sauver, reglages: reglages, epoquesVues: epoquesVues }, records: [],
     fenetreRestante: function () { return O.clamp(1 - (O.T.t - m.dernier) / fenetre(), 0, 1); },
     terminer: terminer, record: record, defiRate: defiRate, nouveauRecord: function () { return m.newRecord; },
     ajouter: function (pts, x, y) { ajouter(pts, x, y); },
