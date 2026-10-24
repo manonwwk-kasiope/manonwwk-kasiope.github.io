@@ -213,3 +213,17 @@ Durée écoulée : 11 h 05. Quota Claude : **88 % de la semaine** (remise 24/10 
 - **f3 livré (13 h 45)** : f2 + p44c + dix corrections rv1 ; 30/30 contrôles, 211 parties VM sans erreur, aucun cyan hors provenance. Vérification Chrome en cours depuis 13 h 47.
 - **ff1 livré (13 h 49)** : films stabilisés (une inversion de luminance doit tenir 250 ms au pixel) + garde-fou sur le tampon présenté ; **510 cas ≤ 3 flashs/s, pire film 2/s (victoire)**, garde-fou 0 image retenue, 80/80 parties identiques. Réserve esthétique vue par la cheffe sur la planche chasse-lui : traînées et personnage dissous dans les films agités (14,8 % de pixels figés en moyenne, jusqu'à 53 %). La sécurité est intégrée d'abord ; une variante plus fidèle sera proposée à la propriétaire, planches à l'appui (goût).
 - **codex-f4 (14 h 00)** : fusion f3 + ff1 sur la pointe (compteur R-13 corrigé), contrôles VM complets, R-13 de jeu remesuré avec le compteur corrigé. Sessions Codex : 5 (4 jurés + f4), mémoire 3,6 Go.
+
+## Point chiffré — 24/10/2026 · 15 h 20 (Paris)
+
+Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 19 h), 0 % de la fenêtre de 5 h (`get_usage`, 15 h 16) : tout le travail possible passe par Codex ; jurés Claude après 19 h. Sessions Codex : 5 (3 jurés, f4b, di7), mémoire 3,5 Go.
+
+| Porte | État à 15 h 20 |
+|---|---|
+| 1 jouabilité | f3 **refusé en Chrome** (13 h 58) : cyan hors provenance dans 11/11 parties paysage (594 à 62 811 px : panneau V5, vol V1, mort), arrêt au catalogue des morceaux ; **f4b** (fusion f3 + ff1 + ces deux défauts) : paysage et portrait à 60 Hz sans cyan hors provenance, palette fermée, 0 erreur, 160 parties (journal 15 h 15), bureau en cours |
+| 2 rythme visible | inchangé |
+| 3 calage audio-image | témoins corrigés (26bd4b9) ; revalidation Chrome attend l'ordre de la propriétaire |
+| 4 tempo des scènes | inchangé |
+| 5 difficulté adaptative | arrêtée ; essai proposé, attend la propriétaire |
+| 6 photosensibilité | films ≤ 3/s en VM (ff1, 510 cas) ; à requalifier en Chrome sur f4b |
+| 7 jury | jurés Codex valides sur défauts plantés (75–100 %), ancrage (0–0,5) et preuves (0 introuvable), **mais aucune discrimination V0/témoin (écart 0–0,5, seuil 1,5)** : troisième tour d'étalonnage en échec → **alarme**. Diagnostic : la synchronisation est mesurée à la noire alors que le jeu cale sur la croche (V0 à 15,9 % au lieu des 99,78 % de r2d) et le sabotage du témoin ne se voit pas dans le paquet. **codex-di7** (15 h 20) : grille lue dans N.R et juge-code discriminant (si le code ne sépare pas V0 et témoin, aucun juré ne le peut). |
