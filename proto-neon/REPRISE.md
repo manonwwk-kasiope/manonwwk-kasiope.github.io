@@ -9,6 +9,12 @@
   À lancer quand la mémoire le permet (≤ 4 sessions à la fois, 2,3 Go libres à 02 h) : **t1** (tempo accéléré par scènes, `30-music.js`), **w1** (WARP, `78-warp.js`).
 - Cycle : livraison → vérifieur au navigateur par la cheffe (un Chromium, verrou `/tmp/snake-chromium-chef.lock`) → intégration (`integrer.sh`,
   raccords par `git apply -3`) → dossier j1 → jury (5 jurés Claude neufs Sonnet xhigh + 1 juré Codex) → corrections. Arrêt de piste : 3 passes, même porte échouée 2 fois.
+- À 02 h 34 : études Claude rendues (`~/Projets/wt-snake/etudes/` : autotest, joueuse-difficulte, game-design, warp-scenes, rythme) ; portes 3, 4, 5, 7
+  amendées (248b316). **d1 arrêté** (punissait le bon joueur) → **d1b** ; **r2b arrêté** (décalage d'une mesure, mauvaise cause de R-13) → **r2c** ;
+  **u1** lancé (titre, RÉGLAGES, saut d'époques). Sessions : i1, j1, d1b, u1, r2c. Agent Claude « instruments » (`~/Projets/wt-snake/instrument`,
+  `tools/mesure2/`). **Répartiteur** `~/Projets/wt-snake/repartiteur.sh` (tâche de fond) : lance la file `consignes/file-attente.txt`
+  (t1, w1, s1, g1) quand < 5 sessions, charge < 40, > 1,5 Go libres. Séries `serie-autotest.sh` en fond (reçus `recus/series/`).
+  Charge du Mac 27–71 sur 10 cœurs à 02 h 33 : ne pas dépasser 5 sessions.
 - Attention guetteurs : un `pgrep -f "<motif>"` lancé dans une commande qui contient ce motif se trouve lui-même (bug du 18/10 : 45 min perdues).
 
 ## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 08 h 06)
