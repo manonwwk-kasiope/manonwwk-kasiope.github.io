@@ -44,7 +44,7 @@ N.ui = (function () {
     if (nom === 'cartes') {
       /* la main du tirage ; sans N.cartes, le repli v0 */
       if (N.cartes && N.cartes.main) {
-        main = O.safe('cartes.main', function () { return N.cartes.main(null, { vague: N.dir && N.dir.vague ? N.dir.vague() : 0, trophee: !!cur_opts.trophee, rareGarantie: !!cur_opts.rareGarantie }); }) || [];
+        main = O.safe('cartes.main', function () { return N.cartes.main(null, { vague: N.dir && N.dir.vague ? N.dir.vague() : 0, trophee: !!cur_opts.trophee, rareGarantie: !!cur_opts.rareGarantie, niveauxSeuls: !!cur_opts.niveauxSeuls }); }) || [];
         nChoix = Math.max(1, N.cartes.choix());
       } else { main = CARTES.map(function (c) { return c.id; }); nChoix = 1; }
       niv = {};
@@ -82,7 +82,10 @@ N.ui = (function () {
         var rb = boutonReglages();
         if (T >= R.accueilU1.garde && (q.key === 'KeyR' || dedans(q, rb))) {
           retourReglages = cur; pageReglages = 0; ouvrir('reglages');
-        } else if (cur === 'titre' && T >= R.accueilU1.garde) out = { ecran: cur, action: 'jouer' };
+        } else if (cur === 'titre' && T >= R.accueilU1.garde) {
+          var r = boutonsTitre(), jour = q.key === 'KeyJ' || dedans(q, r.jour);
+          out = { ecran: cur, action: jour ? 'jour' : 'jouer' };
+        }
         else if (cur === 'pause' && q.key !== 'Tab') out = { ecran: cur, action: 'reprendre' };
       }
       else if (cur === 'demarrage') { if (T >= R.accueilU1.garde) out = { ecran: cur, action: 'jouer' }; }
@@ -178,7 +181,7 @@ N.ui = (function () {
     var propose = !cur_opts.victoire && !!(N.score && N.score.continuerPossible && N.score.continuerPossible());
     if (port) x = x0;
     return { bilan: cibleBilan(), continuer: { x: x, y: port ? y - h - a.ecart : y, w: w, h: h }, rejouer: { x: port ? x : x + w + a.ecart, y: y, w: w, h: h },
-      propose: propose, disponible: propose && age <= c.de - c.a, restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
+      propose: propose, surcharge: !!cur_opts.victoire, disponible: !!cur_opts.victoire || (propose && age <= c.de - c.a), restant: Math.max(c.a, c.de - age), pret: T >= f.garde };
   }
   function entreeFin(q) {
     if (out) return;
@@ -198,7 +201,7 @@ N.ui = (function () {
         var r = a[nom]; if (q.x >= r.x && q.x < r.x + r.w && q.y >= r.y && q.y < r.y + r.h) action = nom;
       });
     }
-    if (a.pret && action && (action !== 'continuer' || a.disponible)) out = { ecran: cur, action: action };
+    if (a.pret && action && (action !== 'continuer' || a.disponible)) out = { ecran: cur, action: action === 'continuer' && a.surcharge ? 'surcharge' : action };
   }
   function entreeCartes(q) {
     var n = main.length, k = -1;
@@ -365,6 +368,13 @@ N.ui = (function () {
     if (on && !duoVive) { duoVive = true; O.safe('art.play', function () { N.art.play('affiche-duo'); }); }
     else if (!on && duoVive) { duoVive = false; O.safe('art.stop', function () { N.art.stop('affiche-duo'); }); }
   }
+  function boutonsTitre() {
+    var c = R.rejouabilite.titre, sf = O.geo.safe, W = O.geo.W, H = O.geo.H;
+    var w = Math.min(W - sf.l - sf.r - c.marge * 2, Math.ceil(c.largeurPt / px()));
+    var h = Math.ceil(c.hauteurPt / px()), x = Math.round((W - w) / 2);
+    var y = Math.min(Math.round(H * c.ancrage), H - sf.b - c.marge - h * 2 - c.ecart - boutonReglages().h - c.ecart);
+    return { jouer: {x:x, y:y, w:w, h:h}, jour: {x:x, y:y+h+c.ecart, w:w, h:h} };
+  }
   function titre() {
     var W = O.geo.W, H = O.geo.H, a = N.art && N.art.get ? O.safe('art.get', function () { return N.art.get('affiche-duo'); }) : null;
     if (a && a.data) duo(true);
@@ -378,7 +388,12 @@ N.ui = (function () {
       var e = N.score.energie | 0, p = N.score.prochain ? N.score.prochain() : null;
       if (e > 0) O.textC('ÉNERGIE ' + e + (p ? '  ·  ' + (DEBNOMS[p.id] || p.id) + ' DANS ' + p.reste : ''), W / 2, y + 11, O.ACIER, true, 1);
     }
-    if ((T * 1.25) % 1 < 0.8) O.textC(O.hasTouch() ? 'TOUCHE POUR JOUER' : 'ESPACE POUR JOUER', W / 2, Math.round(H * 0.72), O.OS, true, 1);
+    var boutons = boutonsTitre();
+    ['jouer', 'jour'].forEach(function (id) {
+      var r = boutons[id]; N.gfx.rect(r.x, r.y, r.w, r.h, O.NUIT);
+      O.textC(id === 'jour' ? 'DÉFI DU JOUR · J' : 'JOUER', r.x + r.w / 2, r.y + (r.h - R.ecrans.retour.texteH) / 2, O.OS, true, R.rejouabilite.titre.echelle);
+    });
+    if (N.S && N.S.ecran) N.S.ecran.titre = boutons;
     peindreBoutonReglages();
   }
   /* La partie demeure pilotée ; les volets de la borne ne touchent ni le score ni le profil. */
@@ -618,7 +633,7 @@ N.ui = (function () {
     if (m.debloques.length && !bruit) { bruit = true; O.sfx('record'); }
     ['continuer', 'rejouer'].forEach(function (nom, i) {
       var rc = actions[nom], ok = actions.pret && (nom !== 'continuer' || actions.disponible);
-      var label = nom === 'rejouer' ? 'REJOUER' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER ?';
+      var label = nom === 'rejouer' ? 'REJOUER' : actions.surcharge ? 'NEW GAME+' : actions.propose ? 'CONTINUER ? ' + actions.restant : 'CONTINUER ?';
       N.gfx.rect(rc.x, rc.y, rc.w, rc.h, O.ARDOISE);
       N.gfx.rect(rc.x, rc.y, rc.w, 1, ok ? O.JAUNE : O.ACIER);
       O.textC(label, rc.x + rc.w / 2, rc.y + Math.floor((rc.h - C.texteH) / 2), ok ? O.OS : O.ACIER, false, C.echelle);

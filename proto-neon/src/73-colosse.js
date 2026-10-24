@@ -303,7 +303,22 @@ N.colosse = (function () {
   function emitPhase(n, evt) {
     if (N.ev && N.ev.emit) O.safe('colosse.phase', function () { N.ev.emit('phase', { n: n, evt: evt }); });
   }
+  // Toutes les échéances appartiennent au transport public, pas au temps ralenti du monde.
+  function calerAttaque(a, minimum) {
+    if (!N.rythme) return;
+    var v = N.rythme.lire(), annonce = N.rythme.annonce(Math.max(K.teleMin, minimum), false);
+    a.morceau = v.id; a.debut = v.t; a.dernier = v.t;
+    a.tele = annonce.duree; a.t = 0; a.horaires = [];
+    var due = annonce.t, n = a.k === 'salve' ? K.salves : a.k === 'salve2' ? a.n : 0;
+    for (var i = 0; i < n; i++) {
+      if (i > 0) due = N.rythme.subdivision(due + (a.k === 'salve' ? K.ecart : CFG.spiraleDt), a.k === 'salve' ? R.rythme.subdivisions : R.rythme.partition.divisionsSon, false);
+      a.horaires.push(due);
+    }
+    if (N.journal) N.journal('rythme-annonce', { id: st.oeil.id, type: 'cyclope', attaque: a.k, minimum: minimum, total: a.tele, debut: v.t, fin: annonce.t });
+  }
+  if (N.rythme) N.rythme.on('transport', function () { if (st && st.atk) st.atk.recaler = true; });
   function emitArme(forme, total, cible) {
+    if (st.atk) { calerAttaque(st.atk, total); total = st.atk.tele; }
     if (N.ev && N.ev.emit && st.oeil) O.safe('colosse.arme', function () {
       N.ev.emit('arme', { id: st.oeil.id, type: 'cyclope', forme: forme, total: total, cible: cible, shown: visible(), rallonge: false });
     });
@@ -498,7 +513,7 @@ N.colosse = (function () {
   /* ============================ les tirs et le rayon ============================ */
   function tirer(a, v, big) {
     if (!N.ennemis || typeof N.ennemis.tir !== 'function') return;
-    N.ennemis.tir(st.bx + Math.cos(a) * TP.cyclopeTirDepart, st.oeil.y + Math.sin(a) * TP.cyclopeTirDepart, Math.cos(a) * v, Math.sin(a) * v, { r: 2, big: true, src: srcOeil() });
+    N.ennemis.tir(st.bx + Math.cos(a) * TP.cyclopeTirDepart, st.oeil.y + Math.sin(a) * TP.cyclopeTirDepart, Math.cos(a) * v, Math.sin(a) * v, { r: 2, big: true, src: srcOeil(), rythmeDivision: st.atk && st.atk.k === 'salve2' ? R.rythme.partition.divisionsSon : R.rythme.subdivisions });
   }
   function laser(x0, y0, x1, y1, dur, w) {
     var src = srcOeil(), z = null;
@@ -596,6 +611,19 @@ N.colosse = (function () {
   function majAtk(dt, P) {
     var a = st.atk, i, e = st.oeil;
     a.t += dt;
+    if (N.rythme) {
+      var v = N.rythme.lire();
+      if (a.recaler || a.morceau !== v.id || v.t < a.dernier) {
+        a.recaler = false;
+        // Un nouveau curseur annonce à nouveau la partie qui reste à tirer.
+        if (a.phase === 0 || a.k === 'salve' || a.k === 'salve2') {
+          calerAttaque(a, a.phase === 0 ? Math.max(K.teleMin, a.tele - a.t) : K.teleMin);
+          a.phase = 0;
+        }
+      }
+      a.dernier = v.t;
+      if (a.phase === 0 || a.k === 'salve' || a.k === 'salve2') a.t = Math.max(0, v.t - a.debut);
+    }
     if (a.phase === 0 && a.t >= a.tele && (a.k === 'salve' || a.k === 'salve2')) a.phase = 1;
     if (a.k === 'rayon') {
       if (a.phase === 0 && a.t >= a.tele) {
@@ -609,17 +637,17 @@ N.colosse = (function () {
         if (a.t >= a.dur) { if (z) z._dead = true; finAtk(); }
       }
     } else if (a.k === 'salve') {
-      while (a.fired < K.salves && a.t >= a.tele + a.fired * K.ecart) { salvo(a, a.fired); a.fired++; }
-      if (a.fired >= K.salves && a.t >= a.tele + (K.salves - 1) * K.ecart + 0.25) finAtk();
+      while (a.fired < K.salves && (a.horaires ? N.rythme.lire().t + R.rythme.epsilon >= a.horaires[a.fired] : a.t >= a.tele + a.fired * K.ecart)) { salvo(a, a.fired); a.fired++; }
+      if (a.fired >= K.salves && a.t >= (a.horaires ? a.horaires[K.salves - 1] - a.debut : a.tele + (K.salves - 1) * K.ecart) + 0.25) finAtk();
     } else if (a.k === 'salve2') {
       var per = K.balles3;
       while (a.fired < a.n) {
         var s2 = (a.fired / per) | 0, i2 = a.fired % per, tt = a.tele + s2 * K.ecart + i2 * CFG.spiraleDt;
-        if (a.t < tt) break;
+        if (a.horaires ? N.rythme.lire().t + R.rythme.epsilon < a.horaires[a.fired] : a.t < tt) break;
         tirer(a.base + (s2 ? -1 : 1) * i2 * CFG.spiralePas + s2 * TP.cyclopeSpiraleDecalage, K.salveVit);
         a.fired++;
       }
-      if (a.fired >= a.n && a.t >= a.tele + (K.salveDouble - 1) * K.ecart + per * CFG.spiraleDt + 0.2) finAtk();
+      if (a.fired >= a.n && a.t >= (a.horaires ? a.horaires[a.n - 1] - a.debut : a.tele + (K.salveDouble - 1) * K.ecart + per * CFG.spiraleDt) + 0.2) finAtk();
     } else if (a.k === 'ciseaux') majCiseaux(a, dt);
     else if (a.k === 'bond') majBond(a, dt, P);
   }
@@ -748,6 +776,7 @@ N.colosse = (function () {
   }
   function mettreEnrage() {
     st.enrage = true;
+    if (N.music && N.music.sceneTempo) N.music.sceneTempo('cyclope-enrage');
     ban(["LE CYCLOPE S'EMBALLE"], 'magenta', 2.4);
     emitPhase(st.ph, 'enrage');
     O.sfx('warning');
@@ -885,12 +914,12 @@ N.colosse = (function () {
       }
     } else if (a.k === 'salve') {
       for (i = a.fired; i < K.salves; i++) for (j = 0; j < K.balles; j++)
-        prevoirTir(a.base + i * PI / K.balles + j * TAU / K.balles, i * K.ecart);
+        prevoirTir(a.base + i * PI / K.balles + j * TAU / K.balles, a.horaires ? a.horaires[i] - a.debut - a.tele : i * K.ecart);
     } else if (a.k === 'salve2') {
       for (i = a.fired; i < a.n; i++) {
         var salve = (i / K.balles3) | 0, balle = i % K.balles3;
         prevoirTir(a.base + (salve ? -1 : 1) * balle * CFG.spiralePas + salve * TP.cyclopeSpiraleDecalage,
-          salve * K.ecart + balle * CFG.spiraleDt);
+          a.horaires ? a.horaires[i] - a.debut - a.tele : salve * K.ecart + balle * CFG.spiraleDt);
       }
     } else if (a.k === 'ciseaux' && a.phase <= 1) {
       for (i = 0; i < a.lignes.length; i++) {

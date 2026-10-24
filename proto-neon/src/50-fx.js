@@ -55,9 +55,9 @@
                               le gel en cours s'il y en a un). Au plus 3 flashs par seconde pour un même objet
                               (WCAG, technique G19) ; aucun si les flashs sont coupés. Rend true s'il flashera.
                               obj est un objet du jeu (deux champs fxHitF/fxHitT y sont posés) ou un entier.
-                              aire (pixels de jeu ; à défaut obj.w x obj.h, ou pi x obj.r²) : un objet plus
-                              grand que le seuil de flash, le colosse par exemple, doit trouver une place
-                              dans le limiteur, sinon il ne blanchit pas.
+                              aire (pixels de jeu ; à défaut obj.w x obj.h, ou pi x obj.r²) : toutes les
+                              frappes d'aire connue passent par le cumul global, même petites. Leur somme
+                              doit trouver une place dans le limiteur, sinon elles ne blanchissent pas.
      N.fx.isHit(obj)          true si obj doit être dessiné en blanc à cette image. Usage :
                                 N.gfx.blit(spr, x, y, N.fx.isHit(e) ? N.fx.HITOPT : null)
      N.fx.HIT, N.fx.HITOPT    l'index de os, et l'objet d'options {ci: os} prêt pour blit (jamais réalloué)
@@ -228,10 +228,14 @@
     try { if (typeof localStorage !== 'undefined') localStorage.setItem('snake2975.fx', JSON.stringify({ s: userShake, f: userFlash })); } catch (e) {}
   }
   readPrefs();
+  var mediaMouvement = null;
   function mouvementReduit() {
-    // Relire la préférence : elle peut changer pendant une partie.
-    try { reduced = !!(typeof window !== 'undefined' && window.matchMedia &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    // matches est relu à chaque appel et suit les changements système pendant la partie.
+    try {
+      if (!mediaMouvement && typeof window !== 'undefined' && window.matchMedia)
+        mediaMouvement = window.matchMedia('(prefers-reduced-motion: reduce)');
+      reduced = !!(mediaMouvement && mediaMouvement.matches);
+    } catch (e) {}
     return reduced;
   }
   function shakeK() { return mouvementReduit() ? 0 : (userShake !== null ? userShake : 1); }
@@ -239,7 +243,7 @@
 
   /* ---------------- limiteur de flashs ---------------- */
   var flT = new Float64Array(8), flI = 0;
-  var burstT = -1e9, burstF = null, burstA = 0, burstFlash = false;
+  var burstT = -1e9, burstF = null, burstA = 0, burstFlash = false, burstId = 0;
   for (var q0 = 0; q0 < 8; q0++) flT[q0] = -1e9;
   function thrArea() {
     var g = N.gfx || {}, W = g.W | 0, H = g.H | 0, P = (g.PX | 0) || 2;
@@ -264,6 +268,11 @@
       aire: area, accepte: k === 1,
       _type: type || 'externe', _issue: issue, _compte: !!compte, _echelle: k,
       _temps: clk, _image: frameNo(),
+      /* Aire déclarée cumulée, pas aire lumineuse mesurée. Même rafale = une
+         seule occurrence ; les petits éclairs simultanés restent additionnés.
+         Le seuil CSS peut être plus prudent que les 6,6 % du critère R-13. */
+      _rafale: burstId, _aireCumulee: burstA, _seuil: thrArea(),
+      _aireEcran: N.gfx ? N.gfx.W * N.gfx.H : null,
       _luminance: ci === undefined || !N.pal || !N.pal.L ? null : N.pal.L[ci],
       _rouge: type === 'explosion' ? true : ci === undefined ? null : ci === MAG || ci === BRAS || ci === SANG
     });
@@ -275,7 +284,7 @@
        rafale indéfinie sur des images distinctes. Seuls les départs d'une MÊME
        image peuvent partager un flash ; la borne de temps reste utile en simulation. */
     var f = frameNo();
-    if (f !== burstF || clk - burstT > FL_BURST) { burstT = clk; burstF = f; burstA = 0; burstFlash = false; }
+    if (f !== burstF || clk - burstT > FL_BURST) { burstT = clk; burstF = f; burstA = 0; burstFlash = false; burstId++; }
     if (on && burstFlash) { burstA += area; return decision(area, 1, 'rafale', false, type, ci); }
     if (burstA + area <= cap) { burstA += area; return decision(area, 1, 'sous-seuil', false, type, ci); }
     if (on) {
@@ -312,6 +321,8 @@
 
   /* ---------------- secousse à trauma ---------------- */
   var trauma = 0, shakeOut = 0, shakeF = -1, shakeBase = 0;
+  var shakeClock = 0, shakeDebut = -Infinity, shakeCrete = 0;
+  var SH_BUD = N.R && N.R.scene && N.R.scene.budgets && N.R.scene.budgets.secousse;
   /* plafond en pixels de jeu : 12 à px = 2 (iPhone), 8 à px = 4 (bureau), jamais sous 7 (critère 4 : 6 au moins) */
   function shMax() {
     var P = (N.gfx && N.gfx.PX) | 0 || 2, m = SH_CSS / P;
@@ -320,6 +331,7 @@
   function writeShake() {
     var s = S(); if (!s) return;
     shakeOut = shMax() * trauma * trauma * shakeK();
+    if (shakeOut < N.R.rythme.partition.secoussePlancher) shakeOut = 0;
     s.shake = shakeOut;
   }
   function shake(a) {
@@ -328,6 +340,21 @@
     var M = shMax();
     if (a > M) a = M;
     var need = Math.sqrt(a / M), f = frameNo();
+    /* Une rafale ne rallonge pas chaque petite secousse : sa crête remplace,
+       sans addition, la précédente dans la fenêtre. Une première frappe isolée
+       garde son amplitude et sa décroissance ; les impacts R12 (dont CYCLOPE)
+       reprennent immédiatement la main. Aucune action sur l’horloge des flashs. */
+    if (SH_BUD) {
+      if (a >= SH_BUD.forte || shakeClock - shakeDebut >= SH_BUD.fenetre) {
+        shakeDebut = shakeClock; shakeCrete = need;
+        if (need > trauma) trauma = need;
+      } else if (need > shakeCrete) {
+        shakeCrete = need;
+        if (need > trauma) trauma = need;
+      }
+      writeShake();
+      return;
+    }
     /* le même impact appelle souvent boom() puis shake() : dans une même image, on garde le plus fort ;
        d'une image à l'autre, les coups s'accumulent */
     if (f !== shakeF) { shakeF = f; shakeBase = trauma; }
@@ -352,7 +379,10 @@
     if (clk - lastT < HIT_GAP) return (num ? HITF[k] : o.fxHitF) === f;   /* déjà blanc il y a moins de 0,34 s */
     var A = +aire;
     if (!(A > 0) && !num) A = (o.w > 0 && o.h > 0) ? o.w * o.h : (o.r > 0 ? 3.1416 * o.r * o.r : 0);
-    if (A > thrArea() && !gate(A, 'frappe', OS)) return false;
+    /* Même une petite frappe rejoint le cumul de l'image. Dix objets chacun
+       sous le seuil peuvent former ensemble un grand aplat : la limite par
+       objet seule ne borne pas les frappes sur des objets distincts. */
+    if (A > 0 && !gate(A, 'frappe', OS)) return false;
     if (num) { HITT[k] = clk; HITF[k] = f; } else { o.fxHitT = clk; o.fxHitF = f; }
     return true;
   }
@@ -569,6 +599,7 @@
        pendant une chaîne de gels ferait clignoter les bords clairs (mesuré : 11 flashs/s sur bureau) */
     var rdt = frozen() ? dtR / HS_SLOW : dtR;
     if (rdt > 0.05) rdt = 0.05;
+    shakeClock += rdt;
     trauma -= TDECAY * rdt;
     if (trauma < 0) trauma = 0;
     writeShake();
@@ -1249,6 +1280,7 @@
        appelle reset() à chaque interlude, une seconde après une explosion peut encore compter) */
     resetG();
     hsSet = -1e9; hsEnd = -1e9; trauma = 0; shakeOut = 0; shakeF = -1; shakeBase = 0;
+    shakeClock = 0; shakeDebut = -Infinity; shakeCrete = 0;
     for (var h = 0; h < 1024; h++) { HITF[h] = -1e9; HITT[h] = -1e9; }
     readPrefs();
     if (s) { s.shake = 0; s.heat = 0; }

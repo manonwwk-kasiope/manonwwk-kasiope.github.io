@@ -227,6 +227,7 @@ N.scene = (function () {
   }
   function onVague(c) {
     var h = head();
+    if (c.evt === 'entree') cue('vague');
     if (c.evt === 'entree') banniere(['VAGUE ' + c.n, c.nom || ''], { c: 'jaune', duree: 2.0, vague: c.n }, 1);
     else if (c.evt === 'nettoyee') {
       if (h) { onde(h.x, h.y, 6, 170, O.JAUNE, 0.7, { epaisseur: 4 }); onde(h.x, h.y, 3, 110, O.OS, 0.5, { epaisseur: 2 }); }
@@ -255,6 +256,7 @@ N.scene = (function () {
   }
   function onPhase(c) {
     if (c.evt === 'arrivee') {
+      if (N.music && N.music.rythme) N.music.rythme('cyclope', true);
       var A = RS.cyclope;
       if (A) ralenti(A.ralenti, A.duree, { long: true });
     } else if (c.evt === 'entree') banniere(c.n ? 'PHASE ' + c.n : 'LE CYCLOPE', { c: 'magenta', duree: 2.0 }, 2);
@@ -269,6 +271,7 @@ N.scene = (function () {
     if (armeCd <= 0) { sfx('arme', { pan: c.cible && c.cible.x !== undefined ? pan(c.cible.x) : 0 }); armeCd = 0.2; }
   }
   function onPouvoir(c) {
+    if (c.id === 'ralenti' && N.music && N.music.rythme && (c.evt === 'debut' || c.evt === 'fin')) N.music.rythme('ralenti', c.evt === 'debut');
     var h = head(); if (!h || (c.evt && c.evt !== 'debut' && c.evt !== 'start')) return;
     var id = c.id;
     if (id === 'traversee' || id === 'ralenti' || id === 'repli') sfx(id);

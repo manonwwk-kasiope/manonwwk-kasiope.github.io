@@ -915,10 +915,11 @@
         var t0 = st.t;
         st.reel += H;
         st.arretee = estArretee();
+        if (global && !st.arretee && N.warp && N.game && /^(jeu|boss|reapparition)$/.test(N.game.etat())) N.warp.update(H);
         if (st.arretee) { st.dtM = st.dtJ = 0; st.gele = false; }
         else {
           if (st.gel > H * 1e-3) { st.gel -= H; st.dtM = st.dtJ = 0; st.gele = true; }
-          else { st.gel = 0; st.gele = false; st.dtM = H * facteur('k'); st.dtJ = H * facteur('kJoueuse'); }
+          else { st.gel = 0; st.gele = false; st.dtM = H * facteur('k') * (global && N.warp ? N.warp.facteur() : 1); st.dtJ = H * facteur('kJoueuse') * (global && N.warp ? N.warp.facteur() : 1); }
         }
         st.t += st.dtM;
         var b0 = Math.floor(t0 / TEMPS + 1e-9), b1 = Math.floor(st.t / TEMPS + 1e-9);
@@ -935,6 +936,9 @@
       arretee: function () { return st.arretee; },
       resteGel: function () { return st.gel; },
       temps: function () {
+        if (global && N.rythme && N.rythme.lire().id) {
+          var mus = N.rythme.lire(); TPS.mesure = mus.mesure; TPS.temps = mus.temps; TPS.phase = mus.phase; return TPS;
+        }
         var nb = st.t / TEMPS + 1e-9, fb = Math.floor(nb);
         TPS.mesure = Math.floor(fb / 4); TPS.temps = fb - TPS.mesure * 4; TPS.phase = nb - fb; if (TPS.phase < 0) TPS.phase = 0;
         return TPS;

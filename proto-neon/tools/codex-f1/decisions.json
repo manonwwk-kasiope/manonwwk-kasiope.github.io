@@ -1,0 +1,52 @@
+[
+  {
+    "lot": "codex-u1",
+    "statut": "appliqué — non-régression VM",
+    "raison": "100 cas sans erreur ; 80/80 résumés et journaux paysage identiques. R14 et R13 portrait échouent déjà sur la pointe reçue, valeurs conservées."
+  },
+  {
+    "lot": "codex-i1",
+    "statut": "appliqué — non-régression VM",
+    "raison": "100 cas sans erreur ; 80/80 résumés et journaux hors flash identiques. p35 modifie volontairement le journal flash. R13 complet 0/4/2 comme la pointe ; R14 hérité non résolu."
+  },
+  {
+    "lot": "codex-t1",
+    "statut": "appliqué — non-régression VM",
+    "raison": "100 cas sans erreur ; 80/80 résumés et journaux identiques à i1. Neuf variantes identiques au lot, grilles croissantes, catalogue six originaux. R13 hérité 0/4/2."
+  },
+  {
+    "lot": "codex-s1",
+    "statut": "écarté — porte R13 échouée deux fois",
+    "raison": "99/100 fins et zéro erreur ; R14 7,72/8,53/9,89 %, scènes et fin CYCLOPE réussies en VM. Charge R13 1/6/3, puis 1/6/2 après plafond du lointain, contre 0/4/2 reçu : portrait en régression persistante. Arrêt, retour exact aux sources t1 prouvé ; sources/raccords S1 non actifs dans la candidate, archivés dans s1-ecarte.patch."
+  },
+  {
+    "lot": "codex-w1",
+    "statut": "écarté — R13 portrait en régression",
+    "raison": "Deux charges complètes donnent 0/6/2 puis 0/6/2 flashs/s, contre 0/4/2 sur t1 ; 100 cas finaux, zéro erreur ; R14 sous 12 % et 12 fixtures WARP passent mais ne compensent pas ce recul. Retour aux sources t1 ; archive w1-ecarte.patch. Collecte w1-corrige exclue pour mélange de snapshots."
+  },
+  {
+    "lot": "codex-r2c",
+    "statut": "appliqué — r2d accepté avec réserves",
+    "raison": "Sources corrigées : 100 cas, 96 fins, zéro erreur ; R13 0/3/1 ; R14 8,12/8,33/10,29 %, sans dépassement de bannière. Bon/2 portrait borné : couverture incomplète. 0/80 résumés identiques à t1 (horaires du rythme changés), 80/80 et journaux identiques entre r2d et son correctif de rendu. P4 tirs sous gel reste une réserve acceptée à 04 h 41."
+  },
+  {
+    "lot": "codex-p44b",
+    "statut": "écarté — contrôle de compatibilité arrêté",
+    "raison": "Deux contrôles ciblés sans erreur mais non concluants : 9/24 puis 12/24 assertions. Après correction des départs publics, 9/9 préparations atteignent boss phase3 / jeu travelling marche. Les fixtures tourelle/mine/larve déplacent un acteur encore soumis au portail r2d ; leurs absences ne prouvent pas un défaut de préavis en partie réelle. Pas de troisième essai ; 80 après non lancées à cette porte arrêtée ; retour exact à r2d-fixe, archive p44b-ecarte.patch."
+  },
+  {
+    "lot": "codex-d1b",
+    "statut": "écarté — lot livré arrêté, contrôleur désactivé",
+    "raison": "final.md arrivé à sa porte (05 h 32) : deux échecs de la porte5, maladroit100 médiane KM59,82 s et CYCLOPE1 %, cibles150–240 s et20–50 %. Contrôleur désactivé et aucune recommandation d’intégration dans son rapport. Aucune troisième passe adaptative ; données et raccords non activés dans f1. G1 avait commencé après une assertion de disponibilité échouée dans un shell sans arrêt automatique ; application anticipée annulée par retour exact à r2d-fixe avant tout essai, puis décision d1b prise dans l’ordre."
+  },
+  {
+    "lot": "codex-g1",
+    "statut": "appliqué — g1c avec budget caméra, réserves conservées",
+    "raison": "Version g1c acceptée à 04 h 51, plafond40 et cartes de la passe2 sans service combat g1b. Première série100 :99fins,0erreur, pic40 mais R14 13,13/14,36/14,47 %. Unique correction : raccord budget codex12 déjà configuré dans N.R, plancher1px r2d conservé. Série finale100 :99fins,0erreur, R14 8,41/8,10/8,66 %, bannières sans dépassement, R13 0/3/1. 80/80 résumés et journaux identiques avant/après caméra ; titre trois cibles ≥44pt sans recouvrement, 9/9 sorties UI et allocation40/refus sans score sur3profils. Dieu/1 reste borné V4 à540,135 s. Difficulté/temps des cartes et palier qualité restent réservés."
+  },
+  {
+    "lot": "codex-f1-audio",
+    "statut": "appliqué — raccord de transport commun",
+    "raison": "Une seule propriété music.transport ; contrat t1 conservé, curseur réel r2d séparé par interface publique, annotations indexées reportées sur les neuf grilles remesurées. 47 positions de transport vérifiées, zéro erreur. Série finale100 :99fins,0erreur ; 80/80 résumés et journaux identiques à g1c-budget ; R13 0/3/1, R14 8,41/8,10/8,66 %. Aucun réglage de caméra supplémentaire ; signal WebAudio à vérifier hors bac."
+  }
+]

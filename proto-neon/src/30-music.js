@@ -4,7 +4,7 @@
      1. LA PISTE : « Neon Velocity » (143,76 BPM mesurés ; le plan annonçait 144,6), découpée par
         tools/musique/decoupe.mjs en 21 blocs MP3 de musique/ (piste.json les décrit). Chaque bloc est décodé à
         la demande, joué par un AudioBufferSourceNode à l'échantillon près, et enchaîné SUR LA MESURE par le
-        séquenceur selon la section demandée (N.music.section). La piste n'est jamais accélérée : la tension
+        séquenceur selon la section demandée (N.music.section). Seuls les blocs et le repli peuvent passer en demi-temps : la tension
         pilote un filtre passe-bas et un gain.
      2. LE MOTEUR GÉNÉRATIF (l'ancien, réaccordé en ré, à 143,76 BPM) : au-dessus de la piste il joue des COUCHES
         (PERCU, ÉTINCELLES, INVERSION, BATTEMENT) et des ACCENTS (stinger, drop, plongée, coupure) recalés sur la
@@ -45,6 +45,9 @@
      N.music.suspend(), resume()       arrière-plan (90-boot.js) ; reprise sur une mesure neuve
      N.music.piste() -> {pret, bloc, mesure, section, repli, morceau}
      N.music.morceau() -> {id, t, duree} | null     le morceau long qui sonne (t en s dans le fichier), sinon null
+     N.music.rythme('inversion'|'ralenti', bool) // demi-temps des blocs/repli ; morceaux longs toujours en temps réel
+     N.music.rythme('cyclope', true)          // compatible avec le raccord p33 ; aucun frein audio
+     N.music.grille(tJeu) -> {total, mesure, temps, phase, bpm} // phase continue du jeu, resetTempo() au reset
      N.music.tempo() -> BPM                         le tempo de ce qui joue : celui du morceau long, sinon de la piste
      N.music.morceaux()                            diagnostic : catalogue, emplacements, programme, échecs
      N.music.noeuds()                  nœuds audio créés dans la dernière seconde
@@ -78,7 +81,9 @@ if (typeof window !== 'undefined') window.__N = N;
     revSend: { drum: 0.26, lead: 0.28, sfx: 0.20, bass: 0.0, pad: 0.10 },
     duckKill: 0.30, duckBig: 0.45, duckHurt: 0.32, duckInfo: 0.22
   };
-  var BPM = 143.759;                              /* tempo mesuré de la piste (piste.json le confirme au chargement) */
+  var RV = (N.R && N.R.tempoVariable) || { demi: 0.5, frein: 0.5, freinMesures: 1, securite: 0.001, minutesSecondes: 60, repliBpm: 143.759 }; // repli isolé, mêmes valeurs que N.R
+  var RT = N.R.tempoScenes;
+  var BPM = RV.repliBpm;                              /* tempo mesuré de la piste (piste.json le confirme au chargement) */
   var LOOKAHEAD = 0.26, PUMP_MS = 40, TRACK_AHEAD = 1.1;
   var ROOT_BASS = 38, ROOT_PAD = 62, ROOT_LEAD = 74;   /* ré : D2, D4, D5 */
   var FADE_OUT = 0.018, FADE_IN = 0.04;           /* constantes de temps de la porte, en s */
@@ -281,13 +286,14 @@ if (typeof window !== 'undefined') window.__N = N;
     var musicBus = ctx.createGain();
     var musicLevel = ctx.createGain(); musicLevel.gain.value = MIX.music;
     var musicDuck = ctx.createGain(); musicDuck.gain.value = 1;
+    var rythmeBus = ctx.createGain(); rythmeBus.gain.value = 1;
     var musicCut = ctx.createGain(); musicCut.gain.value = 1;            /* la coupure à la mort */
     var secLP = ctx.createBiquadFilter(); secLP.type = 'lowpass'; secLP.frequency.value = Math.min(20000, sr * 0.45); secLP.Q.value = 0.5;   /* filtre de section : alerte 300 Hz, défaite 1,2 kHz */
     var musicChan = ctx.createGain(); musicChan.gain.value = muteMus ? 0 : 1;   /* mute('musique') */
     var OPEN = Math.min(20000, sr * 0.45);
     var muffle = ctx.createBiquadFilter(); muffle.type = 'lowpass'; muffle.frequency.value = OPEN; muffle.Q.value = 0.6;
     var genHP = ctx.createBiquadFilter(); genHP.type = 'highpass'; genHP.frequency.value = 460; genHP.Q.value = 0.8;   /* repli éclairci : pas de grave sous 460 Hz (le haut-parleur d'un téléphone ne les rend pas) */
-    musicBus.connect(genHP); genHP.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(musicCut);
+    musicBus.connect(genHP); genHP.connect(musicLevel); musicLevel.connect(musicDuck); musicDuck.connect(rythmeBus); rythmeBus.connect(musicCut);
     musicCut.connect(musicChan); musicChan.connect(secLP); secLP.connect(muffle); muffle.connect(master);
 
     var trackBus = ctx.createGain(); trackBus.gain.value = 1;
@@ -1375,7 +1381,7 @@ if (typeof window !== 'undefined') window.__N = N;
     function trackTone() {
       /* passe-bas : 2,5 kHz à la tension 0,15 (VAGUE 1), 18 kHz à partir de 0,6, en échelle logarithmique ;
          gain : de −7,2 dB à 0,15 à 0 dB à partir de 0,6 (le plan disait −3 dB : mesuré au téléphone, il ne donne que
-         2 dB d'écart calme -> chaos, et le tableau du mixage exige 6). La piste n'est JAMAIS accélérée. */
+         2 dB d'écart calme -> chaos, et le tableau du mixage exige 6). La tension ne change jamais la vitesse ; seuls rythme() et ses effets sur la barre le font. */
       var u = clamp((tTarget - 0.15) / 0.45, 0, 1);
       var f = 2500 * Math.pow(18000 / 2500, u);
       var sp = PROFIL[wantNom];
@@ -1457,6 +1463,7 @@ if (typeof window !== 'undefined') window.__N = N;
     function mzCoupe(t) { return !!M.sansCouches || (M.G.length > 0 && t >= M.G[0].from - 1e-3 && t < M.layersFin); }
     function segTime(sg, i) {                        /* début de la barre i (extrapolée au-delà des extrémités de la carte) */
       var B = sg.bars, n = B.length, o = sg.off();
+      // La carte d'un morceau suit le fichier en temps réel, jamais l'horloge variable des blocs.
       if (i < 0) return o + B[0] + i * (B[1] - B[0]);
       if (i >= n) return o + B[n - 1] + (i - n + 1) * (B[n - 1] - B[n - 2]);
       return o + B[i];
@@ -1476,7 +1483,7 @@ if (typeof window !== 'undefined') window.__N = N;
       var t0 = segTime(sg, i - 1), bt = (t1 - t0) / 4, k = Math.ceil((t - t0) / bt - 1e-6);
       return t0 + k * bt;
     }
-    function segTempo(sg, t) { var i = segIdx(sg, t); return 240 / Math.max(0.2, segTime(sg, i + 1) - segTime(sg, i)); }
+    function segTempo(sg, t) { var i = segIdx(sg, t); if (segTime(sg, i) > t + RV.securite) i--; return 240 / Math.max(0.2, segTime(sg, i + 1) - segTime(sg, i)); }
     function eqp(p, v0, v1, t, dur) {                /* fondu à puissance constante : sinus en montée, cosinus en descente */
       var n = 48, a = new Float32Array(n);
       for (var i = 0; i < n; i++) { var x = i / (n - 1) * Math.PI / 2; a[i] = v1 > v0 ? v0 + (v1 - v0) * Math.sin(x) : v1 + (v0 - v1) * Math.cos(x); }
@@ -1487,12 +1494,47 @@ if (typeof window !== 'undefined') window.__N = N;
       fo.gain.value = 0; en.connect(fo); fo.connect(mzBus);
       return { entree: en, fondu: fo, sonde: offline ? null : tap(en) };
     }
+    /* Horloge des BLOCS, continue quand leur vitesse change. Les morceaux longs ont
+       leur propre horloge réelle ; ni les effets du monde ni cette horloge ne les ralentissent. */
+    var vitesses = [{ t: 0, q: 0, k: 1, raison: 'normal' }];
+    function vitesseA(t) { var v = vitesses[0]; for (var i = 1; i < vitesses.length && vitesses[i].t <= t; i++) v = vitesses[i]; return v; }
+    function position(t) { var v = vitesseA(t); return v.q + (t - v.t) * v.k; }
+    function instant(q) { var v = vitesses[0]; for (var i = 1; i < vitesses.length && vitesses[i].q <= q; i++) v = vitesses[i]; return v.t + (q - v.q) / v.k; }
+    function vitesse(k, raison, mesures) {
+      if (!(k > 0) || !isFinite(k)) return false;
+      // Dès qu'un morceau est armé, sa carte et sa lecture restent natives, fondu compris.
+      if (raison === 'cyclope' || M.G.length) return false;
+      var now = ctx.currentTime, dernier = vitesses[vitesses.length - 1];
+      if (dernier.k === k) return dernier.t;
+      var tb = barAfter(Math.max(now + LOOKAHEAD, cur, dernier.t) + RV.securite);
+      function poser(t, valeur, nom) {
+        var precedent = vitesseA(t).k, q = position(t), futurs = anchors.filter(function (a) { return a.t >= t; }).map(function (a) { return { a: a, q: position(a.t) }; });
+        vitesses.push({ t: t, q: q, k: valeur, raison: nom });
+        T.items.forEach(function (it) {
+          if (it.dead || it.tEnd <= t) return;
+          it.src.playbackRate.setValueAtTime(valeur, Math.max(t, it.tSrc));
+          it.tJoin = instant(it.qJoin); it.tCore = instant(it.qCore); it.tEnd = instant(it.qEnd);
+          it.barD = P.blocs[it.bloc].dureeMesure / valeur;
+          it.g.gain.cancelScheduledValues(Math.max(t, it.tJoin));
+          if (it.tJoin >= t) { it.g.gain.setValueAtTime(0, instant(it.qJoin) - XF); it.g.gain.linearRampToValueAtTime(1, it.tJoin); }
+          else it.g.gain.setValueAtTime(1, t);
+          it.g.gain.setValueAtTime(1, it.tEnd - XF); it.g.gain.linearRampToValueAtTime(0, it.tEnd);
+        });
+        futurs.forEach(function (x) { x.a.t = instant(x.q); x.a.dur = x.a.dur * precedent / valeur; });
+        anchors = anchors.filter(function (a) { return Math.abs(a.t - t) > RV.securite; });
+        anchors.push({ t: t, over: overMode || !!mzSeg(t), dur: (mzSeg(t) ? 240 / segTempo(mzSeg(t), t) : 240 / bpm / valeur) });
+        anchors.sort(function (a,b) { return a.t - b.t; });
+      }
+      poser(tb, k, raison);
+      if (mesures) poser(barAfter(tb + RV.securite) + (mesures - 1) * 240 / tempoA(tb), dernier.k, raison + ':reprise');
+      return tb;
+    }
+    function tempoA(t) { var sg = mzSeg(t); return sg ? segTempo(sg, t) : bpm * vitesseA(t).k; }
     function tempoCourant() {                        /* le BPM de ce qui joue : le morceau long (tempo local de sa carte), sinon la piste */
-      var sg = mzSeg(ctx.currentTime);
-      return sg ? segTempo(sg, ctx.currentTime) : bpm;
+      return tempoA(ctx.currentTime);
     }
     function mzPret() { var f = famFirst(T.want); return !!(P && T.want && f >= 0 && ready(f)); }
-    function mzAncres(horizon) {                     /* repose la grille du moteur sur le morceau : une ancre toutes les 8 barres */
+    function mzAncres(horizon) {                     /* repose la grille du moteur sur le morceau : une ancre par barre, tempo local variable */
       if (!M.G.length) return;
       var now = ctx.currentTime;
       for (var gi = 0; gi < M.G.length; gi++) {
@@ -1502,9 +1544,9 @@ if (typeof window !== 'undefined') window.__N = N;
           var ta = segTime(sg, sg.ia);
           if (ta >= sg.to - 1e-3 || ta > horizon + 0.5) break;
           if (ta >= cur - 1e-4) {
-            anchors.push({ t: ta, over: true, dur: Math.max(0.2, segTime(sg, sg.ia + 1) - ta), sg: sg });
+            if (!anchors.some(function (a) { return Math.abs(a.t - ta) < RV.securite; })) anchors.push({ t: ta, over: true, dur: Math.max(0.2, segTime(sg, sg.ia + 1) - ta), sg: sg });
             anchors.sort(function (x, y) { return x.t - y.t; });
-            sg.ia += 8;
+            sg.ia++;
           } else sg.ia = segIdx(sg, cur) ;
         }
       }
@@ -1589,25 +1631,26 @@ if (typeof window !== 'undefined') window.__N = N;
       for (var i = T.items.length - 1; i >= 0; i--) {
         var it = T.items[i];
         if (it.tJoin - 1e-3 <= t && t < it.tEnd + 1e-3) {
-          var k = Math.ceil((t - it.tJoin) / it.barD - 1e-6);
-          return Math.min(it.tJoin + k * it.barD, it.tEnd);
+          var d = P.blocs[it.bloc].dureeMesure, k = Math.ceil((position(t) - it.qJoin) / d - 1e-6);
+          return Math.min(instant(it.qJoin + k * d), it.tEnd);
         }
       }
-      var k2 = Math.ceil((t - barT0) / barDurCur - 1e-6);
-      return barT0 + Math.max(0, k2) * barDurCur;
+      var duree = 240 / bpm, q0 = position(barT0);
+      var k2 = Math.ceil((position(t) - q0) / duree - 1e-6);
+      return instant(q0 + Math.max(0, k2) * duree);
     }
     function beatAfter(t) {
       var sg = mzSeg(t); if (sg) return segBeatAfter(sg, t);
-      var bd = barDurCur / 4;
+      var bd = 60 / bpm;
       for (var i = T.items.length - 1; i >= 0; i--) {
         var it = T.items[i];
-        if (it.tJoin - 1e-3 <= t && t < it.tEnd + 1e-3) { var bt = it.barD / 4, k = Math.ceil((t - it.tJoin) / bt - 1e-6); return Math.min(it.tJoin + k * bt, it.tEnd); }
+        if (it.tJoin - 1e-3 <= t && t < it.tEnd + 1e-3) { var bt = P.blocs[it.bloc].dureeMesure / 4, k = Math.ceil((position(t) - it.qJoin) / bt - 1e-6); return Math.min(instant(it.qJoin + k * bt), it.tEnd); }
       }
-      var k2 = Math.ceil((t - barT0) / bd - 1e-6);
-      return barT0 + Math.max(0, k2) * bd;
+      var q0 = position(barT0), k2 = Math.ceil((position(t) - q0) / bd - 1e-6);
+      return instant(q0 + Math.max(0, k2) * bd);
     }
     gridApi.snap = function (t) { return beatAfter(t); };
-    gridApi.bd = function () { var sg = mzSeg(ctx.currentTime); return sg ? 60 / segTempo(sg, ctx.currentTime) : 60 / BPM; };
+    gridApi.bd = function () { return 60 / tempoCourant(); };
 
     function famSpec(fam, afterDeath) {       /* premier item en entrant dans une famille */
       var F = T.FAMS[fam]; if (!F || !F.order.length) return null;
@@ -1653,14 +1696,17 @@ if (typeof window !== 'undefined') window.__N = N;
     function startItem(spec, tJoin) {
       var b = P.blocs[spec.bloc], buf = T.bufs[spec.bloc];
       if (!buf) return null;
-      var barD = b.dureeMesure, coreLen = b.coeurFin - b.coeurDeb, off = T.offs[spec.bloc] || 0;
+      var rate = vitesseA(tJoin).k, barD = b.dureeMesure / rate, coreLen = b.coeurFin - b.coeurDeb, off = T.offs[spec.bloc] || 0;
       var from = spec.fromRel || 0, to = spec.toRel != null ? spec.toRel : coreLen;
       var leadD = spec.lead ? Math.min(b.avant, 1) * barD : 0;
-      var tCore = tJoin + leadD, tEnd = tCore + (to - from);
-      var fileStart = b.coeurDeb + off + from - leadD - XF, tSrc = tJoin - XF;
-      if (fileStart < 0) { tSrc -= fileStart; fileStart = 0; }
-      var len = (tEnd + XF + 0.02) - tSrc;
+      var qJoin = position(tJoin), qCore = qJoin + leadD * rate, qEnd = qCore + to - from;
+      var tCore = instant(qCore), tEnd = instant(qEnd);
+      var tSrc = tJoin - XF, fileStart = b.coeurDeb + off + from - (qCore - position(tSrc));
+      if (fileStart < 0) { tSrc -= fileStart / vitesseA(tSrc).k; fileStart = 0; }
+      var len = qEnd - position(tSrc) + (XF + 0.02) * rate;
       var src = ctx.createBufferSource(); src.buffer = buf;
+      src.playbackRate.setValueAtTime(vitesseA(tSrc).k, tSrc);
+      vitesses.forEach(function (v) { if (v.t > tSrc) src.playbackRate.setValueAtTime(v.k, v.t); });
       var g = ctx.createGain();
       g.gain.setValueAtTime(0, tSrc);
       g.gain.linearRampToValueAtTime(1, Math.max(tSrc + 0.001, tJoin));        /* fondu d'entrée de 10 ms, posé sur la barre */
@@ -1668,7 +1714,7 @@ if (typeof window !== 'undefined') window.__N = N;
       g.gain.linearRampToValueAtTime(0, tEnd);                                  /* fondu de sortie, posé sur la barre */
       src.connect(g); g.connect(trackBus);
       src.start(tSrc, fileStart, len);
-      var it = { bloc: spec.bloc, fam: spec.fam, spec: spec, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, src: src, g: g, from: from, to: to, leadD: leadD };
+      var it = { bloc: spec.bloc, fam: spec.fam, spec: spec, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, src: src, g: g, from: from, to: to, leadD: leadD, qJoin: qJoin, qCore: qCore, qEnd: qEnd, tSrc: tSrc };
       T.items.push(it); T.last = it; T.tNext = tEnd; T.fam = spec.fam; T.mode = 'on';
       itemLog.push({ bloc: spec.bloc, fam: spec.fam, tJoin: tJoin, tCore: tCore, tEnd: tEnd, barD: barD, from: from, to: to, lead: leadD > 0 });
       T.recent.push(spec.bloc); if (T.recent.length > 12) T.recent.shift();
@@ -1683,7 +1729,7 @@ if (typeof window !== 'undefined') window.__N = N;
         it.g.gain.setValueAtTime(1, tb - XF);
         it.g.gain.linearRampToValueAtTime(0, tb);
       } catch (e) { /* item déjà fini */ }
-      it.tEnd = tb;
+      it.tEnd = tb; it.qEnd = position(tb);
     }
     function killItem(it) {
       try { it.g.gain.cancelScheduledValues(0); it.g.gain.setValueAtTime(0, ctx.currentTime); } catch (e) { /* ignoré */ }
@@ -1838,7 +1884,7 @@ if (typeof window !== 'undefined') window.__N = N;
       }
     }
     function stinger(nom) {
-      var tb = barAfter(ctx.currentTime + 0.05), bd = barDurCur, k = 0;
+      var tb = barAfter(ctx.currentTime + 0.05), bd = barAfter(tb + RV.securite) - tb, k = 0;
       accLog.push({ nom: nom, t: tb });
       var big = nom === 'vague';
       /* une mesure : accord de ré (ré, la, ré) sur le premier temps, puis une montée de quatre notes, un temps chacune */
@@ -1908,7 +1954,9 @@ if (typeof window !== 'undefined') window.__N = N;
       cutState: function () { return { cut: T.cut, at: T.deathAt, want: T.want }; },
       setPiste: setPiste, setBuffer: setBuffer, dropBuffer: dropBuffer, needs: needs, hasBuffer: function (i) { return !!T.bufs[i]; },
       /* les morceaux longs */
-      hooks: hooks, tempo: tempoCourant,
+      hooks: hooks, tempo: tempoCourant, vitesse: vitesse, position: position, instant: instant,
+      taux: function (t) { return vitesseA(t == null ? ctx.currentTime : t).k; },
+      variations: function () { return vitesses.map(function (v) { return { t:v.t, q:v.q, k:v.k, raison:v.raison }; }); },
       mzSlot: mzSlot, mzEntrer: mzEntrer, mzAnnuler: mzAnnuler, mzRetour: mzRetour, mzFinir: mzFinir, mzPret: mzPret, mzSnap: mzSnap,
       mzBarre: function (t) { return barAfter(t); },
       mzTenu: function () { return M.hold; },
@@ -1918,6 +1966,12 @@ if (typeof window !== 'undefined') window.__N = N;
       mzSansCouches: function (b) { M.sansCouches = !!b; },   /* mesure du niveau de la piste seule, sans les couches du moteur */
       sfx: function (name, o) { play(name, ctx.currentTime + 0.012, o); },
       sfxAt: function (name, t, o) { play(name, t, o); },
+      trouRythme: function (t, fin) {
+        if (!(t >= ctx.currentTime && fin > t)) return;
+        var p = rythmeBus.gain, r = N.R.rythme.partition.rampeSon;
+        p.cancelScheduledValues(t); p.setValueAtTime(1, t); p.linearRampToValueAtTime(0, t + r);
+        p.setValueAtTime(0, Math.max(t + r, fin - r)); p.linearRampToValueAtTime(1, fin);
+      },
       voix: function (mot) { return say(mot, ctx.currentTime + 0.012); },
       /* la porte : v 0 ou 1, constante de temps tc (0 = immédiat) */
       gate: function (v, tc) { glide(gate.gain, v, tc); },
@@ -1938,7 +1992,7 @@ if (typeof window !== 'undefined') window.__N = N;
       journal: function () { return jr; },
       nodes: function () { return nodesLast(1); }, nodesTotal: function () { return nodeTotal; },
       beat: function () {
-        var t = ctx.currentTime - Math.min(0.2, (ctx.outputLatency || 0) + (ctx.baseLatency || 0)), g0 = barT0, bd = barDurCur;
+        var t = ctx.currentTime - Math.min(0.2, (ctx.outputLatency || 0) + (ctx.baseLatency || 0)), g0 = barT0, bd = barDurCur, baseBar = bar;
         var sg = mzSeg(t);
         if (sg) {                                    /* un morceau long : la carte de ses barres */
           var i0 = segIdx(sg, t); if (segTime(sg, i0) > t + 1e-6) i0--;
@@ -1946,19 +2000,32 @@ if (typeof window !== 'undefined') window.__N = N;
           beatOut.bar = i0 < 0 ? 0 : i0; beatOut.beat = Math.min(3, Math.floor(kk)); beatOut.phase = Math.min(1, kk - Math.floor(kk));
           return beatOut;
         }
-        for (var i = T.items.length - 1; i >= 0; i--) { var it = T.items[i]; if (it.tJoin - 1e-3 <= t && t < it.tEnd + 1e-3) { g0 = it.tJoin; bd = it.barD; break; } }
-        var k = (t - g0) / (bd / 4); if (k < 0) k = 0;
-        beatOut.bar = Math.floor(k / 4); beatOut.beat = Math.floor(k) % 4; beatOut.phase = k - Math.floor(k);
+        for (var i = T.items.length - 1; i >= 0; i--) { var it = T.items[i]; if (it.tJoin - 1e-3 <= t && t < it.tEnd + 1e-3) { g0 = it.tJoin; bd = it.barD; baseBar = 0; break; } }
+        var k = (position(t) - position(g0)) / (60 / bpm); if (k < 0 && baseBar === 0) k = 0;
+        beatOut.bar = Math.max(0, baseBar + Math.floor(k / 4)); beatOut.beat = ((Math.floor(k) % 4) + 4) % 4; beatOut.phase = k - Math.floor(k);
         return beatOut;
       },
       piste: function () {
         var now = ctx.currentTime, it = null;
         for (var i = T.items.length - 1; i >= 0; i--) if (T.items[i].tJoin - 1e-3 <= now && now < T.items[i].tEnd + 1e-3) { it = T.items[i]; break; }
         var r = { pret: !!P, bloc: it ? P.blocs[it.bloc].fichier : null, mesure: 0, section: wantNom, repli: !it, famille: T.fam, mode: T.mode };
-        if (it) { var b = P.blocs[it.bloc]; r.mesure = Math.floor(b.mesures[0] + Math.max(0, (now - it.tCore + it.from) / it.barD)); }
+        if (it) { var b = P.blocs[it.bloc]; r.mesure = Math.floor(b.mesures[0] + Math.max(0, (position(now) - it.qCore + it.from) / P.blocs[it.bloc].dureeMesure)); }
         return r;
       },
-      trackState: function () { return { decOff: T.decOff, items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
+      transport: function () {
+        var lat = Math.min(N.R.rythme.latenceMax, (ctx.outputLatency || 0) + (ctx.baseLatency || 0));
+        var heard = ctx.currentTime - lat, sg = mzSeg(heard);
+        if (sg) return { id: sg.id, t: Math.max(0, heard - sg.off()), latence: lat, ctx: ctx.currentTime };
+        for (var i = T.items.length - 1; i >= 0; i--) {
+          var it = T.items[i];
+          if (heard < it.tJoin || heard >= it.tEnd) continue;
+          var b = P.blocs[it.bloc];
+          return { id: 'neon-velocity', t: Math.max(0, (P.premiereMesure || 0) + b.temps[0] * P.dureeTemps + heard - it.tCore + it.from),
+            latence: lat, ctx: ctx.currentTime, bloc: b.fichier };
+        }
+        return { id: 'neon-velocity', t: Math.max(0, bar * barDurCur + heard - barT0), latence: lat, ctx: ctx.currentTime };
+      },
+      trackState: function () { return { decOff: T.decOff, items: T.items.map(function (it) { return { bloc: it.bloc, fam: it.fam, tJoin: it.tJoin, tCore: it.tCore, tEnd: it.tEnd, barD: it.barD, qJoin:it.qJoin, qCore:it.qCore, qEnd:it.qEnd }; }), mode: T.mode, fam: T.fam, want: T.want, offs: T.offs.slice(), suspect: T.suspect.slice(), failed: T.failed, recent: T.recent.slice() }; },
       trackRms: function () { return trackTap ? trackTap() : 0; },
       info: function () {
         return {
@@ -1977,7 +2044,7 @@ if (typeof window !== 'undefined') window.__N = N;
   var chanMute = { musique: false, effets: false };
   var J = { appels: {}, ignores: 0 };
   var pend = { tension: 0, danger: 0, inversion: false, section: null };
-  function bpmPiste() { return (LD.piste && LD.piste.bpm) || BPM; }
+  function bpmPiste() { return (LD.piste && LD.piste.bpm) || (N.R && N.R.temps && N.R.temps.bpm) || BPM; } // sans contexte ni piste chargée : grille historique du jeu muet
   var autoSec = true, autoCur = null;                      /* tant que personne n'a demandé de section : titre, ou jeu dès que la tension monte */
 
   /* ---- le chargement de la piste : piste.json, puis les blocs à la demande ---- */
@@ -2076,7 +2143,8 @@ if (typeof window !== 'undefined') window.__N = N;
     etat: 'repos',            /* repos | catalogue | pret | absent | embarque | sansLecteur */
     cat: {}, slots: [], cur: null, plan: null, erreur: null,
     sec: null, vague: 0, boss: false, cle: null, rang: 0, hist: [],
-    ko: {}, blobs: {}, charge: null, lat: 0.12, enPause: false, pauses: [], dernierEval: 0, dernierPre: 0, stats: { entrees: 0, annulees: 0, boucles: 0, fins: 0, retours: 0 }
+    ko: {}, blobs: {}, charge: null, lat: 0.12, enPause: false, pauses: [], dernierEval: 0, dernierPre: 0, tempoFacteur: 1, tempoRaison: null, tempoEvenements: [], tempoAbonnes: [], tempoDropV5: false,
+    stats: { entrees: 0, annulees: 0, boucles: 0, fins: 0, retours: 0 }
   };
   function zSafe(f) { try { return f(); } catch (e) { Z.erreur = String(e && e.message || e); J.ignores++; return undefined; } }
   function zNum(a, b) { return a - b; }
@@ -2094,7 +2162,7 @@ if (typeof window !== 'undefined') window.__N = N;
       if (ia > ide) bo = { de: bars[ide], a: bars[ia], ide: ide, ia: ia };
     }
     return { id: m.id, fichier: m.fichier, url: LD.base + 'morceaux/' + m.fichier, gainDb: (+m.gainDb || 0) + (+m.gainJeuDb || 0),
-      bars: bars, duree: d, boucle: bo, bpm: +m.bpmMesure || +m.bpm || 0 };
+      original: m.original || m.id, facteur: m.facteurTempo || 1, bars: bars, duree: d, boucle: bo, bpm: +m.bpmMesure || +m.bpm || 0 };
   }
   function zCatalogue() {
     if (Z.etat !== 'repos') return;
@@ -2159,6 +2227,7 @@ if (typeof window !== 'undefined') window.__N = N;
     var k = zCle(), u = {};
     if (Z.cur) u[Z.cur.id] = 1;
     if (k) { var r = k === Z.cle ? Z.rang : 0; if (r < PROG[k].length) u[PROG[k][r].replace('!', '')] = 1; }
+    if (Z.cur) u[zVersion(zBase(Z.cur.id), Z.tempoFacteur)] = 1;
     zProchains().forEach(function (id) { u[id] = 1; });
     return u;
   }
@@ -2209,10 +2278,10 @@ if (typeof window !== 'undefined') window.__N = N;
     var k = zCle();
     if (k !== Z.cle) { Z.cle = k; Z.rang = 0; }
     if (!k || Z.rang >= PROG[k].length) return null;
-    return PROG[k][Z.rang].replace('!', '');
+    return zVersion(PROG[k][Z.rang].replace('!', ''), Z.tempoFacteur);
   }
   function zEnBoucle() { var k = Z.cle; return !!(k && Z.rang < PROG[k].length && PROG[k][Z.rang].slice(-1) === '!'); }
-  function zProchains() {                                               /* à précharger : la suite du morceau, puis le premier de la vague d'après */
+  function zProchainsProgramme() {                                               /* à précharger : la suite du morceau, puis le premier de la vague d'après */
     var l = [], k = Z.cle, v = Z.vague;
     if (k && Z.rang + 1 < PROG[k].length) l.push(PROG[k][Z.rang + 1].replace('!', ''));
     if (Z.sec === 'jeu' || Z.sec === null || Z.sec === 'repit') {
@@ -2222,6 +2291,69 @@ if (typeof window !== 'undefined') window.__N = N;
     return l;
   }
 
+  /* codex-t1 : les versions sont des fichiers, playbackRate reste toujours 1.
+     La grille remesurée garde les indices de mesure du morceau de base. */
+  function zBase(id) { return Z.cat[id] ? Z.cat[id].original : id; }
+  function zVersion(id, facteur) {
+    var version = id + '-t' + Math.round(facteur * RT.suffixeFacteur);
+    return facteur !== 1 && Z.cat[version] ? version : id;
+  }
+  function zProchains() {
+    var l = [], c = Z.cur, base = c ? zBase(c.id) : null, facteur = Z.tempoFacteur;
+    if (base) {
+      if (facteur === 1) facteur = Z.boss ? RT.cyclope2 : Z.vague === RT.vague4 ? RT.v4Pic : Z.vague === RT.vague5 ? RT.v5Drop : 1;
+      else if (Z.boss) facteur = facteur < RT.cyclope3 ? RT.cyclope3 : RT.enrage;
+      var id = zVersion(base, facteur); if (id !== (c && c.id)) l.push(id);
+    }
+    return l.concat(zProchainsProgramme().map(function (id) { return zVersion(id, Z.tempoFacteur); }));
+  }
+  function sceneTempo(nom) {
+    var facteurs = { 'v4-pic': RT.v4Pic, 'v5-drop': RT.v5Drop, 'cyclope-phase2': RT.cyclope2,
+      'cyclope-phase3': RT.cyclope3, 'cyclope-enrage': RT.enrage, normal: 1 };
+    if (!Object.prototype.hasOwnProperty.call(facteurs, nom)) return false;
+    Z.tempoFacteur = facteurs[nom]; Z.tempoRaison = nom;
+    return true;
+  }
+  function zEvenementTempo(etat, p) {
+    var ancien = p.sortant && Z.cat[p.sortant.id], m = Z.cat[p.id];
+    var e = { etat: etat, tb: p.tb, id: m.original, version: m.id, ancienneVersion: ancien && ancien.id,
+      facteur: m.facteur, mesure: p.mesureTempo, depart: p.depart, fondu: p.dur,
+      barres: m.bars.slice(), raison: Z.tempoRaison };
+    Z.tempoEvenements.push(e);
+    Z.tempoAbonnes.slice().forEach(function (f) { zSafe(function () { f(e); }); });
+  }
+  function zIndice(m, position) {
+    var i = 0; while (i + 1 < m.bars.length && m.bars[i + 1] <= position + RV.securite) i++;
+    return i;
+  }
+  function zTempo(now) {
+    var c = Z.cur; if (!c || Z.plan || Z.enPause) return;
+    var m = Z.cat[c.id], base = m.original, b = Z.cat[base];
+    // Phases 2/3 par l'interface publique ; ENRAGE est un raccord explicite de 73.
+    if (Z.boss && N.colosse && N.colosse.phase) {
+      var ph = N.colosse.phase();
+      if (ph >= RT.phase3 && Z.tempoFacteur < RT.cyclope3) sceneTempo('cyclope-phase3');
+      else if (ph >= RT.phase2 && Z.tempoFacteur < RT.cyclope2) sceneTempo('cyclope-phase2');
+    }
+    var tbDrop = null;
+    if (Z.vague === RT.vague5 && !Z.tempoDropV5 && base === 'voix-plus-vite') {
+      tbDrop = c.slot.off + m.bars[RT.dropV5Mesure - 1];
+      if (tbDrop - now <= LEAD_MZ + RT.avance) { Z.tempoDropV5 = true; sceneTempo('v5-drop'); }
+    }
+    var cible = zVersion(base, Z.tempoFacteur);
+    if (cible === c.id) return;
+    var sl = zSlotAvec(cible, true); if (!zPret(sl)) { zCharger(cible); return; }
+    var tb = E.mzBarre(now + LEAD_MZ + RT.avance);
+    if (tbDrop !== null && tbDrop >= now + LEAD_MZ && Z.tempoDropV5) tb = tbDrop;
+    var i = zIndice(m, tb - c.slot.off), entree = Z.cat[cible];
+    if (i + 1 >= m.bars.length || i + 1 >= entree.bars.length) return;
+    // L'indice i est conservé, les secondes viennent de la carte du fichier entrant.
+    var fondu = (entree.bars[i + 1] - entree.bars[i]) / N.R.temps.tempsParMesure / RT.doubleCrocheParTemps;
+    zArmerEntree(cible, sl, 'boucle', entree.bars[i], tb, fondu);
+    Z.plan.tempo = true; Z.plan.mesureTempo = i;
+    zEvenementTempo('arme', Z.plan);
+  }
+
   /* ---- les transitions ---- */
   function zOK() {
     return !!(E && Z.etat === 'pret' && Z.slots.length && !sleeping && !wantMute && E.ctx.state === 'running' && E.isRunning());
@@ -2229,7 +2361,7 @@ if (typeof window !== 'undefined') window.__N = N;
   function zEval() {
     if (!zOK() || Z.plan || Z.enPause) return;
     var voulu = zSouhait(), c = Z.cur;
-    if (c && c.id === voulu) return;
+    if (c && zBase(c.id) === zBase(voulu)) return;
     if (voulu) {
       if ((Z.ko[voulu] || 0) >= 2 || !Z.cat[voulu]) return;
       var s = zSlotAvec(voulu, true);
@@ -2293,9 +2425,10 @@ if (typeof window !== 'undefined') window.__N = N;
       }
     }
     if (p.valide) {
+      if (p.tempo && !p.annonce && now >= p.tb) { p.annonce = true; zEvenementTempo('bascule', p); }
       if (!p.mi && now >= p.tb + p.dur * 0.5) {
         p.mi = true; Z.cur = { id: p.id, slot: s, duree: Z.cat[p.id].duree, arme: false }; zNoter('sonne', p.id, 'off ' + s.off.toFixed(3));
-        if (p.sortant) zLibere(p.sortant);                              /* l'ancien est à −3 dB et descend : il a fini de compter */
+        if (p.sortant && !p.tempo) zLibere(p.sortant);                  /* l'ancien est à −3 dB et descend : il a fini de compter */
       }
       if (now >= p.tb + p.dur + 0.05) { s.occupe = 'cur'; if (p.sortant) zLibere(p.sortant); Z.plan = null; }
     } else if (now > p.tb + 0.1) zAbort(p, 'en retard');
@@ -2402,8 +2535,13 @@ if (typeof window !== 'undefined') window.__N = N;
     var cs = E.cutState();
     if ((cs.cut && now - cs.at > 0.04) || wantMute) zPauser(cs.cut ? 'mort' : 'son');
     else if (Z.enPause && !sleeping) zReprendre();
-    Z.slots.forEach(function (s) { zSync(s, now); });
+    Z.slots.forEach(function (s) {
+      // Le morceau fait autorité pour le tempo : il avance toujours d'une seconde par seconde.
+      if (s.el.playbackRate !== 1) { s.el.playbackRate = 1; s.ring.length = 0; }
+      zSync(s, now);
+    });
     zPlan(now);
+    zTempo(now);
     zSurveiller(now);
     zPrecharger(now);
     if (now - Z.dernierEval > 0.2) { Z.dernierEval = now; zEval(); }
@@ -2421,6 +2559,7 @@ if (typeof window !== 'undefined') window.__N = N;
       var h = 0; try { h = N.fx.hitstopLeft(); } catch (e3) { h = 0; }
       if (h >= 10 && (!f || f > 900)) f = 900;
     }
+    if (N.warp && N.warp.actif() && (!f || f > N.R.rythme.partition.warpFiltre)) f = N.R.rythme.partition.warpFiltre;
     return f;
   }
   function wake() {
@@ -2477,14 +2616,63 @@ if (typeof window !== 'undefined') window.__N = N;
   /* le numéro de vague arrive par le bus (émetteur : 76-directeur). Inscrit au chargement : N.ev existe (03-socle), la vérification du
      contrat n'est pas encore active ; le contrat (EVT.vague.conso de 03-socle.js) devrait lister [60, '30-music']. */
   function zVague(c) {
-    if (!c || c.evt !== 'entree') return;
+    if (!c) return;
+    if (c.evt === 'pic' && c.n === RT.vague4) { sceneTempo('v4-pic'); return; }
+    if (c.evt !== 'entree') return;
+    Z.tempoFacteur = 1; Z.tempoDropV5 = false; Z.tempoRaison = null;
     Z.vague = c.n | 0; Z.boss = false;                       /* une vague commence : le combat contre le CYCLOPE est fini */
     if (E) zSafe(zEval);
   }
   if (typeof N.ev === 'object' && N.ev && typeof N.ev.on === 'function') { try { N.ev.on('vague', 60, zVague, '30-music'); } catch (e) { /* le bus est absent : sans lui, la piste en blocs seule */ } }
 
+  var modesTempo = {}, grilleOrigine = 0, grilleBase = 0, grilleBpm = null;
+  var grilleJeu = { t: 0, total: 0, mesure: 0, temps: 0, phase: 0, bpm: BPM };
+  function rythme(nom, on) {
+    if (nom === 'cyclope') return; // Le ralenti d'arrivée appartient au monde, pas au transport audio.
+    if (nom !== 'inversion' && nom !== 'ralenti') return;
+    modesTempo[nom] = !!on;
+    if (E) E.vitesse(modesTempo.inversion || modesTempo.ralenti ? RV.demi : 1, nom);
+  }
+  function grille(t) {
+    t = Math.max(0, +t || 0);
+    if (t < grilleJeu.t) { grilleJeu.t = 0; grilleJeu.total = 0; grilleOrigine = 0; grilleBase = 0; grilleBpm = null; }
+    var bpm = N.music.tempo();
+    if (bpm !== grilleBpm) { grilleOrigine = grilleJeu.t; grilleBase = grilleJeu.total; grilleBpm = bpm; }
+    // Une ancre par changement de tempo : pas de dérive par accumulation à chaque pas.
+    grilleJeu.total = grilleBase + (t - grilleOrigine) / (RV.minutesSecondes / bpm); grilleJeu.t = t;
+    var n = Math.floor(grilleJeu.total + Number.EPSILON);
+    grilleJeu.mesure = Math.floor(n / ((N.R && N.R.temps && N.R.temps.tempsParMesure) || 4)); grilleJeu.temps = n % ((N.R && N.R.temps && N.R.temps.tempsParMesure) || 4);
+    grilleJeu.phase = grilleJeu.total - n; grilleJeu.bpm = bpm;
+    return grilleJeu;
+  }
   N.music = {
     init: init,
+    rythme: rythme, grille: grille,
+    sceneTempo: sceneTempo,
+    onTempo: function (fn) {
+      if (typeof fn !== 'function') return noop;
+      Z.tempoAbonnes.push(fn);
+      return function () { var i = Z.tempoAbonnes.indexOf(fn); if (i >= 0) Z.tempoAbonnes.splice(i, 1); };
+    },
+    tempoEvenements: function () { return Z.tempoEvenements.slice(); },
+    transport: function () {
+      if (!E) return null;
+      var tr = E.transport();
+      if (Z.cur && Z.cur.slot && Z.cur.slot.joue && !Z.cur.slot.el.paused) {
+        var el = Z.cur.slot.el;
+        tr = { id: Z.cur.id, t: Math.max(0, el.currentTime - tr.latence * (el.playbackRate || 1)), latence: tr.latence, ctx: E.ctx.currentTime, sourceMedia: true };
+      }
+      var lat = Math.min(RT.latenceMax, (E.ctx.outputLatency || 0) + (E.ctx.baseLatency || 0));
+      var tAudio = E.ctx.currentTime - lat, g = E.mzGrille(), sg = null;
+      for (var j = g.length - 1; j >= 0; j--) if (tAudio >= g[j].from && tAudio < g[j].to) { sg = g[j]; break; }
+      if (!sg) return tr;
+      var m = Z.cat[sg.id], b = Z.cat[m.original], t = tAudio - sg.off, i = zIndice(m, t);
+      var phase = (t - m.bars[i]) / (m.bars[Math.min(i + 1, m.bars.length - 1)] - m.bars[i] || 1);
+      return { id: m.original, version: m.id, t: b.bars[i] + phase * ((b.bars[i + 1] || b.duree) - b.bars[i]),
+        rythme: tr, tVersion: t, tAudio: tAudio, barres: m.bars.slice(), facteur: m.facteur, bpm: E.tempo(), latence: lat };
+    },
+    resetTempo: function () { Z.tempoFacteur = 1; Z.tempoDropV5 = false; Z.tempoRaison = null; Z.tempoEvenements = []; modesTempo = {}; grilleJeu.t = 0; grilleJeu.total = 0; grilleOrigine = 0; grilleBase = 0; grilleBpm = null; if (E) E.vitesse(1, 'reset'); },
+    variations: function () { return E ? E.variations() : []; },
     load: load,
     start: function () {
       if (!E && !init()) return;
@@ -2516,6 +2704,7 @@ if (typeof window !== 'undefined') window.__N = N;
       var k = String(nom);
       J.appels['section:' + k] = (J.appels['section:' + k] || 0) + 1;
       autoSec = false; pend.section = k;
+      if (k === 'titre' || k === 'victoire' || k === 'defaite' || k === 'initiales') { Z.tempoFacteur = 1; Z.tempoDropV5 = false; modesTempo = {}; if (E) E.vitesse(1, 'section:' + k); }
       if (!E) return has(SEC_FAM, k);
       var okSec = E.section(k);
       if (okSec) { Z.sec = k; }
@@ -2531,6 +2720,7 @@ if (typeof window !== 'undefined') window.__N = N;
       if (nom !== 'inversion') return;
       pend.inversion = !!on;
       if (E) E.couche(nom, !!on);
+      N.music.rythme('inversion', !!on);
     },
     beat: function () { return E ? E.beat() : { bar: 0, beat: 0, phase: 0 }; },
     sfx: function (name, o) {
@@ -2539,8 +2729,13 @@ if (typeof window !== 'undefined') window.__N = N;
       if (!E || wantMute || sleeping || chanMute.effets) { J.ignores++; return; }
       /* horloge arrêtée ou figée : un son posé maintenant ressortirait plus tard, en paquet */
       if (E.ctx.state !== 'running' || stale > 30) { J.ignores++; return; }
-      try { E.sfx(k, o); } catch (e) { J.ignores++; }       /* un son ne fait jamais tomber le jeu */
+      try { if (!(N.rythme && N.R.rythme.partition.echo.indexOf(k) >= 0 && N.rythme.echo(k, o))) E.sfx(k, o); } catch (e) { J.ignores++; }       /* un son ne fait jamais tomber le jeu */
     },
+    sfxAt: function (name, t, o) {
+      if (!E || wantMute || sleeping || chanMute.effets || E.ctx.state !== 'running' || stale > 30 || !isFinite(t)) return false;
+      try { E.sfxAt(String(name), Math.max(E.ctx.currentTime, t), o); return true; } catch (e) { J.ignores++; return false; }
+    },
+    trouRythme: function (t, fin) { if (E && !wantMute && !sleeping) E.trouRythme(t, fin); },
     voix: function (mot) {
       if (!E || wantMute || sleeping || chanMute.effets || E.ctx.state !== 'running') return false;
       try { return E.voix(String(mot).toUpperCase().replace(/[^A-Z]/g, '')); } catch (e) { return false; }
@@ -2590,15 +2785,20 @@ if (typeof window !== 'undefined') window.__N = N;
     morceau: function () {                                   /* { id, t, duree } du morceau qui sonne (le plus audible), ou null */
       var c = Z.cur; if (!c || !c.slot) return null;
       var t = 0; try { t = c.slot.el.currentTime; } catch (e) { t = 0; }
-      return { id: c.id, t: +t.toFixed(3), duree: Z.cat[c.id] ? Z.cat[c.id].duree : 0 };
+      return { id: zBase(c.id), version: c.id, facteur: Z.cat[c.id].facteur, t: +t.toFixed(3), duree: Z.cat[c.id] ? Z.cat[c.id].duree : 0 };
     },
     tempo: function () { return E ? E.tempo() : bpmPiste(); },     /* le BPM de ce qui joue : le tempo local du morceau long, sinon celui de la piste */
     morceaux: function () {                                  /* diagnostic : catalogue, emplacements, programme, échecs */
       return {
-        etat: Z.etat, erreur: Z.erreur, ids: Object.keys(Z.cat), vague: Z.vague, section: Z.sec, cle: Z.cle, rang: Z.rang, ko: Z.ko, stats: Z.stats,
+        etat: Z.etat, erreur: Z.erreur,
+        /* Une version accélérée garde son morceau d'origine : le catalogue public les distingue. */
+        ids: Object.keys(Z.cat).filter(function (id) { return Z.cat[id].original === id; }),
+        versions: Object.keys(Z.cat).filter(function (id) { return Z.cat[id].original !== id; }),
+        vague: Z.vague, section: Z.sec, cle: Z.cle, rang: Z.rang, ko: Z.ko, stats: Z.stats,
         latence: +Z.lat.toFixed(3), enPause: Z.enPause || false, charge: Z.charge,
         historique: Z.hist, boss: Z.boss,
-        plan: Z.plan ? { type: Z.plan.type, id: Z.plan.id, tb: Z.plan.tb, joue: Z.plan.joue, valide: Z.plan.valide } : null,
+        tempoFacteur: Z.tempoFacteur,
+        plan: Z.plan ? { type: Z.plan.type, id: Z.plan.id, tb: Z.plan.tb, dur: Z.plan.dur, depart: Z.plan.depart, tempo: !!Z.plan.tempo, joue: Z.plan.joue, valide: Z.plan.valide } : null,
         emplacements: Z.slots.map(function (s) { return { i: s.i, id: s.id, occupe: s.occupe, pret: zPret(s), joue: s.joue, vu: s.vu, t: +s.el.currentTime.toFixed(2), off: +s.off.toFixed(3), maxRms: +s.maxRms.toFixed(5), erreur: s.erreur }; }),
         grille: E ? E.mzGrille() : []
       };
@@ -2651,6 +2851,19 @@ if (typeof window !== 'undefined') window.__N = N;
         mb.buffer = mo.buffer; mb.connect(ms.entree); mb.start(0, mo.depart || 0);
         e.mzEntrer(0, 0.05, ms, { id: 'essai', bars: mo.bars || [0, 2, 4], off: function () { return -(mo.depart || 0); } }, null);
       }
+      // Même double fondu et même chaîne que zArmerEntree ; buffers décodés pour le reçu PCM.
+      if (opts.bascule) {
+        var bs = opts.bascule, avant = bs.avant, apres = bs.apres, im = bs.mesure, tb = bs.tb;
+        var ms0 = e.mzSlot(), ms1 = e.mzSlot(), src0 = ctx.createBufferSource(), src1 = ctx.createBufferSource();
+        var depart0 = avant.bars[im] - tb, depart1 = apres.bars[im] - tb, tbBascule = tb + (bs.retard || 0);
+        var fd = (apres.bars[im + 1] - apres.bars[im]) / N.R.temps.tempsParMesure / RT.doubleCrocheParTemps;
+        ms0.entree.gain.value = Math.pow(10, (avant.gainDb || 0) / 20);
+        ms1.entree.gain.value = Math.pow(10, (apres.gainDb || 0) / 20);
+        src0.buffer = avant.buffer; src0.connect(ms0.entree); src0.start(0, depart0);
+        src1.buffer = apres.buffer; src1.connect(ms1.entree); src1.start(0, depart1);
+        e.mzEntrer(0, 0.05, ms0, { id: 'avant', bars: avant.bars, off: function () { return -depart0; } }, null);
+        e.mzEntrer(tbBascule, fd, ms1, { id: 'apres', bars: apres.bars, off: function () { return -depart1; } }, ms0);
+      }
       if (opts.piste) {
         e.setPiste(opts.piste);
         for (var k in (opts.buffers || {})) e.setBuffer(+k, opts.buffers[k]);
@@ -2661,6 +2874,7 @@ if (typeof window !== 'undefined') window.__N = N;
       var tl = [];
       (opts.sections || []).forEach(function (x) { tl.push({ t: x.t, f: function () { e.section(x.nom); } }); });
       (opts.cues || []).forEach(function (x) { tl.push({ t: x.t, f: function () { e.cue(x.nom); } }); });
+      (opts.rythmes || []).forEach(function (x) { tl.push({ t: x.t, f: function () { e.vitesse(x.taux, x.nom, x.mesures); } }); });
       (opts.couches || []).forEach(function (x) { tl.push({ t: x.t, f: function () { e.couche(x.nom, x.on); } }); });
       tl.sort(function (a, c) { return a.t - c.t; });
       var ti = 0;

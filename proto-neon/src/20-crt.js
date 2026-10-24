@@ -626,6 +626,7 @@
     }
   }
 
+  var rythmeBuf = null;
   function apply(dt) {
     if (CRT.off) {
       ST.ops = 0; ST.mode = 'coupe';
@@ -654,6 +655,17 @@
     }
     ST.d = d;
 
+    var rz = N.rythme ? N.rythme.zoom() : 1;
+    if (rz > 1) {
+      var rw = g.W, rh = g.H;
+      if (!rythmeBuf || rythmeBuf.length !== buf.length) rythmeBuf = new Uint8Array(buf.length);
+      for (var ry = 0; ry < rh; ry++) for (var rx = 0; rx < rw; rx++) {
+        var zx = Math.max(0, Math.min(rw - 1, Math.round(rw / 2 + (rx - rw / 2) / rz)));
+        var zy = Math.max(0, Math.min(rh - 1, Math.round(rh / 2 + (ry - rh / 2) / rz)));
+        rythmeBuf[ry * rw + rx] = buf[zy * rw + zx];
+      }
+      buf = rythmeBuf;
+    }
     pass(buf, ox, oy, d);
     octx.putImageData(img, 0, 0); ops++;
 

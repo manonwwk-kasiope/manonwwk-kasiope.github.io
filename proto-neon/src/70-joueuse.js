@@ -516,6 +516,7 @@ N.joueuse = (function () {
 
   /* ============================ les gestes du § 2.16 et ACTIONS AUTO ============================ */
   function entrees(dt, inp) {
+    if (N.warp && N.warp.capte()) { majBoost(dt, null); return; }
     majBoost(dt, inp);
     if (!vivante()) return;
     var auto = S && S.reglages && S.reglages.actions === 'auto';

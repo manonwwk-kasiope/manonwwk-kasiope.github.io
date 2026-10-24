@@ -423,6 +423,7 @@
 
     /* ---------------------------------------------------------------- § 2.16 les doigts (90-boot.js) */
     gestes: {
+      recentrage: { repos: 0.25 }, // p47 : 150 ms existantes + 100 ms au plus au repos ; aucune attente ajoutée au relâcher
       delaiAction: 0.15,          // un doigt d'action se pose alors que le manche est tenu depuis 150 ms
       toucher: { duree: 0.18, deplacementPt: 10 },     // pouvoir, au relâcher
       glisse: { distancePt: 24, duree: 0.22 },         // APOGÉE, dès le seuil franchi
@@ -1223,6 +1224,91 @@
     defiV1Lasso: false,
     retourEpoques: ['connexion', '1976', 'fissure', '1982', 'eclat'],
     retourEtape: 'neon', entreeTouchersMax: 3, entreeSecondesMax: 12
+  };
+
+  /* codex-p35 : cas construits du limiteur, sans modifier ses seuils. */
+  R.photosensibiliteP35 = { demandes: 10, duree: 1, petiteAire: 0.01, grandeAire: 0.1 };
+
+  /* codex-p33 : variations sur la barre ; la piste conserve son tempo natif hors effet. */
+  R.tempoVariable = {
+    demi: 0.5, frein: 0.5, freinMesures: 1,
+    securite: 0.001, minutesSecondes: 60,
+    repliBpm: 143.759
+  };
+
+  /* codex-t1 : versions atempo hors ligne, p33b déjà conservé ci-dessus. */
+  R.tempoScenes = {
+    v4Pic: 1.06, v5Drop: 1.08, cyclope2: 1.04, cyclope3: 1.08, enrage: 1.12,
+    vague4: 4, vague5: 5, dropV5Mesure: 20,
+    phase2: 2, phase3: 3, doubleCrocheParTemps: 4,
+    avance: 0.3, latenceMax: 0.2, suffixeFacteur: 100, margeRendu: 0.0001,
+    mesure: { tempoMin: 1.08, toleranceRatio: 0.005, hauteurCents: 10, raccordMs: 10 }
+  };
+
+  /* codex-r2 : chorégraphie musicale, sans ennemi ni trauma supplémentaire.
+     Métadonnées des morceaux injectées au build ; chiffres de rendu bornés ici. */
+  R.rythme = {
+    actif: true, version: 1, phraseMesures: 8, subdivisions: 2, epsilon: 1e-6,
+    bpmRepli: 143.759, secondesMinute: 60, latenceMax: 0.2,
+    pulseDuree: 0.14, dropDuree: 0.9, monteeMesures: 2, breakMesures: 2,
+    repliBreakPhrase: 3, repliDropPhrase: 4,
+    attenteMaxTemps: 0.5, repriseForce: 0.7,
+    decor: { gainMontee: 0.3, gainDrop: 0.65, retenue: 0.72 },
+    ennemis: { retenue: 0.86 },
+    visuel: { aireMax: 0.025, pas: 16, seuilPulse: 0.25, rayonOnde: 0.7,
+      pointsOnde: 240, etincelles: 64, longueurTrait: 4, margeHud: 4, hudLargeur: 48,
+      contourPoints: 8, contourMarge: 3, trauma: 0 },
+    verification: { audioMaxMs: 20, duree: 60, hz: 60, destructionNombre: 30, destructionPas: 4 }
+  };
+
+  /* codex-r2c — partition de l'étude indépendante, 24/10/2026.
+     Ajouts seulement ; les règles historiques et leurs seuils restent intacts. */
+  R.rythme.partition = {
+    divisionsSon: 4, divisionsCascade: 2, cascadeNombre: 4, divisionsSalve: 8,
+    tempsTirs: [1, 3], roulement: [1, 2, 4, 8],
+    trouTemps: 0.25, rampeSon: 0.004, avanceSon: 0.002,
+    gelDropImages: 3, zoomDrop: 1.06, zoomDropImages: 8,
+    ondeEpaisseur: 2, flashPart: 0.04, ondeRayon: 0.7,
+    luminanceLointainMax: 0.09, encreLointain: 'violet',
+    aireSombreMax: 1, vignettePart: 0.18, traitsMax: 32,
+    secoussePlancher: 1, mouvementDropImagesMax: 12,
+    warpEntree: 0.3, warpFacteur: 0.15, warpFiltre: 900, warpDuckDb: -6,
+    warpMesures: 2, warpSortieTemps: 1, warpRechargeTemps: 2,
+    volMesures: 2, volEntreeTemps: 1, volSortieTemps: 1,
+    repriseTemps: 4, autoTirsParTemps: 3, autoCasesParTemps: 4,
+    echo: ['tir', 'tirEnnemi', 'kill', 'bigkill', 'butin', 'portail', 'lasso', 'salve', 'arme'],
+    gamme: [0, 2, 4, 5, 7, 9, 11],
+    calendrier: { 3: { formationDrop: 'pince' }, 4: { respirationBreak: true }, 5: { picDrop: true } }
+  };
+
+  R.rythme.verificationAudio = { audioMaxMs: 40, tauxSync: 0.95, medianeMs: 15, p99Ms: 60, audioDuree: 540 };
+
+
+  /* codex-g1 : une proposition structurelle, aucun réglage itératif de R-15.
+     Les surcharges ci-dessous sont ajoutées avant le gel ; les déclarations historiques restent lisibles. */
+  R.mort.coupe.expireCellules = 6;
+  R.vies.reapparition.longueurPart = 0.7;
+  R.armes.canon.hysteresisLongueur = 2;
+  R.xp.seuils = [3].concat(R.xp.seuils.slice(1));
+  R.cartes.progression = { tropheeDes: 3, delaiCible: 10 };
+  R.rejouabilite = {
+    notes: { C: 0.25, B: 0.55, A: 0.85 },
+    jourSel: 2975, graineRepli: 2975,
+    titre: { marge: 6, ecart: 4, largeurPt: 210, hauteurPt: 44, ancrage: 0.68, echelle: 1 }
+  };
+  R.intensite = {
+    horsCombat: R.secteurs[0].respiration.duree, // durée existante : 8 s entièrement hors des vues sûre et anticipée
+    poids: { fleche: 1, larve: 1, mine: 2, dard: 2, tourelle: 3, lame: 3, ruche: 4, sentinelle: 5, rival: 5 },
+    cibles: [0.30, 0.45, 0.60, 0.78, 0.95], referencePoids: 3,
+    // Flux de rencontres par seconde active, indépendant du calendrier des vagues.
+    debits: [1.0, 1.25, 1.65, 1.85, 2.5],
+    flecheMax: 0.35, creditMax: 6, parTempsMax: 4,
+    courbe: { entree: 0.6, crete: 1, creteA: 0.75 },
+    types: [ ['fleche','larve'], ['fleche','larve','dard','mine'],
+      ['fleche','larve','dard','tourelle','sentinelle'],
+      ['fleche','larve','dard','tourelle','sentinelle','ruche','lame'],
+      ['fleche','larve','dard','tourelle','sentinelle','ruche','lame'] ],
+    placement: { essais: 36, bordMax: 110, candidatMax: 16 }
   };
 
   /* gel profond : N.R se lit, il ne s'écrit pas */

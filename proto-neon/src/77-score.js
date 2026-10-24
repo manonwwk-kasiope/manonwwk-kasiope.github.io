@@ -107,6 +107,7 @@ N.score = (function () {
 
   function ajouter(pts, x, y, source, maitrise) {
     if (!(pts > 0)) return;
+    if (S && S.surcharge) pts *= R.surcharge.score;
     m.score += pts;
     source = source || 'combat';
     m.stats.points[source] = (m.stats.points[source] || 0) + pts;
@@ -409,7 +410,8 @@ N.score = (function () {
     var tot = dir && dir.nombreVagues ? dir.nombreVagues() : 5, vague = d && d.vague ? d.vague : (dir && dir.vague ? dir.vague() : 1);
     var boss = !!(dir && dir.phase && dir.phase() === 'boss') || vague > tot;
     var faits = API.defis.filter(function (d) { return d.fait; }).length;
-    var note = victoire ? (faits === R.defis.parPartie && !m.stats.morts.length ? 'S' : faits > R.defis.partie.finirBut ? 'A' : 'B') : boss ? 'C' : 'D';
+    var progression = victoire ? 1 : (dir && dir.progression ? dir.progression() : 0), notesG1 = R.rejouabilite.notes;
+    var note = victoire && faits === R.defis.parPartie && !m.stats.morts.length ? 'S' : victoire || boss || progression >= notesG1.A ? 'A' : progression >= notesG1.B ? 'B' : progression >= notesG1.C ? 'C' : 'D';
     m.resume = {
       victoire: !!victoire, score: m.score, marque: m.continuations ? 'C' : '', ecart: dernier > 0 ? m.score - dernier : null, record: Math.max(rec, m.score), nouveauRecord: m.newRecord,
       kills: m.stats.kills, maxChaine: m.stats.maxChaine, coupes: m.stats.coupes, lassos: m.stats.lassos, maxLasso: m.stats.maxLasso,

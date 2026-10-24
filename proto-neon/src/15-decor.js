@@ -83,7 +83,7 @@
   function enJeu() {
     if (!N.game || !N.game.etat) return false;
     var e = N.game.etat();
-    return e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort' || e === 'victoire' || e === 'fin';
+    return e === 'plongee' || e === 'jeu' || e === 'defile' || e === 'nettoyage' || e === 'alerte' || e === 'boss' || e === 'reapparition' || e === 'mort' || e === 'victoire' || e === 'fin';
   }
 
   /* ================================ outils ================================ */
@@ -472,11 +472,28 @@
   }
   /* le temps du décor : celui du jeu quand l'horloge tourne, sinon le temps de la boucle (essais, écrans) */
   function tempsJeu() {
+    if (N.rythme && N.rythme.lire().id) return N.rythme.lire().absolu;
     var h = N.horloge;
     if (h && typeof h.t === 'function' && h.pas && h.pas() > 0) return h.t();
     return ((N.S && N.S.t) || 0) / 1000;
   }
-  var TEMPS = 60 / 144.6;                  // → N.R.horloge.dureeTemps
+  var tempsDecor = 0, bandeAudio = 0, barreAudioPrec = null, audioCale = false;
+  function calerBarre() {
+    var m = N.music, info = m && m.info && m.info();
+    audioCale = !!(info && info.running && !info.sleeping && !info.muted && m.beat);
+    if (!audioCale || mouvementCoupe()) return;
+    var b = m.beat().bar, toutes = (RD().vie && RD().vie.soleilBandesMesures) || 2;
+    // Un saut de fichier ou une reprise ne fait jamais sauter plusieurs rangées à l'image.
+    if (barreAudioPrec !== null && b !== barreAudioPrec && b % toutes === 0) bandeAudio++;
+    barreAudioPrec = b;
+  }
+  function dureeTemps() {
+    var q = N.rythme && N.rythme.lire();
+    if (q && q.id && q.dureeTemps > 0) return q.dureeTemps;
+    var r = N.R && N.R.temps;
+    return N.music && N.music.tempo ? 60 / N.music.tempo() : ((r && r.dureeTemps) || 60 / 144.6);
+  }
+  // Le tempo est lu sans remettre la phase à zéro.
 
   function etat(nom) {
     if (nom === undefined) return cur.e;
@@ -570,12 +587,17 @@
   function poserCite(ville, x0, y0) {
     var g = N.gfx;
     if (fonduCite >= 1) { g.layer(ville, { x: x0, y: y0, wrapX: true, luts: lutRows }); return; }
-    var b = g.buf(), d = ville.data;
+    var b = g.buf(), d = ville.data, iw = ville.w, W = g.W;
+    var start = ((-x0) % iw + iw) % iw, seuil = fonduCite * securite().rangsFondu;
+    rangFondu(0, 0); // initialise la tuile exacte p45 avant le parcours
     for (var r = Math.max(0, -y0); r < Math.min(CH, g.H - y0); r++) {
-      var y = y0 + r, ro = y * g.W, so = r * ville.w;
-      for (var x = 0; x < g.W; x++) {
-        var v = d[so + ((x - x0) % ville.w + ville.w) % ville.w];
-        if (v) b[ro + x] = (rangFondu(x, y) < fonduCite * securite().rangsFondu ? lutRows : lutRowsAvant)[r][v];
+      var y = y0 + r, ro = y * W, so = r * iw, sx = start, actuel = lutRows[r], avant = lutRowsAvant[r];
+      var fr = (y % fonduCote) * fonduCote, fx = 0;
+      for (var x = 0; x < W; x++) {
+        var v = d[so + sx];
+        if (v) b[ro + x] = (fonduRangs[fr + fx] < seuil ? actuel : avant)[v];
+        if (++sx === iw) sx = 0;
+        if (++fx === fonduCote) fx = 0;
       }
     }
   }
@@ -609,7 +631,10 @@
             var tl = dy < 18 ? lim : 16, ci = dy < 18 ? ink : (dy < 36 ? ink : ink);
             if (dy < 18) tl = lim; else if (lim < 16) tl = lim;
             var br = (y & 3) << 2;
-            for (var x = 0; x < W; x++) if (tl > B[br | (x & 3)]) buf[ro + x] = ci;
+            if (tl > 15) buf.fill(ci, ro, ro + W);
+            else for (var phase = 0; phase < 4; phase++) {
+              if (tl > B[br | phase]) for (var x = phase; x < W; x += 4) buf[ro + x] = ci;
+            }
           }
         }
       }
@@ -643,14 +668,27 @@
   /* le reflet de la cité dans le sol : les fenêtres allumées se miroitent, de plus en plus tramées */
   function reflet(buf, W, H, yh, ville, shiftX, luts, k) {
     var B = N.pal.BAYER, rr = Math.min(30, H - 1 - yh), d = ville.data;
+    // Les résidus de la trame sont indépendants : ne lire que ceux qui écrivent.
     for (var dy = 1; dy <= rr; dy++) {
       var sr = CH - 1 - Math.round(dy * 1.5); if (sr < 0) break;
       var L = luts[sr], y = yh + dy, ro = y * W, so = sr * CW, tl = 0.85 * k * (1 - dy / (rr + 1)) * 16, br = (y & 3) << 2;
-      for (var x = 0; x < W; x++) {
-        var v = d[so + ((x + shiftX) % CW)];
-        if (v < 5) continue;
-        var c = L[v];
-        if (c === C.AM || c === C.JA || c === C.BR) { if (tl > B[br | (x & 3)]) buf[ro + x] = c; }
+      for (var phase = 0; phase < 4; phase++) {
+        if (!(tl > B[br | phase])) continue;
+        if (shiftX < 0) {
+          for (var x = phase; x < W; x += 4) {
+            var v = d[so + ((x + shiftX) % CW)];
+            if (v < 5) continue;
+            var c = L[v];
+            if (c === C.AM || c === C.JA || c === C.BR) buf[ro + x] = c;
+          }
+        } else {
+          var sx = (phase + shiftX) % CW;
+          for (var xx = phase; xx < W; xx += 4) {
+            var vv = d[so + sx], cc = L[vv];
+            if (vv >= 5 && (cc === C.AM || cc === C.JA || cc === C.BR)) buf[ro + xx] = cc;
+            sx += 4; if (sx >= CW) sx -= CW;
+          }
+        }
       }
     }
   }
@@ -666,7 +704,7 @@
   function soleil(buf, W, H, yh, sx, R, kHaut, t, eclipse, e) {
     sunTable(R);
     var B = N.pal.BAYER, cyD = yh - Math.round(R * kHaut), top = cyD - R, D = 2 * R;
-    var shift = mouvementCoupe() ? 0 : Math.floor(t / (8 * TEMPS));    // une rangée toutes les 2 mesures (8 temps)
+    var shift = mouvementCoupe() ? 0 : audioCale ? bandeAudio : Math.floor(tempsDecor / (((N.R && N.R.temps && N.R.temps.tempsParMesure) || 4) * ((RD().vie && RD().vie.soleilBandesMesures) || 2)));    // une rangée toutes les 2 mesures (8 temps)
     for (var j = 0; j <= D; j++) {
       var y = top + j;
       if (y < 0) continue;
@@ -701,10 +739,15 @@
       var yy = cyD + jj; if (yy < 0) continue; if (yy > yh) break;
       var wo = Math.round(Math.sqrt(r1 * r1 - jj * jj)), wi = Math.abs(jj) <= r0 ? Math.round(Math.sqrt(Math.max(0, r0 * r0 - jj * jj))) : -1;
       var br = (yy & 3) << 2, rw = yy * W;
-      for (var xx = sx - wo; xx <= sx + wo; xx++) {
-        if (xx < 0 || xx >= W) continue;
-        if (wi >= 0 && Math.abs(xx - sx) <= wi) continue;
-        if (lim > B[br | (xx & 3)]) buf[rw + xx] = hc;
+      // codex-p45 : même ensemble de pixels, centre du disque exclu avant la boucle.
+      var left = Math.max(0, sx - wo), right = Math.min(W - 1, sx + wo);
+      if (wi < 0) {
+        for (var xx = left; xx <= right; xx++) if (lim > B[br | (xx & 3)]) buf[rw + xx] = hc;
+      } else {
+        var stop = Math.min(right, sx - wi - 1);
+        for (var xl = left; xl <= stop; xl++) if (lim > B[br | (xl & 3)]) buf[rw + xl] = hc;
+        var start = Math.max(left, sx + wi + 1);
+        for (var xr = start; xr <= right; xr++) if (lim > B[br | (xr & 3)]) buf[rw + xr] = hc;
       }
     }
   }
@@ -862,9 +905,10 @@
     ensureCur();
     tranche();
     /* le sol avance d'une case par temps de jeu (deux au chaos, six pendant LE VOL), plus vite en accélération */
-    var E = ET[cur.e], mult = E.avance * accelK;
+    var E = ET[cur.e], mult = E.avance * accelK * (N.rythme ? N.rythme.vitesseDecor() : 1);
     if (N.S && N.S.input && N.S.input.boost) mult *= (RD().sol && RD().sol.avanceBoost) || 1.6;
-    if (!mouvementCoupe()) avZ += dt * (PAS_Z / TEMPS) * mult;
+    if (!mouvementCoupe()) { var temps = dt / dureeTemps(); tempsDecor += temps; avZ += temps * PAS_Z * mult; }
+    calerBarre();
     if (fenT > 0) fenT -= dt;
     if (eclairT > 0) eclairT -= dt;
     if (g.mask && g.mask()) g.mask().fill(8);
@@ -879,9 +923,14 @@
       trans.u = clamp01((t - trans.t0) / trans.dur);
       var b = g.buf(), old = trans.fond;
       if (old.length === b.length) {
-        for (var y = 0; y < g.H; y++) for (var x = 0; x < g.W; x++) {
-          var i = y * g.W + x;
-          if (rangFondu(x, y) >= trans.u * securite().rangsFondu) b[i] = old[i];
+        rangFondu(0, 0);
+        var seuilFondu = trans.u * securite().rangsFondu, fw = g.W, fh = g.H;
+        for (var y = 0; y < fh; y++) {
+          var fr = (y % fonduCote) * fonduCote, row = y * fw;
+          for (var phase = 0; phase < fonduCote; phase++) {
+            if (!(fonduRangs[fr + phase] >= seuilFondu)) continue;
+            for (var x = phase; x < fw; x += fonduCote) b[row + x] = old[row + x];
+          }
         }
       }
       if (trans.u >= 1) trans = null;
@@ -896,27 +945,48 @@
   }
   /* Bayer 8×8 dérivé du Bayer 4×4 officiel : pas d'alpha ni de couleur nouvelle.
      64 petites étapes remplacent les sauts de 6,25 % d'un fondu 4×4 plein écran. */
+  var fonduRangs = null, fonduCote = 0;
   function rangFondu(x, y) {
-    var B = N.pal.BAYER, cote = securite().trame;
-    return cote * B[((y % cote) * cote) + (x % cote)] + B[(((y / cote) | 0) & 1) * (cote * cote / 2) + ((((x / cote) | 0) & 1) * (cote / 2))];
+    if (!fonduRangs) {
+      var B = N.pal.BAYER, cote = securite().trame;
+      fonduCote = cote * 2;
+      fonduRangs = new Uint8Array(fonduCote * fonduCote);
+      for (var fy = 0; fy < fonduCote; fy++) for (var fx = 0; fx < fonduCote; fx++)
+        fonduRangs[fy * fonduCote + fx] = cote * B[((fy % cote) * cote) + (fx % cote)] + B[(((fy / cote) | 0) & 1) * (cote * cote / 2) + ((((fx / cote) | 0) & 1) * (cote / 2))];
+    }
+    return fonduRangs[(y % fonduCote) * fonduCote + (x % fonduCote)];
   }
+  var tablesFond = null;
   function taireFondJeu(cam) {
     if (!enJeu()) return;
     var g = N.gfx, b = g.buf(), B = N.pal.BAYER;
     var cj = N.R.decorContrejour, encre = N.pal.i(cj.encre), rangs = g.H > g.W ? cj.rangsPortrait : cj.rangs;
     /* Ciel, soleil, cité : garder les détails et les étoiles, baisser les encres chaudes et
        leur saturation. L'accent chaud est une trame spatiale fixe, sans scintillement. */
-    for (var sy = 0; sy < YH; sy++) {
-      var row = sy * g.W, br = (sy & 3) << 2;
-      for (var sx = 0; sx < g.W; sx++) {
-        var table = B[br | (sx & 3)] === 0 ? lutAccentJeu : lutLointainJeu;
-        var v = table[b[row + sx]];
-        /* Contre-jour froid, fixe dans la trame écran : on éclaire les matières du
-           lointain sans réchauffer le sol ni combler ses silhouettes nuit profonde. */
-        if (v !== C.V && v !== C.NP && N.pal.L[v] <= RD().lumiere.seuil && B[br | (sx & 3)] < rangs)
-          v = encre;
-        b[row + sx] = v;
+    // codex-p45 : une table pour chaque case de Bayer, réutilisée sans allocation par image.
+    if (!tablesFond) tablesFond = new Uint8Array(B.length * N.pal.C.length);
+    var nc = N.pal.C.length, seuil = RD().lumiere.seuil, L = N.pal.L;
+    for (var phase = 0; phase < B.length; phase++) {
+      var table = B[phase] === 0 ? lutAccentJeu : lutLointainJeu, base = phase * nc;
+      for (var ci = 0; ci < nc; ci++) {
+        var v = table[ci];
+        v = v !== C.V && v !== C.NP && L[v] <= seuil && B[phase] < rangs ? encre : v;
+        var rp = N.R.rythme.partition;
+        if (L[v] > rp.luminanceLointainMax || v === C.MA || v === C.BR || v === C.SA)
+          v = B[phase] < rangs ? N.pal.i(rp.encreLointain) : C.AR;
+        tablesFond[base + ci] = v;
       }
+    }
+    var W = g.W, tables = tablesFond;
+    for (var sy = 0; sy < YH; sy++) {
+      var row = sy * W, br = (sy & 3) << 2, sx = 0;
+      var t0 = br * nc, t1 = (br | 1) * nc, t2 = (br | 2) * nc, t3 = (br | 3) * nc;
+      for (; sx + 3 < W; sx += 4) {
+        var at = row + sx;
+        b[at] = tables[t0 + b[at]]; b[at + 1] = tables[t1 + b[at + 1]];
+        b[at + 2] = tables[t2 + b[at + 2]]; b[at + 3] = tables[t3 + b[at + 3]];
+      }
+      for (; sx < W; sx++) b[row + sx] = tables[(br | (sx & 3)) * nc + b[row + sx]];
     }
     /* Le sol se tait jusqu'aux bords de l'écran, y compris au-delà des murs mobiles :
        aucune bande chaude collée au mur. La grille, les murs et les acteurs sont dessinés ensuite. */
@@ -946,8 +1016,8 @@
         for (var sx2 = ax0 - cx; sx2 <= ax1 - cx; sx2++) if (lim25 * 2 > B[((sy2 & 3) << 2) | (sx2 & 3)]) buf[ro + sx2] = vi;
       }
       /* les intersections : des points d'indigo, qui ondulent autour des explosions (Geometry Wars) et passent au violet sur la grosse caisse */
-      var beat = N.horloge && N.horloge.franchi ? N.horloge.franchi().temps : false;
-      var dotc = ind;
+      var beat = N.rythme ? N.rythme.lire().phase === 0 : false;
+      var dotc = ind; // La pulsation bornée est dessinée par N.rythme après le plateau.
       for (var iy = gy0; iy <= ay1; iy += 16) for (var ix = gx0; ix <= ax1; ix += 16) {
         var dx = 0, dy = 0;
         for (var k = 0; k < 6; k++) {
@@ -982,7 +1052,26 @@
     /* quatre bandes : gauche, droite, haut, bas ; on ne parcourt que la partie visible de chacune */
     function bande(x0, y0, x1, y1) {
       var sx0 = Math.max(0, x0 - cx), sx1 = Math.min(W - 1, x1 - cx - 1), sy0 = Math.max(0, y0 - cy), sy1 = Math.min(H - 1, y1 - cy - 1);
-      for (var y = sy0; y <= sy1; y++) { var o = y * W; for (var x = sx0; x <= sx1; x++) buf[o + x] = (((x + cx) + (y + cy) + scroll) % 6 + 6) % 6 < 3 ? ma : np; }
+      // Les murs mobiles peuvent passer par des bornes fractionnaires : garder ce chemin intact.
+      if (sx0 % 1 || sx1 % 1 || sy0 % 1 || sy1 % 1) {
+        for (var y = sy0; y <= sy1; y++) {
+          var o = y * W;
+          // Un index fractionnaire n'écrit aucun octet. Près d'un entier, garder les additions
+          // originales : l'arrondi IEEE peut absorber une fraction au fil des incréments.
+          var fraction = (o + sx0) % 1, precision = Number.EPSILON * (W * H + W);
+          if (fraction > precision && 1 - fraction > precision) continue;
+          for (var x = sx0; x <= sx1; x++) buf[o + x] = (((x + cx) + (y + cy) + scroll) % 6 + 6) % 6 < 3 ? ma : np;
+        }
+        return;
+      }
+      var xa = sx0 | 0, xb = sx1 | 0, ya = sy0 | 0, yb = sy1 | 0;
+      for (var yy = ya; yy <= yb; yy++) {
+        var row = yy * W, phase = (((xa + cx) + (yy + cy) + scroll) % 6 + 6) % 6;
+        for (var xx = xa; xx <= xb; xx++) {
+          buf[row + xx] = phase < 3 ? ma : np;
+          phase++; if (phase >= 6) phase -= 6;
+        }
+      }
     }
     bande(ex0, ey0, ix0, ey1); bande(ix1, ey0, ex1, ey1); bande(ix0, ey0, ix1, iy0); bande(ix0, iy1, ix1, ey1);
   }
@@ -1142,7 +1231,7 @@
     if (N.gfx && N.gfx.W) { verifierVue(); ensure(q, e); }
     trans = null; cur.q = q; cur.e = e;
   }
-  function reset() { camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
+  function reset() { camDecorX = camDecorY = null; fondStable = null; tDecor = 0; dernierEclair = -Infinity; accelK = 1; trans = null; avZ = 0; tempsDecor = 0; bandeAudio = 0; barreAudioPrec = null; audioCale = false; lastT = -1; fenT = 0; eclairT = 0; eclipseK = 0; cur.q = 'docks'; cur.e = 'calme'; etapes.length = 0; }
 
   N.decor = {
     build: build, reset: reset, fixer: fixer, etat: etat, quartier: quartier, preparer: preparer,

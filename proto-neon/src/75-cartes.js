@@ -2,7 +2,7 @@
 
    Le SEUL émetteur des événements `niveau` et `carte` (§ 7.4). Il CONSOMME `ramassage` (rang 30) : une cellule vaut
    1 XP, un noyau 5 (N.R.butin.<type>.xp). Les seuils d'expérience sont cumulés (N.R.xp.seuils). Une montée de
-   niveau n'ouvre jamais d'écran : elle attend le NETTOYAGE de la vague (79-jeu → N.ui.ouvrir('cartes') → main()).
+   niveau n'ouvre jamais d'écran : elle attend une phase sûre (NETTOYAGE, VOL ou DÉFILÉ ; 79-jeu suspend puis reprend).
 
    LA MAIN. main(n, { trophee, vague, rareGarantie }) rend au plus n identifiants, tous différents. Règles : la première
    main contient une arme neuve, un pouvoir débloqué et une carte de survie ; la pitié garantit une rare au moins tous
@@ -59,7 +59,7 @@ N.cartes = (function () {
     S = N.S;
     m.xp = 0; m.niveau = 0; m.attente = 0; m.prises = {}; m.equipees = ['canon']; m.pouvoir = null; m.nb = 0; m.ecrans = 0;
     m.sansRare = 0; m.sansEpique = 0; m.famille = {}; m.courante = []; m.choixEcran = 1; m.derniereVague = 0;
-    m.repitJusqua = 0;
+    m.repitJusqua = 0; m.trophee = false;
     recalcMods();
   }
 
@@ -143,16 +143,18 @@ N.cartes = (function () {
   function main(n, opts) {
     opts = opts || {};
     var c = cfg(), pool = vivier(), hand = [], i, id;
-    m.choixEcran = Math.max(1, Math.min(c.choixMax, 1 + m.attente));
-    m.attente -= m.choixEcran - 1;
+    var prime = opts.niveauxSeuls ? 0 : c.parVague;
+    m.choixEcran = Math.max(1, Math.min(c.choixMax, prime + m.attente));
+    m.attente = Math.max(0, m.attente - (m.choixEcran - prime));
     if (!(n > 0)) n = tailleMain(m.choixEcran);
     m.derniereVague = opts.vague || m.derniereVague;
     function prendre(id) { hand.push(id); retirer(pool, id); }
     function parmi(f) { var l = pool.filter(f); return l.length ? l[Math.min(l.length - 1, (O.rf('cartes') * l.length) | 0)] : null; }
 
-    if (opts.trophee) {
+    var ultime = opts.trophee && !m.trophee ? parmi(function (x) { return estArme(x) && rarete(x) === 'ultime'; }) : null;
+    if (ultime) {
       /* aucune commune ; l'ULTIME d'une arme à un palier près quand il y en a une */
-      var ult = parmi(function (x) { return estArme(x) && rarete(x) === 'ultime'; });
+      var ult = ultime;
       if (ult) prendre(ult);
       pool = pool.filter(function (x) { return rarete(x) !== 'commune'; });
     } else if (m.ecrans === 0) {
@@ -160,6 +162,13 @@ N.cartes = (function () {
       var a = parmi(function (x) { return estArme(x) && x !== 'canon' && !(m.prises[x] > 0); }); if (a) prendre(a);
       var p = parmi(function (x) { return estPouvoir(x); }); if (p) prendre(p);
       var sv = parmi(function (x) { return c.premiereMain.survie.indexOf(x) >= 0; }); if (sv) prendre(sv);
+    }
+    // Préparer une arme déjà équipée jusqu'au trophée, sans accorder un palier gratuit.
+    // La joueuse conserve le choix ; aucune ULTIME donnée sans carte choisie.
+    if (opts.trophee && !m.trophee && !ultime) {
+      var avancees = pool.filter(function (x) { return estArme(x) && m.equipees.indexOf(x) >= 0; });
+      avancees.sort(function (a, b) { return palierDe(b) - palierDe(a) || ARMES.indexOf(a) - ARMES.indexOf(b); });
+      if (avancees.length) prendre(avancees[0]);
     }
     /* la pitié : une rare au moins tous les 3 écrans, une épique au moins tous les 7 */
     function aRare(r) { for (var j = 0; j < hand.length; j++) if (rang(rarete(hand[j])) >= r) return true; return false; }
@@ -182,6 +191,7 @@ N.cartes = (function () {
     if (!id || !eligible(id)) return null;
     var k = (m.prises[id] || 0) + 1;
     if (k > prisesMax(id)) return null;
+    if (estArme(id) && rarete(id) === 'ultime') m.trophee = true;
     m.prises[id] = k; m.nb++;
     var f = liste(id).famille; m.famille[f] = (m.famille[f] || 0) + 1;
     if (estArme(id) && m.equipees.indexOf(id) < 0) m.equipees.push(id);
@@ -273,6 +283,11 @@ N.cartes = (function () {
   /* MODS : initialisé à la valeur de départ dès le chargement, pour être lisible avant le premier reset() */
   recalcMods();
   return {
+    optionsMain: function (opts) {
+      var o = {}, k; for (k in (opts || {})) o[k] = opts[k];
+      o.trophee = m.ecrans + 1 >= R.cartes.progression.tropheeDes && !m.trophee;
+      return o;
+    },
     reset: reset, xp: xp, niveauxEnAttente: niveauxEnAttente, main: main, choisir: choisir, prises: function () { return m.prises; }, texte: texte,
     mods: MODS, apresCoupe: apresCoupe, repitActif: repitActif,
     niveau: function () { return m.niveau; }, choix: function () { return m.choixEcran; }, pouvoir: function () { return m.pouvoir; },

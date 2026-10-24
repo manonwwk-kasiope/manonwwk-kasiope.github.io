@@ -209,7 +209,8 @@ N.hud = (function () {
     var lines = b.lines.slice();
     if (b.icon) lines[0] = b.icon + ' ' + lines[0];
     function largeur(l) { return O.textW(l, 1); }
-    var k = Math.min(plafond || Infinity, O.geo.portrait ? B.echellePortrait : B.echellePaysage);
+    var demandeTexte = N.S && N.S.reglages && N.S.reglages.texte;
+    var k = Math.min(plafond || Infinity, (demandeTexte || R.reglages.texte) * (O.geo.portrait ? B.echellePortrait : B.echellePaysage));
     while (k > cfg.echelleMin && lines.some(function (l) { return largeur(l) * k > disponible - cfg.padding * 2; })) k--;
     // À ×2, on revient à la ligne par mots ; même un identifiant sans espace est conservé en entier.
     var wrapped = [];
@@ -296,13 +297,26 @@ N.hud = (function () {
     var vie = O.clamp((b.d - b.t) / B.sortie, 0, 1);
     var scan = !reduit() && b.lumiere === 1 && b.t < cfg.balayage;
     var sy = Math.floor(b.t / cfg.balayage * s.h);
+    // codex-p45b : mêmes octets, copies de rangées au lieu d'un appel px par case.
+    var blink = b.blink && !reduit() && (Math.floor(b.t * cfg.clignoteHz * 2) & 1);
+    if (vie >= 1) {
+      var lut = null;
+      if (b.lumiere < 1) {
+        lut = new Uint8Array(N.pal.C.length);
+        for (var ci = 0; ci < lut.length; ci++) lut[ci] = ci === b.c || ci === O.MAGENTA ? O.ACIER : ci;
+      }
+      g.layer(s, { x: x, y: y, opaque: true, lut: lut });
+      if (scan && sy >= 0 && sy < s.h) g.rect(x, y + sy, s.w, 1, O.OS);
+      if (blink) { g.rect(x, y, s.w, 1, O.SANG); g.rect(x, y + s.h - 1, s.w, 1, O.SANG); }
+      return;
+    }
     for (var yy = 0; yy < s.h; yy++) for (var xx = 0; xx < s.w; xx++) {
       if (vie < 1 && !N.pal.dither(x + xx, y + yy, vie)) continue;
       var c = s.data[yy * s.w + xx];
       if (b.lumiere < 1 && (c === b.c || c === O.MAGENTA)) c = O.ACIER;
       if (scan && yy === sy) c = O.OS;
       // L'option d'alarme ne fait battre que les deux filets, jamais tout le texte.
-      if (b.blink && !reduit() && (yy === 0 || yy === s.h - 1) && (Math.floor(b.t * cfg.clignoteHz * 2) & 1)) c = O.SANG;
+      if (blink && (yy === 0 || yy === s.h - 1)) c = O.SANG;
       g.px(x + xx, y + yy, c);
     }
   }

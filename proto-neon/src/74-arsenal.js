@@ -34,7 +34,7 @@ N.arsenal = (function () {
 
   function reset() {
     S = N.S; tirs.length = 0; arcs.length = 0; missiles.length = 0; mines.length = 0;
-    st.cd = 0.5; st.volley = 0; st.monte = 0; st.perte = 0; st.surcharge = false; st.cad = 1; st.chute = null;
+    st.longueurPalier = 1; st.cd = 0.5; st.volley = 0; st.monte = 0; st.perte = 0; st.surcharge = false; st.cad = 1; st.chute = null;
     st.niv.tourelles = 0; st.niv.arc = 0; st.niv.missiles = 0; st.niv.drones = 0; st.niv.minesQ = 0;
     st.tcd.length = 0; st.dcd.length = 0; st.dpen.length = 0; st.arcT = 0.5; st.misT = 1.0; st.minT = 1.5; st.rayonT = 0; st.rayonOn = false; st.salveSon = 0; st.nT = 0;
     DR.length = 0;
@@ -53,9 +53,15 @@ N.arsenal = (function () {
   function cad() { return (N.cartes && N.cartes.mods) ? N.cartes.mods.cadence : st.cad; }
 
   function palierLongueur() {
-    var n = N.joueuse ? N.joueuse.len() : 8, p = CFG.paliersLongueur;
-    return n < p[0] ? 1 : n < p[1] ? 2 : n < p[2] ? 3 : 4;
+    var n = N.joueuse ? N.joueuse.len() : R.longueur.depart, p = CFG.paliersLongueur;
+    var h = R.armes.canon.hysteresisLongueur;
+    var palier = st.longueurPalier || 1;
+    while (palier < p.length + 1 && n >= p[palier - 1]) palier++;
+    while (palier > 1 && n < p[palier - 2] - h) palier--;
+    st.longueurPalier = palier;
+    return palier;
   }
+
   function niveau(arme) {
     if (!arme || arme === 'canon') return O.clamp(palierLongueur() + st.monte - st.perte, 1, 4);
     return st.niv[arme] | 0;

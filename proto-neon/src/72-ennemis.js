@@ -90,6 +90,8 @@ N.ennemis = (function () {
     tique: 'chasse', voleur: 'cherche', miroir: 'entre', brouilleur: 'plane' };
 
   function reset() {
+    list.slice().forEach(function (e) { if (N.rythme) N.rythme.annuler('apparition', e.id, 'reset-ennemis'); });
+    rythmeGeneration++;
     S = N.S;
     list.length = 0; tirs.length = 0; lasers.length = 0; fuses.length = 0;
     charges = 0; purgeFile = null; purgeI = 0;
@@ -179,6 +181,12 @@ N.ennemis = (function () {
   /* spawn(type, x, y, opts) : opts { portail: s, elite, mods, st, stT, ext, annoncePose }. Un ennemi avec portail existe, ne touche
      pas et n'agit pas pendant ce délai (§ 2.3 : 600 ms d'apparition) ; `apparition` part à la fin du portail. */
   function spawn(type, x, y, opts) {
+    // Réservation atomique : portails inclus, tous les producteurs passent ici.
+    // Un refus n'alloue ni objet, ni identifiant, ni tirage d'IA, ni apparition.
+    if (type !== 'cyclope' && count() >= R.secteurs[0].plafondDur.ennemis) {
+      if (N.journal) N.journal('naissanceAnnulee', { type: type, x: x, y: y, effectif: count() });
+      return null;
+    }
     arena();
     opts = opts || {};
     if (SERP[type]) return spawnSerpent(type, x, y, opts);
@@ -193,6 +201,9 @@ N.ennemis = (function () {
     if (opts.st) e._st = opts.st;
     if (opts.stT !== undefined) e._stT = opts.stT;
     if (inv.t > 0 && !e.boss && type !== 'traqueur' && type !== 'planeur') { e._stAvant = e._st; e._st = 'proie'; }
+    e._rythmeNaissance = opts.rythmeFin;
+    if (!e._ext && N.rythme && e._rythmeNaissance === undefined && opts.portail > 0) e._rythmeNaissance = N.rythme.dateNaissance(N.rythme.lire().t + opts.portail);
+    if (opts.rythmeFin !== undefined && N.rythme) opts.portail = Math.max(opts.portail || 0, opts.rythmeFin - N.rythme.lire().t);
     if (opts.portail > 0) { e._portail = opts.portail; e._portailTotal = opts.portail; e.etat = 'portail'; }
     else if (!e._attenteNaissance) apparu(e);
     if (e._attenteNaissance) e.etat = 'portail';
@@ -236,12 +247,55 @@ N.ennemis = (function () {
     return e;
   }
   function noter(evt, e, plus) { if (N.serpents && N.serpents.noter) N.serpents.noter(evt, e, plus); }
+  var rythmeGeneration = 0;
+  // 31 annule un ticket ; seul 72 retire son acteur, son télégraphe et sa réservation.
+  function annulerNaissance(e, raison) {
+    if (e._ext || e.etat !== 'portail') return;
+    e._rythmeAttente = false; e._attenteNaissance = false; e._portail = 0;
+    e._dead = true; e.etat = 'mort'; e.tele = -1;
+    var i = list.indexOf(e); if (i >= 0) list.splice(i, 1);
+    publierTele();
+    if (N.journal) N.journal('rythme-annulation', { id: e.id, type: e.type, raison: raison });
+  }
+  if (N.rythme) N.rythme.on('transport', function () {
+    list.slice().forEach(function (e) {
+      if (e.etat === 'portail' && !e._ext) annulerNaissance(e, 'transport');
+      else if (!e._dead && e._rythmeFin !== undefined && e._rythmeEtat === e._st) {
+        var minimum = Math.max(R.apparitions.teleMin, e._stT), a = N.rythme.annonce(minimum, e.type === 'tourelle' || e.type === 'sentinelle');
+        e._rythmeFin = a.t; e._stT = a.duree; e._teleTotal = Math.max(e._teleTotal, a.duree);
+      }
+    });
+  });
   function apparu(e) {
+    if (!N.rythme || e._ext) { apparuRythme(e); return; }
+    if (e._rythmeAttente) return;
+    e._rythmeAttente = true; e.etat = 'portail';
+    var generation = rythmeGeneration;
+    N.rythme.attendre('apparition', e.id, function () {
+      if (e._dead || generation !== rythmeGeneration) return;
+      e._rythmeAttente = false;
+      if (!horsVue(e) && !placerNaissance(e)) { e._attenteNaissance = true; return; }
+      apparuRythme(e);
+    }, { due: e._rythmeNaissance, annuler: function (raison) { annulerNaissance(e, raison); } });
+  }
+  function apparuRythme(e) {
+    // Recontrôle à la matérialisation. Sa place réservée est déjà dans count().
+    // Si un producteur a rempli la liste entre-temps, le portail attend sans attaquer.
+    if (!e.boss && list.indexOf(e) >= 0 && count() > R.secteurs[0].plafondDur.ennemis) {
+      e._portail = R.temps.h; e.etat = 'portail'; return false;
+    }
     e.etat = ETAT[e._st] || 'approche';
     if (N.ev) N.ev.emit('apparition', { id: e.id, type: e.type, x: e.x, y: e.y, elite: !!e.elite });
   }
   /* une attaque s'arme : événement `arme` (armement du journal, § 3.8 règle 3) */
   function armer(e, forme, total, cible) {
+    if (N.rythme && !e._ext) {
+      var annonce = N.rythme.annonce(Math.max(total, R.apparitions.teleMin), e.type === 'tourelle' || e.type === 'sentinelle');
+      e._rythmeFin = annonce.t; e._rythmeEtat = e._st;
+      // Le télégraphe et sa publication expirent ENSEMBLE. Durée minimale toujours conservée.
+      e._stT += annonce.duree - total; total = annonce.duree;
+      if (N.journal) N.journal('rythme-annonce', { id: e.id, type: e.type, minimum: annonce.minimum, total: total, fin: annonce.t, debut: N.rythme.lire().t });
+    }
     e._teleTotal = total; e._ext300 = false;
     if (N.ev) N.ev.emit('arme', { id: e.id, type: e.type, forme: forme, total: total, cible: cible || 'tete', shown: vu6(e), rallonge: false });
   }
@@ -253,6 +307,7 @@ N.ennemis = (function () {
     var b = { id: N.ids.suivant(), x: x, y: y, vx: vx, vy: vy, r: opts.r || (opts.big ? CFG.tirTaille + 1 : CFG.tirTaille), vie: opts.vie || TP.tirVie,
       src: opts.src || { genre: 'ennemi', type: 'tourelle', id: -1 }, _big: !!opts.big, _dead: false };
     tirs.push(b);
+    if (N.rythme && N.journal) N.journal('rythme-tir', { id: b.id, type: 'balle', t: N.rythme.lire().t, division: opts.rythmeDivision || R.rythme.subdivisions, source: b.src });
     return b;
   }
   function ebullet(e, x, y, a, v, big, vie) { return tir(x, y, Math.cos(a) * v, Math.sin(a) * v, { big: big, src: srcDe(e), vie: vie }); }
@@ -260,6 +315,7 @@ N.ennemis = (function () {
   function rayon(x0, y0, x1, y1, dur, w, src) {
     var z = { x0: x0, y0: y0, x1: x1, y1: y1, t: 0, d: dur, w: w, src: src || { genre: 'ennemi', type: 'sentinelle', id: -1 }, _dead: false };
     lasers.push(z);
+    if (N.rythme && N.journal) N.journal('rythme-tir', { type: 'rayon', t: N.rythme.lire().t, source: z.src });
     return z;
   }
   function beam(e, x, y, a, d, w, len) {
@@ -308,6 +364,7 @@ N.ennemis = (function () {
   function kill(e, src) {
     if (e._dead) return false;
     e._dead = true; e.etat = 'mort'; e.pv = Math.min(e.pv, 0);
+    if (N.rythme) N.rythme.annuler('apparition', e.id, 'mort');
     var P = tete(), base = (R && R.score && R.score.base && R.score.base[e.type]) || 0;
     if (!base && e._serpent) base = SERP[e.type].points;
     src = src || SRC_PAR_DEFAUT;
@@ -445,10 +502,13 @@ N.ennemis = (function () {
   }
   if (N.ev) N.ev.on('ramassage', 10, inverserSurPastille, '72-ennemis');
 
-  function fuir() { for (var i = 0; i < list.length; i++) if (!list[i].boss && !list[i]._ext) list[i]._st = 'fuite'; }
+  function fuir() {
+    list.slice().forEach(function (e) { if (e.etat === 'portail' && !e._ext) { if (N.rythme) N.rythme.annuler('apparition', e.id, 'fuite'); annulerNaissance(e, 'fuite'); } });
+    for (var i = 0; i < list.length; i++) if (!list[i].boss && !list[i]._ext) list[i]._st = 'fuite'; }
   /* purge(ordre) : tous les ennemis meurent l'un après l'autre (les plus proches de la tête d'abord, un toutes
      les 45 ms), tirs et lasers effacés. Chaque mort émet `kill` avec src decor/purge : pas de points ni de butin. */
   function purge(ordre) {
+    list.slice().forEach(function (e) { if (e.etat === 'portail' && !e._ext) { if (N.rythme) N.rythme.annuler('apparition', e.id, 'purge'); annulerNaissance(e, 'purge'); } });
     var P = tete();
     purgeFile = list.filter(function (e) { return !e._dead; });
     if (P && ordre !== 'indifferent') purgeFile.sort(function (a, b) { return O.d2(a.x, a.y, P.x, P.y) - O.d2(b.x, b.y, P.x, P.y); });
@@ -463,11 +523,24 @@ N.ennemis = (function () {
   /* ============================ l'IA ============================ */
   function canAct(e) { return e._stun <= 0 && O.visible(e.x, e.y, -e.r + 2) && e.etat !== 'portail'; }
   /* on n'arme que sous les yeux de la joueuse : entièrement dans la vue, à 6 px du bord (§ 3.8 règle 3) */
-  function peutArmer(e) { return canAct(e) && vu6(e); }
+  function peutArmer(e) { return canAct(e) && vu6(e) && !(N.rythme && N.rythme.souffle()); }
   /* sorti du cadre pendant l'armement : une seule rallonge de 300 ms ; encore dehors au tir : annule et recharge */
   function verifTir(e) {
+    if (N.rythme && N.rythme.souffle()) {
+      var d = N.rythme.annonce(N.R.temps.h, e.type === 'tourelle' || e.type === 'sentinelle');
+      e._rythmeFin = d.t; e._stT = d.duree; return null;
+    }
     if (vu6(e)) return true;
-    if (!e._ext300) { e._ext300 = true; e._stT += 0.3; return null; }
+    if (!e._ext300) {
+      e._ext300 = true;
+      if (N.rythme) {
+        var extension = N.rythme.annonce(R.apparitions.rallonge, e.type === 'tourelle' || e.type === 'sentinelle');
+        e._rythmeFin = extension.t; e._stT = extension.duree;
+        e._teleTotal += extension.duree;
+        if (N.journal) N.journal('rythme-annonce', { id: e.id, type: e.type, minimum: R.apparitions.rallonge, total: extension.duree, fin: extension.t, debut: N.rythme.lire().t, rallonge: true });
+      } else e._stT += R.apparitions.rallonge;
+      return null;
+    }
     return false;
   }
   function avance(e, a, v, dt) { e.x += Math.cos(a) * v * dt; e.y += Math.sin(a) * v * dt; }
@@ -702,6 +775,7 @@ N.ennemis = (function () {
       if (e._stT <= 0) {
         for (var k = 0; k < (c.larves || 3); k++) {
           var a = (k / (c.larves || 3)) * TAU + e._age, l = spawn('larve', e.x + Math.cos(a) * (e.r + TP.rucheDecalage), e.y + Math.sin(a) * (e.r + TP.rucheDecalage), { portail: TP.ruchePortail });
+          if (!l) break; // éclosion annulée proprement : aucune larve fantôme
           l._mere = e.id;
         }
         O.ringFx(e.x, e.y, 22, O.MAGENTA, 0.3);
@@ -1131,7 +1205,7 @@ N.ennemis = (function () {
     CHAMPS.length = 0;                                     // les champs des BROUILLEURS, refaits à chaque pas (vide sans eux)
     for (i = 0; i < list.length; i++) {
       e = list[i];
-      if (e._dead) continue;
+      if (e._dead || e._rythmeAttente) continue;
       if (e._attenteNaissance) {
         if (!placerNaissance(e)) continue;
         e._attenteNaissance = false;
@@ -1140,12 +1214,14 @@ N.ennemis = (function () {
       e.etatT += dt; e.img = (e.img + 1) | 0; e._age += dt;
       if (e._flash > 0) e._flash -= dt;
       if (e._portail > 0) {                               // le portail : il existe, il ne touche pas, il n'agit pas
-        e._portail -= dt;
+        if (N.rythme && e._rythmeNaissance !== undefined) e._portail = Math.max(0, e._rythmeNaissance - N.rythme.lire().t);
+        else e._portail -= dt;
         // Si la caméra a rejoint le portail, ne pas matérialiser ni téléporter son marqueur visible.
         if (e._portail <= 0 && !e._ext && !horsVue(e)) e._portail = R.temps.h;
         if (e._portail <= 0) { e._portail = 0; apparu(e); }
         continue;
       }
+      var sxG1 = e.x, syG1 = e.y;
       /* vue : depuis combien de temps l'ennemi est entièrement visible */
       var plein = N.cam && N.cam.shown ? N.cam.shown(e.x, e.y, 0) : O.visible(e.x, e.y, -e.r);
       e.vuDepuis = plein ? (e.vuDepuis < 0 ? 0 : e.vuDepuis + dt) : -1;
@@ -1162,6 +1238,9 @@ N.ennemis = (function () {
       if (e._ext) { if (e.etat !== 'mort') e.etat = 'approche'; continue; }       // le CYCLOPE (73-colosse) se pilote seul
       if (e._stun > 0) e._stun -= dt;
       if (e._kx || e._ky) { e.x += e._kx * dt; e.y += e._ky * dt; var f = Math.pow(0.02, dt); e._kx *= f; e._ky *= f; if (Math.abs(e._kx) + Math.abs(e._ky) < 2) { e._kx = 0; e._ky = 0; } }
+      if (N.rythme && e._rythmeEtat === e._st && e._rythmeFin !== undefined) {
+        e._stT = Math.max(0, e._rythmeFin - N.rythme.lire().t) + dt;
+      }
       if (e._st === 'proie') updProie(e, dt, P);
       else if (e._st === 'fuite') {                       // fuir() : il s'éloigne de la tête
         var dd0 = Math.sqrt(O.d2(e.x, e.y, P.x, P.y)) || 1; e.x += (e.x - P.x) / dd0 * 60 * dt; e.y += (e.y - P.y) / dd0 * 60 * dt;
@@ -1182,6 +1261,11 @@ N.ennemis = (function () {
       else if (e.type === 'miroir') updMiroir(e, dt, P);
       else if (e.type === 'brouilleur') updBrouilleur(e, dt, P);
       if (e._dead) continue;
+      if (e._rythmeEtat !== e._st) { e._rythmeFin = undefined; e._rythmeEtat = null; }
+      if (S.surcharge && e.type !== 'traqueur' && !e.boss && !e._ext && !e._poseAttente) {
+        e.x += (e.x - sxG1) * (R.surcharge.vitesse - 1);
+        e.y += (e.y - syG1) * (R.surcharge.vitesse - 1);
+      }
       e.etat = ETAT[e._st] || 'approche';
       var dirA = (e._st === 'vise' || e._st === 'fonce' || e._st === 'verrou' || e._st === 'recule') ? e._aim : e.ang;
       e.dir = O.dir16(dirA);
@@ -1704,10 +1788,31 @@ N.ennemis = (function () {
     for (i = 0; i < lasers.length; i++) if (!lasers[i]._dead) beamDraw(lasers[i]);
   }
 
+  // codex-g1 : retrait sans destruction, sans butin ni score, après un séjour
+  // continu entièrement hors champ. Cette fonction appartient au producteur.
+  // Le directeur ne lit et ne modifie aucun état privé des ennemis.
+  var horsCombatG1 = new WeakMap();
+  function desengagerHorsCombat(dt, duree) {
+    var n = 0, vue = N.cam && N.cam.anticipee ? N.cam.anticipee(R.apparitions.anticipee, {}) : null;
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      if (e._dead || e.boss || e.type === 'traqueur' || e._serpent || e._ext || e.etat === 'portail') continue;
+      var marge = Math.max(e.r, (conf(e.type).sprite || 0) / 2) + R.apparitions.marge;
+      var anticipe = vue && e.x >= vue.x - marge && e.x <= vue.x + vue.w + marge && e.y >= vue.y - marge && e.y <= vue.y + vue.h + marge;
+      if (!horsVue(e) || anticipe || (e.etat !== 'approche' && e.etat !== 'recup')) { horsCombatG1.delete(e); continue; }
+      var t = (horsCombatG1.get(e) || 0) + dt; horsCombatG1.set(e, t);
+      if (t < duree) continue;
+      e._dead = true; horsCombatG1.delete(e); n++;
+      if (N.journal) N.journal('retraitHorsCombat', { id: e.id, type: e.type, x: e.x, y: e.y, duree: t, vue: { x: O.VUE.x, y: O.VUE.y, w: O.VUE.w, h: O.VUE.h }, anticipee: vue });
+    }
+    return n;
+  }
+
   return {
     reset: reset, update: update, draw: draw, drawEnemies: drawEnemies, drawTele: drawTele,
     spawn: spawn, list: list, count: count, counts: counts, hit: hit, zone: zone, devorer: devorer, dans: dans, pres: pres,
     tir: tir, tirs: tirs, lasers: lasers, effacerTirs: effacerTirs, inverser: inverser, fuir: fuir, purge: purge, purgeEnCours: purgeEnCours,
+    desengagerHorsCombat: desengagerHorsCombat,
     rayon: rayon, teleLigne: teleLine, marque: spawnMark, inversion: function () { return Math.max(0, inv.t); }, charges: function () { return charges; }, publierTele: publierTele
   };
 })();

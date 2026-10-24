@@ -335,12 +335,13 @@
   /* ================================ la salve et les tirs ================================ */
   function salve(raison) {
     if (W.phase !== 'entree' && W.phase !== 'visee') return;
+    if (W.planRythme && N.rythme.lire().t + N.R.rythme.epsilon < W.planRythme.salve) return;
     var i, v, ok = 0;
     for (i = 0; i < W.verrous.length; i++) {
       v = W.verrous[i];
       if (!v.e || v.e._dead) continue;
       v.choix = choisir(v.e);
-      W.file.push({ delai: ok * CFG.salveEcart, v: v });
+      W.file.push({ delai: ok * (W.planRythme ? W.planRythme.ecart : CFG.salveEcart), v: v });
       W.partis.push({ x: v.e.x, y: v.e.y, r: v.e.r, t: 0 });
       ok++;
     }
@@ -463,8 +464,9 @@
     cfg();
     if (W.phase !== 'repos' || W.rech > 0) return false;
     o = o || {};
-    W.phase = 'entree'; W.pt = 0; W.raison = String(raison || 'essai'); W.n++; W.stats.warps++;
-    W.visee = o.duree > 0 ? +o.duree : CFG.visee;
+    W.planRythme = N.rythme && N.rythme.lire().id ? N.rythme.planWarp() : null;
+    W.phase = W.planRythme ? 'attente' : 'entree'; W.pt = 0; W.raison = String(raison || 'essai'); W.n++; W.stats.warps++;
+    W.visee = W.planRythme ? W.planRythme.visee : o.duree > 0 ? +o.duree : CFG.visee;
     W.verrous.length = 0; W.souris = false; W.sourisClic = false; W.tenu = !!(S().input && (S().input.boost || S().input.fire));
     W.tenuT = 0; W.peint = false; W.off.x = 0; W.off.y = 0; W.th.x = 0; W.th.y = 0;
     var I = S().input; W.p0.x = I && I.pointer ? I.pointer.x : -1; W.p0.y = I && I.pointer ? I.pointer.y : -1;
@@ -478,10 +480,10 @@
     return true;
   }
   function annuler() {
-    if (W.phase === 'entree' || W.phase === 'visee') { W.verrous.length = 0; W.phase = 'sortie'; W.pt = 0; journal('annule'); }
+    if (W.phase === 'attente' || W.phase === 'entree' || W.phase === 'visee') { W.planRythme = null; W.verrous.length = 0; W.phase = 'sortie'; W.pt = 0; journal('annule'); }
   }
   function reset() {
-    W.phase = 'repos'; W.pt = 0; W.f = 1; W.fPrec = 1; W.rech = 0; W.verrous.length = 0; W.file.length = 0; W.projs.length = 0;
+    W.planRythme = null; W.phase = 'repos'; W.pt = 0; W.f = 1; W.fPrec = 1; W.rech = 0; W.verrous.length = 0; W.file.length = 0; W.projs.length = 0;
     W.partis.length = 0; W.vit = {}; W.tenu = false; W.peint = false; W.k = 0; W.sous = null;
   }
   function update(dtReel) {
@@ -490,17 +492,25 @@
     var dt = dtReel > 0 ? Math.min(0.1, dtReel) : 0;
     if (S().paused) return;
     W.t += dt;
+    if (W.planRythme && N.rythme.lire().id !== W.planRythme.id) annuler();
+    if (W.phase === 'attente') {
+      W.f = 1;
+      if (N.rythme.lire().t + N.R.rythme.epsilon >= W.planRythme.depart) { W.phase = 'entree'; W.pt = 0; }
+      else return;
+    }
     mesurerVitesses(W.dtPrec * W.fPrec);
     if (W.phase === 'repos') { if (W.rech > 0) W.rech -= dt; W.f = 1; }
     else {
       W.pt += dt;
       if (N.joueuse && N.joueuse.etat === 'mort') annuler();
       if (W.phase === 'entree') {
+        if (W.planRythme) W.pt = Math.max(0, N.rythme.lire().t - W.planRythme.depart);
         W.f = 1 + (CFG.facteur - 1) * lisse(W.pt / CFG.entree);
-        if (W.pt >= CFG.entree) { W.phase = 'visee'; W.pt = 0; W.f = CFG.facteur; journal('visee'); }
+        if (W.pt + N.R.rythme.epsilon >= CFG.entree) { W.phase = 'visee'; W.pt = 0; W.f = CFG.facteur; journal('visee'); }
       } else if (W.phase === 'visee') {
         W.f = CFG.facteur;
-        if (W.pt >= W.visee) salve('fin');
+        if (W.planRythme) W.pt = Math.max(0, N.rythme.lire().t - W.planRythme.entree);
+        if (W.pt + N.R.rythme.epsilon >= W.visee) salve('fin');
       }
       if (W.phase === 'entree' || W.phase === 'visee') entrees(dt);
       else W.sous = null;
@@ -510,8 +520,10 @@
         v.age += dt; v.choix = choisir(v.e);
       }
       if (W.phase === 'sortie') {
-        W.f = CFG.facteur + (1 - CFG.facteur) * lisse(W.pt / CFG.sortie);
-        if (W.pt >= CFG.sortie) { W.phase = 'repos'; W.pt = 0; W.f = 1; W.rech = CFG.recharge; journal('fin'); }
+        var sortie = W.planRythme ? W.planRythme.sortie : CFG.sortie;
+        if (W.planRythme) W.pt = Math.max(0, N.rythme.lire().t - W.planRythme.salve);
+        W.f = CFG.facteur + (1 - CFG.facteur) * lisse(W.pt / sortie);
+        if (W.pt >= sortie) { W.phase = 'repos'; W.pt = 0; W.f = 1; W.rech = W.planRythme ? W.planRythme.recharge : CFG.recharge; journal('fin'); }
       }
     }
     /* l'intensité du voile : 0 hors warp, 1 au creux */

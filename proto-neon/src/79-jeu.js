@@ -51,6 +51,7 @@ N.game = (function () {
      `suiteFilm` reprend ; le même ne revient jamais dans une partie. filmDemande : demandé pendant un pas de jeu
      (par un événement), lancé à la fin du pas. */
   var filmsVus = {}, suiteFilm = null, filmDemande = null, filmMuet = false, secCourante = null;
+  var retourCartes = null, modePartie = 'normal';
   var avantAventure = 'jeu', pisteAventureCoupee = false, voyageFini = false;
 
   function S_() { return S || (S = N.S); }
@@ -58,11 +59,11 @@ N.game = (function () {
   function modOk(m, f) { return m && typeof m[f] === 'function'; }
 
   /* ============================ le son : coupure mémorisée ============================ */
-  function reglagesSon() { var rg = N.score && N.score.profil ? N.score.profil.reglages() : null; return rg ? !(rg.musique && rg.effets) : false; }
+  function reglagesSon() { var rg = N.score && N.score.profil ? N.score.profil.reglages() : null; return rg ? !(rg.musique || rg.effets) : false; }
   function applyMute() {
     if (!N.music) return;
     var coupe = muted || demo; // démo silencieuse : jamais plus forte que le titre
-    if (N.music.piste && N.music.mute) { N.music.mute('musique', coupe); N.music.mute('effets', coupe); return; }   // l'interface 1.0
+    if (N.music.piste && N.music.mute) { var rg = N.score.profil.reglages(); N.music.mute(false); N.music.mute('musique', coupe || !rg.musique); N.music.mute('effets', coupe || !rg.effets); return; }   // l'interface 1.0
     if (N.music.mute) {
       if (!N.music.muted || N.music.muted() !== coupe) appel('music.mute', function () { N.music.mute(coupe); });
       return;
@@ -70,7 +71,7 @@ N.game = (function () {
     if (coupe && N.music.stop) appel('music.stop', function () { N.music.stop(); });
   }
   function toggleMute() {
-    muted = !muted;
+    muted = !reglagesSon();
     if (N.score && N.score.profil) N.score.profil.reglages({ musique: !muted, effets: !muted });
     if (S_()) S.muted = muted;
     if (N.music && !N.music.mute && N.music.start && !muted && N.music.info && N.music.info()) appel('music.start', function () { N.music.start(); });
@@ -100,7 +101,7 @@ N.game = (function () {
     var T = O.taps, s = S_(), inp = s && s.input, i;
     T.length = 0;
     while (QT.length) T.push(QT.shift());
-    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
+    if (inp && inp.taps) for (i = 0; i < inp.taps.length; i++) T.push({ x: inp.taps[i].x, y: inp.taps[i].y, key: inp.taps[i].key || null, t0: inp.taps[i].t0, t1: inp.taps[i].t1, bouton: inp.taps[i].doigt === 'bouton' ? 'bouton' : null });
     if (inp) {
       if (inp.valider) T.push({ x: -1, y: -1, key: 'Enter' });
       if (inp.retour) T.push({ x: -1, y: -1, key: 'Escape' });
@@ -109,7 +110,9 @@ N.game = (function () {
     }
     /* les boutons du HUD et les touches de commodité : traités ici, le reste va à N.ui */
     for (i = T.length - 1; i >= 0; i--) {
-      var q = T[i], b = (q.key === null && modOk(N.hud, 'toucher') && JOUE_OU_PAUSE()) ? N.hud.toucher(q.x, q.y) : null;
+      var q = T[i];
+      if (N.ui && N.ui.ecran && N.ui.ecran() === 'reglages') continue;
+      var b = (q.key === null && modOk(N.hud, 'toucher') && JOUE_OU_PAUSE()) ? N.hud.toucher(q.x, q.y) : null;
       if (q.key === 'KeyM' || b === 'son') { toggleMute(); T.splice(i, 1); }
       else if (b === 'pause' || ((q.key === 'KeyP' || q.key === 'Escape') && (JOUE[et] || et === 'pause'))) { basculerPause(); T.splice(i, 1); }
     }
@@ -136,7 +139,7 @@ N.game = (function () {
     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
     var u = N.ui;
     if (u) {
-      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' && N.defile ? { rareGarantie: N.defile.prendreRare() } : undefined);
+      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom, nom === 'cartes' ? N.cartes.optionsMain({ rareGarantie: N.defile ? N.defile.prendreRare() : false, niveauxSeuls: !!retourCartes }) : undefined);
       else if (nom === 'attraction' && prev !== 'attraction') u.ouvrir('attraction');
       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
       else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
@@ -214,6 +217,7 @@ N.game = (function () {
     }
   }
   function commencerAventure() {
+    if (modePartie === 'normal' && !departExplicite) partie(graineDemarrage());
     if (!modOk(N.aventure, 'demarrer')) { lancer(false); return; }
     if (modOk(N.intro, 'skip')) N.intro.skip();
     if (modOk(N.intro, 'stop')) N.intro.stop();
@@ -235,10 +239,16 @@ N.game = (function () {
   /* ============================ la partie : tout remis à zéro ============================ */
   function partie(graine) {
     seed = graine | 0;
+    retourCartes = null;
+    S_().surcharge = modePartie === 'surcharge'; S_().defiDuJour = modePartie === 'jour';
     if (N.socle && N.socle.reset) N.socle.reset(seed);
+    if (N.rythme) N.rythme.reset();
+    if (N.warp) N.warp.reset();
+    vagueRythme = false;
     if (N.decor && N.decor.build) appel('decor.build', function () { N.decor.build(); });
     O.geom();
     O.T.t = 0; O.T.ak = 0; timers.length = 0;
+    if (modOk(N.music, 'resetTempo')) N.music.resetTempo();
     O.fxReset();
     reprise = null;
     filmsVus = {}; suiteFilm = null; filmDemande = null;
@@ -264,14 +274,16 @@ N.game = (function () {
     /* Départs publics de test : refuser une faute AVANT de toucher la partie courante. */
     var departs = ['demarrage', 'ouverture', 'titre', 'briefing', 'plongee', 'jeu'];
     if (opts && opts.depart !== undefined && departs.indexOf(opts.depart) < 0) return false;
+    if (N.music && N.music.resetTempo) N.music.resetTempo();
     arreterAttraction();
     arreterAventure();
     voyageFini = false;
     S = N.S;
     opts = opts || {};
+    modePartie = opts.mode || 'normal';
     departExplicite = opts.depart !== undefined;
     listen();
-    var s = (graine === undefined || graine === null) ? (S.seed | 0) : (graine | 0);
+    var s = (graine === undefined || graine === null) ? graineDemarrage() : (graine | 0);
     muted = false;
     partie(s);
     muted = reglagesSon(); S.muted = muted; applyMute();
@@ -289,12 +301,32 @@ N.game = (function () {
     } else if (opts.direct) lancer(false);
     return true;
   }
+  function graineDemarrage() {
+    var W = typeof window !== 'undefined' ? window : {};
+    if (W.__SEED !== undefined) return W.__SEED >>> 0;
+    var q = W.location && /[?&]seed=([^&]+)/.exec(W.location.search || '');
+    if (q && isFinite(Number(q[1]))) return Number(q[1]) >>> 0;
+    if (W.crypto && W.crypto.getRandomValues) { var a = new Uint32Array(1); W.crypto.getRandomValues(a); return a[0]; }
+    // Sans entropie fournie par la plateforme, repli explicite et reproductible.
+    return R.rejouabilite.graineRepli;
+  }
+  function defiDuJour() {
+    modePartie = 'jour';
+    var g = N.rng.flux(Number(S_().jour) || R.defis.partie.jourRepli, 'jour');
+    partie(g.i(0, R.rejouabilite.jourSel) ^ (Number(S_().jour) || R.defis.partie.jourRepli));
+    commencerAventure();
+  }
+  function cartesEnPhaseSure() {
+    if ((et !== 'vol' && et !== 'defile') || !N.cartes.niveauxEnAttente()) return false;
+    retourCartes = { etat: et, t: etT };
+    aller('cartes'); return true;
+  }
   /* lancer() : la plongée dans la partie ; `nouvelle` remet tout à zéro (sauf au premier lancement du reset) */
   function lancer(nouvelle) {
     if (N.intro && N.intro.stop) appel('intro.stop', function () { N.intro.stop(); });
     if (finClip && N.art && N.art.stop) { var f = finClip; appel('art.stop', function () { N.art.stop(f); }); }
     finClip = null;
-    partie(nouvelle === false ? seed : seed + CFG.graineSuite);
+    partie(nouvelle === false || modePartie === 'jour' ? seed : seed + CFG.graineSuite);
     partieN++;
     /* REJOUER rend la main sans rejouer le briefing ni la plongée d'ouverture. */
     if (nouvelle === true) lancerVague(R.secteurs[0].vagues[0].n);
@@ -307,9 +339,13 @@ N.game = (function () {
     if (!ok) { suite(); return; }
     suiteFilm = suite; filmMuet = true; aller('panneau'); filmMuet = false;     // la musique garde sa section pendant le film
   }
+  var vagueRythme = false;
   function lancerVague(n) {
-    N.dir.demarrer(n);
-    aller('jeu');
+    if (vagueRythme) return;
+    if (!N.rythme) { N.dir.demarrer(n); aller('jeu'); return; }
+    vagueRythme = true;
+    aller('plongee');
+    N.rythme.vague(function () { vagueRythme = false; N.dir.demarrer(n); aller('jeu'); });
   }
 
   /* ============================ la mise en scène de repli (si 79-scene.js manque) ============================
@@ -378,7 +414,9 @@ N.game = (function () {
     else if (N.ev) {
       N.ev.emit('carte', { id: id, niveau: 1 });                       // un seul émetteur : N.cartes ; en son absence, ce repli
     }
-    demarrerVol();
+    if (retourCartes) {
+      var r = retourCartes; retourCartes = null; aller(r.etat); etT = r.t;
+    } else demarrerVol();
   }
   function demarrerVol() { film('plongee', vol); }
   function vol() {
@@ -510,6 +548,7 @@ N.game = (function () {
       appel('cosmos.film', function () { N.cosmos.update(dt); });
       return;
     }
+    if (N.rythme) N.rythme.update(dt, simulant);
     O.geom();
     redimensionne();
     /* Lire le vrai toucher AVANT que le pilote puisse écrire les entrées. Le geste de sortie
@@ -557,18 +596,21 @@ N.game = (function () {
       s.input.any = false;
       N.ui.update(dt); etT += dt;
       var b = N.ui.sortie();
-      if (b && b.action === 'jouer') commencerAventure();
-      else if (etT >= R.ecrans.attraction.attente) commencerAttraction();
+      if (b && b.action === 'jour') defiDuJour();
+      else if (b && b.action === 'jouer') commencerAventure();
+      else if (N.ui.ecran() !== 'reglages' && etT >= R.ecrans.attraction.attente) commencerAttraction();
       return;
     }
     if (et === 'attraction') {
       etT += dt; O.T.t += dt; O.T.ak += dt;
+      if (modOk(N.music, 'grille')) N.music.grille(O.T.t);
       pas(dt);
       if (modOk(N.cam, 'update')) N.cam.update(dt);
       publier();
       if (N.joueuse.etat === 'mort' || etT >= R.ecrans.attraction.demo) commencerAttraction();
       return;
     }
+    if (cartesEnPhaseSure()) { publier(); return; }
     if (hsCd > 0) hsCd -= dt;
     etT += dt;
     /* Même ordre caméra/jeu en simulation et dans la boucle dessinée. */
@@ -576,6 +618,7 @@ N.game = (function () {
 
     if (JOUE[et]) {
       O.T.t += dt; O.T.ak += dt;
+      if (modOk(N.music, 'grille')) N.music.grille(O.T.t);
       pas(dt);
       if (et === 'defile' && N.defile && N.defile.fini()) vol();
       else if (et === 'nettoyage' && etT >= CFG.nettoyage && !N.ennemis.purgeEnCours()) suiteNettoyage();
@@ -590,7 +633,7 @@ N.game = (function () {
       O.T.ak += dt;
       appel('decor', function () { if (N.decor && N.decor.update) N.decor.update(dt); });
       majHud(dt);
-      if (etT >= CFG.plongee) lancerVague(1);
+      if (!vagueRythme && etT >= CFG.plongee) lancerVague(1);
     } else if (et === 'cartes') {
       N.ui.update(dt);
       var c = N.ui.sortie(); if (c && c.action === 'carte') apresCarte(c.index, c.id);
@@ -609,13 +652,15 @@ N.game = (function () {
       majMort(dt);
     } else if (et === 'victoire') {
       O.T.ak += dt; O.T.t += dt;
+      if (modOk(N.music, 'grille')) N.music.grille(O.T.t);
       N.ennemis.update(dt); N.butin.update(dt); O.fxUpdate(dt); majHud(dt);
       if (etT >= CFG.victoire && !N.ennemis.purgeEnCours()) film('apotheose', finirVoyage);
     } else if (et === 'fin') {
       O.T.ak += dt;
       N.ui.update(dt);
       var f = N.ui.sortie();
-      if (f && f.action === 'continuer') continuer();
+      if (f && f.action === 'surcharge' && fin.victoire) { modePartie = 'surcharge'; lancer(true); }
+      else if (f && f.action === 'continuer') continuer();
       else if (f && f.action === 'rejouer') { if (voyageFini) aller('titre'); else lancer(true); }
     } else if (et === 'pause') {
       N.ui.update(dt);
@@ -727,7 +772,11 @@ N.game = (function () {
     var pan = N.joueuse ? N.joueuse.distMur(N.joueuse.tete.x, N.joueuse.tete.y) : null;
     var al = (R && R.monde && R.monde.mur && R.monde.mur.alerte) || 24, k = pan && pan.d < al ? 1 - Math.max(0, pan.d) / al : 0, pn = pan ? pan.pan : '';
     function bande(x0, y0, w, h, pa) {
-      for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) {
+      // codex-p45 : découpage seulement ; la primitive garde son arrondi et son propriétaire.
+      var ox = gf.ox(), oy = gf.oy();
+      var xa = Math.max(0, ox - Math.round(x0)), xb = Math.min(w, gf.W + ox - Math.round(x0));
+      var ya = Math.max(0, oy - Math.round(y0)), yb = Math.min(h, gf.H + oy - Math.round(y0));
+      for (var yy = ya; yy < yb; yy++) for (var xx = xa; xx < xb; xx++) {
         var px = x0 + xx, py = y0 + yy;
         gf.px(px, py, (px + py) % 4 < 2 ? O.VIOLET : O.NP);
       }
@@ -754,6 +803,7 @@ N.game = (function () {
     if (N.decor && N.decor.drawFar && O.geo.cam) appel('decor.drawFar', function () { N.decor.drawFar(N.cam); });
     O.origineMonde();
     if (N.decor && N.decor.drawPlateau) appel('decor.drawPlateau', function () { N.decor.drawPlateau(N.cam); }); else drawBG();
+    if (N.rythme) N.rythme.drawDecor();
     if (N.decor && N.decor.drawFront && O.geo.cam) appel('decor.drawFront', function () { N.decor.drawFront(N.cam); });
     drawMurs();
     appel('butin.draw', function () { N.butin.draw(); });
@@ -761,6 +811,7 @@ N.game = (function () {
     appel('arsenal.draw', function () { N.arsenal.draw(); });
     appel('joueuse.draw', function () { N.joueuse.draw(); });
     O.fxDraw();
+    if (N.warp) N.warp.draw('monde');
   }
 
   var LUT = null;
@@ -816,6 +867,8 @@ N.game = (function () {
       drawNomCause();
     } else appel('joueuse.drawTop', function () { N.joueuse.drawTop(); });
     if (et === 'defile' && N.defile) N.defile.draw();
+    if (N.rythme) N.rythme.drawTop();
+    if (N.warp) N.warp.draw('dessus');
     ecranVieux();
   }
   /* l'interface : dessinée ici tant que 90-boot.js n'appelle pas N.hud.draw / N.ui.draw / N.intro.draw lui-même */
@@ -853,6 +906,8 @@ N.game = (function () {
   dbg.vague = function (n) {
     n = n | 0;
     if (!JOUE[et] && et !== 'plongee') { if (et === 'demarrage' || et === 'titre' || et === 'fin') lancer(false); }
+    if (N.rythme) N.rythme.annulerVague(); vagueRythme = false;
+    if (N.warp) N.warp.reset();
     N.ennemis.reset(); N.arsenal.reset();
     N.dir.demarrer(n);
     aller('jeu');
@@ -860,6 +915,8 @@ N.game = (function () {
   };
   dbg.boss = function () {
     if (!JOUE[et]) { if (et === 'demarrage' || et === 'titre' || et === 'fin') lancer(false); }
+    if (N.rythme) N.rythme.annulerVague(); vagueRythme = false;
+    if (N.warp) N.warp.reset();
     N.ennemis.reset();
     N.dir.demarrer(N.dir.nombreVagues());
     lancerBoss();
@@ -934,6 +991,7 @@ N.game = (function () {
     W.arena({ x: 0, y: 0, w: W.W, h: W.H }, R.monde.mobile.glissementMin);
     N.cam.update(R.monde.mobile.glissementMin); N.cam.reset(); N.decor.reset(); O.geom();
     reset(seed, { depart: 'jeu' });
+    if (N.rythme) N.rythme.annulerVague(); vagueRythme = false;
     dbg.input({ x: 0, y: 0, mag: 0, fire: false, boost: false, pouvoir: false, apogee: false });
     N.horloge.avancer();                 // même amorçage que le protocole officiel des parties
     var v = R.secteurs[0].vagues, last = v[v.length - 1], i;

@@ -39,6 +39,7 @@ N.dir = (function () {
   function plafond() {
     var w = info(), r = reglage(), cap = Math.min(w ? w.plafond : secteur().plafondDur.ennemis, secteur().plafondDur.ennemis);
     if (r.plafonds) { var palier = cap; for (var i = 0; i < r.plafonds.length; i++) if (st.tw >= r.plafonds[i].t) palier = r.plafonds[i].n; cap = Math.min(cap, palier); }
+    if (N.S && N.S.surcharge) cap = Math.min(secteur().plafondDur.ennemis, Math.ceil(cap * R.surcharge.densite));
     return cap;
   }
   var st = {
@@ -49,6 +50,7 @@ N.dir = (function () {
   var stats = { spawns: [], inView: 0, minDistSpawn: 1e9, parVague: [], maxAlive: 0, minDistTele: 1e9, respirations: [] };
   var repos = { demande: false, fini: false, pic: 0, duree: 0, debut: null };
   var VAGUES = null;
+  var alimentation = { credit: 0, types: {}, total: 0 };
 
   function vagues() { return VAGUES || (VAGUES = (R && R.secteurs && R.secteurs[0] && R.secteurs[0].vagues) || []); }
   function info() { return vagues()[Math.max(0, st.n - 1)] || null; }
@@ -77,13 +79,21 @@ N.dir = (function () {
     n = O.clamp(n | 0, 1, vs.length || 1);
     var w = vs[n - 1] || {};
     st.n = n; st.tw = 0; st.phase = 'vague'; st.fini = false; st.nettoye = false; st.entrees++;
+    alimentation.credit = 0; alimentation.types = {}; alimentation.total = 0;
     st.spawned = 0; st.picFait = false; st.pastilleFaite = false; st.traqueurs = 0; st.traqueurT = -99; st.prochainGroupe = 0; st.melangeT = 0; st.elroy = false;
     repos.demande = repos.fini = false; repos.pic = 0; repos.duree = 0; repos.debut = null;
     st.derniereAction = O.T.t; st.freeCd = 2; st.lastBeat = -1;
     st.queue.length = 0;
     if (N.hud && N.hud.reserverBanniere) N.hud.reserverBanniere(false);
-    var fs = reglage().formations || w.formations || [];
+    var fs = []; // le plan de rencontres est maintenant piloté par la pression
     for (var i = 0; i < fs.length; i++) st.queue.push({ t: fs[i].t, f: fs[i].f, essais: 0, fait: false, annonce: 0 });
+    if (N.rythme) {
+      var calendrier = N.rythme.calendrier(n);
+      if (calendrier.drop !== null && calendrier.regle.formationDrop) st.queue.forEach(function (q) {
+        if (q.f === calendrier.regle.formationDrop) q.t = Math.max(0, calendrier.drop - R.temps.tempsParMesure * calendrier.temps - R.formations.annonce - calendrier.temps);
+      });
+      st.rythmePic = calendrier.regle.picDrop ? calendrier.drop : null;
+    } else st.rythmePic = null;
     st.queue.sort(function (a, b) { return a.t - b.t; });
     if (n === 1 && st.premiere) {                      // le premier ennemi de la première partie : 3 s après un virage de plus de 45°, 6 s au plus tard
       st.gate = st.tuto ? secteur().premierEnnemi.delai : secteur().premierEnnemi.partiesSuivantes; st.turn = 0; st.angPrec = null;
@@ -148,11 +158,16 @@ N.dir = (function () {
     var w = info(), por = o.portail !== undefined ? o.portail : ((R && R.apparitions && R.apparitions.portail) || 0.6) * (o.elite ? 2 : 1);
     var mods = o.mods || {};
     if (w && w.rapide && !o.elite && type !== 'mine' && type !== 'ruche' && rnd() < w.rapide) { mods = { rapide: true }; }
-    var e = N.ennemis.spawn(type, x, y, { portail: por, elite: !!o.elite, mods: mods, st: o.st });
+    var fin = rythmeFormationFin;
+    if (fin !== null) fin += (rythmeFormationIndex++ % R.rythme.partition.cascadeNombre) * N.rythme.lire().dureeTemps / R.rythme.partition.divisionsCascade;
+    else if (o.elite && N.rythme) fin = N.rythme.naissanceFormation(por);
+    var e = N.ennemis.spawn(type, x, y, { portail: por, elite: !!o.elite, mods: mods, st: o.st, rythmeFin: fin === null ? undefined : fin });
+    if (!e) return null;
     if (o.cd0 !== undefined) e._cd0 = o.cd0;
     if (o.mere) e._mere = o.mere;
     if (o.tx !== undefined) { e._tx = o.tx; e._ty = o.ty; }
     if (!o.sansCompte) st.spawned++;
+    if (type !== 'traqueur') { alimentation.types[type] = (alimentation.types[type] || 0) + 1; alimentation.total++; }
     logSpawn(e, por);
     if (N.ev && (o.elite || type === 'traqueur')) N.ev.emit('portail', { type: type, x: x, y: y, dur: por, elite: !!o.elite });
     return e;
@@ -203,7 +218,14 @@ N.dir = (function () {
   }
   function nbMines() { var c = N.ennemis.counts(); return c.mine || 0; }
   /* formation(nom, opts) -> nombre d'ennemis créés (0 : pas de place, on réessaie) */
+  var rythmeFormationFin = null, rythmeFormationIndex = 0;
   function formation(nom, opts) {
+    if (N.rythme && !N.rythme.apparitionsPermises()) return 0;
+    rythmeFormationFin = N.rythme ? N.rythme.naissanceFormation(R.apparitions.portail) : null;
+    rythmeFormationIndex = 0;
+    try { return formationFaire(nom, opts); } finally { rythmeFormationFin = null; }
+  }
+  function formationFaire(nom, opts) {
     var made = 0, p, i, e, n, P = tete(), o = opts || {}, F = effectif(nom);
     if (!P || !F || N.ennemis.counts().regular + taille(nom) > plafond()) return 0;
     if (nom === 'file') { p = pointHors(); if (!p) return 0; made = ligne('fleche', p, F.fleches, CFG.ecartFile); }
@@ -315,6 +337,53 @@ N.dir = (function () {
     O.sfx('traqueur');
   }
 
+  // Pression normalisée, calculée uniquement depuis la vue publique des ennemis.
+  function intensite() {
+    var poids = R.intensite.poids, total = 0, L = N.ennemis.list;
+    for (var i = 0; i < L.length; i++) {
+      var e = L[i];
+      if (e.etat !== 'mort' && e.etat !== 'portail' && !e.boss && e.type !== 'traqueur' && (!N.cam || !N.cam.shown || N.cam.shown(e.x, e.y, e.r))) total += poids[e.type] || 1;
+    }
+    return O.clamp(total / (Math.max(1, plafond()) * R.intensite.referencePoids), 0, 1);
+  }
+  function cibleIntensite() {
+    var c = R.intensite, w = info(), u = O.clamp(st.tw / Math.max(R.temps.h, w.duree * c.courbe.creteA), 0, 1);
+    return c.cibles[st.n - 1] * (c.courbe.entree + (c.courbe.crete - c.courbe.entree) * u);
+  }
+  function rencontre() {
+    var c = R.intensite, types = c.types[st.n - 1], candidats = [], min = Infinity;
+    for (var i = 0; i < types.length; i++) {
+      var type = types[i], n = alimentation.types[type] || 0;
+      if (type === 'mine' && nbMines() >= CFG.maxMines) continue;
+      if (type === 'fleche' && (n + 1) / (alimentation.total + 1) > c.flecheMax) continue;
+      if (n < min) { candidats.length = 0; min = n; }
+      if (n === min) candidats.push(type);
+    }
+    return candidats.length ? candidats[ri(0, candidats.length - 1)] : null;
+  }
+  function pointRencontre() {
+    // Le plus proche des points sûrs : une rencontre hors champ doit pouvoir rejoindre l'action.
+    // Aucun point dans la vue courante ou anticipée n'est admis.
+    var best = null, dist = Infinity, P = tete();
+    for (var i = 0; i < R.intensite.placement.candidatMax; i++) {
+      var p = pointHors(); if (!p) continue;
+      var d = O.d2(p.x, p.y, P.x, P.y);
+      if (d < dist) { best = p; dist = d; }
+    }
+    return best;
+  }
+  function alimenter(dt, w) {
+    var c = R.intensite, pression = intensite(), cible = cibleIntensite();
+    alimentation.credit = Math.min(c.creditMax, alimentation.credit + dt * c.debits[st.n - 1]);
+    if (!st.beat) return;
+    var n = 0;
+    while (alimentation.credit >= 1 && vivants() < plafond() && n < c.parTempsMax && pression < cible) {
+      var type = rencontre(), p = pointRencontre();
+      if (!type || !p || !mk(type, p.x, p.y)) break;
+      alimentation.credit--; n++; pression = intensite();
+    }
+  }
+
   /* ============================ la vague ============================ */
   function vivants() { var c = N.ennemis.counts(); return c.regular; }
   /* Une vraie baisse de densité, avant le nettoyage et le pic suivant. La vague
@@ -347,16 +416,18 @@ N.dir = (function () {
   function update(dt) {
     if (st.phase !== 'vague') return;
     var w = info(); if (!w) return;
+    if (!repos.demande && N.ennemis.desengagerHorsCombat) N.ennemis.desengagerHorsCombat(dt, R.intensite.horsCombat);
     var P = tete(), c = N.ennemis.counts(), i;
     st.tw += dt;
     st.alive = c.regular;
     if (c.regular > repos.pic) repos.pic = c.regular;
     respirer(w, c, dt);
     if (c.regular > stats.maxAlive) stats.maxAlive = c.regular;
-    var picEnAttente = w.pic && !st.picFait && st.tw >= w.pic.t;
-    var chassePause = repos.demande || picEnAttente || (N.ennemis.inversion && N.ennemis.inversion() > 0);
+    var datePic = st.rythmePic !== null && N.rythme ? Math.max(0, st.rythmePic - R.temps.tempsParMesure * N.rythme.lire().dureeTemps) : w.pic && w.pic.t;
+    var picEnAttente = w.pic && !st.picFait && st.tw >= datePic;
+    var chassePause = repos.demande || picEnAttente || (N.ennemis.inversion && N.ennemis.inversion() > 0) || (N.rythme && !N.rythme.apparitionsPermises());
     /* la grille des temps de jeu : on n'apparaît qu'au changement de temps (au plus tard 0,41 s plus tard) */
-    var b = Math.floor(O.T.t / secteur().grilleTemps); st.beat = b !== st.lastBeat; st.lastBeat = b;
+    var b = N.rythme ? N.rythme.tempsCle() : N.music && N.music.grille ? Math.floor(N.music.grille(O.T.t).total) : Math.floor(O.T.t / secteur().grilleTemps); st.beat = b !== st.lastBeat; st.lastBeat = b;
     /* le virage de plus de 45° du premier ennemi de la première partie */
     if (st.gate > 0 && P) {
       if (st.angPrec !== null) st.turn += Math.abs(O.wrapA(P.ang - st.angPrec));
@@ -365,22 +436,25 @@ N.dir = (function () {
     }
     var cap = plafond(), regl = reglage();
     if (!chassePause && N.serpents && N.serpents.pasPartie) N.serpents.pasPartie(dt, cap);
+    var calendrierMusical = N.rythme && N.rythme.calendrier(st.n);
+    var formationMusicale = calendrierMusical && calendrierMusical.regle.formationDrop;
     /* les formations datées : la première seule pendant l'entrée de 6 s ; elles attendent si le plafond est atteint */
-    if (!chassePause && st.beat && st.tw >= st.prochainGroupe) {
+    if (formationMusicale && !chassePause && st.beat && st.tw >= st.prochainGroupe) {
       for (i = 0; i < st.queue.length; i++) {
         var q = st.queue[i];
-        if (q.fait) continue;
+        if (q.fait || q.f !== formationMusicale) continue;
         if (q.t > st.tw) break;
         if (i > 0 && st.tw < secteur().entree) break;                            // entrée calme de 6 s : seule la première formation
         if (i === 0 && st.gate > st.tw) break;
         if (N.ennemis.counts().regular + taille(q.f) > cap) break;      // le plafond ne cesse jamais de s’appliquer
         if (!q.annonce) {                                                   // annoncée 1 s avant (§ 4.3) : son nom d'abord, ses ennemis ensuite
           q.annonce = st.tw;
+          q.rythmeFinAnnonce = N.rythme ? N.rythme.annonce(R.formations.annonce).t : null;
           var nm = NOMS[q.f] || q.f.toUpperCase();
           if (!st.vus[q.f]) { st.vus[q.f] = true; banniere(nm, { c: 'magenta', duree: 1.4 }); } else etiquette(nm);
           break;
         }
-        if (st.tw - q.annonce < ((R && R.formations && R.formations.annonce) || 1)) break;
+        if (q.rythmeFinAnnonce !== null && N.rythme ? N.rythme.lire().t < q.rythmeFinAnnonce : st.tw - q.annonce < R.formations.annonce) break;
         var made = formation(q.f, { sansEtiquette: true });
         if (made > 0) { q.fait = true; st.prochainGroupe = st.tw + (regl.intervalle || 0); break; }
         q.essais++;
@@ -388,22 +462,12 @@ N.dir = (function () {
         break;
       }
     }
-    /* V5 : toutes les formations, deux à la fois, toutes les 5 s */
-    if (!chassePause && w.melange && st.tw >= (w.melange.demarre !== undefined ? w.melange.demarre : (w.travelling ? w.travelling.t : 6)) && st.tw >= st.melangeT && st.beat) {
-      var toutes = ['file', 'meute', 'nuee', 'duoMines', 'champMines', 'pince', 'batterie', 'essaim', 'duel', 'garde'];
-      for (i = 0; i < w.melange.parSalve; i++) formation(toutes[ri(0, toutes.length - 1)]);
-      st.melangeT = st.tw + (w.melange.intervalle || 5);
-    }
-    /* le remplissage : tant que le quota n'est pas atteint et que la vague manque d'ennemis, une FILE (ou une formation de la vague) */
+    // L'alimentation suit une pression pondérée et une dette de débit bornée.
+    // Aucun changement de grille musicale ici : r2b garde le propriétaire du rythme.
+    if (!chassePause && !(st.gate > st.tw)) alimenter(dt, w);
     var quota = regl.quota !== undefined ? regl.quota : w.quota;
-    var attendu = quota * O.clamp(st.tw / Math.max(CFG.remplissageMin, w.duree * CFG.remplissagePart), 0, 1);
-    if (!chassePause && st.beat && st.tw >= st.prochainGroupe && st.tw > CFG.remplissageDebut && st.spawned < quota && st.spawned < attendu && !(st.gate > st.tw)) {
-      var rem = w.remplissage;
-      if (!rem && w.formations && w.formations.length) rem = w.formations[ri(0, w.formations.length - 1)].f;
-      if (rem && rem !== 'champMines' && rem !== 'duoMines' && formation(rem, { sansEtiquette: true })) st.prochainGroupe = st.tw + (regl.intervalle || 0);
-    }
     /* le pic, entre 55 et 75 % de la durée */
-    if (!repos.demande && !st.picFait && w.pic && st.tw >= w.pic.t) { if (lancerPic()) st.picFait = true; }
+    if (!repos.demande && !st.picFait && w.pic && st.tw >= datePic && (!N.rythme || N.rythme.apparitionsPermises())) { if (lancerPic()) st.picFait = true; }
     if (!repos.demande && !st.pastilleFaite && w.pastille && st.tw >= w.pastille) { st.pastilleFaite = poserPastille(); if (!st.pastilleFaite && st.tw > w.pastille + 6) st.pastilleFaite = true; }
     if (!chassePause) traqueur();
     /* la traque de fin de vague (Cruise Elroy) : moins de 20 % du quota à venir, les dernières flèches accélèrent de 30 % */
@@ -474,6 +538,7 @@ N.dir = (function () {
   return {
     bossMort: function () { return st.bossMort; },
     reset: reset, update: update, vague: function () { return st.n; }, phase: function () { return st.phase; },
+    intensite: intensite, cibleIntensite: cibleIntensite,
     tension: tension, progression: progression, entrees: function () { return st.entrees; },
     demarrer: demarrer, info: info, lancerBoss: lancerBoss, fini: function () { return st.fini; }, stats: stats,
     plafond: plafond, effectif: effectif, tailleFormation: taille,

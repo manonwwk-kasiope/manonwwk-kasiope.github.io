@@ -227,15 +227,23 @@ function stickUpdate() {
   STICK_R = N.R.joueuse.courseCSS * ((S.reglages && S.reglages.manche) || N.R.reglages.manche);
   var st = S.input.stick;
   st.r = STICK_R;
+  var dirigeait = S.input.mag > 0;
   st.active = stick.id !== null; st.ox = stick.ox; st.oy = stick.oy; st.x = stick.x; st.y = stick.y;
   if (!st.active) { S.input.mag = 0; return; }
   var dx = stick.x - stick.ox, dy = stick.y - stick.oy, m = Math.hypot(dx, dy), a = Math.min(1, m / STICK_R);
-  if (a < STICK_MORT) { S.input.mag = 0; return; }        // la dernière direction est gardée
+  if (a < STICK_MORT) {
+    if (dirigeait) {
+      stickReposT0 = performance.now();
+      for (var i = 0; i < doigts.length; i++) if (doigts[i].role === 'action' && doigts[i].classe === null) doigts[i].toucherPermis = false;
+    }
+    S.input.mag = 0; return;                            // la dernière direction est gardée
+  }
   S.input.x = dx / m; S.input.y = dy / m; S.input.mag = a;
 }
 /* ---- § 2.16 : un geste, une action, aucune confusion ----
    Le manche est le premier doigt posé. Un doigt posé pendant que le manche est tenu depuis au moins 150 ms est un
-   doigt d'action ; posé avant, il attend (si le manche se lève il devient le manche, sinon il n'est rien). Le doigt
+   doigt d'action ; son TOUCHER seul est écarté à l'origine pendant la garde de recentrage (N.R.gestes.recentrage.repos).
+   Posé avant, il attend (si le manche se lève il devient le manche, sinon il n'est rien). Le doigt
    d'action est classé UNE fois, au premier de trois instants : TOUCHER (relevé en moins de 180 ms, déplacé de moins
    de 10 pt : pouvoir), GLISSÉ (24 pt ou plus en moins de 220 ms : apogée, dès le seuil), TENU (encore posé à 180 ms,
    moins de 24 pt : boost tant qu'il reste posé). Tout autre geste ne fait rien. Unités : les seuils en pt (px CSS) ;
@@ -244,7 +252,16 @@ var G_ATTENTE = N.R.gestes.delaiAction * N.R.gestes.msParSeconde,
   G_TOUCHER_T = N.R.gestes.toucher.duree * N.R.gestes.msParSeconde, G_TOUCHER_D = N.R.gestes.toucher.deplacementPt,
   G_GLISSE_D = N.R.gestes.glisse.distancePt, G_GLISSE_T = N.R.gestes.glisse.duree * N.R.gestes.msParSeconde,
   G_BORD = N.R.gestes.bordPt, G_TAP_T = N.R.gestes.tapMenu * N.R.gestes.msParSeconde;
-var doigts = [], stickT0 = 0;
+var doigts = [], stickT0 = 0, stickReposT0 = 0;
+/* Une pose encore neutre peut appartenir au recentrage, même si le navigateur a livré
+   le second touchstart juste après 150 ms. La permission de TOUCHER est figée
+   à SA pose : diriger ensuite ne la réarme pas. Les GLISSÉ/TENU gardent leurs
+   seuils, même dans cette garde. Un manche dirigé, ou au repos établi, conserve
+   exactement les gestes existants. */
+function pouvoirPossible(now) {
+  return now - stickT0 >= G_ATTENTE && (S.input.mag > 0 ||
+    now - stickReposT0 >= N.R.gestes.recentrage.repos * N.R.gestes.msParSeconde);
+}
 function doigtDe(id) { for (var i = 0; i < doigts.length; i++) if (doigts[i].id === id) return doigts[i]; return null; }
 function retirer(d) { var i = doigts.indexOf(d); if (i >= 0) doigts.splice(i, 1); }
 /* Un retour à l'origine n'efface jamais l'excursion déjà parcourue. */
@@ -280,6 +297,7 @@ function prendreManche(d, now) {
   d.role = 'manche';
   stick.id = d.id; stick.ox = ox; stick.oy = oy; stick.x = d.x; stick.y = d.y;
   stickT0 = now;
+  stickReposT0 = now;
   stickUpdate();
 }
 /* à chaque image, avant la mise à jour : les doigts qui attendent, et le TENU */
@@ -319,7 +337,10 @@ function onTouchStart(e) {
     var d = { id: t.identifier, role: 'rien', x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, t0: now, classe: null, distanceMax: 0 };
     doigts.push(d);
     if (stick.id === null) prendreManche(d, now);                 // le premier doigt posé est le manche, jamais une action
-    else d.role = (now - stickT0 >= G_ATTENTE) ? 'action' : 'attente';
+    else {
+      d.role = now - stickT0 >= G_ATTENTE ? 'action' : 'attente';
+      d.toucherPermis = pouvoirPossible(now);
+    }
   }
   if (e.cancelable) e.preventDefault();
 }
@@ -343,6 +364,12 @@ function onTouchMove(e) {
 }
 function onTouchEnd(e) {
   var now = performance.now(), fin = e.type === 'touchend';
+  /* Tous les doigts d'un même événement se lèvent ensemble, quel que soit l'ordre
+     de changedTouches : retirer le pouce ne doit pas valider d'abord le pouvoir. */
+  for (var p = 0; e.changedTouches && p < e.changedTouches.length; p++) if (e.changedTouches[p].identifier === stick.id) {
+    for (var a = 0; a < doigts.length; a++) if (doigts[a].role === 'action' && doigts[a].classe === null) doigts[a].role = 'recentrage';
+    break;
+  }
   for (var i = 0; e.changedTouches && i < e.changedTouches.length; i++) {
     var t = e.changedTouches[i], d = doigtDe(t.identifier);
     if (!d) continue;
@@ -352,11 +379,11 @@ function onTouchEnd(e) {
     if (d.role === 'manche') {
       stick.id = null; stickUpdate();
       if (fin && court) tap(d, now);                                // le toucher bref du manche ne fait que poser une origine
-      for (var j = 0; j < doigts.length; j++) if (doigts[j].role === 'attente') {   // le doigt qui attendait devient le manche
+      for (var j = 0; j < doigts.length; j++) if (doigts[j].role === 'attente' || doigts[j].role === 'recentrage') {   // le doigt qui attendait devient le manche
         prendreManche(doigts[j], now); break;
       }
     } else if (d.role === 'action') {
-      if (fin && d.classe === null && now - d.t0 < G_TOUCHER_T && deplace(d) < G_TOUCHER_D) {
+      if (fin && d.toucherPermis && d.classe === null && now - d.t0 < G_TOUCHER_T && deplace(d) < G_TOUCHER_D) {
         d.classe = 'toucher'; geste('toucher', d, now); S.input.pouvoir = true; tap(d, now);   // au relâcher
       }
     }

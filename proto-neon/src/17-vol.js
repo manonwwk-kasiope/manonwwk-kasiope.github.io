@@ -129,7 +129,7 @@
       else { NA = 5; for (var b = 0; b < 5; b++) ANNEAUX[b] = 5 - b; }
     }
     if (s) { D.pas = ou(s.pasTransversal, 24); if (s.avance) D.avance = ou(s.avance.vol, D.avance); }
-    D.temps = (tp && ou(tp.dureeTemps, 0)) ? tp.dureeTemps : 60 / 144.6;
+    D.temps = N.music && N.music.tempo ? N.R.tempoVariable.minutesSecondes / N.music.tempo() : ((tp && ou(tp.dureeTemps, 0)) ? tp.dureeTemps : 60 / 144.6);
     if (D.echelle < 1) D.echelle = 2;
     if (D.nPorte < 1) D.nPorte = 1;
     if (D.nPorte > 8) D.nPorte = 8;
@@ -594,7 +594,7 @@
       bX[k] += (px - bX[k]) * a; bY[k] += (py - bY[k]) * a;
       px = bX[k]; py = bY[k];
     }
-    Q[AV] += dt * AVN;
+    Q[AV] += dt * (N.music && N.music.tempo ? D.avance * D.pas * N.music.tempo() / N.R.tempoVariable.minutesSecondes : AVN);
     // les contacts, dans l'ordre du temps (ord va du plus loin au plus proche)
     for (var q = nObj - 1; q >= 0; q--) {
       var i = ord[q];

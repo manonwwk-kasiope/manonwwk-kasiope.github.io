@@ -455,6 +455,7 @@
       if (i >= ETAPES.length) { finir('fin'); return; }
       var e = ETAPES[i];
       A.i = i;
+      if (A.opts.retour && N.R.accueilU1.retourEpoques.indexOf(e.id) >= 0) { ajournal('déjà traversé ' + e.id); continue; }
       if (e.si === 'deux' && !A.deux) continue;
       if (e.si === 'seul' && A.deux) continue;
       if (A.cible >= 0) {                                   // rattrapage : on va vers la cible sans rendre la main
@@ -493,6 +494,7 @@
         continue;
       }
       if (e.type === 'jeu') {
+        if (e.id === N.R.accueilU1.retourEtape && N.score && N.score.profil.epoquesVues) N.score.profil.epoquesVues(true);
         if (e.sauf && A.vus[e.sauf]) { ajournal('jeu ' + e.id + ' remplacé par ' + e.sauf); continue; }
         ajournal('jeu ' + e.id); ambiance(e);
         if (!A.aJouer) {                                     // sans jeu (page d'essai nue) : le voyage se raconte d'une traite
@@ -539,7 +541,7 @@
     A.qui = (o.qui === 'elle' || o.qui === 'lui') ? o.qui : null;
     A.aJouer = typeof o.aJouer === 'function' ? o.aJouer : null;
     A.surFin = typeof o.surFin === 'function' ? o.surFin : null;
-    A.opts = { qui: A.qui, rattraper: o.rattraper !== false, graines: o.graines || null };
+    A.opts = { retour: !!(N.score && N.score.profil.epoquesVues && N.score.profil.epoquesVues()), qui: A.qui, rattraper: o.rattraper !== false, graines: o.graines || null };
     ajournal('début');
     entrer(0);
     return true;

@@ -278,15 +278,19 @@
     if (ty1 > H - 1) ty1 = H - 1;
     if (tx1 < tx0 || ty1 < ty0) return;
 
+    // codex-p45b : sens, recoloration et masque choisis une fois par pose.
+    var stride = fx ? -1 : 1, first = fx ? sw - 1 - (tx0 - x) : tx0 - x;
     for (var ty = ty0; ty <= ty1; ty++) {
-      var sy = ty - y; if (fy) sy = sh - 1 - sy;
-      var so = sy * sw, to = ty * W;
-      for (var tx = tx0; tx <= tx1; tx++) {
-        var sx = tx - x; if (fx) sx = sw - 1 - sx;
-        var vv = d[so + sx];
-        if (!vv) continue;
-        buf[to + tx] = ink >= 0 ? ink : (vv & 15);
-        if (MK) MK[to + tx] = OWN;
+      var sy = fy ? sh - 1 - (ty - y) : ty - y;
+      var si = sy * sw + first, to = ty * W + tx0, end = ty * W + tx1 + 1;
+      if (MK) {
+        for (; to < end; to++, si += stride) {
+          var v = d[si]; if (v) { buf[to] = ink >= 0 ? ink : (v & 15); MK[to] = OWN; }
+        }
+      } else if (ink >= 0) {
+        for (; to < end; to++, si += stride) if (d[si]) buf[to] = ink;
+      } else {
+        for (; to < end; to++, si += stride) { var vv = d[si]; if (vv) buf[to] = vv & 15; }
       }
     }
   }
@@ -297,6 +301,27 @@
      est posé aussi (sinon il est transparent, comme pour blit). lut : table de 16 index appliquée à la volée
      (cyclage des enseignes, table de couleurs d'un quartier). Un plan sans lut ni transparence se copie par
      segments entiers (buf.set) : c'est le chemin rapide du ciel et du sol. */
+  // codex-p45 : choisir transparence/table/masque hors de la boucle de pixels.
+  // Aucun cache d'image : les plans restent modifiables par leurs propriétaires.
+  function layerRun(d, so, to, n, lut, opaque) {
+    var k, v;
+    if (!lut && opaque) {
+      buf.set(d.subarray(so, so + n), to);
+      if (MK) MK.fill(OWN, to, to + n);
+    } else if (opaque) {
+      for (k = 0; k < n; k++) buf[to + k] = lut[d[so + k]];
+      if (MK) MK.fill(OWN, to, to + n);
+    } else if (MK) {
+      for (k = 0; k < n; k++) {
+        v = d[so + k];
+        if (v) { buf[to + k] = lut ? lut[v] : v; MK[to + k] = OWN; }
+      }
+    } else if (lut) {
+      for (k = 0; k < n; k++) { v = d[so + k]; if (v) buf[to + k] = lut[v]; }
+    } else {
+      for (k = 0; k < n; k++) { v = d[so + k]; if (v) buf[to + k] = v; }
+    }
+  }
   function layer(img, o) {
     if (!img || !img.data || !buf) return;
     var iw = img.w | 0, ih = img.h | 0, d = img.data;
@@ -306,38 +331,29 @@
     var ya = y0 < 0 ? -y0 : 0, yb = ih - 1;
     if (y0 + yb > H - 1) yb = H - 1 - y0;
     if (ya > yb) return;
-    var fast = opaque && !lut0 && !luts;
-    for (var r = ya; r <= yb; r++) {
-      var so = r * iw, to = (y0 + r) * W;
-      var lut = luts ? luts[r] : lut0;           /* une table par rangée du plan : rangées de fenêtres, éclipse */
-      if (wrap) {
-        var s0 = (-x0) % iw; if (s0 < 0) s0 += iw;         /* colonne du plan qui tombe sur la colonne 0 du tampon */
-        var tx = 0;
+    if (!wrap && opaque && !lut0 && !luts && x0 === 0 && iw === W && d.buffer !== buf.buffer) {
+      var to = (y0 + ya) * W, count = (yb - ya + 1) * W;
+      buf.set(d.subarray(ya * iw, (yb + 1) * iw), to);
+      if (MK) MK.fill(OWN, to, to + count);
+      return;
+    }
+    if (wrap) {
+      var start = (-x0) % iw; if (start < 0) start += iw;
+      for (var r = ya; r <= yb; r++) {
+        var so = r * iw, to = (y0 + r) * W, s0 = start, tx = 0;
+        var lut = luts ? luts[r] : lut0;
         while (tx < W) {
           var run = iw - s0; if (run > W - tx) run = W - tx;
-          if (fast) buf.set(d.subarray(so + s0, so + s0 + run), to + tx);
-          else for (var k = 0; k < run; k++) {
-            var v = d[so + s0 + k];
-            if (!v && !opaque) continue;
-            buf[to + tx + k] = lut ? lut[v] : v;
-            if (MK) MK[to + tx + k] = OWN;
-          }
-          if (MK && fast) MK.fill(OWN, to + tx, to + tx + run);
+          layerRun(d, so + s0, to + tx, run, lut, opaque);
           tx += run; s0 = 0;
         }
-      } else {
-        var a = x0 < 0 ? -x0 : 0, b = iw - 1;
-        if (x0 + b > W - 1) b = W - 1 - x0;
-        if (a > b) continue;
-        if (fast) buf.set(d.subarray(so + a, so + b + 1), to + x0 + a);
-        else for (var k2 = a; k2 <= b; k2++) {
-          var v2 = d[so + k2];
-          if (!v2 && !opaque) continue;
-          buf[to + x0 + k2] = lut ? lut[v2] : v2;
-          if (MK) MK[to + x0 + k2] = OWN;
-        }
-        if (MK && fast) MK.fill(OWN, to + x0 + a, to + x0 + b + 1);
       }
+    } else {
+      var a = x0 < 0 ? -x0 : 0, b = iw - 1;
+      if (x0 + b > W - 1) b = W - 1 - x0;
+      if (a > b) return;
+      for (var r2 = ya; r2 <= yb; r2++)
+        layerRun(d, r2 * iw + a, (y0 + r2) * W + x0 + a, b - a + 1, luts ? luts[r2] : lut0, opaque);
     }
   }
 

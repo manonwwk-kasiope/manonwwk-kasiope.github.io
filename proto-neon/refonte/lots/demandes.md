@@ -962,3 +962,183 @@ Ajout dans `src/02-regles.js` : `R.scene.budgets.secousse`, fenêtre de 1 second
 Point de reprise : sources avant figées, calibration historique 10/10 exacte, mesures et contrôles VM dans le dossier du lot. Les trois campagnes de 80 parties sont en collecte à cette heure ; bilan définitif dans `tools/codex-u1/rapport.md`. Aucun commit, aucun réseau sortant, aucune source réservée modifiée. Le navigateur et Safari réel restent à vérifier.
 
 Codex-u1 — 24/10/2026 · 02 h 48 (Paris), mis à jour : 240 reçus collectés, 80/80 trajectoires et journaux de combat identiques ; 40/80 résumés score compris et 32/80 journaux bruts identiques (deux effets comptables voulus). Ablation comptable : 80/80 reçus strictement identiques, journaux compris. Zéro erreur ; build 0 ; trois raccords acceptés par git apply --check, sources réservées inchangées. Bornes préexistantes expert/2 V5 et dieu/9 V4 maintenues. Captures VM regardées sur les trois profils, retour au combat en trois touchers et 5,55 s ; contrôles navigateur et Safari réel toujours à vérifier. Rapport final : tools/codex-u1/rapport.md. Aucun commit ni réseau sortant.
+
+## codex-f1 — fusion candidate du chantier INCROYABLE
+
+24/10/2026 · 03 h 59 (Paris). Section de la fusion uniquement ; les sections des autres missions sont conservées.
+
+| mission | fichier | besoin / chiffre | raison |
+|---|---|---|---|
+| codex-f1 | `02-regles.js`, `R.photosensibiliteP35` | `demandes=10`, `duree=1`, `petiteAire=0.01`, `grandeAire=0.1` | report du cas construit p35 livré par i1 ; aucun seuil de photosensibilité modifié |
+| codex-f1 | `02-regles.js`, `R.tempoVariable` | `demi=0.5`, `frein=0.5`, `freinMesures=1`, `securite=0.001`, `minutesSecondes=60`, `repliBpm=143.759` | report p33b via i1, sans seconde application de p33b.patch ; garder le tempo natif des morceaux longs |
+| codex-f1 | `02-regles.js`, `R.gestes.recentrage` | `repos=0.25` s | report p47 via i1 ; préserver sa protection lors de l'intégration WARP et la course de manche u1 |
+| codex-f1 | `64-aventure.js`, `78-hud.js`, `79-jeu.js` | trois raccords u1 appliqués par patch | sources u1 déjà sur la pointe ; canaux sonores indépendants, réglages, retour au néon et texte des bannières |
+| codex-f1 | `tools/codex-f1/` | reçus avant/après et script navigateur, sans exécution dans le bac | interdiction explicite de listen/Chromium et de réseau sortant ; aucune qualification Safari, acoustique ou jury déduite de la VM |
+| codex-f1 | `02-regles.js`, ajout `R.tempoScenes` de t1 | `v4Pic=1.06`, `v5Drop=1.08`, `cyclope2=1.04`, `cyclope3=1.08`, `enrage=1.12` ; `vague4=4`, `vague5=5`, `dropV5Mesure=20`, `phase2=2`, `phase3=3`, `doubleCrocheParTemps=4` | paliers et points de raccord livrés par t1, variantes audio sans changement de hauteur ; catalogue de six originaux séparé des neuf versions |
+| codex-f1 | `02-regles.js`, ajout `R.tempoScenes` de t1 | `avance=0.3`, `latenceMax=0.2`, `suffixeFacteur=100`, `margeRendu=0.0001` ; mesure : `tempoMin=1.08`, `toleranceRatio=0.005`, `hauteurCents=10`, `raccordMs=10` | anticiper les raccords, borner la compensation, retrouver le nom des variantes ; marge et seuils du banc t1 livrés, aucune qualification acoustique déduite de la VM |
+| codex-f1 | `30-music.js`, `73-colosse.js`, `79-jeu.js` | conflits t1 résolus en gardant le repli p33b et le transport t1 ; resetTempo enrichi et appel enrage branchés | ne pas doubler p33b, ne pas supprimer les canaux u1, préserver les morceaux natifs et préparer r2c |
+| codex-f1 | `02-regles.js`, ajout `R.scenesS1` de s1 | `secondesMinute=60`, `bpmRepli=143.759`, `subdivisions=4`, `tolerance=0.05`, `secousseSeuil=0.5`, `jolt=3` | transport musical public et repli explicitement simulé ; extinction physique sous le demi-pixel, seuil R14 toujours strictement `S.shake > 0` |
+| codex-f1 | `02-regles.js`, `scenesS1.vague/vol` | vague `temps=4`, `formation16=10` ; VOL `entree=1`, `portes=6`, `sortie=1` | scène demandée en temps : quatre temps de bannière et huit temps de VOL ; contacts des six portes aux temps 2 à 7, pas simple étalement des créations |
+| codex-f1 | `02-regles.js`, `scenesS1.reveil/colosse` | réveil `film=5`, `alerte=3`, `boss=4` ; colosse `gelees=4`, `warning=7`, `arrivee=5`, `repit=16`, `mortGel=1`, `cascadeCroches=5`, `brasierTemps=4` | valeurs livrées par s1 ; arrivée, répit et mort du composant raccordés. La préentrée complète en seize temps et les panneaux du réveil ne sont pas qualifiés par le contrôle de fin CYCLOPE |
+| codex-f1 | `02-regles.js`, `scenesS1.profondeur/cosmos` | profondeur `sortie=10`, `choc=0.2`, `gelImages=3`, `kick=0.5`, `rayon=16`, `annonce=2`, `cadence=[5,4,4]` ; cosmos `poussee=0.18`, `amplitude=3`, `detonation=4`, `anneau16=1`, `rampe16=32` | scripts de s1 repris ; impulsion amortie et explosions compatibles confort ; mesures VM distinctes du son réel et des films |
+| codex-f1 | `02-regles.js`, `scenesS1.mort/victoire` | mort `silence16=1`, `fin=3` ; victoire `mesures=4` | accord après une double croche de silence, fin de mort en trois temps puis READY au temps suivant ; victoire en quatre mesures réelles, gel inclus |
+| codex-f1 | `02-regles.js`, ajout `R.fusionF1` | bannière `numero=1`, `formation=2` ; `ready=1`, `readyTaille=2` ; victoire `pluieParTemps=1`, `extinction=1` ; colosse `croche=0.5`, `carcasseTemps=5` | cadre puis numéro puis formation ; READY lisible au-dessus de la tête pendant un temps, en tag pour garder le vrai budget des bannières ; pluie de perles et extinction ; animation complète de carcasse en cinq temps pour tenir les quatre mesures sans couper la mort du boss |
+| codex-f1 | `79-jeu.js`, `73-colosse.js`, `50-fx.js`, `30-music.js` | attendre la vraie fin du boss avant le film ; cinq explosions à la croche, drop sur barre ; transport identifié par version/id publics | l'ancien film partait avant la mort complète. Les attentes sont annulées au reset et reprogrammées si la piste change ; aucun champ privé d'un autre module lu |
+| codex-f1 | `17-vol.js`, `78-hud.js`, `79-scene.js` | raccords S01/S02/S05, admission du limiteur à chaque révélation de bannière | vraie durée du VOL, portes effectivement franchies, bannière en quatre temps sans échapper à la porte des flashs ; départ explicite `reset(...,{depart:'jeu'})` immédiat pour préserver le contrat des fixtures |
+| codex-f1 | `02-regles.js`, `R.fusionF1.luminanceLointainMax=0.09`, `encreLointain='violet'` ; `15-decor.js` | reprise isolée du plafond de luminance du diagnostic r2c dans les tables p45b | première charge S1 : 1/6/3 flashs/s, donc régression portrait contre 0/4/2 reçu. Les retournements du lointain clair sont documentés par r2c ; garder sa géométrie et ses matières dans les encres sombres avant plateau/acteurs/HUD. Aucun seuil R13 modifié et aucun module 31 ni son scheduler bloquant importé par cette correction |
+
+**Arrêt de S1 en fusion f1 — les ajouts S1/F1 ci-dessus sont retirés de la source candidate.** Deux charges complètes R13 sur le candidat S1 donnent 1/6/3 puis 1/6/2 flashs/s (paysage/portrait/bureau), contre 0/4/2 sur t1 : le portrait reste à 6/s après l'unique correction du lointain. Aucun troisième essai. Le contrôle de scènes et la fin CYCLOPE passent, mais ne compensent pas la régression de photosensibilité. `tools/codex-f1/s1-ecarte.patch` conserve tous les raccords ; `retour-s1.json` prouve le retour exact aux sources t1 par patch. Les captures et durées S1 appartiennent au candidat écarté. La cause fine de la seconde paire de transitions du portrait reste à établir par une méthode indépendante ; le plafond du lointain n'en est pas une correction suffisante.
+
+### W1, W1b et W1c — nombres actifs de la fusion
+
+Le bloc ci-dessous est le report exact des paramètres livrés par W1. Les charges et récompenses restent des hypothèses de design ; les dimensions et le transport sont ceux de son étude. Les seuils R13/R14 ne changent pas. Les neuf MP3 de t1 ne changent pas de vitesse au WARP. Le calage anticipé de W1c, livré à 04 h 09, reste borné à 12 ms et le journal conserve le vrai écart.
+
+```js
+R.warp = {
+    jauge: { max: 100, charge: { ordinaire: 1, elite: 6, noyau: 10, lasso: 2 } },
+    temps: { entree: 1, viseeMin: 4, salve: 2, sortie: 2, mesure: 4, subdivisions: 4, periodeX: 6, periodeY: 4 },
+    epoques: { profondeur: 3, warp: 4 },
+    audio: { note: 74, duree: 0.06, attaque: 0.002, gain: 0.085, filtre: 3000, grave: 130, finGrave: 38, queue: 0.24, relache: 0.5, gainDrop: 0.3 },
+    bpmRepli: 143.759, secondesMinute: 60, epsilon: 1e-7, facteur: 0.15, sortieCourbe: 2,
+    verrousMax: 8, parCible: 3, parBoss: 4, capture: 11, recharge: 1,
+    salveEcart16: 1, trou16: 1, decor: 4, inactiviteTemps: 4,
+    flashs: { max: 2, ecartMin: 0.83, duree: 1 / 60 },
+    jolt: { max: 3, amplitude: 3 },
+    recompense: { pluieBase: 2, apogee: 15, apogeeParfait: 25, cellule: 1, banniereTemps: 4 },
+    armes: { missile: 80, bombe: 70, mine: 90, laser: 90, groupe: 26, groupeMin: 3,
+      rapide: 100, couloir: 3, rayon: 30, vol16: 1, longueur: 340 },
+    visuel: { stries: 28, rayon: 4, coins: 3, marge: 4, pasJauge: 4, margeHud: 12,
+      pulseFraction: 0.125, palierBayer: 3, epaisseur: 1, trainee: 0.12, jante: 2 },
+    journalMax: 256, dureeMaxTemps: 12, grilleTolerance: 0.012,
+    lumaMax: 0.039, flashHzMax: 3, secousseRatioMax: 0.12, pixelPulseMin: 0.01, p95Max: 1.5
+  };
+
+  /* codex-w1c : rendu à 60 Hz et horloge audio quantifiée ; échéance admise
+     au plus 12 ms en avance, heure observée conservée, retard jamais masqué. */
+  R.warp.calage = { avance: 0.012 };
+```
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-f1 | `90-boot.js` | relâcher groupé du pouce et du doigt WARP admis seulement pour une action p47 sûre ou éloignée du manche, toujours sous les seuils TOUCHER existants | préserver le garde de recentrage sans bloquer une commande WARP volontaire ; preuve tactile Chrome à vérifier, sans faux DOM |
+| codex-f1 | `50-fx.js` | remettre le facteur externe WARP à la vitesse normale au reset | ne pas laisser un ralenti actif entre deux parties ; aucune nouvelle valeur de combat |
+| codex-f1 | `03-socle.js`, `12-cam.js`, `30-music.js`, `70-joueuse.js`, `79-jeu.js`, `79-scene.js`, `67-cosmos.js` | raccords générés depuis le raccords.py livré, seulement ceux non déjà présents dans le diff W1 | bus, audio, caméra, horloge unique avant avancer, entrée exclusive, effets et source cosmique par les interfaces publiques |
+
+### Compléments f1 — budget indépendant et progression WARP
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-f1 | `02-regles.js`, `R.confortFusion.seuilSecousse=0.5` ; `50-fx.js` | extinction réelle du déplacement sous un demi-pixel et raccord du budget codex-12 déjà configuré dans `R.scene.budgets.secousse` | réduire la traîne de caméra, sans modifier le critère R14 (`S.shake>0` reste compté) ; composant indépendant des scènes S1 écartées, pas de troisième essai S1 |
+| codex-f1 | `78-warp.js` | pas de cadeau de jauge à l'époque vide ou NEON | la première intégration donnait un WARP dès 4,1417 s en V1 ; le déblocage voulu reste profondeur/WARP/cosmos |
+
+Incident de collecte : `w1-corrige` partiel mélangeait deux instantanés lors d'une modification anticipée. Ces reçus sont exclus, pas présentés comme une régression du jeu. Arrêt coopératif, puis étiquette neuve immuable `w1-fixe` ; chaque enfant vérifie maintenant le SHA attendu et la création d'un instantané refuse d'écraser une étiquette différente. Le candidat `w1` antérieur reste un essai, pas la source livrée.
+
+**Retrait W1 à la porte de fusion :** les deux charges R13 complètes donnent `0/6/2`, contre `0/4/2` sur t1. W1/W1b/W1c et le budget indépendant `confortFusion` ci-dessus sont retirés de la source candidate par retour exact à t1 ; archive `w1-ecarte.patch`. Les paramètres W1 documentés ci-dessus ne sont donc plus actifs. Leurs preuves ciblées restent celles d'un candidat écarté. Aucun troisième réglage du lot.
+
+### Rythme r2d, livraison acceptée par la cheffe le 24/10 à 04 h 41
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-f1 | `02-regles.js` : ajouts exacts `R.rythme`, `R.rythme.partition`, `R.rythme.verificationAudio` du patch r2d | paramètres de chorégraphie, rendu et mesure ; aucune ancienne règle modifiée | provenance `codex-r2d-manifest.json`, SHA du patch livré `3f895d9e634a5fc9882db393cdcab05191f0166cea5f5b118f0eb00b2e1d4c7e` ; seuils existants non affaiblis |
+| codex-f1 | `build.mjs` (hors propriété), remplacé par `src/01-rythme-data.js` | injection synchrone des métadonnées du raccord build dans la fermeture lexicographique existante | build.mjs reste intact ; données issues du catalogue t1, de piste.json et de structure.json appliqué par patch, mêmes objets dans le bundle et la VM ; aucun nouveau paramètre de gameplay hors N.R |
+| codex-f1 | `15-decor.js`, `30-music.js`, `76-directeur.js` | conserver les tables p45b et diagnostics/tempo t1 avec la partition r2d | le plafond du lointain est composé dans la table Bayer préexistante ; transport public et trackState enrichi conservés ; priorité à l'horloge r2d, repli grille t1 |
+
+Le candidat r2c antérieur n'est pas pris. Réserve explicite acceptée par la cheffe : des tirs CYCLOPE sous gel restent retardés au-delà de la fenêtre stricte de 20 ms ; ne pas annoncer P4 acquis. Les scènes S1 et le module W1 écartés ne sont pas réactivés par r2d.
+
+Valeurs importées r2d (motifs de design du lot, mesures audio et plafonds visuels distincts ; aucun seuil R13/R14 changé) :
+
+```js
+  R.rythme = {
+    actif: true, version: 1, phraseMesures: 8, subdivisions: 2, epsilon: 1e-6,
+    bpmRepli: 143.759, secondesMinute: 60, latenceMax: 0.2,
+    pulseDuree: 0.14, dropDuree: 0.9, monteeMesures: 2, breakMesures: 2,
+    repliBreakPhrase: 3, repliDropPhrase: 4,
+    attenteMaxTemps: 0.5, repriseForce: 0.7,
+    decor: { gainMontee: 0.3, gainDrop: 0.65, retenue: 0.72 },
+    ennemis: { retenue: 0.86 },
+    visuel: { aireMax: 0.025, pas: 16, seuilPulse: 0.25, rayonOnde: 0.7,
+      pointsOnde: 240, etincelles: 64, longueurTrait: 4, margeHud: 4, hudLargeur: 48,
+      contourPoints: 8, contourMarge: 3, trauma: 0 },
+    verification: { audioMaxMs: 20, duree: 60, hz: 60, destructionNombre: 30, destructionPas: 4 }
+  };
+
+  /* codex-r2c — partition de l'étude indépendante, 24/10/2026.
+     Ajouts seulement ; les règles historiques et leurs seuils restent intacts. */
+  R.rythme.partition = {
+    divisionsSon: 4, divisionsCascade: 2, cascadeNombre: 4, divisionsSalve: 8,
+    tempsTirs: [1, 3], roulement: [1, 2, 4, 8],
+    trouTemps: 0.25, rampeSon: 0.004, avanceSon: 0.002,
+    gelDropImages: 3, zoomDrop: 1.06, zoomDropImages: 8,
+    ondeEpaisseur: 2, flashPart: 0.04, ondeRayon: 0.7,
+    luminanceLointainMax: 0.09, encreLointain: 'violet',
+    aireSombreMax: 1, vignettePart: 0.18, traitsMax: 32,
+    secoussePlancher: 1, mouvementDropImagesMax: 12,
+    warpEntree: 0.3, warpFacteur: 0.15, warpFiltre: 900, warpDuckDb: -6,
+    warpMesures: 2, warpSortieTemps: 1, warpRechargeTemps: 2,
+    volMesures: 2, volEntreeTemps: 1, volSortieTemps: 1,
+    repriseTemps: 4, autoTirsParTemps: 3, autoCasesParTemps: 4,
+    echo: ['tir', 'tirEnnemi', 'kill', 'bigkill', 'butin', 'portail', 'lasso', 'salve', 'arme'],
+    gamme: [0, 2, 4, 5, 7, 9, 11],
+    calendrier: { 3: { formationDrop: 'pince' }, 4: { respirationBreak: true }, 5: { picDrop: true } }
+  };
+
+  R.rythme.verificationAudio = { audioMaxMs: 40, tauxSync: 0.95, medianeMs: 15, p99Ms: 60, audioDuree: 540 };
+```
+
+Correction de raccord r2d en fusion : le premier rendu complet échouait sur l'affectation `TEMPS` restée dans `drawFar`, après maintien de la fonction de tempo t1. `dureeTemps()` lit maintenant d'abord le transport public r2d ; affectation au symbole supprimé retirée. Aucun nombre ajouté. Reçu d'erreur conservé ; après correction, R13 complet `0/3/1` flashs/s et zéro erreur sur les trois formats. Le processus de mesure s'était arrêté avec le code 139 après paysage (cause inconnue) : reprise des seuls profils manquants dans des processus séparés, sources identiques.
+
+### Lots p44b et d1b arrêtés à leur porte
+
+P44b : ses ajouts `R.tests.codexP42={mortTirDistance:24, attenteImpact:8, grainesParties:10}` sont des paramètres de fixture ; `R.ennemis.tele.naissanceContour=2` est l'épaisseur du préavis de contact. Le raccord F1 tentait de créditer la visibilité dans les dates absolues r2d, puis de recaler les échéances musicales, sans nouveau nombre. Deux contrôles : 9/24 puis 12/24 assertions ; 0 erreur, 9/9 préparations après correction du départ public. Des acteurs sont déplacés par les fixtures pendant leur portail r2d : leurs absences ne prouvent pas une attaque mal annoncée en partie réelle. Arrêt sans troisième essai ; ces ajouts et raccords sont retirés, archive `p44b-ecarte.patch`, retour exact à r2d-fixe. La campagne 80 après n'est pas lancée sur cette porte préalablement arrêtée.
+
+D1b : final livré à 05 h 32, lu à sa porte. Deux échecs de la porte5 et contrôleur explicitement désactivé ; aucune nouvelle passe adaptative, aucun raccord d1b ni LASSO de son étalon importé dans f1. Le lot est écarté, pas noté en attente et pas annoncé qualifié.
+
+### G1c accepté avec réserves par la cheffe le 24/10 à 04 h 51
+
+Ajouts exacts de la passe2 + plafond40, pas de service des cartes en combat g1b. Les poids/débits et courbes restent des hypothèses de design, sans nouveau réglage de difficulté. Raison des autres nombres : durée des cellules coupées, longueur de réapparition, hystérésis de canon, premier niveau XP, notes finales, défi du jour et géométrie des cibles de titre. Valeurs importées :
+
+```js
+  /* codex-g1 : une proposition structurelle, aucun réglage itératif de R-15.
+     Les surcharges ci-dessous sont ajoutées avant le gel ; les déclarations historiques restent lisibles. */
+  R.mort.coupe.expireCellules = 6;
+  R.vies.reapparition.longueurPart = 0.7;
+  R.armes.canon.hysteresisLongueur = 2;
+  R.xp.seuils = [3].concat(R.xp.seuils.slice(1));
+  R.cartes.progression = { tropheeDes: 3, delaiCible: 10 };
+  R.rejouabilite = {
+    notes: { C: 0.25, B: 0.55, A: 0.85 },
+    jourSel: 2975, graineRepli: 2975,
+    titre: { marge: 6, ecart: 4, largeurPt: 210, hauteurPt: 44, ancrage: 0.68, echelle: 1 }
+  };
+  R.intensite = {
+    horsCombat: R.secteurs[0].respiration.duree, // durée existante : 8 s entièrement hors des vues sûre et anticipée
+    poids: { fleche: 1, larve: 1, mine: 2, dard: 2, tourelle: 3, lame: 3, ruche: 4, sentinelle: 5, rival: 5 },
+    cibles: [0.30, 0.45, 0.60, 0.78, 0.95], referencePoids: 3,
+    // Flux de rencontres par seconde active, indépendant du calendrier des vagues.
+    debits: [1.0, 1.25, 1.65, 1.85, 2.5],
+    flecheMax: 0.35, creditMax: 6, parTempsMax: 4,
+    courbe: { entree: 0.6, crete: 1, creteA: 0.75 },
+    types: [ ['fleche','larve'], ['fleche','larve','dard','mine'],
+      ['fleche','larve','dard','tourelle','sentinelle'],
+      ['fleche','larve','dard','tourelle','sentinelle','ruche','lame'],
+      ['fleche','larve','dard','tourelle','sentinelle','ruche','lame'] ],
+    placement: { essais: 36, bordMax: 110, candidatMax: 16 }
+  };
+
+
+```
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-f1 | `72-ennemis.js`, `76-directeur.js` | garder la garde 40 au producteur et à la matérialisation dans la callback de rythme, refus sans quota ; alimentation pondérée G1 avec la seule Pince datée du calendrier r2d conservée | ne pas perdre la cascade musicale V3 et les horaires r2d en remplaçant le remplissage historique ; aucun champ privé de 31 lu |
+| codex-f1 | `79-jeu.js`, `80-ecrans.js` | défi du jour G1, réglages U1 toujours accessibles ; les deux boutons G1 sont bornés au-dessus du bouton de réglages existant | ne pas superposer les cibles ni relancer l'attraction pendant RÉGLAGES ; géométrie dérivée des mêmes paramètres N.R, aucun nouveau nombre |
+
+### Raccord final f1 : caméra et transport audio commun
+
+| mission | fichier | besoin | raison |
+|---|---|---|---|
+| codex-f1 | `50-fx.js` | raccorder le budget codex-12 déjà configuré (`R.scene.budgets.secousse.fenetre=1`, priorité forte de `R.criteres.R12.camera=6`) ; garder `R.rythme.partition.secoussePlancher=1` | première série G1c : R14 13,13/14,36/14,47 %. Unique correction : 8,41/8,10/8,66 %, 80/80 résumés et journaux identiques. Aucun nouveau paramètre, pas de retour à confortFusion0,5 ni de réactivation S1 |
+| codex-f1 | `30-music.js` | une seule propriété publique `transport`, avec le contrat t1 conservé et un curseur `rythme` daté sur l'audio réel r2d ; repli blocs conservé | la relecture a trouvé deux propriétés homonymes, r2d masquait t1. Pas de deuxième compensation de latence ; l'horloge remappée vers l'original ne doit pas raccourcir un préavis en secondes réelles |
+| codex-f1 | `31-rythme.js` | lire le curseur réel public et reporter les mêmes indices de mesures, drops, breaks et montées sur les barres remesurées de chaque variante t1 | aucun nouveau jugement de structure et aucune annotation changée ; temps des événements dérivés des données déjà livrées, pas de nouvelle valeur de gameplay. Les deux modules sont propriétaires de leurs données privées, sans lecture d'un champ privé inter-module |
+
+Raccord audio final : une proposition structurelle de fusion, sans réglage R14 supplémentaire. Contrôle VM : neuf variantes, 47 positions ; vrais événements de drop, durées de temps et préavis minimum observés, zéro erreur. Signal et calage WebAudio à vérifier hors bac. Le titre G1 conserve une réserve héritée : glyphes de 14 px CSS sur mobile ; au bureau le libellé JOUR mesure 95 pixels de tampon pour une cible large de 53. Géométrie des cibles et actions passent, mais cela ne valide pas la typographie HIG ni la qualité visuelle.
