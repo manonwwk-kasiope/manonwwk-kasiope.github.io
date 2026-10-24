@@ -137,3 +137,8 @@ Durée écoulée : 6 h 03 (le plancher de 6 h est atteint ; la boucle continue j
 | 5 difficulté adaptative | **arrêtée** (d1, d1b) ; joueuse occasionnelle 58–73 s ; méthode proposée, attend la propriétaire |
 | 6 photosensibilité et secousses | f1 Chrome : R-13 ≤ 3/s, R-14 ≤ 8 % — **tenue sur f1** |
 | 7 jury ≥ 9,5 (A et B) | étalonnage en cours ; jurys après f2 |
+
+## Fusion n° 2 livrée et R-07 — 24/10/2026 · 08 h 29 (Paris)
+
+- **f2 livrée (08 h 26)** : f1 + i1b + s1 + w1c + p44b + o1 + journal des tirs (D1/D2) ; d1b exclu. VM : 211 parties, 0 erreur ; R-13 1/0/1 flash/s ; R-14 ≤ 8,71 % ; p44b 24/24, 9/9 scènes. Vérification Chrome en file après l'étalonnage du jury ; relecture adverse du code par Codex rv1 en cours.
+- **p44c (08 h 26), accepté avec réserves, lot arrêté** (second échec de R-07 à 100 %) : coups reçus sans préavis à l'endroit **13 % → 1,06 %** (39/3 674 sur 480 parties) ; reliquat : 34 convois, 4 lasers CYCLOPE, 1 souffle INSTABLE ; aucun contact ni projectile non annoncé ; 0 erreur, 9/9 scènes. À inclure dans la fusion n° 3 (`~/Projets/wt-snake/codex-p44b/proto-neon/tools/codex-p44c/combine.patch`) ; le reliquat est consigné, sans troisième essai.
