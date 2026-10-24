@@ -227,3 +227,9 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 | 5 difficulté adaptative | arrêtée ; essai proposé, attend la propriétaire |
 | 6 photosensibilité | films ≤ 3/s en VM (ff1, 510 cas) ; à requalifier en Chrome sur f4b |
 | 7 jury | jurés Codex valides sur défauts plantés (75–100 %), ancrage (0–0,5) et preuves (0 introuvable), **mais aucune discrimination V0/témoin (écart 0–0,5, seuil 1,5)** : troisième tour d'étalonnage en échec → **alarme**. Diagnostic : la synchronisation est mesurée à la noire alors que le jeu cale sur la croche (V0 à 15,9 % au lieu des 99,78 % de r2d) et le sabotage du témoin ne se voit pas dans le paquet. **codex-di7** (15 h 20) : grille lue dans N.R et juge-code discriminant (si le code ne sépare pas V0 et témoin, aucun juré ne le peut). |
+
+## Grille de synchronisation corrigée, nouveaux bruts nécessaires — 24/10/2026 · 15 h 35 (Paris)
+
+- **codex-di7 (15 h 28), commit d8e6d65** : jury2 mesurait l'écart à la noire (`sonde.mjs:15`, `tapis.mjs:21-23`) alors que le jeu cale sur la croche (`src/31-rythme.js:246-250`, `N.R` subdivisions = 2). Grille lue désormais dans le `N.R` du bundle observé : **V0 passe de 15,9 % à 98,99 %** des apparitions mesurables à ± 40 ms. Juge-code discriminant (aucun accès aux clés, testé) : indice « rythme » **V0 8,71 / témoin 0**. 73/73, rejoués par la cheffe.
+- **Ce qui manque** : les anciens bruts du témoin ne sont pas réellement désynchronisés (défaut du témoin corrigé seulement depuis 26bd4b9) et les doublons de poursuivants n'y sont pas attribuables ; les autres regards ne sont pas mesurables par un code. **Aucun nouveau juré sur ces anciens paquets.**
+- **Prochaine étape, qui attend l'ordre de la propriétaire** (arrêt de non-convergence) : une prise d'étalonnage complète en Chrome (instrument + bruts du jury, 90 à 180 min, hypothèse ; un Chrome muet), de préférence sur la fusion f4b une fois vérifiée et intégrée.
