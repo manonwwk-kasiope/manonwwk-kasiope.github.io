@@ -291,3 +291,10 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - 7 victoires perdues, 6 imputées au plafond des larves et 1 au pic avec les larves, par ablation ; 13 victoires gagnées.
 - **Candidate complète** (`codex-cand`) : f5 + pf1 + fv1 + tc1 + dv1. Le bloc N.R de dv1 a été posé à la main (conflit de contexte avec le bloc fv1). Provenance contrôlée fichier par fichier ; build 0.
 - **codex-jdv1 (22 h 15)** : juge indépendant. Relit le code, rejoue les canaris sur la candidate, vérifie sur 40 parties l'équivalence avec `apres.json` et compte les victoires par pilote.
+
+## WARP en Chrome : défaut du banc, pas du jeu — 24/10/2026 · 22 h 25 (Paris)
+
+- **wx1** (`codex-f5/proto-neon/tools/codex-wx1/rapport.md`) : les deux crochets « muet » du banc f3 imposaient `muted=true` et `volume=0` à **tout** élément média, musique comprise. Le nœud d'analyse du jeu lisait donc 0 et annulait `voix-machine` (seuil 0,0004, `30-music.js:2436`). Remplacés par un gain final nul avant chaque sortie, plus `--mute-audio` : aucun son ne sort, le signal interne reste mesurable. Le banc continue après une erreur de fixture et rend `ok:false`. Jeu inchangé.
+- **Diagnostic Chrome par la cheffe (22 h 17–22 h 19, `diagnostic-chrome.json`), trois profils** : avec l'ancien crochet, le témoin média intact donne **0,0000**, la fixture WARP échoue ; avec le correctif, il donne **0,0710** (attendu 0,0707), et `voix-machine` sonne et passe la validation (maxRms 0,081). L'oscillateur témoin lit 0,07 dans les deux cas.
+- **Jury** : `tools/jury2/sonde.mjs:76` ne coupe que les vidéos ; les bruts du jury ne sont pas touchés. Les vérifieurs de dv1, fv1 et tc1 ont le même piège (vigilance : ne pas conclure sur la musique avec eux).
+- **22 h 25** : vérification Chrome de la **candidate complète** (f5 + pf1 + fv1 + tc1 + dv1 + outils wx1), trois profils.
