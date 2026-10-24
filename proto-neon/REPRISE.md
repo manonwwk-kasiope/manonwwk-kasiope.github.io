@@ -230,3 +230,10 @@ https://manonwwk-kasiope.github.io/proto-neon/ .
 - `.claude/settings.json` autorise Higgsfield et la recherche web sans te demander à chaque fois.
 - La campagne complète (25 niveaux en 5 chapitres) est proposée dans `recherche/game-design-campagne.md`,
   partie 3 : c'est la suite logique après le prototype.
+
+### Point de reprise — 24/10/2026 · 06 h 58 (Paris), chantier « jeu incroyable »
+
+- **Pointe** : candidate f1 intégrée (e4b2428 / bundle 5f7dbb3), vérifiée dans Chrome (33 parties, 0 erreur, R-14 ≤ 8 %, R-13 ≤ 3/s). Page publique inchangée (V0) tant que le jury n'a pas donné ≥ 9,5.
+- **En cours** : Codex `codex-f2` (fusion n° 2 : i1b, s1, WARP w1c, p44b, o1, journal des tirs ; consigne `consignes/codex-f2.md`) ; Codex `codex-p44c` (coups sans préavis, 13 % au navigateur) ; **étalonnage du jury** dans la copie figée `~/Projets/wt-snake/jury-f1` (lancer-libre, 06 h 55, 3–5 h) — ne jamais modifier cette copie pendant le banc ; série autonome `serie-autotest.sh` jusqu'à 11 h ; guetteur.
+- **Arrêtés (non-convergence, relance seulement sur ordre de la propriétaire)** : instruments 3–5 (m1, m2) ; difficulté adaptative d1b (méthode « première minute » proposée, analyse a1 : mur + FLÈCHE = 92 % des morts de l'occasionnelle) ; R-33 « retour-origine » (i1, transmis à f2).
+- **Prochaines actions** : à la livraison de f2 → vérifieur `tools/codex-f2/verifier.mjs --verrou-detenu` **après** l'étalonnage (un Chromium) ; intégrer f2 ; paquets du jury (`jure.mjs paquet`, rôles etalonnage-v0 / -pointe / -temoin) dès que le dossier d'étalonnage existe ; jurys A et B (5 regards × 2 familles) sur la candidate finale ; publication gh-pages + Aiguilleur + notification si ≥ 9,5.
