@@ -66,9 +66,9 @@ export async function testsCanarisRegards({ test, preuve }) {
       const dossier = path.join(REELS, 'dossiers', cleSource.dossierBrut);
       const r = await construirePaquet({ dossier, role: cleSource.role, sortie, cles, code, graineTirage: cleSource.graineTirage });
       const cle = lire(r.cleFichier), m = accessibilite(r.racine, cle); observations.reconstructions.push(m);
-      // Même tirage et mêmes défauts : seule leur accessibilité doit changer.
+      // Même tirage et mêmes défauts de passe 1 ; la passe 2 peut migrer vers une mesure qualifiée.
       assert.deepEqual(cle.ordre, cleSource.ordre);
-      assert.deepEqual(cle.canaris, cleSource.canaris);
+      assert.deepEqual(cle.canaris.filter(c => c.passe === 1), cleSource.canaris.filter(c => c.passe === 1));
       verifierAcces(r.racine, cle, m); return m;
     });
     await test('Accessibilité : noms neutres, tirage crypto, listes indépendantes des défauts et doublon préservé', async () => {

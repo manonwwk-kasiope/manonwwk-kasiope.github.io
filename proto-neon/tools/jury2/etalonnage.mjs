@@ -90,6 +90,7 @@ export function validerVerdict(v, ctx, { passe, verdict1 = null }) {
   if (passe === 2) { if (!verdict1) E('verdict de la passe 1 absent'); else if (v.note_passe1 !== verdict1.note) E('note_passe1 différente de la note remise à la passe 1'); }
   for (const l of LISTES) if (v[l] !== undefined && !Array.isArray(v[l])) E(l + ' doit être une liste');
   const preuves = Array.isArray(v.preuves) ? v.preuves : [], ids = new Set();
+  if (passe === 1 && preuves.some(p => cheminSur(p?.fichier)?.startsWith('annexe/'))) E('annexe citée avant la note de la passe 1');
   for (const p of preuves) { if (!p?.id || ids.has(p.id)) E('identifiant de preuve absent ou doublon : ' + p?.id); ids.add(p?.id); }
   const res = new Map(), introuvables = [];
   for (const p of preuves) { const r = verifierPreuve(p, ctx, { passe }); res.set(p.id, r); if (!r.ok) introuvables.push({ id: p.id, fichier: p.fichier, raison: r.raison }); }
@@ -126,18 +127,43 @@ export function plafond(v, analyse) {
   return { plafond: pl, note, plafonnee: note < v.note, raisons };
 }
 /* Défauts plantés retrouvés : une preuve rangée parmi les défauts ou les anomalies désigne le fichier planté. */
-export function retrouverCanaris(verdicts, cle) {
+export function retrouverCanaris(verdicts, cle, ctx = null) {
   const trouves = [];
   for (const c of cle.canaris || []) {
     const ok = verdicts.some(v => {
+      if (v.passe < c.passe) return false;
       const preuves = new Map((v.preuves || []).map(p => [p.id, p]));
       return ['défauts graves', 'défauts mineurs', 'anomaliesDossier'].some(l => (v[l] || []).some(it => (it.preuves || []).some(id => {
         const p = preuves.get(id); if (!p) return false;
         const f = cheminSur(p.fichier); if (!f) return false;
-        if (c.champ) return f === c.fichier && typeof p.champ === 'string' && p.champ.startsWith(c.champ.split('/').slice(0, 5).join('/'));
+        if (ctx && !verifierPreuve(p, ctx, { passe: v.passe }).ok) return false;
+        // Un pointeur exact ou descendant ; jamais un champ voisin de la même mesure.
+        if (c.champ) return f === c.fichier && typeof p.champ === 'string' && (p.champ === c.champ || p.champ.startsWith(c.champ + '/'));
         if (f !== c.fichier && f !== c.fichierJson) return false;
-        if (!p.temps || p.temps.unite !== 's_reel' || !c.fenetre) return true;
-        return p.temps.valeur >= c.fenetre[0] - P.canaris.toleranceTemps && p.temps.valeur <= c.fenetre[1] + P.canaris.toleranceTemps;
+        const indices = c.indices?.length ? c.indices : null;
+        const caseCible = k => Number.isInteger(k) && k >= 0 && (!indices || indices.includes(k));
+        if (Number.isInteger(p.case)) return caseCible(p.case);
+        if (typeof p.champ === 'string') {
+          const m = /^\/images\/(\d+)(?:\/|$)/.exec(p.champ);
+          if (m) return f === c.fichierJson && caseCible(Number(m[1]));
+          // Un tapis n'a pas de cases : désigner un événement réel situe la preuve dans sa fenêtre.
+          const e = /^\/evenements\/(\d+)(?:\/|$)/.exec(p.champ);
+          if (e && ctx && f === c.fichierJson) {
+            const evt = ctx.json(f)?.evenements?.[Number(e[1])];
+            return evt && c.fenetre && evt.w >= c.fenetre[0] - P.canaris.toleranceTemps && evt.w <= c.fenetre[1] + P.canaris.toleranceTemps;
+          }
+          return false;
+        }
+        if (!p.temps || !Number.isFinite(p.temps.valeur) || !c.fenetre) return false;
+        let t = p.temps.valeur;
+        if (p.temps.unite !== 's_reel') {
+          if (!ctx) return false;
+          const meta = ctx.json(c.fichierJson);
+          if (p.temps.unite === 's_video' && meta?.fenetre) t += meta.fenetre.debut;
+          else if (p.temps.unite === 's_jeu' && meta?.images) return meta.images.some((im, k) => caseCible(k) && Math.abs(im.t - t) <= P.canaris.toleranceTemps);
+          else return false;
+        }
+        return t >= c.fenetre[0] - P.canaris.toleranceTemps && t <= c.fenetre[1] + P.canaris.toleranceTemps;
       })));
     });
     trouves.push({ type: c.id, fichier: c.fichier, retrouve: ok });
@@ -179,7 +205,7 @@ export function consolider({ verdicts, paquets, cles }) {
     lignes.push({ ...g, cle, role: cle.role, doublonDe: cle.doublonDe, serie: cle.serie, bundleSha256: cle.bundleSha256, graineListe: cle.graineListe,
       note1: pl1?.note ?? null, note2: pl2?.note ?? null, brute1: g.p[1]?.v.note ?? null, brute2: g.p[2]?.v.note ?? null, plafonnee: !!(pl1?.plafonnee || pl2?.plafonnee), plafonds: { p1: pl1?.raisons || [], p2: pl2?.raisons || [] },
       valide1: a1?.valide ?? null, valide2: a2?.valide ?? null, erreurs: [...(a1?.erreurs || []), ...(a2?.erreurs || [])], preuves: { total: (a1?.preuves.total || 0) + (a2?.preuves.total || 0), introuvables: (a1?.preuves.introuvables.length || 0) + (a2?.preuves.introuvables.length || 0) },
-      canaris: retrouverCanaris([g.p[1]?.v, g.p[2]?.v].filter(Boolean), cle), aJuger, statut: g.p[2]?.v.statut ?? g.p[1]?.v.statut });
+      canaris: retrouverCanaris([g.p[1]?.v, g.p[2]?.v].filter(Boolean), cle, ctx), aJuger, statut: g.p[2]?.v.statut ?? g.p[1]?.v.statut });
   }
   return { lignes, rejets };
 }

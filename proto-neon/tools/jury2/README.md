@@ -14,6 +14,24 @@ Rien ici n'est chargé par le jeu livré. Rien n'est lancé sans l'orchestratric
 | 3. Jurés | l'orchestratrice | non | un JSON par juré et par passe (`consigne-jure.md`) |
 | 4. Étalonnage / porte 7 | `etalonnage.mjs` | non | tests de chaque juré, écartés ou retenus ; lecture de la porte 7 (`--mode porte`) |
 
+Avant de solliciter un juré, exécuter `node tools/jury2/verifier.mjs --statique` depuis `proto-neon/`.
+Le contrôle `tests-oracle.mjs` reconstruit les fixtures et les trois paquets réels dans un dossier temporaire,
+teste les deux passes et chaque cellule (famille × regard), puis supprime les reconstructions. Il exige
+100 % des défauts retrouvés par l'oracle, aucune preuve introuvable, le rejet du témoin nul et du tricheur
+qui cite l'annexe en passe 1. Les seuils des jurés restent ceux de `protocole.mjs`.
+
+`oracle.mjs` produit des verdicts de test à partir des pièces publiques désignées par une clé ; les coordonnées
+et les constats sont recalculés depuis les JSON et les pixels PNG, sans reprendre les mots ou les indices secrets.
+Ses notes sont injectées pour tester l'instrument : elles ne constituent aucune évaluation du jeu.
+Pour inspecter un résultat :
+
+```sh
+node tools/jury2/oracle.mjs --cle cles/J-xxxxxxxx.json --paquet paquets/J-xxxxxxxx --regard "game design"
+```
+
+La contradiction de passe 2 touche R-13 seulement si elle est qualifiable ; sinon elle utilise la part mesurée
+des secousses R-14, si disponible. Sans mesure qualifiée, le montage signale un canari manquant et le contrôle échoue.
+
 ## Commandes
 
 Étalonnage de l'instrument (version 0 = pointe : mêmes octets, `snake2975-v0` et `index.html` ont le même SHA-256), une seule fois, hors bac :

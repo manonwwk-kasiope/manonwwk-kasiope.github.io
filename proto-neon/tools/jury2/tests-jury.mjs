@@ -85,8 +85,8 @@ export function verdict({ racine, jure, famille = 'claude', regard = 'rythme et 
     { id: 'p4', fichier: planches[0].chemin, temps: null, case: 0, observation: 'Case 0 : un élément couvre une partie de l’écran.' },
     { id: 'p5', fichier: autres.chemin, temps: null, case: 1, observation: 'Même défaut dans une autre séquence, case 1.' }];
   if (passe === 2) preuves.push({ id: 'p6', fichier: 'annexe/annexe.json', temps: null, champ: `/sequences/${s0}/mesures/R13/maxParSeconde`, observation: 'Annexe : maximum de flashs par seconde.' });
-  if (rc && cle) for (const [k, c] of cle.canaris.entries()) preuves.push({ id: 'c' + k, fichier: c.champ ? c.fichier : c.fichier, temps: c.champ ? null : (c.fenetre ? { valeur: (c.fenetre[0] + c.fenetre[1]) / 2, unite: 's_reel' } : null), ...(c.champ ? { champ: c.champ + '/maxParSeconde' } : c.fenetre ? {} : { case: 0 }), observation: 'Pièce du paquet incohérente avec une autre : ' + c.type });
-  const anomalies = rc && cle ? cle.canaris.map((c, k) => ({ constat: 'Anomalie de dossier ' + c.type + ' (S).', preuves: ['c' + k] })) : [];
+  if (rc && cle) for (const [k, c] of cle.canaris.entries()) { if (c.passe > passe) continue; preuves.push({ id: 'c' + k, fichier: c.champ ? c.fichier : c.fichier, temps: c.champ ? null : (c.fenetre ? { valeur: (c.fenetre[0] + c.fenetre[1]) / 2, unite: 's_reel' } : null), ...(c.champ ? { champ: c.champ } : c.fenetre ? {} : { case: 0 }), observation: 'Pièce du paquet incohérente avec une autre : ' + c.type }); }
+  const anomalies = rc && cle ? cle.canaris.flatMap((c, k) => c.passe <= passe ? [{ constat: 'Anomalie de dossier ' + c.type + ' (S).', preuves: ['c' + k] }] : []) : [];
   return { jure, famille, regard, code: pq.code, passe, empreinte: passe === 1 ? pq.empreinte : pq.empreinteAnnexe, statut: 'evalue', note, note_passe1: passe === 2 ? note1 : null,
     forces: diligent ? [{ constat: 'Planche S : lisible à 12 s.', preuves: ['p1'] }, { constat: 'Clip : mouvement continu sur 30 s.', preuves: ['p2'] }, { constat: 'Tapis : 3 événements calés.', preuves: ['p3'] }] : [{ constat: 'Très bien.', preuves: [] }],
     'défauts graves': [], 'défauts mineurs': diligent ? [{ constat: 'Élément qui couvre l’écran (case 0), puis ailleurs (case 1).', preuves: ['p4', 'p5'] }, { constat: 'Idem ailleurs (case 1).', preuves: ['p5'] }, { constat: 'Troisième constat avec preuve (case 0).', preuves: ['p4'] }] : [],
@@ -163,7 +163,7 @@ export async function testsJury({ test, fixtures, preuve, HERE }) {
       const inc = incoherenceTemps({ images: [{ w: 5 }, { w: 5.25 }, { w: 5.5 }, { w: 5.75 }, { w: 6 }] }); assert(inc.json.images[2].w < inc.json.images[0].w); assert(inc.json.images[4].w > 100);
       const tp = { temps: [{ tVideo: 0 }, { tVideo: .5 }, { tVideo: 1 }], evenements: [{ w: 0.5, tVideo: 0.5, ecartMs: 0, ecartSigneMs: 0, dansLaTolerance: true }, { w: 1, tVideo: 1, ecartMs: 0, ecartSigneMs: 0, dansLaTolerance: true }], resume: {} };
       const d = decalerTapis(tp); assert.equal(d.evenements[0].ecartMs, 120); assert.equal(d.evenements[0].dansLaTolerance, false); assert.equal(tp.evenements[0].ecartMs, 0, 'copie');
-      const m = contredireMesure({ R13: { maxParSeconde: 0, seuil: 3, conforme: true } }); assert.equal(m.R13.maxParSeconde, 6); assert.equal(m.R13.conforme, true);
+      const m = contredireMesure({ R13: { qualifiable: true, maxParSeconde: 0, seuil: 3, conforme: true } }); assert.equal(m.R13.maxParSeconde, 6); assert.equal(m.R13.conforme, true);
       return { types: P.canaris.types.map(x => x.id) };
     });
 
@@ -256,7 +256,7 @@ export async function testsJury({ test, fixtures, preuve, HERE }) {
       return { complaisant: pl.note };
     });
     await test('Défauts plantés : retrouvés seulement par une preuve rangée parmi les défauts ou les anomalies', () => {
-      const bon = verdict({ racine, jure: 'jb', note: 8, cle, retrouverCanaris: true }), r = retrouverCanaris([bon], cle);
+      const bon = verdict({ racine, jure: 'jb', note: 8, cle, retrouverCanaris: true }), bon2 = verdict({ racine, jure: 'jb', passe: 2, note: 8, note1: 8, cle, retrouverCanaris: true }), r = retrouverCanaris([bon, bon2], cle);
       assert.equal(r.plantes, cle.canaris.length); assert.equal(r.retrouves, r.plantes, JSON.stringify(r.detail));
       const sans = verdict({ racine, jure: 'jc', note: 8 }), r2 = retrouverCanaris([sans], cle); assert.equal(r2.retrouves, 0);
       const enForce = { ...bon, 'défauts graves': [], 'défauts mineurs': [], anomaliesDossier: [], forces: bon.anomaliesDossier }; assert.equal(retrouverCanaris([enForce], cle).retrouves, 0, 'louer la pièce altérée ne la retrouve pas');
@@ -301,7 +301,7 @@ export async function testsJury({ test, fixtures, preuve, HERE }) {
     });
     await test('Consolidation sur fichiers : verdicts écrits, relus, validés, plafonnés, canaris comptés', async () => {
       const dirV = path.join(tmp, 'verdicts'); fs.mkdirSync(path.join(dirV, 'j1'), { recursive: true });
-      const v1 = verdict({ racine, jure: 'j1', note: 9.9, diligent: false, cle, retrouverCanaris: true }), v2 = verdict({ racine, jure: 'j1', passe: 2, note: 9.9, note1: 9.9, diligent: false });
+      const v1 = verdict({ racine, jure: 'j1', note: 9.9, diligent: false, cle, retrouverCanaris: true }), v2 = verdict({ racine, jure: 'j1', passe: 2, note: 9.9, note1: 9.9, diligent: false, cle, retrouverCanaris: true });
       fs.writeFileSync(path.join(dirV, 'j1', 'J-3f9a1c7e.p1.json'), JSON.stringify(v1)); fs.writeFileSync(path.join(dirV, 'j1', 'J-3f9a1c7e.p2.json'), JSON.stringify(v2)); fs.writeFileSync(path.join(dirV, 'j1', 'casse.json'), '{');
       const { lignes, rejets } = consolider({ verdicts: (await import('./etalonnage.mjs')).chargerVerdicts(dirV), paquets: sortieP, cles: sortieC });
       assert.equal(lignes.length, 1); assert.equal(rejets.length, 1); const l = lignes[0]; assert(l.note1 <= 8.5 && l.note2 <= 8.5 && l.plafonnee, JSON.stringify(l.plafonds)); assert.equal(l.canaris.retrouves, l.canaris.plantes); assert.equal(l.valide1, true);

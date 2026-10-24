@@ -55,9 +55,19 @@ export function decalerTapis(tapis, ms = P.canaris.decalageMs) {
   t.resume = { ...t.resume, mesurables: mes.length, dansLaTolerance: mes.filter(e => e.dansLaTolerance).length, medianeEcartMs: mes.length ? [...mes].sort((a, b) => a.ecartMs - b.ecartMs)[Math.floor(mes.length / 2)].ecartMs : null };
   return t;
 }
-/* Annexe : R-13 annoncé conforme alors que son maximum dépasse le seuil. */
-export function contredireMesure(mesures) {
-  const m = JSON.parse(JSON.stringify(mesures)), s = m.R13?.seuil ?? 3;
-  m.R13 = { ...m.R13, maxParSeconde: s + 3, conforme: true };
+/* Ne planter une contradiction que dans une mesure réellement qualifiée. La borne
+   historique R-13 ne constitue jamais une candidate, même si elle contient des nombres. */
+export function mesureQualifiee(m) {
+  if (m.R13?.qualifiable === true && Number.isFinite(m.R13.maxParSeconde) && Number.isFinite(m.R13.seuil)) return 'R13';
+  const r = m.R14;
+  if (m.frames > 0 && Number.isFinite(r?.secouees) && Number.isFinite(r?.part) && r.part >= 0 && r.part <= 1 &&
+      Number.isFinite(r.seuil) && r.seuil >= 0 && r.seuil < 1 && typeof r.conforme === 'boolean') return 'R14';
+  return null;
+}
+export function contredireMesure(mesures, champ = mesureQualifiee(mesures)) {
+  if (!champ || champ !== mesureQualifiee(mesures)) throw Error('Aucune mesure qualifiée pour le défaut de passe 2');
+  const m = JSON.parse(JSON.stringify(mesures));
+  if (champ === 'R13') m.R13 = { ...m.R13, maxParSeconde: m.R13.seuil + 3, conforme: true };
+  else m.R14 = { ...m.R14, secouees: m.frames, part: 1, conforme: true };
   return m;
 }

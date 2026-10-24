@@ -16,7 +16,7 @@ import { flashs, borneHistorique, nonQualifiable } from '../codex-di5/r13.mjs';
 import { carteAlignee } from './analyse.mjs';
 import { planEchantillon, imagesAutour, prng, hashTexte } from './echantillon.mjs';
 import { tapisRythmique, rendreTapis } from './tapis.mjs';
-import { tirerTypes, imageGelee, bandeauMasquant, flashPleinEcran, retirerCases, incoherenceTemps, decalerTapis, contredireMesure } from './canaris.mjs';
+import { tirerTypes, imageGelee, bandeauMasquant, flashPleinEcran, retirerCases, incoherenceTemps, decalerTapis, contredireMesure, mesureQualifiee } from './canaris.mjs';
 import { lireTampon, planche } from './images.mjs';
 /* Recalcul obligatoire depuis les bruts ; un manifeste ancien ne peut faire foi. */
 export function r13Annexe(data) {
@@ -67,7 +67,9 @@ function inventaire(dossier, manifest) {
         statut:'Candidate historique non probante, fractions sans recouvrement spatial',...P.echantillon.fenetre});
     }
     const clips = (c.medias.clips || []).map(m => ({ moment: m.moment, debut: m.debut, fin: m.fin }));
-    return { c, dir, plan: plan.plan, regle: plan.regle, clips, duree: data.duree };
+    const mesures = lireJSON(path.join(dir, 'mesures.json')).mesures;
+    const mesure = mesureQualifiee({ ...mesures, R13: r13Annexe(data) });
+    return { c, dir, plan: plan.plan, regle: plan.regle, clips, duree: data.duree, mesure };
   });
 }
 const nomPlanche = it => `planche-${it.categorie}-${it.rang ?? it.n ?? 1}`;
@@ -77,7 +79,7 @@ function choisirCanaris(types, seqs, rng) {
   const catalogue = {
     planche: seqs.flatMap((s, i) => s.plan.map((it, k) => ({ seq: i, k, cle: `${i}/${k}` }))),
     tapis: seqs.flatMap((s, i) => s.clips.map((m, k) => ({ seq: i, k, moment: m.moment, cle: `${i}/t${k}` }))),
-    annexe: seqs.flatMap((s, i) => s.c.genre === 'partie' ? [{ seq: i, cle: `${i}/a` }] : [])
+    annexe: seqs.flatMap((s, i) => s.c.genre === 'partie' && s.mesure ? [{ seq: i, cle: `${i}/a` }] : [])
   };
   const pris = new Set(), choix = [], manques = [];
   const tirer = pool => { const p = pool.filter(x => !pris.has(x.cle)); if (!p.length) return null; const x = p[Math.floor(rng() * p.length)]; pris.add(x.cle); return x; };
@@ -197,14 +199,8 @@ export async function construirePaquet(o) {
       adapte: fs.existsSync(path.join(dir, 'adapte.json')) ? lireJSON(path.join(dir, 'adapte.json')) : null };
     const ca = choix.find(x => x.seq === i && x.type.id === 'mesure-contradictoire');
     if (ca) {
-      if (annexeSeq[s.id].mesures.R13.qualifiable) annexeSeq[s.id].mesures = contredireMesure(annexeSeq[s.id].mesures);
-      else {
-        /* Un canari ne transforme jamais des fractions en dépassement qualifié : la contradiction
-           reste cantonnée à la borne historique (maximum supérieur au total annoncé). */
-        const r=annexeSeq[s.id].mesures.R13;
-        r.borneSuperieureNonProbante={...r.borneSuperieureNonProbante,flashs:0,maxParSeconde:r.seuil+3};
-      }
-      plantes.push({ ...ca.type, fichier: 'annexe/annexe.json', champ: `/sequences/${s.id}/mesures/R13`, description: 'mesure-contradictoire' });
+      annexeSeq[s.id].mesures = contredireMesure(annexeSeq[s.id].mesures, s.mesure);
+      plantes.push({ ...ca.type, fichier: 'annexe/annexe.json', champ: `/sequences/${s.id}/mesures/${s.mesure}`, description: 'mesure-contradictoire' });
     }
   }
   /* annexe (passe 2) : chiffres, portes et courbes, remise seulement après la note de la passe 1 */
