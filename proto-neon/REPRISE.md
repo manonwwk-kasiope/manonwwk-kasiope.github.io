@@ -15,6 +15,12 @@
   `tools/mesure2/`). **Répartiteur** `~/Projets/wt-snake/repartiteur.sh` (tâche de fond) : lance la file `consignes/file-attente.txt`
   (t1, w1, s1, g1) quand < 5 sessions, charge < 40, > 1,5 Go libres. Séries `serie-autotest.sh` en fond (reçus `recus/series/`).
   Charge du Mac 27–71 sur 10 cœurs à 02 h 33 : ne pas dépasser 5 sessions.
+- À 03 h 17 : livrés j1 (banc jury, intégré 3e81b65, puis **durci par un relecteur Claude**, bd06d4ed : séries scellées, paquets neutres,
+  défauts plantés, étalonnage des jurés), u1, t1, w1 (arrêté sur R-14 13,24 %, préexistant, confié à s1). Lancés : s1, g1 ; file vide.
+  **Deux sortes de vérifieurs** : ceux qui ne prennent pas le verrou → `file-verifs.sh` ; ceux qui le prennent eux-mêmes (w1, jury2, mesure2)
+  → `lancer-libre.sh <copie> "<commande>" [reçu.json]`. Premier chiffre réel : 21,5 % des événements à ± 40 ms d'un temps (211/981, 17 parties).
+  **Banc d'étalonnage du jury** : 3 à 5 h de navigateur (hypothèse du relecteur) → à lancer sur la build candidate fusionnée, pas sur V0 seule
+  (commande : `node ~/Projets/wt-snake/instrument/proto-neon/tools/jury2/banc.mjs --serie etalonnage --valider-instrument --carte <structure.json>`).
 - Attention guetteurs : un `pgrep -f "<motif>"` lancé dans une commande qui contient ce motif se trouve lui-même (bug du 18/10 : 45 min perdues).
 
 ## Cheffe d'orchestre (session Claude du Mac) — point de reprise du 18/10/2026 · 01 h 36 (mis à jour à 08 h 06)
