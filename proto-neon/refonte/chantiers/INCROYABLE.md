@@ -301,3 +301,14 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - **jdv1 (22 h 48)** : **À CORRIGER**. Validé : 40/40 rejeux de la candidate identiques à `apres.json` de dv1, trois canaris jusqu'à `fin`, pic et larves conformes ; aucun pilote ne perd plus de 2 victoires en bilan net (humain 12 → 10 : 4 anciennes victoires perdues, 2 gagnées). Défaut : `76-directeur.js:441–442`, la sortie de secours dépasse la borne selon l'alignement musical (décalage 5 s → **70 s**, 6 s → **69 s**, pour une borne de 68 s).
 - **codex-dv2 (22 h 55)** : borne stricte pour tout décalage de 0 à 8 s, de V1 à V5, sans relever `dureesMax`, et 210 parties identiques à `apres.json` pour que la vérification Chrome en cours reste valable. **Deuxième échec de cette porte** (75,3 s, puis 70 s) : un nouvel échec = arrêt et diagnostic de méthode.
 - **dv2 accepté (23 h 45)** : avant de sortir, le directeur projette le prochain temps permis sur la grille publique (fenêtres interdites tirées des cartes rythmiques livrées) ; si ce rendez-vous dépasse la borne, il sort tout de suite. L'auteur rapporte 405/405 sorties dans les bornes (81 décalages × V1–V5) et **210/210 parties identiques, journaux compris**. **Contre-mesure de la cheffe avec le test dirigé du juge jdv1** (pas celui de l'auteur), sur une copie candidate + dv2 : **18/18 sous 68 s** ; décalage 5 s : **70,00 → 59,95 s** ; décalage 6 s : 69,00 → 58,95 s ; plus forte valeur 67,917 s. dv2 sera posé sur la candidate quand Chrome aura fini : parties identiques, donc la vérification Chrome en cours reste valable.
+
+## Retours de la propriétaire et nouveaux chantiers — 25/10/2026 · 00 h 20 (Paris)
+
+- **Ses mots** (00 h 08 → 00 h 12) : « je ne comprends pas trop le jeu, et surtout où sont passées les musiques que tu as créées sur Suno ? » ; « Neon Velocity n'est vraiment pas super. En plus, il y a comme un bruit de fond désagréable. Les effets sonores sont très pauvres » ; « il faut monter à 9/10 ».
+- **Constat** : les six morceaux Suno ne jouent qu'à partir de V3 (`30-music.js:2129`) ; titre, menus, V1–V2, victoire et défaite gardent Neon Velocity ; les Suno *titre*, *ouverture*, *victoire* et *défaite* n'ont jamais été branchés. Notes indicatives de l'étalonnage du 24/10 (jurés Codex, passe 2, jury non validé) : V0 **7,5** (rythme et musique 5,5), pointe 7,25 (rythme 5).
+- **Décision de la cheffe** : Neon Velocity retiré, palier **9/10** (jury validé, moyenne ≥ 9, aucune note < 8,5) avant 9,5. Lancés à 00 h 20 sur la base candidate + dv2, fichiers disjoints :
+  - **mu1** : Suno partout, rythme calé sur le morceau joué, chasse au bruit de fond ;
+  - **sf1** : effets sonores refaits, nouveau module `32-sfx.js` partant de la banque `sons/` jamais branchée ;
+  - **tu1** : tutoriel jouable au premier lancement, `61-tuto.js` ;
+  - **ec1** : étude des verdicts des jurés pour 9/10, sans toucher au jeu.
+- Chrome sur la candidate (22 h 20) : paysage et portrait terminés, bureau en cours.
