@@ -1,9 +1,10 @@
+import { transitions } from '../codex-di5/r13.mjs';
 /* Fonction sérialisée par Playwright : toutes ses dépendances passent par cfg.
    Aucun pas simulé, aucun rAF artificiel, aucune modification de vitesse du jeu. */
-export function installer(cfg) {
+function installerInterne(cfg) {
   const natRAF=window.requestAnimationFrame.bind(window), natConnect=AudioNode.prototype.connect;
   const clone=x=>x==null?null:JSON.parse(JSON.stringify(x));
-  let actif=false, origine=0, previous=null, lastStamp=null, snapAt=-Infinity, denseJusque=-Infinity, dernierWarp=null;
+  let actif=false, origine=0, previous=null, previousDim=null, lastStamp=null, snapAt=-Infinity, denseJusque=-Infinity, dernierWarp=null;
   let frames=[],evenements=[],images=[],adapte=[],audio=[],pending=[],erreurs=[];
   let dernierAdapte='',courantFrame=0, hooks=false;
   const recorders=new Map();
@@ -95,17 +96,16 @@ export function installer(cfg) {
     const N=window.__N,S=window.__S;
     if(!actif||!N?.gfx?.buf||!S)return;
     const h=horloge(),b=N.gfx.buf(),L=N.pal.L,n=b.length;
-    let up=0,dn=0,rin=0,rout=0,horsPalette=0,changes=0,lum=0;
+    const dim=N.gfx.W+':'+N.gfx.H;if(dim!==previousDim){previous=null;previousDim=dim;}
+    const r13=cfg.pixels?cfg.transitions(previous,b,L,N.R.lisibiliteP10?.mesure?.luminanceDelta??.1,N.R.lisibiliteP10?.mesure?.luminanceSombre??.8):null;
+    let horsPalette=0,changes=0,lum=0;
     if(cfg.pixels) {
       for(let i=0;i<n;i++) {
         const c=b[i],a=previous?.[i];if(c>=N.pal.C.length)horsPalette++;
         lum+=L[c]||0;
         if(a===undefined||a===c)continue;
         changes++;
-        if(L[c]-L[a]>=.1&&Math.min(L[a],L[c])<.8)up++;
-        if(L[a]-L[c]>=.1&&Math.min(L[a],L[c])<.8)dn++;
-        const ra=a===5||a===11||a===14,rc=c===5||c===11||c===14;
-        if(rc&&!ra)rin++;if(ra&&!rc)rout++;
+
       }
       if(!previous||previous.length!==n)previous=new Uint8Array(n);previous.set(b);
     }
@@ -119,7 +119,7 @@ export function installer(cfg) {
       instrumentMs:null,etat:N.game.etat(),vague:N.dir?.vague?.(),score:N.score?.score,
       ennemis:N.ennemis?.count?.(),tension:S.tension,shake:S.shake||0,
       shakeXY:[S.shakeX??null,S.shakeY??null],W:N.gfx.W,H:N.gfx.H,PX:N.gfx.PX,
-      up:up/n,dn:dn/n,rin:rin/n,rout:rout/n,horsPalette,changes:changes/n,luminance:lum/n,
+      up:r13?.up??0,dn:r13?.dn??0,rin:r13?.rin??0,rout:r13?.rout??0,r13:r13?.r13,horsPalette,changes:changes/n,luminance:lum/n,
       aventure:adv?{enCours:adv.enCours,etape:adv.etape,qui:adv.qui,type:adv.type}:null,
       warp:w?{phase:w.phase,facteur:w.facteur,raison:w.raison}:null,paused:!!S.paused});
     lastStamp=stamp;
@@ -142,7 +142,7 @@ export function installer(cfg) {
     }
   });
   window.__jury={
-    commencer(){poserHooks();origine=performance.now();actif=true;previous=null;lastStamp=null;snapAt=0;denseJusque=-Infinity;dernierWarp=null;
+    commencer(){poserHooks();origine=performance.now();actif=true;previous=null;previousDim=null;lastStamp=null;snapAt=0;denseJusque=-Infinity;dernierWarp=null;
       for(const r of recorders.values())if(!r.started)startRecorder(r);
       return {performanceTimeOrigin:performance.timeOrigin,originePerformanceMs:origine,regles:clone(window.__N.R.criteres),audio};},
     vider(){const d={frames,evenements,images,adapte,erreurs};frames=[];evenements=[];images=[];adapte=[];erreurs=[];return d;},
@@ -154,3 +154,6 @@ export function installer(cfg) {
       bilanScore:clone(window.__N.score.resume?.()),aventure:clone(window.__N.aventure?.state?.()),profil:clone(window.__N.choix?.profil?.()),adapteExiste:!!window.__N.adapte}};}
   };
 }
+
+/* Ferme explicitement la dépendance pour les appels directs ET installer.toString() de Playwright. */
+export const installer = new Function('return function installer(cfg){ cfg={...cfg,transitions:(' + transitions.toString() + ')};return (' + installerInterne.toString() + ')(cfg); }')();

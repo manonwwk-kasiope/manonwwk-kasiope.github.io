@@ -1,0 +1,7 @@
+24/10/2026 · 13 h 03 (Paris) — mis à jour à 13 h 03
+Objectif et livrable : voir rapport.md. R-13 partagé livré ; 50 clips traités, 510 suites de masques + 12 cas sans MP4 relus ; 34 usages >3/s, maximum 18 (éveil bureau, 60 Hz contractuels). Aucun src ni index modifié.
+Preuves : controles.json (9 + 11), validation-vm.json (10 historiques identiques), verification-jury2.json (64/64), films.json, films/*.json.gz, annexe-controle.json, build.json (code 0, même empreinte).
+Point restant : question asynchrone sans réponse sur l'ajout du seul tools/mesure/verifier-p3c-instrument.mjs au périmètre. Fixture adaptée dans p3c-fixture.patch, git apply --check vert ; mêmes 8 assertions vertes dans p3c-execution.mjs. Commande historique brute : attendu 1, résultat null/non qualifiable ; ne pas transformer les fractions en données spatiales.
+Commit : git add et git commit tentés, tous deux code 128, création .git/worktrees/codex-di5/index.lock refusée. Aucune escalade ni contournement.
+Prochaine action si accord explicite : appliquer uniquement le patch de fixture, exécuter la commande originale de ce test, mettre à jour rapport/demandes et finir le Goal. Les corrections des films dans src restent proposées seulement, conformément à la mission.
+Aucun navigateur, serveur, réseau ni lecture sonore n'a été lancé. Pas de travail lourd en cours. Ne pas relancer les 50 films ; seules de nouvelles données ou un changement de rendu justifient cette dépense.

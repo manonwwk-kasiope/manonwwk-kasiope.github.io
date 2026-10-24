@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { transitions } from '../codex-di5/r13.mjs';
 import { P,paris } from './protocole.mjs';
 import { flashs,sync,sensibilite,repereCarte,alignerSources,difficulte,mediane } from './analyse.mjs';
 import { testsJury } from './tests-jury.mjs';
@@ -32,7 +33,7 @@ export async function statique() {
   });
   await test('Import du banc sans lancement',async()=>{const b=await import('./banc.mjs');assert.equal(typeof b.main,'function');assert.equal(typeof b.produire,'function');return 'Aucun effet de bord à l’import';});
   await test('Fonctions navigateur sérialisables',()=>{new vm.Script('('+installer.toString()+')');new vm.Script('('+conduireAventure.toString()+')');});
-  const flashes=n=>{const a=[];for(let k=0;k<n;k++){a.push({w:k*.2,up:1,dn:0,rin:1,rout:0});a.push({w:k*.2+.05,up:0,dn:1,rin:0,rout:1});}return a;};
+  const flashes=n=>{const a=[];let old=null;for(let k=0;k<n*2;k++){const b=new Uint8Array(100).fill(k%2?0:5);a.push({w:Math.floor(k/2)*.2+(k%2)*.05,...transitions(old||new Uint8Array(100),b,[0,0,0,0,0,.24],.1,.8)});old=b;}return a;};
   await test('Un flash rouge et lumineux simultané compte une fois',()=>assert.equal(flashs(flashes(1),.066).maxParSeconde,1));
   await test('Trois flashs restent trois ; quatre sont refusés',()=>{assert.equal(flashs(flashes(3),.066).maxParSeconde,3);assert.equal(flashs(flashes(4),.066).maxParSeconde,4);});
   await test('R-13 emploie la seconde réelle malgré les images manquantes',()=>{const a=flashes(4);a[6].w=1.2;a[7].w=1.25;assert.equal(flashs(a,.066).maxParSeconde,3);});

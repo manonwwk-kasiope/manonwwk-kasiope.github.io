@@ -12,11 +12,18 @@ import zlib from 'node:zlib';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { P, REGARDS, paris } from './protocole.mjs';
+import { flashs, borneHistorique, nonQualifiable } from '../codex-di5/r13.mjs';
 import { carteAlignee } from './analyse.mjs';
 import { planEchantillon, imagesAutour, prng, hashTexte } from './echantillon.mjs';
 import { tapisRythmique, rendreTapis } from './tapis.mjs';
 import { tirerTypes, imageGelee, bandeauMasquant, flashPleinEcran, retirerCases, incoherenceTemps, decalerTapis, contredireMesure } from './canaris.mjs';
 import { lireTampon, planche } from './images.mjs';
+/* Recalcul obligatoire depuis les bruts ; un manifeste ancien ne peut faire foi. */
+export function r13Annexe(data) {
+  const seuil=data.regles?.R13?.flashsParSeconde;
+  const r=flashs(data.frames||[],data.regles?.R13?.aire);
+  return {...r,seuil,conforme:r.qualifiable?r.maxParSeconde<=seuil:null};
+}
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const sha = b => crypto.createHash('sha256').update(b).digest('hex');
 const gunzipJSON = f => JSON.parse(zlib.gunzipSync(fs.readFileSync(f)).toString('utf8'));
@@ -51,6 +58,14 @@ function inventaire(dossier, manifest) {
   return cas.map(c => {
     const dir = path.join(dossier, c.dossier), data = gunzipJSON(path.join(dir, 'brut.json.gz'));
     const croisements = carteAlignee(data.frames, carte), plan = planEchantillon(data, { cle: cleSequence(c), croisements, aire: data.regles?.R13?.aire, duree: data.duree });
+    /* Préserver le tirage des canaris historiques : la planche reste une candidate à examiner,
+       jamais une mesure de dépassement. Son ancienne catégorie garde le même rang dans le tirage. */
+    if (data.frames?.length && !data.frames.every(f=>f.r13)) {
+      const f=[...data.frames];f.aire=data.regles?.R13?.aire;const borne=borneHistorique(f);
+      if (borne.a!==null && borne.maxParSeconde>0) plan.plan.push({famille:'pire-cas',categorie:'pire-seconde-flashs',rang:1,
+        w:+(borne.a-.5).toFixed(3),fenetre:[+(borne.a-1).toFixed(3),+borne.a.toFixed(3)],
+        statut:'Candidate historique non probante, fractions sans recouvrement spatial',...P.echantillon.fenetre});
+    }
     const clips = (c.medias.clips || []).map(m => ({ moment: m.moment, debut: m.debut, fin: m.fin }));
     return { c, dir, plan: plan.plan, regle: plan.regle, clips, duree: data.duree };
   });
@@ -178,17 +193,26 @@ export async function construirePaquet(o) {
     S.ecrire(`${s.id}/fiche.md`, ficheNeutre(s, c, data, mesuresRaw), 'fiche', { profil: c.profil, genre: c.genre });
     sequencesJSON.push({ id: s.id, genre: c.genre, profil: c.profil, pilote: c.pilote, dureeReelle: +data.duree.toFixed(3), tempsJeu: data.final?.tempsJeu ?? null, arret: data.raison, etatFinal: data.final?.etat ?? null,
       moments: (c.moments || []).map(m => ({ nom: m.nom, w: +m.w.toFixed(3), t: m.t, etat: m.etat })), clips: clipsMeta, aventureComplete: c.aventureComplete });
-    annexeSeq[s.id] = { echantillon: echantillonAnnexe, regleEchantillon: s.regle, genre: c.genre, profil: c.profil, pilote: c.pilote, issue: mesuresRaw.mesures.issue, mesures: propre(mesuresRaw.mesures), morts: mesuresRaw.mesures.morts, manques: mesuresRaw.manques,
+    annexeSeq[s.id] = { echantillon: echantillonAnnexe, regleEchantillon: s.regle, genre: c.genre, profil: c.profil, pilote: c.pilote, issue: mesuresRaw.mesures.issue, mesures: { ...propre(mesuresRaw.mesures), R13:r13Annexe(data) }, morts: mesuresRaw.mesures.morts, manques: mesuresRaw.manques,
       adapte: fs.existsSync(path.join(dir, 'adapte.json')) ? lireJSON(path.join(dir, 'adapte.json')) : null };
     const ca = choix.find(x => x.seq === i && x.type.id === 'mesure-contradictoire');
-    if (ca) { annexeSeq[s.id].mesures = contredireMesure(annexeSeq[s.id].mesures); plantes.push({ ...ca.type, fichier: 'annexe/annexe.json', champ: `/sequences/${s.id}/mesures/R13`, description: 'mesure-contradictoire' }); }
+    if (ca) {
+      if (annexeSeq[s.id].mesures.R13.qualifiable) annexeSeq[s.id].mesures = contredireMesure(annexeSeq[s.id].mesures);
+      else {
+        /* Un canari ne transforme jamais des fractions en dépassement qualifié : la contradiction
+           reste cantonnée à la borne historique (maximum supérieur au total annoncé). */
+        const r=annexeSeq[s.id].mesures.R13;
+        r.borneSuperieureNonProbante={...r.borneSuperieureNonProbante,flashs:0,maxParSeconde:r.seuil+3};
+      }
+      plantes.push({ ...ca.type, fichier: 'annexe/annexe.json', champ: `/sequences/${s.id}/mesures/R13`, description: 'mesure-contradictoire' });
+    }
   }
   /* annexe (passe 2) : chiffres, portes et courbes, remise seulement après la note de la passe 1 */
   const parties = Object.values(annexeSeq).filter(a => a.genre === 'partie');
   const sync = { total: 0, mesurables: 0, dans40ms: 0 };
   for (const a of parties) for (const v of Object.values(a.mesures.synchronisation || {})) { sync.total += v.total; sync.mesurables += v.mesurables; sync.dans40ms += v.dans40ms; }
   const perf = manifest.performance.concat(manifest.cas.filter(c => c.genre === 'charge')).map(p => ({ genre: p.genre, profil: p.profil, scene: p.scene ?? null, p50Ms: p.mesures.coutImage?.p50Ms ?? null, p95Ms: p.mesures.coutImage?.p95Ms ?? null, n: p.mesures.coutImage?.n ?? 0,
-    conformeP95: p.mesures.coutImage?.conforme ?? null, R13: p.mesures.R13 ? { maxParSeconde: p.mesures.R13.maxParSeconde ?? null, seuil: p.mesures.R13.seuil ?? null, conforme: p.mesures.R13.conforme } : null, zeroErreur: p.mesures.zeroErreur }));
+    conformeP95: p.mesures.coutImage?.conforme ?? null, R13: fs.existsSync(path.join(dossier,p.dossier||'','brut.json.gz')) ? r13Annexe(gunzipJSON(path.join(dossier,p.dossier,'brut.json.gz'))) : {...nonQualifiable(p.mesures.R13),seuil:p.mesures.R13?.seuil??null}, zeroErreur: p.mesures.zeroErreur }));
   const annexe = { code, passe: 2, dateParis: paris(), avertissement: 'Annexe de chiffres : remise après la note de la passe 1. Aucune de ces valeurs n’est un jugement.',
     sequences: annexeSeq, difficulte: (manifest.difficulte || []).filter(d => d.n > 0), synchronisationAgregee: { ...sync, part: sync.mesurables ? sync.dans40ms / sync.mesurables : null, seuilMs: P.syncMs, seuilPart: P.syncPart },
     performance: perf, seuilsDuJeu: lireRegles(dossier, manifest),

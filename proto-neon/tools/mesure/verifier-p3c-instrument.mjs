@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {execFileSync} from 'node:child_process';
+import {transitions} from '../codex-di5/r13.mjs';
 import { flashs } from './criteres/R-13-photosensibilite.mjs';
 import { ANALYSE } from './criteres/R-37-arsenal.mjs';
 import { CAUSES } from './criteres/R-05-mourir.mjs';
@@ -9,7 +10,7 @@ import { lireGestes } from './gestes.mjs';
 import { dateParis } from './commun.mjs';
 const controles=[];
 function test(nom,fn){fn();controles.push({nom,ok:true});}
-const images=n=>Array.from({length:60},(_,i)=>({up:i<n*2&&i%2===0?1:0,dn:i<n*2&&i%2===1?1:0,rin:i<n*2&&i%2===0?1:0,rout:i<n*2&&i%2===1?1:0}));
+const images=n=>{let old=new Uint8Array(100);return Array.from({length:60},(_,i)=>{const b=new Uint8Array(100).fill(i<n*2&&i%2===0?5:0),r={w:i/60,...transitions(old,b,[0,0,0,0,0,.24],.1,.8)};old=b;return r;});};
 const ancienSrc=execFileSync('git',['show','15a196a:proto-neon/tools/mesure/criteres/R-13-photosensibilite.mjs'],{encoding:'utf8'});
 const fn=ancienSrc.slice(ancienSrc.indexOf('export function flashs('),ancienSrc.indexOf('export async function mesurer')).replace('export function','function');
 const ancienFlashs=new Function(fn+';return flashs;')();

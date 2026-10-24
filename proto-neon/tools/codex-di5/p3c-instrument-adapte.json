@@ -1,0 +1,67 @@
+{
+  "dateParis": "24/10/2026 · 12 h 57",
+  "avantApresFlashAnalytique": {
+    "avant": {
+      "flashs": 2,
+      "maxParSeconde": 2,
+      "a": 1
+    },
+    "apres": {
+      "qualifiable": true,
+      "statut": "mesuré spatialement",
+      "flashs": 1,
+      "maxParSeconde": 1,
+      "a": 0.016666666666666666,
+      "instants": [
+        0.016666666666666666
+      ],
+      "evenements": [
+        {
+          "w": 0.016666666666666666,
+          "image": 1,
+          "surface": 1,
+          "pixels": 100,
+          "total": 100
+        }
+      ],
+      "surface": 1,
+      "surfaceMax": 1,
+      "limite": "Paires spatiales du tampon palette ; pas une certification WCAG ni une mesure de Safari physique."
+    }
+  },
+  "limite": "Fixtures analytiques de l’instrument uniquement ; aucun après navigateur.",
+  "controles": [
+    {
+      "nom": "Flash lumineux et rouge simultané : un flash, pas deux",
+      "ok": true
+    },
+    {
+      "nom": "Trois flashs simultanément rouges et lumineux : trois",
+      "ok": true
+    },
+    {
+      "nom": "Quatre flashs toujours refusés au seuil de trois",
+      "ok": true
+    },
+    {
+      "nom": "Sept causes naturelles ; morsure exclue des morts",
+      "ok": true
+    },
+    {
+      "nom": "La tête réelle exclut les deux pixels du radar",
+      "ok": true
+    },
+    {
+      "nom": "Une tête corrompue de même surface reste refusée",
+      "ok": true
+    },
+    {
+      "nom": "Silence strictement inférieur à trois pixels : exactement trois est permis",
+      "ok": true
+    },
+    {
+      "nom": "debut/fin/pret du pouvoir : une seule activation",
+      "ok": true
+    }
+  ]
+}

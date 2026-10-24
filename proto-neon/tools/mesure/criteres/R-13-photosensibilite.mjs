@@ -6,31 +6,14 @@
 import { executer, principal, seuils, exiger } from '../commun.mjs';
 
 export const meta = { id: 'R-13', titre: 'Photosensibilité', seuil: '≤ 3 flashs par seconde au-delà de 6,6 % de l’écran', bloquant: true };
+import { flashs, transitions } from '../../codex-di5/r13.mjs';
+export { flashs } from '../../codex-di5/r13.mjs';
 const IMAGE = `
-  var b = N.gfx.buf(), L = M.L, n = b.length, p = M.__prec13; if (!p || p.length !== n) { M.__prec13 = new Uint8Array(b); return { f: window.__FRAME, up: 0, dn: 0, rin: 0, rout: 0 }; }
-  var up = 0, dn = 0, rin = 0, rout = 0;
-  for (var i = 0; i < n; i++) { var a = p[i], c = b[i]; if (a === c) continue;
-    var la = L[a], lc = L[c], lo = la < lc ? la : lc;
-    if (lc - la >= 0.1 && lo < 0.8) up++; else if (la - lc >= 0.1 && lo < 0.8) dn++;
-    var ra = a === 5 || a === 11 || a === 14, rc = c === 5 || c === 11 || c === 14; if (rc && !ra) rin++; else if (ra && !rc) rout++; }
-  p.set(b); return { f: window.__FRAME, up: up / n, dn: dn / n, rin: rin / n, rout: rout / n };`;
-
-/* Les deux familles simultanées décrivent un même flash : union, sans doubler L/R.
-   Ce compteur agrégé ne prouve pas le recouvrement spatial ; conserver les transitions brutes.
-   compte les flashs : une transition franchit l'aire ; deux transitions opposées font un flash */
-export function flashs(images, aire, dt) {
-  const ev = [];
-  for (let k = 0; k < images.length; k++) {
-    const x = images[k];
-    if (x.up > aire) ev.push({ k, s: 'L+' }); if (x.dn > aire) ev.push({ k, s: 'L-' });
-    if (x.rin > aire) ev.push({ k, s: 'R+' }); if (x.rout > aire) ev.push({ k, s: 'R-' });
-  }
-  const fl = []; const dernier = {};
-  for (const e of ev) { const fam = e.s[0], opp = fam + (e.s[1] === '+' ? '-' : '+'); if (dernier[opp] !== undefined) { if (fl[fl.length - 1] !== e.k) fl.push(e.k); delete dernier[opp]; } else dernier[e.s] = e.k; }
-  const parSec = Math.round(1 / dt); let max = 0, at = 0;
-  for (let i = 0, j = 0; i < fl.length; i++) { while (fl[i] - fl[j] >= parSec) j++; if (i - j + 1 > max) { max = i - j + 1; at = fl[i]; } }
-  return { flashs: fl.length, maxParSeconde: max, a: at };
-}
+  var b = N.gfx.buf(), r = N.R.lisibiliteP10.mesure;
+  var dim=N.gfx.W+':'+N.gfx.H;if(M.__dim13!==dim){M.__prec13=null;M.__dim13=dim;}
+  var mesure = (${transitions.toString()})(M.__prec13, b, M.L, r.luminanceDelta, r.luminanceSombre);
+  M.__prec13 = new Uint8Array(b);
+  return { f: window.__FRAME, w: performance.now()/1000, W:N.gfx.W, H:N.gfx.H, ...mesure };`;
 
 export async function mesurer(banc, res) {
   const s = await banc.ouvrir('paysage', { dt: 1 / 60 });
@@ -39,6 +22,7 @@ export async function mesurer(banc, res) {
   const sc = await s.scene('charge');
   if (!sc.ok) return res.nonMesurable('scène de charge', sc.raison);
   await s.eval(() => { const d = window.__MESURE.dbg(); if (d && d.god) d.god(true); try { window.__N.journal.dump({ vider: true }); } catch (e) { } });
+  await s.eval(() => { window.__MESURE.__prec13=null; window.__MESURE.__dim13=null; });
   await s.eval(c => window.__MESURE.parImage('r13', c), IMAGE);
   /* la rafale : 30 destructions en 2 s */
   await s.eval(() => {
@@ -49,7 +33,8 @@ export async function mesurer(banc, res) {
   await s.images(duree * 60, duree * 3);
   const I = await s.eval(() => window.__MESURE.arreter('r13'));
   const r = flashs(I, S.aire, 1 / 60);
-  res.note('Transitions brutes : analyse agrégée conservatrice, recouvrement spatial non établi.');
+  if (!r.qualifiable) return res.nonMesurable('R-13 spatial', r.statut);
+  res.note('Paires sur les mêmes pixels, rendus distincts, fenêtre en temps réel w.');
   res.verifie('flashs par seconde (pire seconde, analyse du tampon)', r.maxParSeconde, '≤ ' + S.flashsParSeconde, r.maxParSeconde <= S.flashsParSeconde, { images: I.length, flashs: r.flashs, image: r.a, transitions: I });
   const J = await s.journal();
   const F = J ? J.filter(x => x.type === 'flash').map(x => ({ t: x.t, ...(x.d || x) })) : [];

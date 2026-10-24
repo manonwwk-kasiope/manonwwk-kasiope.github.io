@@ -9,6 +9,7 @@ import zlib from 'node:zlib';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {chromium,devices} from 'playwright';
+import {transitions} from '../codex-di5/r13.mjs';
 import {flashs} from '../mesure/criteres/R-13-photosensibilite.mjs';
 import {compterAdmissions} from '../mesure/criteres/R-14-budgets-effets.mjs';
 import {dessiner} from './rendu.mjs';
@@ -32,6 +33,7 @@ const manifest=JSON.parse(fs.readFileSync(path.join(ROOT,'musique/morceaux/morce
 async function ouvrir(profil,origin){
  const ctx=await browser.newContext({...profils[profil],serviceWorkers:'block',reducedMotion:'no-preference'});
  await ctx.route('**/*',r=>{const u=r.request().url();return u.startsWith(origin+'/')||/^(data|blob):/.test(u)?r.continue():r.abort('blockedbyclient');});
+ await ctx.addInitScript({content:'window.__f1Transitions='+transitions.toString()+';'});
  await ctx.addInitScript({content:'window.__f1Rendu='+dessiner.toString()+';'});
  const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
  await page.addInitScript(()=>{window.__SEED=7;window.__DT=1/60;window.__f1RAF=requestAnimationFrame.bind(window);window.requestAnimationFrame=()=>0;window.cancelAnimationFrame=()=>{};
@@ -50,10 +52,10 @@ async function partie(page,pilote,graine){
 }
 async function r13(page,nom){
  const r=await page.evaluate(()=>{
- const N=__N,S=__S,dt=N.R.temps.imageRef;N.intro.skip();N.game.reset(6,{depart:'jeu'});const ready=N.game.dbg.scene('charge');N.game.dbg.god(true);N.journal.vider();N.journal.actif(true);const images=[];let old=new Uint8Array(N.gfx.buf()),kills=0;const dump=N.journal.dump;N.journal.dump=()=>[];
- try{for(let f=0;f<60/dt;f++){S.frame++;if(f<2/dt&&f%4===0&&kills++<30){const e=N.ennemis.list.find(e=>e.etat!=='mort'&&!e.boss);if(e)N.ennemis.hit(e,1e6,{genre:'arme',type:'canon',id:0});}N.game.dbg.simuler(dt,{dessin:false});window.__f1Rendu(N);const b=N.gfx.buf(),L=N.pal.L;let up=0,dn=0,rin=0,rout=0;for(let i=0;i<b.length;i++){const a=old[i],c=b[i];if(a===c)continue;const lo=Math.min(L[a],L[c]);if(L[c]-L[a]>=.1&&lo<.8)up++;else if(L[a]-L[c]>=.1&&lo<.8)dn++;const ra=a===5||a===11||a===14,rc=c===5||c===11||c===14;if(rc&&!ra)rin++;else if(ra&&!rc)rout++;}images.push({f,up:up/b.length,dn:dn/b.length,rin:rin/b.length,rout:rout/b.length});old.set(b);}}finally{N.journal.dump=dump;}
+ const N=__N,S=__S,dt=N.R.temps.imageRef;N.intro.skip();N.game.reset(6,{depart:'jeu'});const ready=N.game.dbg.scene('charge');N.game.dbg.god(true);N.journal.vider();N.journal.actif(true);const images=[{f:-1,w:0,W:N.gfx.W,H:N.gfx.H,...window.__f1Transitions(null,N.gfx.buf(),N.pal.L,N.R.lisibiliteP10.mesure.luminanceDelta,N.R.lisibiliteP10.mesure.luminanceSombre)}];let old=new Uint8Array(N.gfx.buf()),kills=0;const dump=N.journal.dump;N.journal.dump=()=>[];
+ try{for(let f=0;f<60/dt;f++){S.frame++;if(f<2/dt&&f%4===0&&kills++<30){const e=N.ennemis.list.find(e=>e.etat!=='mort'&&!e.boss);if(e)N.ennemis.hit(e,1e6,{genre:'arme',type:'canon',id:0});}N.game.dbg.simuler(dt,{dessin:false});window.__f1Rendu(N);const b=N.gfx.buf(),r=N.R.lisibiliteP10.mesure;images.push({f,w:(f+1)/(1/dt),W:N.gfx.W,H:N.gfx.H,...window.__f1Transitions(old,b,N.pal.L,r.luminanceDelta,r.luminanceSombre)});old.set(b);}}finally{N.journal.dump=dump;}
  return{ready,images,journal:N.journal.dump(),err:__ERR,dt,seuils:N.R.criteres.R13};});
- const file=nom+'-r13.json.gz';fs.writeFileSync(path.join(OUT,file),zlib.gzipSync(JSON.stringify(r)));const m=flashs(r.images,r.seuils.aire,r.dt);return{file,...m,ok:r.ready&&r.images.length===60/r.dt&&m.maxParSeconde<=r.seuils.flashsParSeconde&&!r.err.count};
+ const file=nom+'-r13.json.gz';fs.writeFileSync(path.join(OUT,file),zlib.gzipSync(JSON.stringify(r)));const m=flashs(r.images,r.seuils.aire,r.dt,{hzFixe:1/r.dt});return{file,...m,ok:r.ready&&r.images.length===60/r.dt+1&&m.qualifiable&&m.maxParSeconde<=r.seuils.flashsParSeconde&&!r.err.count};
 }
 async function catalogue(page){
  // Six fichiers de base réellement servis ; dg.ids doit rester séparé des versions accélérées.
@@ -87,7 +89,7 @@ try{
  for(const [pilote,graine]of [['dieu',graineComplete],...Array.from({length:10},(_,i)=>['bon',i+1])]){
  const {ctx,page,errors}=await ouvrir(profil,origin);try{const r=await partie(page,pilote,graine);const file=`${profil}-${pilote}-${graine}.json.gz`;fs.writeFileSync(path.join(OUT,file),zlib.gzipSync(JSON.stringify(r)));const admissions=compterAdmissions([r],r.seuils.R14.banniere);result.parties.push({pilote,graine,file,raison:r.raison,etat:r.etat,temps:r.tempsJeu,score:r.score,vague:r.vague,cyclope:r.cyclope,r14:{part:r.partSecouee,...admissions},errors,err:r.err,ok:r.etat==='fin'&&!r.err.count&&!errors.length&&(pilote==='dieu'?r.cyclope:r.partSecouee<=r.seuils.R14.secouees&&admissions.present&&!admissions.trop)});result.pixels.push(await pixels(page,`${profil}-${pilote}-${graine}`));}finally{await ctx.close();save();}}
  {const {ctx,page,errors}=await ouvrir(profil,origin);try{result.r13=await r13(page,profil);result.r13.errors=errors;}finally{await ctx.close();save();}}
- {const {ctx,page,errors}=await ouvrir(profil,origin);try{result.scenes=await page.evaluate(scenes);result.scenes.photosensibilite=result.scenes.cas.map(x=>result.scenes.visuel.length?({scene:x.id,...flashs(result.scenes.visuel.filter(v=>v.scene===x.id),result.scenes.seuils.aire,result.scenes.dt)}):({scene:x.id,mesure:null,raison:x.raison}));result.scenes.ok=result.scenes.ok&&result.scenes.photosensibilite.every(x=>x.maxParSeconde<=result.scenes.seuils.flashsParSeconde);result.scenes.errors=errors;fs.writeFileSync(path.join(OUT,profil+'-scenes.json'),JSON.stringify(result.scenes,null,2));result.pixels.push(await pixels(page,profil+'-scenes'));}finally{await ctx.close();save();}}
+ {const {ctx,page,errors}=await ouvrir(profil,origin);try{result.scenes=await page.evaluate(scenes);result.scenes.photosensibilite=result.scenes.cas.map(x=>result.scenes.visuel.length?({scene:x.id,...flashs(result.scenes.visuel.filter(v=>v.scene===x.id),result.scenes.seuils.aire,result.scenes.dt)}):({scene:x.id,mesure:null,raison:x.raison}));result.scenes.ok=result.scenes.ok&&result.scenes.photosensibilite.every(x=>x.qualifiable&&x.maxParSeconde<=result.scenes.seuils.flashsParSeconde);result.scenes.errors=errors;fs.writeFileSync(path.join(OUT,profil+'-scenes.json'),JSON.stringify(result.scenes,null,2));result.pixels.push(await pixels(page,profil+'-scenes'));}finally{await ctx.close();save();}}
  {const {ctx,page,errors}=await ouvrir(profil,origin);try{const inclus=await page.evaluate(()=>!!(__N.ennemis.observerTele&&__N.R.tests.codexP42));const r=inclus?await page.evaluate(casPreavis):await page.evaluate(()=>({inclus:false,raison:'p44b écarté après deux contrôles non concluants',err:window.__ERR,tests:[],pixels:[]}));const {pixels,...reste}=r;result.preavis={...reste,inclus,errors,pixelsSha256:sha(Buffer.from(pixels)),ok:inclus&&!r.err.count&&!errors.length&&r.tests.every(t=>t.ok)&&pixels.every(v=>v>=0&&v<16)};}finally{await ctx.close();save();}}
  {const {ctx,page,errors}=await ouvrir(profil,origin);try{const r=await page.evaluate(interfaceG1);const {pixels,...reste}=r;result.interfaceG1={...reste,errors,pixelsSha256:pixels?sha(Buffer.from(pixels)):null};}finally{await ctx.close();save();}}
  {const {ctx,page,errors}=await ouvrir(profil,origin);try{result.catalogueH=await catalogue(page);result.catalogueH.errors=errors;}finally{await ctx.close();save();}}

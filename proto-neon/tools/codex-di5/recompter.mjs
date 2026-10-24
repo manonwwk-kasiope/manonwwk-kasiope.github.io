@@ -1,0 +1,6 @@
+// Rejouer les mêmes masques, sans redécoder ni redessiner ; horloge rationnelle du générateur fixe.
+import fs from 'node:fs';import path from 'node:path';import zlib from 'node:zlib';import assert from 'node:assert/strict';import {fileURLToPath} from 'node:url';import {flashs} from './r13.mjs';
+const HERE=path.dirname(fileURLToPath(import.meta.url)),file=path.join(HERE,'films.json');const data=JSON.parse(fs.readFileSync(file));assert(data.termine);
+for(const film of data.films)for(const c of film.cas){const images=JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join(HERE,'films',c.masques))));const r=flashs(images,.066,undefined,{hzFixe:c.hz});assert(r.qualifiable);Object.assign(c,{maxAvantPrecisionHorloge:c.maxParSeconde,maxParSeconde:r.maxParSeconde,surface:r.surface,instant:r.a,surfaceMax:r.surfaceMax,evenements:r.evenements,conforme:r.maxParSeconde<=3});}
+data.horloge='Acquisition fixe explicitement déclarée : w=k/hz vérifié pour chaque rendu ; fenêtres comparées en indices exacts (60 à 60 Hz, 12 à 12 Hz). Aucune modification des fenêtres réelles jury2 (w strict).';
+fs.writeFileSync(file,JSON.stringify(data,null,2)+'\n');console.log('Même série de pixels et masques, fenêtre fixe exacte.');

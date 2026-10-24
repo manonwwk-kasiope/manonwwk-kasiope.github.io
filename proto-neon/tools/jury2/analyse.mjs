@@ -2,22 +2,8 @@ import { P } from './protocole.mjs';
 export const quantile = (a, p) => a.length ? [...a].sort((x,y)=>x-y)[Math.min(a.length-1, Math.floor(a.length*p))] : null;
 export const moyenne = a => a.length ? a.reduce((a,b)=>a+b,0)/a.length : null;
 export const mediane = a => {if(!a.length)return null;const b=[...a].sort((x,y)=>x-y),k=Math.floor(b.length/2);return b.length%2?b[k]:(b[k-1]+b[k])/2;};
-export function flashs(images, aire) {
-  const dernier = {}, fl = [];
-  for (const x of images) {
-    for (const [cle,opp] of [['up','dn'],['dn','up'],['rin','rout'],['rout','rin']]) {
-      if (!(x[cle] > aire)) continue;
-      if (dernier[opp] !== undefined) {
-        if (fl.at(-1) !== x.w) fl.push(x.w);
-        delete dernier[opp];
-      } else dernier[cle] = x.w;
-    }
-  }
-  let max = 0, a = null;
-  for (let i=0,j=0;i<fl.length;i++) { while(fl[i]-fl[j]>=1)j++; if(i-j+1>max){max=i-j+1;a=fl[i];} }
-  return { flashs: fl.length, maxParSeconde: max, a, instants: fl,
-    limite: 'Transitions agrégées du tampon, sans preuve de recouvrement spatial. Pas une certification WCAG.' };
-}
+import { flashs } from '../codex-di5/r13.mjs';
+export { flashs } from '../codex-di5/r13.mjs';
 export function sync(evenements) {
   const categories = {};
   for(const type of ['apparition','tir-ennemi','vague']) {
@@ -43,7 +29,7 @@ export function bilan(d) {
     issue:d.final?.etat!=='fin'?'censure':d.final?.bilanScore?.victoire===true?'victoire':d.final?.bilanScore?.victoire===false?'defaite':'inconnue',
     morts:J.filter(x=>x.type==='mort').map(x=>({t:x.t,...x.d})),
     synchronisation:sync(d.evenements),
-    R13:{...R13,seuil:R.R13.flashsParSeconde, conforme:!!f.length&&R13.maxParSeconde<=R.R13.flashsParSeconde},
+    R13:{...R13,seuil:R.R13.flashsParSeconde, conforme:R13.qualifiable?R13.maxParSeconde<=R.R13.flashsParSeconde:null},
     R14:{secouees,part:f.length?secouees/f.length:null,seuil:R.R14.secouees,
       conforme:!!f.length&&secouees/f.length<=R.R14.secouees,
       bannieres:bannieres.length, rapprochees, bannieresMesurables:bannieres.length>0},

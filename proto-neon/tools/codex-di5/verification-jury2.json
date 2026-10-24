@@ -1,0 +1,1611 @@
+{
+  "dateParis": "24/10/2026 13:01:22 (Paris)",
+  "portee": "Instrument et construction uniquement ; aucun jeu simulé, aucun serveur, aucun navigateur, aucune sortie réseau.",
+  "controles": [
+    {
+      "nom": "Syntaxe de tous les modules ESM",
+      "ok": true,
+      "valeur": [
+        "analyse.mjs",
+        "aventure.mjs",
+        "banc.mjs",
+        "canaris.mjs",
+        "echantillon.mjs",
+        "etalonnage.mjs",
+        "images.mjs",
+        "jure.mjs",
+        "protocole.mjs",
+        "sonde.mjs",
+        "tapis.mjs",
+        "temoin.mjs",
+        "tests-canaris-regards.mjs",
+        "tests-jury.mjs",
+        "tests-temoins.mjs",
+        "valider-vm.mjs",
+        "verifier.mjs",
+        "vm-temoins.mjs"
+      ]
+    },
+    {
+      "nom": "Import du banc sans lancement",
+      "ok": true,
+      "valeur": "Aucun effet de bord à l’import"
+    },
+    {
+      "nom": "Fonctions navigateur sérialisables",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un flash rouge et lumineux simultané compte une fois",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Trois flashs restent trois ; quatre sont refusés",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "R-13 emploie la seconde réelle malgré les images manquantes",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Synchronisation : ±40 ms et 95 % inclusifs",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un audio inconnu ne disparaît pas du dénominateur",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Le RMS avant mute ne prouve jamais la musique audible",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Carte r1 : mesures numérotées à partir de 1",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Planches : phase quelconque du drop, sans élargir le seuil de 150 ms",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "pireSec": 0.125,
+        "seuilSec": 0.15
+      }
+    },
+    {
+      "nom": "Alignement : latence retirée une seule fois ; curseur accéléré suivi",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Boucle musicale : aucun faux drop en remontant le curseur",
+      "ok": true,
+      "valeur": [
+        {
+          "type": "drop",
+          "id": "x",
+          "tFichier": 1,
+          "w": 1.8,
+          "encadrement": [
+            1,
+            2
+          ],
+          "incertitudeSec": 1,
+          "repere": {
+            "t": 1
+          }
+        }
+      ]
+    },
+    {
+      "nom": "Difficulté : victoires et censures ne sont pas des défaites",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Sensibilité : le témoin connu dégradé est distingué sur deux axes",
+      "ok": true,
+      "valeur": {
+        "ratio": 0.005,
+        "perteSync": 0.6
+      }
+    },
+    {
+      "nom": "Deux dossiers identiques invalident l’instrument",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Un seul axe ou aucune donnée ne suffisent pas",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Capteur dans une fixture VM indépendante du jeu : pixels et objets réels",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "images": 4,
+        "flashs": 1,
+        "tirsEffectivementInseres": 1
+      }
+    },
+    {
+      "nom": "PNG du tampon : aller-retour RGB exact et planche",
+      "ok": true,
+      "valeur": {
+        "sha256": "645175796f4c9c10fa00dc0e6fbdb1869f94079847d590ad2dbcde19fd560ce9",
+        "synthetique": true
+      }
+    },
+    {
+      "nom": "Mesure audio du fichier réel : sinusoïde et silence décodés sans lecture",
+      "ok": true,
+      "valeur": {
+        "synthetique": true,
+        "sinusRms": 0.07071016227886011,
+        "silenceRms": 0
+      }
+    },
+    {
+      "nom": "Serveur : Range 206 et gel des actifs, sans ouvrir de port",
+      "ok": true,
+      "valeur": null
+    },
+    {
+      "nom": "Build du jeu reçu : sortie 0, dans une copie temporaire (la copie de travail n’est pas reconstruite)",
+      "ok": true,
+      "valeur": {
+        "avant": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+        "apres": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+        "identique": true,
+        "code": 0
+      }
+    },
+    {
+      "nom": "Témoin construit dans une copie temporaire, syntaxe valide",
+      "ok": true,
+      "valeur": {
+        "code": 0,
+        "sha256": "6802c5fea9f16fe47351ff6ce5a596645f2f4e7be01ef6c41602d86fff00c41d",
+        "srcInchanges": true
+      }
+    },
+    {
+      "nom": "Témoin reproductible, actifs identiques à la pointe, aucun chemin temporaire",
+      "ok": true,
+      "valeur": {
+        "sha256": "6802c5fea9f16fe47351ff6ce5a596645f2f4e7be01ef6c41602d86fff00c41d",
+        "referencesTemporaires": 0,
+        "identiqueHorsAjout": true
+      }
+    },
+    {
+      "nom": "Intervalle de Wilson et médiane de Kaplan–Meier : valeurs connues",
+      "ok": true,
+      "valeur": {
+        "wilson35sur100": {
+          "part": 0.35,
+          "bas": 0.2636410465347802,
+          "haut": 0.4474573957080203,
+          "demiLargeur": 0.09190817458662004
+        }
+      }
+    },
+    {
+      "nom": "Séries de graines : étalonnage hors réglage ; alpha et beta tirées, scellées, disjointes, jamais écrasées",
+      "ok": true,
+      "valeur": {
+        "alpha": [
+          10000,
+          17919,
+          25838
+        ],
+        "beta": [
+          33757,
+          41676,
+          49595
+        ]
+      }
+    },
+    {
+      "nom": "Échantillon : instants uniformes stratifiés et reproductibles, temps de jeu → temps réel, pires cas",
+      "ok": true,
+      "valeur": {
+        "pires": 6
+      }
+    },
+    {
+      "nom": "Échantillon : événements désignés par la règle écrite (drops, breaks, vagues, WARP, CYCLOPE, fin, toutes les morts)",
+      "ok": true,
+      "valeur": {
+        "evenements": [
+          "vague",
+          "warp-entree",
+          "break",
+          "drop",
+          "warp-sortie",
+          "vague",
+          "mort",
+          "vol",
+          "drop",
+          "cyclope",
+          "fin"
+        ]
+      }
+    },
+    {
+      "nom": "Tapis rythmique : grille des temps, écarts signés, événements verts/rouges, PNG exact",
+      "ok": true,
+      "valeur": {
+        "evenements": 3
+      }
+    },
+    {
+      "nom": "Défauts plantés : liste écrite, tirage borné par le rôle, altérations réelles sur des copies",
+      "ok": true,
+      "valeur": {
+        "types": [
+          "image-gelee",
+          "temps-incoherent",
+          "trou-couverture",
+          "mesure-contradictoire",
+          "decalage-rythme",
+          "flash-plein-ecran"
+        ]
+      }
+    },
+    {
+      "nom": "Paquet : noms neutres, passes séparées, échantillon appliqué par script, canaris tirés et consignés dans la clé seule",
+      "ok": true,
+      "valeur": {
+        "fichiers": 240,
+        "canaris": [
+          "trou-couverture",
+          "mesure-contradictoire",
+          "temps-incoherent",
+          "decalage-rythme"
+        ],
+        "manques": []
+      }
+    },
+    {
+      "nom": "Paquet : refus d’écraser ; rôle verdict exige série, validation de l’instrument et dossier complet",
+      "ok": true,
+      "valeur": {
+        "verdictA": [
+          "temps-incoherent",
+          "trou-couverture",
+          "mesure-contradictoire"
+        ]
+      }
+    },
+    {
+      "nom": "Paquet : un doublon renomme les séquences sans changer le contenu (test de stabilité)",
+      "ok": true,
+      "valeur": {
+        "correspondance": {
+          "S01": "S01",
+          "S02": "S04",
+          "S03": "S02",
+          "S04": "S03"
+        }
+      }
+    },
+    {
+      "nom": "Preuves vérifiables par script : fichier, temps, champ, case ; tout le reste est introuvable",
+      "ok": true,
+      "valeur": {
+        "planche": "S01/planche-uniforme-1.png"
+      }
+    },
+    {
+      "nom": "Verdict : schéma, deux passes, annexe interdite avant la note 1, plafonds de la grille appliqués par le script",
+      "ok": true,
+      "valeur": {
+        "complaisant": 8.5
+      }
+    },
+    {
+      "nom": "Défauts plantés : retrouvés seulement par une preuve rangée parmi les défauts ou les anomalies",
+      "ok": true,
+      "valeur": {
+        "retrouves": 4,
+        "sur": 4
+      }
+    },
+    {
+      "nom": "Étalonnage : un juré complaisant, plat, instable ou ancré par les chiffres est écarté ; accord de rang ; cellules",
+      "ok": true,
+      "valeur": {
+        "jures": 16
+      }
+    },
+    {
+      "nom": "Porte 7 : réussite seulement si tout tient ; sinon échec ou « non interprétable » (accord des familles, troisième jury, graines communes)",
+      "ok": true,
+      "valeur": {
+        "statut": "reussite"
+      }
+    },
+    {
+      "nom": "Consolidation sur fichiers : verdicts écrits, relus, validés, plafonnés, canaris comptés",
+      "ok": true,
+      "valeur": {
+        "note1": 8.5,
+        "brute1": 9.9
+      }
+    },
+    {
+      "nom": "Témoin : source du module dégradé et du témoin positif, exécutée dans un contexte VM (retards, doublons, calage sur le temps)",
+      "ok": true,
+      "valeur": {
+        "doublons": 121
+      }
+    },
+    {
+      "nom": "Sensibilité : la pointe désynchronisée ne fait pas échouer l’instrument ; témoin positif et dégradé requis",
+      "ok": true,
+      "valeur": {
+        "ok": true
+      }
+    },
+    {
+      "nom": "Sonde : images denses autour des drops, des morts et du WARP seulement (fixture VM indépendante du jeu)",
+      "ok": true,
+      "valeur": {
+        "densite": 20,
+        "base": 8
+      }
+    },
+    {
+      "nom": "Accessibilité : fixture montée, chaque regard reçoit tous les défauts de passe 1",
+      "ok": true,
+      "valeur": {
+        "code": "J-3f9a1c7e",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 229
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 222
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 222
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 229
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 236
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-625ea38c, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-b632cd0a, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : reconstruction brute J-611ad6f4, tous les regards à 100 %",
+      "ok": true,
+      "valeur": {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          }
+        }
+      }
+    },
+    {
+      "nom": "Accessibilité : noms neutres, tirage crypto, listes indépendantes des défauts et doublon préservé",
+      "ok": true,
+      "valeur": {
+        "code": "J-b6c71759",
+        "doublon": "J-0ae5438c",
+        "listesIndependantes": true
+      }
+    },
+    {
+      "nom": "VM : dix références e1bdc6f identiques, reçu du chargeur courant",
+      "ok": true,
+      "valeur": {
+        "reference": "e1bdc6f",
+        "identiques": 10
+      }
+    },
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "ancienEfface": true,
+        "profil": {
+          "musique": true,
+          "effets": false,
+          "secousse": 1,
+          "flashs": true,
+          "ecran": "riche",
+          "texte": 1,
+          "manche": 1,
+          "actions": "doigts"
+        },
+        "etapes": [
+          {
+            "nom": "préparation",
+            "canaux": {
+              "musique": false,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute",
+            "canaux": {
+              "musique": false,
+              "effets": true
+            }
+          },
+          {
+            "nom": "reset réel",
+            "canaux": {
+              "musique": false,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute après reset",
+            "canaux": {
+              "musique": false,
+              "effets": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Audio VM : préparation réelle, applyMute et reset — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "ancienEfface": true,
+        "profil": {
+          "musique": true,
+          "effets": false,
+          "secousse": 1,
+          "flashs": true,
+          "ecran": "riche",
+          "texte": 1,
+          "manche": 1,
+          "actions": "doigts"
+        },
+        "etapes": [
+          {
+            "nom": "préparation",
+            "canaux": {
+              "musique": true,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute",
+            "canaux": {
+              "musique": true,
+              "effets": true
+            }
+          },
+          {
+            "nom": "reset réel",
+            "canaux": {
+              "musique": true,
+              "effets": true
+            }
+          },
+          {
+            "nom": "100 applyMute après reset",
+            "canaux": {
+              "musique": true,
+              "effets": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance absente",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11,
+              "attendu": 11,
+              "observe": 11,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — synchro — échéance présente",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6,
+          "rythmeFin": 11.25
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11,
+              "attendu": 11,
+              "observe": 11,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance absente",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.08,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.08,
+              "attendu": 11.075132799195126,
+              "observe": 11.08,
+              "ecart": 0.004867200804874017,
+              "attente": -0.004867200804874017,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : émission réelle — desync — échéance présente",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6,
+          "rythmeFin": 11.25
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.08,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.08,
+              "attendu": 11.075132799195126,
+              "observe": 11.08,
+              "ecart": 0.004867200804874017,
+              "attente": -0.004867200804874017,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : minimum contractuel du portail, même sans option — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {},
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11,
+              "attendu": 11,
+              "observe": 11,
+              "ecart": 0,
+              "attente": 0,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : changement de morceau annule, aucun faux positif — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-annulation",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "raison": "transport"
+            }
+          }
+        ],
+        "restant": []
+      }
+    },
+    {
+      "nom": "Temps VM : placement impossible reporte réellement l’émission — synchro",
+      "ok": true,
+      "valeur": {
+        "mode": "synchro",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.305,
+              "attendu": 11.75,
+              "observe": 11.75,
+              "ecart": 0,
+              "attente": 0.4450000000000003,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [],
+        "empeche": true,
+        "ecartAuTempsMs": 250
+      }
+    },
+    {
+      "nom": "Temps VM : minimum contractuel du portail, même sans option — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {},
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.08,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.08,
+              "attendu": 11.075132799195126,
+              "observe": 11.08,
+              "ecart": 0.004867200804874017,
+              "attente": -0.004867200804874017,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [
+          {
+            "id": 1,
+            "etat": "approche"
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Temps VM : changement de morceau annule, aucun faux positif — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-annulation",
+            "d": {
+              "id": 1,
+              "type": "planeur",
+              "raison": "transport"
+            }
+          }
+        ],
+        "restant": []
+      }
+    },
+    {
+      "nom": "Temps VM : placement impossible reporte réellement l’émission — desync",
+      "ok": true,
+      "valeur": {
+        "mode": "desync",
+        "opts": {
+          "portail": 0.6
+        },
+        "debut": 10.125,
+        "emissions": [
+          {
+            "id": 1,
+            "t": 11.75,
+            "x": 450,
+            "y": 150,
+            "morceau": "fixture"
+          }
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.305,
+              "attendu": 11.75,
+              "observe": 11.75,
+              "ecart": 0,
+              "attente": 0.4450000000000003,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ],
+        "restant": [],
+        "empeche": true,
+        "ecartAuTempsMs": 250
+      }
+    },
+    {
+      "nom": "Temps VM : livraison au pas suivant, pas de rétrodatage",
+      "ok": true,
+      "valeur": {
+        "emissions": [
+          11.005
+        ],
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "rythme-action",
+            "d": {
+              "type": "apparition",
+              "id": 1,
+              "morceau": "fixture",
+              "demande": 11.005,
+              "attendu": 11,
+              "observe": 11.005,
+              "ecart": 0.005000000000000782,
+              "attente": -0.005000000000000782,
+              "dureeTemps": 0.5,
+              "changementPiste": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "nom": "Audio VM : aucune coupure persistée hors audio-probe",
+      "ok": true,
+      "valeur": {
+        "reglages": {
+          "musique": true,
+          "effets": true,
+          "secousse": 1,
+          "flashs": true,
+          "ecran": "riche",
+          "texte": 1,
+          "manche": 1,
+          "actions": "doigts"
+        },
+        "canaux": {
+          "musique": false,
+          "effets": false
+        }
+      }
+    },
+    {
+      "nom": "Traçabilité : les deux modes ont chacun leur dossier brut",
+      "ok": true,
+      "valeur": [
+        "sync-probe-paysage-bon-101-synchro",
+        "sync-probe-paysage-bon-101-desync"
+      ]
+    },
+    {
+      "nom": "Revalidation ciblée : seules les sondes, aucun verdict de campagne",
+      "ok": true,
+      "valeur": {
+        "profilsParties": [],
+        "pilotesParties": [],
+        "aventure": false,
+        "performance": false,
+        "qualificationComplete": false
+      }
+    }
+  ],
+  "bundle": {
+    "avant": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+    "apres": "3eaf75cf596e5e101d7b33d103eae98dca36ae83435afa3b4890618f684a4024",
+    "identique": true,
+    "code": 0
+  },
+  "temoin": {
+    "dateParis": "24/10/2026 13:01:23 (Paris)",
+    "buildCode": 0,
+    "sha256": "6802c5fea9f16fe47351ff6ce5a596645f2f4e7be01ef6c41602d86fff00c41d",
+    "fichier": "/Users/manonwojciechowski/Projets/wt-snake/codex-di5/proto-neon/tools/jury2/temoin/index.html",
+    "modes": [
+      "desync",
+      "synchro"
+    ],
+    "modifications": [
+      "mode desync : musique coupée par le canal public musique",
+      "mode desync : portails prolongés par un retard pseudo-aléatoire indépendant de 0 à 0.9 s",
+      "mode desync : 60 % des fleche, dard, larve doublés",
+      "mode synchro (témoin positif) : rythmeFin imposé au prochain temps audio après le préavis minimal, musique conservée"
+    ],
+    "srcOriginalModifie": false,
+    "executionNavigateur": false,
+    "limite": "Construction et syntaxe seulement ; sensibilité à mesurer sur les sorties réelles, jamais déduite de la présence de ce patch."
+  },
+  "accessibilite": {
+    "dateParis": "24/10/2026 13:01:25 (Paris)",
+    "sourceReelle": "/Users/manonwojciechowski/Projets/wt-snake/jury-f1/proto-neon/tools/jury2",
+    "temporaire": "/private/var/folders/bp/283k11m11rq76sjc8c_wg97r0000gn/T/snake-codex-di3-W6RBJR",
+    "fixture": {
+      "code": "J-3f9a1c7e",
+      "regards": {
+        "joueuse iPhone": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 229
+        },
+        "game design": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 222
+        },
+        "rythme et musique": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 222
+        },
+        "direction artistique": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 229
+        },
+        "avocat du diable": {
+          "visibles": 3,
+          "total": 3,
+          "part": 1,
+          "absents": [],
+          "fichiers": 236
+        }
+      }
+    },
+    "originaux": [
+      {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 399
+          },
+          "game design": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 167
+          },
+          "rythme et musique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 247
+          },
+          "direction artistique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-pire-mort-court-preavis-1.png",
+                "fichierJson": "S06/planche-pire-mort-court-preavis-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S09/planche-uniforme-2.png",
+                "fichierJson": "S09/planche-uniforme-2.json"
+              }
+            ],
+            "fichiers": 201
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S08/planche-vague-1.png",
+                "fichierJson": "S08/planche-vague-1.json"
+              }
+            ],
+            "fichiers": 385
+          }
+        }
+      },
+      {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 399
+          },
+          "game design": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              },
+              {
+                "id": "flash-plein-ecran",
+                "fichier": "S09/planche-uniforme-4.png",
+                "fichierJson": "S09/planche-uniforme-4.json"
+              }
+            ],
+            "fichiers": 167
+          },
+          "rythme et musique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              },
+              {
+                "id": "flash-plein-ecran",
+                "fichier": "S09/planche-uniforme-4.png",
+                "fichierJson": "S09/planche-uniforme-4.json"
+              }
+            ],
+            "fichiers": 247
+          },
+          "direction artistique": {
+            "visibles": 1,
+            "total": 3,
+            "part": 0.3333333333333333,
+            "absents": [
+              {
+                "id": "image-gelee",
+                "fichier": "S06/planche-mort-1.png",
+                "fichierJson": "S06/planche-mort-1.json"
+              },
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 201
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "decalage-rythme",
+                "fichier": "S06/tapis-break.png",
+                "fichierJson": "S06/tapis-break.json"
+              }
+            ],
+            "fichiers": 385
+          }
+        }
+      },
+      {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              }
+            ],
+            "fichiers": 433
+          },
+          "game design": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 179
+          },
+          "rythme et musique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 267
+          },
+          "direction artistique": {
+            "visibles": 0,
+            "total": 3,
+            "part": 0,
+            "absents": [
+              {
+                "id": "trou-couverture",
+                "fichier": "S04/planche-uniforme-1.png",
+                "fichierJson": "S04/planche-uniforme-1.json"
+              },
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              },
+              {
+                "id": "image-gelee",
+                "fichier": "S09/planche-uniforme-5.png",
+                "fichierJson": "S09/planche-uniforme-5.json"
+              }
+            ],
+            "fichiers": 209
+          },
+          "avocat du diable": {
+            "visibles": 2,
+            "total": 3,
+            "part": 0.6666666666666666,
+            "absents": [
+              {
+                "id": "temps-incoherent",
+                "fichier": "S04/planche-break-2.png",
+                "fichierJson": "S04/planche-break-2.json"
+              }
+            ],
+            "fichiers": 407
+          }
+        }
+      }
+    ],
+    "reconstructions": [
+      {
+        "code": "J-625ea38c",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      },
+      {
+        "code": "J-b632cd0a",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 663
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 715
+          }
+        }
+      },
+      {
+        "code": "J-611ad6f4",
+        "regards": {
+          "joueuse iPhone": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          },
+          "game design": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "rythme et musique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "direction artistique": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 717
+          },
+          "avocat du diable": {
+            "visibles": 3,
+            "total": 3,
+            "part": 1,
+            "absents": [],
+            "fichiers": 769
+          }
+        }
+      }
+    ]
+  },
+  "reussi": true,
+  "nombre": 64,
+  "echecs": 0,
+  "navigateur": "non exécuté conformément à la mission ; sensibilité réelle et dossiers à vérifier par la cheffe"
+}

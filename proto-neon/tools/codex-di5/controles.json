@@ -1,0 +1,115 @@
+{
+  "dateParis": "24/10/2026 13:06:46",
+  "controles": [
+    {
+      "nom": "fixe",
+      "attendu": 0,
+      "avantJury": 0,
+      "avantProjet": 0,
+      "apres": 0
+    },
+    {
+      "nom": "une permutation sans retour",
+      "attendu": 0,
+      "avantJury": 1,
+      "avantProjet": 1,
+      "apres": 0
+    },
+    {
+      "nom": "quatre permutations sans retour",
+      "attendu": 0,
+      "avantJury": 4,
+      "avantProjet": 4,
+      "apres": 0
+    },
+    {
+      "nom": "un flash L et R",
+      "attendu": 1,
+      "avantJury": 1,
+      "avantProjet": 1,
+      "apres": 1
+    },
+    {
+      "nom": "trois flashs",
+      "attendu": 3,
+      "avantJury": 3,
+      "avantProjet": 3,
+      "apres": 3
+    },
+    {
+      "nom": "quatre flashs",
+      "attendu": 4,
+      "avantJury": 4,
+      "avantProjet": 4,
+      "apres": 4
+    },
+    {
+      "nom": "aire 6 %",
+      "attendu": 0,
+      "avantJury": 0,
+      "avantProjet": 0,
+      "apres": 0
+    },
+    {
+      "nom": "aire exactement 6,6 %",
+      "attendu": 0,
+      "avantJury": 0,
+      "avantProjet": 0,
+      "apres": 0
+    },
+    {
+      "nom": "aire 6,7 %",
+      "attendu": 1,
+      "avantJury": 1,
+      "avantProjet": 1,
+      "apres": 1
+    }
+  ],
+  "autres": [
+    {
+      "nom": "Zones opposées sur deux rendus distincts mais sans pixel commun",
+      "ok": true
+    },
+    {
+      "nom": "Surface commune seule : 10 % aller, 6 % retour",
+      "ok": true
+    },
+    {
+      "nom": "Temps réel prioritaire : quatre flashes sur 1,25 s",
+      "ok": true
+    },
+    {
+      "nom": "Borne une seconde exclue, même avec seulement huit rendus",
+      "ok": true
+    },
+    {
+      "nom": "Pas fixe explicite sans w accepté ; sans horloge refusé",
+      "ok": true
+    },
+    {
+      "nom": "Resize : aucune paire entre surfaces de dimensions différentes",
+      "ok": true
+    },
+    {
+      "nom": "RLE corrompu refusé ; temps non croissant refusé",
+      "ok": true
+    },
+    {
+      "nom": "Fenêtre fixe exacte à 12 Hz : un événement par rendu, jamais treize dans une seconde",
+      "ok": true
+    },
+    {
+      "nom": "Annexe historique : maximum et conformité null, ancienne valeur bornée non probante",
+      "ok": true
+    },
+    {
+      "nom": "Annexe neuve : paire spatialement mesurée conservée",
+      "ok": true
+    },
+    {
+      "nom": "Deux familles sur surfaces distinctes, union avant seuil sans doublon",
+      "ok": true
+    }
+  ],
+  "reussi": true
+}
