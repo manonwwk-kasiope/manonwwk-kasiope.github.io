@@ -1,0 +1,15 @@
+evalmachine.<anonymous>:1
+(()=>window.__MESURE.etat()==='attraction')()
+                     ^
+
+TypeError: Cannot read properties of undefined (reading 'etat')
+    at evalmachine.<anonymous>:1:22
+    at evalmachine.<anonymous>:1:44
+    at Script.runInContext (node:vm:149:12)
+    at Object.runInContext (node:vm:301:6)
+    at lire (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p24/instrument.mjs:10:20)
+    at Object.attendre (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p24/instrument.mjs:12:242)
+    at mesurer (file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/mesure/criteres/R-19-attraction.mjs:26:20)
+    at async file:///Users/manonwojciechowski/Projets/wt-snake/codex-p24/proto-neon/tools/codex-p24/instrument.mjs:14:2
+
+Node.js v24.15.0

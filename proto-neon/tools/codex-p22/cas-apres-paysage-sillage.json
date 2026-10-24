@@ -1,0 +1,96 @@
+{
+  "hash": "0eac8dc132a459504a218e04fe8fb6089328f20856a6f356ce0bbc1b5a4321b6",
+  "profil": "paysage",
+  "nom": "sillage",
+  "image": {
+    "W": 422,
+    "H": 195,
+    "cyan": 0,
+    "hors": 0,
+    "horsPalette": 0,
+    "proprietaires": 2489,
+    "part": 0,
+    "parCode": {}
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "arene",
+      "d": {
+        "evt": "convoiAnnonce",
+        "voie": 2,
+        "vx": 240
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "armement",
+      "d": {
+        "id": 1,
+        "type": "convoi",
+        "forme": "voie",
+        "total": 1.5,
+        "cible": "tout",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "coup",
+      "d": {
+        "partie": "corps",
+        "k": 7,
+        "cause": "convoi",
+        "auteur": "convoi",
+        "auteurId": null,
+        "visibleDepuis": 0,
+        "teleDuree": 0,
+        "absorbe": false
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "flash",
+      "d": {
+        "aire": 762.6748321544353,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 0,
+        "_image": 0,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "coupe",
+      "d": {
+        "k": 7,
+        "perdus": 1,
+        "cause": "convoi",
+        "auteur": "convoi",
+        "x": 354.1199951171875,
+        "y": 256
+      }
+    }
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "erreursConsole": []
+}

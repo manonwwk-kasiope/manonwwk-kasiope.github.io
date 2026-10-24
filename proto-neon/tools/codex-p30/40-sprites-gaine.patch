@@ -1,0 +1,14 @@
+--- a/proto-neon/src/40-sprites.js
++++ b/proto-neon/src/40-sprites.js
+@@ -273,9 +273,9 @@
+     for (var yy = 0; yy < h; yy++) for (var xx = 0; xx < w; xx++) {
+       var j = yy * w + xx;
+       if (cyan[j]) continue;
+-      // Un trou intérieur déjà présent (œil) ne devient pas une nouvelle encre.
++      // codex-p30 : un œil sombre reste sombre, même sur une explosion claire.
+       if (d[j] === 0 && xx > ep && xx < w - ep - 1 && yy > ep && yy < h - ep - 1 &&
+-          d[j - 1] && d[j + 1] && d[j - w] && d[j + w]) continue;
++          d[j - 1] && d[j + 1] && d[j - w] && d[j + w]) { o.data[j] = NP; continue; }
+       for (var dy = -ep; dy <= ep && !o.data[j]; dy++) for (var dx = -ep; dx <= ep; dx++) {
+         var nx = xx + dx, ny = yy + dy;
+         if (nx >= 0 && nx < w && ny >= 0 && ny < h && cyan[ny * w + nx]) { o.data[j] = NP; break; }

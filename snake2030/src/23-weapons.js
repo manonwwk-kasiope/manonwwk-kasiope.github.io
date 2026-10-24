@@ -1,4 +1,4 @@
-/* ============================================================================
+/* ======
    SNAKE 2030 — 23-weapons.js
    S2030.weapons : arsenal entièrement automatique.
 
@@ -15,21 +15,45 @@
 
    Conventions internes : tout identifiant de niveau fichier est préfixé
    `_wpn` / `_WPN` pour ne heurter aucun autre module.
-   ========================================================================== */
+   ====== */
 
-/* ------------------------------------------------------------- palette */
-var _WPN_WHITE = '#ffffff';
+/* ------ palette */
+/* G11 : les modules d'arme sont dessinés SUR le corps du serpent (drawMounts est
+   appelé depuis drawSnake) ; en blanc pur ils produisaient des taches blanches
+   de 33 à 47 px² à un demi-anneau d'un segment, indiscernables de la tête. Un
+   blanc très légèrement bleuté (232 sur le rouge) garde la lecture « chrome »
+   et sort du seuil de 235 sur les trois canaux qui définit la tache de tête. */
+/* COMPOSITION DES MODULES POSÉS SUR LE SERPENT (G11).
+   drawMounts est appelé depuis drawSnake : tout ce qu'il trace est posé SUR un
+   corps #00e5ff, dont le vert (229) et le bleu (255) sont déjà au plafond. En
+   composition additive, il suffit alors que la somme des rouges des couches
+   dépasse 235 pour écrire du blanc pur — et cette somme n'est bornée par rien :
+   traînée ambre 117, écailles 54, éclair de bouche 217, arcs dorés 71. Mesuré
+   sur le build précédent : (246, 248, 251) sur 85 à 113 px CSS de corps.
+   Toutes les couches de module passent donc en composition NORMALE, où le
+   résultat vaut au plus la couleur du trait. Le blanc pur reste à la tête.
+   Les BALLES aussi : la supposition « elles volent devant le décor, pas sur le
+   corps » est FAUSSE, et mesurée fausse — le serpent s'enroule devant son propre
+   tir. Empilées en additif, la lueur crème (#fff3b0, alpha cumulé 0,90) et le
+   coeur (#e6f0ff, alpha 1) portent le rouge à 459 et le bleu à 413 : sur le
+   corps cyan, un tiret de balle écrit du blanc pur de 25 à 38 px CSS, rattaché
+   à aucun objet parce que le tiret (8 à 22 u) est plus long que le rayon de la
+   balle qui sert à l'attribution. Identifié en instrumentant fill et stroke :
+   2 407 traits en quarante secondes. Elles passent donc en composition normale
+   comme le reste de ce qui peut se poser sur le joueur. */
+var _WPN_OP = 'source-over';
+var _WPN_WHITE = '#e6f0ff';
 var _WPN_CREAM = '#fff3b0';
 var _WPN_GOLD = '#ffd166';
 var _WPN_AMBER = '#ffb347';
 var _WPN_PLASMA = '#fff7d6';
 var _WPN_CHROME = '#dfe9f5';
 
-/* ============================================================================
+/* ======
    DÉFINITIONS
    Chaque niveau porte ses propres paramètres : le code de tir lit l'objet
    de niveau, jamais un numéro. Ajouter un palier = ajouter une ligne.
-   ========================================================================== */
+   ====== */
 
 var _wpnDefs = {
 
@@ -141,9 +165,9 @@ var _wpnDefs = {
 var _WPN_IDS = ['frontCannon', 'sideTurrets', 'tailLaser', 'arcLightning',
                 'missiles', 'drones', 'shockwave', 'tailMines'];
 
-/* ============================================================================
+/* ======
    ÉTAT LOCAL — tout est préalloué, aucune allocation par image.
-   ========================================================================== */
+   ====== */
 
 var _wpnFrame = 0;      // compteur d'images, sert aux étalements de charge
 var _wpnMark = 1;       // marqueur de passe (évite les doubles dégâts)
@@ -244,9 +268,9 @@ var _wpnBurns = [];
   }
 })();
 
-/* ============================================================================
+/* ======
    AIDES
-   ========================================================================== */
+   ====== */
 
 function _wpnLvl(id) {
   var v = S.up[id] | 0;
@@ -356,9 +380,9 @@ function _wpnThreat(e, x, y) {
   return v - Math.sqrt(dist2(x, y, e.x, e.y)) * 0.35;
 }
 
-/* ============================================================================
+/* ======
    1. CANON FRONTAL
-   ========================================================================== */
+   ====== */
 
 function _wpnUpFront(dt, L) {
   var s = S.snake;
@@ -445,9 +469,9 @@ function _wpnUpFront(dt, L) {
   S2030.audio.sfx('shoot', { vol: L.orb ? 0.5 : 0.34, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    2. TOURELLES LATÉRALES
-   ========================================================================== */
+   ====== */
 
 function _wpnMountPlaces(L) {
   var segs = S.snake.segs, n = segs.length;
@@ -541,11 +565,12 @@ function _wpnUpSide(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    3. TRAÎNÉE DE QUEUE
-   ========================================================================== */
+   ====== */
 
 function _wpnTailPush(L) {
+  if (!L) return;
   var tx = _wpnTailX(), ty = _wpnTailY();
   var dx = tx - _wpnTail.lx, dy = ty - _wpnTail.ly;
   if (dx * dx + dy * dy < 64) return;
@@ -591,10 +616,11 @@ function _wpnTailPush(L) {
   S2030.fx.burst(cx, cy, _WPN_GOLD, 26, 320, { life: 0.5, size: 2.4 });
   S2030.fx.shake(10);
   S2030.fx.text(cx, cy - 20, 'ENCERCLÉ', _WPN_GOLD);
-  S2030.audio.sfx('explode', { vol: 0.8, x: cx });
+  S2030.audio.sfx('bigkill', { vol: 0.8, x: cx });
 }
 
 function _wpnUpTail(dt, L) {
+  if (!L) return;
   var i, nd;
   if (_wpnTail.loopCd > 0) _wpnTail.loopCd -= dt;
   if (_wpnTail.boom > 0) _wpnTail.boom -= dt;
@@ -660,9 +686,9 @@ function _wpnUpTail(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    4. ARC ÉLECTRIQUE
-   ========================================================================== */
+   ====== */
 
 function _wpnArcNext() {
   var a = _wpnArcs[_wpnArc.i];
@@ -745,9 +771,9 @@ function _wpnUpArc(dt, L) {
   if (fired) S2030.audio.sfx('zap', { vol: 0.5, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    5. MISSILES
-   ========================================================================== */
+   ====== */
 
 function _wpnMissileHit(e) {
   if (!this.split) return;
@@ -815,9 +841,9 @@ function _wpnUpMissile(dt, L) {
   S2030.audio.sfx('missile', { vol: 0.55, x: s.x });
 }
 
-/* ============================================================================
+/* ======
    6. DRONES
-   ========================================================================== */
+   ====== */
 
 function _wpnDroneSync(L) {
   var want = L.n | 0, d;
@@ -919,9 +945,9 @@ function _wpnUpDrones(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    7. ONDE DE CHOC
-   ========================================================================== */
+   ====== */
 
 function _wpnWaveSpawn(x, y, r, sp, dmg) {
   var w = null;
@@ -961,7 +987,7 @@ function _wpnPulse(L) {
   S2030.fx.ring(s.x, s.y, _WPN_WHITE, r * 0.1, r * 3.4, { w: 2.5, life: 0.3 });
   S2030.fx.flare(s.x, s.y, _WPN_CREAM, r * 0.7, { life: 0.2, a: 0.55 });
   S2030.fx.shake(4 + L.r * 0.02);
-  S2030.audio.sfx('shock', { vol: 0.6, x: s.x });
+  S2030.audio.sfx('boost', { vol: 0.7, x: s.x });
 }
 
 function _wpnUpShock(dt, L) {
@@ -1014,9 +1040,9 @@ function _wpnUpShock(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    8. MINES DE SILLAGE
-   ========================================================================== */
+   ====== */
 
 function _wpnMineFree() {
   for (var i = 0; i < _WPN_MINEN; i++) if (!_wpnMines[i].on) return _wpnMines[i];
@@ -1089,7 +1115,7 @@ function _wpnUpMines(dt, L) {
       var ta = S.snake.segs.length ? S.snake.segs[S.snake.segs.length - 1].ang : S.snake.ang;
       _wpnMineDrop(tx - Math.sin(ta) * off, ty + Math.cos(ta) * off, L, 0);
     }
-    S2030.audio.sfx('click', { vol: 0.22, x: tx });
+    S2030.audio.sfx('boostDry', { vol: 0.35, x: tx });
   }
 
   var slot = _wpnFrame % 5;
@@ -1134,7 +1160,7 @@ function _wpnUpMines(dt, L) {
     if (m.sing) {
       m.singT = m.sing;
       S2030.fx.ring(m.x, m.y, _WPN_WHITE, m.blast * 1.4, -m.blast * 2.2, { w: 3, life: m.sing });
-      S2030.audio.sfx('warp', { vol: 0.35, x: m.x });
+      S2030.audio.sfx('absorb', { vol: 0.8, x: m.x });
     } else {
       _wpnMineBoom(m, L);
     }
@@ -1160,15 +1186,14 @@ function _wpnUpMines(dt, L) {
   }
 }
 
-/* ============================================================================
+/* ======
    MISE À JOUR GÉNÉRALE
-   ========================================================================== */
+   ====== */
 
 function _wpnUpdate(dt) {
   // brouilleur : tant que la tête baigne dans le champ, les armes se taisent
   if (S2030.enemies && S2030.enemies.isJammed && S2030.enemies.isJammed()) {
-    _wpnUpTail && _wpnUpTail(dt);   // le sillage de queue n'est pas une arme
-    return;
+    var L = _wpnL('tailLaser'); if (L) _wpnUpTail(dt, L); return;   // le sillage de queue n'est pas une arme
   }
   if (!S.snake) return;
   _wpnFrame++;
@@ -1184,12 +1209,12 @@ function _wpnUpdate(dt) {
   L = _wpnL('tailMines');    if (L) _wpnUpMines(dt, L);
 }
 
-/* ============================================================================
+/* ======
    DESSIN DES PROJECTILES
    Un seul passage groupé par image : le cœur appelle drawBullet pour chaque
    projectile visible, on ne travaille que sur le premier appel de l'image et
    on trace un chemin par famille. Coût : quelques stroke() au lieu de mille.
-   ========================================================================== */
+   ====== */
 
 var _WPN_KINDS = ['frag', 'shard', 'flak', 'dbolt', 'bolt', 'sub', 'orb'];
 var _WPN_STYLE = {
@@ -1220,7 +1245,7 @@ function _wpnDrawAll(ctx) {
   var i, b, k, st, any;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1326,9 +1351,9 @@ function _wpnDrawBullet(ctx, b) {
   _wpnDrawAll(ctx);
 }
 
-/* ============================================================================
+/* ======
    DESSIN DES MODULES VISIBLES SUR LE CORPS
-   ========================================================================== */
+   ====== */
 
 /* bruit déterministe, sans consommer le générateur du jeu */
 function _wpnNoise(a) {
@@ -1341,7 +1366,7 @@ function _wpnDrawTrail(ctx, L) {
   if (!c) return;
   var i, nd, seg, drawn;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1362,10 +1387,22 @@ function _wpnDrawTrail(ctx, L) {
     var a = 1 - seg * 0.32;
     var w = L.w * (1 - seg * 0.22);
     ctx.strokeStyle = _WPN_AMBER;
-    ctx.globalAlpha = 0.20 * a; ctx.lineWidth = w * 1.9; ctx.stroke();
-    ctx.globalAlpha = 0.38 * a; ctx.lineWidth = w; ctx.stroke();
+    ctx.globalAlpha = 0.16 * a; ctx.lineWidth = w * 1.9; ctx.stroke();
+    ctx.globalAlpha = 0.30 * a; ctx.lineWidth = w; ctx.stroke();
+    /* G11 — LE LEVIER EST LA COMPOSITION, PAS L'ALPHA. Ce coeur est posé SUR le
+       corps du serpent (drawMounts est appelé depuis drawSnake) : en 'lighter'
+       il s'ajoute à un cyan dont le vert (229) et le bleu (255) sont déjà au
+       plafond, si bien qu'il suffit que le rouge cumulé des couches dépasse 235
+       pour écrire du blanc pur. Mesuré ainsi : (246, 248, 251) sur 85 à 113 px²,
+       alpha déjà descendu à 0,45 — la baisse d'alpha ne fermait pas la porte.
+       En source-over l'encre REMPLACE le fond : le résultat vaut au plus la
+       couleur du trait, dont le bleu (176 pour la crème, 255 mais le rouge à 230
+       pour le blanc bleuté) reste sous le seuil. La lueur ambre autour, elle,
+       garde son additif : c'est elle qui porte le néon. */
+    ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = L.block ? _WPN_WHITE : _WPN_CREAM;
     ctx.globalAlpha = 0.75 * a; ctx.lineWidth = w * 0.34; ctx.stroke();
+    ctx.globalCompositeOperation = _WPN_OP;
   }
 
   /* halo de détonation de boucle */
@@ -1425,7 +1462,7 @@ function _wpnDrawTurrets(ctx, L) {
 
   /* éclairs de bouche */
   if (fl) {
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     ctx.globalAlpha = 0.85;
     ctx.beginPath();
     for (i = 0; i < n; i++) {
@@ -1452,7 +1489,7 @@ function _wpnDrawDrones(ctx, L) {
 
   /* filin / anneau */
   if (L.tether && n > 1) {
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     var pairs = L.ring ? n : n - 1;
     ctx.beginPath();
     for (i = 0; i < pairs; i++) {
@@ -1474,7 +1511,7 @@ function _wpnDrawDrones(ctx, L) {
   for (i = 0; i < n; i++) {
     d = S.drones[i];
     if (d.shield <= 0 || !inView(d.x, d.y, 50)) continue;
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = _WPN_OP;
     ctx.globalAlpha = 0.5 * Math.min(1, d.shield);
     ctx.strokeStyle = _WPN_CHROME; ctx.lineWidth = 2.4;
     ctx.beginPath(); ctx.arc(d.x, d.y, 15 + (1 - Math.min(1, d.shield)) * 6, 0, TAU); ctx.stroke();
@@ -1502,7 +1539,7 @@ function _wpnDrawDrones(ctx, L) {
   ctx.strokeStyle = _WPN_CHROME; ctx.lineWidth = 1.8; ctx.stroke();
 
   /* yeux */
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.globalAlpha = 0.9;
   for (var pass = 0; pass < 2; pass++) {
     var got = 0;
@@ -1545,7 +1582,7 @@ function _wpnDrawArcs(ctx) {
   if (!live) return;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
@@ -1578,9 +1615,13 @@ function _wpnDrawArcs(ctx) {
     if (pass === 0) {
       ctx.strokeStyle = _WPN_GOLD; ctx.globalAlpha = 0.28; ctx.lineWidth = 9;
     } else {
+      /* G11 : coeur d'arc en composition NORMALE, même raison que la traînée.
+         L'alpha revient à 0,95 : ce n'est pas lui qui écrivait du blanc. */
+      ctx.globalCompositeOperation = 'source-over';
       ctx.strokeStyle = _WPN_WHITE; ctx.globalAlpha = 0.95; ctx.lineWidth = 2.2;
     }
     ctx.stroke();
+    if (pass === 1) ctx.globalCompositeOperation = _WPN_OP;
   }
 
   /* nœuds lumineux */
@@ -1609,7 +1650,7 @@ function _wpnDrawBeam(ctx, L) {
   var puls = 1 + Math.sin(S.t * 0.045) * 0.16;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
   ctx.lineCap = 'round';
   ctx.strokeStyle = _WPN_GOLD;
   ctx.globalAlpha = 0.22 * p;
@@ -1619,6 +1660,12 @@ function _wpnDrawBeam(ctx, L) {
   ctx.globalAlpha = 0.55 * p;
   ctx.lineWidth = L.w * puls;
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  /* G11 : le coeur du rayon part DE LA TÊTE. En additif à plein alpha il
+     écrivait une bande blanche continue depuis la tête, et la composante blanche
+     la plus proche de la tête n'était alors plus la tête mais le rayon — le
+     critère (a) du test 3 tombait. En source-over le coeur vaut au plus
+     #e6f0ff, dont le rouge (230) reste sous 235. */
+  ctx.globalCompositeOperation = 'source-over';
   ctx.strokeStyle = _WPN_WHITE;
   ctx.globalAlpha = 1;
   ctx.lineWidth = L.w * 0.3 * puls;
@@ -1652,7 +1699,7 @@ function _wpnDrawBeam(ctx, L) {
 function _wpnDrawShock(ctx, L) {
   var s = S.snake;
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
 
   /* aura permanente */
   if (L.aura) {
@@ -1711,7 +1758,7 @@ function _wpnDrawMines(ctx) {
   if (!any && !anyB) return;
 
   ctx.save();
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.globalCompositeOperation = _WPN_OP;
 
   /* cratères incandescents */
   for (i = 0; i < _WPN_BURNN; i++) {
@@ -1783,7 +1830,10 @@ function _wpnDrawMines(ctx) {
     ctx.stroke();
   }
 
-  /* implosions : rares, tracées individuellement */
+  /* implosions : rares, tracées individuellement.
+     G11 : en composition normale — elles sont posées sur la queue du serpent et
+     leur blanc additif empilé (0,7 + 0,9) y saturait les trois canaux. */
+  ctx.globalCompositeOperation = 'source-over';
   for (i = 0; i < _WPN_MINEN; i++) {
     m = _wpnMines[i];
     if (!m.on || m.singT <= 0 || !inView(m.x, m.y, 90)) continue;
@@ -1811,9 +1861,9 @@ function _wpnDrawMounts(ctx) {
   L = _wpnL('frontCannon');  if (L && L.beam && _wpnFront.beamOn) _wpnDrawBeam(ctx, L);
 }
 
-/* ============================================================================
+/* ======
    RÉINITIALISATION
-   ========================================================================== */
+   ====== */
 
 function _wpnReset() {
   var i;
@@ -1851,9 +1901,9 @@ function _wpnReset() {
   _wpnMine.t = 0.8;
 }
 
-/* ============================================================================
+/* ======
    API DU MODULE
-   ========================================================================== */
+   ====== */
 
 S2030.weapons = {
   defs: _wpnDefs,

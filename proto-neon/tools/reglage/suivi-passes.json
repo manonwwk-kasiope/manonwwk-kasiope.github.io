@@ -1,0 +1,226 @@
+{
+  "bilan": [
+    {
+      "numero": 1,
+      "config": "passe-1.json",
+      "avant": "baseline.json",
+      "apres": "passe-1-sortie.json",
+      "decision": "retenue comme candidate de travail",
+      "raison": "Choix au nombre de B tenues ; ce choix ne valide pas le lot et les régressions indicatives ou hors fourchette restent publiées.",
+      "changements": [
+        {
+          "k": "ennemis.fleche.approche.0",
+          "avant": 50,
+          "apres": 40
+        },
+        {
+          "k": "ennemis.fleche.approche.1",
+          "avant": 70,
+          "apres": 56
+        },
+        {
+          "k": "secteurs.0.vitessesFleches.0",
+          "avant": 50,
+          "apres": 40
+        },
+        {
+          "k": "secteurs.0.vitessesFleches.1",
+          "avant": 55,
+          "apres": 44
+        },
+        {
+          "k": "secteurs.0.vitessesFleches.2",
+          "avant": 60,
+          "apres": 48
+        },
+        {
+          "k": "secteurs.0.vitessesFleches.3",
+          "avant": 65,
+          "apres": 52
+        },
+        {
+          "k": "secteurs.0.vitessesFleches.4",
+          "avant": 70,
+          "apres": 56
+        }
+      ],
+      "gains": [
+        "inerte.35",
+        "humain.mediane"
+      ],
+      "pertes": [],
+      "serieSansGain": 0,
+      "stop": false,
+      "avantB": 7,
+      "apresB": 9
+    },
+    {
+      "numero": 2,
+      "config": "passe-2.json",
+      "avant": "passe-1-sortie.json",
+      "apres": "passe-2-sortie.json",
+      "decision": "retenue comme candidate de travail",
+      "raison": "11 B tenues contre 9, avec deux nouvelles B bon (atteint 35 %, battu 10 %) et aucune B perdue. Expert et durées dieu restent hors cible.",
+      "changements": [
+        {
+          "k": "secteurs.0.vagues.0.plafond",
+          "avant": 10,
+          "apres": 12
+        },
+        {
+          "k": "secteurs.0.vagues.1.chargesFleches",
+          "avant": 2,
+          "apres": 1
+        },
+        {
+          "k": "colosse.pvPhase",
+          "avant": 1500,
+          "apres": 1200
+        },
+        {
+          "k": "colosse.pvTotal",
+          "avant": 4500,
+          "apres": 3600
+        }
+      ],
+      "gains": [
+        "bon.cyclope",
+        "bon.bat"
+      ],
+      "pertes": [],
+      "serieSansGain": 0,
+      "stop": false,
+      "avantB": 9,
+      "apresB": 11
+    },
+    {
+      "numero": 3,
+      "config": "passe-3.json",
+      "avant": "passe-2-sortie.json",
+      "apres": "passe-3-sortie.json",
+      "decision": "rejetée ; candidate 2 conservée",
+      "raison": "Aucune nouvelle B ; 8/20 au lieu de 11. Perd durée inerte, durée humaine et borne haute d’accès bon. Expert gagne 30 % (cible 40–70 %), LASSO humain encore à 11,86 % / 5,66 %. Pas de bénéfice compensant les régressions.",
+      "changements": [
+        {
+          "k": "ennemis.fleche.pv",
+          "avant": 20,
+          "apres": 10
+        },
+        {
+          "k": "ennemis.fleche.bond.vitesse",
+          "avant": 160,
+          "apres": 128
+        },
+        {
+          "k": "ennemis.fleche.bond.duree",
+          "avant": 0.42,
+          "apres": 0.525
+        },
+        {
+          "k": "lasso.traine.base",
+          "avant": 1.2,
+          "apres": 6
+        }
+      ],
+      "gains": [],
+      "pertes": [
+        "tourneur.90",
+        "humain.mediane",
+        "bon.cyclope"
+      ],
+      "serieSansGain": 1,
+      "stop": false,
+      "avantB": 11,
+      "apresB": 8
+    },
+    {
+      "numero": 4,
+      "config": "passe-4.json",
+      "avant": "passe-2-sortie.json",
+      "apres": "passe-4-sortie.json",
+      "decision": "non retenue pour livraison ; base expérimentale de la dernière passe",
+      "raison": "Nouvelle B expert : 45 % de victoires, sans vie intacte. B total 10/20 contre 11 pour la candidate 2 : humain dépasse 210 s et bon atteint 65 %, au-dessus de 60 %. La candidate 2 reste la meilleure au nombre de B, mais la nouvelle entrée expert justifie une dernière tentative de compromis.",
+      "changements": [
+        {
+          "k": "ennemis.fleche.pv",
+          "avant": 20,
+          "apres": 15
+        },
+        {
+          "k": "ennemis.fleche.bond.vitesse",
+          "avant": 160,
+          "apres": 128
+        },
+        {
+          "k": "ennemis.fleche.bond.duree",
+          "avant": 0.42,
+          "apres": 0.525
+        },
+        {
+          "k": "lasso.traine.base",
+          "avant": 1.2,
+          "apres": 6
+        },
+        {
+          "k": "lasso.fermetureTraine",
+          "avant": 7,
+          "apres": 11
+        },
+        {
+          "k": "lasso.fermetureQueue",
+          "avant": 5.5,
+          "apres": 7.5
+        }
+      ],
+      "gains": [
+        "expert.bat"
+      ],
+      "pertes": [
+        "humain.mediane",
+        "bon.cyclope"
+      ],
+      "serieSansGain": 0,
+      "stop": false,
+      "avantB": 11,
+      "apresB": 10
+    },
+    {
+      "numero": 5,
+      "config": "passe-5.json",
+      "avant": "passe-4-sortie.json",
+      "apres": "passe-5-sortie.json",
+      "decision": "rejetée ; candidate 2 conservée pour contrôle final",
+      "raison": "Collecte des 160 essais terminée, avec un cas expert non fini à 540,1770833508882 s, aucun seuil abaissé ni durée finale imputée. Humain reste au-dessus de 210 s, maladroit sous 45 s. Les cibles expert sont à vérifier du fait du cas borné. Candidate 2 meilleure parmi les séries entièrement finies : 11/20 B. Arrêt obligatoire au plafond de cinq passes ; aucune sixième passe.",
+      "changements": [
+        {
+          "k": "secteurs.0.vagues.0.plafond",
+          "avant": 12,
+          "apres": 8
+        },
+        {
+          "k": "secteurs.0.vagues.1.chargesFleches",
+          "avant": 1,
+          "apres": 2
+        },
+        {
+          "k": "secteurs.0.vagues.0.formations.1.t",
+          "avant": 5,
+          "apres": 11
+        }
+      ],
+      "gains": [],
+      "pertes": [
+        "expert.bat",
+        "expert.perdVie"
+      ],
+      "serieSansGain": 1,
+      "stop": true,
+      "avantB": 10,
+      "apresB": 9
+    }
+  ],
+  "arretObligatoire": true,
+  "serieSansGain": 1,
+  "budgetPasses": 5,
+  "passesConsommees": 5
+}

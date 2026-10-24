@@ -1,0 +1,148 @@
+{
+ "id": "R-03",
+ "titre": "Cyan réservé",
+ "seuil": "cyan hors codes 1-4 du masque < 0,5 %",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "13 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "calme",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004301859278162595,
+   "etat": "jeu"
+  },
+  {
+   "nom": "montee",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004544902175233929,
+   "etat": "jeu"
+  },
+  {
+   "nom": "chaos",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004921618665694495,
+   "etat": "jeu"
+  },
+  {
+   "nom": "colosse",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0051403572730586945,
+   "etat": "boss"
+  },
+  {
+   "nom": "charge",
+   "valeur": 0.00039,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.007133309029043626,
+   "etat": "boss"
+  },
+  {
+   "nom": "v5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.025361526309393607,
+   "etat": "jeu"
+  },
+  {
+   "nom": "boss3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005152509417912262,
+   "etat": "boss"
+  },
+  {
+   "nom": "travelling",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004289707133309029,
+   "etat": "jeu"
+  },
+  {
+   "nom": "convoi",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004374772147283996,
+   "etat": "jeu"
+  },
+  {
+   "nom": "lasso6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.01093693036820999,
+   "etat": "jeu"
+  },
+  {
+   "nom": "mort",
+   "valeur": 0.00136,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.009976910924778223,
+   "etat": "mort"
+  },
+  {
+   "nom": "vol",
+   "valeur": 0.03432,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 0.0353870458135861,
+   "etat": "vol"
+  },
+  {
+   "nom": "inversion",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0035970348766557296,
+   "etat": "jeu"
+  },
+  {
+   "nom": "cartes",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0001093693036820999,
+   "etat": "cartes"
+  }
+ ],
+ "notes": [
+  "pire image : 3.43 %"
+ ],
+ "captures": [
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-calme-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-montee-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-chaos-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-colosse-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-charge-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-v5-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-boss3-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-travelling-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-convoi-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-lasso6-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-mort-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-vol-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-inversion-paysage-tampon.png",
+  "tools/mesure/diagnostic/p3c-navigateur/captures/R-03-cartes-paysage-tampon.png"
+ ],
+ "duree": 12.2,
+ "bundle": {
+  "url": "http://127.0.0.1:62346/proto-neon/index.html",
+  "empreinte": "7fc90b5a2166"
+ },
+ "date": "2026-10-18T00:11:34.253Z",
+ "dateParis": "18/10/2026 · 02 h 11"
+}

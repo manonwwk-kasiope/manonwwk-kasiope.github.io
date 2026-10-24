@@ -1,0 +1,25 @@
+{
+ "createdAt": "2026-09-06T04:12:33.838Z",
+ "url": "http://127.0.0.1:8112/snake2030/index-head.html",
+ "note": "Relevés de suivi. La performance ne se juge plus contre ce fichier : banc.mjs mesure le build courant et le build de référence (dernier commit git) dans la même fenêtre de temps, parce que le coût absolu d une image dépend de la machine et de son état. Ici ne restent que la référence de rail2 (latence de virage, en images de jeu, indépendante de la machine) et la partie pilotée par diag (indicatif, sans seuil).",
+ "rail2": {
+  "orthoMed": 69,
+  "orthoN": 20,
+  "diagMed": 69,
+  "diagN": 20
+ },
+ "desk1440": {
+  "pct33": 5.25,
+  "p99": 47.8,
+  "p50": 22.9,
+  "p95": 33.2,
+  "n": 4918
+ },
+ "iphone": {
+  "pct33": 0.49,
+  "p99": 16.8,
+  "p50": 16.7,
+  "p95": 16.7,
+  "n": 4938
+ }
+}

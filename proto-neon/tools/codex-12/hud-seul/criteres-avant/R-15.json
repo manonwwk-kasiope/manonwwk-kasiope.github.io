@@ -1,0 +1,162 @@
+{
+ "id": "R-15",
+ "titre": "Rythme",
+ "seuil": "vagues nommées et annoncées ; respirations ≥ 8 s < 40 % ; pics croissants ; pic en V3-V5 ; 0 tir ennemi en V1",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "5 ok, 3 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "vagues nommées (entrées avec nom)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "entrees": 203
+  },
+  {
+   "nom": "vagues annoncées par une bannière (± 1,5 s)",
+   "valeur": 0.41872,
+   "seuil": 1,
+   "statut": "echec",
+   "vagues": 203
+  },
+  {
+   "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+   "valeur": 0.94505,
+   "seuil": 1,
+   "statut": "echec",
+   "pics": 182,
+   "exemples": [
+    {
+     "n": 3,
+     "pic": 17,
+     "tp": 138.86833334345377,
+     "respiration": 6.749999999993861,
+     "terminee": true,
+     "graine": 2
+    },
+    {
+     "n": 4,
+     "pic": 20,
+     "tp": 182.54333334515346,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 7
+    },
+    {
+     "n": 4,
+     "pic": 25,
+     "tp": 186.66583334554653,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 10
+    },
+    {
+     "n": 2,
+     "pic": 10,
+     "tp": 46.351250002034455,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 13
+    },
+    {
+     "n": 3,
+     "pic": 17,
+     "tp": 142.97458334469175,
+     "respiration": 6.249999999994316,
+     "terminee": true,
+     "graine": 14
+    },
+    {
+     "n": 2,
+     "pic": 9,
+     "tp": 46.65125000203444,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 23
+    }
+   ]
+  },
+  {
+   "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+   "valeur": [
+    6,
+    11,
+    18,
+    22,
+    19
+   ],
+   "seuil": "strictement croissants",
+   "statut": "echec",
+   "vaguesConnues": 5
+  },
+  {
+   "nom": "pic connu en V3 (événement vague/pic)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 35,
+   "jouees": 39,
+   "excluesAvantPic": 4,
+   "parProfil": {
+    "paysage": {
+     "total": 14,
+     "V4": 2,
+     "V3": 4,
+     "V5": 8
+    }
+   }
+  },
+  {
+   "nom": "pic connu en V4 (événement vague/pic)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 33,
+   "jouees": 35,
+   "excluesAvantPic": 2,
+   "parProfil": {
+    "paysage": {
+     "total": 14,
+     "V4": 2,
+     "V3": 4,
+     "V5": 8
+    }
+   }
+  },
+  {
+   "nom": "pic connu en V5 (événement vague/pic)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "parties": 21,
+   "jouees": 29,
+   "excluesAvantPic": 8,
+   "parProfil": {
+    "paysage": {
+     "total": 14,
+     "V4": 2,
+     "V3": 4,
+     "V5": 8
+    }
+   }
+  },
+  {
+   "nom": "tirs ennemis avant la vague 2",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  }
+ ],
+ "notes": [
+  "Vagues perdues avant le pic exclues des contrôles pic/respiration : {\"nombre\":14,\"parProfil\":{\"paysage\":{\"total\":14,\"V4\":2,\"V3\":4,\"V5\":8}},\"cas\":[{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":4,\"n\":4,\"disponible\":16.89999999998463,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":8,\"n\":3,\"disponible\":25.159583335389613,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":9,\"n\":3,\"disponible\":6.816666666672091,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":14,\"n\":5,\"disponible\":24.783333333310793,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":15,\"n\":5,\"disponible\":15.599999999985812,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":16,\"n\":5,\"disponible\":19.366666666649053,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":21,\"n\":5,\"disponible\":21.049999999980855,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":28,\"n\":5,\"disponible\":11.558333333322821,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":29,\"n\":4,\"disponible\":14.24999999998704,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":34,\"n\":3,\"disponible\":14.000000000011141,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":37,\"n\":3,\"disponible\":12.691666666676767,\"heurePic\":30},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":43,\"n\":5,\"disponible\":15.273750001923673,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":49,\"n\":5,\"disponible\":15.374999999986017,\"heurePic\":32},{\"interrompue\":true,\"profil\":\"paysage\",\"graine\":50,\"n\":5,\"disponible\":15.913333335256425,\"heurePic\":32}]}"
+ ],
+ "captures": [],
+ "duree": 152,
+ "bundle": {
+  "url": "http://127.0.0.1:49679/proto-neon/index.html",
+  "empreinte": "48dd27b9e27d"
+ },
+ "date": "2026-10-18T03:57:56.143Z",
+ "dateParis": "18/10/2026 · 05 h 57"
+}

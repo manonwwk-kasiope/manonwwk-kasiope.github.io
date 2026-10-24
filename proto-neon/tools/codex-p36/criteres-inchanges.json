@@ -1,0 +1,127 @@
+{
+  "R-15": {
+    "id": "R-15",
+    "titre": "Rythme",
+    "seuil": "vagues nommées et annoncées ; respirations ≥ 8 s < 40 % ; pics croissants ; pic en V3-V5 ; 0 tir ennemi en V1",
+    "bloquant": true,
+    "statut": "echec",
+    "resume": "4 ok, 4 en échec, 0 indicatives hors cible, 0 non mesurables",
+    "mesures": [
+      {
+        "nom": "vagues nommées (entrées avec nom)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok",
+        "entrees": 22
+      },
+      {
+        "nom": "vagues annoncées par une bannière (± 1,5 s)",
+        "valeur": 0.40909,
+        "seuil": 1,
+        "statut": "echec",
+        "vagues": 22
+      },
+      {
+        "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+        "valeur": 0.95,
+        "seuil": 1,
+        "statut": "echec",
+        "pics": 20,
+        "exemples": [
+          {
+            "n": 5,
+            "pic": 12,
+            "tp": 263.5212500193968,
+            "respiration": 0,
+            "terminee": true,
+            "graine": 4
+          }
+        ]
+      },
+      {
+        "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+        "valeur": [
+          12,
+          18,
+          16,
+          18.5,
+          19
+        ],
+        "seuil": "strictement croissants",
+        "statut": "echec",
+        "vaguesConnues": 5
+      },
+      {
+        "nom": "pic connu en V3 (événement vague/pic)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok",
+        "parties": 4
+      },
+      {
+        "nom": "pic connu en V4 (événement vague/pic)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok",
+        "parties": 4
+      },
+      {
+        "nom": "pic connu en V5 (événement vague/pic)",
+        "valeur": 0.75,
+        "seuil": 1,
+        "statut": "echec",
+        "parties": 4
+      },
+      {
+        "nom": "tirs ennemis avant la vague 2",
+        "valeur": 0,
+        "seuil": 0,
+        "statut": "ok"
+      }
+    ],
+    "notes": [],
+    "captures": [],
+    "duree": 0.1
+  },
+  "R-34": {
+    "id": "R-34",
+    "titre": "LASSO jouable",
+    "seuil": "≥ 50 % jusqu’à 20 segments ; ≥ 40 % de 30 à 40 ; cadence 30-40 ≥ 0,8 × 8-20",
+    "bloquant": true,
+    "statut": "echec",
+    "resume": "1 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+    "mesures": [
+      {
+        "nom": "lassos réussis jusqu’à 20 segments",
+        "valeur": 0.14286,
+        "seuil": "≥ 0.5",
+        "statut": "echec",
+        "tentatives": 7
+      },
+      {
+        "nom": "lassos réussis de 30 à 40 segments",
+        "valeur": 0.25455,
+        "seuil": "≥ 0.4",
+        "statut": "echec",
+        "tentatives": 55
+      },
+      {
+        "nom": "lassos par minute, 30-40 segments / 8-20 segments",
+        "valeur": 13.41994,
+        "seuil": "≥ 0.8",
+        "statut": "ok",
+        "parMinute": {
+          "court": 0.11,
+          "long": 1.45
+        },
+        "minutes": {
+          "court": 9.3,
+          "long": 9.7
+        }
+      }
+    ],
+    "notes": [],
+    "captures": [],
+    "duree": 0.1
+  }
+}

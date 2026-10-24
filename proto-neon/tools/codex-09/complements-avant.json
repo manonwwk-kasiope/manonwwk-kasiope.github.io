@@ -1,0 +1,1782 @@
+{
+  "dateParis": "18/10/2026 01:46:28",
+  "profils": [
+    {
+      "nom": "paysage",
+      "controles": [
+        {
+          "nom": "néon avec aventure attachée",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "défaite conserve écran fin et aventure en attente",
+          "ok": true,
+          "valeur": {
+            "jeu": "fin",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 0,
+            "victoire": false,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "CONTINUER reprend néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "jeu",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": "C"
+          }
+        },
+        {
+          "nom": "REJOUER après défaite reste néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "titre arrête le voyage après défaite",
+          "ok": true,
+          "valeur": {
+            "jeu": "titre",
+            "aventure": false,
+            "etape": null,
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "intermède reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé reveil",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "intermède boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.016666666666666666,
+            "u": 0.016666666666666666,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé boss",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute boss",
+          "ok": false,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "retour réel au boss",
+          "ok": false,
+          "valeur": "panneau"
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "console": []
+          }
+        }
+      ],
+      "trace": [
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": ""
+        },
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": "C"
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreursConsole": [],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 122,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "titre",
+            "a": "aventure"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "aventure",
+            "a": "plongee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 97,
+          "t": 0.8083333333333329,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 418.5866666666665,
+            "y": 256,
+            "t": 0.43333333333333385,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 366.8819736266255,
+            "y": 216.9121271774718,
+            "t": 0.6333333333333335,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 312.63606743644414,
+            "y": 188.7234785872099,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 337.0142250740273,
+            "y": 216.37838695235246,
+            "t": 1.033333333333332,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 283.7577409233327,
+            "y": 186.3447198983638,
+            "t": 1.2333333333333314,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "alerte"
+          }
+        }
+      ],
+      "conforme": false
+    },
+    {
+      "nom": "portrait",
+      "controles": [
+        {
+          "nom": "néon avec aventure attachée",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "défaite conserve écran fin et aventure en attente",
+          "ok": true,
+          "valeur": {
+            "jeu": "fin",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 0,
+            "victoire": false,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "CONTINUER reprend néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "jeu",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": "C"
+          }
+        },
+        {
+          "nom": "REJOUER après défaite reste néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "titre arrête le voyage après défaite",
+          "ok": true,
+          "valeur": {
+            "jeu": "titre",
+            "aventure": false,
+            "etape": null,
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "intermède reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé reveil",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 512,
+              "y": 235.27333333333388,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 512,
+              "y": 235.27333333333388,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "intermède boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.016666666666666666,
+            "u": 0.016666666666666666,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé boss",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 512,
+              "y": 235.27333333333388,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 512,
+              "y": 235.27333333333388,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute boss",
+          "ok": false,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "retour réel au boss",
+          "ok": false,
+          "valeur": "panneau"
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "console": []
+          }
+        }
+      ],
+      "trace": [
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": ""
+        },
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": "C"
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreursConsole": [],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 122,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "titre",
+            "a": "aventure"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "aventure",
+            "a": "plongee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 97,
+          "t": 0.8083333333333329,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 287.9733333333335,
+            "t": 0.43333333333333385,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 472.5978216215717,
+            "y": 94.46262353946167,
+            "t": 0.6333333333333335,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 441.763458704173,
+            "y": 93.23697372438255,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 472.9757285590845,
+            "y": 113.86467703924836,
+            "t": 1.033333333333332,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 442.71610158925114,
+            "y": 93.75730321905144,
+            "t": 1.2333333333333314,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "alerte"
+          }
+        }
+      ],
+      "conforme": false
+    },
+    {
+      "nom": "bureau",
+      "controles": [
+        {
+          "nom": "néon avec aventure attachée",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "défaite conserve écran fin et aventure en attente",
+          "ok": true,
+          "valeur": {
+            "jeu": "fin",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 0,
+            "victoire": false,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "CONTINUER reprend néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "jeu",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": "C"
+          }
+        },
+        {
+          "nom": "REJOUER après défaite reste néon",
+          "ok": true,
+          "valeur": {
+            "jeu": "plongee",
+            "aventure": true,
+            "etape": "neon",
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "titre arrête le voyage après défaite",
+          "ok": true,
+          "valeur": {
+            "jeu": "titre",
+            "aventure": false,
+            "etape": null,
+            "vies": 3,
+            "victoire": null,
+            "marque": ""
+          }
+        },
+        {
+          "nom": "intermède reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "reveil",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé reveil",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute reveil",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "intermède boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.008333333333333333,
+            "u": 0.008333333333333333,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "garde boss",
+          "ok": true,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0.016666666666666666,
+            "u": 0.016666666666666666,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "monde gelé boss",
+          "ok": true,
+          "valeur": {
+            "avant": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            },
+            "apres": {
+              "t": 1.2083333333333315,
+              "x": 471.2866666666661,
+              "y": 256,
+              "vagueT": 0
+            }
+          }
+        },
+        {
+          "nom": "un toucher saute boss",
+          "ok": false,
+          "valeur": {
+            "mode": "interlude",
+            "etape": "boss",
+            "t": 0,
+            "u": 0,
+            "guard": true,
+            "armed": false,
+            "typed": 0,
+            "busy": true,
+            "phase": "intro"
+          }
+        },
+        {
+          "nom": "retour réel au boss",
+          "ok": false,
+          "valeur": "panneau"
+        },
+        {
+          "nom": "zéro erreur",
+          "ok": true,
+          "valeur": {
+            "err": {
+              "count": 0,
+              "sigs": {}
+            },
+            "console": []
+          }
+        }
+      ],
+      "trace": [
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": ""
+        },
+        {
+          "jeu": "fin",
+          "aventure": true,
+          "etape": "neon",
+          "vies": 0,
+          "victoire": false,
+          "marque": "C"
+        }
+      ],
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "erreursConsole": [],
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 122,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "titre",
+            "a": "aventure"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "etat",
+          "d": {
+            "de": "aventure",
+            "a": "plongee"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 97,
+          "t": 0.8083333333333329,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 418.5866666666665,
+            "y": 256,
+            "t": 0.43333333333333385,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 149,
+          "t": 1.2416666666666647,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 380.737708315939,
+            "y": 206.89058358000852,
+            "t": 0.6333333333333335,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 329,
+          "t": 2.5749999999999935,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 338.3221859940427,
+            "y": 174.880322087271,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 509,
+          "t": 3.908333333333322,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0.8333333333333328,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 745,
+          "t": 5.041666666666707,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 350.99151145393216,
+            "y": 206.14751539988856,
+            "t": 1.033333333333332,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 925,
+          "t": 6.375000000000107,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 310.5390612298961,
+            "y": 171.39111274783613,
+            "t": 1.2333333333333314,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 1105,
+          "t": 7.708333333333506,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 8,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "titre"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 7,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "vague",
+          "d": {
+            "n": 1,
+            "etape": "vague",
+            "evt": "entree",
+            "nom": "ÉVEIL",
+            "quartier": "docks"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "alerte"
+          }
+        }
+      ],
+      "conforme": false
+    }
+  ],
+  "conforme": false
+}

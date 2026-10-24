@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import { monde } from './vm.mjs';
+import { parcours } from './parcours.mjs';
+const [source, nom, width, height, opt] = process.argv.slice(2);
+const src = Object.fromEntries(fs.readdirSync(source).filter(f => f.endsWith('.js')).sort().map(f => [f, fs.readFileSync(path.join(source, f), 'utf8')]));
+const m = monde(src, +width, +height);
+m.S.view.safe = nom === 'paysage' ? { l: 24, t: 0, r: 24, b: 11 } : nom === 'portrait' ? { l: 0, t: 24, r: 0, b: 17 } : { l: 0, t: 0, r: 0, b: 0 };
+m.N.game.reset(7); m.c.option = JSON.parse(opt);
+const r = vm.runInContext('(' + parcours.toString() + ')(N,N.S,option)', m.c);
+console.log(JSON.stringify({ nom, option: m.c.option, ...r, console: m.erreurs }));

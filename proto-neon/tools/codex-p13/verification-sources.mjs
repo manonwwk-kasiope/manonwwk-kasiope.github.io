@@ -1,0 +1,14 @@
+import fs from 'node:fs';import crypto from 'node:crypto';import {execFileSync} from 'node:child_process';import {chromium,devices} from 'playwright';import {sources,monde} from '../codex-p10/vm.mjs';
+const racine=new URL('../../',import.meta.url),repo=new URL('../../../',import.meta.url),src=sources();
+const sha=x=>crypto.createHash('sha256').update(x).digest('hex');
+const git=(...args)=>execFileSync('git',args,{cwd:repo,encoding:'utf8'});
+const {N}=monde(src);
+const protections=['40-sprites.js','50-fx.js'].map(f=>({f,identiqueIndex:fs.readFileSync(new URL('src/'+f,racine),'utf8')===git('show',':proto-neon/src/'+f),sha256:sha(fs.readFileSync(new URL('src/'+f,racine)))}));
+const avant=fs.readFileSync(new URL('avant/02-regles.js',import.meta.url),'utf8'),apres=fs.readFileSync(new URL('src/02-regles.js',racine),'utf8');
+const sansAjout=apres.replace(/  \/\* codex-p13 : fondus[\s\S]*?(?=  \/\* gel profond)/,'');
+const r={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),sourcesSha256:sha(JSON.stringify(src)),bundleSha256:sha(fs.readFileSync(new URL('index.html',racine))),bundleOctets:fs.statSync(new URL('index.html',racine)).size,buildSortie:0,playwrightImport:!!chromium&&!!devices['iPhone 13'],navigateurLance:false,serveurLance:false,protections,reglesAjoutSeul:sansAjout===avant,morsure:N.R.mort.morsure.effet,mur:N.R.mort.mur};
+for(const f of ['src/02-regles.js','src/15-decor.js','tools/codex-p13/verifier.mjs','tools/codex-p13/sonde-decor.mjs','tools/codex-p13/scenes-vm.mjs','tools/codex-p13/parties-vm.mjs','tools/codex-p13/transitions-vm.mjs','tools/codex-p13/rapport-generer.mjs'])execFileSync(process.execPath,['--check',new URL(f,racine).pathname]);
+git('diff','--check');
+r.conforme=protections.every(p=>p.identiqueIndex)&&r.reglesAjoutSeul&&r.morsure==='coupe';
+fs.writeFileSync(new URL('verification-sources.json',import.meta.url),JSON.stringify(r,null,2)+'\n');
+console.log(r);if(!r.conforme)process.exitCode=1;

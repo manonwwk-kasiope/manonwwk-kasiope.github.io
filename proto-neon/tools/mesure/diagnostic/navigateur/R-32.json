@@ -1,0 +1,184 @@
+{
+ "id": "R-32",
+ "titre": "Variété",
+ "seuil": "7 quartiers d’IoU < 0,5 deux à deux ; une première fois au moins toutes les 60 s avant le CYCLOPE",
+ "bloquant": true,
+ "statut": "partiel",
+ "resume": "1 ok, 0 en échec, 0 indicatives hors cible, 1 non mesurables",
+ "mesures": [
+  {
+   "nom": "quartiers distincts (paires d’IoU < 0.5)",
+   "valeur": 21,
+   "seuil": "21 paires sur 7 quartiers",
+   "statut": "ok",
+   "quartiers": [
+    "docks",
+    "artere",
+    "centrale",
+    "ciel",
+    "tours",
+    "coeur",
+    "eclipse"
+   ],
+   "paires": [
+    {
+     "a": "docks",
+     "b": "artere",
+     "iou": 0.35073035925779705
+    },
+    {
+     "a": "docks",
+     "b": "centrale",
+     "iou": 0.3976904721322652
+    },
+    {
+     "a": "docks",
+     "b": "ciel",
+     "iou": 0.4492938303068918
+    },
+    {
+     "a": "docks",
+     "b": "tours",
+     "iou": 0.17400799526206692
+    },
+    {
+     "a": "docks",
+     "b": "coeur",
+     "iou": 0.4039004233017537
+    },
+    {
+     "a": "docks",
+     "b": "eclipse",
+     "iou": 0.39743911624403716
+    },
+    {
+     "a": "artere",
+     "b": "centrale",
+     "iou": 0.42792365597771326
+    },
+    {
+     "a": "artere",
+     "b": "ciel",
+     "iou": 0.1702951136913401
+    },
+    {
+     "a": "artere",
+     "b": "tours",
+     "iou": 0.4582493015338502
+    },
+    {
+     "a": "artere",
+     "b": "coeur",
+     "iou": 0.29535650089874177
+    },
+    {
+     "a": "artere",
+     "b": "eclipse",
+     "iou": 0.38759261307088355
+    },
+    {
+     "a": "centrale",
+     "b": "ciel",
+     "iou": 0.1793218312265118
+    },
+    {
+     "a": "centrale",
+     "b": "tours",
+     "iou": 0.4239642357789388
+    },
+    {
+     "a": "centrale",
+     "b": "coeur",
+     "iou": 0.3913245958352738
+    },
+    {
+     "a": "centrale",
+     "b": "eclipse",
+     "iou": 0.43888006354249404
+    },
+    {
+     "a": "ciel",
+     "b": "tours",
+     "iou": 0.07820743016863188
+    },
+    {
+     "a": "ciel",
+     "b": "coeur",
+     "iou": 0.22895549894303213
+    },
+    {
+     "a": "ciel",
+     "b": "eclipse",
+     "iou": 0.1995504670927864
+    },
+    {
+     "a": "tours",
+     "b": "coeur",
+     "iou": 0.33557591285274546
+    },
+    {
+     "a": "tours",
+     "b": "eclipse",
+     "iou": 0.2378325342021956
+    },
+    {
+     "a": "coeur",
+     "b": "eclipse",
+     "iou": 0.34814080744538756
+    }
+   ],
+   "pires": [
+    {
+     "a": "artere",
+     "b": "tours",
+     "iou": 0.458
+    },
+    {
+     "a": "docks",
+     "b": "ciel",
+     "iou": 0.449
+    },
+    {
+     "a": "centrale",
+     "b": "eclipse",
+     "iou": 0.439
+    },
+    {
+     "a": "artere",
+     "b": "centrale",
+     "iou": 0.428
+    }
+   ]
+  },
+  {
+   "nom": "premières fois",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  }
+ ],
+ "notes": [
+  "docks : support P3 9417/61440 pixels, transition=1",
+  "artere : support P3 24797/61440 pixels, transition=1",
+  "centrale : support P3 23384/61440 pixels, transition=1",
+  "ciel : support P3 4231/61440 pixels, transition=1",
+  "tours : support P3 54017/61440 pixels, transition=1",
+  "coeur : support P3 18442/61440 pixels, transition=1",
+  "eclipse : support P3 12847/61440 pixels, transition=1"
+ ],
+ "captures": [
+  "tools/mesure/diagnostic/navigateur/captures/R-32-docks-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-artere-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-centrale-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-ciel-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-tours-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-coeur-paysage-tampon.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-32-eclipse-paysage-tampon.png"
+ ],
+ "duree": 7.4,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:09:32.111Z",
+ "dateParis": "18/10/2026 · 01 h 09"
+}

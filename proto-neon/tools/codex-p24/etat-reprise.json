@@ -1,0 +1,27 @@
+{
+  "objectif": "R-19 attraction 15 ± 1 s et briefing portrait regroupé ; livrer patch 79 sans toucher au fichier partagé",
+  "preuves": [
+    "calibration.json : 10/10 historiques identiques",
+    "cas.json : 72/72 compositions avant/après ; 7 sorties ; arrivée 15.008333 s",
+    "instrument.json : 7/7 après ; refus des cas absent/13,05 s/17,05 s",
+    "modele.json : 4 volets conformes au schéma ; entrees.json : états et préférences conservés",
+    "comparaison.json : 80/80 exactes, aucun écart ni erreur",
+    "reutilisation-parties.json : empreintes exactes, seul déplacement de métadonnées de dessin",
+    "build.log : sortie 0, bundle reconstruit"
+  ],
+  "en_cours": "aucun calcul engagé ; deux séries de 80 terminées, sorties 0",
+  "reste": [
+    "intégrer raccord-79-jeu.patch dans le fichier partagé puis reconstruire",
+    "lancer node tools/codex-p24/verifier.mjs hors bac et relire les captures",
+    "vérifier Safari réel sur iPhone"
+  ],
+  "interdictions": [
+    "aucun serveur/Chromium lancé",
+    "aucun réseau sortant",
+    "aucun commit",
+    "aucune modification 79-jeu.js ni 90-boot.js"
+  ],
+  "budget": "aucune dépense ; un seul lot de correction, aucune borne de critère changée",
+  "dateParis": "18/10/2026 · 04 h 03",
+  "statut": "contrôles locaux terminés ; chantier bloqué pour la qualification navigateur"
+}

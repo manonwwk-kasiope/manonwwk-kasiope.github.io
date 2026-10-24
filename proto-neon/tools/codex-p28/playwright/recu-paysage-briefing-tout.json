@@ -1,0 +1,1218 @@
+{
+  "id": "recu-paysage-briefing-tout",
+  "w": 422,
+  "h": 195,
+  "px": 2,
+  "etat": "jeu",
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansFilet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS FILET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansCoupe",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS COUPE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "v4Broie",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "BROIE 3 ENNEMIS",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 3,
+        "vague": 4
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 4,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ESSAIM",
+        "quartier": "tours"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": true,
+        "prime": 0,
+        "evt": "bilan",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "reussi",
+        "fait": true,
+        "prog": 1,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "bilan",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "rate",
+        "fait": false,
+        "prog": 1,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "bilan",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "rate",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "v4Broie",
+        "ok": false,
+        "prime": 0,
+        "evt": "bilan",
+        "portee": "vague",
+        "nom": "BROIE 3 ENNEMIS",
+        "etat": "rate",
+        "fait": false,
+        "prog": 0,
+        "but": 3,
+        "vague": 4
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": true,
+        "prime": 0,
+        "evt": "fin",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "reussi",
+        "fait": true,
+        "prog": 1,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "fin",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "rate",
+        "fait": false,
+        "prog": 1,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "fin",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "rate",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "deblocage",
+      "d": {
+        "id": "departV3"
+      }
+    }
+  ],
+  "sha256": "20190f397ef1bb26848ece653a5e7614422d05418e9a9740ff450394c73dd8c5",
+  "preuve": {
+    "nom": "briefing",
+    "stade": "tout",
+    "profil": "paysage",
+    "fixture": true,
+    "etat": "jeu",
+    "modele": {
+      "nom": "briefing",
+      "x": 29,
+      "y": 5,
+      "w": 364,
+      "bas": 180,
+      "port": false,
+      "lignes": [
+        {
+          "texte": "OBJECTIFS",
+          "x": 29,
+          "y": 5,
+          "w": 106,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "FINIR",
+          "x": 29,
+          "y": 23,
+          "w": 58,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "2 DÉFIS",
+          "x": 29,
+          "y": 41,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "ÉNERGIE 849",
+          "x": 29,
+          "y": 67,
+          "w": 130,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "TOUT DÉBLOQUÉ",
+          "x": 29,
+          "y": 85,
+          "w": 154,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "DÉFIS DU JOUR",
+          "x": 215,
+          "y": 5,
+          "w": 154,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "✓",
+          "x": 215,
+          "y": 23,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "FINIR",
+          "x": 233,
+          "y": 23,
+          "w": 58,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "1/1",
+          "x": 359,
+          "y": 23,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "✓",
+          "x": 215,
+          "y": 41,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "1ER JET",
+          "x": 233,
+          "y": 41,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "25/25",
+          "x": 335,
+          "y": 41,
+          "w": 58,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "✓",
+          "x": 215,
+          "y": 59,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "INTACT",
+          "x": 233,
+          "y": 59,
+          "w": 70,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "2/2",
+          "x": 359,
+          "y": 59,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "VAGUE 4",
+          "x": 215,
+          "y": 81,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "✓",
+          "x": 215,
+          "y": 99,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "BROYÉS",
+          "x": 233,
+          "y": 99,
+          "w": 70,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "3/3",
+          "x": 359,
+          "y": 99,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "DÉPART AUTO",
+          "x": 215,
+          "y": 125,
+          "w": 130,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        }
+      ],
+      "barres": [],
+      "actions": null,
+      "debloques": []
+    },
+    "lignes": [
+      {
+        "texte": "OBJECTIFS",
+        "x": 29,
+        "y": 5,
+        "w": 106,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 516,
+        "dansZone": true
+      },
+      {
+        "texte": "FINIR",
+        "x": 29,
+        "y": 23,
+        "w": 58,
+        "h": 14,
+        "echelle": 2,
+        "encre": 12,
+        "pixels": 284,
+        "dansZone": true
+      },
+      {
+        "texte": "2 DÉFIS",
+        "x": 29,
+        "y": 41,
+        "w": 82,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 360,
+        "dansZone": true
+      },
+      {
+        "texte": "ÉNERGIE 849",
+        "x": 29,
+        "y": 67,
+        "w": 130,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 652,
+        "dansZone": true
+      },
+      {
+        "texte": "TOUT DÉBLOQUÉ",
+        "x": 29,
+        "y": 85,
+        "w": 154,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 744,
+        "dansZone": true
+      },
+      {
+        "texte": "DÉFIS DU JOUR",
+        "x": 215,
+        "y": 5,
+        "w": 154,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 676,
+        "dansZone": true
+      },
+      {
+        "texte": "✓",
+        "x": 215,
+        "y": 23,
+        "w": 10,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 40,
+        "dansZone": true
+      },
+      {
+        "texte": "FINIR",
+        "x": 233,
+        "y": 23,
+        "w": 58,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 284,
+        "dansZone": true
+      },
+      {
+        "texte": "1/1",
+        "x": 359,
+        "y": 23,
+        "w": 34,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 108,
+        "dansZone": true
+      },
+      {
+        "texte": "✓",
+        "x": 215,
+        "y": 41,
+        "w": 10,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 40,
+        "dansZone": true
+      },
+      {
+        "texte": "1ER JET",
+        "x": 233,
+        "y": 41,
+        "w": 82,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 344,
+        "dansZone": true
+      },
+      {
+        "texte": "25/25",
+        "x": 335,
+        "y": 41,
+        "w": 58,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 276,
+        "dansZone": true
+      },
+      {
+        "texte": "✓",
+        "x": 215,
+        "y": 59,
+        "w": 10,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 40,
+        "dansZone": true
+      },
+      {
+        "texte": "INTACT",
+        "x": 233,
+        "y": 59,
+        "w": 70,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 324,
+        "dansZone": true
+      },
+      {
+        "texte": "2/2",
+        "x": 359,
+        "y": 59,
+        "w": 34,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 140,
+        "dansZone": true
+      },
+      {
+        "texte": "VAGUE 4",
+        "x": 215,
+        "y": 81,
+        "w": 82,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 380,
+        "dansZone": true
+      },
+      {
+        "texte": "✓",
+        "x": 215,
+        "y": 99,
+        "w": 10,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 40,
+        "dansZone": true
+      },
+      {
+        "texte": "BROYÉS",
+        "x": 233,
+        "y": 99,
+        "w": 70,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 388,
+        "dansZone": true
+      },
+      {
+        "texte": "3/3",
+        "x": 359,
+        "y": 99,
+        "w": 34,
+        "h": 14,
+        "echelle": 2,
+        "encre": 9,
+        "pixels": 140,
+        "dansZone": true
+      },
+      {
+        "texte": "DÉPART AUTO",
+        "x": 215,
+        "y": 125,
+        "w": 130,
+        "h": 14,
+        "echelle": 2,
+        "encre": 10,
+        "pixels": 632,
+        "dansZone": true
+      }
+    ],
+    "collisions": [],
+    "boutons": [],
+    "hist": [
+      15702,
+      60124,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      2756,
+      3424,
+      0,
+      284,
+      0,
+      0,
+      0
+    ],
+    "horsPalette": 0,
+    "cyan": 0,
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "journal": [
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "partie",
+        "d": {
+          "graine": 1,
+          "mode": null
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "finir",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "FINIR",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 1,
+          "jour": 20261018
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "sansFilet",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "SANS FILET",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 1,
+          "jour": 20261018
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "sansCoupe",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "SANS COUPE",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 2,
+          "jour": 20261018
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "partie",
+        "d": {
+          "graine": 1,
+          "mode": null
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "finir",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "FINIR",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 1,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "chaine5",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "CHAÎNE ×5",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 5,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "premierJet",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "partie",
+          "nom": "PREMIER JET",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 25,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "section",
+        "d": {
+          "nom": "jeu"
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "v4Broie",
+          "ok": false,
+          "prime": 0,
+          "evt": "selection",
+          "portee": "vague",
+          "nom": "BROIE 3 ENNEMIS",
+          "etat": "actif",
+          "fait": false,
+          "prog": 0,
+          "but": 3,
+          "vague": 4
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "vague",
+        "d": {
+          "n": 4,
+          "etape": "vague",
+          "evt": "entree",
+          "nom": "ESSAIM",
+          "quartier": "tours"
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "finir",
+          "ok": true,
+          "prime": 0,
+          "evt": "bilan",
+          "portee": "partie",
+          "nom": "FINIR",
+          "etat": "reussi",
+          "fait": true,
+          "prog": 1,
+          "but": 1,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "chaine5",
+          "ok": false,
+          "prime": 0,
+          "evt": "bilan",
+          "portee": "partie",
+          "nom": "CHAÎNE ×5",
+          "etat": "rate",
+          "fait": false,
+          "prog": 1,
+          "but": 5,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "premierJet",
+          "ok": false,
+          "prime": 0,
+          "evt": "bilan",
+          "portee": "partie",
+          "nom": "PREMIER JET",
+          "etat": "rate",
+          "fait": false,
+          "prog": 0,
+          "but": 25,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "v4Broie",
+          "ok": false,
+          "prime": 0,
+          "evt": "bilan",
+          "portee": "vague",
+          "nom": "BROIE 3 ENNEMIS",
+          "etat": "rate",
+          "fait": false,
+          "prog": 0,
+          "but": 3,
+          "vague": 4
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "finir",
+          "ok": true,
+          "prime": 0,
+          "evt": "fin",
+          "portee": "partie",
+          "nom": "FINIR",
+          "etat": "reussi",
+          "fait": true,
+          "prog": 1,
+          "but": 1,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "chaine5",
+          "ok": false,
+          "prime": 0,
+          "evt": "fin",
+          "portee": "partie",
+          "nom": "CHAÎNE ×5",
+          "etat": "rate",
+          "fait": false,
+          "prog": 1,
+          "but": 5,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "defi",
+        "d": {
+          "id": "premierJet",
+          "ok": false,
+          "prime": 0,
+          "evt": "fin",
+          "portee": "partie",
+          "nom": "PREMIER JET",
+          "etat": "rate",
+          "fait": false,
+          "prog": 0,
+          "but": 25,
+          "jour": 20261017
+        }
+      },
+      {
+        "pas": 0,
+        "t": 0,
+        "image": 0,
+        "type": "deblocage",
+        "d": {
+          "id": "departV3"
+        }
+      }
+    ],
+    "acquis": [
+      "ralenti",
+      "repli",
+      "styles",
+      "galerie",
+      "departV3"
+    ],
+    "catalogue": [
+      "ralenti",
+      "repli",
+      "styles",
+      "galerie",
+      "departV3"
+    ],
+    "prochain": null,
+    "resume": {
+      "victoire": true,
+      "score": 20000,
+      "marque": "",
+      "ecart": null,
+      "record": 20000,
+      "nouveauRecord": false,
+      "kills": 0,
+      "maxChaine": 0,
+      "coupes": 0,
+      "lassos": 0,
+      "maxLasso": 0,
+      "pertes": 0,
+      "defisVague": 0,
+      "cause": null,
+      "auteur": null,
+      "vague": 4,
+      "quartier": null,
+      "temps": 0,
+      "progression": 1,
+      "boss": false,
+      "note": "B",
+      "build": {
+        "nom": "TIREUSE",
+        "armes": [
+          {
+            "id": "canon",
+            "palier": 1
+          }
+        ],
+        "pouvoir": null,
+        "lasso": 0
+      },
+      "defi": {
+        "nom": "DIX KILLS EN CHAÎNE",
+        "etat": "actif",
+        "prog": 0,
+        "but": 10,
+        "meilleur": 0
+      },
+      "defis": [
+        {
+          "id": "finir",
+          "nom": "FINIR",
+          "etat": "reussi",
+          "fait": true,
+          "prog": 1,
+          "but": 1,
+          "jour": 20261017
+        },
+        {
+          "id": "chaine5",
+          "nom": "CHAÎNE ×5",
+          "etat": "rate",
+          "fait": false,
+          "prog": 1,
+          "but": 5,
+          "jour": 20261017
+        },
+        {
+          "id": "premierJet",
+          "nom": "PREMIER JET",
+          "etat": "rate",
+          "fait": false,
+          "prog": 0,
+          "but": 25,
+          "jour": 20261017
+        }
+      ],
+      "defisVagues": [
+        {
+          "id": "v4Broie",
+          "nom": "BROIE 3 ENNEMIS",
+          "n": 4,
+          "etat": "rate",
+          "fait": false,
+          "prog": 0,
+          "but": 3
+        }
+      ],
+      "primesDefis": 20000,
+      "energieGagnee": 50,
+      "energie": 849,
+      "avant": {
+        "id": "departV3",
+        "reste": 1,
+        "part": 0.996,
+        "seuil": 800,
+        "prec": 550
+      },
+      "prochain": null,
+      "debloques": [
+        "departV3"
+      ],
+      "conseil": "BOUCLE AUTOUR D'EUX : TOUT ÉCLATE",
+      "cartes": {}
+    },
+    "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+    },
+    "phase": "recu",
+    "erreursConsole": [],
+    "ok": true
+  }
+}

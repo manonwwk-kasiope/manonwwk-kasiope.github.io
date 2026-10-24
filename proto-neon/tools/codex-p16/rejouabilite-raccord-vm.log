@@ -1,0 +1,79 @@
+{
+  "dateParis": "18/10/2026 02:41:25",
+  "avantFiltrage": {
+    "egaux": false,
+    "premier": 7,
+    "a": "[\"flash\",{\"aire\":3309,\"accepte\":true,\"_type\":\"externe\",\"_issue\":\"sous-seuil\",\"_compte\":false,\"_echelle\":1,\"_temps\":0.8166666666666662,\"_image\":49,\"_luminance\":n",
+    "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":0}]"
+  },
+  "apresFiltrage": {
+    "egaux": true,
+    "premier": -1,
+    "longueurs": [
+      91,
+      91
+    ]
+  },
+  "dessineRepete": {
+    "egaux": true,
+    "premier": -1,
+    "longueurs": [
+      99,
+      99
+    ]
+  },
+  "types": {
+    "simule": {
+      "partie": 1,
+      "section": 1,
+      "pilote": 64,
+      "vague": 1,
+      "apparition": 12,
+      "armement": 9,
+      "ramassage": 2,
+      "flash": 4,
+      "mort": 1,
+      "coup": 1
+    },
+    "dessine": {
+      "partie": 1,
+      "section": 1,
+      "pilote": 65,
+      "vague": 1,
+      "flash": 6,
+      "hudBanniere": 2,
+      "apparition": 12,
+      "armement": 9,
+      "ramassage": 2,
+      "mort": 1,
+      "coup": 1
+    }
+  },
+  "temoinSansRalenti": {
+    "debut": {
+      "t": 0,
+      "reel": 0,
+      "pas": 0,
+      "r": 0
+    },
+    "fin": {
+      "t": 1.9999999999999953,
+      "reel": 1.9999999999999953,
+      "pas": 240,
+      "r": 2000
+    },
+    "ralentis": 0,
+    "ratios": {
+      "ancien": 0.9999999999999977,
+      "machine": 0.9999999999999977,
+      "secondesMurales": 2,
+      "secondesTraitees": 1.9999999999999953,
+      "secondesMonde": 1.9999999999999953,
+      "pasTraites": 240
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  }
+}

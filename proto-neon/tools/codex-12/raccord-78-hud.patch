@@ -1,0 +1,73 @@
+--- a/proto-neon/src/78-hud.js
++++ b/proto-neon/src/78-hud.js
+@@ -17,6 +17,7 @@
+   var BTN = (R && R.hud && R.hud.bouton && R.hud.bouton.px) || 22;     // 22 px de jeu = 44 pt
+   var S = null;
+   var H = R.hud.tempsForts, B = R.hud.banniere;
++  var reserveVague = false;
+   var temps = 0, derniereBan = -Infinity, palierVu = null, palier = null;
+   var mediaReduit = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+   var sauvegardes = [];
+@@ -25,7 +26,7 @@
+ 
+   function reset() {
+     S = N.S;
+-    temps = 0; derniereBan = -Infinity; palierVu = null; palier = null;
++    temps = 0; derniereBan = -Infinity; reserveVague = false; palierVu = null; palier = null;
+     ban = null; file.length = 0; toasts.length = 0; tags.length = 0; muteFlash = 0;
+     var P = N.joueuse && N.joueuse.tete;
+     var premiere = !(N.score && N.score.records && N.score.records.length);
+@@ -40,25 +41,33 @@
+     return !!opts.cyclope || lines.some(function (s) { return /CYCLOPE/i.test(s); }) ||
+       (lines.some(function (s) { return /^PHASE /.test(s); }) && N.colosse && N.colosse.actif && N.colosse.actif());
+   }
++  function heureBanniere() { return N.horloge && N.horloge.t ? N.horloge.t() : temps; }
++  function reserverBanniere(b) { reserveVague = !!b; if (reserveVague) file.length = 0; }
+   function demarrer(b) {
+     ban = b; b.t = 0;
++    if (!b.cyclope) derniereBan = heureBanniere();
++    if (N.journal) N.journal('hudBanniereAdmise', { texte: b.lines.join(' / '), cyclope: b.cyclope,
++      etat: N.game && N.game.etat ? N.game.etat() : '', vague: b.vague || 0, temps: heureBanniere() });
+   }
+   function suivant() {
+-    if (ban) return;
++    if (ban || reserveVague) return;
+     while (file.length && temps - file[0].attente > H.banniere.attenteMax) file.shift();
+-    if (file.length && (file[0].cyclope || temps - derniereBan >= R.scene.budgets.banniereIntervalle)) demarrer(file.shift());
++    if (file.length && (file[0].cyclope || heureBanniere() - derniereBan >= R.scene.budgets.banniereIntervalle)) demarrer(file.shift());
+   }
+   function banniere(texte, opts) {
+     opts = opts || {};
+     var lines = (Array.isArray(texte) ? texte : [String(texte)]).map(String);
+     var b = { lines: lines, c: couleur(opts.c || 'os'), icon: opts.icone || null, t: 0,
+-      d: opts.duree || H.banniere.duree, blink: !!opts.clignote, cyclope: cyclope(lines, opts), attente: temps, rendu: false };
++      d: opts.duree || H.banniere.duree, blink: !!opts.clignote, cyclope: cyclope(lines, opts), attente: temps, rendu: false, vague: opts.vague || 0 };
++    // La réserve de respiration/transition protège la prochaine entrée ; même admission sans dessin.
++    if (b.vague) { reserveVague = false; file.length = 0; }
++    if (reserveVague && !b.cyclope) return null;
+     // Le CYCLOPE passe devant les annonces ordinaires ; aucune ancienne vague ne le suit.
+     if (b.cyclope) { file.length = 0; demarrer(b); }
+-    else if (!ban && temps - derniereBan >= R.scene.budgets.banniereIntervalle) demarrer(b);
++    else if (!ban && heureBanniere() - derniereBan >= R.scene.budgets.banniereIntervalle) demarrer(b);
+     else {
+       if (file.length >= H.banniere.fileMax) file.shift();
+-      file.push(b);
++      if (b.vague) file.unshift(b); else if (!file.some(function (q) { return q.lines.join() === b.lines.join(); })) file.push(b);
+     }
+     return b;
+   }
+@@ -281,7 +290,6 @@
+     if (!b.rendu) {
+       b.lumiere = N.fx && N.fx.flashGate ? (N.fx.flashGate(s.data.reduce(function (n, c) { return n + (c !== O.NUIT); }, 0)) ? 1 : 0) : 1;
+       b.rendu = true;
+-      if (!b.cyclope) derniereBan = temps;
+       if (N.journal) N.journal('hudBanniere', { texte: b.lines.join(' / '), cyclope: b.cyclope, temps: temps,
+         x: x, y: y, w: s.w, h: s.h, echelle: s.k, lignes: s.lines });
+     }
+@@ -518,5 +526,5 @@
+     N.ev.on('deblocage', 70, function (c) { toast('DÉBLOQUÉ : ' + String(c.id).toUpperCase()); }, '78-hud');
+   }
+ 
+-  return { reset: reset, update: update, draw: draw, banniere: banniere, toast: toast, tag: tag, pop: pop, codex: codex, boutons: boutons, toucher: toucher, flashSon: flashSon };
++  return { reset: reset, update: update, draw: draw, reserverBanniere: reserverBanniere, banniere: banniere, toast: toast, tag: tag, pop: pop, codex: codex, boutons: boutons, toucher: toucher, flashSon: flashSon };
+ })();

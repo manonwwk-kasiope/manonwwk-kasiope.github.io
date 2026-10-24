@@ -1,0 +1,36 @@
+<script>
+/* page d'essai du régénérateur (chantier n° 4, src/71-butin.js) : le jeu complet, plus un petit panneau qui LIT
+   N.butin.regenerateur() (état, segments à rendre, ramassages) et deux boutons d'essai :
+     COUPER : coupe le serpent en son milieu (N.joueuse.couper, l'API publique) ;
+     ICI    : pose la tête sur le régénérateur allumé (N.joueuse.force), pour le ramasser sans piloter.
+   Le régénérateur n'existe qu'EN AVENTURE (JOUER depuis le titre) : en départ direct, le panneau affiche « hors aventure ».
+   ?banc=1 : le panneau est caché (captures du banc tools/regen/banc.mjs). Le panneau ne tire aucun hasard et
+   n'écrit rien dans la partie tant qu'on ne touche pas ses boutons. */
+(function () {
+  var N = window.__N, q = location.search || '';
+  if (/[?&]banc=1\b/.test(q)) return;
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;right:6px;top:6px;z-index:9;pointer-events:auto;font:11px/1.3 ui-monospace,Menlo,monospace;' +
+    'color:#fffce8;background:rgba(13,2,33,.82);border:1px solid #541388;padding:4px 6px;max-width:46vw';
+  var t = document.createElement('div'); d.appendChild(t);
+  function bouton(nom, fn) {
+    var b = document.createElement('button'); b.textContent = nom;
+    b.style.cssText = 'margin:3px 4px 0 0;background:#241734;color:#ffd319;border:1px solid #ff9e00;font:inherit;padding:2px 6px';
+    b.addEventListener('click', function (e) { e.stopPropagation(); try { fn(); } catch (x) { console.warn(x); } });
+    d.appendChild(b);
+  }
+  bouton('COUPER', function () { var J = N.joueuse; if (J && J.len() > 6) J.couper(Math.max(3, J.len() >> 1)); });
+  bouton('ICI', function () {
+    var r = N.butin.regenerateur && N.butin.regenerateur();
+    if (r && r.etat === 'pret') N.joueuse.force({ x: r.x, y: r.y, trace: true });
+  });
+  document.body.appendChild(d);
+  setInterval(function () {
+    var r = N.butin && N.butin.regenerateur ? N.butin.regenerateur() : null, J = N.joueuse;
+    if (!r) { t.textContent = 'régénérateur absent (bundle d\'avant)'; return; }
+    t.innerHTML = 'RÉGÉNÉRATEUR · ' + (r.actif ? 'aventure' : 'hors aventure') + '<br>état ' + r.etat +
+      (r.etat === 'pret' ? ' (' + r.vie.toFixed(1) + ' s)' : '') + ' · perdus ' + r.perdu + ' · à rendre ' + r.rendre +
+      '<br>longueur ' + (J ? J.len() : '?') + ' · apparus ' + r.apparus + ' · pris ' + r.pris + ' · éteints ' + r.eteints + ' · rendus ' + r.rendus;
+  }, 200);
+})();
+</script>

@@ -1,0 +1,37 @@
+--- a/proto-neon/src/79-jeu.js
++++ b/proto-neon/src/79-jeu.js
+@@ -135,9 +135,9 @@
+     if (sec && sec !== ancienne && N.journal && N.ids.sections.indexOf(sec) >= 0) N.journal('section', { nom: sec });
+     var u = N.ui;
+     if (u) {
+-      if (nom === 'demarrage' || nom === 'titre' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
++      if (nom === 'demarrage' || nom === 'titre' || nom === 'briefing' || nom === 'cartes' || nom === 'pause') u.ouvrir(nom);
+       else if (nom === 'fin') u.ouvrir('fin', { victoire: fin.victoire });
+-      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
++      else if (u.actif() && (prev === 'demarrage' || prev === 'titre' || prev === 'briefing' || prev === 'cartes' || prev === 'pause' || prev === 'fin')) u.fermer();
+     }
+     return true;
+   }
+@@ -243,7 +243,7 @@
+     finClip = null;
+     partie(nouvelle === false ? seed : seed + CFG.graineSuite);
+     partieN++;
+-    aller('plongee');
++    aller('briefing');
+   }
+   function film(nom, suite, opts) {
+     if (filmsVus[nom] || !(N.intro && N.intro.transition)) { suite(); return; }
+@@ -466,7 +466,12 @@
+       if (nouveau) { var a = N.ui.sortie(); if (a && a.action === 'jouer') aller('titre'); } else N.ui.sortie();
+       etT += dt; return;
+     }
+-    if (et === 'ouverture' || et === 'briefing') { etT += dt; if (etT > 0.5) aller('titre'); return; }
++    if (et === 'briefing') {
++      N.ui.update(dt); etT += dt;
++      if (etT >= R.ecrans.briefing.duree) aller('plongee');
++      return;
++    }
++    if (et === 'ouverture') { etT += dt; if (etT > 0.5) aller('titre'); return; }
+     if (et === 'titre') {
+       N.ui.update(dt); etT += dt;
+       var b = N.ui.sortie(); if (b && b.action === 'jouer') commencerAventure();

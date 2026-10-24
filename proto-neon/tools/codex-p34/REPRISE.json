@@ -1,0 +1,33 @@
+{
+  "dateParis": "18/10/2026 05:09:20",
+  "statut": "analyse terminée ; aucune tâche engagée",
+  "objectif": "Compatibilité des 20 cibles B, sans régler le jeu",
+  "budget": {
+    "calibrations": 10,
+    "actuelles": 80,
+    "contrefactuelles": 30,
+    "simulations": 120,
+    "historiquesRelues": 40
+  },
+  "preuves": [
+    "rapport.md",
+    "verification-finale.json",
+    "validation-vm.json",
+    "synthese.json",
+    "paires.csv",
+    "relecture-318ce61.json",
+    "durees.json"
+  ],
+  "conclusions": [
+    "cibles numériquement non contradictoires, réalisation par les pilotes figés non prouvée",
+    "R04 : faux accès au boss par panneau, médianes de populations différentes, repère phase/mort manquant",
+    "p14 : gain apparié humain/bon/expert ; dieu suit une autre politique que bon",
+    "inerte : trajet initial au mur incompatible avec moins de 8 secondes"
+  ],
+  "resteHorsMission": [
+    "décision cheffe et jury sur définitions et politiques",
+    "corrections par les propriétaires, aucun seuil modifié ici",
+    "si nécessaire : Playwright hors bac puis qualification sur cinquante graines du candidat figé"
+  ],
+  "prochaineAction": "Lire rapport.md ; ne pas rejouer les séries VM inchangées. Commande navigateur : cd proto-neon && node tools/codex-p34/verifier.mjs"
+}

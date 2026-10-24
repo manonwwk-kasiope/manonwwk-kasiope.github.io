@@ -1,0 +1,39 @@
+{
+  "objectif": "ordre11/codex-12",
+  "phase": "Ordre14 lot VM arrêté, palier non validé ; suivre secousses/REPRISE.json",
+  "dateParis": "18/10/2026 · 12 h 16",
+  "base": "76d76e337fab45f246761a500e79dd58760533f8",
+  "processus": [],
+  "restant": [
+    "Médiation Claude ordre14, aucune deuxième valeur sans ordre",
+    "Pull/relire boîte, ne rejouer aucun ancien lot"
+  ],
+  "interdits": [
+    "reprise ciblesB",
+    "modification combatV4/V5",
+    "patch27b sans instruction",
+    "doublonprocessus/Chromium"
+  ],
+  "preuves": {
+    "avant80": {
+      "cas": 80,
+      "fins": 80,
+      "censures": [],
+      "erreurs": 0
+    },
+    "chromiumAvant": "4critères originaux complets terminés05h17, aucun doublon ; R14/R15/R31/R35 enéchec,0erreur, rapports/60reçus conservés.",
+    "apres80": "78fins/80, expert2 et dieu2bornes540,0erreur ; garde10 échouée humain−18,99%,bon−33,18%. Regroupementnonretenu. ecarts.json",
+    "HUD": "7/7contrats conformes, ajoutvéritableadmission→rendugéométrique ; aucun nouveaucalcpartie",
+    "ChromiumApres": "Terminé : R14bannières0violation sur165admissions et secousses14,92%échec ; R15annonces1,pics6/10/17,5/20/24,resp90,91% etpicsmanquantséchecs ; R31septconformes ; R35V1conforme,relance2échecs.0erreur.",
+    "admissionsReelles": "205/205entrées annoncées par admissioncorrespondante, pas seulementdemande ; 971admissions ordinaires hors CYCLOPE sur60parties et0intervalle<10s. Lecture desmêmesraw, aucunreplay."
+  },
+  "prochaineAction": "Lire secousses/REPRISE.json et Ordres pour Codex ; preuves complètes, attente arbitrage",
+  "rapport": "Les anciens champs de preuves ci-dessous décrivent les lots historiques11/12 ; rapport courant : secousses/rapport.md",
+  "retrait": "Retrait sourcegroupement vérifié strictement :76avant + deux appels facultatifs de réserve seulement ; N.R.rythme retiré, indexrebâti séparément, preuvescandidatefigées.",
+  "verrou": "Tous les processus des anciens lots et14 sont terminés. Aucun témoin propre ni Chromium de14 ; ne pas relancer.",
+  "suiteHUD": "hud-seul/REPRISE.json",
+  "livraison": "d4465c4",
+  "suiteElites": "elites/REPRISE.json",
+  "livraisonOrdre13": "84ea550",
+  "suiteSecousses": "secousses/REPRISE.json"
+}

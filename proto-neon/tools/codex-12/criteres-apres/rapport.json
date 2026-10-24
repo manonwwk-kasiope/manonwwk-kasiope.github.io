@@ -1,0 +1,330 @@
+{
+ "date": "2026-10-18T03:30:38.427Z",
+ "dateParis": "18/10/2026 · 05 h 30",
+ "environnement": null,
+ "url": "http://127.0.0.1:63239/proto-neon/index.html",
+ "empreinte": "ecfc6ea2cd86",
+ "options": {
+  "rapide": false,
+  "long": false,
+  "graines": null,
+  "profils": null,
+  "parallele": 1
+ },
+ "duree": 279.3,
+ "totaux": {
+  "ok": 1,
+  "echec": 3,
+  "partiel": 0,
+  "nonMesurable": 0,
+  "horsBanc": 0,
+  "erreur": 0
+ },
+ "criteres": [
+  {
+   "id": "R-14",
+   "titre": "Budgets d’effets",
+   "seuil": "≤ 12 % d’images secouées ; ≤ 1 bannière par 10 s hors CYCLOPE",
+   "bloquant": true,
+   "statut": "echec",
+   "resume": "1 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "images secouées (pire partie)",
+     "valeur": 0.1492,
+     "seuil": "≤ 0.12",
+     "statut": "echec",
+     "mediane": 0.11611857457552761,
+     "parties": 10
+    },
+    {
+     "nom": "bannières à moins de 10 s de la précédente, hors CYCLOPE",
+     "valeur": 0,
+     "seuil": 0,
+     "statut": "ok",
+     "bannieres": 165,
+     "exemples": []
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 40.7,
+   "bundle": {
+    "url": "http://127.0.0.1:63239/proto-neon/index.html",
+    "empreinte": "ecfc6ea2cd86"
+   },
+   "date": "2026-10-18T03:26:39.855Z",
+   "dateParis": "18/10/2026 · 05 h 26",
+   "fichier": "tools/mesure/criteres/R-14-budgets-effets.mjs"
+  },
+  {
+   "id": "R-15",
+   "titre": "Rythme",
+   "seuil": "vagues nommées et annoncées ; respirations ≥ 8 s < 40 % ; pics croissants ; pic en V3-V5 ; 0 tir ennemi en V1",
+   "bloquant": true,
+   "statut": "echec",
+   "resume": "4 ok, 4 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "vagues nommées (entrées avec nom)",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "entrees": 205
+    },
+    {
+     "nom": "vagues annoncées par une bannière (± 1,5 s)",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "vagues": 205
+    },
+    {
+     "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+     "valeur": 0.90909,
+     "seuil": 1,
+     "statut": "echec",
+     "pics": 187,
+     "exemples": [
+      {
+       "n": 5,
+       "pic": 17,
+       "tp": 228.7420833475452,
+       "respiration": 0,
+       "terminee": true,
+       "graine": 3
+      },
+      {
+       "n": 3,
+       "pic": 18,
+       "tp": 138.15125001176,
+       "respiration": 7.973750001930313,
+       "terminee": true,
+       "graine": 4
+      },
+      {
+       "n": 2,
+       "pic": 8,
+       "tp": 46.702500004070885,
+       "respiration": 0,
+       "terminee": true,
+       "graine": 7
+      },
+      {
+       "n": 3,
+       "pic": 17,
+       "tp": 144.6691666787194,
+       "respiration": 7.959583335363021,
+       "terminee": true,
+       "graine": 8
+      },
+      {
+       "n": 5,
+       "pic": 22,
+       "tp": 240.7229166847428,
+       "respiration": 3.0416666666639003,
+       "terminee": true,
+       "graine": 8
+      },
+      {
+       "n": 3,
+       "pic": 16,
+       "tp": 147.23250001001412,
+       "respiration": 5.973750001932132,
+       "terminee": true,
+       "graine": 15
+      }
+     ]
+    },
+    {
+     "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+     "valeur": [
+      6,
+      10,
+      17.5,
+      20,
+      24
+     ],
+     "seuil": "strictement croissants",
+     "statut": "ok",
+     "vaguesConnues": 5
+    },
+    {
+     "nom": "pic connu en V3 (événement vague/pic)",
+     "valeur": 0.9,
+     "seuil": 1,
+     "statut": "echec",
+     "parties": 40
+    },
+    {
+     "nom": "pic connu en V4 (événement vague/pic)",
+     "valeur": 0.94444,
+     "seuil": 1,
+     "statut": "echec",
+     "parties": 36
+    },
+    {
+     "nom": "pic connu en V5 (événement vague/pic)",
+     "valeur": 0.68966,
+     "seuil": 1,
+     "statut": "echec",
+     "parties": 29
+    },
+    {
+     "nom": "tirs ennemis avant la vague 2",
+     "valeur": 0,
+     "seuil": 0,
+     "statut": "ok"
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 159.4,
+   "bundle": {
+    "url": "http://127.0.0.1:63239/proto-neon/index.html",
+    "empreinte": "ecfc6ea2cd86"
+   },
+   "date": "2026-10-18T03:29:19.247Z",
+   "dateParis": "18/10/2026 · 05 h 29",
+   "fichier": "tools/mesure/criteres/R-15-rythme.mjs"
+  },
+  {
+   "id": "R-31",
+   "titre": "Le plateau se déplace",
+   "seuil": "≥ 25 % en mouvement (V2-V5) ; TRAVELLING V2, V3, V5 ; 5 VOLS ; ≥ 4 convois en V4 ; 0 mort par mur mobile non annoncé",
+   "bloquant": true,
+   "statut": "ok",
+   "resume": "7 ok, 0 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "arène en mouvement, vagues 2 à 5",
+     "valeur": 0.26769,
+     "seuil": "≥ 0.25",
+     "statut": "ok",
+     "pas": 1334055
+    },
+    {
+     "nom": "TRAVELLING en V2",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 60
+    },
+    {
+     "nom": "TRAVELLING en V3",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 50
+    },
+    {
+     "nom": "TRAVELLING en V5",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 39
+    },
+    {
+     "nom": "VOLS par partie gagnée",
+     "valeur": 5,
+     "seuil": 5,
+     "statut": "ok",
+     "parties": 21,
+     "vols": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+     ]
+    },
+    {
+     "nom": "convois en V4 (minimum par partie)",
+     "valeur": 4,
+     "seuil": "≥ 4",
+     "statut": "ok",
+     "parties": 39
+    },
+    {
+     "nom": "morts par un mur mobile sans annonce",
+     "valeur": 0,
+     "seuil": 0,
+     "statut": "ok",
+     "mortsMurMobile": 7
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 74.3,
+   "bundle": {
+    "url": "http://127.0.0.1:63239/proto-neon/index.html",
+    "empreinte": "ecfc6ea2cd86"
+   },
+   "date": "2026-10-18T03:30:33.517Z",
+   "dateParis": "18/10/2026 · 05 h 30",
+   "fichier": "tools/mesure/criteres/R-31-plateau.mjs"
+  },
+  {
+   "id": "R-35",
+   "titre": "Relance",
+   "seuil": "REJOUER → serpent en main < 2 s, sans briefing ; V1 ≤ 24 s (médiane)",
+   "bloquant": true,
+   "statut": "echec",
+   "resume": "1 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "REJOUER → serpent en main (s)",
+     "valeur": 2.81667,
+     "seuil": "< 2",
+     "statut": "echec",
+     "etats": [
+      "briefing",
+      "plongee",
+      "jeu"
+     ]
+    },
+    {
+     "nom": "REJOUER sans briefing",
+     "valeur": false,
+     "seuil": true,
+     "statut": "echec"
+    },
+    {
+     "nom": "durée de V1 (médiane, s)",
+     "valeur": 23.89167,
+     "seuil": "≤ 24",
+     "statut": "ok",
+     "parties": 50,
+     "min": 23.84166666666591,
+     "max": 23.89291666870235
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 4.9,
+   "bundle": {
+    "url": "http://127.0.0.1:63239/proto-neon/index.html",
+    "empreinte": "ecfc6ea2cd86"
+   },
+   "date": "2026-10-18T03:30:38.374Z",
+   "dateParis": "18/10/2026 · 05 h 30",
+   "fichier": "tools/mesure/criteres/R-35-relance.mjs"
+  }
+ ]
+}

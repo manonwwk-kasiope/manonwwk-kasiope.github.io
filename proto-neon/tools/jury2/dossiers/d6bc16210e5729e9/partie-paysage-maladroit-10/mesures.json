@@ -1,0 +1,197 @@
+{
+  "genre": "partie",
+  "profil": "paysage",
+  "pilote": "maladroit",
+  "graine": 10,
+  "max": 720,
+  "media": false,
+  "dossier": "partie-paysage-maladroit-10",
+  "mesures": {
+    "frames": 1602,
+    "dureeReelle": 26.67820000000298,
+    "tempsJeu": 25.73458333536896,
+    "etatFinal": "fin",
+    "fin": true,
+    "issue": "defaite",
+    "morts": [
+      {
+        "t": 7.25000000000015,
+        "cause": "ennemi",
+        "auteur": "fleche",
+        "auteurId": 3,
+        "x": 353.13695649869703,
+        "y": 302.17870163735756,
+        "vague": 1,
+        "quartier": "docks",
+        "visibleDepuis": 0.8999999999999992,
+        "teleDuree": 0.6
+      },
+      {
+        "t": 12.049999999999956,
+        "cause": "ennemi",
+        "auteur": "fleche",
+        "auteurId": 6,
+        "x": 468.02024904398417,
+        "y": 265.352040997852,
+        "vague": 1,
+        "quartier": "docks",
+        "visibleDepuis": 2.3499999999999943,
+        "teleDuree": 0
+      },
+      {
+        "t": 21.526250002035866,
+        "cause": "mur",
+        "auteur": "mur",
+        "auteurId": null,
+        "x": 570.5454173793775,
+        "y": 509,
+        "vague": 1,
+        "quartier": "docks",
+        "visibleDepuis": 0,
+        "teleDuree": 0
+      }
+    ],
+    "synchronisation": {
+      "apparition": {
+        "total": 6,
+        "mesurables": 2,
+        "inconnus": 4,
+        "dans40ms": 2,
+        "part": 1,
+        "p50Ms": 25.27976007775427,
+        "p95Ms": 25.27976007775427,
+        "conforme": false
+      },
+      "tir-ennemi": {
+        "total": 0,
+        "mesurables": 0,
+        "inconnus": 0,
+        "dans40ms": 0,
+        "part": null,
+        "p50Ms": null,
+        "p95Ms": null,
+        "conforme": false
+      },
+      "vague": {
+        "total": 1,
+        "mesurables": 1,
+        "inconnus": 0,
+        "dans40ms": 0,
+        "part": 0,
+        "p50Ms": 185.56934958495924,
+        "p95Ms": 185.56934958495924,
+        "conforme": false
+      }
+    },
+    "R13": {
+      "flashs": 8,
+      "maxParSeconde": 3,
+      "a": 0.7749000000059605,
+      "instants": [
+        0.14480000000447035,
+        0.5273000000044703,
+        0.7749000000059605,
+        8.01860000000149,
+        9.31220000000298,
+        14.179,
+        15.4785,
+        26.551
+      ],
+      "limite": "Transitions agrégées du tampon, sans preuve de recouvrement spatial. Pas une certification WCAG.",
+      "seuil": 3,
+      "conforme": true
+    },
+    "R14": {
+      "secouees": 157,
+      "part": 0.09800249687890138,
+      "seuil": 0.12,
+      "conforme": true,
+      "bannieres": 2,
+      "rapprochees": [],
+      "bannieresMesurables": true
+    },
+    "coutImage": {
+      "p50Ms": 1.8999999985098839,
+      "p95Ms": 2.7000000029802322,
+      "n": 1602,
+      "condition": "rAF réel ; coût du callback du jeu, instrumentation après callback exclue ; collecte vidéo peut perturber la cadence"
+    },
+    "cadence": {
+      "p50Ms": 16.699999999999818,
+      "p95Ms": 16.799999999999272
+    },
+    "audio": {
+      "rmsMusique": 0.0668759757741966,
+      "rmsSortie": 0.09209177539142101,
+      "running": 1602,
+      "fichier": [],
+      "captureRms": null,
+      "captures": []
+    },
+    "palette": {
+      "horsPalette": 0
+    },
+    "zeroErreur": true,
+    "err": {
+      "count": 0,
+      "sigs": {}
+    },
+    "erreurs": [],
+    "adapte": {
+      "existe": false,
+      "serie": []
+    },
+    "raison": "fin"
+  },
+  "moments": [
+    {
+      "nom": "debut",
+      "w": 0.004600000001490116,
+      "t": 0.049999999999999996,
+      "etat": "plongee",
+      "preuve": "première image mesurée"
+    },
+    {
+      "nom": "premiere-vague",
+      "w": 0.7749000000059605,
+      "t": 0.8166666666666662,
+      "etat": "jeu",
+      "preuve": "vague 1 et état jeu"
+    },
+    {
+      "nom": "drop",
+      "w": 3.4608000000044705,
+      "t": 3.5083333333333235,
+      "etat": "jeu",
+      "preuve": {
+        "morceau": "neon-velocity",
+        "tFichier": 16.70448,
+        "mesure": 11
+      }
+    },
+    {
+      "nom": "fin",
+      "w": 26.551,
+      "t": 25.73458333536896,
+      "etat": "fin",
+      "preuve": "état fin"
+    }
+  ],
+  "manques": [
+    "vol",
+    "warp",
+    "break",
+    "cyclope",
+    "espace"
+  ],
+  "medias": null,
+  "aventureComplete": null,
+  "syncGeometrique": [
+    25.27976007775427,
+    25.27976007775427,
+    3.0196007063816626,
+    3.0196007063816626,
+    0,
+    0
+  ]
+}

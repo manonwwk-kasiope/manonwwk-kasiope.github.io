@@ -1,0 +1,42 @@
+{
+  "dateParis": "18/10/2026 03:33:26",
+  "raccords": false,
+  "versions": {
+    "avant": "0497b0db62730993ba326fd6b2ef3569ca7dfa7454d5389b4930f08725af6188",
+    "apres": "f0ca8bb04937d72f598971ba360738c027553f683bbc0e22215304459ebdf7d7"
+  },
+  "limite": "Chromium émulé, pas Safari réel. Profilage instrumenté distinct du coût officiel R-20.",
+  "instrument": {
+    "dateParis": "18/10/2026 03:33:26",
+    "normal": {
+      "ancien": 1,
+      "machine": 1,
+      "secondesMurales": 1,
+      "secondesTraitees": 1,
+      "secondesMonde": 1,
+      "pasTraites": 120
+    },
+    "ralenti": {
+      "ancien": 0.5,
+      "machine": 1,
+      "secondesMurales": 1,
+      "secondesTraitees": 1,
+      "secondesMonde": 0.5,
+      "pasTraites": 120
+    },
+    "perte": {
+      "ancien": 0.5,
+      "machine": 0.9,
+      "secondesMurales": 1,
+      "secondesTraitees": 0.9,
+      "secondesMonde": 0.5,
+      "pasTraites": 108
+    },
+    "r30": "dessin exclu seulement entre modes ; altération et perte de kill refusées",
+    "ok": true
+  },
+  "profils": [],
+  "criteres": [],
+  "navigateur": "140.0.7339.16",
+  "erreur": "page.waitForFunction: Timeout 30000ms exceeded.\n    at /Users/manonwojciechowski/Projets/wt-snake/codex-p16/proto-neon/tools/codex-p16/verifier.mjs:98:20"
+}

@@ -1,0 +1,457 @@
+{
+  "provenance": "Même lot de 40 reçus 318ce61 ; R-04 rejoué comme instrument, R-15 et R-34 inchangés ; cinq graines par pilote, aucune qualification sur cinquante.",
+  "avant": {
+    "tenues": 6,
+    "echecs": 14,
+    "nonMesurables": 0
+  },
+  "apres": {
+    "tenues": 10,
+    "echecs": 9,
+    "nonMesurables": 1
+  },
+  "rows": [
+    {
+      "id": 1,
+      "nom": "inerte : trois vies",
+      "seuil": "100 % avant 35 s",
+      "avant": {
+        "nom": "inerte : perd ses 3 vies avant 35 s (5 graines)",
+        "valeur": 0.8,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "inerte : perd ses 3 vies avant 35 s (5 graines)",
+        "valeur": 0.8,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      "notes": ""
+    },
+    {
+      "id": 2,
+      "nom": "inerte : première mort au mur",
+      "seuil": "avant 8 s → avant 11 s, strict",
+      "avant": {
+        "nom": "inerte : première mort au mur avant 8 s",
+        "valeur": 0,
+        "seuil": 1,
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "inerte : première mort au mur avant 11 s",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      "notes": "Décision 05 h 11 ; globale 10,175 s, combat 9,366666667 s sur les cinq reçus."
+    },
+    {
+      "id": 3,
+      "nom": "tourneur : trois vies",
+      "seuil": "100 % avant 90 s",
+      "avant": {
+        "nom": "tourneur : perd ses 3 vies avant 90 s (5 graines)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "tourneur : perd ses 3 vies avant 90 s (5 graines)",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 4,
+      "nom": "maladroit : médiane de fin",
+      "seuil": "45–150 s",
+      "avant": {
+        "nom": "maladroit : game over médian (s) (5 graines)",
+        "valeur": 17.575,
+        "seuil": [
+          45,
+          150
+        ],
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "maladroit : fin de partie médiane (s), victoires comprises (5 graines)",
+        "valeur": 17.575,
+        "seuil": [
+          45,
+          150
+        ],
+        "statut": "echec"
+      },
+      "notes": ""
+    },
+    {
+      "id": 5,
+      "nom": "maladroit : accès CYCLOPE",
+      "seuil": "0",
+      "avant": {
+        "nom": "maladroit : atteint le CYCLOPE (parties)",
+        "valeur": 1,
+        "seuil": 0,
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "maladroit : atteint le CYCLOPE (parties)",
+        "valeur": 0,
+        "seuil": 0,
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 6,
+      "nom": "kamikaze : défaite avant CYCLOPE",
+      "seuil": "≥90 %",
+      "avant": {
+        "nom": "kamikaze : game over avant le CYCLOPE (5 graines)",
+        "valeur": 0,
+        "seuil": "≥ 0.9",
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "kamikaze : game over avant le CYCLOPE (5 graines)",
+        "valeur": 1,
+        "seuil": "≥ 0.9",
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 7,
+      "nom": "kamikaze : victoires",
+      "seuil": "≤2/50, proportion conservée",
+      "avant": {
+        "nom": "kamikaze : victoires",
+        "valeur": 0,
+        "seuil": "≤ 2 sur 50",
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "kamikaze : victoires",
+        "valeur": 0,
+        "seuil": "≤ 2 sur 50",
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 8,
+      "nom": "humain : médiane de fin",
+      "seuil": "120–210 s",
+      "avant": {
+        "nom": "humain : game over médian (s) (5 graines)",
+        "valeur": 425.03792,
+        "seuil": [
+          120,
+          210
+        ],
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "humain : fin de partie médiane (s), victoires comprises (5 graines)",
+        "valeur": 408.86083,
+        "seuil": [
+          120,
+          210
+        ],
+        "statut": "echec"
+      },
+      "notes": "Avant : une défaite seulement ; après : les cinq fins, quatre victoires comprises."
+    },
+    {
+      "id": 9,
+      "nom": "humain : LASSO court",
+      "seuil": "≥50 %",
+      "avant": {
+        "nom": "lassos réussis jusqu’à 20 segments",
+        "valeur": 0.14286,
+        "seuil": "≥ 0.5",
+        "statut": "echec",
+        "tentatives": 7
+      },
+      "apres": {
+        "nom": "lassos réussis jusqu’à 20 segments",
+        "valeur": 0.14286,
+        "seuil": "≥ 0.5",
+        "statut": "echec",
+        "tentatives": 7
+      },
+      "notes": ""
+    },
+    {
+      "id": 10,
+      "nom": "humain : LASSO long",
+      "seuil": "≥40 %",
+      "avant": {
+        "nom": "lassos réussis de 30 à 40 segments",
+        "valeur": 0.25455,
+        "seuil": "≥ 0.4",
+        "statut": "echec",
+        "tentatives": 55
+      },
+      "apres": {
+        "nom": "lassos réussis de 30 à 40 segments",
+        "valeur": 0.25455,
+        "seuil": "≥ 0.4",
+        "statut": "echec",
+        "tentatives": 55
+      },
+      "notes": ""
+    },
+    {
+      "id": 11,
+      "nom": "bon : accès CYCLOPE",
+      "seuil": "30–60 %",
+      "avant": {
+        "nom": "bon : atteint le CYCLOPE (5 graines)",
+        "valeur": 1,
+        "seuil": [
+          0.3,
+          0.6
+        ],
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "bon : atteint le CYCLOPE (5 graines)",
+        "valeur": 0.4,
+        "seuil": [
+          0.3,
+          0.6
+        ],
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 12,
+      "nom": "bon : victoires",
+      "seuil": "10–30 %",
+      "avant": {
+        "nom": "bon : bat le CYCLOPE",
+        "valeur": 0.4,
+        "seuil": [
+          0.1,
+          0.3
+        ],
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "bon : bat le CYCLOPE",
+        "valeur": 0.4,
+        "seuil": [
+          0.1,
+          0.3
+        ],
+        "statut": "echec"
+      },
+      "notes": ""
+    },
+    {
+      "id": 13,
+      "nom": "expert : victoires",
+      "seuil": "40–70 %",
+      "avant": {
+        "nom": "expert : bat le CYCLOPE (5 graines)",
+        "valeur": 0.6,
+        "seuil": [
+          0.4,
+          0.7
+        ],
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "expert : bat le CYCLOPE (5 graines)",
+        "valeur": 0.6,
+        "seuil": [
+          0.4,
+          0.7
+        ],
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 14,
+      "nom": "expert : au moins une vie perdue",
+      "seuil": "≥80 %",
+      "avant": {
+        "nom": "expert : perd au moins une vie",
+        "valeur": 1,
+        "seuil": "≥ 0.8",
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "expert : perd au moins une vie",
+        "valeur": 1,
+        "seuil": "≥ 0.8",
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 15,
+      "nom": "dieu : chaque fin victorieuse dans la plage",
+      "seuil": "320–390 s",
+      "avant": {
+        "nom": "dieu : durée du secteur (médiane, s)",
+        "valeur": 413.87333,
+        "seuil": [
+          320,
+          390
+        ],
+        "statut": "echec",
+        "min": 378.53625004497684,
+        "max": 538.6187500461235
+      },
+      "apres": {
+        "nom": "dieu : durée du secteur (médiane, s)",
+        "valeur": 413.87333,
+        "seuil": [
+          320,
+          390
+        ],
+        "statut": "echec",
+        "min": 378.53625004497684,
+        "max": 538.6187500461235
+      },
+      "notes": ""
+    },
+    {
+      "id": 16,
+      "nom": "dieu : chaque combat officiel",
+      "seuil": "55–90 s",
+      "avant": {
+        "nom": "dieu : combat du CYCLOPE (s)",
+        "valeur": null,
+        "seuil": [
+          55,
+          90
+        ],
+        "statut": "echec"
+      },
+      "apres": {
+        "nom": "dieu : combat du CYCLOPE (s)",
+        "statut": "non-mesurable",
+        "raison": "non mesurable : phase/entree n=1 ou phase/mort absent : 0/5 combats mesurables"
+      },
+      "notes": ""
+    },
+    {
+      "id": 17,
+      "nom": "dieu : zéro erreur",
+      "seuil": "100 % sans erreur",
+      "avant": {
+        "nom": "dieu : zéro erreur",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "dieu : zéro erreur",
+        "valeur": 1,
+        "seuil": 1,
+        "statut": "ok"
+      },
+      "notes": ""
+    },
+    {
+      "id": 18,
+      "nom": "rythme : pics médians",
+      "seuil": "V1<V2<V3<V4<V5",
+      "avant": {
+        "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+        "valeur": [
+          12,
+          18,
+          16,
+          18.5,
+          19
+        ],
+        "seuil": "strictement croissants",
+        "statut": "echec",
+        "vaguesConnues": 5
+      },
+      "apres": {
+        "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+        "valeur": [
+          12,
+          18,
+          16,
+          18.5,
+          19
+        ],
+        "seuil": "strictement croissants",
+        "statut": "echec",
+        "vaguesConnues": 5
+      },
+      "notes": ""
+    },
+    {
+      "id": 19,
+      "nom": "rythme : respirations",
+      "seuil": "8 s sous 40 % après chaque pic",
+      "avant": {
+        "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+        "valeur": 0.95,
+        "seuil": 1,
+        "statut": "echec",
+        "pics": 20,
+        "exemples": [
+          {
+            "n": 5,
+            "pic": 12,
+            "tp": 263.5212500193968,
+            "respiration": 0,
+            "terminee": true,
+            "graine": 4
+          }
+        ]
+      },
+      "apres": {
+        "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+        "valeur": 0.95,
+        "seuil": 1,
+        "statut": "echec",
+        "pics": 20,
+        "exemples": [
+          {
+            "n": 5,
+            "pic": 12,
+            "tp": 263.5212500193968,
+            "respiration": 0,
+            "terminee": true,
+            "graine": 4
+          }
+        ]
+      },
+      "notes": ""
+    },
+    {
+      "id": 20,
+      "nom": "rythme : aucun tir avant V2",
+      "seuil": "0",
+      "avant": {
+        "nom": "tirs ennemis avant la vague 2",
+        "valeur": 0,
+        "seuil": 0,
+        "statut": "ok"
+      },
+      "apres": {
+        "nom": "tirs ennemis avant la vague 2",
+        "valeur": 0,
+        "seuil": 0,
+        "statut": "ok"
+      },
+      "notes": ""
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+--- a/proto-neon/src/50-fx.js
++++ b/proto-neon/src/50-fx.js
+@@ -887,7 +887,8 @@
+     /* La durée appartient à N.R chez l'appelant (RALENTI = 3,5 s), pas à un plafond local. */
+     var visuel = !!(o && o.visuel);
+     if (!visuel && !(o && o.long)) {                       /* ralenti et gel ne se cumulent pas au-delà de 0,5 s */
+-      var gl = hitstopLeft() / 60;
++      /* Le gel du monde s'use au pas fixe, même sans image dessinée. */
++      var gl = N.horloge && N.horloge.resteGel ? N.horloge.resteGel() : hitstopLeft() / 60;
+       if (gl > 0 && gl + dur > 0.5) { dur = 0.5 - gl; if (dur < 0.05) dur = 0.05; }
+     }
+     var j = 0, i, w = 1e9;

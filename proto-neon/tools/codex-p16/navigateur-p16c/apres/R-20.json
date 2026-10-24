@@ -1,0 +1,11352 @@
+{
+ "id": "R-20",
+ "titre": "Performance",
+ "seuil": "p95 ≤ 11 ms (×1, sans adaptatif) et < SNAKE 2030 ; p95 ≤ 25 ms (×4) sans perte de temps ; p95 ≤ 16,7 ms sur iPhone",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "5 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "scène charge, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 4,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "conditions": [
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.676666692892233,
+     "ennemis": 5,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.743333359558896,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.84333335955889,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.943333359558885,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.04333335955888,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.143333359558873,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.243333359558868,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.293333359558865,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.39333335955886,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.493333359558854,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.593333359558848,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.693333359558842,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.793333359558837,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.89333335955883,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.993333359558825,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.09333335955882,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.160000026225482,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.260000026225477,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.32666669289214,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.426666692892134,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.526666692892128,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.626666692892123,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.726666692892117,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.82666669289211,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.926666692892105,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.0266666928921,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.126666692892094,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.22666669289209,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.326666692892083,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.426666692892077,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.52666669289207,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.626666692892066,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.72666669289206,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.826666692892054,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.92666669289205,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.026666692892043,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.126666692892037,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.22666669289203,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.34333335955869,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.42666669289202,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.54333335955868,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.62666669289201,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.726666692892003,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.826666692891997,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.92666669289199,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.026666692891986,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.12666669289198,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.226666692891975,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.32666669289197,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.426666692891963,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.526666692891958,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.626666692891952,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.726666692891946,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.82666669289194,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.926666692891935,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.02666669289193,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.126666692891924,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.226666692891918,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.326666692891912,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.426666692891907,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.5266666928919,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.626666692891895,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.72666669289189,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.810000026225218,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.87666669289188,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.94833335975722,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.963333360353253,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.978333360949286,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.993333361545318,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.102916694928314,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.186250028261643,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.286250028261637,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.38625002826163,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.486250028261626,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.58625002826162,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.67791669492828,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.752916694928278,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.852916694928272,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.9362500282616,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.01958336159493,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.119583361594923,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.219583361594918,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.336250028261578,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.436250028261572,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.5195833615949,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.619583361594895,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.71958336159489,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.819583361594884,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.936250028261544,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.019583361594872,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.119583361594866,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.21958336159486,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.319583361594855,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.41958336159485,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.53625002826151,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.619583361594838,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.719583361594832,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.819583361594827,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.936250028261487,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.019583361594815,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.11958336159481,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.136250028261475,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    }
+   ],
+   "images": 601,
+   "p50": 2.599999964237213,
+   "p99": 4.900000035762787,
+   "max": 7.400000035762787
+  },
+  {
+   "nom": "scène v5, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 3.7,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "conditions": [
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.613750000546391,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.625000000993423,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.640000001589466,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.7045833351711535,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.804583335171158,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 4.904583335171163,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.004583335171168,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.104583335171173,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.171250001837843,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.271250001837848,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.371250001837853,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.471250001837858,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.571250001837863,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.671250001837868,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.771250001837873,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.871250001837878,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 5.971250001837883,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.071250001837888,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.171250001837893,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.271250001837898,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.371250001837903,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.429583335171239,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.5212500018379105,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.6212500018379155,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.72125000183792,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.821250001837925,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 6.92125000183793,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.021250001837935,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.12125000183794,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.221250001837945,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.32125000183795,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.371250001837953,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.471250001837958,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.571250001837963,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.671250001837968,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.771250001837973,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.871250001837978,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 7.971250001837983,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.07125000183798,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.171250001837974,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.271250001837968,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.371250001837963,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.471250001837957,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.571250001837951,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.671250001837945,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.77125000183794,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.871250001837934,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 8.971250001837928,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.071250001837923,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.171250001837917,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.271250001837911,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.371250001837906,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.4712500018379,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.571250001837894,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.671250001837889,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.771250001837883,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.871250001837877,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 9.971250001837872,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.071250001837866,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.17125000183786,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.271250001837855,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.371250001837849,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.471250001837843,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.571250001837837,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.671250001837832,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.771250001837826,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.87125000183782,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 10.971250001837815,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.071250001837809,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.171250001837803,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.271250001837798,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.371250001837792,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.471250001837786,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.57125000183778,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.671250001837775,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.77125000183777,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.871250001837764,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 11.971250001837758,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.071250001837752,
+     "ennemis": 12,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.171250001837747,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.27125000183774,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.371250001837735,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.47125000183773,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.571250001837724,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.671250001837718,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.771250001837712,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.871250001837707,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 12.971250001837701,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.071250001837695,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.17125000183769,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.271250001837684,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.371250001837678,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.471250001837673,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.571250001837667,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.671250001837661,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.771250001837656,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.87125000183765,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 13.971250001837644,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 14.071250001837639,
+     "ennemis": 13,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 14.137916668504301,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 14.237916668504296,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 14.254583335170961,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    }
+   ],
+   "images": 601,
+   "p50": 2.599999964237213,
+   "p99": 3.900000035762787,
+   "max": 4.199999988079071
+  },
+  {
+   "nom": "scène vol, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 2.9,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "conditions": [
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.321250001837512,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.421250001837507,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.5212500018375,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.621250001837495,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.72125000183749,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.821250001837484,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 16.92125000183748,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.021250001837473,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.121250001837467,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.22125000183746,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.321250001837456,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.42125000183745,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.521250001837444,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.62125000183744,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.721250001837433,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.821250001837427,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 17.92125000183742,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 18.021250001837416,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 18.12125000183741,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "vol",
+     "paused": false,
+     "t": 18.221250001837404,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.3212500018374,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.421250001837393,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.487916668504056,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.58791666850405,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.687916668504045,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.78791666850404,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.887916668504033,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 18.987916668504027,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.087916668504022,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.187916668504016,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.28791666850401,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.387916668504005,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.487916668504,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.587916668503993,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.687916668503988,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.787916668503982,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.887916668503976,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 19.98791666850397,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.087916668503965,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.18791666850396,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.287916668503954,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.387916668503948,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.487916668503942,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.587916668503937,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.68791666850393,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.787916668503925,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.88791666850392,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 20.987916668503914,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.087916668503908,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.187916668503902,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.287916668503897,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.38791666850389,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.487916668503885,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.58791666850388,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.687916668503874,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.78791666850387,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.887916668503863,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 21.987916668503857,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.08791666850385,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.187916668503846,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.28791666850384,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.387916668503834,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.48791666850383,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.587916668503823,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.687916668503817,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.78791666850381,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.887916668503806,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 22.9879166685038,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.087916668503794,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.18791666850379,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.287916668503783,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.387916668503777,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.48791666850377,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.587916668503766,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.68791666850376,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.787916668503755,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.88791666850375,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 23.987916668503743,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.087916668503738,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.187916668503732,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.287916668503726,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.38791666850372,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.479583335170382,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.554583335170378,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.654583335170372,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.754583335170366,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.85458333517036,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 24.954583335170355,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.05458333517035,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.154583335170344,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.254583335170338,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.354583335170332,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.454583335170327,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.55458333517032,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.654583335170315,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.75458333517031,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.854583335170304,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 25.954583335170298,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 26.054583335170292,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 26.154583335170287,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 26.25458333517028,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "jeu",
+     "paused": false,
+     "t": 26.271250001836947,
+     "ennemis": 18,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    }
+   ],
+   "images": 601,
+   "p50": 2,
+   "p99": 3.300000011920929,
+   "max": 6.300000011920929
+  },
+  {
+   "nom": "scène charge meilleure que SNAKE 2030 en jeu (p95, ms)",
+   "valeur": {
+    "snake2975": 4,
+    "snake2030": 0.6
+   },
+   "seuil": "snake2975 < snake2030",
+   "statut": "echec",
+   "imagesSnake2030": 596,
+   "brut": {
+    "snake2975": 4,
+    "snake2030": 0.6000000238418579
+   },
+   "conditions2030": [
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 2866.666666666663,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 2983.3333333333285,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3066.666666666661,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3166.66666666666,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3266.6666666666592,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3366.6666666666583,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3466.6666666666574,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3566.6666666666565,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3666.6666666666556,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3766.6666666666547,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3866.666666666654,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 3983.3333333333194,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4066.666666666652,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4166.666666666653,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4266.666666666655,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4383.333333333324,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4449.999999999992,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4549.999999999994,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4649.999999999995,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4749.999999999997,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4849.999999999999,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 4950.000000000001,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5050.000000000003,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5150.000000000005,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5250.000000000006,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5350.000000000008,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5450.00000000001,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5550.000000000012,
+     "ennemis": 4,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5650.000000000014,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5750.0000000000155,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5850.000000000017,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 5950.000000000019,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6050.000000000021,
+     "ennemis": 3,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6150.000000000023,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6250.000000000025,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6350.000000000026,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6450.000000000028,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6550.00000000003,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6650.000000000032,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6750.000000000034,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6850.0000000000355,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 6950.000000000037,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7050.000000000039,
+     "ennemis": 5,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7150.000000000041,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7266.66666666671,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7350.000000000045,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7466.666666666713,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7566.666666666715,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7666.666666666717,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7750.000000000052,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7850.000000000054,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 7950.0000000000555,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8050.000000000057,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8166.666666666726,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8266.666666666724,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8350.000000000055,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8450.000000000051,
+     "ennemis": 6,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8566.666666666713,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8650.000000000044,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8766.666666666706,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8866.666666666702,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 8966.666666666699,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9066.666666666695,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9150.000000000025,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9266.666666666688,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9366.666666666684,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9466.66666666668,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9550.000000000011,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9666.666666666673,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9766.66666666667,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9866.666666666666,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 9966.666666666662,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10066.666666666659,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10166.666666666655,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10266.666666666652,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10366.666666666648,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10466.666666666644,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10566.66666666664,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10649.99999999997,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10766.666666666633,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10849.999999999964,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 10966.666666666626,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11049.999999999956,
+     "ennemis": 8,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11166.666666666619,
+     "ennemis": 9,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11266.666666666615,
+     "ennemis": 9,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11349.999999999945,
+     "ennemis": 12,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11466.666666666608,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11566.666666666604,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11666.6666666666,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11749.99999999993,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11866.666666666593,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 11949.999999999924,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12066.666666666586,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12166.666666666582,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12266.666666666579,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12366.666666666575,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12449.999999999905,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12566.666666666568,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12649.999999999898,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12733.333333333228,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    },
+    {
+     "phase": "play",
+     "etat": null,
+     "paused": false,
+     "t": 12799.999999999893,
+     "ennemis": 14,
+     "tampon": null,
+     "canvas": [
+      {
+       "w": 1266,
+       "h": 585
+      }
+     ],
+     "qualite2030": 1.5
+    }
+   ],
+   "conditions2975": [
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.676666692892233,
+     "ennemis": 5,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.743333359558896,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.84333335955889,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.943333359558885,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.04333335955888,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.143333359558873,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.243333359558868,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.293333359558865,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.39333335955886,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.493333359558854,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.593333359558848,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.693333359558842,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.793333359558837,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.89333335955883,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.993333359558825,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.09333335955882,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.160000026225482,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.260000026225477,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.32666669289214,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.426666692892134,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.526666692892128,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.626666692892123,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.726666692892117,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.82666669289211,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.926666692892105,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.0266666928921,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.126666692892094,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.22666669289209,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.326666692892083,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.426666692892077,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.52666669289207,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.626666692892066,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.72666669289206,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.826666692892054,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.92666669289205,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.026666692892043,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.126666692892037,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.22666669289203,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.34333335955869,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.42666669289202,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.54333335955868,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.62666669289201,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.726666692892003,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.826666692891997,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.92666669289199,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.026666692891986,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.12666669289198,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.226666692891975,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.32666669289197,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.426666692891963,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.526666692891958,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.626666692891952,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.726666692891946,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.82666669289194,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.926666692891935,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.02666669289193,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.126666692891924,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.226666692891918,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.326666692891912,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.426666692891907,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.5266666928919,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.626666692891895,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.72666669289189,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.810000026225218,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.87666669289188,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.94833335975722,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.963333360353253,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.978333360949286,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.993333361545318,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.102916694928314,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.186250028261643,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.286250028261637,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.38625002826163,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.486250028261626,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.58625002826162,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.67791669492828,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.752916694928278,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.852916694928272,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.9362500282616,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.01958336159493,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.119583361594923,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.219583361594918,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.336250028261578,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.436250028261572,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.5195833615949,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.619583361594895,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.71958336159489,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.819583361594884,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.936250028261544,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.019583361594872,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.119583361594866,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.21958336159486,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.319583361594855,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.41958336159485,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.53625002826151,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.619583361594838,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.719583361594832,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.819583361594827,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.936250028261487,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.019583361594815,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.11958336159481,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.136250028261475,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    }
+   ],
+   "protocole": {
+    "profil": "iPhone 13 paysage",
+    "dt": 0.016666666666666666,
+    "cpu": 1,
+    "chauffe": 2,
+    "duree": 10,
+    "pollingMs": 100,
+    "charge2975": "fixture charge",
+    "charge2030": "début de partie sans pilote"
+   },
+   "validite": {
+    "ok": true
+   }
+  },
+  {
+   "nom": "scène charge, processeur ×4, qualité adaptative : p95 (ms)",
+   "valeur": 14.435,
+   "seuil": "≤ 25",
+   "statut": "ok",
+   "images": 554,
+   "conditions": [
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.768333359558895,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 19.918333359558886,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.010000026225548,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.110000026225542,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.201666692892204,
+     "ennemis": 4,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.2516666928922,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.360000026225528,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.460000026225522,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.56833335955885,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.651666692892178,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.74333335955884,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.868333359558832,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 20.960000026225494,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.060000026225488,
+     "ennemis": 10,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.135000026225484,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.226666692892145,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.32666669289214,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.401666692892135,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.50166669289213,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.601666692892124,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.685000026225453,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.785000026225447,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.88500002622544,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 21.985000026225435,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.068333359558764,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.185000026225424,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.28500002622542,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.368333359558747,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.485000026225407,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.5850000262254,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.70166669289206,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.78500002622539,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.885000026225384,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 22.968333359558713,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.10166669289204,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.185000026225367,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.268333359558696,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.385000026225356,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.48500002622535,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.585000026225345,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.68500002622534,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.801666692892,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.86833335955866,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 23.985000026225322,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.101666692891982,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.18500002622531,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.30166669289197,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.3850000262253,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.50166669289196,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.601666692891953,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.685000026225282,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.785000026225276,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 24.88500002622527,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.00166669289193,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.08500002622526,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.185000026225254,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.285000026225248,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.368333359558576,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.485000026225237,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.58500002622523,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.685000026225225,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.78500002622522,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.851666692891882,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.93500002622521,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.957083360104907,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.974583360800278,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 25.98708336129697,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.044583361594984,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.14458336159498,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.244583361594973,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.344583361594967,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.44458336159496,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.544583361594956,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.64458336159495,
+     "ennemis": 9,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.711250028261613,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.811250028261608,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.911250028261602,
+     "ennemis": 8,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 26.977916694928265,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.07791669492826,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.177916694928253,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.277916694928248,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.377916694928242,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.477916694928236,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.57791669492823,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.677916694928225,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.77791669492822,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.877916694928214,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 27.977916694928208,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.077916694928202,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.177916694928197,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.27791669492819,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.377916694928185,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.47791669492818,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.577916694928174,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.677916694928168,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.777916694928162,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.877916694928157,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 28.97791669492815,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.077916694928145,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.17791669492814,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.277916694928134,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    },
+    {
+     "phase": "play",
+     "etat": "boss",
+     "paused": false,
+     "t": 29.2945833615948,
+     "ennemis": 3,
+     "tampon": {
+      "w": 422,
+      "h": 195,
+      "px": 2
+     },
+     "canvas": [
+      {
+       "w": 844,
+       "h": 390
+      }
+     ],
+     "qualite2030": null
+    }
+   ]
+  },
+  {
+   "nom": "temps traité / temps réel au profil ×4 (pas réellement exécutés)",
+   "valeur": 1.00072,
+   "seuil": "≥ 0,99",
+   "statut": "ok",
+   "ancien": 0.9487839304934987,
+   "machine": 1.0007205849262533,
+   "secondesMurales": 10.084400000035762,
+   "secondesTraitees": 10.091666666666097,
+   "secondesMonde": 9.56791666870257,
+   "pasTraites": 1211,
+   "etat": "boss",
+   "debut": {
+    "t": 19.743333359558896,
+    "reel": 22.13333333333272,
+    "pas": 2656,
+    "r": 3687.599999964237,
+    "etat": "boss",
+    "horloge": {
+     "t": 19.743333359558896,
+     "pas": 2656,
+     "reel": 22.13333333333272,
+     "gel": 0,
+     "dtMonde": 0.008333333333333333,
+     "dtJoueuse": 0.008333333333333333,
+     "gele": false,
+     "arretee": false
+    }
+   },
+   "fin": {
+    "t": 29.311250028261465,
+    "reel": 32.224999999998815,
+    "pas": 3867,
+    "r": 13772,
+    "etat": "boss",
+    "horloge": {
+     "t": 29.311250028261465,
+     "pas": 3867,
+     "reel": 32.224999999998815,
+     "gel": 0,
+     "dtMonde": 0.008333333333333333,
+     "dtJoueuse": 0.008333333333333333,
+     "gele": false,
+     "arretee": false
+    }
+   }
+  },
+  {
+   "nom": "vrai iPhone de la propriétaire",
+   "statut": "hors-banc",
+   "raison": "p95 ≤ 16.7 ms à lire sur ?perf=1&scene=charge aux jalons A et B (REFONTE.md § 8.4)"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 69.1,
+ "bundle": {
+  "url": "http://127.0.0.1:61549/proto-neon/__apres.html",
+  "empreinte": "10e6124c44ab"
+ },
+ "date": "2026-10-18T03:11:49.408Z",
+ "dateParis": "18/10/2026 · 05 h 11"
+}

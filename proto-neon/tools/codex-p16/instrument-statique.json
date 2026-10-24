@@ -1,0 +1,1424 @@
+{
+  "dateParis": "18/10/2026 04:48:08",
+  "normal": {
+    "ancien": 1,
+    "machine": 1,
+    "secondesMurales": 1,
+    "secondesTraitees": 1,
+    "secondesMonde": 1,
+    "pasTraites": 120
+  },
+  "ralenti": {
+    "ancien": 0.5,
+    "machine": 1,
+    "secondesMurales": 1,
+    "secondesTraitees": 1,
+    "secondesMonde": 0.5,
+    "pasTraites": 120
+  },
+  "perte": {
+    "ancien": 0.5,
+    "machine": 0.9,
+    "secondesMurales": 1,
+    "secondesTraitees": 0.9,
+    "secondesMonde": 0.5,
+    "pasTraites": 108
+  },
+  "bundles": {
+    "dateParis": "18/10/2026 04:48:08",
+    "build": {
+      "sortie": 0,
+      "journal": "build-p16b.log",
+      "indexSha256": "0b0c9d6310d2a8b41f96d0fb9dbdbc6f9cd8bbe6a050c73f2e9b884fcab1e4dd"
+    },
+    "sourcesSha256": "a361a9d21b8d31326ac5778cb2bc93190c14abe078f610bc0175101053110cd1",
+    "modules": {
+      "00-pal.js": {
+        "avant": "4d127de29cb86b21bf36070b1d5b6db9aa529001e6b4438ec35c2d5925a41c7a",
+        "apres": "4d127de29cb86b21bf36070b1d5b6db9aa529001e6b4438ec35c2d5925a41c7a"
+      },
+      "02-regles.js": {
+        "avant": "0ef884768e3ad55735d3bec4f13774c8209cc260bfdd396b0e84698c7fe324a8",
+        "apres": "0ef884768e3ad55735d3bec4f13774c8209cc260bfdd396b0e84698c7fe324a8"
+      },
+      "03-socle.js": {
+        "avant": "583231bce8f6831afa4f7423c58c36279e50dc3630083cfd5cfb7d4ee080b828",
+        "apres": "583231bce8f6831afa4f7423c58c36279e50dc3630083cfd5cfb7d4ee080b828"
+      },
+      "05-art.js": {
+        "avant": "422bcb0e008f6926a6febe33bffcaea160324829cdcb369d72f0c57311ff08a6",
+        "apres": "422bcb0e008f6926a6febe33bffcaea160324829cdcb369d72f0c57311ff08a6"
+      },
+      "10-gfx.js": {
+        "avant": "3e09e6f783fa0e069a3b2a2ca89a728de302acdbd4bfd2cb67c9b3dc0dfee460",
+        "apres": "33c7387cee6b37b6608e182d8359a11d22fff9028dfcd77cdc0ecb7ceaad4177"
+      },
+      "12-cam.js": {
+        "avant": "d003c3e391b7b91b067407a6948ef79146351c6075d0c285b5a444a54fcc758a",
+        "apres": "d003c3e391b7b91b067407a6948ef79146351c6075d0c285b5a444a54fcc758a"
+      },
+      "15-decor.js": {
+        "avant": "0acc89364ec3b829c944da83180db1f651c09193e4e4cee4a6b2aecc4743a4df",
+        "apres": "0acc89364ec3b829c944da83180db1f651c09193e4e4cee4a6b2aecc4743a4df"
+      },
+      "17-vol.js": {
+        "avant": "b4964fd8dabf0a18715d22f020ef15d36da520faa0e845861d5f5a99cd9b535a",
+        "apres": "b4964fd8dabf0a18715d22f020ef15d36da520faa0e845861d5f5a99cd9b535a"
+      },
+      "20-crt.js": {
+        "avant": "56092696f8cdd961eabbbfe04834e16261e52ab10fd6d05f666ba8e59f6038db",
+        "apres": "56092696f8cdd961eabbbfe04834e16261e52ab10fd6d05f666ba8e59f6038db"
+      },
+      "30-music.js": {
+        "avant": "16111354eb545597c70c0449228e778224c6566bd5fbeb73ccd3587c9fe7fc9b",
+        "apres": "16111354eb545597c70c0449228e778224c6566bd5fbeb73ccd3587c9fe7fc9b"
+      },
+      "40-sprites.js": {
+        "avant": "492c93a4ee7ce02cd483f19f6a6372eb47c290e455eebab4fa8adc1215514514",
+        "apres": "492c93a4ee7ce02cd483f19f6a6372eb47c290e455eebab4fa8adc1215514514"
+      },
+      "50-fx.js": {
+        "avant": "daf925c8b21fe29d085f6a7ffc413c7f000fc4843966eb33eb4c5c9fe3fe751f",
+        "apres": "daf925c8b21fe29d085f6a7ffc413c7f000fc4843966eb33eb4c5c9fe3fe751f"
+      },
+      "60-intro.js": {
+        "avant": "2b459b39a8cb843941a88f2daf967d6efa47adc1c4dc46182f5dfe4678e0cc53",
+        "apres": "2b459b39a8cb843941a88f2daf967d6efa47adc1c4dc46182f5dfe4678e0cc53"
+      },
+      "62-choix.js": {
+        "avant": "e1d82eb3fb5b4466bce838dd8cc0ba2c345f543cd1ac3e162e0770a9f7b4f336",
+        "apres": "e1d82eb3fb5b4466bce838dd8cc0ba2c345f543cd1ac3e162e0770a9f7b4f336"
+      },
+      "63-themes.js": {
+        "avant": "d3ad93249976ebf28973738f3b0d4f5114fb638d95b7fea67bc65ef9817128c6",
+        "apres": "d3ad93249976ebf28973738f3b0d4f5114fb638d95b7fea67bc65ef9817128c6"
+      },
+      "64-aventure.js": {
+        "avant": "1fc8fd1b9da75bc223d7378672e46a401d9b53ea6eab4030b81ba0ea8afebd45",
+        "apres": "1fc8fd1b9da75bc223d7378672e46a401d9b53ea6eab4030b81ba0ea8afebd45"
+      },
+      "67-cosmos.js": {
+        "avant": "3cd4502221e7b8d9a1ea6f02f3845a9836af6f9356fa5c64023aa0850a84fbcf",
+        "apres": "3cd4502221e7b8d9a1ea6f02f3845a9836af6f9356fa5c64023aa0850a84fbcf"
+      },
+      "68-terminal.js": {
+        "avant": "ad238a611559e55d200c9e00e203f8f2da98333cbb2d9f90479ff16aaca79ae0",
+        "apres": "ad238a611559e55d200c9e00e203f8f2da98333cbb2d9f90479ff16aaca79ae0"
+      },
+      "69-arcade.js": {
+        "avant": "fc27a23d9e7db2678b3351a52ba360351b03e786e360bba9e4c79872b949e5b8",
+        "apres": "fc27a23d9e7db2678b3351a52ba360351b03e786e360bba9e4c79872b949e5b8"
+      },
+      "70-commun.js": {
+        "avant": "f5b31e58db0a58aae688be1611e56014a24a52ec01e0caafdfd7d2e1f8d78a53",
+        "apres": "f5b31e58db0a58aae688be1611e56014a24a52ec01e0caafdfd7d2e1f8d78a53"
+      },
+      "70-joueuse.js": {
+        "avant": "9eb48c0d368007a52220306fa6aad39d8204aea3689681df076413feb6318c8a",
+        "apres": "9eb48c0d368007a52220306fa6aad39d8204aea3689681df076413feb6318c8a"
+      },
+      "71-butin.js": {
+        "avant": "dd50b151bd50130686478beae8f3ffd64e81e9f75fa40934d7f437a62028d1de",
+        "apres": "dd50b151bd50130686478beae8f3ffd64e81e9f75fa40934d7f437a62028d1de"
+      },
+      "72-ennemis.js": {
+        "avant": "6a8b2801b112af4902366f8bfaf94e293a9d74f4c5cf06a34ab15e0b5d2cea82",
+        "apres": "6a8b2801b112af4902366f8bfaf94e293a9d74f4c5cf06a34ab15e0b5d2cea82"
+      },
+      "73-arene.js": {
+        "avant": "7dfa81c1ec354c9b23ad87b143f020a8bbb5af8404d4da67c15500e10b998b98",
+        "apres": "7dfa81c1ec354c9b23ad87b143f020a8bbb5af8404d4da67c15500e10b998b98"
+      },
+      "73-colosse.js": {
+        "avant": "fcae827a9a85e673593213ef26291e42fc5d0c160384d432fb182a81450db127",
+        "apres": "fcae827a9a85e673593213ef26291e42fc5d0c160384d432fb182a81450db127"
+      },
+      "74-arsenal.js": {
+        "avant": "cd1223b9ed6e31d50bc380106b5fe825d905b987a05b59dba5583d352e52c46d",
+        "apres": "cd1223b9ed6e31d50bc380106b5fe825d905b987a05b59dba5583d352e52c46d"
+      },
+      "75-cartes.js": {
+        "avant": "f0a3db14c12ddb1763b56695f0cd736c3fc4e4a017f822a061831d8031aba3a5",
+        "apres": "f0a3db14c12ddb1763b56695f0cd736c3fc4e4a017f822a061831d8031aba3a5"
+      },
+      "76-defile.js": {
+        "avant": "87396c719767bb5953f07856ebed7314450de81a4f5360344f25c8977e9d3b93",
+        "apres": "87396c719767bb5953f07856ebed7314450de81a4f5360344f25c8977e9d3b93"
+      },
+      "76-directeur.js": {
+        "avant": "907d4c194d6c728f8914f6ffb0560b9872da3a8a35565a6ef72ab7ad1ad37e73",
+        "apres": "907d4c194d6c728f8914f6ffb0560b9872da3a8a35565a6ef72ab7ad1ad37e73"
+      },
+      "77-score.js": {
+        "avant": "8b5a09c7ab588aa7cae650cb022ff727ea34df0e57d13b6f15ba42705c944f4b",
+        "apres": "8b5a09c7ab588aa7cae650cb022ff727ea34df0e57d13b6f15ba42705c944f4b"
+      },
+      "78-hud.js": {
+        "avant": "1dffd6ad8c7cd235d646573351a30171d495b743b7279c6a9e4ec43353368e83",
+        "apres": "18c7dfd81f70d494f6439ce8ef61b6afd8ebe23993cf6ffa3e86abafa9b30360"
+      },
+      "78-warp.js": {
+        "avant": "75aecb2ed2e7819833fefdeff76c0842d5e4ac6f3bca832252e24780cbb3e0e1",
+        "apres": "75aecb2ed2e7819833fefdeff76c0842d5e4ac6f3bca832252e24780cbb3e0e1"
+      },
+      "79-jeu.js": {
+        "avant": "05d91c9aa497538b71e5473b2f79b2fcedc71030ce292d142de53d80262b9bdc",
+        "apres": "05d91c9aa497538b71e5473b2f79b2fcedc71030ce292d142de53d80262b9bdc"
+      },
+      "79-scene.js": {
+        "avant": "82ae0e6574260b840fdc8fbf0b3f5c03c7811c7bbbdc0e74cf87193f389bf000",
+        "apres": "82ae0e6574260b840fdc8fbf0b3f5c03c7811c7bbbdc0e74cf87193f389bf000"
+      },
+      "80-ecrans.js": {
+        "avant": "49dd41e89a9b11b5079d436ad999dd3c7b7a226e506a9cf1d660b4fcc0ea412a",
+        "apres": "49dd41e89a9b11b5079d436ad999dd3c7b7a226e506a9cf1d660b4fcc0ea412a"
+      },
+      "85-pilote.js": {
+        "avant": "0001a774d482d1cb09c1274cfe2dbc3b3e4c14cfa7bb28814e045d33fb2a4e93",
+        "apres": "0001a774d482d1cb09c1274cfe2dbc3b3e4c14cfa7bb28814e045d33fb2a4e93"
+      },
+      "90-boot.js": {
+        "avant": "551f2fabaf9cfe5b01bfc6ced28b144bd120a71e38602b4d6b5631b375700910",
+        "apres": "551f2fabaf9cfe5b01bfc6ced28b144bd120a71e38602b4d6b5631b375700910"
+      }
+    },
+    "fichiers": {
+      "avant": "f7f381b76886ee2eceac53da9b8d333d4fded666ebd3e58aab9288e586b334b0",
+      "apres": "0b0c9d6310d2a8b41f96d0fb9dbdbc6f9cd8bbe6a050c73f2e9b884fcab1e4dd"
+    },
+    "servis": {
+      "apres": "0b0c9d6310d2a8b41f96d0fb9dbdbc6f9cd8bbe6a050c73f2e9b884fcab1e4dd",
+      "avant": "f7f381b76886ee2eceac53da9b8d333d4fded666ebd3e58aab9288e586b334b0"
+    },
+    "raccords": false,
+    "provenanceAvant": "sources-recues-p16c.json : 10-gfx, 20-crt, 78-hud ; même socle final et mêmes paramètres N.R du banc",
+    "raccordsEnMemoire": [],
+    "ressources": {
+      "apres": {
+        "route": "/proto-neon/__apres.html",
+        "bases": {
+          "cine": "cine/",
+          "musique": "musique/"
+        },
+        "assets": [
+          {
+            "type": "art",
+            "nom": "amiral-elle",
+            "relatif": "art/amiral-elle.png",
+            "url": "/proto-neon/art/amiral-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "amiral-lui",
+            "relatif": "art/amiral-lui.png",
+            "url": "/proto-neon/art/amiral-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "apotheose-elle",
+            "relatif": "art/apotheose-elle.png",
+            "url": "/proto-neon/art/apotheose-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "apotheose-lui",
+            "relatif": "art/apotheose-lui.png",
+            "url": "/proto-neon/art/apotheose-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "chasse-elle",
+            "relatif": "art/chasse-elle.png",
+            "url": "/proto-neon/art/chasse-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "chasse-lui",
+            "relatif": "art/chasse-lui.png",
+            "url": "/proto-neon/art/chasse-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "connexion-elle",
+            "relatif": "art/connexion-elle.png",
+            "url": "/proto-neon/art/connexion-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "connexion-lui",
+            "relatif": "art/connexion-lui.png",
+            "url": "/proto-neon/art/connexion-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "defaite-elle",
+            "relatif": "art/defaite-elle.png",
+            "url": "/proto-neon/art/defaite-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "defaite-lui",
+            "relatif": "art/defaite-lui.png",
+            "url": "/proto-neon/art/defaite-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "espace-elle",
+            "relatif": "art/espace-elle.png",
+            "url": "/proto-neon/art/espace-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "espace-lui",
+            "relatif": "art/espace-lui.png",
+            "url": "/proto-neon/art/espace-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fin-elle",
+            "relatif": "art/fin-elle.png",
+            "url": "/proto-neon/art/fin-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fin-lui",
+            "relatif": "art/fin-lui.png",
+            "url": "/proto-neon/art/fin-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fissure-elle",
+            "relatif": "art/fissure-elle.png",
+            "url": "/proto-neon/art/fissure-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fissure-lui",
+            "relatif": "art/fissure-lui.png",
+            "url": "/proto-neon/art/fissure-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "neon-elle",
+            "relatif": "art/neon-elle.png",
+            "url": "/proto-neon/art/neon-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "neon-lui",
+            "relatif": "art/neon-lui.png",
+            "url": "/proto-neon/art/neon-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "pilote-elle",
+            "relatif": "art/pilote-elle.png",
+            "url": "/proto-neon/art/pilote-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "pilote-lui",
+            "relatif": "art/pilote-lui.png",
+            "url": "/proto-neon/art/pilote-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "plongee-elle",
+            "relatif": "art/plongee-elle.png",
+            "url": "/proto-neon/art/plongee-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "plongee-lui",
+            "relatif": "art/plongee-lui.png",
+            "url": "/proto-neon/art/plongee-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "profondeur-elle",
+            "relatif": "art/profondeur-elle.png",
+            "url": "/proto-neon/art/profondeur-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "profondeur-lui",
+            "relatif": "art/profondeur-lui.png",
+            "url": "/proto-neon/art/profondeur-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retournement-elle",
+            "relatif": "art/retournement-elle.png",
+            "url": "/proto-neon/art/retournement-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retournement-lui",
+            "relatif": "art/retournement-lui.png",
+            "url": "/proto-neon/art/retournement-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retrouvailles",
+            "relatif": "art/retrouvailles.png",
+            "url": "/proto-neon/art/retrouvailles.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "reveil-elle",
+            "relatif": "art/reveil-elle.png",
+            "url": "/proto-neon/art/reveil-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "reveil-lui",
+            "relatif": "art/reveil-lui.png",
+            "url": "/proto-neon/art/reveil-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "rival-elle",
+            "relatif": "art/rival-elle.png",
+            "url": "/proto-neon/art/rival-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "rival-lui",
+            "relatif": "art/rival-lui.png",
+            "url": "/proto-neon/art/rival-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "teaser-3019",
+            "relatif": "art/teaser-3019.png",
+            "url": "/proto-neon/art/teaser-3019.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "warp-elle",
+            "relatif": "art/warp-elle.png",
+            "url": "/proto-neon/art/warp-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "warp-lui",
+            "relatif": "art/warp-lui.png",
+            "url": "/proto-neon/art/warp-lui.png",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "affiche-duo",
+            "relatif": "cine/affiche-duo.mp4",
+            "url": "/proto-neon/cine/affiche-duo.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "affiche",
+            "relatif": "cine/affiche.mp4",
+            "url": "/proto-neon/cine/affiche.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "alerte",
+            "relatif": "cine/alerte.mp4",
+            "url": "/proto-neon/cine/alerte.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "amiral-elle",
+            "relatif": "cine/amiral-elle.mp4",
+            "url": "/proto-neon/cine/amiral-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "amiral-lui",
+            "relatif": "cine/amiral-lui.mp4",
+            "url": "/proto-neon/cine/amiral-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose-elle",
+            "relatif": "cine/apotheose-elle.mp4",
+            "url": "/proto-neon/cine/apotheose-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose-lui",
+            "relatif": "cine/apotheose-lui.mp4",
+            "url": "/proto-neon/cine/apotheose-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose",
+            "relatif": "cine/apotheose.mp4",
+            "url": "/proto-neon/cine/apotheose.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "boss",
+            "relatif": "cine/boss.mp4",
+            "url": "/proto-neon/cine/boss.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "briefing",
+            "relatif": "cine/briefing.mp4",
+            "url": "/proto-neon/cine/briefing.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse-elle",
+            "relatif": "cine/chasse-elle.mp4",
+            "url": "/proto-neon/cine/chasse-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse-lui",
+            "relatif": "cine/chasse-lui.mp4",
+            "url": "/proto-neon/cine/chasse-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse",
+            "relatif": "cine/chasse.mp4",
+            "url": "/proto-neon/cine/chasse.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion-elle",
+            "relatif": "cine/connexion-elle.mp4",
+            "url": "/proto-neon/cine/connexion-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion-lui",
+            "relatif": "cine/connexion-lui.mp4",
+            "url": "/proto-neon/cine/connexion-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion",
+            "relatif": "cine/connexion.mp4",
+            "url": "/proto-neon/cine/connexion.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite-elle",
+            "relatif": "cine/defaite-elle.mp4",
+            "url": "/proto-neon/cine/defaite-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite-lui",
+            "relatif": "cine/defaite-lui.mp4",
+            "url": "/proto-neon/cine/defaite-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite",
+            "relatif": "cine/defaite.mp4",
+            "url": "/proto-neon/cine/defaite.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "espace-elle",
+            "relatif": "cine/espace-elle.mp4",
+            "url": "/proto-neon/cine/espace-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "espace-lui",
+            "relatif": "cine/espace-lui.mp4",
+            "url": "/proto-neon/cine/espace-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "eveil",
+            "relatif": "cine/eveil.mp4",
+            "url": "/proto-neon/cine/eveil.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "exterieur",
+            "relatif": "cine/exterieur.mp4",
+            "url": "/proto-neon/cine/exterieur.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fin-elle",
+            "relatif": "cine/fin-elle.mp4",
+            "url": "/proto-neon/cine/fin-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fin-lui",
+            "relatif": "cine/fin-lui.mp4",
+            "url": "/proto-neon/cine/fin-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fissure-elle",
+            "relatif": "cine/fissure-elle.mp4",
+            "url": "/proto-neon/cine/fissure-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fissure-lui",
+            "relatif": "cine/fissure-lui.mp4",
+            "url": "/proto-neon/cine/fissure-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "neon-elle",
+            "relatif": "cine/neon-elle.mp4",
+            "url": "/proto-neon/cine/neon-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "neon-lui",
+            "relatif": "cine/neon-lui.mp4",
+            "url": "/proto-neon/cine/neon-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "pilote-elle",
+            "relatif": "cine/pilote-elle.mp4",
+            "url": "/proto-neon/cine/pilote-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "pilote-lui",
+            "relatif": "cine/pilote-lui.mp4",
+            "url": "/proto-neon/cine/pilote-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee-elle",
+            "relatif": "cine/plongee-elle.mp4",
+            "url": "/proto-neon/cine/plongee-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee-lui",
+            "relatif": "cine/plongee-lui.mp4",
+            "url": "/proto-neon/cine/plongee-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee",
+            "relatif": "cine/plongee.mp4",
+            "url": "/proto-neon/cine/plongee.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "profondeur-elle",
+            "relatif": "cine/profondeur-elle.mp4",
+            "url": "/proto-neon/cine/profondeur-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "profondeur-lui",
+            "relatif": "cine/profondeur-lui.mp4",
+            "url": "/proto-neon/cine/profondeur-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement-elle",
+            "relatif": "cine/retournement-elle.mp4",
+            "url": "/proto-neon/cine/retournement-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement-lui",
+            "relatif": "cine/retournement-lui.mp4",
+            "url": "/proto-neon/cine/retournement-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement",
+            "relatif": "cine/retournement.mp4",
+            "url": "/proto-neon/cine/retournement.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retrouvailles",
+            "relatif": "cine/retrouvailles.mp4",
+            "url": "/proto-neon/cine/retrouvailles.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil-elle",
+            "relatif": "cine/reveil-elle.mp4",
+            "url": "/proto-neon/cine/reveil-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil-lui",
+            "relatif": "cine/reveil-lui.mp4",
+            "url": "/proto-neon/cine/reveil-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil",
+            "relatif": "cine/reveil.mp4",
+            "url": "/proto-neon/cine/reveil.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival-elle",
+            "relatif": "cine/rival-elle.mp4",
+            "url": "/proto-neon/cine/rival-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival-lui",
+            "relatif": "cine/rival-lui.mp4",
+            "url": "/proto-neon/cine/rival-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival",
+            "relatif": "cine/rival.mp4",
+            "url": "/proto-neon/cine/rival.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "teaser-3019",
+            "relatif": "cine/teaser-3019.mp4",
+            "url": "/proto-neon/cine/teaser-3019.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "victoire",
+            "relatif": "cine/victoire.mp4",
+            "url": "/proto-neon/cine/victoire.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "warp-elle",
+            "relatif": "cine/warp-elle.mp4",
+            "url": "/proto-neon/cine/warp-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "warp-lui",
+            "relatif": "cine/warp-lui.mp4",
+            "url": "/proto-neon/cine/warp-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "musique",
+            "nom": "piste",
+            "relatif": "musique/piste.json",
+            "url": "/proto-neon/musique/piste.json",
+            "existe": true
+          }
+        ],
+        "manquants": []
+      },
+      "avant": {
+        "route": "/proto-neon/__avant.html",
+        "bases": {
+          "cine": "cine/",
+          "musique": "musique/"
+        },
+        "assets": [
+          {
+            "type": "art",
+            "nom": "amiral-elle",
+            "relatif": "art/amiral-elle.png",
+            "url": "/proto-neon/art/amiral-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "amiral-lui",
+            "relatif": "art/amiral-lui.png",
+            "url": "/proto-neon/art/amiral-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "apotheose-elle",
+            "relatif": "art/apotheose-elle.png",
+            "url": "/proto-neon/art/apotheose-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "apotheose-lui",
+            "relatif": "art/apotheose-lui.png",
+            "url": "/proto-neon/art/apotheose-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "chasse-elle",
+            "relatif": "art/chasse-elle.png",
+            "url": "/proto-neon/art/chasse-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "chasse-lui",
+            "relatif": "art/chasse-lui.png",
+            "url": "/proto-neon/art/chasse-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "connexion-elle",
+            "relatif": "art/connexion-elle.png",
+            "url": "/proto-neon/art/connexion-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "connexion-lui",
+            "relatif": "art/connexion-lui.png",
+            "url": "/proto-neon/art/connexion-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "defaite-elle",
+            "relatif": "art/defaite-elle.png",
+            "url": "/proto-neon/art/defaite-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "defaite-lui",
+            "relatif": "art/defaite-lui.png",
+            "url": "/proto-neon/art/defaite-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "espace-elle",
+            "relatif": "art/espace-elle.png",
+            "url": "/proto-neon/art/espace-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "espace-lui",
+            "relatif": "art/espace-lui.png",
+            "url": "/proto-neon/art/espace-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fin-elle",
+            "relatif": "art/fin-elle.png",
+            "url": "/proto-neon/art/fin-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fin-lui",
+            "relatif": "art/fin-lui.png",
+            "url": "/proto-neon/art/fin-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fissure-elle",
+            "relatif": "art/fissure-elle.png",
+            "url": "/proto-neon/art/fissure-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "fissure-lui",
+            "relatif": "art/fissure-lui.png",
+            "url": "/proto-neon/art/fissure-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "neon-elle",
+            "relatif": "art/neon-elle.png",
+            "url": "/proto-neon/art/neon-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "neon-lui",
+            "relatif": "art/neon-lui.png",
+            "url": "/proto-neon/art/neon-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "pilote-elle",
+            "relatif": "art/pilote-elle.png",
+            "url": "/proto-neon/art/pilote-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "pilote-lui",
+            "relatif": "art/pilote-lui.png",
+            "url": "/proto-neon/art/pilote-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "plongee-elle",
+            "relatif": "art/plongee-elle.png",
+            "url": "/proto-neon/art/plongee-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "plongee-lui",
+            "relatif": "art/plongee-lui.png",
+            "url": "/proto-neon/art/plongee-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "profondeur-elle",
+            "relatif": "art/profondeur-elle.png",
+            "url": "/proto-neon/art/profondeur-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "profondeur-lui",
+            "relatif": "art/profondeur-lui.png",
+            "url": "/proto-neon/art/profondeur-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retournement-elle",
+            "relatif": "art/retournement-elle.png",
+            "url": "/proto-neon/art/retournement-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retournement-lui",
+            "relatif": "art/retournement-lui.png",
+            "url": "/proto-neon/art/retournement-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "retrouvailles",
+            "relatif": "art/retrouvailles.png",
+            "url": "/proto-neon/art/retrouvailles.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "reveil-elle",
+            "relatif": "art/reveil-elle.png",
+            "url": "/proto-neon/art/reveil-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "reveil-lui",
+            "relatif": "art/reveil-lui.png",
+            "url": "/proto-neon/art/reveil-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "rival-elle",
+            "relatif": "art/rival-elle.png",
+            "url": "/proto-neon/art/rival-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "rival-lui",
+            "relatif": "art/rival-lui.png",
+            "url": "/proto-neon/art/rival-lui.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "teaser-3019",
+            "relatif": "art/teaser-3019.png",
+            "url": "/proto-neon/art/teaser-3019.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "warp-elle",
+            "relatif": "art/warp-elle.png",
+            "url": "/proto-neon/art/warp-elle.png",
+            "existe": true
+          },
+          {
+            "type": "art",
+            "nom": "warp-lui",
+            "relatif": "art/warp-lui.png",
+            "url": "/proto-neon/art/warp-lui.png",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "affiche-duo",
+            "relatif": "cine/affiche-duo.mp4",
+            "url": "/proto-neon/cine/affiche-duo.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "affiche",
+            "relatif": "cine/affiche.mp4",
+            "url": "/proto-neon/cine/affiche.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "alerte",
+            "relatif": "cine/alerte.mp4",
+            "url": "/proto-neon/cine/alerte.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "amiral-elle",
+            "relatif": "cine/amiral-elle.mp4",
+            "url": "/proto-neon/cine/amiral-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "amiral-lui",
+            "relatif": "cine/amiral-lui.mp4",
+            "url": "/proto-neon/cine/amiral-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose-elle",
+            "relatif": "cine/apotheose-elle.mp4",
+            "url": "/proto-neon/cine/apotheose-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose-lui",
+            "relatif": "cine/apotheose-lui.mp4",
+            "url": "/proto-neon/cine/apotheose-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "apotheose",
+            "relatif": "cine/apotheose.mp4",
+            "url": "/proto-neon/cine/apotheose.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "boss",
+            "relatif": "cine/boss.mp4",
+            "url": "/proto-neon/cine/boss.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "briefing",
+            "relatif": "cine/briefing.mp4",
+            "url": "/proto-neon/cine/briefing.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse-elle",
+            "relatif": "cine/chasse-elle.mp4",
+            "url": "/proto-neon/cine/chasse-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse-lui",
+            "relatif": "cine/chasse-lui.mp4",
+            "url": "/proto-neon/cine/chasse-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "chasse",
+            "relatif": "cine/chasse.mp4",
+            "url": "/proto-neon/cine/chasse.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion-elle",
+            "relatif": "cine/connexion-elle.mp4",
+            "url": "/proto-neon/cine/connexion-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion-lui",
+            "relatif": "cine/connexion-lui.mp4",
+            "url": "/proto-neon/cine/connexion-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "connexion",
+            "relatif": "cine/connexion.mp4",
+            "url": "/proto-neon/cine/connexion.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite-elle",
+            "relatif": "cine/defaite-elle.mp4",
+            "url": "/proto-neon/cine/defaite-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite-lui",
+            "relatif": "cine/defaite-lui.mp4",
+            "url": "/proto-neon/cine/defaite-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "defaite",
+            "relatif": "cine/defaite.mp4",
+            "url": "/proto-neon/cine/defaite.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "espace-elle",
+            "relatif": "cine/espace-elle.mp4",
+            "url": "/proto-neon/cine/espace-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "espace-lui",
+            "relatif": "cine/espace-lui.mp4",
+            "url": "/proto-neon/cine/espace-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "eveil",
+            "relatif": "cine/eveil.mp4",
+            "url": "/proto-neon/cine/eveil.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "exterieur",
+            "relatif": "cine/exterieur.mp4",
+            "url": "/proto-neon/cine/exterieur.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fin-elle",
+            "relatif": "cine/fin-elle.mp4",
+            "url": "/proto-neon/cine/fin-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fin-lui",
+            "relatif": "cine/fin-lui.mp4",
+            "url": "/proto-neon/cine/fin-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fissure-elle",
+            "relatif": "cine/fissure-elle.mp4",
+            "url": "/proto-neon/cine/fissure-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "fissure-lui",
+            "relatif": "cine/fissure-lui.mp4",
+            "url": "/proto-neon/cine/fissure-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "neon-elle",
+            "relatif": "cine/neon-elle.mp4",
+            "url": "/proto-neon/cine/neon-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "neon-lui",
+            "relatif": "cine/neon-lui.mp4",
+            "url": "/proto-neon/cine/neon-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "pilote-elle",
+            "relatif": "cine/pilote-elle.mp4",
+            "url": "/proto-neon/cine/pilote-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "pilote-lui",
+            "relatif": "cine/pilote-lui.mp4",
+            "url": "/proto-neon/cine/pilote-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee-elle",
+            "relatif": "cine/plongee-elle.mp4",
+            "url": "/proto-neon/cine/plongee-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee-lui",
+            "relatif": "cine/plongee-lui.mp4",
+            "url": "/proto-neon/cine/plongee-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "plongee",
+            "relatif": "cine/plongee.mp4",
+            "url": "/proto-neon/cine/plongee.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "profondeur-elle",
+            "relatif": "cine/profondeur-elle.mp4",
+            "url": "/proto-neon/cine/profondeur-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "profondeur-lui",
+            "relatif": "cine/profondeur-lui.mp4",
+            "url": "/proto-neon/cine/profondeur-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement-elle",
+            "relatif": "cine/retournement-elle.mp4",
+            "url": "/proto-neon/cine/retournement-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement-lui",
+            "relatif": "cine/retournement-lui.mp4",
+            "url": "/proto-neon/cine/retournement-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retournement",
+            "relatif": "cine/retournement.mp4",
+            "url": "/proto-neon/cine/retournement.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "retrouvailles",
+            "relatif": "cine/retrouvailles.mp4",
+            "url": "/proto-neon/cine/retrouvailles.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil-elle",
+            "relatif": "cine/reveil-elle.mp4",
+            "url": "/proto-neon/cine/reveil-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil-lui",
+            "relatif": "cine/reveil-lui.mp4",
+            "url": "/proto-neon/cine/reveil-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "reveil",
+            "relatif": "cine/reveil.mp4",
+            "url": "/proto-neon/cine/reveil.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival-elle",
+            "relatif": "cine/rival-elle.mp4",
+            "url": "/proto-neon/cine/rival-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival-lui",
+            "relatif": "cine/rival-lui.mp4",
+            "url": "/proto-neon/cine/rival-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "rival",
+            "relatif": "cine/rival.mp4",
+            "url": "/proto-neon/cine/rival.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "teaser-3019",
+            "relatif": "cine/teaser-3019.mp4",
+            "url": "/proto-neon/cine/teaser-3019.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "victoire",
+            "relatif": "cine/victoire.mp4",
+            "url": "/proto-neon/cine/victoire.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "warp-elle",
+            "relatif": "cine/warp-elle.mp4",
+            "url": "/proto-neon/cine/warp-elle.mp4",
+            "existe": true
+          },
+          {
+            "type": "cine",
+            "nom": "warp-lui",
+            "relatif": "cine/warp-lui.mp4",
+            "url": "/proto-neon/cine/warp-lui.mp4",
+            "existe": true
+          },
+          {
+            "type": "musique",
+            "nom": "piste",
+            "relatif": "musique/piste.json",
+            "url": "/proto-neon/musique/piste.json",
+            "existe": true
+          }
+        ],
+        "manquants": []
+      }
+    }
+  },
+  "criteresSha256": {
+    "R-20-performance.mjs": "ac9e7426d31e04ac84750ba49a82e528d8155e3c5b78fafdb760bed2e9556ae5",
+    "R-30-rejouabilite.mjs": "f28155cfde61a1a82790c2bd5e04439071b372eee14bf086139b945ccceac2f0",
+    "raf-controle.mjs": "e3376464ba2e4f569ea1b81ae97064cd991210df1b666cd99e16a7af8c922d9e"
+  },
+  "versionsManuelles": {
+    "apres": "e98e0e9cfcf33bb6f11cdb878cc421796dda4d0ea6c893170937b319c07bf9bf",
+    "avant": "a165bfde6772c018fd477d287a78b0b075ad204524b4621abaa1d82dfb4fac3a"
+  },
+  "attente": {
+    "delaiMs": 30000,
+    "pollingMs": 100
+  },
+  "r30": "dessin exclu seulement entre modes ; altération et perte de kill refusées",
+  "ok": true
+}

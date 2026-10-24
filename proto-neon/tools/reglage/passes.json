@@ -1,0 +1,42 @@
+[
+  {
+    "numero": 1,
+    "config": "passe-1.json",
+    "avant": "baseline.json",
+    "apres": "passe-1-sortie.json",
+    "decision": "retenue comme candidate de travail",
+    "raison": "Choix au nombre de B tenues ; ce choix ne valide pas le lot et les régressions indicatives ou hors fourchette restent publiées."
+  },
+  {
+    "numero": 2,
+    "config": "passe-2.json",
+    "avant": "passe-1-sortie.json",
+    "apres": "passe-2-sortie.json",
+    "decision": "retenue comme candidate de travail",
+    "raison": "11 B tenues contre 9, avec deux nouvelles B bon (atteint 35 %, battu 10 %) et aucune B perdue. Expert et durées dieu restent hors cible."
+  },
+  {
+    "numero": 3,
+    "config": "passe-3.json",
+    "avant": "passe-2-sortie.json",
+    "apres": "passe-3-sortie.json",
+    "decision": "rejetée ; candidate 2 conservée",
+    "raison": "Aucune nouvelle B ; 8/20 au lieu de 11. Perd durée inerte, durée humaine et borne haute d’accès bon. Expert gagne 30 % (cible 40–70 %), LASSO humain encore à 11,86 % / 5,66 %. Pas de bénéfice compensant les régressions."
+  },
+  {
+    "numero": 4,
+    "config": "passe-4.json",
+    "avant": "passe-2-sortie.json",
+    "apres": "passe-4-sortie.json",
+    "decision": "non retenue pour livraison ; base expérimentale de la dernière passe",
+    "raison": "Nouvelle B expert : 45 % de victoires, sans vie intacte. B total 10/20 contre 11 pour la candidate 2 : humain dépasse 210 s et bon atteint 65 %, au-dessus de 60 %. La candidate 2 reste la meilleure au nombre de B, mais la nouvelle entrée expert justifie une dernière tentative de compromis."
+  },
+  {
+    "numero": 5,
+    "config": "passe-5.json",
+    "avant": "passe-4-sortie.json",
+    "apres": "passe-5-sortie.json",
+    "decision": "rejetée ; candidate 2 conservée pour contrôle final",
+    "raison": "Collecte des 160 essais terminée, avec un cas expert non fini à 540,1770833508882 s, aucun seuil abaissé ni durée finale imputée. Humain reste au-dessus de 210 s, maladroit sous 45 s. Les cibles expert sont à vérifier du fait du cas borné. Candidate 2 meilleure parmi les séries entièrement finies : 11/20 B. Arrêt obligatoire au plafond de cinq passes ; aucune sixième passe."
+  }
+]

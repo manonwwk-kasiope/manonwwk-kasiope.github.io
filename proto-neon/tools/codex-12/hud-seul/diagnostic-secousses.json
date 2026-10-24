@@ -1,0 +1,166 @@
+{
+  "dateParis": "18/10/2026 06:20:43",
+  "objet": "Cause des secousses : un seul cas supplémentaire avec préférence SECOUSSE=0, contrôle normal déjà en cache, aucun réglage livré",
+  "source": "apres.html.gz",
+  "statut": "terminé",
+  "graine": 6,
+  "temoin": "76769be408d9_65888399caf1_paysage_bon_-_6_-_-_540_20261017_-.json.gz",
+  "avant": {
+    "part": 0.16335038847830208,
+    "fin": {
+      "etat": "fin",
+      "t": 403.3779167128625,
+      "err": {
+        "count": 0,
+        "sigs": []
+      },
+      "score": 260130,
+      "vies": 2,
+      "cartes": {
+        "bouclier": 1,
+        "tourelles": 2,
+        "canon": 1,
+        "missiles": 2,
+        "arc": 2,
+        "puissance": 1
+      },
+      "prochain": {
+        "id": "styles",
+        "reste": 13,
+        "part": 0.9235294117647059,
+        "seuil": 350,
+        "prec": 180
+      },
+      "energie": 337
+    }
+  },
+  "apres": {
+    "part": 0,
+    "fin": {
+      "etat": "fin",
+      "t": 403.3779167128625,
+      "err": {
+        "count": 0,
+        "sigs": []
+      },
+      "score": 260130,
+      "vies": 2,
+      "cartes": {
+        "bouclier": 1,
+        "tourelles": 2,
+        "canon": 1,
+        "missiles": 2,
+        "arc": 2,
+        "puissance": 1
+      },
+      "prochain": {
+        "id": "styles",
+        "reste": 13,
+        "part": 0.9235294117647059,
+        "seuil": 350,
+        "prec": 180
+      },
+      "energie": 337
+    },
+    "erreurs": {
+      "err": 0,
+      "sigs": [],
+      "console": [],
+      "pageErreurs": [],
+      "zero": true
+    }
+  },
+  "metriquesComparees": [
+    "t",
+    "score",
+    "etat",
+    "vies"
+  ],
+  "metriquesIdentiques": true,
+  "trace": {
+    "appels": {
+      "boom": {
+        "onKill": 300,
+        "onCoupe": 16,
+        "autre": 298,
+        "majMort": 15
+      },
+      "shake": {
+        "autre": 42,
+        "onKill": 6,
+        "majMort": 1
+      },
+      "exemples": {
+        "boom:onKill": [
+          "Error",
+          "    at N.fx.<computed> [as boom] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at boom (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29254:83)",
+          "    at Object.onKill [as kill] (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29336:7)",
+          "    at Object.fn (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29532:51)",
+          "    at envoyer (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2225:20)",
+          "    at Object.emit (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2245:125)"
+        ],
+        "boom:onCoupe": [
+          "Error",
+          "    at N.fx.<computed> [as boom] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at boom (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29254:83)",
+          "    at Object.onCoupe [as coupe] (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29353:5)",
+          "    at Object.fn (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29532:51)",
+          "    at envoyer (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2225:20)",
+          "    at Object.emit (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2245:125)"
+        ],
+        "boom:autre": [
+          "Error",
+          "    at N.fx.<computed> [as boom] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19956:65",
+          "    at safe (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19719:18)",
+          "    at Object.boom (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19956:30)",
+          "    at updMissiles (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:25113:13)",
+          "    at Object.update (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:25390:32)"
+        ],
+        "shake:autre": [
+          "Error",
+          "    at N.fx.<computed> [as shake] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19963:67",
+          "    at safe (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19719:18)",
+          "    at Object.shake (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19963:31)",
+          "    at debutMort (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:28591:7)",
+          "    at Object.fn (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:28479:40)"
+        ],
+        "boom:majMort": [
+          "Error",
+          "    at N.fx.<computed> [as boom] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19956:65",
+          "    at safe (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19719:18)",
+          "    at Object.boom (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19956:30)",
+          "    at Object.desintegre (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:20927:32)",
+          "    at majMort (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:28596:7)"
+        ],
+        "shake:onKill": [
+          "Error",
+          "    at N.fx.<computed> [as shake] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at shake (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29256:60)",
+          "    at Object.onKill [as kill] (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29327:61)",
+          "    at Object.fn (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:29532:51)",
+          "    at envoyer (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2225:20)",
+          "    at Object.emit (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:2245:125)"
+        ],
+        "shake:majMort": [
+          "Error",
+          "    at N.fx.<computed> [as shake] (eval at evaluate (:291:30), <anonymous>:1:178)",
+          "    at http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19963:67",
+          "    at safe (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19719:18)",
+          "    at Object.shake (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:19963:31)",
+          "    at majMort (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:24539:9)",
+          "    at Object.update (http://127.0.0.1:51972/proto-neon/index.html?nodraw=1&journal=1:24586:34)"
+        ]
+      }
+    },
+    "option": {
+      "shake": 0,
+      "flash": true,
+      "reduced": false
+    }
+  },
+  "conclusion": "Ablation du réglage public SECOUSSE : baisse mesurée sans changement des métriques finales. Le chemin trauma de50-fx contribue causalement à cette occupation ; les appels observés et sa décroissance sans budget temporel sont documentés, sans attribuer une fraction à chaque émetteur."
+}

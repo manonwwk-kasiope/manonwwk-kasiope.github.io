@@ -1,0 +1,1087 @@
+{
+ "init": {
+  "blocs": 21,
+  "origDuree": 274.9734920634921,
+  "origSr": 44100
+ },
+ "jointures": {
+  "joints": [
+   {
+    "joint": 16.695,
+    "de": "nv-02.mp3",
+    "vers": "nv-03.mp3",
+    "lagAvantMs": -0.132,
+    "lagApresMs": -0.27,
+    "ecartMs": -0.138,
+    "rhoAvant": 0.874,
+    "rhoApres": 0.895,
+    "piDerive": 0.009796857833862305
+   },
+   {
+    "joint": 30.05,
+    "de": "nv-03.mp3",
+    "vers": "nv-04.mp3",
+    "lagAvantMs": -0.271,
+    "lagApresMs": -0.377,
+    "ecartMs": -0.106,
+    "rhoAvant": 0.878,
+    "rhoApres": 0.9,
+    "piDerive": 0.01381230354309082
+   },
+   {
+    "joint": 43.406,
+    "de": "nv-04.mp3",
+    "vers": "nv-05.mp3",
+    "lagAvantMs": -0.351,
+    "lagApresMs": -0.48,
+    "ecartMs": -0.129,
+    "rhoAvant": 0.898,
+    "rhoApres": 0.909,
+    "piDerive": 0.013620197772979736
+   },
+   {
+    "joint": 56.762,
+    "de": "nv-05.mp3",
+    "vers": "nv-06.mp3",
+    "lagAvantMs": -0.479,
+    "lagApresMs": -0.605,
+    "ecartMs": -0.127,
+    "rhoAvant": 0.86,
+    "rhoApres": 0.835,
+    "piDerive": 0.009186208248138428
+   },
+   {
+    "joint": 70.118,
+    "de": "nv-06.mp3",
+    "vers": "nv-07.mp3",
+    "lagAvantMs": -0.606,
+    "lagApresMs": -0.73,
+    "ecartMs": -0.124,
+    "rhoAvant": 0.88,
+    "rhoApres": 0.848,
+    "piDerive": 0.04651319980621338
+   },
+   {
+    "joint": 83.473,
+    "de": "nv-07.mp3",
+    "vers": "nv-08.mp3",
+    "lagAvantMs": -0.732,
+    "lagApresMs": -0.856,
+    "ecartMs": -0.124,
+    "rhoAvant": 0.869,
+    "rhoApres": 0.864,
+    "piDerive": 0.014107227325439453
+   },
+   {
+    "joint": 96.829,
+    "de": "nv-08.mp3",
+    "vers": "nv-09.mp3",
+    "lagAvantMs": -0.834,
+    "lagApresMs": -0.961,
+    "ecartMs": -0.127,
+    "rhoAvant": 0.892,
+    "rhoApres": 0.894,
+    "piDerive": 0.011781513690948486
+   },
+   {
+    "joint": 103.507,
+    "de": "nv-09.mp3",
+    "vers": "nv-06.mp3",
+    "lagAvantMs": -0.96,
+    "lagApresMs": -0.614,
+    "ecartMs": 0.347,
+    "rhoAvant": 0.891,
+    "rhoApres": 0.838,
+    "piDerive": 0.012198030948638916
+   }
+  ],
+  "seuilClic": 0.07217858540752402,
+  "derivePicOrigine": 0.5615565404295921,
+  "echelle": 0.12853306873125764,
+  "maxPiJoint": 0.04651319980621338,
+  "items": 9
+ },
+ "mixage": {
+  "paliers": {
+   "1": {
+    "telDB": -13.21,
+    "rmsDB": -10.11,
+    "creteDB": -1.11,
+    "centroide": 1006
+   },
+   "0.15": {
+    "telDB": -19.65,
+    "rmsDB": -16.83,
+    "creteDB": -2.97,
+    "centroide": 660
+   },
+   "0.4": {
+    "telDB": -16.17,
+    "rmsDB": -13.13,
+    "creteDB": -1.21,
+    "centroide": 871
+   },
+   "0.6": {
+    "telDB": -13.41,
+    "rmsDB": -10.2,
+    "creteDB": -1.12,
+    "centroide": 853
+   },
+   "0.8": {
+    "telDB": -13.31,
+    "rmsDB": -10.16,
+    "creteDB": -1.12,
+    "centroide": 861
+   }
+  },
+  "correlation": 0.891,
+  "fenetres": [
+   [
+    0.15,
+    -21.7
+   ],
+   [
+    0.15,
+    -19.4
+   ],
+   [
+    0.23,
+    -18.2
+   ],
+   [
+    0.38,
+    -16
+   ],
+   [
+    0.52,
+    -15.6
+   ],
+   [
+    0.52,
+    -17
+   ],
+   [
+    0.4,
+    -16.8
+   ],
+   [
+    0.57,
+    -14.2
+   ],
+   [
+    0.78,
+    -13.3
+   ],
+   [
+    0.92,
+    -12.7
+   ],
+   [
+    0.6,
+    -14.1
+   ],
+   [
+    0.47,
+    -15.3
+   ],
+   [
+    0.6,
+    -14.3
+   ],
+   [
+    0.73,
+    -15.1
+   ],
+   [
+    0.87,
+    -14.5
+   ],
+   [
+    0.98,
+    -13
+   ],
+   [
+    1,
+    -12.8
+   ]
+  ],
+  "crete": -1.1131268489878847,
+  "blocsJoues": [
+   "02",
+   "03",
+   "04",
+   "05",
+   "06",
+   "07",
+   "08",
+   "09",
+   "05",
+   "03",
+   "07",
+   "06",
+   "08",
+   "04"
+  ]
+ },
+ "sons": {
+  "tir": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -14.94,
+   "momDB": -24.5,
+   "momTelDB": -24.6,
+   "centroide": 860
+  },
+  "salve": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -14.89,
+   "momDB": -23.5,
+   "momTelDB": -23.5,
+   "centroide": 719
+  },
+  "boostOn": {
+   "dureeS": 0.22,
+   "part400": 56.8,
+   "creteDB": -14.57,
+   "momDB": -23.2,
+   "momTelDB": -26,
+   "centroide": 809
+  },
+  "boostOff": {
+   "dureeS": 0.15,
+   "part400": 75.79,
+   "creteDB": -13.09,
+   "momDB": -23.3,
+   "momTelDB": -24.3,
+   "centroide": 2005
+  },
+  "boostPanne": {
+   "dureeS": 0.05,
+   "part400": 53.6,
+   "creteDB": -4.23,
+   "momDB": -19.2,
+   "momTelDB": -19.4,
+   "centroide": 1399
+  },
+  "traversee": {
+   "dureeS": 0.24,
+   "part400": 99.31,
+   "creteDB": -16.05,
+   "momDB": -25.4,
+   "momTelDB": -25.4,
+   "centroide": 1354
+  },
+  "ralenti": {
+   "dureeS": 0.86,
+   "part400": 99.94,
+   "creteDB": -6.26,
+   "momDB": -13.8,
+   "momTelDB": -13.9,
+   "centroide": 632
+  },
+  "repli": {
+   "dureeS": 0.29,
+   "part400": 83.51,
+   "creteDB": -9.23,
+   "momDB": -16,
+   "momTelDB": -16.9,
+   "centroide": 461
+  },
+  "pouvoirPret": {
+   "dureeS": 0.13,
+   "part400": 100,
+   "creteDB": -16.47,
+   "momDB": -27.3,
+   "momTelDB": -27.3,
+   "centroide": 2539
+  },
+  "ultimePret": {
+   "dureeS": 1.38,
+   "part400": 99.96,
+   "creteDB": -11.32,
+   "momDB": -16.2,
+   "momTelDB": -16.2,
+   "centroide": 1065
+  },
+  "ultime": {
+   "dureeS": 3.5,
+   "part400": 27.41,
+   "creteDB": -1.61,
+   "momDB": -9.2,
+   "momTelDB": -15.4,
+   "centroide": 602
+  },
+  "lasso": {
+   "dureeS": 1.25,
+   "part400": 99.97,
+   "creteDB": -11.94,
+   "momDB": -17.8,
+   "momTelDB": -17.8,
+   "centroide": 999
+  },
+  "fermable": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -18.54,
+   "momDB": -30.7,
+   "momTelDB": -30.8,
+   "centroide": 1909
+  },
+  "vie": {
+   "dureeS": 1.39,
+   "part400": 99.98,
+   "creteDB": -10.52,
+   "momDB": -17,
+   "momTelDB": -17,
+   "centroide": 1130
+  },
+  "porte": {
+   "dureeS": 0.09,
+   "part400": 100,
+   "creteDB": -11.77,
+   "momDB": -19.4,
+   "momTelDB": -19.5,
+   "centroide": 892
+  },
+  "devore": {
+   "dureeS": 0.25,
+   "part400": 99.82,
+   "creteDB": -17.4,
+   "momDB": -24.7,
+   "momTelDB": -24.8,
+   "centroide": 1000
+  },
+  "impact": {
+   "dureeS": 0.05,
+   "part400": 45.34,
+   "creteDB": -7.75,
+   "momDB": -25,
+   "momTelDB": -26.1,
+   "centroide": 1203
+  },
+  "impactBoss": {
+   "dureeS": 0.14,
+   "part400": 72.72,
+   "creteDB": -7.67,
+   "momDB": -16,
+   "momTelDB": -18.7,
+   "centroide": 657
+  },
+  "ricochet": {
+   "dureeS": 0.06,
+   "part400": 100,
+   "creteDB": -13.91,
+   "momDB": -23.1,
+   "momTelDB": -23.2,
+   "centroide": 1532
+  },
+  "kill": {
+   "dureeS": 0.99,
+   "part400": 99.63,
+   "creteDB": -2.36,
+   "momDB": -9.9,
+   "momTelDB": -10.3,
+   "centroide": 657
+  },
+  "bigkill": {
+   "dureeS": 3.5,
+   "part400": 27.83,
+   "creteDB": -1.16,
+   "momDB": -6.5,
+   "momTelDB": -13.1,
+   "centroide": 502
+  },
+  "crash": {
+   "dureeS": 0.3,
+   "part400": 39.9,
+   "creteDB": -1.49,
+   "momDB": -10,
+   "momTelDB": -14.9,
+   "centroide": 860
+  },
+  "explosion": {
+   "dureeS": 3.5,
+   "part400": 26.56,
+   "creteDB": -1.59,
+   "momDB": -9,
+   "momTelDB": -15.9,
+   "centroide": 513
+  },
+  "colosseMort": {
+   "dureeS": 3.5,
+   "part400": 26.95,
+   "creteDB": -1.14,
+   "momDB": -6.1,
+   "momTelDB": -13.1,
+   "centroide": 518
+  },
+  "tirEnnemi": {
+   "dureeS": 0.1,
+   "part400": 97.84,
+   "creteDB": -13.77,
+   "momDB": -23.1,
+   "momTelDB": -23.9,
+   "centroide": 806
+  },
+  "arme": {
+   "dureeS": 0.43,
+   "part400": 83.26,
+   "creteDB": -13.53,
+   "momDB": -19.5,
+   "momTelDB": -19.6,
+   "centroide": 622
+  },
+  "portail": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -12.81,
+   "momDB": -26.1,
+   "momTelDB": -26.2,
+   "centroide": 1086
+  },
+  "traqueur": {
+   "dureeS": 0.54,
+   "part400": 100,
+   "creteDB": -16.26,
+   "momDB": -25.2,
+   "momTelDB": -25.3,
+   "centroide": 1027
+  },
+  "convoi": {
+   "dureeS": 0.4,
+   "part400": 68.41,
+   "creteDB": -11.23,
+   "momDB": -20.3,
+   "momTelDB": -21.8,
+   "centroide": 585
+  },
+  "travelling": {
+   "dureeS": 0.74,
+   "part400": 38.26,
+   "creteDB": -7.98,
+   "momDB": -17.2,
+   "momTelDB": -20.9,
+   "centroide": 688
+  },
+  "warning": {
+   "dureeS": 0.65,
+   "part400": 99.94,
+   "creteDB": -16.17,
+   "momDB": -22.5,
+   "momTelDB": -22.5,
+   "centroide": 1568
+  },
+  "butin": {
+   "dureeS": 0.09,
+   "part400": 100,
+   "creteDB": -11.46,
+   "momDB": -19.5,
+   "momTelDB": -19.6,
+   "centroide": 607
+  },
+  "noyau": {
+   "dureeS": 0.91,
+   "part400": 99.99,
+   "creteDB": -12.8,
+   "momDB": -19.8,
+   "momTelDB": -19.8,
+   "centroide": 1014
+  },
+  "pastille": {
+   "dureeS": 0.76,
+   "part400": 100,
+   "creteDB": -7.02,
+   "momDB": -14.5,
+   "momTelDB": -14.5,
+   "centroide": 974
+  },
+  "coupe": {
+   "dureeS": 0.2,
+   "part400": 36.63,
+   "creteDB": -1.24,
+   "momDB": -7.3,
+   "momTelDB": -10.3,
+   "centroide": 488
+  },
+  "mort": {
+   "dureeS": 3.26,
+   "part400": 33.11,
+   "creteDB": -1.11,
+   "momDB": -5.8,
+   "momTelDB": -9.5,
+   "centroide": 465
+  },
+  "gameover": {
+   "dureeS": 2.22,
+   "part400": 46.04,
+   "creteDB": -6.7,
+   "momDB": -14.6,
+   "momTelDB": -14.7,
+   "centroide": 492
+  },
+  "battement": {
+   "dureeS": 0.27,
+   "part400": 30.3,
+   "creteDB": -2.43,
+   "momDB": -11.8,
+   "momTelDB": -15.8,
+   "centroide": 2066
+  },
+  "palier": {
+   "dureeS": 0.27,
+   "part400": 99.89,
+   "creteDB": -8.64,
+   "momDB": -15.2,
+   "momTelDB": -15.3,
+   "centroide": 1004
+  },
+  "levelup": {
+   "dureeS": 1.51,
+   "part400": 99.98,
+   "creteDB": -10.67,
+   "momDB": -17.1,
+   "momTelDB": -17.2,
+   "centroide": 1028
+  },
+  "carte": {
+   "dureeS": 1.27,
+   "part400": 99.71,
+   "creteDB": -11.66,
+   "momDB": -17.1,
+   "momTelDB": -17.1,
+   "centroide": 1201
+  },
+  "choix": {
+   "dureeS": 0.09,
+   "part400": 100,
+   "creteDB": -10.41,
+   "momDB": -19.2,
+   "momTelDB": -19.2,
+   "centroide": 685
+  },
+  "vague": {
+   "dureeS": 0.48,
+   "part400": 99.96,
+   "creteDB": -9.25,
+   "momDB": -15.6,
+   "momTelDB": -15.6,
+   "centroide": 885
+  },
+  "defi": {
+   "dureeS": 2.09,
+   "part400": 99.97,
+   "creteDB": -5.55,
+   "momDB": -11.8,
+   "momTelDB": -11.8,
+   "centroide": 1064
+  },
+  "defiRate": {
+   "dureeS": 0.39,
+   "part400": 99.96,
+   "creteDB": -8.72,
+   "momDB": -14.4,
+   "momTelDB": -14.8,
+   "centroide": 569
+  },
+  "record": {
+   "dureeS": 3.5,
+   "part400": 99.97,
+   "creteDB": -6.68,
+   "momDB": -14.6,
+   "momTelDB": -14.6,
+   "centroide": 1422
+  },
+  "bip": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -20.56,
+   "momDB": -38,
+   "momTelDB": -38,
+   "centroide": 3455
+  },
+  "clic": {
+   "dureeS": 0.05,
+   "part400": 100,
+   "creteDB": -16.61,
+   "momDB": -30.3,
+   "momTelDB": -30.4,
+   "centroide": 814
+  },
+  "degat": {
+   "dureeS": 1.97,
+   "part400": 25.22,
+   "creteDB": -1.16,
+   "momDB": -6.9,
+   "momTelDB": -11.1,
+   "centroide": 413
+  },
+  "intro": {
+   "dureeS": 3.5,
+   "part400": 33.23,
+   "creteDB": -1.16,
+   "momDB": -23.8,
+   "momTelDB": -33.4,
+   "centroide": 731
+  },
+  "__correlationTirEnnemi": 0.122
+ },
+ "niveaux": {
+  "contre": {
+   "1": {
+    "kill": -5.07,
+    "kill_momTel": 4.44,
+    "coupe": -4.58,
+    "coupe_momTel": 4.47,
+    "mort": -3.75,
+    "mort_momTel": 5.23,
+    "tir": -20.26,
+    "tir_momTel": -9.85,
+    "bigkill": -6.08,
+    "bigkill_momTel": 1.9
+   },
+   "0.15": {
+    "kill": 2.12,
+    "kill_momTel": 11.35,
+    "coupe": 2.62,
+    "coupe_momTel": 11.39,
+    "mort": 2.96,
+    "mort_momTel": 12.15,
+    "tir": -13.07,
+    "tir_momTel": -2.93,
+    "bigkill": 0.64,
+    "bigkill_momTel": 8.81
+   },
+   "0.6": {
+    "kill": -4.69,
+    "kill_momTel": 4.72,
+    "coupe": -4.19,
+    "coupe_momTel": 4.76,
+    "mort": -3.84,
+    "mort_momTel": 5.52,
+    "tir": -19.88,
+    "tir_momTel": -9.56,
+    "bigkill": -6.17,
+    "bigkill_momTel": 2.19
+   }
+  },
+  "tirSousKill": 14.64,
+  "esquive": {
+   "profondeur": 0.293,
+   "relachementMs": 110,
+   "courbe": [
+    [
+     -0.1,
+     1
+    ],
+    [
+     -0.09,
+     1
+    ],
+    [
+     -0.08,
+     1
+    ],
+    [
+     -0.07,
+     1
+    ],
+    [
+     -0.06,
+     1
+    ],
+    [
+     -0.05,
+     1
+    ],
+    [
+     -0.04,
+     1
+    ],
+    [
+     -0.03,
+     1
+    ],
+    [
+     -0.02,
+     1
+    ],
+    [
+     -0.01,
+     1
+    ],
+    [
+     0,
+     0.896
+    ],
+    [
+     0.01,
+     0.779
+    ],
+    [
+     0.02,
+     0.749
+    ],
+    [
+     0.03,
+     0.708
+    ],
+    [
+     0.04,
+     0.707
+    ],
+    [
+     0.05,
+     0.744
+    ],
+    [
+     0.06,
+     0.799
+    ],
+    [
+     0.07,
+     0.841
+    ],
+    [
+     0.08,
+     0.879
+    ],
+    [
+     0.09,
+     0.905
+    ],
+    [
+     0.1,
+     0.925
+    ],
+    [
+     0.11,
+     0.941
+    ],
+    [
+     0.12,
+     0.957
+    ],
+    [
+     0.13,
+     0.967
+    ],
+    [
+     0.14,
+     0.974
+    ],
+    [
+     0.15,
+     0.979
+    ],
+    [
+     0.16,
+     0.984
+    ],
+    [
+     0.17,
+     0.987
+    ],
+    [
+     0.18,
+     0.99
+    ],
+    [
+     0.19,
+     0.992
+    ],
+    [
+     0.2,
+     0.994
+    ],
+    [
+     0.21,
+     0.995
+    ],
+    [
+     0.22,
+     0.996
+    ],
+    [
+     0.23,
+     0.997
+    ],
+    [
+     0.24,
+     0.998
+    ],
+    [
+     0.25,
+     0.998
+    ],
+    [
+     0.26,
+     0.999
+    ],
+    [
+     0.27,
+     0.999
+    ],
+    [
+     0.28,
+     0.999
+    ],
+    [
+     0.29,
+     0.999
+    ]
+   ]
+  },
+  "kills": {
+   "demandes": 40,
+   "joues": 40
+  }
+ },
+ "charge": {
+  "noeudsParSeconde": 55.6,
+  "noeudsTotal": 3561,
+  "creteDB": -1.11,
+  "echantillonsEcretes": 0,
+  "demandes": {
+   "salve": 960,
+   "tir": 420,
+   "kill": 180,
+   "impact": 359,
+   "butin": 239,
+   "tirEnnemi": 298,
+   "bigkill": 7
+  },
+  "joues": {
+   "salve": 41,
+   "tir": 231,
+   "kill": 180,
+   "impact": 67,
+   "butin": 58,
+   "tirEnnemi": 9,
+   "bigkill": 7
+  },
+  "fusionnes": 41,
+  "plafonnes": 0,
+  "budget": 1829,
+  "rmsTel": -13.6
+ },
+ "grille": {
+  "couches": [
+   {
+    "l": "perc",
+    "on": true,
+    "t": 33.389,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": true,
+    "t": 38.398,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": false,
+    "t": 50.084,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": true,
+    "t": 71.787,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": false,
+    "t": 80.134,
+    "ecartMs": 0
+   },
+   {
+    "l": "perc",
+    "on": false,
+    "t": 83.473,
+    "ecartMs": 0
+   },
+   {
+    "l": "perc",
+    "on": true,
+    "t": 101.837,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": true,
+    "t": 106.846,
+    "ecartMs": 0
+   },
+   {
+    "l": "inv",
+    "on": true,
+    "t": 121.871,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": false,
+    "t": 125.21,
+    "ecartMs": 0
+   },
+   {
+    "l": "inv",
+    "on": false,
+    "t": 130.218,
+    "ecartMs": 0
+   },
+   {
+    "l": "heart",
+    "on": true,
+    "t": 138.566,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": true,
+    "t": 143.574,
+    "ecartMs": 0
+   },
+   {
+    "l": "spark",
+    "on": false,
+    "t": 156.93,
+    "ecartMs": 0
+   },
+   {
+    "l": "perc",
+    "on": false,
+    "t": 165.277,
+    "ecartMs": 0
+   },
+   {
+    "l": "heart",
+    "on": false,
+    "t": 165.277,
+    "ecartMs": 0
+   }
+  ],
+  "accents": [
+   {
+    "nom": "stinger",
+    "t": 31.72,
+    "ecartBarreMs": 0,
+    "ecartTempsMs": 0
+   },
+   {
+    "nom": "drop",
+    "t": 51.753,
+    "ecartBarreMs": 0,
+    "ecartTempsMs": 0
+   },
+   {
+    "nom": "plongee",
+    "t": 80.552,
+    "ecartBarreMs": 417.37,
+    "ecartTempsMs": 0
+   },
+   {
+    "nom": "vague",
+    "t": 101.837,
+    "ecartBarreMs": 0,
+    "ecartTempsMs": 0
+   },
+   {
+    "nom": "stinger",
+    "t": 141.905,
+    "ecartBarreMs": 0,
+    "ecartTempsMs": 0
+   },
+   {
+    "nom": "drop",
+    "t": 161.938,
+    "ecartBarreMs": 0,
+    "ecartTempsMs": 0
+   }
+  ],
+  "couchesDansLes10ms": 16,
+  "couchesTotal": 16,
+  "accentsDansLes10ms": 6,
+  "accentsTotal": 6,
+  "mesures": 122,
+  "consecutivesMax": 1,
+  "blocs": [
+   "02",
+   "03",
+   "04",
+   "05",
+   "06",
+   "07",
+   "08",
+   "09",
+   "05",
+   "07",
+   "08",
+   "02",
+   "03",
+   "05"
+  ]
+ },
+ "mort": {
+  "blocMort": "03",
+  "blocReprise": "04",
+  "repriseT": 25.042,
+  "premierBlocDeLaFamille": "02",
+  "niveauApresCoupure": -35.9,
+  "niveauAvant": -10.2,
+  "niveauReprise": -10
+ },
+ "repetition": {
+  "paires": 237705,
+  "distanceMin": 0.0478,
+  "fenetres": [
+   59.75,
+   106.5
+  ],
+  "souslepourcent": 0,
+  "mesures": 122,
+  "consecutivesMax": 1,
+  "blocs": [
+   "02",
+   "03",
+   "04",
+   "05",
+   "06",
+   "07",
+   "08",
+   "09",
+   "06",
+   "02",
+   "04",
+   "03",
+   "06",
+   "08"
+  ]
+ },
+ "repli": {
+  "1": {
+   "rmsDB": -11.14,
+   "telDB": -11.6,
+   "centroide": 876,
+   "creteDB": -1.11
+  },
+  "0.06": {
+   "rmsDB": -18.33,
+   "telDB": -18.8,
+   "centroide": 916,
+   "creteDB": -1.11
+  },
+  "0.5": {
+   "rmsDB": -14.3,
+   "telDB": -14.8,
+   "centroide": 877,
+   "creteDB": -1.11
+  },
+  "premierSon": 0.00015873015873015873,
+  "mesure": 1.66947
+ },
+ "erreurs": []
+}

@@ -1,0 +1,314 @@
+{
+  "etat": {
+    "jeu": "aventure",
+    "etape": "1982",
+    "film": {
+      "actif": false,
+      "nom": "fissure-elle",
+      "t": 0.35,
+      "duree": 4.5,
+      "legende": "LA GRILLE SE BRISE",
+      "typed": 0,
+      "clip": false,
+      "video": false,
+      "videoVue": false,
+      "panneau": true,
+      "repli": false,
+      "saute": true,
+      "carte": null,
+      "n": 2,
+      "journal": [
+        {
+          "e": "film fissure-elle panneau",
+          "t": 0
+        },
+        {
+          "e": "saut fissure-elle",
+          "t": 0.35
+        }
+      ]
+    },
+    "intro": {
+      "mode": null,
+      "etape": null,
+      "t": 0,
+      "u": 0,
+      "guard": true,
+      "armed": false,
+      "typed": 0,
+      "busy": false,
+      "phase": "play"
+    },
+    "aventure": {
+      "enCours": true,
+      "actif": true,
+      "etape": "1982",
+      "type": "epoque",
+      "i": 4,
+      "qui": "elle",
+      "deux": false,
+      "cible": null,
+      "t": 15.77,
+      "vus": [
+        "connexion",
+        "fissure"
+      ],
+      "joues": [
+        "connexion-elle",
+        "fissure-elle"
+      ],
+      "film": {
+        "actif": false,
+        "nom": "fissure-elle",
+        "t": 0.35,
+        "duree": 4.5,
+        "legende": "LA GRILLE SE BRISE",
+        "typed": 0,
+        "clip": false,
+        "video": false,
+        "videoVue": false,
+        "panneau": true,
+        "repli": false,
+        "saute": true,
+        "carte": null,
+        "n": 2,
+        "journal": [
+          {
+            "e": "film fissure-elle panneau",
+            "t": 0
+          },
+          {
+            "e": "saut fissure-elle",
+            "t": 0.35
+          }
+        ]
+      },
+      "journal": [
+        {
+          "e": "début",
+          "t": 0
+        },
+        {
+          "e": "choix",
+          "t": 0
+        },
+        {
+          "e": "choisi elle",
+          "t": 1.12
+        },
+        {
+          "e": "film connexion connexion-elle",
+          "t": 1.12
+        },
+        {
+          "e": "époque 1976",
+          "t": 1.48
+        },
+        {
+          "e": "film fissure fissure-elle",
+          "t": 14.9
+        },
+        {
+          "e": "époque 1982",
+          "t": 15.25
+        }
+      ]
+    },
+    "err": {
+      "count": 0,
+      "sigs": {}
+    }
+  },
+  "W": 422,
+  "H": 195,
+  "px": 2,
+  "pixels": 82290,
+  "histogramme": {
+    "0": 77890,
+    "5": 156,
+    "7": 2512,
+    "10": 1732
+  },
+  "empreinte": 2111016161,
+  "difference": 0,
+  "musique": {
+    "bar": 3,
+    "step": 4,
+    "bpm": 143.759,
+    "tension": 0.12,
+    "key": 0,
+    "over": false,
+    "layers": 3,
+    "perc": false,
+    "spark": false,
+    "inv": false,
+    "heart": false,
+    "grid": 1,
+    "fill": "tom",
+    "brk": "none",
+    "muffle": 0,
+    "gate": 1,
+    "section": "titre",
+    "mode": "off",
+    "state": "running",
+    "muted": false,
+    "sleeping": false,
+    "running": false
+  },
+  "terminal": {
+    "phase": "fini",
+    "t": 13.42,
+    "menace": 5,
+    "manges": 0,
+    "morts": 2,
+    "score": 0,
+    "len": 0,
+    "dir": 0,
+    "tete": null,
+    "food": [
+      1,
+      6
+    ],
+    "cols": 32,
+    "rows": 13,
+    "cell": 13,
+    "tempo": 128,
+    "audio": true,
+    "journal": [
+      {
+        "e": "message > RUN SNAKE.BAS",
+        "t": 0
+      },
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "jeu",
+        "t": 1.61
+      },
+      {
+        "e": "mort 1",
+        "t": 5.2
+      },
+      {
+        "e": "message GAME OVER",
+        "t": 5.2
+      },
+      {
+        "e": "mort 2",
+        "t": 9.7
+      },
+      {
+        "e": "message NON. PAS ENCORE.",
+        "t": 9.7
+      },
+      {
+        "e": "message LA GRILLE NE TIENT PLUS",
+        "t": 10.61
+      },
+      {
+        "e": "fissure morts",
+        "t": 10.61
+      },
+      {
+        "e": "fin",
+        "t": 13.42
+      }
+    ]
+  },
+  "arcade": {
+    "phase": "boot",
+    "t": 0.53,
+    "pt": 0.53,
+    "vt": 0,
+    "section": 0,
+    "tempo": 132,
+    "score": 0,
+    "morts": 0,
+    "nseg": 6,
+    "tete": [
+      63,
+      87.83166666666662
+    ],
+    "cap": -1.5707963267948966,
+    "vitesse": 46,
+    "invul": false,
+    "arene": {
+      "x0": 1,
+      "y0": 10,
+      "x1": 210,
+      "y1": 95
+    },
+    "K": 2,
+    "food": null,
+    "dore": null,
+    "frenesie": false,
+    "soucoupe": null,
+    "sens": 1,
+    "formation": null,
+    "fleches": [],
+    "bombes": [],
+    "compte": {
+      "tues": 0,
+      "mange": 0,
+      "coupes": 0,
+      "grosses": 0,
+      "tirs": 0,
+      "formations": 0
+    },
+    "nouveautes": [],
+    "premiereExplosion": -1,
+    "audio": true,
+    "musique": {
+      "section": 0,
+      "pas": 2,
+      "notes": {
+        "pulse": 1,
+        "tri": 2,
+        "bruit": 1
+      }
+    },
+    "journal": [
+      {
+        "e": "debut",
+        "t": 0
+      },
+      {
+        "e": "message 1982",
+        "t": 0.4
+      }
+    ]
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0,
+      "image": 31,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 123,
+      "t": 0,
+      "image": 63,
+      "type": "etat",
+      "d": {
+        "de": "titre",
+        "a": "aventure"
+      }
+    }
+  ]
+}

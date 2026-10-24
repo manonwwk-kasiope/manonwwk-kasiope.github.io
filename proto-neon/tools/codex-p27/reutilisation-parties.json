@@ -1,0 +1,115 @@
+{
+  "dateParis": "18/10/2026 05:05:31",
+  "sourcesMesureesSha256": "1615be36e0d43a28dfd12fd15693a59405d5a16235d13c0a02f8f194fab8c71c",
+  "sourcesFinalesSha256": "4348c59994c7f8ce8e538a34fdb1de25308bc5f082d9009e12907a432c047b15",
+  "changements": [
+    {
+      "fichier": "72-serpents.js",
+      "avant": "if (partie && N.ennemis.counts().regular >= plafond) return;",
+      "apres": "if (partie && (N.ennemis.counts().regular >= plafond || N.ennemis.count() >= N.R.secteurs[0].plafondDur.ennemis)) return;",
+      "portee": "Branche partie uniquement. Aucun appel à pasPartie dans 76 non raccordé ; sans effet dans les 80 parties."
+    }
+  ],
+  "partiesIdentiques": 80,
+  "calibration": 10,
+  "bornes": {
+    "conforme": true,
+    "cas": [
+      {
+        "mode": "plafond",
+        "types": [],
+        "total": 0,
+        "file": [
+          {
+            "t": 9,
+            "type": "tique"
+          },
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      },
+      {
+        "mode": "dur",
+        "types": [],
+        "total": 40,
+        "file": [
+          {
+            "t": 9,
+            "type": "tique"
+          },
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      },
+      {
+        "mode": "inversion",
+        "types": [],
+        "total": 0,
+        "file": [
+          {
+            "t": 9,
+            "type": "tique"
+          },
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      },
+      {
+        "mode": "respiration",
+        "types": [],
+        "total": 0,
+        "file": [
+          {
+            "t": 9,
+            "type": "tique"
+          },
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      },
+      {
+        "mode": "horsJeu",
+        "types": [],
+        "total": 0,
+        "file": [
+          {
+            "t": 9,
+            "type": "tique"
+          },
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      },
+      {
+        "mode": "reprise",
+        "types": [
+          "tique"
+        ],
+        "total": 1,
+        "file": [
+          {
+            "t": 15,
+            "type": "tique"
+          }
+        ],
+        "err": 0
+      }
+    ]
+  },
+  "portee": "Reçus des 80 parties réutilisés après le seul garde-fou partie non raccordée. Les bornes nouvelles sont réellement exécutées ; les vagues raccordées sont rejouées."
+}

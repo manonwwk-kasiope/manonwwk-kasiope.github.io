@@ -1,0 +1,64 @@
+{
+  "avertissement": "Construction mathematique, PAS des parties jouees. Prouve la non-contradiction des cibles numeriques seules, PAS leur realisabilite par le jeu.",
+  "graines": 50,
+  "inerte": {
+    "premiereMort": 7,
+    "fin": 30
+  },
+  "tourneur": {
+    "fin": 60
+  },
+  "maladroit": {
+    "fin": 90,
+    "atteint": 0
+  },
+  "kamikaze": {
+    "fin": 90,
+    "atteint": 0,
+    "victoires": 0
+  },
+  "humain": {
+    "defaitesAvantCyclope": 40,
+    "tempsDefaitesAvantCyclope": 150,
+    "defaitesCyclope": 5,
+    "tempsDefaitesCyclope": 300,
+    "victoires": 5,
+    "tempsVictoires": 350,
+    "lassoCourt": {
+      "reussis": 50,
+      "tentatives": 100
+    },
+    "lassoLong": {
+      "reussis": 40,
+      "tentatives": 100
+    }
+  },
+  "bon": {
+    "atteint": 25,
+    "victoires": 10,
+    "perdVieAvantCyclope": 35
+  },
+  "expert": {
+    "atteint": 45,
+    "victoires": 30,
+    "perdVie": 45
+  },
+  "dieu": {
+    "tousGagnent": true,
+    "temps": 350,
+    "combat": 70,
+    "horsCombat": 280,
+    "erreurs": 0
+  },
+  "rythme": {
+    "pics": [
+      6,
+      10,
+      14,
+      18,
+      22
+    ],
+    "respiration": 8,
+    "tirsV1": 0
+  }
+}

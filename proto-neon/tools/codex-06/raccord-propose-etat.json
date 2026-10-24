@@ -1,0 +1,1070 @@
+{
+  "stage": "raccord-propose",
+  "revisionBase": "3da78d632aeb0a353565143b03ad3130db8758ab",
+  "mode": "Node VM sans navigateur ni DOM, modules réels, tampon réel",
+  "dateParis": "18/10/2026 00:34:24",
+  "profils": [
+    {
+      "nom": "iphone-paysage",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "grappe": {
+        "pv": [
+          0,
+          -5,
+          -5,
+          20,
+          20
+        ],
+        "morts": 3,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 2,
+              "type": "fleche",
+              "x": 540,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 1
+              },
+              "distTete": 140,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 3,
+              "type": "fleche",
+              "x": 560,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 2
+              },
+              "distTete": 160,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 422,
+          "h": 195,
+          "hist": [
+            0,
+            29115,
+            9418,
+            4080,
+            2675,
+            40,
+            19,
+            930,
+            140,
+            211,
+            461,
+            282,
+            469,
+            8481,
+            6095,
+            19874
+          ],
+          "invalides": 0,
+          "hash": 2250532146
+        }
+      },
+      "eperon": {
+        "pv": 0,
+        "ennemi": "mort",
+        "joueuse": "vivant",
+        "reserve": 67.49999999999972,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 426,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "eperon",
+                "id": null
+              },
+              "distTete": 6.559537860002763,
+              "gen": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": true,
+          "pv": 0,
+          "journal": [
+            {
+              "pas": 0,
+              "t": 0,
+              "image": 0,
+              "type": "kill",
+              "d": {
+                "id": 1,
+                "type": "fleche",
+                "x": 400.6322298357432,
+                "y": 240,
+                "elite": false,
+                "boss": false,
+                "base": 50,
+                "src": {
+                  "genre": "arme",
+                  "type": "eperon",
+                  "id": null
+                },
+                "distTete": 0,
+                "gen": 0
+              }
+            }
+          ]
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29977,
+              9397,
+              4137,
+              2660,
+              146,
+              46,
+              938,
+              221,
+              70,
+              133,
+              286,
+              483,
+              8635,
+              6210,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 3587980519
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 203.66666666666873,
+          "pvMax": 240,
+          "degats": 36.33333333333127,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29975,
+              9397,
+              4138,
+              2660,
+              4,
+              34,
+              938,
+              221,
+              73,
+              133,
+              286,
+              735,
+              8637,
+              6108,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 4281391993
+          },
+          "pixelsAmbreArsenal": 58
+        },
+        {
+          "pv": 195.6666666666692,
+          "pvMax": 240,
+          "degats": 44.33333333333081,
+          "pixels": {
+            "w": 422,
+            "h": 195,
+            "hist": [
+              0,
+              29969,
+              9397,
+              4138,
+              2659,
+              4,
+              33,
+              938,
+              221,
+              86,
+              133,
+              286,
+              735,
+              8637,
+              6103,
+              18951
+            ],
+            "invalides": 0,
+            "hash": 577320852
+          },
+          "pixelsAmbreArsenal": 71
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 0,
+        "len": 16,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          }
+        ],
+        "raccordActif": true,
+        "murProtege": false,
+        "expire": true
+      },
+      "stress": {
+        "morts": 128,
+        "maxKillsPas": 24,
+        "maxFile": 64,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 64,
+          "braises": 0
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1130,
+          "len": 8,
+          "kills": 21,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1700,
+          "len": 9,
+          "kills": 24,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 18.9583333333329,
+          "score": 170,
+          "len": 8,
+          "kills": 3,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [],
+      "erreursConsole": []
+    },
+    {
+      "nom": "iphone-portrait",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "grappe": {
+        "pv": [
+          0,
+          -5,
+          -5,
+          20,
+          20
+        ],
+        "morts": 3,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 2,
+              "type": "fleche",
+              "x": 540,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 1
+              },
+              "distTete": 140,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 3,
+              "type": "fleche",
+              "x": 560,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 2
+              },
+              "distTete": 160,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 195,
+          "h": 422,
+          "hist": [
+            515,
+            36136,
+            5598,
+            4385,
+            2961,
+            56,
+            36,
+            0,
+            2,
+            352,
+            458,
+            427,
+            448,
+            6001,
+            2434,
+            22481
+          ],
+          "invalides": 0,
+          "hash": 3238467701
+        }
+      },
+      "eperon": {
+        "pv": 0,
+        "ennemi": "mort",
+        "joueuse": "vivant",
+        "reserve": 67.49999999999972,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 426,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "eperon",
+                "id": null
+              },
+              "distTete": 6.559537860002763,
+              "gen": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": true,
+          "pv": 0,
+          "journal": [
+            {
+              "pas": 0,
+              "t": 0,
+              "image": 0,
+              "type": "kill",
+              "d": {
+                "id": 1,
+                "type": "fleche",
+                "x": 400.6322298357432,
+                "y": 240,
+                "elite": false,
+                "boss": false,
+                "base": 50,
+                "src": {
+                  "genre": "arme",
+                  "type": "eperon",
+                  "id": null
+                },
+                "distTete": 0,
+                "gen": 0
+              }
+            }
+          ]
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 203.66666666666873,
+          "pvMax": 240,
+          "degats": 36.33333333333127,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 49
+        },
+        {
+          "pv": 195.6666666666692,
+          "pvMax": 240,
+          "degats": 44.33333333333081,
+          "pixels": {
+            "w": 195,
+            "h": 422,
+            "hist": [
+              518,
+              36957,
+              5539,
+              4399,
+              2924,
+              4,
+              0,
+              938,
+              176,
+              207,
+              133,
+              412,
+              441,
+              5911,
+              2345,
+              21386
+            ],
+            "invalides": 0,
+            "hash": 173211831
+          },
+          "pixelsAmbreArsenal": 49
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 0,
+        "len": 16,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          }
+        ],
+        "raccordActif": true,
+        "murProtege": false,
+        "expire": true
+      },
+      "stress": {
+        "morts": 128,
+        "maxKillsPas": 24,
+        "maxFile": 64,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 64,
+          "braises": 0
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "fin",
+          "tJeu": 12.016666666666625,
+          "score": 110,
+          "len": 9,
+          "kills": 2,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "fin",
+          "tJeu": 19.674999999999525,
+          "score": 50,
+          "len": 8,
+          "kills": 1,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 21.608333333332748,
+          "score": 940,
+          "len": 11,
+          "kills": 7,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [],
+      "erreursConsole": []
+    },
+    {
+      "nom": "bureau",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "grappe": {
+        "pv": [
+          0,
+          -5,
+          -5,
+          20,
+          20
+        ],
+        "morts": 3,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 520,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": -1
+              },
+              "distTete": 120,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 2,
+              "type": "fleche",
+              "x": 540,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 1
+              },
+              "distTete": 140,
+              "gen": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 3,
+              "type": "fleche",
+              "x": 560,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "grappe",
+                "id": 2
+              },
+              "distTete": 160,
+              "gen": 0
+            }
+          }
+        ],
+        "pixels": {
+          "w": 360,
+          "h": 225,
+          "hist": [
+            0,
+            28968,
+            8415,
+            4018,
+            2320,
+            8,
+            0,
+            930,
+            140,
+            215,
+            461,
+            217,
+            448,
+            9691,
+            5461,
+            19708
+          ],
+          "invalides": 0,
+          "hash": 1296949818
+        }
+      },
+      "eperon": {
+        "pv": 0,
+        "ennemi": "mort",
+        "joueuse": "vivant",
+        "reserve": 67.49999999999972,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 426,
+              "y": 240,
+              "elite": false,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "eperon",
+                "id": null
+              },
+              "distTete": 6.559537860002763,
+              "gen": 0
+            }
+          }
+        ],
+        "raccord": {
+          "resultat": true,
+          "pv": 0,
+          "journal": [
+            {
+              "pas": 0,
+              "t": 0,
+              "image": 0,
+              "type": "kill",
+              "d": {
+                "id": 1,
+                "type": "fleche",
+                "x": 400.6322298357432,
+                "y": 240,
+                "elite": false,
+                "boss": false,
+                "base": 50,
+                "src": {
+                  "genre": "arme",
+                  "type": "eperon",
+                  "id": null
+                },
+                "distTete": 0,
+                "gen": 0
+              }
+            }
+          ]
+        }
+      },
+      "braise": [
+        {
+          "pv": 240,
+          "pvMax": 240,
+          "degats": 0,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29817,
+              8399,
+              4075,
+              2312,
+              146,
+              46,
+              903,
+              181,
+              74,
+              133,
+              235,
+              462,
+              9917,
+              5454,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 3572980516
+          },
+          "pixelsAmbreArsenal": 0
+        },
+        {
+          "pv": 203.66666666666873,
+          "pvMax": 240,
+          "degats": 36.33333333333127,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29818,
+              8399,
+              4076,
+              2312,
+              4,
+              34,
+              903,
+              181,
+              77,
+              133,
+              235,
+              714,
+              9919,
+              5349,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 2496722345
+          },
+          "pixelsAmbreArsenal": 58
+        },
+        {
+          "pv": 195.6666666666692,
+          "pvMax": 240,
+          "degats": 44.33333333333081,
+          "pixels": {
+            "w": 360,
+            "h": 225,
+            "hist": [
+              0,
+              29818,
+              8399,
+              4076,
+              2311,
+              4,
+              33,
+              903,
+              181,
+              90,
+              133,
+              235,
+              714,
+              9915,
+              5342,
+              18846
+            ],
+            "invalides": 0,
+            "hash": 907852034
+          },
+          "pixelsAmbreArsenal": 71
+        }
+      ],
+      "repit": {
+        "absorption": 0,
+        "premiere": 8,
+        "seconde": 0,
+        "len": 16,
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coupe",
+            "d": {
+              "k": 16,
+              "perdus": 8,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "x": 320,
+              "y": 240
+            }
+          }
+        ],
+        "raccordActif": true,
+        "murProtege": false,
+        "expire": true
+      },
+      "stress": {
+        "morts": 128,
+        "maxKillsPas": 24,
+        "maxFile": 64,
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 64,
+          "braises": 0
+        },
+        "perdusBus": 0,
+        "erreurs": 0
+      },
+      "invariants": {
+        "sansPropagationPurge": true,
+        "murTue": true,
+        "morsure": "coupe"
+      },
+      "pilotes": [
+        {
+          "seed": 2975,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1060,
+          "len": 9,
+          "kills": 18,
+          "coupes": 0,
+          "morts": 2,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 2030,
+          "etat": "cartes",
+          "tJeu": 36.51666666666524,
+          "score": 1150,
+          "len": 16,
+          "kills": 20,
+          "coupes": 0,
+          "morts": 1,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        },
+        {
+          "seed": 1976,
+          "etat": "fin",
+          "tJeu": 16.524999999999704,
+          "score": 320,
+          "len": 8,
+          "kills": 5,
+          "coupes": 0,
+          "morts": 3,
+          "choix": 0,
+          "prises": {},
+          "erreurs": 0
+        }
+      ],
+      "erreurs": {
+        "count": 0,
+        "sigs": {}
+      },
+      "soak": [],
+      "erreursConsole": []
+    }
+  ]
+}

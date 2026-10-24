@@ -1,0 +1,1615 @@
+{
+  "dateParis": "18/10/2026 00:52:33",
+  "integrationAnticipee": false,
+  "limite": "Sources de production sans modification.",
+  "calibration": 20,
+  "manquants": [
+    "onde",
+    "sillage",
+    "perforation",
+    "surtension",
+    "epines"
+  ],
+  "scenes": [
+    {
+      "id": "onde",
+      "avant": {
+        "id": "onde",
+        "avec": false,
+        "choix": null,
+        "temps": 1.2083333333333333,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 270
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 500,
+            "y": 258
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 270
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 500,
+            "y": 258
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 500,
+              "y": 270,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 111.7603435928863
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 500,
+              "y": 258,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 110.89803605114022
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "apres": {
+        "id": "onde",
+        "avec": true,
+        "choix": null,
+        "temps": 1.2083333333333333,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 270
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 500,
+            "y": 258
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 270
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 500,
+            "y": 258
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0,
+          "sillage": 0,
+          "ondeDans": 1.2,
+          "freins": 0,
+          "onde": null
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 500,
+              "y": 270,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 111.7603435928863
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 500,
+              "y": 258,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 110.89803605114022
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "console": []
+    },
+    {
+      "id": "sillage",
+      "avant": {
+        "id": "sillage",
+        "avec": false,
+        "choix": null,
+        "temps": 1,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 2,
+            "t": 0.016666666666666666,
+            "image": 1,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 380,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 10.916702798922396
+            }
+          },
+          {
+            "pas": 2,
+            "t": 0.016666666666666666,
+            "image": 1,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 380,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 10.916702798922396
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "apres": {
+        "id": "sillage",
+        "avec": true,
+        "choix": null,
+        "temps": 1,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 380,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0,
+          "sillage": 0,
+          "ondeDans": 1.2,
+          "freins": 0,
+          "onde": null
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 2,
+            "t": 0.016666666666666666,
+            "image": 1,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 380,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 10.916702798922396
+            }
+          },
+          {
+            "pas": 2,
+            "t": 0.016666666666666666,
+            "image": 1,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 380,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 10.916702798922396
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "console": []
+    },
+    {
+      "id": "perforation",
+      "avant": {
+        "id": "perforation",
+        "avec": false,
+        "choix": null,
+        "temps": 0.8333333333333334,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 530,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 556,
+            "y": 250
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 582,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 180,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 530,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 556,
+            "y": 250
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 582,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0
+        },
+        "degats": [
+          60,
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "carte",
+            "d": {
+              "id": "canon",
+              "niveau": 1
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 530,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 141.00771042747982
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "ruche",
+              "x": 556,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 166.98782710125911
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 3,
+              "type": "ruche",
+              "x": 582,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 192.9732997074984
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "apres": {
+        "id": "perforation",
+        "avec": true,
+        "choix": null,
+        "temps": 0.8333333333333334,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 530,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 556,
+            "y": 250
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 582,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 180,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 530,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 556,
+            "y": 250
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 582,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0,
+          "sillage": 0,
+          "ondeDans": 1.2,
+          "freins": 0,
+          "onde": null
+        },
+        "degats": [
+          60,
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "carte",
+            "d": {
+              "id": "canon",
+              "niveau": 1
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 530,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 141.00771042747982
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "ruche",
+              "x": 556,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 166.98782710125911
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 3,
+              "type": "ruche",
+              "x": 582,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 192.9732997074984
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "console": []
+    },
+    {
+      "id": "surtension",
+      "avant": {
+        "id": "surtension",
+        "avec": false,
+        "choix": null,
+        "temps": 0.5083333333333333,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 280
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 330
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 380
+          },
+          {
+            "id": 4,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 447
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 280
+          },
+          {
+            "id": 2,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 330
+          },
+          {
+            "id": 3,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 380
+          },
+          {
+            "id": 4,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 447
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 1,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0
+        },
+        "degats": [
+          14,
+          14,
+          14,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "carte",
+            "d": {
+              "id": "arc",
+              "niveau": 1
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 500,
+              "y": 280,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 113.44767251909578
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "ruche",
+              "x": 500,
+              "y": 330,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 133.30556777569345
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 3,
+              "type": "ruche",
+              "x": 500,
+              "y": 380,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 166.34414447163445
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 4,
+              "type": "ruche",
+              "x": 500,
+              "y": 447,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 220.8514758836807
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "apres": {
+        "id": "surtension",
+        "avec": true,
+        "choix": null,
+        "temps": 0.5083333333333333,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 280
+          },
+          {
+            "id": 2,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 330
+          },
+          {
+            "id": 3,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 380
+          },
+          {
+            "id": 4,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 447
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 280
+          },
+          {
+            "id": 2,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 330
+          },
+          {
+            "id": 3,
+            "pv": 226,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 380
+          },
+          {
+            "id": 4,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 500,
+            "y": 447
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 1,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0,
+          "sillage": 0,
+          "ondeDans": 1.2,
+          "freins": 0,
+          "onde": null
+        },
+        "degats": [
+          14,
+          14,
+          14,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "carte",
+            "d": {
+              "id": "arc",
+              "niveau": 1
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 500,
+              "y": 280,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 113.44767251909578
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "ruche",
+              "x": 500,
+              "y": 330,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 133.30556777569345
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 3,
+              "type": "ruche",
+              "x": 500,
+              "y": 380,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 166.34414447163445
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 4,
+              "type": "ruche",
+              "x": 500,
+              "y": 447,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 220.8514758836807
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "console": []
+    },
+    {
+      "id": "epines",
+      "avant": {
+        "id": "epines",
+        "avec": false,
+        "choix": null,
+        "temps": 1,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 440,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 51.23255215192778
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 440,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 51.23255215192778
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "apres": {
+        "id": "epines",
+        "avec": true,
+        "choix": null,
+        "temps": 1,
+        "avant": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          }
+        ],
+        "apres": [
+          {
+            "id": 1,
+            "pv": 240,
+            "pvMax": 240,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          },
+          {
+            "id": 2,
+            "pv": 10,
+            "pvMax": 10,
+            "etat": "approche",
+            "x": 440,
+            "y": 250
+          }
+        ],
+        "joueuse": "vivant",
+        "arsenal": {
+          "arcs": 0,
+          "missiles": 0,
+          "mines": 0,
+          "drones": 0,
+          "tourelles": 0,
+          "rayon": false,
+          "grappes": 0,
+          "grappeSaturee": 0,
+          "braises": 0,
+          "sillage": 0,
+          "ondeDans": 1.2,
+          "freins": 0,
+          "onde": null
+        },
+        "degats": [
+          0,
+          0
+        ],
+        "journal": [
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 1,
+              "type": "ruche",
+              "x": 440,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 51.23255215192778
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 0,
+            "type": "apparition",
+            "d": {
+              "id": 2,
+              "type": "larve",
+              "x": 440,
+              "y": 250,
+              "elite": false,
+              "vue": {
+                "x": 352,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "anticipee": {
+                "x": 430,
+                "y": 153,
+                "w": 422,
+                "h": 195
+              },
+              "distTete": 51.23255215192778
+            }
+          }
+        ],
+        "err": 0,
+        "sigs": {}
+      },
+      "console": []
+    }
+  ],
+  "endurances": [],
+  "cartes": {
+    "sans": [
+      "canon",
+      "tourelles",
+      "arc",
+      "missiles",
+      "drones",
+      "minesQ",
+      "puissance",
+      "cadence",
+      "aimant",
+      "croissance",
+      "reparation",
+      "bouclier",
+      "eperon",
+      "grappe",
+      "sangFroid",
+      "braise",
+      "traversee"
+    ],
+    "refus": null,
+    "apresCanon": [
+      "canon",
+      "tourelles",
+      "arc",
+      "missiles",
+      "drones",
+      "minesQ",
+      "puissance",
+      "cadence",
+      "aimant",
+      "croissance",
+      "reparation",
+      "bouclier",
+      "eperon",
+      "grappe",
+      "sangFroid",
+      "braise",
+      "traversee"
+    ],
+    "apresArc": [
+      "canon",
+      "tourelles",
+      "arc",
+      "missiles",
+      "drones",
+      "minesQ",
+      "puissance",
+      "cadence",
+      "aimant",
+      "croissance",
+      "reparation",
+      "bouclier",
+      "eperon",
+      "grappe",
+      "sangFroid",
+      "braise",
+      "traversee"
+    ],
+    "offerts": {
+      "minesQ": 101,
+      "cadence": 94,
+      "traversee": 53,
+      "drones": 99,
+      "croissance": 97,
+      "tourelles": 94,
+      "puissance": 106,
+      "arc": 94,
+      "grappe": 28,
+      "aimant": 88,
+      "braise": 62,
+      "missiles": 95,
+      "canon": 49,
+      "reparation": 64,
+      "sangFroid": 17,
+      "eperon": 31,
+      "bouclier": 28
+    },
+    "textes": {
+      "onde": [],
+      "sillage": [],
+      "perforation": [],
+      "surtension": [],
+      "epines": []
+    },
+    "textesConformes": true,
+    "schemaMods": [
+      "mods.perforation : champ non prévu par le contrat (préfixe « _ » pour un champ privé, sinon demande au gardien)",
+      "mods.surtension : champ non prévu par le contrat (préfixe « _ » pour un champ privé, sinon demande au gardien)",
+      "mods.epines : champ non prévu par le contrat (préfixe « _ » pour un champ privé, sinon demande au gardien)"
+    ],
+    "err": 0
+  },
+  "controle": {
+    "onde": {
+      "tirsApres": 1,
+      "cellules": 0,
+      "id": 1
+    },
+    "sillage": {
+      "tirsApres": 1
+    },
+    "traversee": {
+      "pouvoir": {
+        "id": "traversee",
+        "etat": "actif",
+        "reste": 1.3916666666666666,
+        "dur": 1.4,
+        "recharge": 0
+      },
+      "degats": 0
+    },
+    "mur": {
+      "resultat": true,
+      "etat": "mort"
+    },
+    "morsure": "coupe",
+    "err": 0
+  },
+  "console": [],
+  "conforme": false
+}

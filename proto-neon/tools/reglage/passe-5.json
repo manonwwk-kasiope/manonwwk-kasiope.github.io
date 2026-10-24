@@ -1,0 +1,24 @@
+{
+  "numero": 5,
+  "valeurs": {
+    "ennemis.fleche.approche.0": 40,
+    "ennemis.fleche.approche.1": 56,
+    "secteurs.0.vitessesFleches.0": 40,
+    "secteurs.0.vitessesFleches.1": 44,
+    "secteurs.0.vitessesFleches.2": 48,
+    "secteurs.0.vitessesFleches.3": 52,
+    "secteurs.0.vitessesFleches.4": 56,
+    "secteurs.0.vagues.0.plafond": 8,
+    "secteurs.0.vagues.1.chargesFleches": 2,
+    "colosse.pvPhase": 1200,
+    "colosse.pvTotal": 3600,
+    "ennemis.fleche.pv": 15,
+    "ennemis.fleche.bond.vitesse": 128,
+    "ennemis.fleche.bond.duree": 0.525,
+    "lasso.traine.base": 6,
+    "lasso.fermetureTraine": 11,
+    "lasso.fermetureQueue": 7.5,
+    "secteurs.0.vagues.0.formations.1.t": 11
+  },
+  "raison": "Dernière passe, base expérimentale 4 : alléger V1 (plafond 12 → 8, encore compatible avec la NUÉE de 6–8 ; seconde FILE +5 → +11 s) pour la survie débutante, et rétablir deux charges simultanées de flèche en V2 pour raccourcir les parties humain et ramener l’accès bon sous 60 %, tout en essayant de conserver les victoires expert. Les effectifs FILE/MEUTE/NUÉE de N.R ne sont pas utilisés par le directeur (littéraux dans le module), donc aucun faux réglage de ces champs. Mines +14 et dards +17 inchangés ; bornes, pilotes et règles létales inchangés. Au terme de cette passe : arrêt au plafond de cinq, quels que soient les résultats."
+}

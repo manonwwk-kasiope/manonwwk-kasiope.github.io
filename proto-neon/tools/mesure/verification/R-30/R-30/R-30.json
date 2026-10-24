@@ -1,0 +1,34 @@
+{
+ "id": "R-30",
+ "titre": "Rejouabilité",
+ "seuil": "même graine et mêmes entrées → même journal (dessiné et simulé) ; graine différente → vagues différentes",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "0 ok, 1 en échec, 0 indicatives hors cible, 1 non mesurables",
+ "mesures": [
+  {
+   "nom": "réinitialisation : même graine → même journal initial",
+   "valeur": false,
+   "seuil": true,
+   "statut": "echec",
+   "egaux": false,
+   "premier": 0,
+   "a": "[0,\"partie\",{\"graine\":7,\"mode\":null,\"defautVolontaire\":\"30c7b556-a80c-4c30-94cd-58351d0c7375\"}]",
+   "b": "[0,\"partie\",{\"graine\":7,\"mode\":null,\"defautVolontaire\":\"57aa2556-c5e6-4d4c-9fca-efbb840d212c\"}]"
+  },
+  {
+   "nom": "mode simulé (a)",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 0.7,
+ "bundle": {
+  "url": "http://127.0.0.1:64041/R-30/index.html",
+  "empreinte": "47be0e5d342c"
+ },
+ "date": "2026-10-17T22:39:13.035Z",
+ "dateParis": "18/10/2026 · 00 h 39"
+}

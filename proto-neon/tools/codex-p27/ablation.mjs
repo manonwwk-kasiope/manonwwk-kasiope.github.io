@@ -1,0 +1,4 @@
+import fs from 'node:fs';import crypto from 'node:crypto';import assert from 'node:assert/strict';
+import {monde,sources,ICI}from './vm.mjs';import {raccorder}from './raccords.mjs';import {vagueScenario}from './scenarios.mjs';import {photosensibilite}from './mesures.mjs';
+const src=raccorder(sources()),cas=[];for(const sansSerpents of [false,true]){const m=monde(src);const r=m.run('('+vagueScenario.toString()+')('+JSON.stringify('miroir')+',4,60,'+sansSerpents+')');r.R13=photosensibilite(r.transitions,m.N.R.criteres.R13);r.journalSha256=crypto.createHash('sha256').update(JSON.stringify(r.journal)).digest('hex');delete r.journal;cas.push({sansSerpents,...r});console.log(sansSerpents?'sans dessin serpents':'complet',r.R13.maxParSeconde);}
+const identique=cas[0].journalSha256===cas[1].journalSha256;fs.writeFileSync(ICI+'/ablation.json',JSON.stringify({cas,journalIdentique:identique},null,2));assert.ok(identique);

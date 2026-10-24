@@ -1,0 +1,23 @@
+{
+  "numero": 4,
+  "valeurs": {
+    "ennemis.fleche.approche.0": 40,
+    "ennemis.fleche.approche.1": 56,
+    "secteurs.0.vitessesFleches.0": 40,
+    "secteurs.0.vitessesFleches.1": 44,
+    "secteurs.0.vitessesFleches.2": 48,
+    "secteurs.0.vitessesFleches.3": 52,
+    "secteurs.0.vitessesFleches.4": 56,
+    "secteurs.0.vagues.0.plafond": 12,
+    "secteurs.0.vagues.1.chargesFleches": 1,
+    "colosse.pvPhase": 1200,
+    "colosse.pvTotal": 3600,
+    "ennemis.fleche.pv": 15,
+    "ennemis.fleche.bond.vitesse": 128,
+    "ennemis.fleche.bond.duree": 0.525,
+    "lasso.traine.base": 6,
+    "lasso.fermetureTraine": 11,
+    "lasso.fermetureQueue": 7.5
+  },
+  "raison": "Compromis après la passe 3 rejetée : partir de la candidate 2, garder le bond ralenti à portée théorique constante et la fenêtre de traînée longue, mais revenir à 15 PV (le canon I exige encore deux impacts, contrairement aux 10 PV de la passe 3). Élargir fermeture sur traînée 7 → 11 px et queue 5,5 → 7,5 px pour tester la fermeture avec les erreurs de trajectoire des pilotes, sans changer ces pilotes ni leurs seuils. Le gain de survie trop fort de la passe 3 et son échec aux cibles LASSO motivent cette combinaison. Si aucune nouvelle B, arrêt obligatoire : deuxième passe sans gain."
+}

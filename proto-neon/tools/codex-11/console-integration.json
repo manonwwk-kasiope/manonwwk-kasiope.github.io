@@ -1,0 +1,88 @@
+{
+  "dateParis": "18/10/2026 04:50:46",
+  "pid": 86013,
+  "phase": "fini",
+  "portee": "Bundle courant : démarrage, V1 simulée5s, puis seulement les deux contrôles UI R35 (relance<2s sans briefing), trois profils. Ne remplace ni la paire figée ni un verdict global R35.",
+  "cas": [
+    {
+      "profil": "paysage",
+      "depart": {
+        "etat": "jeu",
+        "err": 0,
+        "temps": 5.000000000000038
+      },
+      "relance": {
+        "mesurable": true,
+        "temps": 2.816666666666667,
+        "etats": [
+          "briefing",
+          "plongee",
+          "jeu"
+        ],
+        "sansBriefing": false,
+        "dans2s": false
+      },
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    },
+    {
+      "profil": "portrait",
+      "depart": {
+        "etat": "jeu",
+        "err": 0,
+        "temps": 5.000000000000038
+      },
+      "relance": {
+        "mesurable": true,
+        "temps": 2.816666666666667,
+        "etats": [
+          "briefing",
+          "plongee",
+          "jeu"
+        ],
+        "sansBriefing": false,
+        "dans2s": false
+      },
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    },
+    {
+      "profil": "bureau",
+      "depart": {
+        "etat": "jeu",
+        "err": 0,
+        "temps": 5.000000000000038
+      },
+      "relance": {
+        "mesurable": true,
+        "temps": 2.8333333333333335,
+        "etats": [
+          "fin",
+          "briefing",
+          "plongee",
+          "jeu"
+        ],
+        "sansBriefing": false,
+        "dans2s": false
+      },
+      "erreurs": {
+        "err": 0,
+        "sigs": [],
+        "console": [],
+        "pageErreurs": [],
+        "zero": true
+      }
+    }
+  ],
+  "sha256": "b7caee58b8b4646fe2187940ad03514a53c4cf42092b5b0e1b1d5d053666a68e"
+}

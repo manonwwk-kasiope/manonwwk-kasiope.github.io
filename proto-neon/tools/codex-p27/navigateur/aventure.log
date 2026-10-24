@@ -1,0 +1,337 @@
+
+== paysage
+ -- aventure 1 : ELLE
+  ok   paysage : écran de choix
+  ok   paysage : ELLE choisie, film de connexion
+  ok   paysage : garde de 300 ms (toucher à 0,1 s ignoré, film à 0.63 s)
+  ok   paysage : étape connexion atteinte
+  ok   paysage : connexion palette fermée (14 couleurs)
+  ok   paysage : connexion image affichée (connexion-elle, panneau fixe de repli)
+  ok   paysage : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   paysage : connexion sauté d'un toucher
+  ok   paysage : époque 1976
+  ok   paysage : 1976 jouée par le pilote jusqu'à la fissure (6 cellules, 0 morts, 28.86 s)
+  ok   paysage : étape fissure atteinte
+  ok   paysage : fissure palette fermée (13 couleurs)
+  ok   paysage : fissure image affichée (fissure-elle, panneau fixe de repli)
+  ok   paysage : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   paysage : fissure joué jusqu'au bout en 4.5 s (prévu 4.5 s)
+  ok   paysage : époque 1982 (N.arcade)
+  ok   paysage : LE NÉON, la main au jeu
+  ok   paysage : aJouer({"etape":"neon","epoque":1987,"qui":"elle","premiere":true})
+  ok   paysage : étape profondeur atteinte
+  ok   paysage : profondeur palette fermée (15 couleurs)
+  ok   paysage : profondeur image affichée (profondeur-elle, panneau fixe de repli)
+  ok   paysage : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   paysage : profondeur sauté d'un toucher
+  ok   paysage : étape warp atteinte
+  ok   paysage : warp palette fermée (14 couleurs)
+  ok   paysage : warp image affichée (warp-elle, panneau fixe de repli)
+  ok   paysage : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   paysage : warp sauté d'un toucher
+  ok   paysage : étape espace atteinte
+  ok   paysage : espace palette fermée (15 couleurs)
+  ok   paysage : espace image affichée (espace-elle, panneau fixe de repli)
+  ok   paysage : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   paysage : espace sauté d'un toucher
+  ok   paysage : époque 2975 (N.cosmos)
+  ok   paysage : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   paysage : 2975 se termine et rend la main à l'aventure
+  ok   paysage : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   paysage : étape fin atteinte
+  ok   paysage : fin palette fermée (15 couleurs)
+  ok   paysage : fin image affichée (fin-elle, panneau fixe de repli)
+  ok   paysage : fin légende « FIN — LA PILOTE » en frappe (15 lettres)
+  ok   paysage : fin sauté d'un toucher
+  ok   paysage : étape rejouer atteinte
+  ok   paysage : rejouer palette fermée (15 couleurs)
+  ok   paysage : rejouer image affichée (pilote-lui, panneau fixe de repli)
+  ok   paysage : rejouer légende « LE PILOTE T'ATTEND » en frappe (18 lettres)
+  ok   paysage : rejouer sauté d'un toucher
+  ok   paysage : surFin({"issue":"fin","qui":"elle","deux":false})
+  ok   paysage : films d'ELLE connexion-elle, fissure-elle, neon-elle, profondeur-elle, warp-elle, espace-elle, fin-elle, pilote-lui
+ -- aventure 2 : LUI
+  ok   paysage : profil après ELLE {"elle":{"fini":true},"lui":{"fini":false}}
+  ok   paysage : étape connexion atteinte
+  ok   paysage : connexion palette fermée (15 couleurs)
+  ok   paysage : connexion image affichée (connexion-lui, panneau fixe de repli)
+  ok   paysage : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   paysage : connexion sauté d'un toucher
+  ok   paysage : étape fissure atteinte
+  ok   paysage : fissure palette fermée (15 couleurs)
+  ok   paysage : fissure image affichée (fissure-lui, panneau fixe de repli)
+  ok   paysage : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   paysage : fissure sauté d'un toucher
+  ok   paysage : LUI au néon
+  ok   paysage : étape profondeur atteinte
+  ok   paysage : profondeur palette fermée (15 couleurs)
+  ok   paysage : profondeur image affichée (profondeur-lui, panneau fixe de repli)
+  ok   paysage : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   paysage : profondeur sauté d'un toucher
+  ok   paysage : époque 1993 (N.grille)
+  ok   paysage : 1993 se termine et rend la main à l'aventure
+  ok   paysage : après profondeur, aJouer({ etape: jeu-1993, epoque: 1993 })
+  ok   paysage : étape warp atteinte
+  ok   paysage : warp palette fermée (15 couleurs)
+  ok   paysage : warp image affichée (warp-lui, panneau fixe de repli)
+  ok   paysage : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   paysage : warp sauté d'un toucher
+  ok   paysage : après warp, aJouer({ etape: jeu-2001, epoque: 2001 })
+  ok   paysage : étape espace atteinte
+  ok   paysage : espace palette fermée (15 couleurs)
+  ok   paysage : espace image affichée (espace-lui, panneau fixe de repli)
+  ok   paysage : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   paysage : espace sauté d'un toucher
+  ok   paysage : époque 2975 (N.cosmos)
+  ok   paysage : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   paysage : 2975 se termine et rend la main à l'aventure
+  ok   paysage : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   paysage : reprendre('profondeur') déjà passé refusé
+  ok   paysage : étape fin atteinte
+  ok   paysage : fin palette fermée (15 couleurs)
+  ok   paysage : fin image affichée (fin-lui, panneau fixe de repli)
+  ok   paysage : fin légende « FIN — LE PILOTE » en frappe (15 lettres)
+  ok   paysage : fin sauté d'un toucher
+  ok   paysage : étape retrouvailles atteinte
+  ok   paysage : retrouvailles palette fermée (15 couleurs)
+  ok   paysage : retrouvailles image affichée (retrouvailles, panneau fixe de repli)
+  ok   paysage : retrouvailles légende « LES DEUX MONDES SE TOUCHENT » en frappe (27 lettres)
+  ok   paysage : retrouvailles joué jusqu'au bout en 5 s (prévu 5 s)
+  ok   paysage : étape teaser atteinte
+  ok   paysage : teaser palette fermée (14 couleurs)
+  ok   paysage : teaser image affichée (teaser-3019, panneau fixe de repli)
+  ok   paysage : teaser sauté d'un toucher
+  ok   paysage : étape asuivre atteinte
+  ok   paysage : asuivre palette fermée (6 couleurs)
+  ok   paysage : asuivre sauté d'un toucher
+  ok   paysage : À SUIVRE sans cyan
+  ok   paysage : surFin({"issue":"fin","qui":"lui","deux":true})
+  ok   paysage : films de LUI connexion-lui, fissure-lui, neon-lui, profondeur-lui, warp-lui, espace-lui, fin-lui, retrouvailles, teaser-3019, asuivre
+  ok   paysage : __ERR.count = 0
+  ok   paysage : erreurs de page 0
+
+== portrait
+ -- aventure 1 : ELLE
+  ok   portrait : écran de choix
+  ok   portrait : ELLE choisie, film de connexion
+  ok   portrait : garde de 300 ms (toucher à 0,1 s ignoré, film à 0.61 s)
+  ok   portrait : étape connexion atteinte
+  ok   portrait : connexion palette fermée (15 couleurs)
+  ok   portrait : connexion image affichée (connexion-elle, panneau fixe de repli)
+  ok   portrait : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   portrait : connexion sauté d'un toucher
+  ok   portrait : époque 1976
+  ok   portrait : 1976 sautée (fissure puis film)
+  ok   portrait : étape fissure atteinte
+  ok   portrait : fissure palette fermée (14 couleurs)
+  ok   portrait : fissure image affichée (fissure-elle, panneau fixe de repli)
+  ok   portrait : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   portrait : fissure joué jusqu'au bout en 4.5 s (prévu 4.5 s)
+  ok   portrait : époque 1982 (N.arcade)
+  ok   portrait : LE NÉON, la main au jeu
+  ok   portrait : aJouer({"etape":"neon","epoque":1987,"qui":"elle","premiere":true})
+  ok   portrait : étape profondeur atteinte
+  ok   portrait : profondeur palette fermée (16 couleurs)
+  ok   portrait : profondeur image affichée (profondeur-elle, panneau fixe de repli)
+  ok   portrait : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   portrait : profondeur sauté d'un toucher
+  ok   portrait : étape warp atteinte
+  ok   portrait : warp palette fermée (14 couleurs)
+  ok   portrait : warp image affichée (warp-elle, panneau fixe de repli)
+  ok   portrait : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   portrait : warp sauté d'un toucher
+  ok   portrait : étape espace atteinte
+  ok   portrait : espace palette fermée (16 couleurs)
+  ok   portrait : espace image affichée (espace-elle, panneau fixe de repli)
+  ok   portrait : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   portrait : espace sauté d'un toucher
+  ok   portrait : époque 2975 (N.cosmos)
+  ok   portrait : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   portrait : 2975 se termine et rend la main à l'aventure
+  ok   portrait : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   portrait : étape fin atteinte
+  ok   portrait : fin palette fermée (16 couleurs)
+  ok   portrait : fin image affichée (fin-elle, panneau fixe de repli)
+  ok   portrait : fin légende « FIN — LA PILOTE » en frappe (15 lettres)
+  ok   portrait : fin sauté d'un toucher
+  ok   portrait : étape rejouer atteinte
+  ok   portrait : rejouer palette fermée (16 couleurs)
+  ok   portrait : rejouer image affichée (pilote-lui, panneau fixe de repli)
+  ok   portrait : rejouer légende « LE PILOTE T'ATTEND » en frappe (18 lettres)
+  ok   portrait : rejouer sauté d'un toucher
+  ok   portrait : surFin({"issue":"fin","qui":"elle","deux":false})
+  ok   portrait : films d'ELLE connexion-elle, fissure-elle, neon-elle, profondeur-elle, warp-elle, espace-elle, fin-elle, pilote-lui
+ -- aventure 2 : LUI
+  ok   portrait : profil après ELLE {"elle":{"fini":true},"lui":{"fini":false}}
+  ok   portrait : étape connexion atteinte
+  ok   portrait : connexion palette fermée (16 couleurs)
+  ok   portrait : connexion image affichée (connexion-lui, panneau fixe de repli)
+  ok   portrait : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   portrait : connexion sauté d'un toucher
+  ok   portrait : étape fissure atteinte
+  ok   portrait : fissure palette fermée (16 couleurs)
+  ok   portrait : fissure image affichée (fissure-lui, panneau fixe de repli)
+  ok   portrait : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   portrait : fissure sauté d'un toucher
+  ok   portrait : LUI au néon
+  ok   portrait : étape profondeur atteinte
+  ok   portrait : profondeur palette fermée (16 couleurs)
+  ok   portrait : profondeur image affichée (profondeur-lui, panneau fixe de repli)
+  ok   portrait : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   portrait : profondeur sauté d'un toucher
+  ok   portrait : époque 1993 (N.grille)
+  ok   portrait : 1993 se termine et rend la main à l'aventure
+  ok   portrait : après profondeur, aJouer({ etape: jeu-1993, epoque: 1993 })
+  ok   portrait : étape warp atteinte
+  ok   portrait : warp palette fermée (16 couleurs)
+  ok   portrait : warp image affichée (warp-lui, panneau fixe de repli)
+  ok   portrait : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   portrait : warp sauté d'un toucher
+  ok   portrait : après warp, aJouer({ etape: jeu-2001, epoque: 2001 })
+  ok   portrait : étape espace atteinte
+  ok   portrait : espace palette fermée (16 couleurs)
+  ok   portrait : espace image affichée (espace-lui, panneau fixe de repli)
+  ok   portrait : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   portrait : espace sauté d'un toucher
+  ok   portrait : époque 2975 (N.cosmos)
+  ok   portrait : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   portrait : 2975 se termine et rend la main à l'aventure
+  ok   portrait : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   portrait : reprendre('profondeur') déjà passé refusé
+  ok   portrait : étape fin atteinte
+  ok   portrait : fin palette fermée (16 couleurs)
+  ok   portrait : fin image affichée (fin-lui, panneau fixe de repli)
+  ok   portrait : fin légende « FIN — LE PILOTE » en frappe (15 lettres)
+  ok   portrait : fin sauté d'un toucher
+  ok   portrait : étape retrouvailles atteinte
+  ok   portrait : retrouvailles palette fermée (16 couleurs)
+  ok   portrait : retrouvailles image affichée (retrouvailles, panneau fixe de repli)
+  ok   portrait : retrouvailles légende « LES DEUX MONDES SE TOUCHENT » en frappe (27 lettres)
+  ok   portrait : retrouvailles joué jusqu'au bout en 5 s (prévu 5 s)
+  ok   portrait : étape teaser atteinte
+  ok   portrait : teaser palette fermée (15 couleurs)
+  ok   portrait : teaser image affichée (teaser-3019, panneau fixe de repli)
+  ok   portrait : teaser sauté d'un toucher
+  ok   portrait : étape asuivre atteinte
+  ok   portrait : asuivre palette fermée (6 couleurs)
+  ok   portrait : asuivre sauté d'un toucher
+  ok   portrait : À SUIVRE sans cyan
+  ok   portrait : surFin({"issue":"fin","qui":"lui","deux":true})
+  ok   portrait : films de LUI connexion-lui, fissure-lui, neon-lui, profondeur-lui, warp-lui, espace-lui, fin-lui, retrouvailles, teaser-3019, asuivre
+  ok   portrait : __ERR.count = 0
+  ok   portrait : erreurs de page 0
+
+== bureau
+ -- aventure 1 : ELLE
+  ok   bureau : écran de choix
+  ok   bureau : ELLE choisie, film de connexion
+  ok   bureau : garde de 300 ms (toucher à 0,1 s ignoré, film à 0.63 s)
+  ok   bureau : étape connexion atteinte
+  ok   bureau : connexion palette fermée (14 couleurs)
+  ok   bureau : connexion image affichée (connexion-elle, panneau fixe de repli)
+  ok   bureau : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   bureau : connexion sauté d'un toucher
+  ok   bureau : époque 1976
+  ok   bureau : 1976 sautée (fissure puis film)
+  ok   bureau : étape fissure atteinte
+  ok   bureau : fissure palette fermée (13 couleurs)
+  ok   bureau : fissure image affichée (fissure-elle, panneau fixe de repli)
+  ok   bureau : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   bureau : fissure joué jusqu'au bout en 4.49 s (prévu 4.5 s)
+  ok   bureau : époque 1982 (N.arcade)
+  ok   bureau : LE NÉON, la main au jeu
+  ok   bureau : aJouer({"etape":"neon","epoque":1987,"qui":"elle","premiere":true})
+  ok   bureau : étape profondeur atteinte
+  ok   bureau : profondeur palette fermée (15 couleurs)
+  ok   bureau : profondeur image affichée (profondeur-elle, panneau fixe de repli)
+  ok   bureau : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   bureau : profondeur sauté d'un toucher
+  ok   bureau : étape warp atteinte
+  ok   bureau : warp palette fermée (14 couleurs)
+  ok   bureau : warp image affichée (warp-elle, panneau fixe de repli)
+  ok   bureau : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   bureau : warp sauté d'un toucher
+  ok   bureau : étape espace atteinte
+  ok   bureau : espace palette fermée (15 couleurs)
+  ok   bureau : espace image affichée (espace-elle, panneau fixe de repli)
+  ok   bureau : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   bureau : espace sauté d'un toucher
+  ok   bureau : époque 2975 (N.cosmos)
+  ok   bureau : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   bureau : 2975 se termine et rend la main à l'aventure
+  ok   bureau : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   bureau : étape fin atteinte
+  ok   bureau : fin palette fermée (15 couleurs)
+  ok   bureau : fin image affichée (fin-elle, panneau fixe de repli)
+  ok   bureau : fin légende « FIN — LA PILOTE » en frappe (15 lettres)
+  ok   bureau : fin sauté d'un toucher
+  ok   bureau : étape rejouer atteinte
+  ok   bureau : rejouer palette fermée (15 couleurs)
+  ok   bureau : rejouer image affichée (pilote-lui, panneau fixe de repli)
+  ok   bureau : rejouer légende « LE PILOTE T'ATTEND » en frappe (18 lettres)
+  ok   bureau : rejouer sauté d'un toucher
+  ok   bureau : surFin({"issue":"fin","qui":"elle","deux":false})
+  ok   bureau : films d'ELLE connexion-elle, fissure-elle, neon-elle, profondeur-elle, warp-elle, espace-elle, fin-elle, pilote-lui
+ -- aventure 2 : LUI
+  ok   bureau : profil après ELLE {"elle":{"fini":true},"lui":{"fini":false}}
+  ok   bureau : étape connexion atteinte
+  ok   bureau : connexion palette fermée (15 couleurs)
+  ok   bureau : connexion image affichée (connexion-lui, panneau fixe de repli)
+  ok   bureau : connexion légende « 1976 — LE TERMINAL » en frappe (18 lettres)
+  ok   bureau : connexion sauté d'un toucher
+  ok   bureau : étape fissure atteinte
+  ok   bureau : fissure palette fermée (15 couleurs)
+  ok   bureau : fissure image affichée (fissure-lui, panneau fixe de repli)
+  ok   bureau : fissure légende « LA GRILLE SE BRISE » en frappe (18 lettres)
+  ok   bureau : fissure sauté d'un toucher
+  ok   bureau : LUI au néon
+  ok   bureau : étape profondeur atteinte
+  ok   bureau : profondeur palette fermée (15 couleurs)
+  ok   bureau : profondeur image affichée (profondeur-lui, panneau fixe de repli)
+  ok   bureau : profondeur légende « 1993 — LA PROFONDEUR » en frappe (20 lettres)
+  ok   bureau : profondeur sauté d'un toucher
+  ok   bureau : époque 1993 (N.grille)
+  ok   bureau : 1993 se termine et rend la main à l'aventure
+  ok   bureau : après profondeur, aJouer({ etape: jeu-1993, epoque: 1993 })
+  ok   bureau : étape warp atteinte
+  ok   bureau : warp palette fermée (15 couleurs)
+  ok   bureau : warp image affichée (warp-lui, panneau fixe de repli)
+  ok   bureau : warp légende « 2001 — LE WARP » en frappe (14 lettres)
+  ok   bureau : warp sauté d'un toucher
+  ok   bureau : après warp, aJouer({ etape: jeu-2001, epoque: 2001 })
+  ok   bureau : étape espace atteinte
+  ok   bureau : espace palette fermée (15 couleurs)
+  ok   bureau : espace image affichée (espace-lui, panneau fixe de repli)
+  ok   bureau : espace légende « 2975 — L'INTERGALACTIQUE » en frappe (24 lettres)
+  ok   bureau : espace sauté d'un toucher
+  ok   bureau : époque 2975 (N.cosmos)
+  ok   bureau : 2975 isolée (N.ennemis.list vide pour N.warp : 0)
+  ok   bureau : 2975 se termine et rend la main à l'aventure
+  ok   bureau : après 2975, le film de fin (étape fin) sans repasser par le jeu
+  ok   bureau : reprendre('profondeur') déjà passé refusé
+  ok   bureau : étape fin atteinte
+  ok   bureau : fin palette fermée (15 couleurs)
+  ok   bureau : fin image affichée (fin-lui, panneau fixe de repli)
+  ok   bureau : fin légende « FIN — LE PILOTE » en frappe (15 lettres)
+  ok   bureau : fin sauté d'un toucher
+  ok   bureau : étape retrouvailles atteinte
+  ok   bureau : retrouvailles palette fermée (15 couleurs)
+  ok   bureau : retrouvailles image affichée (retrouvailles, panneau fixe de repli)
+  ok   bureau : retrouvailles légende « LES DEUX MONDES SE TOUCHENT » en frappe (27 lettres)
+  ok   bureau : retrouvailles joué jusqu'au bout en 5 s (prévu 5 s)
+  ok   bureau : étape teaser atteinte
+  ok   bureau : teaser palette fermée (14 couleurs)
+  ok   bureau : teaser image affichée (teaser-3019, panneau fixe de repli)
+  ok   bureau : teaser sauté d'un toucher
+  ok   bureau : étape asuivre atteinte
+  ok   bureau : asuivre palette fermée (6 couleurs)
+  ok   bureau : asuivre sauté d'un toucher
+  ok   bureau : À SUIVRE sans cyan
+  ok   bureau : surFin({"issue":"fin","qui":"lui","deux":true})
+  ok   bureau : films de LUI connexion-lui, fissure-lui, neon-lui, profondeur-lui, warp-lui, espace-lui, fin-lui, retrouvailles, teaser-3019, asuivre
+  ok   bureau : __ERR.count = 0
+  ok   bureau : erreurs de page 0
+
+{"paysage":{"ecran":{"W":422,"H":195,"px":2},"cout":{"n":120,"p50":0.6,"p95":0.8},"t1976":{"manges":6,"morts":0,"t":28.86},"videos":"0/16"},"portrait":{"ecran":{"W":195,"H":422,"px":2},"cout":{"n":120,"p50":0.3,"p95":0.4},"videos":"0/16"},"bureau":{"ecran":{"W":360,"H":225,"px":4},"cout":{"n":120,"p50":0.6,"p95":0.7},"videos":"0/16"}}
+
+tout passe

@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {ROOT} from './vm.mjs';
+const dir=ROOT+'/tools/codex-p12/';
+const avant=JSON.parse(fs.readFileSync(dir+'avant-80.json')).cas,apres=JSON.parse(fs.readFileSync(dir+'apres-80.json')).cas;
+assert.equal(avant.length,80);assert.equal(apres.length,80);
+const cle=r=>r.pilote+':'+r.graine;
+assert.equal(new Set(avant.map(cle)).size,80);assert.equal(new Set(apres.map(cle)).size,80);
+const cas=apres.map(r=>{
+ const a=avant.find(x=>cle(x)===cle(r));assert.ok(a);
+ return {pilote:r.pilote,graine:r.graine,avant:{tempsJeu:a.tempsJeu,tempsCombat:a.tempsCombat,vague:a.vague,score:a.score,raison:a.raison},apres:{tempsJeu:r.tempsJeu,tempsCombat:r.tempsCombat,vague:r.vague,score:r.score,raison:r.raison},deltaTempsJeu:r.tempsJeu-a.tempsJeu,deltaTempsCombat:r.tempsCombat-a.tempsCombat,deltaVague:r.vague-a.vague,deltaScore:r.score-a.score,primes:r.resume?.primesDefis??null,errAvant:a.err,errApres:r.err};
+});
+const synthese=[...new Set(cas.map(r=>r.pilote))].map(p=>{const l=cas.filter(r=>r.pilote===p);return {pilote:p,n:l.length,tempsIdentiques:l.filter(r=>!r.deltaTempsJeu&&!r.deltaTempsCombat).length,vaguesIdentiques:l.filter(r=>!r.deltaVague).length,scoreMin:Math.min(...l.map(r=>r.deltaScore)),scoreMax:Math.max(...l.map(r=>r.deltaScore)),scoresChanges:l.filter(r=>r.deltaScore!==0).length};});
+const suite=JSON.parse(fs.readFileSync(dir+'suite-finale-25.json')),deblocages=[];
+for(const [i,r] of suite.cas.entries())for(const id of r.resume?.debloques||[])deblocages.push({id,partie:i+1,energie:r.energie});
+const resultat={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),refAvant:'2c1546a699f19444008a1793dd3c9ebc86dd4338',cas,synthese,suite:{n:suite.cas.length,seuils:suite.seuils,deblocages,energieFinale:suite.cas.at(-1)?.energie},finsAvant:avant.filter(r=>r.raison==='fin').length,finsApres:apres.filter(r=>r.raison==='fin').length};
+fs.writeFileSync(dir+'comparaison.json',JSON.stringify(resultat,null,2));
+assert.ok(cas.every(r=>!r.deltaTempsJeu&&!r.deltaTempsCombat&&!r.deltaVague&&r.deltaScore===r.primes&&!r.errAvant&&!r.errApres));
+assert.ok([...avant,...apres].every(r=>r.raison==='fin'&&!r.erreurs.length));
+assert.equal(suite.cas.length,25);assert.ok(suite.cas.every(r=>r.raison==='fin'&&!r.err&&!r.erreurs.length));
+assert.equal(deblocages.length,5);assert.ok([1,2].includes(deblocages[0].partie));assert.ok(deblocages.at(-1).partie>=12&&deblocages.at(-1).partie<=25);
+console.log(JSON.stringify({parties:cas.length,ecartsTempsVague:0,deblocages},null,2));

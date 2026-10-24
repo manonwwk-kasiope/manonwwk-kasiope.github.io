@@ -1,0 +1,158 @@
+{
+ "date": "2026-10-18T02:40:34.431Z",
+ "dateParis": "18/10/2026 · 04 h 40",
+ "environnement": null,
+ "url": "http://127.0.0.1:59050/proto-neon/index.html",
+ "empreinte": "5c4aa366a7d3",
+ "options": {
+  "rapide": false,
+  "long": false,
+  "graines": null,
+  "profils": null,
+  "parallele": 1
+ },
+ "duree": 176.7,
+ "totaux": {
+  "ok": 0,
+  "echec": 2,
+  "partiel": 0,
+  "nonMesurable": 0,
+  "horsBanc": 0,
+  "erreur": 0
+ },
+ "criteres": [
+  {
+   "id": "R-31",
+   "titre": "Le plateau se déplace",
+   "seuil": "≥ 25 % en mouvement (V2-V5) ; TRAVELLING V2, V3, V5 ; 5 VOLS ; ≥ 4 convois en V4 ; 0 mort par mur mobile non annoncé",
+   "bloquant": true,
+   "statut": "echec",
+   "resume": "6 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "arène en mouvement, vagues 2 à 5",
+     "valeur": 0.30632,
+     "seuil": "≥ 0.25",
+     "statut": "ok",
+     "pas": 1096294
+    },
+    {
+     "nom": "TRAVELLING en V2",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 60
+    },
+    {
+     "nom": "TRAVELLING en V3",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 55
+    },
+    {
+     "nom": "TRAVELLING en V5",
+     "valeur": 1,
+     "seuil": 1,
+     "statut": "ok",
+     "parties": 30
+    },
+    {
+     "nom": "VOLS par partie gagnée",
+     "valeur": 5,
+     "seuil": 5,
+     "statut": "ok",
+     "parties": 16,
+     "vols": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+     ]
+    },
+    {
+     "nom": "convois en V4 (minimum par partie)",
+     "valeur": 4,
+     "seuil": "≥ 4",
+     "statut": "ok",
+     "parties": 30
+    },
+    {
+     "nom": "morts par un mur mobile sans annonce",
+     "valeur": 1,
+     "seuil": 0,
+     "statut": "echec",
+     "mortsMurMobile": 1
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 172.1,
+   "bundle": {
+    "url": "http://127.0.0.1:59050/proto-neon/index.html",
+    "empreinte": "5c4aa366a7d3"
+   },
+   "date": "2026-10-18T02:40:29.783Z",
+   "dateParis": "18/10/2026 · 04 h 40",
+   "fichier": "tools/mesure/criteres/R-31-plateau.mjs"
+  },
+  {
+   "id": "R-35",
+   "titre": "Relance",
+   "seuil": "REJOUER → serpent en main < 2 s, sans briefing ; V1 ≤ 24 s (médiane)",
+   "bloquant": true,
+   "statut": "echec",
+   "resume": "1 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+   "mesures": [
+    {
+     "nom": "REJOUER → serpent en main (s)",
+     "valeur": 2.81667,
+     "seuil": "< 2",
+     "statut": "echec",
+     "etats": [
+      "briefing",
+      "plongee",
+      "jeu"
+     ]
+    },
+    {
+     "nom": "REJOUER sans briefing",
+     "valeur": false,
+     "seuil": true,
+     "statut": "echec"
+    },
+    {
+     "nom": "durée de V1 (médiane, s)",
+     "valeur": 23.89167,
+     "seuil": "≤ 24",
+     "statut": "ok",
+     "parties": 50,
+     "min": 23.84166666666591,
+     "max": 25.024999999999174
+    }
+   ],
+   "notes": [],
+   "captures": [],
+   "duree": 4.6,
+   "bundle": {
+    "url": "http://127.0.0.1:59050/proto-neon/index.html",
+    "empreinte": "5c4aa366a7d3"
+   },
+   "date": "2026-10-18T02:40:34.391Z",
+   "dateParis": "18/10/2026 · 04 h 40",
+   "fichier": "tools/mesure/criteres/R-35-relance.mjs"
+  }
+ ]
+}

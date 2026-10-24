@@ -1,0 +1,118 @@
+{
+ "id": "R-20",
+ "titre": "Performance",
+ "seuil": "p95 ≤ 11 ms (×1, sans adaptatif) et < SNAKE 2030 ; p95 ≤ 25 ms (×4) sans perte de temps ; p95 ≤ 16,7 ms sur iPhone",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "5 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "scène charge, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 3.5,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 600,
+   "p50": 2.100000023841858,
+   "p99": 4.199999988079071,
+   "max": 6.899999976158142
+  },
+  {
+   "nom": "scène v5, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 3.805,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 600,
+   "p50": 2.800000011920929,
+   "p99": 4.199999988079071,
+   "max": 4.400000035762787
+  },
+  {
+   "nom": "scène vol, ×1, sans qualité adaptative : p95 (ms)",
+   "valeur": 3,
+   "seuil": "≤ 11",
+   "statut": "ok",
+   "images": 600,
+   "p50": 2.099999964237213,
+   "p99": 3.5,
+   "max": 6
+  },
+  {
+   "nom": "scène charge meilleure que SNAKE 2030 en jeu (p95, ms)",
+   "valeur": {
+    "snake2975": 3.5,
+    "snake2030": 0.6
+   },
+   "seuil": "snake2975 < snake2030",
+   "statut": "echec",
+   "imagesSnake2030": 597
+  },
+  {
+   "nom": "scène charge, processeur ×4, qualité adaptative : p95 (ms)",
+   "valeur": 14.98,
+   "seuil": "≤ 25",
+   "statut": "ok",
+   "images": 553
+  },
+  {
+   "nom": "temps traité / temps réel au profil ×4 (pas réellement exécutés)",
+   "valeur": 1.00281,
+   "seuil": "≥ 0,99",
+   "statut": "ok",
+   "ancien": 0.9507198670671171,
+   "machine": 1.0028078620112038,
+   "secondesMurales": 10.055100000023842,
+   "secondesTraitees": 10.083333333332764,
+   "secondesMonde": 9.559583335369236,
+   "pasTraites": 1210,
+   "etat": "boss",
+   "debut": {
+    "t": 19.75166669289223,
+    "reel": 22.14166666666605,
+    "pas": 2657,
+    "r": 3678.199999988079,
+    "etat": "boss",
+    "horloge": {
+     "t": 19.75166669289223,
+     "pas": 2657,
+     "reel": 22.14166666666605,
+     "gel": 0,
+     "dtMonde": 0.008333333333333333,
+     "dtJoueuse": 0.008333333333333333,
+     "gele": false,
+     "arretee": false
+    }
+   },
+   "fin": {
+    "t": 29.311250028261465,
+    "reel": 32.224999999998815,
+    "pas": 3867,
+    "r": 13733.300000011921,
+    "etat": "boss",
+    "horloge": {
+     "t": 29.311250028261465,
+     "pas": 3867,
+     "reel": 32.224999999998815,
+     "gel": 0,
+     "dtMonde": 0.008333333333333333,
+     "dtJoueuse": 0.008333333333333333,
+     "gele": false,
+     "arretee": false
+    }
+   }
+  },
+  {
+   "nom": "vrai iPhone de la propriétaire",
+   "statut": "hors-banc",
+   "raison": "p95 ≤ 16.7 ms à lire sur ?perf=1&scene=charge aux jalons A et B (REFONTE.md § 8.4)"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 68.9,
+ "bundle": {
+  "url": "http://127.0.0.1:58728/proto-neon/__avant.html",
+  "empreinte": "d0696d00c558"
+ },
+ "date": "2026-10-18T02:31:09.929Z",
+ "dateParis": "18/10/2026 · 04 h 31"
+}

@@ -1,0 +1,31 @@
+{
+ "id": "G2",
+ "titre": "Mode bureau : détection, plus de contrôles tactiles ni de plein écran forcé, toute fenêtre jouable, pause et perte de focus propres",
+ "pourquoi": "Mesuré en direct (med-desk.mjs) : à 1440×900 sans tactile, .s2ctl.on = true (manche et boutons affichés), fullscreenElement posé au clic JOUER, Entrée et Espace inertes au menu, P inerte, souris inerte ; à 960×1040 (demi-écran ancré) le voile « Tourne ton téléphone » rend JOUER incliquable. Une touche maintenue reste collée après un blur. C'est ce qui rend le jeu injouable sur PC/Mac, demandé explicitement.",
+ "quoi": "src/10-core.js : S.desktop = !(navigator.maxTouchPoints > 0 || matchMedia('(pointer:coarse)').matches), remis à false au premier touchstart. src/26-ui.js _uiSyncCtl : show = show && !S.desktop ; les six lignes tactiles des réglages (Manche, Main directrice, Taille/Opacité/Hauteur des contrôles, Écart du bord) et Vibrations (si !navigator.vibrate) reçoivent hidden quand S.desktop. src/90-boot.js resizeCanvas : SCALE = h / K.VIEW_H, puis si w/SCALE < 1000 → SCALE = w/1000, si w/SCALE > 1600 → SCALE = w/1600 ; S.view.h = h/SCALE (plus de constante) ; body.portrait, #rotate et la pause automatique de portrait seulement si !S.desktop. startRun : goFullscreen() et lockLandscape() seulement si !S.desktop ; le bouton « PLEIN ÉCRAN » du menu reste sur bureau avec le suffixe « (F) ». Clavier (keydown) : ignorer l'événement si e.ctrlKey || e.metaKey || e.altKey ; ignorer e.repeat pour e, r, f, p, Escape, Enter ; directions lues sur e.code (KeyW/KeyA/KeyS/KeyD, KeyZ/KeyQ, flèches) ; 'p' et 'Escape' → togglePause() ; en pause 'Enter' ou ' ' → reprise ; 'f' → bascule plein écran ; fullscreenchange sortant pendant une partie non pausée → togglePause(). window 'blur' et 'pagehide' : vider keys{}, S.input (jx, jy, jmag = 0 ; jactive, boost, special, ult = false), relâcher touchJoy/touchBtns, togglePause() si en jeu ; togglePause() vide aussi keys{} ; bandeau de pause « PAUSE — FENÊTRE INACTIVE » (classe .s2pause-blur) distinct de la pause volontaire. visibilitychange visible et reprise : requestWake() si S.phase === 'play' ; src/21-audio.js : resume() si state !== 'running' (couvre 'interrupted' de Safari) aussi sur pointerdown/touchstart ; onTouchStart/Move/End : preventDefault seulement si e.cancelable. src/27-phases.js : ZOOM_BASE = S.desktop ? 1.05 : 1.30, ZOOM_NEAR = 1.54 × base, ZOOM_WIDE = 0.77 × base.",
+ "tests": [
+  "Bureau 1440×900 hasTouch:false, après clic JOUER : getComputedStyle('.s2ctl').display === 'none' ; document.fullscreenElement === null ; aucun .s2opt visible dont le texte matche /Manche|Main directrice|Écart du bord|Vibrations/ ; au repos (zc.mode 0) S.view.w ∈ [1150 ; 1250] et S.view.h ∈ [700 ; 780].",
+  "Bureau 960×1040 hasTouch:false : getComputedStyle('#rotate').display === 'none' ; clic JOUER → S.phase === 'play' en ≤ 500 ms et S.paused === false après 2 s ; S.view.w ≥ 900 et S.view.w / S.view.h ≥ 0,85. Bureau 3440×1440 : S.view.w ≤ 1550 au repos.",
+  "iPhone 13 paysage hasTouch:true : .s2ctl.on présent en jeu ; contexte 390×844 portrait → #rotate display 'flex' ; S.view.w au repos ∈ [1200 ; 1260] (1316 aujourd'hui, +5 % de taille des entités).",
+  "Clavier en jeu (bureau) : press 'p' → S.paused === true ; 'Enter' → false ; 'Escape' → true ; 'Escape' → false ; 'f' → document.fullscreenElement === document.documentElement ; 'f' → null ; S.ult = S.ultMax puis dispatch keydown {key:'r', metaKey:true} → S.ult inchangé, keydown {key:'r'} → S.ult === 0 ; document.exitFullscreen() en partie plein écran → S.paused === true en ≤ 100 ms.",
+  "keyboard.down('ArrowLeft') + down('Space') puis dispatch window 'blur' → en ≤ 100 ms : S.paused === true, S.input.jactive === false, S.input.jmag === 0, S.input.boost === false, S.snake.boosting === false ; dispatch 'focus' puis press 'Escape' → paused false et |ΔS.snake.ang| < 0,01 rad sur 500 ms sans touche enfoncée.",
+  "hidden → visible → tap REPRENDRE : compteur navigator.wakeLock.request === 2 (aujourd'hui 1) ; AudioContext.prototype.resume appelé ≥ 1 fois après un visibilitychange visible avec state simulé 'interrupted' ; profil tablette 1194×834, partie de 60 s au doigt : 0 message console de type error (aujourd'hui 1050 par 150 s).",
+  "NR : tools/test/run.mjs nr passe (diag, son-ios, rail2) ; desktop-feel.mjs : latence entrée→virage au clavier = 1 image, 90° en ≤ 22 images (inchangé)."
+ ],
+ "depend_de": [
+  "G1"
+ ],
+ "effort": 2,
+ "impact": 5,
+ "propositions_source": [
+  "DESK-1",
+  "DESK-2",
+  "DESK-3",
+  "DESK-8",
+  "ROB-7",
+  "AV-14",
+  "ENN-16",
+  "ACC-2",
+  "ACC-10"
+ ]
+}

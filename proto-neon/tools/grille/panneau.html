@@ -1,0 +1,143 @@
+<script>
+/* page d'essai de l'époque 1993 : le jeu principal reste à l'arrêt, N.grille prend la main sur la boucle.
+   ?pilote=1 : le pilote automatique du banc (tools/grille/banc.mjs) tient le manche (par les vraies commandes : il pose
+   S.input.x / y / mag dans la direction ÉCRAN d'une case, et le saut d'étage par S.input.pouvoir).
+   ?qui=lui : le pilote (sinon elle). Touche N : skip() (une étape à la fois).
+   window.__GRILLE_MES : coût de update + draw du module à chaque image, couleurs du tampon (une image sur six, par
+   phase), part de cyan hors du serpent (une image sur trente). */
+(function () {
+  var N = window.__N, q = location.search || '';
+  var PILOTE = /[?&]pilote=1\b/.test(q), QUI = /[?&]qui=lui\b/.test(q) ? 'lui' : 'elle';
+  var MES = window.__GRILLE_MES = { images: 0, couts: [], parPhase: {}, couleurs: {}, horsPalette: 0, cyanHors: [], cyanMax: 0, decisions: 0, plongees: 0 };
+  var horloge = (window.performance && performance.now) ? function () { return performance.now(); } : function () { return 0; };
+  var DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];
+
+  /* le pilote : un plus court chemin (BFS) sur l'étage de la tête, vers la balise, l'ascenseur, la sortie ou une
+     cellule ; les cases dangereuses sont des murs (piliers, corps, ennemis et leur pas suivant, cases visées) */
+  var dernier = -1, voulu = -1, plongerT = 0;
+  function pilote(st) {
+    var I = N.S.input;
+    if (st.phase === 'titre' || st.phase === 'sortie' || st.phase === 'fini') return;
+    if (st.n !== dernier && !st.mort) { dernier = st.n; voulu = decider(st); MES.decisions++; }
+    if (voulu >= 0) { I.x = st.dirsEcran[voulu][0]; I.y = st.dirsEcran[voulu][1]; I.mag = 1; }
+    if (plongerT > 0) plongerT--;
+  }
+  function decider(st) {
+    var C = st.C, R = st.R, h = st.snake[0], f = h[2], i, k;
+    if (st.vertical >= 0) return st.dir;
+    var mur = new Uint8Array(C * R);
+    st.piliers[f].forEach(function (p) { mur[p[1] * C + p[0]] = 1; });
+    for (i = 1; i < st.snake.length - 1; i++) { var s = st.snake[i]; if (s[2] === f) mur[s[1] * C + s[0]] = 1; }
+    st.ennemis.forEach(function (e) {
+      if (e.f !== f || e.canon) return;
+      mur[e.y * C + e.x] = 1;
+      if (e.k === 'rodeur') { for (var d = 0; d < 4; d++) { var x = e.x + DX[d], y = e.y + DY[d]; if (x >= 0 && y >= 0 && x < C && y < R) mur[y * C + x] = 1; } }
+      else { var x2 = e.x + e.dx, y2 = e.y + e.dy, x3 = e.x - e.dx, y3 = e.y - e.dy; if (x2 >= 0 && y2 >= 0 && x2 < C && y2 < R) mur[y2 * C + x2] = 1; if (x3 >= 0 && y3 >= 0 && x3 < C && y3 < R) mur[y3 * C + x3] = 1; }
+    });
+    st.menaces.forEach(function (m) { if (m.f === f && (m.feu || m.reste < 1.7)) m.cases.forEach(function (c) { mur[c[1] * C + c[0]] = 1; }); });
+    /* l'objectif */
+    var cibles = [], asc = st.asc.filter(function (a) { return a.ouvert; });
+    var autre = false;
+    if (st.sortie) { if (f === 0) cibles.push([st.sortie.x, st.sortie.y]); else autre = true; }
+    else {
+      var bal = st.balises.filter(function (b) { return !b.allume; });
+      bal.forEach(function (b) { if (b.f === f) cibles.push([b.x, b.y]); });
+      if (!cibles.length && bal.length) autre = true;
+      if (!bal.length && st.phase === 'grille' && asc.length) autre = true;
+    }
+    if (autre) {
+      if (st.plongee.pret && plongerT <= 0 && st.piliers[1 - f].every(function (p) { return p[0] !== h[0] || p[1] !== h[1]; }) && !menaceEn(st, 1 - f, h[0], h[1])) {
+        N.S.input.pouvoir = true; plongerT = 30; MES.plongees++; return st.dir;
+      }
+      asc.forEach(function (a) { cibles.push([a.x, a.y]); });
+    }
+    if (!cibles.length) {
+      st.items.forEach(function (it) { if (it.f === f && (it.type !== 'regen' || st.perdu > 0)) cibles.push([it.x, it.y]); });
+    }
+    /* les ascenseurs qu'on ne vise pas sont des murs (on ne change pas d'étage par mégarde) */
+    st.asc.forEach(function (a) { if (a.ouvert && !cibles.some(function (c) { return c[0] === a.x && c[1] === a.y; })) mur[a.y * C + a.x] = 1; });
+    var but = new Uint8Array(C * R); cibles.forEach(function (c) { but[c[1] * C + c[0]] = 1; mur[c[1] * C + c[0]] = 0; });
+    /* le BFS, depuis les trois cases voisines permises */
+    var dist = new Int16Array(C * R).fill(-1), prem = new Int8Array(C * R).fill(-1), file = [];
+    for (k = 0; k < 4; k++) {
+      if ((k + 2) % 4 === st.dir) continue;
+      var nx = h[0] + DX[k], ny = h[1] + DY[k];
+      if (nx < 0 || ny < 0 || nx >= C || ny >= R || mur[ny * C + nx]) continue;
+      dist[ny * C + nx] = 1; prem[ny * C + nx] = k; file.push(ny * C + nx);
+    }
+    var trouve = -1;
+    for (var qi = 0; qi < file.length; qi++) {
+      var c0 = file[qi];
+      if (but[c0]) { trouve = c0; break; }
+      var cx = c0 % C, cy = (c0 / C) | 0;
+      for (k = 0; k < 4; k++) {
+        var x = cx + DX[k], y = cy + DY[k];
+        if (x < 0 || y < 0 || x >= C || y >= R) continue;
+        var j = y * C + x; if (mur[j] || dist[j] >= 0) continue;
+        dist[j] = dist[c0] + 1; prem[j] = prem[c0]; file.push(j);
+      }
+    }
+    if (trouve >= 0 && espace(st, mur, prem[trouve], h) > 4) return prem[trouve];
+    /* sinon : le voisin qui laisse le plus de place */
+    var best = st.dir, bs = -1;
+    for (k = 0; k < 4; k++) { if ((k + 2) % 4 === st.dir) continue; var e = espace(st, mur, k, h); if (e > bs) { bs = e; best = k; } }
+    return best;
+  }
+  function menaceEn(st, f, x, y) { return st.menaces.some(function (m) { return m.f === f && m.cases.some(function (c) { return c[0] === x && c[1] === y; }); }); }
+  function espace(st, mur, d, h) {
+    var C = st.C, R = st.R, x = h[0] + DX[d], y = h[1] + DY[d];
+    if (d < 0 || x < 0 || y < 0 || x >= C || y >= R || mur[y * C + x]) return -1;
+    var vu = new Uint8Array(C * R), pile = [y * C + x], n = 0; vu[y * C + x] = 1;
+    while (pile.length && n < 40) {
+      var c = pile.pop(); n++;
+      var cx = c % C, cy = (c / C) | 0;
+      for (var k = 0; k < 4; k++) { var xx = cx + DX[k], yy = cy + DY[k]; if (xx < 0 || yy < 0 || xx >= C || yy >= R) continue; var j = yy * C + xx; if (mur[j] || vu[j]) continue; vu[j] = 1; pile.push(j); }
+    }
+    return n;
+  }
+  function mesurer(st, cout) {
+    MES.images++;
+    var ph = st.phase;
+    MES.couts.push(cout);
+    (MES.parPhase[ph] || (MES.parPhase[ph] = [])).push(cout);
+    if (MES.images % 6) return;
+    var B = N.gfx.buf(), vu = new Uint8Array(256), l = [];
+    for (var i = 0; i < B.length; i++) vu[B[i]] = 1;
+    for (var c = 0; c < 256; c++) if (vu[c]) { l.push(c); if (c > 15) MES.horsPalette++; }
+    var u = MES.couleurs[ph] || (MES.couleurs[ph] = []); l.forEach(function (c) { if (u.indexOf(c) < 0) u.push(c); });
+    if (MES.images % 30) return;
+    /* le cyan hors du serpent : à plus d'un rayon de toute boîte du serpent dessinée (tête, tube, puits, colonne) */
+    var W = N.gfx.W, H = N.gfx.H, cy = N.pal.i('cyan'), cp = N.pal.i('cyanPale'), pts = st.serpentEcran, hors = 0;
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      var v = B[y * W + x]; if (v !== cy && v !== cp) continue;
+      var pres = false;
+      for (var k = 0; k < pts.length; k++) { var dx = pts[k][0] - x, dy = pts[k][1] - y, r = pts[k][2] + 2; if (dx * dx + dy * dy < r * r) { pres = true; break; } }
+      if (!pres) hors++;
+    }
+    var part = hors / (W * H);
+    MES.cyanHors.push(part); MES.cyanMax = Math.max(MES.cyanMax, part);
+  }
+  function lancer() {
+    var S = N.S; S.phase = 'grille';
+    N.grille.start({ graine: window.__SEED || 1993, qui: QUI, surFin: function () { window.__GRILLE_FINI = (window.__GRILLE_FINI || 0) + 1; window.__GRILLE_FIN_T = N.grille.state().t; } });
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop, piste = false, cout = 0;
+    g.update = function (dt) {
+      if (!piste && N.music && N.music.context && N.music.context() && N.music.stop) { piste = true; try { N.music.stop(); } catch (e) { } }
+      if (N.grille.actif()) { if (PILOTE) pilote(N.grille.state()); var a = horloge(); N.grille.update(dt); cout = horloge() - a; }
+      else { cout = 0; u0.call(g, dt); }
+    };
+    g.draw = function () {
+      if (N.grille.actif() || N.grille.phase() === 'fini') { var a = horloge(); N.grille.draw(); cout += horloge() - a; window.__FRAME = (window.__FRAME || 0) + 1; mesurer(N.grille.state(), cout); }
+      else d0.call(g);
+    };
+    g.drawTop = function () { if (!N.grille.actif() && N.grille.phase() !== 'fini') t0.call(g); };
+    /* les écrans et le HUD du jeu principal se taisent tant que l'époque tient l'écran */
+    function couvre() { return N.grille.actif() || N.grille.phase() === 'fini'; }
+    if (N.ui) { if (N.ui.fermer) N.ui.fermer(); var ua = N.ui.actif; N.ui.actif = function () { return !couvre() && ua.call(N.ui); }; }
+    if (N.hud && N.hud.draw) { var hd = N.hud.draw; N.hud.draw = function () { if (!couvre()) hd.apply(N.hud, arguments); }; }
+    if (N.fx && N.fx.drawEcran) { var fe = N.fx.drawEcran; N.fx.drawEcran = function () { if (!couvre()) fe.apply(N.fx, arguments); }; }
+    window.addEventListener('keydown', function (e) { if (e.code === 'KeyN') N.grille.skip(); });
+  }
+  if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
+})();
+</script>

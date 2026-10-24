@@ -1,0 +1,11 @@
+diff --git a/proto-neon/src/64-aventure.js b/proto-neon/src/64-aventure.js
+--- a/proto-neon/src/64-aventure.js
++++ b/proto-neon/src/64-aventure.js
+@@ -376,6 +376,7 @@
+     { id: 'espace', type: 'film', base: 'espace', evt: 'espace', legende: '2975 — L\'INTERGALACTIQUE' },
+     /* 2975, le final : N.cosmos (67-cosmos.js) s'il est là — l'espace profond et le vaisseau amiral — ; sinon le jeu reprend */
++    { id: 'amiral', type: 'film', base: 'amiral', legende: 'UNE ARMADA T’ATTEND' },
+     { id: '2975', type: 'epoque', module: 'cosmos', graine: 2975, final: true, isole: true },
+     { id: 'jeu-2975', type: 'jeu', epoque: 2975, sauf: '2975' },
+     { id: 'fin', type: 'film', base: 'fin', evt: 'fin', duree: 5, theme: 'qui', legende: { elle: 'FIN — LA PILOTE', lui: 'FIN — LE PILOTE' } },
+     { id: 'bilan', type: 'bilan' },

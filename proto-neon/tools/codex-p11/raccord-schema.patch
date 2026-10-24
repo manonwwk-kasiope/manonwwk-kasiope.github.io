@@ -1,0 +1,7 @@
+diff --git a/proto-neon/src/03-socle.js b/proto-neon/src/03-socle.js
+--- a/proto-neon/src/03-socle.js
++++ b/proto-neon/src/03-socle.js
+@@ -475,2 +475,2 @@
+-    geste: obj({ genre: un(['toucher', 'glisse', 'tenu', 'autre']), doigt: un(['manche', 'action', 'bouton']), duree: 'n+',
++    geste: obj({ genre: un(['toucher', 'glisse', 'tenu', 'autre']), doigt: un(['manche', 'action', 'bouton']), t0: '?n', t1: '?n', duree: 'n+',
+       deplacement: 'n+', action: un(['pouvoir', 'apogee', 'boost', 'aucune']) }),

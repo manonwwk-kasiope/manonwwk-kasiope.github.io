@@ -1,0 +1,33 @@
+{
+ "id": "G8",
+ "titre": "Impact : hitstop réel compté en images, kill avec score flottant, pitch et secousse, blessure en vignette directionnelle, montée de niveau mise en scène, budget de flashs, sons « prêt »",
+ "pourquoi": "Rejoué en direct : fx.hitstop(12) → 0 image gelée (dts 16,7 ms partout), 55 → 2 images ; le son de kill est à hauteur fixe, aucun score ne flotte, la blessure est un flash rouge plein écran d'une image (+82 à +113 % de luminance) sans gel ; 120 flashs plein écran et 30 % d'images secouées en 5 min ; ultReady existe et n'est jamais appelé. Les retours sont soit fantômes, soit saturants.",
+ "quoi": "src/20-fx.js : hitstop compté en images — fx.hitstop(n) gèle n images à timeScale 0,08, décrément dans frame() (src/90-boot.js) après lecture de hitstopLeft(), jamais dans l'image de pose ; plafond 6 images cumulées hors mort ; valeurs : kill ordinaire 2, élite/boss 5, blessure 4, mort 8. Kill (src/10-core.js killEnemy, src/20-fx.js kill, src/21-audio.js) : fx.text('+' + score × mult, taille 13 + 2 × min(combo, 6) px, blanc → ambre si mult > 1, vy −60) ; audio kill() et bigkill() lisent opts.pitch, killEnemy passe pitch = 2^(min(combo, 12)/12) ; fx.kill : shake 2,4 → 4,5 u (élite 9 → 14), ph.pulse 0,012 → 0,035 (élite 0,09) ; anneau et flare divisés par le zoom courant ; flash blanc de la silhouette 60 ms puis 6 éclats 'shard' à 300 u/s pendant 0,35 s ; recul de caméra de 3 u opposé au vecteur du tir, lissé. Blessure (hurtSnake) : fx.flash('#ff2b52', 0,7, 'edge', ang) — mode 'edge' existant, gradient décalé de 25 % de l'écran vers l'angle d'impact — à la place du flash plein écran ; hitstop 4 ; S.timeScale 0,4 pendant 180 ms puis retour linéaire sur 120 ms ; ph.jolt(0,6, ang) pour toute blessure (1,5 élite, 2 boss) ; shake 14 → 8. Ultime (useUlt) : flash blanc 0,85 → 0,4 et 120 ms, plus de bannière ; plafond global d'un flash plein écran toutes les 4 s (les suivants deviennent des vignettes) ; shake plafonné à 18 u ; rebond de mur shake 5 → 3. Impact non létal : _enDraw (src/22-enemies.js) remplit la silhouette en blanc opaque quand hitT > 60 ms puis fond sur les 30 ms restants ; fx.hit(x, y, e.color) appelé à chaque impact de projectile joueur (existe, jamais appelé). Montée de niveau (openCards, src/90-boot.js) : 350 ms avant le passage en 'cards' : timeScale 0,15, fx.flash('#ffffff', 0,3), fx.ring depuis la tête 10 → 600 u largeur 6, ph.pulse(0,08), S.snake.invuln couvrant la séquence, sfx levelup au début et 'card' à l'ouverture. Sons prêts : quand S.ult atteint ultMax → au.sfx('ultReady') (existe) + toast « ULTIME PRÊT — ★ / R » 1,9 s + halo × 1,3 du bouton ; première fois qu'un pouvoir est prêt → toast « POUVOIR PRÊT — ◈ / E ».",
+ "tests": [
+  "med-feel.mjs / probe-feel.mjs section C (pose depuis un crochet sur weapons.update, dans l'image) : après un kill réel de traqueur, exactement 2 images consécutives avec S.dt < 0,006 (aujourd'hui 0) ; élite 5 ; hurtSnake 4 ; à 30 im/s simulées (throttle CDP) mêmes nombres d'images.",
+  "Bot 60 s avec crochet mettant hp = 1 aux traqueurs : appels fx.text === nombre de kills ; audio.lastSfx() (à exposer : {name, f0, t}) : sur 5 kills en 3 s, f0(5)/f0(1) ≥ 1,25 et strictement croissant ; S.shake ≥ 4,0 l'image suivant un kill ordinaire ; luminance locale (fenêtre 120 px écran autour de l'ennemi tué) ≥ +12 points à zoom 0,78 comme à 1,35 ; hitstopLeft() > 0 sur 2 images après chaque kill ; déplacement de S.cam ≥ 2,5 u opposé au tir dans les 2 images.",
+  "Blessure, sonde de luminance 3×3 : à l'impact, zone centrale ≤ +15 %, bord côté impact ≥ +60 %, bord opposé ≤ +25 % ; 4 images avec dt < 0,006 ; S.timeScale ≤ 0,45 sur ≥ 10 images ; phases.tilt() ≥ 0,05 dans les 2 images suivant chaque hurtSnake (11/11, contre 1/11).",
+  "Partie increvable de 5 min à 1440×900 (av-desk.mjs 1 god) : flashs plein écran ≤ 30 (120) ; images avec shake > 0,5 ≤ 12 % (30 %) ; luminance moyenne d'écran max ≤ 140/255 (209) ; ui.banner jamais appelé avec 'SURCHARGE' par useUlt.",
+  "Montée de niveau : entre l'image où S.lvlUps passe à 1 et la première image en phase 'cards' ≥ 18 images dont ≥ 15 avec dt < 0,004 ; un appel fx.ring avec (x, y) = tête ± 2 u ; pic de luminance globale ≥ +40 % ; S.snake.invuln > 0 pendant toute la séquence.",
+  "probe-feel.mjs section E (ennemi immobilisé, projectile manuel) : luminance de la boîte de l'ennemi ≥ +25 points l'image suivant l'impact (2,5) ; appels fx.hit === impacts de projectiles sur 20 s de bot.",
+  "S.ult forcé à ultMax → au.sfx('ultReady') en ≤ 100 ms et .s2ann.on avec texte /ULTIME/ ; ui.banner('SURCHARGE') non appelé.",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G1",
+  "G5"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "FEEL-2",
+  "FEEL-5",
+  "FEEL-6",
+  "FEEL-7",
+  "FEEL-8",
+  "AV-8",
+  "AV-10",
+  "FEEL-11",
+  "ACC-6"
+ ]
+}

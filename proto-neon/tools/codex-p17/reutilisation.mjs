@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import assert from 'node:assert/strict';
+import {sources,monde} from './vm.mjs';
+const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
+const src=sources(),ancien=fs.readFileSync(new URL('candidat-parties-80-ecrans.js',import.meta.url),'utf8'),actuel=src.find(([f])=>f==='80-ecrans.js')[1];
+const sansModele=s=>s.slice(0,s.indexOf('  function retourModele(nom) {'))+'/* modèle de dessin seul */'+s.slice(s.indexOf('  function peindreRetour(nom) {'));
+const ref=JSON.parse(fs.readFileSync(new URL('candidat-parties.json',import.meta.url)));
+const horsEcrans=src.filter(([f])=>f!=='80-ecrans.js').every(([f,s])=>hash(s)===ref.fichiers.find(([ff])=>ff===f)[1]);
+const ancienSrc=src.map(([f,s])=>[f,f==='80-ecrans.js'?ancien:s]);
+const a=monde(ancienSrc),b=monde(src);
+const fonctions=['ouvrir','fermer','update','sortie','finActions'];
+const logique=fonctions.map(nom=>({nom,identique:a.N.ui[nom].toString()===b.N.ui[nom].toString()}));
+const lectures=src.filter(([f,s])=>f!=='80-ecrans.js'&&/retourModele|ecran\.retour/.test(s)).map(([f])=>f);
+const sortie={avantSha256:hash(ancien),apresSha256:hash(actuel),seulRetourModeleModifie:sansModele(ancien)===sansModele(actuel),autresSourcesIdentiques:horsEcrans,fonctionsDeLogique:logique,lecteursExternesDuModele:lectures,justification:'Le protocole de partie sans DOM met à jour et ne dessine pas. Seul retourModele change pour retirer les fragments PROCHAIN et DU/JOUR ; les reçus réels des 80 parties restent ceux du moteur inchangé. Les contrôles de composition et le build sont rejoués sur le rendu final.'};
+fs.writeFileSync(new URL('reutilisation-parties.json',import.meta.url),JSON.stringify(sortie,null,2));
+console.log(sortie);assert.ok(sortie.seulRetourModeleModifie&&horsEcrans&&logique.every(c=>c.identique)&&lectures.length===0);

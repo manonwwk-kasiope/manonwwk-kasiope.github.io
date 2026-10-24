@@ -1,0 +1,87 @@
+<script>
+/* page d'essai du WARP (78-warp.js) : vague 3, joueuse invulnérable ; un warp toutes les 6 s de jeu ; pendant le warp le
+   monde reçoit dt × N.warp.facteur() ; un pilote simule le second doigt (un warp sur deux au TOUCHER, l'autre TENU puis
+   relâché) et fait tourner le serpent. ?pilote=0 coupe le pilote (on vise soi-même) ; ?scenario=0 n'ajoute pas les
+   ennemis de démonstration (un groupe pour la BOMBE, deux alignés pour le LASER, un RAPIDE pour la MINE).
+   window.__WARP : l'état de la page et les mesures (déplacement des ennemis pendant et hors warp). */
+(function () {
+  var N = window.__N, q = location.search || '';
+  var W = window.__WARP = { pret: false, periode: 6, t: 0, cycle: 0, tape: 0, pilote: !/[?&]pilote=0\b/.test(q), scenario: !/[?&]scenario=0\b/.test(q),
+    mesure: { creux: { d: 0, n: 0, tt: 0, dt: 0 }, plein: { d: 0, n: 0, tt: 0, dt: 0 } }, prec: {}, ttPrec: -1, verrousParWarp: [], tAvant: 0 };
+
+  /* les ennemis de démonstration, posés dans la vue autour de la tête */
+  function scenario() {
+    var P = N.joueuse.tete, c = N.cam, A = N.outils.A, m = 26;
+    function pose(t, dx, dy, o) {
+      var x = Math.min(Math.max(P.x + dx, Math.max(c.x, A.x0) + m), Math.min(c.x + c.w, A.x1) - m);
+      var y = Math.min(Math.max(P.y + dy, Math.max(c.y, A.y0) + m + 12), Math.min(c.y + c.h, A.y1) - m);
+      return N.ennemis.spawn(t, x, y, o || {});
+    }
+    var sx = P.x < c.x + c.w / 2 ? 1 : -1, sy = P.y < c.y + c.h / 2 ? 1 : -1;
+    pose('larve', sx * 80, sy * -10); pose('larve', sx * 92, sy * 4); pose('larve', sx * 84, sy * 14);
+    var a = Math.atan2(sy * 40, sx * -60), u = Math.cos(a), v = Math.sin(a);
+    pose('fleche', u * 50, v * 50); pose('fleche', u * 92, v * 92);
+    pose('dard', sx * 40, sy * 70, { mods: { rapide: true } });
+  }
+  /* le second doigt simulé */
+  function pilote(dt) {
+    var S = N.S, I = S.input, st = N.warp.state();
+    W.tape -= dt;
+    var a = W.t * 0.45;
+    I.x = Math.cos(a); I.y = Math.sin(a); I.mag = 1;
+    var mode = (W.cycle & 1) ? 'tenu' : 'toucher';
+    if (!N.warp.capte()) { if (W.tenuSimule) { I.boost = false; W.tenuSimule = false; } return; }
+    if (mode === 'toucher') {
+      if (st.sous !== null && W.tape <= 0) { I.taps.push({ x: st.curseur.x, y: st.curseur.y, t0: 0, t1: 0, doigt: 'action' }); W.tape = 0.3; }
+    } else if (st.phase === 'visee') {
+      var tient = st.pt >= 0.3 && st.pt < 2.7;
+      if (tient) { I.boost = true; W.tenuSimule = true; } else if (W.tenuSimule) { I.boost = false; W.tenuSimule = false; }
+    }
+  }
+  /* la mesure : le déplacement moyen d'un ennemi par image, au creux du warp et hors warp */
+  function mesurer() {
+    var L = N.ennemis.list, st = N.warp.state(), M = null, tt = N.outils.T.t;
+    if (st.phase === 'visee') M = W.mesure.creux;
+    else if (st.phase === 'repos' && st.recharge <= 0) M = W.mesure.plein;
+    var vu = {};
+    for (var i = 0; i < L.length; i++) {
+      var e = L[i]; if (e._dead) continue;
+      var p = W.prec[e.id];
+      if (M && p && e.etat !== 'portail') { M.d += Math.hypot(e.x - p.x, e.y - p.y); M.n++; }
+      vu[e.id] = { x: e.x, y: e.y };
+    }
+    if (M && W.ttPrec >= 0) { M.tt += tt - W.ttPrec; M.dt += W.dtPrec || 0; }
+    W.prec = vu; W.ttPrec = tt;
+  }
+  function lancer() {
+    if (N.intro && N.intro.skip) N.intro.skip();
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop, fx = N.fx, f0 = fx && fx.update;
+    g.update = function (dt) {
+      if (W.pret && g.etat() === 'jeu') {
+        W.t += dt;
+        if (!N.warp.actif() && W.t - W.tAvant >= W.periode) {
+          W.tAvant = W.t;
+          if (W.scenario) scenario();
+          if (N.warp.declencher('essai')) { W.cycle++; W.verrousParWarp.push(0); }
+        }
+        if (W.pilote) pilote(dt);
+        mesurer();
+        W.dtPrec = dt;
+      }
+      N.warp.update(dt);
+      var s = N.warp.state(); if (W.verrousParWarp.length) W.verrousParWarp[W.verrousParWarp.length - 1] = Math.max(W.verrousParWarp[W.verrousParWarp.length - 1], s.verrous);
+      u0.call(g, dt * N.warp.facteur());
+    };
+    if (f0) fx.update = function (dt) { f0.call(fx, dt * N.warp.facteur()); };
+    g.draw = function () { d0.call(g); N.warp.draw('monde'); };
+    g.drawTop = function () { t0.call(g); N.warp.draw('dessus'); };
+    var essai = setInterval(function () {
+      if (g.etat() === 'demarrage') return;
+      clearInterval(essai);
+      g.dbg.god(true); g.dbg.vague(3); N.warp.reset();
+      W.pret = true; W.tAvant = W.t - W.periode + 2;          // le premier warp à 2 s
+    }, 50);
+  }
+  if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
+})();
+</script>

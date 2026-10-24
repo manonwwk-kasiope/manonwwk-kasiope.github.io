@@ -1,0 +1,29 @@
+{
+ "id": "G14",
+ "titre": "Fin de partie qui explique, boutons tactiles nommés avec signal « prêt », score par cran et records, PARE-CHOCS honnête",
+ "pourquoi": "L'écran de fin ne dit ni qui a tué (hurtSnake n'a pas de source), ni quoi changer, ni la distance au prochain déblocage ; « NOUVEAU RECORD » s'affiche dès la première partie ; un seul record sans cran (563 k à DÉTENDU vs 691 k à SUICIDE) ; les boutons ◈ et ★ n'ont ni nom ni signal prêt (opacité 0,26) et l'abréviation SEG n'est jamais expliquée ; PARE-CHOCS annonce une seconde d'invulnérabilité et donne une charge de bouclier.",
+ "quoi": "src/10-core.js : hurtSnake(dmg, x, y, src) mémorise S.lastHit = {type, name, level, progress} (src passé par src/22-enemies.js, src/25-levels.js pour convois/nœuds et les balles) ; S.run = {killedBy, usedUlt, usedSpecial, boosted, cardsTaken, peakLen, ultReadyAt, comboMax, bossKills}. src/26-ui.js _uiFillOver : ligne « Détruit par TRAQUEUR — niveau 1 — 62 % du secteur — 0:52 » ; tuiles PROGRESSION (barre du niveau au moment de la mort), COMBO MAX, cartes du build en icônes avec niveau, libellé de build (axe dominant + arme la plus haute, ex. « ÉLECTRICIEN — ARC 6 ») ; delta vs partie précédente (« +31 pts, +0:12 ») et vs record du cran ; une phrase-conseil .s2tip par règle (ultReadyAt > 0 && !usedUlt → « Ton ultime ★ / R était prêt à 0:49 et n'a pas servi » ; !usedSpecial → « E / ◈ : traverse les ennemis 2 s » ; !boosted → « Espace / » : fuis » ; cardsTaken === 0 → « Les cartes tombent à 12 s : survis jusque-là ») ; barre « PROCHAIN DÉBLOCAGE : NOM dans N ◆ » (.s2next>u, largeur = min(1, coins/coût)) cliquable vers DÉBLOCAGES ; bouton « REJOUER AU CRAN SUPÉRIEUR » si S.level ≥ 3 ; NOUVEAU RECORD (.s2rec.on) seulement si S.stats.runs > 0 et score > record du cran ; tuile ARME non tronquée. Score : addScore × [0,8 ; 1 ; 1,25 ; 1,6 ; 2,0] selon le cran (facteur affiché à côté du nom du cran dans RÉGLAGES) ; S.stats.bestByDiff[5], bestLevel, bestTime, bossKills persistés dans snake2030.v1 ; le menu affiche le cran courant et son record ; MEILLEUR / CRÉDITS / PARTIES masqués tant que S.stats.runs === 0 (remplacés par « Première partie : les cartes tombent à 12 s »). Boutons tactiles (src/26-ui.js) : étiquette 11 px sous chaque bouton — BOOST / nom du pouvoir courant (POWERS[id].nom) / SURTENSION ; opacité de base 0,26 → 0,45 et 0,9 quand prêt ; pendant specialCd > 0, ◈ affiche Math.ceil(specialCd/1000) au centre ; HUD « SEG 9 » → « VIE » + une pastille par segment (.s2seg), rouge et pulsation 2 Hz sous 4. PARE-CHOCS (src/26-ui.js _UI_UNLOCKS) : texte « Absorbe un coup par partie » (effet réel conservé).",
+ "tests": [
+  "Après une mort forcée par un 'chaser' : S.run.killedBy === 'chaser' ; le .s2scr.on contient /Détruit par TRAQUEUR/ et les libellés PROGRESSION, COMBO MAX, PROCHAIN DÉBLOCAGE avec valeurs /\\d/ ; la valeur « dans N ◆ » === coût de l'article le moins cher non acquis − S.stats.coins ; largeur de .s2next>u === min(1, coins/coût) ± 1 % ; avec ultReadyAt > 0 et usedUlt = false, .s2tip matche /ultime/i ; après une partie au niveau ≥ 3 un bouton /CRAN SUPÉRIEUR/ est visible ; libellé de build /— [A-ZÉ ]+ \\d/ présent dans 20/20 parties sim ; scrollWidth ≤ clientWidth pour chaque .s2tile>b sur 1440×900 et iPhone.",
+  "Profil vierge : .s2rec.on absent après la 1re partie, présent après une 2e partie meilleure, absent après une 3e moins bonne ; .s2stat2 display none avant la première partie, visible ensuite.",
+  "Même graine (seedRnd) et pilote passif à DÉTENDU puis SUICIDE → S.score SUICIDE / S.score DÉTENDU ≥ 2,0 à kills égaux ; après 5 parties (une par cran) localStorage snake2030.v1 contient stats.bestByDiff de longueur 5 avec 5 valeurs > 0 ; le texte du menu contient le nom du cran courant et son record.",
+  "iPhone : btnEls.special.textContent contient POWERS[courant].nom avec font-size ≥ 11 px ; opacité calculée du bouton ★ ≥ 0,45 au repos et ≥ 0,85 quand S.ult ≥ ultMax ; pendant specialCd > 0 le bouton ◈ affiche Math.ceil(specialCd/1000) ; .s2seg contient exactement S.snake.len pastilles et la classe low quand len ≤ 3.",
+  "Texte de PARE-CHOCS contient « absorbe » et, avec u_shield acquis, S.snake.shield === 1 au départ et un coup ne réduit pas S.snake.len.",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G4",
+  "G9",
+  "G10"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "ACC-7",
+  "PROG-12",
+  "PROG-11",
+  "ACC-6",
+  "ACC-13",
+  "PROG-13"
+ ]
+}

@@ -1,0 +1,17 @@
+18/10/2026 · 00 h 34 (Paris)
+
+Commande : node proto-neon/tools/codex-06/verifier.mjs avant
+Résultat : sortie 1 avant tout lancement de navigateur.
+Error: listen EPERM: operation not permitted 127.0.0.1
+code: EPERM ; syscall: listen ; address: 127.0.0.1
+
+Essai de lecture locale (sans serveur) :
+node proto-neon/tools/codex-06/verifier.mjs avant --file
+Résultat : sortie 1 au lancement Chromium, avant toute scène.
+FATAL:base/apple/mach_port_rendezvous_mac.cc:158
+bootstrap_check_in org.chromium.Chromium.MachPortRendezvousServer: Permission denied (1100)
+Le processus Chromium a quitté par SIGTRAP. Le drapeau --mute-audio était présent.
+
+Aucune permission élevée disponible dans cette session. Aucun contournement appliqué.
+Les reçus *-etat.json sont des mesures des vrais modules sous Node VM, sans DOM ni navigateur.
+Ils ne valident ni Playwright, ni Safari, ni les performances réelles de l'iPhone.

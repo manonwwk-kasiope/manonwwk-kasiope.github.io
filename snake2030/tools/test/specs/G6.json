@@ -1,0 +1,28 @@
+{
+ "id": "G6",
+ "titre": "Menaces lisibles : aucune apparition ni armement hors champ, chevrons de bord, le corps absorbe les balles au-delà du 8e anneau, annonces ≥ 450 ms",
+ "pourquoi": "1 192 coups analysés : 52 % sont des balles d'artilleur, tirées à 37-62 % depuis hors champ et encaissées à 48 % par le corps à 423 u de la tête ; 37 à 76 % des charges de trancheur démarrent hors champ ; 17-29 % des ennemis apparaissent dans la vue. Le joueur meurt de ce qu'il ne peut pas voir, ce qui rend toute courbe de difficulté illisible tant que ce n'est pas corrigé.",
+ "quoi": "src/25-levels.js _lvPoint : tous les motifs ('flank', 'ring', 'ahead', 'pack', 'lane', 'edge') utilisent R ≥ max(view.w, view.h)/2 + 150 u et vérifient !inView(x, y, 40) sur 5 essais ; chaque apparition est précédée de 600 ms par un portail : chevron de 24 px de la couleur du type dessiné en coordonnées écran au bord le plus proche de la direction d'arrivée (nouvelle fonction fx.drawScreen appelée après render), chevron double pour les élites, tic sonore 'spawnTick' (nouveau, 40 ms, 2 kHz, crête −18 dBFS) ; l'événement est journalisé dans S.log si présent. src/22-enemies.js : trancheur, intercepteur, artilleur et pondeuse n'ouvrent leur fenêtre d'armement que si inView(e, 40) ; si l'ennemi sort de la vue pendant l'armement, l'annonce est prolongée de 300 ms et un chevron clignotant à 6 Hz est dessiné au bord, à l'intersection de la ligne d'attaque et du cadre ; sur le treillis, le trancheur choisit la famille de rails perpendiculaire à celle du serpent (railAng + π/2) ; traqueur : annonce de bond ≥ 450 ms même avec le mod rapide (le mod double la vitesse du bond, pas la cadence). Artilleur : bSpeed 195 → 230 u/s, vie de balle 4,2 → 2,2 s (portée 506 u) ; le crochet de visée se pose sur le point d'impact prédit du corps et vire au rouge s'il est dans les 8 premiers anneaux. src/10-core.js collide : un projectile ennemi touchant un segment d'indice > 8 est absorbé (burst de 6 particules couleur corps, boostE +1, sfx 'absorb' court −18 dBFS) sans dégât, sans invulnérabilité, sans remise à zéro du combo ; tête et 8 premiers anneaux blessent comme aujourd'hui ; boss, mines et contact inchangés. Marqueurs hors champ permanents (src/26-ui.js, calque écran) pour boss, élites et mines armées : 20 px du bord, taille ∝ 1/distance ; exposer ui.offscreen() → liste {x, y, kind}.",
+ "tests": [
+  "en-sim.mjs, 20 parties × 3 viewports (1440×900, 2560×1080, iPhone 13 paysage) : apparitions avec inView = true à leur première image = 0 % (aujourd'hui 17-29 %) ; événements 'wind' avec inView = false pour cutter/interceptor/shooter/spawner = 0 % (30-71 %) ; coups 'bullet' ≤ 25 % du total (52 %) ; coups 'bullet' sur un segment d'indice > 8 = 0 ; coups 'cutter:dash' depuis une source visible depuis < 600 ms ≤ 3 %.",
+  "Labo : balle ennemie lancée sur le segment 20 d'un serpent de 40 → S.snake.len inchangé, S.mult inchangé, ≥ 1 particule émise ; sur le segment 3 → len −1.",
+  "Portail : pour ≥ 95 % des apparitions, événement 'portal' journalisé 550-650 ms avant la première image de l'ennemi, avec ≥ 100 pixels modifiés dans la bande de 40 px du cadre (mesure en-lab pixels()).",
+  "Traqueur rapide : annonce→attaque p10 ≥ 450 ms sur 20 sims (aujourd'hui 183 ms) ; traqueur nominal p10 ≥ 450 ms (317 ms).",
+  "ui.offscreen() : boss hors vue → pendant 30 images un marqueur à < 24 px du bord dans la direction ±15° du boss ; en-lab2 cutter_ortho : ≤ 1 coup par dash (40 → ≥ 38 segments).",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G1",
+  "G2"
+ ],
+ "effort": 3,
+ "impact": 5,
+ "propositions_source": [
+  "ENN-5",
+  "ENN-6",
+  "ENN-11",
+  "AV-12",
+  "ENN-13",
+  "ENN-16"
+ ]
+}

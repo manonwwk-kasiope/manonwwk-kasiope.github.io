@@ -1,0 +1,73 @@
+{
+  "autoResiduel": {
+    "cas": 8,
+    "echecs": 6,
+    "corrige": false
+  },
+  "dateParis": "18/10/2026 04:09:06",
+  "sourcesSha256": "0889f1b83b94e6dc16da60d871373ddca89e366fd3fa0ec31cf394496935206d",
+  "protocolePouceSha256": "9bc3bea5c14192dfcc2cd0e528a7d0662c7273f36bc3a6a2866c0b434d070b62",
+  "raccordSha256": "332aaf8c3bec0d183e732bc947a35b35b48e0d6e28a023307e930d3cd7b962e5",
+  "calibration": true,
+  "calibrationProcessus": true,
+  "instrument": true,
+  "gestes": true,
+  "bornes": true,
+  "commandesVM": true,
+  "boost": true,
+  "conservation": true,
+  "pairesIdentiques": 80,
+  "r23": [
+    {
+      "phase": "avant",
+      "variante": "diriger",
+      "parties": 50,
+      "victoires": 5,
+      "taux": 0.1,
+      "seuil": 0.15,
+      "terminees": 50,
+      "impulsions": 0,
+      "erreurs": 0,
+      "conforme": false
+    },
+    {
+      "phase": "avant",
+      "variante": "auto",
+      "parties": 50,
+      "victoires": 6,
+      "taux": 0.12,
+      "seuil": 0.35,
+      "terminees": 50,
+      "impulsions": 506,
+      "erreurs": 0,
+      "conforme": false
+    },
+    {
+      "phase": "apres-raccord",
+      "variante": "diriger",
+      "parties": 50,
+      "victoires": 5,
+      "taux": 0.1,
+      "seuil": 0.15,
+      "terminees": 50,
+      "impulsions": 0,
+      "erreurs": 0,
+      "conforme": false
+    },
+    {
+      "phase": "apres-raccord",
+      "variante": "auto",
+      "parties": 50,
+      "victoires": 4,
+      "taux": 0.08,
+      "seuil": 0.35,
+      "terminees": 50,
+      "impulsions": 652,
+      "erreurs": 0,
+      "conforme": false
+    }
+  ],
+  "navigateur": "à vérifier hors bac ; script prêt, non exécuté",
+  "safari": "à vérifier sur iPhone physique",
+  "statut": "lot non validé tant que R-23, raccord intégré et navigateur ne sont pas tous vérifiés"
+}

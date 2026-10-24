@@ -1,0 +1,28 @@
+{
+ "id": "G13",
+ "titre": "Performance : zéro dégradé par image, butin fusionné, échelle de qualité complète (crans sous 1, hystérésis, mémoire), redimensionnement anti-rebond, horloge à pas fixe",
+ "pourquoi": "Sur canvas rasterisé CPU en 1080p (Firefox Linux, GPU sur liste noire, VM) : 94-96 % d'images > 33 ms, plancher de qualité px = 1 insuffisant, horloge dilatée de 6,4 % (37 s perdues en 10 min) ; 106 à 433 createRadialGradient par image pour les butins et tirs ennemis ; 20 changements de netteté en 5 min sur iPhone ; 60 réallocations du canvas par seconde de resize ; hoquet de 350-533 ms au clic JOUER. Le coût est entièrement en pixels (JS ≈ 1,2 ms/image), donc il faut moins de pixels, pas moins de logique.",
+ "quoi": "src/90-boot.js drawPickups/drawBullets et src/10-core.js drawPools : sprites offscreen pré-rendus par (couleur, rayon arrondi à 4 px) posés par drawImage — 0 createRadialGradient par image hors initialisation. Pickups (src/10-core.js) : expiration 26 → 10 s avec clignotement les 2 dernières secondes ; rayon d'aimant 120 → 200 u ; fusion : au-delà de 60 vivants, ou dès que ≥ 3 butins énergie sont à < 30 u, un seul pickup de valeur cumulée (rayon +15 %) ; VOLEUR mort et fin de secteur (src/22-enemies.js, src/25-levels.js) lâchent 1 core au lieu de 10 butins. Qualité : PX_CRANS = [0,6, 0,75, 1, 1,25, 1,5, 2] ; crans < 1 proposés seulement si S.desktop ou innerHeight ≥ 700 px ; le canvas garde sa taille CSS (cv.style.width/height) et rend à round(w × pxEff) ; palier « léger » quand _qStep ≥ 3 : plus de seconde passe néon (_enNeon large), halos de pickups plats, poussière et blooms rendus une fois dans un canvas de fond recopié par drawImage ; hystérésis : baisse si part > 6 % sur 2 s (inchangé), remontée seulement si part < 1 % pendant 45 s continus et au plus une remontée par 90 s ; cran stable mémorisé dans S.stats.qStep et appliqué dès la première image de la partie suivante ; sur Retina DPR 2, cran 2 autorisé après 25 s sains ; « Qualité d'image » affiche 60 % / 75 %. Redimensionnement : un seul timer resize/orientationchange (clearTimeout, 80 ms, dernier passage à 400 ms), réallocation seulement si (w, h, DPR) changent ; au clic JOUER, armement audio, plein écran et resetRun étalés sur trois images ; dégradés, polices et buffer de bruit audio pré-créés au boot ; les images des 3 premières secondes ne comptent pas dans _qWin. Horloge (frame()) : accumulateur à pas fixe 1/120 s, au plus 4 pas par image, le reste abandonné et compté dans S.dropped ; rattrapage borné à 33 ms ; le déterminisme à graine et entrées égales est conservé.",
+ "tests": [
+  "rp-calls.mjs (compteur sur CanvasRenderingContext2D.prototype) : 150 pickups en vue → createRadialGradient ≤ 3 par image (106) et ≤ 400 appels canvas/image (1 607) ; 500 tirs ennemis en vue → ≤ 3 dégradés (433) et ≤ 1 200 appels (4 254) ; god10.mjs : max(S.pickups.length) ≤ 120 (299) avec Σ XP ramassé ≥ 95 % de la valeur actuelle sur la même graine.",
+  "Chromium headless sans GPU, 1920×1080 DPR 1, partie réelle 120 s : part d'images > 33 ms ≤ 20 % après les 20 premières secondes (94-96 %) ; dilatation Σmin(raw, 50)/Σraw < 1 % (6,4 %) ; scène vide (0 ennemi) p50 ≤ 20 ms (33) ; S.opt.px = 0,75 → #game.width === 1440, height === 810, style.width === '1920px' ; S.opt.px = 0,6 → 1152×648 ; partie de 30 s à 2560×1440 : S.pxEff < 1 à la fin (aujourd'hui 1 avec 100 % d'images longues).",
+  "Profil iPhone, partie « dieu » 300 s : changements de S.pxEff ≤ 4 (20) ; rechargement après une partie → S.pxEff de la première image en jeu === S.stats.qStep ; profils iPhone et tablette : aucune image > 100 ms dans les 3 s suivant le clic JOUER (350 / 533 ms) et pxEff inchangé pendant ces 3 s.",
+  "60 événements resize dispatchés en 1 s → mutations de l'attribut width du canvas ≤ 2 (60) ; setViewportSize 1920×1080 → 1000×700 → 1920×1080 : S.view cohérent et 0 pageerror.",
+  "Horloge : 1080p CPU partie « dieu » 300 s : |S.t − temps réel joué| ≤ 1 % (6,4 %) ; gel injecté de 2 s → S.t avance de ≤ 40 ms et le serpent de ≤ 6 u ; iPhone à 60 im/s : trajectoire du serpent identique au pixel près sur 30 s à graine et entrées enregistrées égales.",
+  "NR : run.mjs nr passe, et le seuil bureau devient absolu : diag.mjs 1440×900 p99 ≤ 33 ms, iPhone p99 ≤ 33 ms."
+ ],
+ "depend_de": [
+  "G1",
+  "G11"
+ ],
+ "effort": 3,
+ "impact": 4,
+ "propositions_source": [
+  "ROB-4",
+  "ROB-5",
+  "DESK-10",
+  "ROB-9",
+  "ROB-11",
+  "AV-4"
+ ]
+}

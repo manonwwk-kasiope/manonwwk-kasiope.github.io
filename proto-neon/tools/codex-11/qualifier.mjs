@@ -1,0 +1,15 @@
+/* Une file bornée : fin de passe3 existante, choix documenté, final50, puis mêmes R31/R35 sur la paire. */
+import fs from'node:fs';import path from'node:path';import{spawn}from'node:child_process';import{fileURLToPath}from'node:url';
+const H=path.dirname(fileURLToPath(import.meta.url)),parent=31311,r={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),pid:process.pid,parentPid:parent,phase:'attente fin passe3',executions:[]};
+const save=()=>{const f=path.join(H,'qualification-execution.json');fs.writeFileSync(f+'.tmp',JSON.stringify(r,null,2)+'\n');fs.renameSync(f+'.tmp',f)},live=p=>{try{process.kill(p,0);return true}catch(e){if(e.code==='ESRCH')return false;throw e}},read=n=>JSON.parse(fs.readFileSync(path.join(H,n),'utf8'));
+async function executer(nom,script,args=[],env={}){r.phase=nom;save();const fd=fs.openSync(path.join(H,nom+'.log'),'w');const code=await new Promise((ok,ko)=>{const p=spawn(process.execPath,[path.join(H,script),...args],{env:{...process.env,...env},stdio:['ignore',fd,fd]});r.enfantPid=p.pid;save();p.on('exit',ok);p.on('error',ko)});fs.closeSync(fd);r.executions.push({nom,code,dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'})});save();return code;}
+save();try{
+let p3;while(true){try{p3=read('passe-3.json')}catch{}if(p3?.complete)break;if(!live(parent))throw Error('Passe3 terminale sans collecte complète');await new Promise(ok=>setTimeout(ok,1000))}
+const p1=read('passe-1.json');if(!p1.complete||!p1.conformeTechnique||p3.conformeTechnique||!p3.censures.some(c=>c.pilote==='bon'&&c.graine===2))throw Error('Le choix prédéfini doit être revu, aucune qualification lancée');
+const selection={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),candidate:1,motif:'Seule des trois candidates entièrement finie sans erreur ; passes2/3 censurées. Aucun quatrième réglage.',sources:'apres-sources.json',correctif:'TRAQUEUR : garde régulière hors quota, garde totale conservée et compteur consommé seulement sur spawn réel',qualification:'400 nouveaux reçus car nouvelle empreinte, mêmes nombres que1, aucune réutilisation des160comme preuve du correctif',plafond:540};fs.writeFileSync(path.join(H,'selection.json'),JSON.stringify(selection,null,2)+'\n');
+const q=read('passes.json');q.passes[2].etat='terminée, non retenue';q.passes[2].resultat='passe-3.json';q.passes[2].nbB=p3.resume.nbB;q.passes[2].bornes=p3.censures;q.selection=selection;q.arretReglage=true;fs.writeFileSync(path.join(H,'passes.json'),JSON.stringify(q,null,2)+'\n');
+await executer('qualification50','banc.mjs',['--serie','apres','--graines','50'],{SNAKE11_SOURCES:path.join(H,'apres-sources.json')});const f=read('apres.json');if(!f.complete||f.cas.some(c=>c.err||c.erreursConsole.length))throw Error('Qualification incomplète ou erreur de jeu ; lire les reçus avant reprise');
+await executer('criteres-avant','criteres.mjs',['avant','avant.html.gz']);
+await executer('criteres-apres','criteres.mjs',['apres','apres.html.gz']);
+r.phase='fini';save();console.log(JSON.stringify(r));
+}catch(e){r.phase='arrêt';r.erreur=String(e.stack||e);save();process.exitCode=1;console.log(JSON.stringify(r))}

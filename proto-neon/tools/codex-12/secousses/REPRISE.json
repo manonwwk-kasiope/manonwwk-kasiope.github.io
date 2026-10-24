@@ -1,0 +1,28 @@
+{
+  "objectif": "Ordre14, budget empilementsecousses, patch50 etpreuvesVM",
+  "dateParis": "18/10/2026 · 12 h 16",
+  "base": "7e5037b6fdd1815bc22f22614bf0e9525ecf7767",
+  "phase": "Lot VM arrêté, palier R14 non validé sur portrait/bureau ; preuves livrées pour arbitrage",
+  "processus": [],
+  "preuves": {
+    "contrats": "12/12, courbesisoléesexactes2.2/6/12PX2/4,CYCLOPEprioritaire,120décisionsflashidentiques",
+    "référence": "sonde actuelle simulerPartie, aprèsN.cam.update ;100parphase dont80paysage et20bon autresprofils",
+    "sources": "50réeldisqueinchangé, raccord50enmémoire ; ajout02réservé fenêtre1s,seuilforteR12existant",
+    "parties": "80/80paysage et100/100total strictement identiques hors caméra,78/80fins et98/100fins de chaque côté,mêmes expert2/dieu9 bornés540,0erreur",
+    "R14": "Pires bon10 : paysage16,156→11,939%, portrait16,296→12,330%, bureau18,769→14,412%, seuil12% conservé",
+    "gel": "58instruments copiés inchangés,50disqueinchangé,contrôle statique archivé",
+    "finReelle": "7336/9096 morts, session8468 clôturée code0, qualification-execution.phase=fini ; aucun Chromium du lot lancé"
+  },
+  "restant": [
+    "Médiation Claude : portrait12,330% et bureau14,412% dépassent12% ; aucune seconde valeur autorisée sans nouvel ordre",
+    "Intégration éventuelle du raccord50 et vérification Chromium par Claude, pas par la boîte"
+  ],
+  "interdits": [
+    "nouveau7336/VMdoublon",
+    "rejouerlesreçuscomplets",
+    "éditer50réservé/flashs",
+    "lancerChromiumboîtepourcelot",
+    "nouvellevaleuraprèsbilan"
+  ],
+  "prochaineAction": "Pull et relire Ordres pour Codex ; attendre arbitrage. Ne relancer ni7336/9096 ni les200 parties reçues, aucun Chromium boîte."
+}

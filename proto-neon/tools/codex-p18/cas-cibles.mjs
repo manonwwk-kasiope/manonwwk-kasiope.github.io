@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import {sources,ROOT} from './vm.mjs';
+const erreurs=[],c={Math,Object,Array,Number,String,JSON,URL,URLSearchParams,console,location:{search:'?journal=1'},navigator:{maxTouchPoints:1},ART_SRC:{},CINE_DISPO:[],MUSIQUE_BASE:'musique/',MUSIQUE_EMBED:null,innerWidth:844,innerHeight:390,addEventListener(){},requestAnimationFrame(){},matchMedia:()=>({matches:false}),__N:{},__DT:1/60,__SEED:1};c.window=c;vm.createContext(c);
+vm.runInContext('var N=window.__N;'+sources().map(([,s])=>s).join('\n'),c);
+const N=c.__N;N.gfx.resize(844,390);N.S.view={w:N.gfx.W,h:N.gfx.H,safe:{l:0,t:0,r:0,b:0}};N.reseed(1);N.intro.reset();N.game.reset(1,{depart:'plongee'});
+const cas=[],reset=()=>{N.score.reset();N.joueuse.reset();N.outils.T.t=0;N.score.reset();};
+function tester(nom,fn){fn();cas.push({nom,ok:true,score:N.score.score,vies:N.score.vies,points:{...N.score.stats.points}});}
+let id=0;
+const kill=(t,{type='fleche',base=50,src='canon',genre='arme'}={})=>{N.outils.T.t=t;const charge={id:++id,type,x:N.joueuse.tete.x+100,y:N.joueuse.tete.y,elite:false,boss:false,base,src:{genre,type:src,id:-1}};N.ev.emit('kill',charge);return charge;};
+tester('attendre sans kill ne paie rien',()=>{reset();N.outils.T.t=120;N.score.update(.25);assert.equal(N.score.score,0);});
+tester('continuité 5 s au-delà de la chaîne de combat 2,5 s',()=>{reset();for(const t of [0,3,6,9,12])kill(t);assert.equal(N.score.mult(),1);assert.equal(N.score.stats.points.continuite,50);assert.equal(N.score.score,300);});
+tester('survie rémunérée uniquement sur kill, plafonnée et remise à zéro par mort',()=>{reset();kill(60);assert.equal(N.score.stats.points.survie,200);N.ev.emit('mort',{cause:'mur',auteur:'mur',t:60,vague:1,x:0,y:0,quartier:'terminal',visibleDepuis:0,teleDuree:0});kill(61);assert.equal(N.score.stats.points.survie,200);});
+tester('LASSO : somme des bases × n × multiplicateur, pas de double paiement',()=>{reset();const kills=[kill(0,{src:'lasso',genre:'joueuse'}),kill(0,{src:'lasso',genre:'joueuse'}),kill(0,{src:'lasso',genre:'joueuse'})];const charge={n:3,ids:kills.map(k=>k.id),aire:100,x:0,y:0,poly:[0,0,10,0,0,20]};N.ev.emit('lasso',charge);assert.equal(N.score.score,450);N.ev.emit('lasso',charge);assert.equal(N.score.score,450);});
+tester('APOGÉE vide ne donne aucun point',()=>{reset();N.ev.emit('apogee',{id:'apogee',evt:'debut'});assert.equal(N.score.score,0);});
+tester('purge sans points ni maîtrise',()=>{reset();kill(120,{genre:'decor',src:'purge'});assert.equal(N.score.score,0);assert.equal(N.score.stats.kills,0);});
+tester('primes de maîtrise sans vie bonus, seuil de combat conservé',()=>{reset();for(let i=0;i<4;i++)kill(60+i*3,{type:'traqueur',base:5000});assert.ok(N.score.score>=80000);assert.equal(N.score.vies,N.R.vies.depart);N.score.ajouter(60000);assert.equal(N.score.vies,N.R.vies.depart+1);});
+tester('prime de risque absente sous invulnérabilité et présente à bout portant',()=>{reset();const x=N.joueuse.tete.x,y=N.joueuse.tete.y;N.outils.T.t=0;N.ev.emit('kill',{id:++id,type:'fleche',x:x+10,y,elite:false,boss:false,base:50,src:{genre:'arme',type:'canon',id:-1}});assert.equal(N.score.stats.points.risque,50);N.joueuse.reapparaitre();N.ev.emit('kill',{id:++id,type:'fleche',x:x+10,y,elite:false,boss:false,base:50,src:{genre:'arme',type:'canon',id:-1}});assert.equal(N.score.stats.points.risque,50);});
+assert.equal(c.__ERR.count,0);fs.writeFileSync(ROOT+'/tools/codex-p18/cas-cibles.json',JSON.stringify({dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),cas,err:c.__ERR,erreurs},null,2)+'\n');console.log(cas.length+' scénarios réels satisfaits.');

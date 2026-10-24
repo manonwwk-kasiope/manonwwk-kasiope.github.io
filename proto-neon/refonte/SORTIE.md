@@ -1,0 +1,80 @@
+# SNAKE 2975 — la sortie finale : ce qui doit être vrai
+
+18/10/2026 · 00 h 27 (Paris). Écrit par la cheffe d'orchestre (session Claude du Mac) sur délégation de la
+propriétaire : « tu prends les décisions qui te semblent meilleures, en multiagent avec Codex, jusqu'à la sortie
+finale, avec vérifications, optimisations et corrections, jusqu'à jouabilité et intérêt optimaux ».
+
+## Le périmètre de la version 1.0 (décision)
+
+- **L'époque néon complète** (le jeu actuel : cinq vagues, VOLS, LASSO, INVERSION, CYCLOPE, cartes, écran de fin),
+  rendue juste et riche : les cinq causes communes de `couverture-snake2030.md` réglées, les dix manques prioritaires
+  de chaque inventaire faits ou écartés avec une raison écrite.
+- **L'ouverture en 1976** (`VISION-PROGRESSION.md` § 1, étape 2 : le terminal à deux couleurs, case par case) qui
+  bascule dans l'époque néon : la promesse « un snake qui traverse l'univers » commence à se voir.
+- Les époques suivantes (8 → 16 bits, intergalactique) : après la 1.0, dans l'ordre de la vision.
+  Raison : livrer un jeu fini et poli plutôt qu'une traversée de toutes les époques à moitié faites.
+
+## Les portes, toutes mesurées (aucune n'est déclarée tenue sans sa preuve)
+
+1. **Batterie R-01 à R-38** (`tools/mesure/lancer.mjs`, mode complet, pas `--rapide`) : chaque critère bloquant
+   « réussi » ; un « non mesurable » est une interface à fournir, pas une réussite.
+2. **Pilotes** (`85-pilote.js`, `tools/pilotes/parties.mjs`) : 8 pilotes × 10 graines jusqu'à la fin, zéro
+   blocage, zéro erreur, déterministes ; courbe de difficulté conforme à R-04 et R-23 (inerte meurt en V1, bon et
+   expert atteignent le CYCLOPE dans les proportions du plan).
+3. **Lisibilité** : seuils de codex-01 et codex-01b sur tout l'écran, dans chaque état (éclipse : 8 %).
+4. **Performance** : R-20 (p95 ≤ 11 ms en iPhone 13 paysage émulé, qualité adaptative coupée), sans régression
+   de plus de 0,5 ms par chantier.
+5. **Jury indépendant** (agents neufs qui jouent au pilote et au doigt simulé, regardent leurs captures et leurs
+   journaux, n'ont lu aucun rapport) : joueuse iPhone, game design, direction artistique, son, performance ;
+   **jouabilité ≥ 8/10 et intérêt ≥ 8/10 chez chacun**, aucun défaut bloquant ouvert. Une note sous 8 ouvre un
+   chantier ; on rejuge après.
+6. **Publication** sur `gh-pages` (`https://manonwwk-kasiope.github.io/proto-neon/`), vérifiée en ligne sur les
+   trois profils, zéro erreur.
+7. **Le JALON de la propriétaire** (R-38) : une partie sur son iPhone ; chaque « non » reçoit une correction ou une
+   raison écrite. Il ne bloque pas la publication d'une version candidate ; il peut rouvrir n'importe quelle porte.
+
+## Décisions de spécification prises en route
+
+- **R-05** (00 h 41) : la morsure coupe et ne tue pas (invariant) ; sept causes de mort naturelles.
+- **R-11** (00 h 47) : la part de pixels lumineux sur tout le tampon (≥ 25 / 28 / 32 / 25 %) et la luminance
+  moyenne deviennent **indicatives**. Démonstration : sous l'horizon (au moins la moitié de l'écran), le décor doit
+  rester sous 8 % de pixels lumineux (codex-01, la lisibilité prime) ; le ciel devrait alors être lumineux à plus
+  de 42 %, avec au plus 12 % d'encres chaudes et moins de 0,5 % de magenta et rose pâle (R-11 lui-même) : seul
+  l'acier gris resterait, que le jury a jugé terne. Le reste de R-11 reste bloquant (0 cyan dans le décor, magenta
+  et rose pâle < 0,5 %, vide < 30 %, gaine des menaces). Le « pas triste » (retour n° 1 de la propriétaire) se juge
+  au jury (ambiance ≥ 8/10) et au JALON.
+- **18/10/2026 · 05 h 11 — cible R-04 « inerte : première mort au mur avant 8 s » → « avant 11 s ».** Démonstration (codex-p34,
+  `tools/codex-p34/rapport.md` § 3.2) : départ à 0,38 × 1024 = 389,12 px, tête limitée à 1021 px, croisière 68 px/s : 9,29 s de trajet nu,
+  avant la grâce au mur ; mesuré 10,18 s sur dix graines. 8 s est inatteignable sans changer le départ ou la vitesse, ce qui changerait le
+  jeu pour tous ; la cible garde son intention (immobile = mort rapide). Décision de la cheffe d'orchestre, réversible par la propriétaire.
+
+- **Performance, comparaison avec SNAKE 2030 (R-20, 18/10/2026 à 07 h 28) — à trancher par la propriétaire.** Deux passes d'optimisation
+  sans changer un pixel (codex-p45 puis p45b, 7 200 images identiques, 80 parties identiques) ont ramené le p95 de la scène charge, en VM,
+  de 2,79 à 1,72 ms (−38 %) ; la seconde ne gagne plus que 6,7 % : **arrêt pour non-convergence**. Le seul filtre d'écran à tube (20-crt),
+  que SNAKE 2030 n'a pas, coûte déjà 1,05 ms (p95 VM) ; le rendu complet minimal observé est 0,998 ms, au-dessus des 0,815 ms de SNAKE 2030
+  (mesure historique en Chromium, non directement comparable). Les autres seuils de R-20 sont tenus (≤ 11 ms ×1, ≤ 25 ms ×4, temps de jeu ≥ 0,99).
+  **Recommandation de la cheffe** : garder le filtre à tube et remplacer « plus rapide que SNAKE 2030 » par « p95 ≤ 16,7 ms sur l'iPhone de la
+  propriétaire » (le vrai critère du joueur, déjà dans R-20) ; ce qu'on perd : la comparaison chiffrée avec 2030. Alternative : couper le tube
+  sur iPhone pour viser 2030, au prix de l'image. En attendant, le seuil reste écrit et l'échec est publié.
+
+## Arrêt de non-convergence
+
+Si une même porte échoue deux tours de suite, ou si un tour n'en ferme aucune, la méthode est en cause : arrêt,
+diagnostic écrit ici, puis seulement une méthode changée et prouvée sur un pilote.
+
+## Où en est chaque porte (mis à jour le 18/10/2026 à 03 h 51)
+
+| porte | état | preuve |
+|---|---|---|
+| 1. Batterie R-01 à R-38 | sur `318ce61` (rapide, 03 h 49, 968 s) : **8 ok**, 22 échecs, 5 partiels, 2 non mesurables, 0 erreur. Gagnés depuis 8f55a91 : R-31 (ok), R-26 et R-36 (partiels). **Régressions** : R-08 mort juste 88,5 % (≥ 95 %, diagnostic codex-p29) et R-18 écran de fin (CONTINUER ? et le contenu du bilan retirés par codex-p17 → codex-p28 après codex-p24) ; R-17 devient non mesurable (tourelle de la scène mortTir). Précédente : `8f55a91` 9 ok | `~/Projets/wt-snake/recus/batterie-318ce61/` |
+| 2. Pilotes | 80/80 parties, déterministes ; jeu trop dur ; réglage en cours (codex-p5, 5 passes au plus) | `mediation/2026-10-18-codex-02-lot-I.md` |
+| 3. Lisibilité | **fermée sur 01b** : codex-01, 01b, 03 acceptés ; codex-01c (ambiance) non retenu, plancher 12 % manqué sur 2 scènes sur 3 ; le soleil plein reste une piste si le jury note l'image sous 8 | `mediation/2026-10-18-codex-01c.md` |
+| 4. Performance | R-20 : 2 échecs à diagnostiquer (codex-p3c) | batterie |
+| 5. Jury | kit prêt (`tools/jury/partie.mjs`) ; après réglage et ambiance | — |
+| 6. Publication | version du 17/10 en ligne ; l'aventure (choix, 1976, 1982, films, fins) se branche dans le vrai jeu : codex-09, lancé à 01 h 37 | — |
+| 7. JALON | à demander sur la version candidate | — |
+
+Intégré depuis le début de la nuit : pilotes (codex-02, lot I), API de test (p6), instrument réparé (p3, p3b),
+horloge à pas fixe (codex-05, 05b), commandes au bureau (codex-06), cartes GRAPPE, BRAISE, ÉPERON, répit, ONDE,
+SILLAGE, PERFORATION, SURTENSION, ÉPINES (p1, p1b), bannières et dernière vie (p2), télégraphes du CYCLOPE (p4),
+CONTINUER ? (p7).

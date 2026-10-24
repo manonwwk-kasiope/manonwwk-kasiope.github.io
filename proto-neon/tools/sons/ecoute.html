@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0d0221">
+<link rel="icon" href="data:,">
+<title>Banque de sons</title>
+<style>
+:root{
+  --vide:#0d0221;--nuit:#190b28;--ardoise:#241734;--violet:#541388;--indigo:#2d1b69;--magenta:#ff2a6d;
+  --rose:#ff8fab;--cyan:#05d9e8;--cyanp:#d1f7ff;--ambre:#ff9e00;--jaune:#ffd319;--brasier:#ff5714;
+  --os:#fffce8;--acier:#8a8fa3;--sang:#8b0f3a;--np:#01012b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--vide);color:var(--os);font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+body{padding:16px;max-width:1280px;margin:0 auto}
+h1{font-size:20px;letter-spacing:.12em;margin:0 0 4px;color:var(--jaune)}
+h2{font-size:14px;letter-spacing:.1em;margin:28px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--ardoise)}
+p{margin:4px 0;color:var(--acier)}
+.barre{position:sticky;top:0;z-index:5;background:var(--np);border:1px solid var(--ardoise);padding:10px;margin:12px 0;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.grp{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.grp>span{color:var(--acier);margin-right:4px}
+button{font:inherit;color:var(--os);background:var(--ardoise);border:1px solid var(--indigo);padding:5px 9px;cursor:pointer;border-radius:2px}
+button:hover{border-color:var(--cyan)}
+button.on{background:var(--indigo);border-color:var(--cyan);color:var(--cyanp)}
+button.jouer{background:var(--nuit);min-width:34px}
+.demos{display:flex;flex-wrap:wrap;gap:6px}
+.cartes{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.carte{background:var(--nuit);border:1px solid var(--ardoise);border-left:3px solid var(--c,var(--acier));padding:10px;min-width:0}
+.carte.ko{border-color:var(--magenta)}
+.tete{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.nom{font-weight:700;color:var(--c,var(--os));font-size:14px}
+.cible{color:var(--acier);white-space:nowrap}
+.quand{color:var(--acier);margin:4px 0 8px;min-height:2.9em}
+.boutons{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.boutons label{color:var(--acier);display:flex;gap:6px;align-items:center}
+input[type=range]{width:110px;accent-color:var(--cyan)}
+canvas{display:block;width:100%;height:46px;margin:8px 0 6px;background:var(--np)}
+.m{display:grid;grid-template-columns:repeat(4,1fr);gap:2px 8px;font-size:11.5px}
+.m div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m b{font-weight:400;color:var(--acier)}
+.ko-t{color:var(--magenta)}
+.ok-t{color:var(--cyan)}
+#bilan{background:var(--np);border:1px solid var(--ardoise);padding:10px;white-space:pre-wrap;color:var(--os)}
+table{border-collapse:collapse;width:100%;font-size:12px}
+.tabwrap{overflow-x:auto}
+td,th{border-bottom:1px solid var(--ardoise);padding:3px 6px;text-align:right;white-space:nowrap}
+th{color:var(--acier);font-weight:400}
+td:first-child,th:first-child{text-align:left}
+@media (max-width:520px){.m{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<h1>SNAKE 2975 · LA BANQUE DE SONS</h1>
+<p id="ton"></p>
+<p>Chaque son est une recette Web Audio de <code>sons/banque.js</code>, jouée par <code>sons/jouer.js</code>. Les mesures sous chaque carte viennent d'un rendu hors ligne (OfflineAudioContext, 48 kHz, mono) fait à l'ouverture de la page.</p>
+
+<div class="barre">
+  <div class="grp" id="pans"><span>pan</span></div>
+  <div class="grp"><span>écoute</span><button id="tel">téléphone</button></div>
+  <div class="grp" id="mus"><span>musique</span><button data-m="">aucune</button><button data-m="calme">calme</button><button data-m="chaos">chaos</button></div>
+  <div class="grp"><span>volume</span><input id="vol" type="range" min="0" max="1" step="0.01" value="0.8"></div>
+  <div class="grp"><span id="nds">noeuds : 0</span></div>
+</div>
+
+<h2>Séquences</h2>
+<div class="demos" id="demos"></div>
+
+<h2>Bilan des mesures</h2>
+<div id="bilan">mesure en cours…</div>
+
+<div id="classes"></div>
+
+<h2>Table complète</h2>
+<div class="tabwrap"><table id="table"></table></div>
+
+<script src="../../sons/banque.js"></script>
+<script src="../../sons/jouer.js"></script>
+<script src="analyse.js"></script>
+<script>
+'use strict';
+(function () {
+  var B = window.SONS_2975, J = window.SONS_2975_JOUER, A = window.SONS_ANALYSE;
+  var ENCRE = { cyan: '--cyan', os: '--os', magenta: '--magenta', ambre: '--ambre', sang: '--rose', jaune: '--jaune', acier: '--acier' };
+  var SR = 48000;
+  var REF = { chaos: -14, calmeTel: -20 };   /* REFONTE.md § 5.7 : musique au chaos, et au calme en simulation de telephone */
+
+  document.getElementById('ton').textContent = 'Tonalité : ré ' + B.tonalite.mode + ' · ' + B.tonalite.bpm + ' BPM · gamme des sons : ré fa sol la do (pentatonique), + mi (hexatonique)';
+
+  /* ---------------- les entrées mesurées : chaque son, chaque variante, la pile, les extrêmes de hauteur ---------------- */
+  function entrees() {
+    var r = [];
+    B.ordre.forEach(function (nom) {
+      var s = B.sons[nom];
+      r.push({ cle: nom, nom: nom, opts: {}, base: true });
+      if (s.variantes) Object.keys(s.variantes).forEach(function (v) { r.push({ cle: nom + '.' + v, nom: nom, opts: { type: v }, base: true, variante: v }); });
+      if (s.pile) r.push({ cle: nom + '.pile', nom: nom, opts: { pile: 1 }, base: true, pile: true });
+      if (s.hauteur === 'nombre') r.push({ cle: nom + '@' + s.pitchMax, nom: nom, opts: { pitch: s.pitchMax }, extreme: true });
+      else if (s.cycle) r.push({ cle: nom + '@' + (s.cycle - 1), nom: nom, opts: { pitch: s.cycle - 1 }, extreme: true });
+      else if (s.pitchMax) r.push({ cle: nom + '@' + s.pitchMax, nom: nom, opts: { pitch: s.pitchMax }, extreme: true });
+      if (s.pile) r.push({ cle: nom + '.pile@' + s.pile.max, nom: nom, opts: { pile: s.pile.max, pitch: s.pitchMax }, extreme: true });
+    });
+    return r;
+  }
+  function attendu(e) { var R = J.resoudre(B, e.nom, e.opts); return R; }
+
+  function rendre(e, cal) {
+    var R = attendu(e), d = Math.max(0.6, (R.duree || 0.5) * 1.6 + 0.4);
+    var ctx = new OfflineAudioContext(1, Math.ceil(SR * d), SR);
+    var L = J.lecteur(ctx, B, { sortie: ctx.destination, graine: 2975 });
+    var o = Object.assign({ t: 0.02 }, e.opts);
+    var info = L.jouer(e.nom, o);
+    return ctx.startRendering().then(function (buf) { return { buf: buf.getChannelData(0), info: info }; });
+  }
+
+  /* ---------------- la tonalité, vérifiée sur les données (après transposition aux extrêmes) ---------------- */
+  function notesDe(e) {
+    var s = B.sons[e.nom], R = attendu(e), T = B.tonalite, centre = 60 + T.classeCentre;
+    var gamme = s.hauteur === 'hexa' ? T.gammes.hexa : T.gammes.penta, p = e.opts.pitch | 0;
+    if (s.cycle) p = ((p % s.cycle) + s.cycle) % s.cycle;
+    if (s.hauteur === 'nombre' || s.hauteur === 'aucune') p = 0;
+    if (s.pitchMax !== undefined) p = Math.min(p, s.pitchMax);
+    if (e.opts.pile) p = Math.min(p + e.opts.pile, s.pile.plafond === undefined ? 99 : s.pile.plafond);
+    var out = [];
+    R.couches.forEach(function (L) {
+      if (L.src === 'bruit') return;
+      var ns = L.notes || [L.note], suit = L.suit !== false;
+      ns.forEach(function (n) {
+        var m = J.midi(n), m2 = suit ? J.degres(m, p, gamme, centre) : m;
+        out.push(m2);
+        var gl = L.vers !== undefined ? J.midi(L.vers) - J.midi(ns[0]) : 0;
+        if (L.vers !== undefined) out.push(m2 + gl);
+      });
+    });
+    return out;
+  }
+  function horsTon(e) {
+    var s = B.sons[e.nom], T = B.tonalite, ok = T.admises.concat(s.eolien ? T.eolienSeulement : []);
+    return notesDe(e).filter(function (m) { return ok.indexOf(((m % 12) + 12) % 12) < 0; });
+  }
+
+  /* ---------------- les critères ---------------- */
+  function criteres(res, musique) {
+    var parCle = {}; res.forEach(function (r) { parCle[r.cle] = r; });
+    var echecs = [], avert = [];
+    res.forEach(function (r) {
+      var s = B.sons[r.nom], k = [];
+      var R = attendu(r);
+      if (r.m.crete > -1) k.push('crête ' + r.m.crete + ' > −1 dBFS');
+      if (r.base && Math.abs(r.m.crete - R.niveau) > 1) k.push('crête ' + r.m.crete + ' loin de la cible ' + R.niveau);
+      if (r.m.p400 < 0.25) k.push('énergie > 400 Hz ' + Math.round(r.m.p400 * 100) + ' % < 25 %');
+      var plaf = s.frequent ? 0.12 : 0.30;
+      if (r.m.p4k > plaf) k.push('énergie > 4 kHz ' + Math.round(r.m.p4k * 100) + ' % > ' + Math.round(plaf * 100) + ' %');
+      if (r.m.duree > R.duree * 1.25 + 0.03) k.push('durée ' + r.m.duree + ' s > ' + R.duree + ' s attendue');
+      if (r.m.rms30Tel < REF.calmeTel - 12) k.push('trop faible au téléphone : ' + r.m.rms30Tel + ' dBFS (30 ms) < ' + (REF.calmeTel - 12));
+      if (r.horsTon.length) k.push('hors de la tonalité : ' + r.horsTon.join(', '));
+      r.echecs = k;
+      k.forEach(function (x) { echecs.push(r.cle + ' : ' + x); });
+    });
+    var g = {};
+    var kill = parCle.kill, tir = parCle.tir;
+    ['kill', 'coupe', 'mort'].forEach(function (n) {
+      var r = parCle[n], em = +(r.m.rms100 - REF.chaos).toFixed(2);
+      g['emergence_' + n] = em;
+      if (em < 3 || em > 6) echecs.push(n + ' : ' + em + ' dB au-dessus de la musique au chaos (cible 3 à 6)');
+      if (musique) {
+        var et = +(r.m.rms100Tel - musique.chaosTel).toFixed(2);
+        g['emergenceTel_' + n] = et;
+        if (et < 3) echecs.push(n + ' : ' + et + ' dB au-dessus de la musique au chaos, au téléphone (cible ≥ 3)');
+      }
+    });
+    g.kill_moins_tir = +(kill.m.rms100 - tir.m.rms100).toFixed(2);
+    if (g.kill_moins_tir < 6) echecs.push('tir à ' + g.kill_moins_tir + ' dB sous le kill (cible ≥ 6)');
+    g.correlation_tir_tirEnnemi = res.correlation;
+    if (res.charge) {
+      g.charge_noeuds_par_seconde = res.charge.noeudsParSeconde;
+      g.charge_kills = res.charge.killsJoues + ' joues / ' + res.charge.killsDemandes + ' demandes';
+      if (res.charge.noeudsParSeconde >= 60) echecs.push('scene de charge : ' + res.charge.noeudsParSeconde + ' noeuds crees par seconde (cible < 60)');
+      if (res.charge.killsJoues !== res.charge.killsDemandes) echecs.push('scene de charge : ' + g.charge_kills + ' (aucun kill muet)');
+    }
+    if (res.correlation >= 0.5) echecs.push('tir et tirEnnemi corrélés à ' + res.correlation + ' (cible < 0,5)');
+    /* sons confusables dans une même classe : centroïdes à moins de 20 % ET durées à moins de 30 % */
+    var bases = res.filter(function (r) { return r.base && !r.pile; });
+    for (var i = 0; i < bases.length; i++) for (var j = i + 1; j < bases.length; j++) {
+      var a = bases[i], b = bases[j];
+      if (B.sons[a.nom].classe !== B.sons[b.nom].classe || a.nom === b.nom) continue;
+      var rc = Math.max(a.m.centroide, b.m.centroide) / Math.max(1, Math.min(a.m.centroide, b.m.centroide));
+      var rd = Math.max(a.m.duree, b.m.duree) / Math.max(0.001, Math.min(a.m.duree, b.m.duree));
+      if (rc < 1.2 && rd < 1.3) avert.push(a.cle + ' et ' + b.cle + ' : centroïdes ' + a.m.centroide + ' / ' + b.m.centroide + ' Hz, durées ' + a.m.duree + ' / ' + b.m.duree + ' s');
+    }
+    return { echecs: echecs, avertissements: avert, global: g };
+  }
+
+  function musiqueRef() {
+    function charge(f) {
+      return fetch('../../musique/' + f).then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+        .then(function (ab) { return new OfflineAudioContext(1, 48000, 48000).decodeAudioData(ab); });
+    }
+    return charge('nv-03.mp3').then(function (buf) {
+      var x = buf.getChannelData(0);
+      if (buf.numberOfChannels > 1) { var y = buf.getChannelData(1), m = new Float32Array(x.length); for (var i = 0; i < x.length; i++) m[i] = (x[i] + y[i]) / 2; x = m; }
+      var n = A.niveauPiste(x, buf.sampleRate);
+      musBuf.chaos = buf;
+      return { fichier: 'nv-03.mp3 (PLATEAU)', rmsBrut: +n.rms.toFixed(2), rmsTelBrut: +n.rmsTel.toFixed(2), chaosTel: +(n.rmsTel + (REF.chaos - n.rms)).toFixed(2) };
+    }).catch(function (err) { return null; });
+  }
+
+  /* la scene de charge (REFONTE.md § 8.3, lot 7b) : 16 tourelles a l'ULTIME (48 tirs/s, fusionnes en
+     demandes `salve` d'une image), le CANON II a 9 tirs/s, 3 kills/s, 6 impacts/s, 4 tirs ennemis/s… */
+  function scenarioCharge(t0, dur) {
+    var r = [], i, n;
+    for (i = 0; i < dur * 9; i++) r.push(['tir', t0 + i / 9, { pitch: [0, 2, 1, 3, 4][i % 5] }]);
+    for (i = 0; i < dur * 48; i++) r.push(['salve', t0 + Math.round(i / 48 * 60) / 60, {}]);
+    for (i = 0; i < dur * 6; i++) r.push(['impact', t0 + 0.07 + i / 6, {}]);
+    for (i = 0; i < dur * 3; i++) r.push(['kill', t0 + 0.11 + i / 3, { pitch: Math.min(9, i) }]);
+    r.push(['kill', t0 + 1.5, { pitch: 4 }]); r.push(['kill', t0 + 1.5, { pitch: 4 }]); r.push(['kill', t0 + 1.5, { pitch: 4 }]);
+    for (i = 0; i < dur * 4; i++) r.push(['tirEnnemi', t0 + 0.05 + i / 4, {}]);
+    for (i = 0; i < dur * 2; i++) r.push(['butin', t0 + 0.3 + i / 2, {}]);
+    for (i = 0; i < dur; i++) r.push(['arme', t0 + 0.5 + i, { type: ['tourelle', 'mine', 'fleche', 'dard'][i % 4] }]);
+    for (i = 0; i < dur / 2; i++) r.push(['explosion', t0 + 0.9 + i * 2, {}]);
+    r.sort(function (a, b) { return a[1] - b[1]; });
+    return r;
+  }
+  function mesurerCharge() {
+    var dur = 4, ctx2 = new OfflineAudioContext(2, SR * (dur + 1), SR);
+    var pans = B.pans.map(function (p) { var n = ctx2.createStereoPanner(); n.pan.value = p; n.connect(ctx2.destination); return n; });
+    var L2 = J.lecteur(ctx2, B, { panneurs: pans, graine: 7 }), G2 = J.garde(B), n0 = 0, k = 0;
+    /* les voix de reserve sont creees au premier tir : on les compte a part */
+    scenarioCharge(0.05, dur).forEach(function (e) {
+      var d = G2.demande(e[0], e[1], Object.assign({ pan: B.pans[(k++ * 5) % 7] }, e[2]));
+      if (d) L2.jouer(e[0], d.opts);
+    });
+    var total = L2.noeuds() - L2.noeudsReserve();
+    return ctx2.startRendering().then(function (buf) {
+      var x = buf.getChannelData(0), y = buf.getChannelData(1), m = new Float32Array(x.length), pk = 0;
+      for (var i = 0; i < x.length; i++) { m[i] = (x[i] + y[i]) / 2; pk = Math.max(pk, Math.abs(x[i]), Math.abs(y[i])); }
+      var st = G2.stats(), kill = st.kill || { demandes: 0, joues: 0 };
+      return { duree: dur, noeuds: total, noeudsReserve: L2.noeudsReserve(), noeudsParSeconde: +(total / dur).toFixed(1), creteBrute: +A.db(pk).toFixed(2),
+        rms: +A.niveauPiste(m, SR).rms.toFixed(2),
+        killsDemandes: kill.demandes, killsJoues: kill.joues, stats: st };
+    });
+  }
+
+  var resultats = null, musBuf = {};
+  function mesurerTout() {
+    var E = entrees(), res = [];
+    var chaine = Promise.resolve();
+    E.forEach(function (e) {
+      chaine = chaine.then(function () {
+        return rendre(e).then(function (r) {
+          e.m = A.mesurer(r.buf, SR); e.noeuds = r.info.noeuds; e.buf = r.buf; e.horsTon = horsTon(e); res.push(e);
+        });
+      });
+    });
+    return chaine.then(function () {
+      var tir = res.filter(function (r) { return r.cle === 'tir'; })[0], te = res.filter(function (r) { return r.cle === 'tirEnnemi'; })[0];
+      res.correlation = A.correlation(tir.buf, te.buf, SR);
+      return mesurerCharge();
+    }).then(function (ch) {
+      res.charge = ch;
+      return musiqueRef();
+    }).then(function (mus) {
+      var c = criteres(res, mus);
+      resultats = res;
+      return {
+        tonalite: B.tonalite, musique: mus, references: REF, global: c.global, charge: res.charge, echecs: c.echecs, avertissements: c.avertissements,
+        sons: res.map(function (r) {
+          var R = attendu(r);
+          return Object.assign({ cle: r.cle, classe: B.sons[r.nom].classe, niveauVise: R.niveau, dureeAttendue: R.duree, noeuds: r.noeuds, echecs: r.echecs, base: !!r.base }, r.m);
+        })
+      };
+    });
+  }
+
+  /* ---------------- l'écoute ---------------- */
+  var ctx = null, L = null, G = null, sortie = null, limiteur = null, telNodes = null, master = null, musG = null, musSrc = null, pan = 3, tel = false, musMode = '';
+  function audio() {
+    if (ctx) { if (ctx.state !== 'running') ctx.resume(); return; }
+    ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: 'interactive' });
+    master = ctx.createGain(); master.gain.value = +document.getElementById('vol').value;
+    limiteur = ctx.createDynamicsCompressor(); limiteur.threshold.value = -2; limiteur.knee.value = 0; limiteur.ratio.value = 20; limiteur.attack.value = 0.002; limiteur.release.value = 0.1;
+    limiteur.connect(master); master.connect(ctx.destination);
+    sortie = ctx.createGain();
+    var h1 = ctx.createBiquadFilter(), h2 = ctx.createBiquadFilter(), lp = ctx.createBiquadFilter();
+    h1.type = h2.type = 'highpass'; h1.frequency.value = h2.frequency.value = 350; lp.type = 'lowpass'; lp.frequency.value = 8000;
+    h1.connect(h2); h2.connect(lp);
+    telNodes = { entree: h1, sortie: lp };
+    var panneurs = B.pans.map(function (p) { var n = ctx.createStereoPanner(); n.pan.value = p; n.connect(sortie); return n; });
+    L = J.lecteur(ctx, B, { sortie: sortie, panneurs: panneurs, graine: (Math.random() * 1e9) | 0 });
+    G = J.garde(B);
+    musG = ctx.createGain(); musG.gain.value = 0; musG.connect(sortie);
+    routeTel();
+    setInterval(function () { document.getElementById('nds').textContent = 'noeuds : ' + L.noeuds(); }, 250);
+  }
+  function routeTel() {
+    if (!ctx) return;
+    sortie.disconnect();
+    try { telNodes.sortie.disconnect(); } catch (e) {}
+    if (tel) { sortie.connect(telNodes.entree); telNodes.sortie.connect(limiteur); } else sortie.connect(limiteur);
+  }
+  function jouer(nom, o) {
+    audio();
+    var opts = Object.assign({ t: ctx.currentTime + 0.03, pan: B.pans[pan] }, o || {});
+    return L.jouer(nom, opts);
+  }
+  function demander(nom, t, o) {
+    var d = G.demande(nom, t, Object.assign({ pan: B.pans[pan] }, o || {}));
+    if (d) L.jouer(nom, d.opts);
+    return d;
+  }
+  function musique(mode) {
+    audio(); musMode = mode;
+    if (musSrc) { try { musSrc.stop(); } catch (e) {} musSrc = null; }
+    if (!mode) return;
+    var f = mode === 'chaos' ? 'nv-03.mp3' : 'nv-10.mp3';
+    fetch('../../musique/' + f).then(function (r) { return r.arrayBuffer(); }).then(function (ab) { return ctx.decodeAudioData(ab); }).then(function (buf) {
+      if (musMode !== mode) return;
+      var x = buf.getChannelData(0), n = A.niveauPiste(x, buf.sampleRate);
+      /* chaos : -14 dBFS RMS pleine bande ; calme : -20 dBFS RMS en simulation de telephone */
+      var g = mode === 'chaos' ? Math.pow(10, (REF.chaos - n.rms) / 20) : Math.pow(10, (REF.calmeTel - n.rmsTel) / 20);
+      musG.gain.value = g;
+      musSrc = ctx.createBufferSource(); musSrc.buffer = buf; musSrc.loop = true; musSrc.connect(musG); musSrc.start();
+    }).catch(function () { document.getElementById('bilan').textContent += '\n(musique introuvable : servir la page en http depuis la racine du dépôt)'; });
+  }
+
+  /* ---------------- les séquences ---------------- */
+  var DEMOS = [
+    ['Chaîne : kill paliers 0 → 9', function (t) { for (var i = 0; i < 10; i++) demander('kill', t + i * 0.28, { pitch: i }); }],
+    ['Rafale : 8 kills dans la même image', function (t) { for (var i = 0; i < 8; i++) demander('kill', t, { pitch: 2 }); }],
+    ['Escalier de butin (13 cellules)', function (t) { for (var i = 0; i < 13; i++) demander('butin', t + i * 0.11, {}); }],
+    ['CANON 6,5 tirs/s, 3 s', function (t) { for (var i = 0; i < 20; i++) demander('tir', t + i / 6.5, { pitch: [0, 2, 1, 3, 4][i % 5] }); }],
+    ['16 tourelles : 48 demandes/s de salve', function (t) { for (var i = 0; i < 96; i++) demander('salve', t + i / 48, {}); }],
+    ['ARC : 8 sauts', function (t) { for (var i = 0; i < 8; i++) demander('tir', t + i * 0.045, { type: 'arc', pitch: i }); }],
+    ['ULTIME RAYON, 2 s', function (t) { for (var i = 0; i < 30; i++) demander('tir', t + i / 15, { type: 'rayon' }); }],
+    ['LASSO n = 2 → 8', function (t) { for (var n = 2; n <= 8; n++) jouer('lasso', { t: t + (n - 2) * 0.7, pitch: n }); }],
+    ['INVERSION : 4 proies dévorées', function (t) { for (var i = 0; i < 4; i++) jouer('devore', { t: t + i * 0.35, pitch: i * 2 }); }],
+    ['LE VOL : 6 portes', function (t) { for (var i = 0; i < 6; i++) jouer('porte', { t: t + i * 0.5, pitch: i }); }],
+    ['Danger proche : battement 1 Hz puis 2 Hz', function (t) { for (var i = 0; i < 4; i++) jouer('battement', { t: t + i }); for (i = 0; i < 6; i++) jouer('battement', { t: t + 4 + i * 0.5 }); }],
+    ['Mort, puis GAME OVER', function (t) { jouer('mort', { t: t }); jouer('gameover', { t: t + 1.3 }); }],
+    ['Entrée du CYCLOPE : WARNING', function (t) { jouer('warning', { t: t }); jouer('travelling', { t: t + 1.5 }); }],
+    ['Scène de charge, 4 s', function (t) { scenarioCharge(t, 4).forEach(function (e) { demander(e[0], e[1], e[2]); }); }]
+  ];
+  var dz = document.getElementById('demos');
+  DEMOS.forEach(function (d) {
+    var b = document.createElement('button'); b.textContent = d[0];
+    b.onclick = function () { audio(); d[1](ctx.currentTime + 0.05); };
+    dz.appendChild(b);
+  });
+
+  /* ---------------- la barre ---------------- */
+  var pz = document.getElementById('pans');
+  B.pans.forEach(function (p, i) {
+    var b = document.createElement('button'); b.textContent = (p > 0 ? '+' : '') + p.toFixed(2);
+    if (i === pan) b.className = 'on';
+    b.onclick = function () { pan = i; Array.prototype.forEach.call(pz.querySelectorAll('button'), function (x, j) { x.className = j === i ? 'on' : ''; }); };
+    pz.appendChild(b);
+  });
+  document.getElementById('tel').onclick = function () { audio(); tel = !tel; this.className = tel ? 'on' : ''; routeTel(); };
+  Array.prototype.forEach.call(document.querySelectorAll('#mus button'), function (b) {
+    if (b.dataset.m === '') b.className = 'on';
+    b.onclick = function () { Array.prototype.forEach.call(document.querySelectorAll('#mus button'), function (x) { x.className = x === b ? 'on' : ''; }); musique(b.dataset.m); };
+  });
+  document.getElementById('vol').oninput = function () { if (master) master.gain.value = +this.value; };
+
+  /* ---------------- les cartes ---------------- */
+  function dessiner(cv, buf) {
+    var w = cv.width = cv.clientWidth * (window.devicePixelRatio || 1), h = cv.height = 46 * (window.devicePixelRatio || 1);
+    var g = cv.getContext('2d'); g.clearRect(0, 0, w, h);
+    var B2 = A.bornes(buf, SR), a = B2.a, b = Math.max(B2.b, a + 10), n = b - a, step = n / w;
+    g.fillStyle = getComputedStyle(cv).getPropertyValue('--c') || '#05d9e8';
+    for (var x = 0; x < w; x++) {
+      var i0 = a + Math.floor(x * step), i1 = a + Math.floor((x + 1) * step), mx = 0;
+      for (var i = i0; i < i1 && i < buf.length; i++) { var v = Math.abs(buf[i]); if (v > mx) mx = v; }
+      var hh = Math.max(1, mx * h); g.fillRect(x, (h - hh) / 2, 1, hh);
+    }
+  }
+  function carte(nom) {
+    var s = B.sons[nom], cl = B.classes[s.classe];
+    var d = document.createElement('div'); d.className = 'carte'; d.id = 'c-' + nom;
+    d.style.setProperty('--c', 'var(' + (ENCRE[cl.encre] || '--os') + ')');
+    var h = '<div class="tete"><span class="nom">' + nom + '</span><span class="cible">' + s.niveau + ' dBFS · ' + s.duree + ' s</span></div>';
+    h += '<div class="quand">' + s.quand + '</div><div class="boutons"></div><canvas></canvas><div class="m"></div>';
+    d.innerHTML = h;
+    var bz = d.querySelector('.boutons'), pitch = 0;
+    function bouton(txt, o) { var b = document.createElement('button'); b.className = 'jouer'; b.textContent = txt; b.onclick = function () { jouer(nom, Object.assign({ pitch: pitch }, o)); }; bz.appendChild(b); }
+    if (!s.variantes || s.couches) bouton('▶', {});
+    if (s.variantes) Object.keys(s.variantes).forEach(function (v) { bouton(v, { type: v }); });
+    if (s.pile) bouton('pile', { pile: 3 });
+    if (s.hauteur !== 'aucune') {
+      var lab = document.createElement('label'), r = document.createElement('input'), val = document.createElement('span');
+      r.type = 'range'; r.min = s.hauteur === 'nombre' ? (s.pitchMin || 2) : 0; r.max = s.pitchMax || (s.cycle ? s.cycle - 1 : 12); r.value = r.min; pitch = +r.min;
+      val.textContent = r.value; r.oninput = function () { pitch = +r.value; val.textContent = r.value; };
+      lab.appendChild(document.createTextNode(s.hauteur === 'nombre' ? 'n' : 'pitch')); lab.appendChild(r); lab.appendChild(val); bz.appendChild(lab);
+    }
+    return d;
+  }
+  var zc = document.getElementById('classes');
+  Object.keys(B.classes).forEach(function (c) {
+    var t = document.createElement('h2'); t.textContent = B.classes[c].titre + ' — ' + B.classes[c].grammaire; zc.appendChild(t);
+    var g = document.createElement('div'); g.className = 'cartes'; zc.appendChild(g);
+    B.ordre.filter(function (n) { return B.sons[n].classe === c; }).forEach(function (n) { g.appendChild(carte(n)); });
+  });
+
+  function afficher(rapport) {
+    var parCle = {}; resultats.forEach(function (r) { parCle[r.cle] = r; });
+    B.ordre.forEach(function (nom) {
+      var r = parCle[nom] || parCle[nom + '.' + Object.keys(B.sons[nom].variantes || {})[0]], d = document.getElementById('c-' + nom);
+      if (!r || !d) return;
+      dessiner(d.querySelector('canvas'), r.buf);
+      var ko = resultats.filter(function (x) { return x.nom === nom && x.echecs && x.echecs.length; });
+      if (ko.length) d.classList.add('ko');
+      var m = r.m;
+      d.querySelector('.m').innerHTML =
+        '<div><b>crête</b> ' + m.crete + '</div><div><b>rms100</b> ' + m.rms100 + '</div><div><b>durée</b> ' + m.duree + '</div><div><b>noeuds</b> ' + r.noeuds + '</div>' +
+        '<div><b>&gt;400</b> ' + Math.round(m.p400 * 100) + '%</div><div><b>&gt;4k</b> ' + Math.round(m.p4k * 100) + '%</div><div><b>centr.</b> ' + m.centroide + '</div><div><b>tél.</b> ' + m.rms100Tel + '</div>' +
+        (ko.length ? '<div class="ko-t" style="grid-column:1/-1;white-space:normal">' + ko.map(function (x) { return x.cle + ' : ' + x.echecs.join(' ; '); }).join('<br>') + '</div>' : '');
+    });
+    var t = '<tr><th>son</th><th>crête</th><th>visée</th><th>rms100</th><th>tél. 100 ms</th><th>durée</th><th>attendue</th><th>&gt;400 Hz</th><th>&gt;4 kHz</th><th>1-4 kHz</th><th>centroïde</th><th>noeuds</th></tr>';
+    rapport.sons.forEach(function (s) {
+      t += '<tr' + (s.echecs.length ? ' class="ko-t"' : '') + '><td>' + s.cle + '</td><td>' + s.crete + '</td><td>' + s.niveauVise + '</td><td>' + s.rms100 + '</td><td>' + s.rms100Tel + '</td><td>' + s.duree + '</td><td>' + s.dureeAttendue + '</td><td>' + Math.round(s.p400 * 100) + ' %</td><td>' + Math.round(s.p4k * 100) + ' %</td><td>' + Math.round(s.p1a4k * 100) + ' %</td><td>' + s.centroide + '</td><td>' + s.noeuds + '</td></tr>';
+    });
+    document.getElementById('table').innerHTML = t;
+    var g = rapport.global, lignes = [];
+    lignes.push(rapport.sons.length + ' rendus mesurés · ' + (rapport.echecs.length ? rapport.echecs.length + ' écart(s) aux critères' : 'tous les critères tenus'));
+    lignes.push('kill, coupe, mort au-dessus de la musique au chaos (−14 dBFS RMS) : ' + g.emergence_kill + ' / ' + g.emergence_coupe + ' / ' + g.emergence_mort + ' dB (cible 3 à 6)');
+    if (g.emergenceTel_kill !== undefined) lignes.push('les mêmes, au téléphone : ' + g.emergenceTel_kill + ' / ' + g.emergenceTel_coupe + ' / ' + g.emergenceTel_mort + ' dB (cible ≥ 3)');
+    if (g.charge_noeuds_par_seconde !== undefined) lignes.push('scène de charge (16 tourelles, CANON II, 3 kills/s…) : ' + g.charge_noeuds_par_seconde + ' noeuds créés par seconde (cible < 60) · kills ' + g.charge_kills);
+    lignes.push('tir sous le kill : ' + g.kill_moins_tir + ' dB (cible ≥ 6) · corrélation tir / tirEnnemi : ' + g.correlation_tir_tirEnnemi + ' (cible < 0,5)');
+    rapport.echecs.forEach(function (e) { lignes.push('✗ ' + e); });
+    rapport.avertissements.forEach(function (e) { lignes.push('· proches : ' + e); });
+    document.getElementById('bilan').textContent = lignes.join('\n');
+  }
+
+  window.__SONS = { mesurerTout: mesurerTout, entrees: entrees, criteres: criteres, B: B, tampons: function () { return resultats; } };
+  mesurerTout().then(function (rap) { window.__SONS.rapport = rap; afficher(rap); }).catch(function (e) { document.getElementById('bilan').textContent = 'erreur : ' + e.message; console.error(e); });
+})();
+</script>
+</body>
+</html>

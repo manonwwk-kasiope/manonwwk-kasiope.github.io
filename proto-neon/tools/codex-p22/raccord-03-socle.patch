@@ -1,0 +1,11 @@
+--- a/proto-neon/src/03-socle.js
++++ b/proto-neon/src/03-socle.js
+@@ -450,7 +450,7 @@
+   CH.vague = obj({ n: 'i+', etape: un(L.etapes), evt: un(['entree', 'pic', 'nettoyee', 'soupape']), nom: 's', quartier: un(L.quartiers) });
+   CH.vol = obj({ evt: un(['debut', 'porte', 'mine', 'fin']), parfait: 'b', vers: un(L.quartiers), portes: 'i+', mines: 'i+' });
+   CH.inversion = obj({ evt: un(['debut', 'fin']), dur: 'n+' });
+-  CH.arene = obj({ evt: un(['travellingAnnonce', 'travelling', 'convoiAnnonce', 'convoiPasse', 'fin']), voie: 'i', vx: 'n' });
++  CH.arene = obj({ evt: un(['travellingAnnonce', 'travelling', 'convoiAnnonce', 'convoiPasse', 'fin', 'battement', 'battementFin']), voie: 'i', vx: 'n' });
+   CH.phase = obj({ n: 'i+', evt: un(['arrivee', 'entree', 'repit', 'enrage', 'mort']) });
+   CH.apparition = obj({ id: 'i', type: un(L.ennemis.concat(L.ennemisBoss)), x: 'n', y: 'n', elite: 'b' });
+   CH.portail = obj({ type: un(L.ennemis.concat(L.ennemisBoss)), x: 'n', y: 'n', dur: 'n+', elite: 'b' });

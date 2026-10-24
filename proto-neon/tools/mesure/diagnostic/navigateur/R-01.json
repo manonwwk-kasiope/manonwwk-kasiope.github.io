@@ -1,0 +1,126 @@
+{
+ "id": "R-01",
+ "titre": "Pixels carrés",
+ "seuil": "blocs px × px identiques ; 0 valeur hors palette (avant tube)",
+ "bloquant": true,
+ "statut": "ok",
+ "resume": "9 ok, 0 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "paysage : toile = tampon × px en CSS",
+   "valeur": {
+    "toile": [
+     844,
+     390
+    ],
+    "attendu": [
+     844,
+     390
+    ]
+   },
+   "seuil": "égalité exacte",
+   "statut": "ok"
+  },
+  {
+   "nom": "paysage : blocs non uniformes (px 2 × dpr 3)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "blocs": 82290,
+   "alignement": [
+    0,
+    0
+   ]
+  },
+  {
+   "nom": "paysage : pixels d'écran hors des seize couleurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "pixels": 2962440
+  },
+  {
+   "nom": "portrait : toile = tampon × px en CSS",
+   "valeur": {
+    "toile": [
+     390,
+     844
+    ],
+    "attendu": [
+     390,
+     844
+    ]
+   },
+   "seuil": "égalité exacte",
+   "statut": "ok"
+  },
+  {
+   "nom": "portrait : blocs non uniformes (px 2 × dpr 3)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "blocs": 82290,
+   "alignement": [
+    0,
+    0
+   ]
+  },
+  {
+   "nom": "portrait : pixels d'écran hors des seize couleurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "pixels": 2962440
+  },
+  {
+   "nom": "bureau : toile = tampon × px en CSS",
+   "valeur": {
+    "toile": [
+     1440,
+     900
+    ],
+    "attendu": [
+     1440,
+     900
+    ]
+   },
+   "seuil": "égalité exacte",
+   "statut": "ok"
+  },
+  {
+   "nom": "bureau : blocs non uniformes (px 4 × dpr 1)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "blocs": 81000,
+   "alignement": [
+    0,
+    0
+   ]
+  },
+  {
+   "nom": "bureau : pixels d'écran hors des seize couleurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok",
+   "pixels": 1296000
+  }
+ ],
+ "notes": [
+  "paysage : état du tube avant capture : {\"off\":true,\"niveau\":\"coupe\",\"auto\":false,\"stats\":{\"ops\":0,\"ox\":0,\"oy\":0,\"a\":0,\"d\":1,\"mode\":\"coupe\",\"auto\":false,\"ext\":\"non\"}}",
+  "portrait : état du tube avant capture : {\"off\":true,\"niveau\":\"coupe\",\"auto\":false,\"stats\":{\"ops\":0,\"ox\":0,\"oy\":0,\"a\":0,\"d\":1,\"mode\":\"coupe\",\"auto\":false,\"ext\":\"non\"}}",
+  "bureau : état du tube avant capture : {\"off\":true,\"niveau\":\"coupe\",\"auto\":false,\"stats\":{\"ops\":0,\"ox\":0,\"oy\":0,\"a\":0,\"d\":2,\"mode\":\"coupe\",\"auto\":false,\"ext\":\"non\"}}"
+ ],
+ "captures": [
+  "tools/mesure/diagnostic/navigateur/captures/R-01-paysage.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-01-portrait.png",
+  "tools/mesure/diagnostic/navigateur/captures/R-01-bureau.png"
+ ],
+ "duree": 1.5,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:08:48.607Z",
+ "dateParis": "18/10/2026 · 01 h 08"
+}

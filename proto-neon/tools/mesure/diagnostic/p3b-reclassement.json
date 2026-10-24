@@ -1,0 +1,173 @@
+{
+  "dateParis": "18/10/2026 01:00:48",
+  "limite": "Reclassement des mêmes valeurs historiques, aucune nouvelle exécution du jeu",
+  "criteres": [
+    {
+      "id": "R-11",
+      "avant": "echec",
+      "apresReclassement": {
+        "id": "R-11",
+        "titre": "Lumière, et décor qui se tait par la forme",
+        "seuil": "≥ 25/28/32/25 % lumineux ; moyenne ≥ 0,075/0,085/0,095/0,075 ; décor 18-28 % ; vide < 30 % ; gaine 100 %",
+        "bloquant": true,
+        "statut": "partiel",
+        "resume": "4 ok, 0 en échec, 8 indicatives hors cible, 6 non mesurables",
+        "mesures": [
+          {
+            "nom": "partie à t = 1 s",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'}) ; aucun écran contourné"
+          },
+          {
+            "nom": "scène calme : pixels lumineux",
+            "valeur": 0.11653,
+            "seuil": "≥ 0.25",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène calme : luminance moyenne",
+            "valeur": 0.05176,
+            "seuil": "≥ 0.075",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène calme : vide",
+            "valeur": 0,
+            "seuil": "< 0.3",
+            "statut": "ok"
+          },
+          {
+            "nom": "scène calme : décor seul, cyan et magenta du décor, gaine",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+          },
+          {
+            "nom": "scène montee : pixels lumineux",
+            "valeur": 0.11467,
+            "seuil": "≥ 0.28",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène montee : luminance moyenne",
+            "valeur": 0.05145,
+            "seuil": "≥ 0.085",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène montee : vide",
+            "valeur": 0,
+            "seuil": "< 0.3",
+            "statut": "ok"
+          },
+          {
+            "nom": "scène montee : décor seul, cyan et magenta du décor, gaine",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+          },
+          {
+            "nom": "scène chaos : pixels lumineux",
+            "valeur": 0.09782,
+            "seuil": "≥ 0.32",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène chaos : luminance moyenne",
+            "valeur": 0.04722,
+            "seuil": "≥ 0.095",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène chaos : vide",
+            "valeur": 0,
+            "seuil": "< 0.3",
+            "statut": "ok"
+          },
+          {
+            "nom": "scène chaos : décor seul, cyan et magenta du décor, gaine",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+          },
+          {
+            "nom": "scène colosse : pixels lumineux",
+            "valeur": 0.17234,
+            "seuil": "≥ 0.25",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène colosse : luminance moyenne",
+            "valeur": 0.06838,
+            "seuil": "≥ 0.075",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "scène colosse : vide",
+            "valeur": 0,
+            "seuil": "< 0.3",
+            "statut": "ok"
+          },
+          {
+            "nom": "scène colosse : décor seul, cyan et magenta du décor, gaine",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+          },
+          {
+            "nom": "part lumineuse à t = 30 s ≥ SNAKE 2030",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : partie de SNAKE 2975 non lancée"
+          }
+        ],
+        "notes": [],
+        "captures": [],
+        "duree": 0
+      }
+    },
+    {
+      "id": "R-28",
+      "avant": "echec",
+      "apresReclassement": {
+        "id": "R-28",
+        "titre": "Mouvement réduit",
+        "seuil": "caméra et plans immobiles à la mort d’une élite ; jeu complet ; lumière gardée",
+        "bloquant": true,
+        "statut": "partiel",
+        "resume": "1 ok, 0 en échec, 1 indicatives hors cible, 2 non mesurables",
+        "mesures": [
+          {
+            "nom": "prefers-reduced-motion vu par la page",
+            "valeur": true,
+            "seuil": true,
+            "statut": "ok"
+          },
+          {
+            "nom": "mort d’une élite",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : scène v5 absente (dbg.scene a rendu false)"
+          },
+          {
+            "nom": "lumière gardée (scène calme, pixels lumineux)",
+            "valeur": 0.12068,
+            "seuil": "≥ 0.25",
+            "statut": "hors-cible",
+            "indicatif": true
+          },
+          {
+            "nom": "jeu complet en mouvement réduit",
+            "statut": "non-mesurable",
+            "raison": "non mesurable : départ impossible : état demarrage après N.game.reset(graine, {depart:'plongee'})"
+          }
+        ],
+        "notes": [],
+        "captures": [],
+        "duree": 0
+      }
+    }
+  ]
+}

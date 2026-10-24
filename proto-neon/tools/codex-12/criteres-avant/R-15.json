@@ -1,0 +1,130 @@
+{
+ "id": "R-15",
+ "titre": "Rythme",
+ "seuil": "vagues nommées et annoncées ; respirations ≥ 8 s < 40 % ; pics croissants ; pic en V3-V5 ; 0 tir ennemi en V1",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "2 ok, 6 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "vagues nommées (entrées avec nom)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "entrees": 205
+  },
+  {
+   "nom": "vagues annoncées par une bannière (± 1,5 s)",
+   "valeur": 0.41951,
+   "seuil": 1,
+   "statut": "echec",
+   "vagues": 205
+  },
+  {
+   "nom": "respirations de 8 s sous 40 % du pic, après chaque pic",
+   "valeur": 0.91979,
+   "seuil": 1,
+   "statut": "echec",
+   "pics": 187,
+   "exemples": [
+    {
+     "n": 3,
+     "pic": 18,
+     "tp": 138.15125001176,
+     "respiration": 7.973750001930313,
+     "terminee": true,
+     "graine": 4
+    },
+    {
+     "n": 2,
+     "pic": 8,
+     "tp": 46.702500004070885,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 7
+    },
+    {
+     "n": 3,
+     "pic": 17,
+     "tp": 144.6691666787194,
+     "respiration": 7.959583335363021,
+     "terminee": true,
+     "graine": 8
+    },
+    {
+     "n": 3,
+     "pic": 16,
+     "tp": 147.23250001001412,
+     "respiration": 5.973750001932132,
+     "terminee": true,
+     "graine": 15
+    },
+    {
+     "n": 3,
+     "pic": 19,
+     "tp": 86.42875000612415,
+     "respiration": 0,
+     "terminee": true,
+     "graine": 16
+    },
+    {
+     "n": 5,
+     "pic": 16,
+     "tp": 238.0170833510144,
+     "respiration": 5.458333333328369,
+     "terminee": true,
+     "graine": 18
+    }
+   ]
+  },
+  {
+   "nom": "pics de vivants croissants V1 < V2 < V3 < V4 < V5 (médianes)",
+   "valeur": [
+    6,
+    10,
+    17.5,
+    20,
+    19
+   ],
+   "seuil": "strictement croissants",
+   "statut": "echec",
+   "vaguesConnues": 5
+  },
+  {
+   "nom": "pic connu en V3 (événement vague/pic)",
+   "valeur": 0.9,
+   "seuil": 1,
+   "statut": "echec",
+   "parties": 40
+  },
+  {
+   "nom": "pic connu en V4 (événement vague/pic)",
+   "valeur": 0.94444,
+   "seuil": 1,
+   "statut": "echec",
+   "parties": 36
+  },
+  {
+   "nom": "pic connu en V5 (événement vague/pic)",
+   "valeur": 0.72414,
+   "seuil": 1,
+   "statut": "echec",
+   "parties": 29
+  },
+  {
+   "nom": "tirs ennemis avant la vague 2",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 157.1,
+ "bundle": {
+  "url": "http://127.0.0.1:61885/proto-neon/index.html",
+  "empreinte": "61a924e614ea"
+ },
+ "date": "2026-10-18T03:15:30.142Z",
+ "dateParis": "18/10/2026 · 05 h 15"
+}

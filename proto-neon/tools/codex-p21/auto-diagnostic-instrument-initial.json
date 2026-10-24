@@ -1,0 +1,167 @@
+{
+  "dateParis": "18/10/2026 04:00:19",
+  "reference": "REFONTE.md §2.16, lignes 692-695 : menace entrante <0,25s / RALENTI 3 télégraphes en vue ; tests construits, pas une attribution des taux R-23.",
+  "corrigeDansCeLot": false,
+  "cas": [
+    {
+      "phase": "avant",
+      "nom": "tir-entrant",
+      "attendu": true,
+      "actif": true,
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "avant",
+      "nom": "tir-qui-seloigne",
+      "attendu": false,
+      "actif": true,
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "avant",
+      "nom": "tir-lateral-sans-contact",
+      "attendu": false,
+      "actif": true,
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "avant",
+      "nom": "ralenti-3-telegraphes-publics-construits-en-vue",
+      "attendu": true,
+      "actif": false,
+      "conforme": false,
+      "schemas": [
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ],
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ],
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ]
+      ],
+      "journal": [],
+      "err": 0
+    },
+    {
+      "phase": "apres-raccord",
+      "nom": "tir-entrant",
+      "attendu": true,
+      "actif": true,
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "apres-raccord",
+      "nom": "tir-qui-seloigne",
+      "attendu": false,
+      "actif": true,
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "apres-raccord",
+      "nom": "tir-lateral-sans-contact",
+      "attendu": false,
+      "actif": true,
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 4,
+          "t": 0.03333333333333333,
+          "image": 2,
+          "type": "pouvoir",
+          "d": {
+            "id": "traversee",
+            "evt": "debut"
+          }
+        }
+      ],
+      "err": 0
+    },
+    {
+      "phase": "apres-raccord",
+      "nom": "ralenti-3-telegraphes-publics-construits-en-vue",
+      "attendu": true,
+      "actif": false,
+      "conforme": false,
+      "schemas": [
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ],
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ],
+        [
+          "tele.forme : \"cercle\" hors de [\"ligne\",\"disque\",\"secteur\",\"rect\",\"losange\",\"voie\"]"
+        ]
+      ],
+      "journal": [],
+      "err": 0
+    }
+  ]
+}

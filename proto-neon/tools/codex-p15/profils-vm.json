@@ -1,0 +1,3954 @@
+{
+  "dateParis": "18/10/2026 05:52:33",
+  "limite": "sans DOM, images/films décodés ou CRT ; contrôle isolé centré, ne remplace pas R-12 officiel",
+  "cas": [
+    {
+      "phase": "avant",
+      "profil": "paysage",
+      "w": 844,
+      "h": 390,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 532,
+              "y": 127.5
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 532.1905107459669,
+            "y": 152.1449534802009,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 532.1905107459669,
+                "y": 152.1449534802009,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.03544780653785393,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03910560213877749,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.042289464090411955,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04487787094422165,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04708956130757078,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05794142666180581,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07362984566776036,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07790740065621582,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07855146433345485,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07733624984809818,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07427390934499939,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07111435168307206,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06830720622189816,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0642848462753676,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.060724267833272574,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.052983351561550616,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04820755863409892,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04391785150078989,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03919066715275246,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03408676631425447,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.029213756227974237,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.024790375501275976,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.016769959897921984,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.01303925142787702,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00951512942034269,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.006598614655486694,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.004435532871551829,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002989427633977397,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0017985174383278648,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001154453761088832,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0007291286912139992,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0005225422287033661,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00020658646251063312,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 0,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 12890.146237276815,
+              "accepte": true,
+              "_type": "explosion",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.9670000076293945,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 532,
+              "y": 152.5,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 176.42829818370976,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    },
+    {
+      "phase": "avant",
+      "profil": "portrait",
+      "w": 390,
+      "h": 844,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 641.5,
+              "y": 256
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 413.14835370292855,
+            "y": 268.0417645223669,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 413.14835370292855,
+                "y": 268.0417645223669,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.035617936565803865,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.038728885648316926,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04241098553894762,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.044938631668489486,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.047162474176692185,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05783205735812371,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07405517073763519,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07776157491797302,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07886742009964759,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07748207558634099,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07435897435897436,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07133309029043626,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.068732531291773,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06542714789160287,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.061793656580386436,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.053603110949082516,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04842629724146312,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04407582938388625,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03931218860128813,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.034196135617936566,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.029651233442702637,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.025045570543200876,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.01689148134645765,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.01307570786243772,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.009381455826953457,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.006817353262850893,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.004593510754648196,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002880058330295297,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001968647466277798,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001154453761088832,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.000704824401506866,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0004253250698748329,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0001579778830963665,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0001579778830963665,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 0,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 12890.146237276815,
+              "accepte": true,
+              "_type": "explosion",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.9670000076293945,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 413.5,
+              "y": 268,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 110.21144949595754,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    },
+    {
+      "phase": "avant",
+      "profil": "bureau",
+      "w": 1440,
+      "h": 900,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 532,
+              "y": 112.5
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 531.613685677902,
+            "y": 137.6156874752567,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 531.613685677902,
+                "y": 137.6156874752567,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.0357037037037037,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.038641975308641975,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04211111111111111,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04469135802469136,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.047135802469135804,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.057790123456790125,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07388888888888889,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07772839506172839,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07806172839506173,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07691358024691358,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07511111111111111,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07190123456790123,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07041975308641975,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06719753086419752,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06369135802469136,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0535679012345679,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04855555555555555,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0442962962962963,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0394320987654321,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.034123456790123456,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.02974074074074074,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.02528395061728395,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.01693827160493827,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.013037037037037036,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00965432098765432,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.006876543209876543,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.004740740740740741,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.003432098765432099,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002234567901234568,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0015308641975308641,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001074074074074074,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.000691358024691358,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00025925925925925926,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00004938271604938271,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 0,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 12688.076864982646,
+              "accepte": true,
+              "_type": "explosion",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.9670000076293945,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 532,
+              "y": 137.5,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 185.6258182473548,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    },
+    {
+      "phase": "apres",
+      "profil": "paysage",
+      "w": 844,
+      "h": 390,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 532,
+              "y": 127.5
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 532.1905107459669,
+            "y": 152.1449534802009,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 532.1905107459669,
+                "y": 152.1449534802009,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.33595819662170373,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.3252643091505651,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.3139506622918945,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.30209016891481344,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.28930611252886135,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2608822457163689,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.24924049094665207,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.23631060882245716,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2254708956130757,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.21453396524486573,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.19105602138777494,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1823672378174748,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.17417669218617085,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.16630210232105966,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.15887714181553045,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.14128083606756592,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.13492526430915056,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1291894519382671,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.12349009600194434,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.11737756714060031,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.10247903755012759,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09707133309029044,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09193097581723174,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.08702150929639081,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.08219710778952485,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07111435168307206,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0670555353019808,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0626078502855754,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05805079596548791,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05370032810791105,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04972657674079475,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04180337829626929,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03857090776522056,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0354964151172682,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0324705310487301,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.029942884919188235,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.02445011544537611,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.022287033661441243,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.020002430428970715,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.01740187143030745,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.015554745412565317,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.011836189087373921,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.009818933041681856,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.008069024182768258,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00661076680034026,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.005346943735569328,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0037064041803378297,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0029772754891238306,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002308907522177664,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001616235265524365,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001020780167699599,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0005225422287033661,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0002673471867784664,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0001093693036820999,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 25,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 29624.399999999994,
+              "accepte": true,
+              "_type": "scene",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.2809999883174896,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 532,
+              "y": 152.5,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 176.42829818370976,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    },
+    {
+      "phase": "apres",
+      "profil": "portrait",
+      "w": 390,
+      "h": 844,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 641.5,
+              "y": 256
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 413.14835370292855,
+            "y": 268.0417645223669,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 413.14835370292855,
+                "y": 268.0417645223669,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.33595819662170373,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.3252643091505651,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.3139506622918945,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.30209016891481344,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.28930611252886135,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2610523757443189,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.24916757807753068,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2362255438084822,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.22556811277190425,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.21457042167942642,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.19084943492526432,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1821728034998177,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.174200996475878,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1663264066107668,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.15913233685745534,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.14119577105359096,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.13507109004739337,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.12877627901324584,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.12338072669826225,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.11726819783691822,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.10246688540527403,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09710778952485113,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09179730222384251,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.08710657431036578,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.08230647709320695,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07143030744926479,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06717705675051647,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06255924170616113,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05781990521327014,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.05367602381820391,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04961720743711265,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04169400899258719,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03865597277919553,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0354964151172682,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0326163567869729,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.030198079961113136,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.024595941183618908,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.022372098675416213,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.020063191153238548,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.017596305747964516,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.015493984688297484,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.011836189087373921,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.009818933041681856,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.008069024182768258,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00661076680034026,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.005346943735569328,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0037185563251913964,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0030137319236845303,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002284603232470531,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0015919309758172318,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0009964758779924658,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0005225422287033661,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00025519504192489975,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00006076072426783327,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 25,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 29624.399999999994,
+              "accepte": true,
+              "_type": "scene",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.2809999883174896,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 413.5,
+              "y": 268,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 110.21144949595754,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    },
+    {
+      "phase": "apres",
+      "profil": "bureau",
+      "w": 1440,
+      "h": 900,
+      "causes": [
+        {
+          "attendu": "mur",
+          "protocole": "tête dirigée vers le bord, vraie grâce et collision",
+          "etat": "mort",
+          "death": {
+            "cause": "mur",
+            "auteur": "mur",
+            "auteurId": null,
+            "x": 1021,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 10,
+              "t": 0.08333333333333333,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "mur",
+                "auteur": "mur",
+                "auteurId": null,
+                "x": 1021,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "ennemi",
+          "protocole": "contact de tête avec une flèche",
+          "etat": "mort",
+          "death": {
+            "cause": "ennemi",
+            "auteur": "fleche",
+            "auteurId": 1,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "ennemi",
+                "auteur": "fleche",
+                "auteurId": 1,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "tir",
+          "protocole": "projectile immobile créé par N.ennemis.tir",
+          "etat": "mort",
+          "death": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "tir",
+                "auteur": "tourelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "laser",
+          "protocole": "N.ennemis.rayon traverse la tête",
+          "etat": "mort",
+          "death": {
+            "cause": "laser",
+            "auteur": "sentinelle",
+            "auteurId": null,
+            "x": 512.5666666666667,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 2,
+              "t": 0.016666666666666666,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "laser",
+                "auteur": "sentinelle",
+                "auteurId": null,
+                "x": 512.5666666666667,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        },
+        {
+          "attendu": "souffle",
+          "protocole": "mine replacée par sa position publique à 20 px après spawn, vraie mise à feu ; joueuse tenue fixe, fixture dirigée",
+          "etat": "mort",
+          "death": {
+            "cause": "souffle",
+            "auteur": "mine",
+            "auteurId": 1,
+            "x": 512,
+            "y": 256,
+            "t": 0.8166666666666662,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0.8083333333333329,
+            "teleDuree": 0.8
+          },
+          "morts": [
+            {
+              "pas": 99,
+              "t": 0.8249999999999995,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "souffle",
+                "auteur": "mine",
+                "auteurId": 1,
+                "x": 512,
+                "y": 256,
+                "t": 0.8166666666666662,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0.8083333333333329,
+                "teleDuree": 0.8
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0,
+          "placement": {
+            "demandee": {
+              "x": 532,
+              "y": 256
+            },
+            "apresSpawn": {
+              "x": 532,
+              "y": 112.5
+            }
+          }
+        },
+        {
+          "attendu": "convoi",
+          "protocole": "voie centrale annoncée, vrai passage sur la tête tenue fixe",
+          "etat": "mort",
+          "death": {
+            "cause": "convoi",
+            "auteur": "convoi",
+            "auteurId": null,
+            "x": 512,
+            "y": 256,
+            "t": 0,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 437,
+              "t": 3.5916666666666566,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "convoi",
+                "auteur": "convoi",
+                "auteurId": null,
+                "x": 512,
+                "y": 256,
+                "t": 0,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [
+            {
+              "pas": 419,
+              "t": 3.491666666666657,
+              "image": 0,
+              "type": "coupe",
+              "d": {
+                "k": 7,
+                "perdus": 1,
+                "cause": "convoi",
+                "auteur": "convoi",
+                "x": 477,
+                "y": 256
+              }
+            }
+          ],
+          "err": 0
+        },
+        {
+          "attendu": "traine",
+          "protocole": "position mémorisée du rival, collision avec sa vraie trace âgée",
+          "etat": "mort",
+          "death": {
+            "cause": "traine",
+            "auteur": "rival",
+            "auteurId": 1,
+            "x": 531.613685677902,
+            "y": 137.6156874752567,
+            "t": 0.7583333333333331,
+            "vague": 1,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          },
+          "morts": [
+            {
+              "pas": 92,
+              "t": 0.7666666666666664,
+              "image": 0,
+              "type": "mort",
+              "d": {
+                "cause": "traine",
+                "auteur": "rival",
+                "auteurId": 1,
+                "x": 531.613685677902,
+                "y": 137.6156874752567,
+                "t": 0.7583333333333331,
+                "vague": 1,
+                "quartier": "docks",
+                "visibleDepuis": 0,
+                "teleDuree": 0
+              }
+            }
+          ],
+          "coupes": [],
+          "err": 0
+        }
+      ],
+      "impact": {
+        "trace": [
+          {
+            "brasier": 0.3352098765432099,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.32419753086419756,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.31264197530864196,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.30074074074074075,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2884814814814815,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2601111111111111,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.24835802469135804,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.23585185185185184,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.2245679012345679,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.21423456790123457,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.19071604938271605,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.18182716049382716,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1735925925925926,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.16591358024691358,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.15865432098765433,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1411851851851852,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.13483950617283952,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1288395061728395,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.12295061728395061,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.1167283950617284,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.10237037037037038,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09630864197530864,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.09154320987654321,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.08685185185185185,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0821604938271605,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.07137037037037038,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06693827160493827,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.06238271604938272,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.057728395061728395,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.053469135802469134,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.049567901234567904,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.04171604938271605,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.038469135802469134,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.03558024691358025,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.032629629629629626,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.030123456790123456,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.024555555555555556,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.02195061728395062,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.019987654320987654,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.017358024691358026,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.015358024691358024,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.011901234567901235,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.009827160493827161,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00817283950617284,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0066172839506172835,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.005234567901234568,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0037530864197530866,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0029753086419753087,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.002271604938271605,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0016049382716049382,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.001037037037037037,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0005555555555555556,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.00027160493827160494,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0.0000617283950617284,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          },
+          {
+            "brasier": 0,
+            "shake": 0,
+            "horsPalette": 0
+          }
+        ],
+        "brasierImages": 25,
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "flash",
+            "d": {
+              "aire": 29160,
+              "accepte": true,
+              "_type": "scene",
+              "_issue": "rafale",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0,
+              "_image": 0,
+              "_luminance": 0.2809999883174896,
+              "_rouge": true
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "kill",
+            "d": {
+              "id": 1,
+              "type": "fleche",
+              "x": 532,
+              "y": 137.5,
+              "elite": true,
+              "boss": false,
+              "base": 50,
+              "src": {
+                "genre": "arme",
+                "type": "canon",
+                "id": 0
+              },
+              "distTete": 185.6258182473548,
+              "gen": 0
+            }
+          }
+        ]
+      },
+      "console": []
+    }
+  ]
+}

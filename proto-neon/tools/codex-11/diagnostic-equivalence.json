@@ -1,0 +1,778 @@
+{
+  "dateParis": "18/10/2026 04:51:23",
+  "comparaison": "stricte conservée en échec ; diagnostic descriptif, aucune tolérance adoptée",
+  "versions": [
+    {
+      "phase": "avant",
+      "cas": [
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 10,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 266,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 131,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 1542,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 355,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 353,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 2288,
+          "structureEvenementsIdentique": true
+        }
+      ],
+      "ecartsNonNumeriques": [
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        }
+      ],
+      "maximumAbsoluHorsDefi": 1.639083038185163e-7,
+      "types": {
+        "defi": 30,
+        "pilote": 3183,
+        "kill": 709,
+        "ramassage": 355,
+        "apparition": 668,
+        "mort": 9
+      }
+    },
+    {
+      "phase": "apres",
+      "cas": [
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 3,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 4,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 5,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 79,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 738,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 27,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 6,
+          "structureEvenementsIdentique": true
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "longueurIdentique": true,
+          "metriquesFinalesIdentiques": true,
+          "erreurs": 0,
+          "evenementsDifferents": 1650,
+          "structureEvenementsIdentique": true
+        }
+      ],
+      "ecartsNonNumeriques": [
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "inerte",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "tourneur",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "maladroit",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "kamikaze",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "humain",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "bon",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "bon",
+          "graine": 2,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "expert",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "expert",
+          "graine": 2,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[2].d.id",
+          "vm": "chaine5",
+          "chromium": "sansFilet"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[2].d.nom",
+          "vm": "CHAÎNE ×5",
+          "chromium": "SANS FILET"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[3].d.id",
+          "vm": "premierJet",
+          "chromium": "sansCoupe"
+        },
+        {
+          "pilote": "dieu",
+          "graine": 1,
+          "chemin": "journal[3].d.nom",
+          "vm": "PREMIER JET",
+          "chromium": "SANS COUPE"
+        }
+      ],
+      "maximumAbsoluHorsDefi": 3.745981302927248e-11,
+      "types": {
+        "defi": 30,
+        "pilote": 1576,
+        "kill": 379,
+        "ramassage": 197,
+        "apparition": 329,
+        "mort": 7
+      }
+    }
+  ]
+}

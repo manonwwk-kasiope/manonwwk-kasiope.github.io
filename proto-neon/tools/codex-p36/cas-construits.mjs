@@ -1,0 +1,41 @@
+// Cas fictifs aux réponses connues. Ces données ne sont jamais des parties réelles.
+import assert from 'node:assert/strict';
+import {resumer,mediane,medianeFins,ciblesR04} from '../mesure/parties.mjs';
+import {analyser,bilan} from '../reglage/analyse.mjs';
+import {save,relireCritere,versBanc} from './preuves.mjs';
+const J=(type,t,d,pas=t*60)=>({type,t,d,pas});
+const phase=(t,evt,n=1)=>J('phase',t,{evt,n});
+const p=(journal=[],echantillons=[],duree=100,raison='fin')=>({ok:true,raison,journal,echantillons,fin:{t:duree,score:1000},params:{pilote:'humain',graine:1},erreurs:{zero:true,compteur:0,console:[]}});
+const cas=[];
+function tester(nom,f){f();cas.push({nom,ok:true});}
+const film=p([J('vague',0,{evt:'entree',n:1}),J('vague',30,{evt:'entree',n:2})],[{etat:'panneau',t:29,vague:1}]);
+const arrivee=p([phase(50,'arrivee'),phase(53,'entree')]);
+const gagne=p([phase(100,'arrivee'),phase(104,'entree'),phase(174,'mort'),J('section',175,{nom:'victoire'})],[{t:176,etat:'victoire'}],180);
+const perd=p([J('mort',10,{cause:'mur',t:9}),J('mort',20,{cause:'mur',t:18}),J('mort',30,{cause:'mur',t:27})],[],35);
+tester('film V1→V2 : aucun accès CYCLOPE',()=>{assert.equal(resumer(film).cyclopeAtteint,false);assert.equal(resumer(film).entreeCyclope,null);});
+tester('alerte / panneau / boss sans événement : aucun accès',()=>{for(const etat of ['alerte','panneau','boss'])assert.equal(resumer(p([],[{etat,t:10}])).cyclopeAtteint,false);});
+tester('phase/arrivee sans combat commencé : accès réel',()=>{const r=resumer(p([phase(50,'arrivee')]));assert.equal(r.cyclopeAtteint,true);assert.equal(r.entreeCyclope,50);assert.equal(r.combatCyclope,null);});
+tester('phase/entree seule : aucune arrivée inventée',()=>assert.equal(resumer(p([phase(53,'entree')])).cyclopeAtteint,false));
+tester('victoire : fin incluse dans la médiane ; défaite distincte',()=>{const r=resumer(gagne);assert.equal(r.victoire,true);assert.equal(r.defaite,false);assert.equal(r.finPartie,180);assert.equal(r.gameOver,null);assert.equal(medianeFins([r,resumer(perd)]),107.5);});
+tester('défaite : fin incluse et gameOver conservé',()=>{const r=resumer(perd);assert.equal(r.defaite,true);assert.equal(r.victoire,false);assert.equal(r.gameOver,35);assert.equal(r.finPartie,35);});
+tester('victoire uniquement journalisée, entre deux échantillons : reconnue',()=>assert.equal(resumer(p([J('section',175,{nom:'victoire'})])).victoire,true));
+tester('combat officiel : première entrée phase 1, pas arrivée ; répits inclus',()=>{const r=resumer(gagne);assert.equal(r.combatCyclope,70);assert.equal(r.combatCyclopeJusquaVictoire,71);});
+tester('victoire sans phase/mort : combat officiel absent, borne alternative séparée',()=>{const r=resumer(p([phase(100,'arrivee'),phase(104,'entree'),J('section',175,{nom:'victoire'})]));assert.equal(r.victoire,true);assert.equal(r.combatCyclope,null);assert.equal(r.combatCyclopeJusquaVictoire,71);});
+tester('deux horloges : mort.t globale, tempsCombat séparé ; reçu non muté',()=>{const s=JSON.stringify(perd),r=resumer(perd);assert.equal(r.premiereMort.t,10);assert.equal(r.premiereMort.tempsCombat,9);assert.equal(JSON.stringify(perd),s);});
+tester('mort après arrivée / V2 : temps de combat ne la replace pas avant',()=>{const x=p([J('vague',0,{evt:'entree',n:1}),J('vague',9,{evt:'entree',n:2}),phase(10,'arrivee'),J('mort',20,{cause:'mur',t:5})]);const r=resumer(x),b=analyser(versBanc(x));assert.equal(r.coupsV1,0);assert.equal(b.mortAvant,false);assert.equal(b.premiereMort.t,20);});
+tester('médiane paire, impaire, null exclus des nombres ; tableau vide',()=>{assert.equal(mediane([1,3,100,200]),51.5);assert.equal(mediane([null,3,1,2]),2);assert.equal(mediane([]),null);assert.equal(medianeFins([]),null);});
+tester('censure : pas de médiane validée sur le sous-ensemble terminé',()=>{assert.equal(medianeFins([resumer(gagne),resumer(p([],[],540,'temps'))]),null);assert.equal(medianeFins([{finie:true,duree:null}]),null);});
+tester('durée manquante : aucune fin médiane inventée',()=>assert.equal(medianeFins([resumer({ok:true,raison:'fin',journal:[]})]),null));
+tester('11 s strict et cible N.R future respectée ; N.R non muté',()=>{const R={pilotes:{inerte:{premiereMortAvant:8,perdAvant:35}}},s=JSON.stringify(R);assert.equal(ciblesR04(R).inerte.premiereMortAvant,11);assert.equal(JSON.stringify(R),s);assert.equal(ciblesR04({pilotes:{inerte:{premiereMortAvant:12}}}).inerte.premiereMortAvant,12);});
+// Faire exécuter le vrai critère sur 40 cas fictifs ; il ne peut pas changer de définition.
+const noms=['inerte','tourneur','maladroit','kamikaze','humain','bon','expert','dieu'];
+const construits=noms.flatMap(pilote=>Array.from({length:5},(_,i)=>{const x=structuredClone(pilote==='humain'&&i<4?gagne:perd);x.params={pilote,graine:i+1};if(pilote==='humain'){x.fin.t=i<4?350:150;}if(pilote==='inerte'){x.journal[0].t=i===4?11:10.5;x.journal[0].d.t=1;}return {pilote,graine:i+1,p:x};}));
+const R=await relireCritere('R-04',construits),avant=await relireCritere('R-04',construits,true);
+tester('vrai R-04 : quatre victoires 350 s + défaite 150 s → médiane 350, avant 150',()=>{assert.equal(R.mesures.find(m=>m.nom.startsWith('humain : fin de partie médiane')).valeur,350);assert.equal(avant.mesures.find(m=>m.nom.startsWith('humain : game over médian')).valeur,150);});
+tester('vrai R-04 : mort à 11 s refusée, 10,5 acceptée ; combat.t=1 ne trompe pas',()=>{const m=R.mesures.find(m=>m.nom.startsWith('inerte : première mort'));assert.equal(m.valeur,.8);assert.equal(m.statut,'echec');});
+tester('banc et critère : même médiane des cinq fins construites',()=>{const b=bilan(construits.filter(c=>c.pilote==='humain').map(c=>analyser(versBanc(c.p))));assert.equal(b.pilotes.humain.mediane,350);});
+const incomplets=structuredClone(construits);incomplets.find(c=>c.pilote==='humain').p.raison='temps';
+const censure=await relireCritere('R-04',incomplets);
+tester('vrai R-04 et banc : censure → non mesurable, pas de succès',()=>{assert.equal(censure.mesures.find(m=>m.nom.startsWith('humain : fin de partie médiane')).statut,'non-mesurable');const b=bilan(incomplets.filter(c=>c.pilote==='humain').map(c=>analyser(versBanc(c.p))));assert.equal(b.pilotes.humain.mediane,null);assert.equal(b.B['humain.mediane'],null);});
+save('cas-construits.json',{dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),nature:'fictif, oracles connus, aucune simulation de jeu',cas,conforme:cas.every(x=>x.ok),R04:R});
+console.log(`${cas.length}/${cas.length} cas construits conformes`);

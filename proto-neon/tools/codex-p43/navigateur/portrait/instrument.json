@@ -1,0 +1,2085 @@
+{
+  "ok": true,
+  "mode": "fin-leves",
+  "cas": [
+    {
+      "nom": "contrat-mouvement-restants",
+      "attendu": "start 1, move 1, start 2, end action seul (pouce actif), end pouce",
+      "ok": false,
+      "fin": {
+        "type": "touchend",
+        "f": 10,
+        "r": 221.30000001192093,
+        "estampille": 204.19999998807907,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 2,
+            "x": 250,
+            "y": 200
+          }
+        ],
+        "ids": [],
+        "actifs": 0,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": false
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "derniere": {
+        "type": "touchend",
+        "f": 10,
+        "r": 221.30000001192093,
+        "estampille": 204.19999998807907,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 2,
+            "x": 250,
+            "y": 200
+          }
+        ],
+        "ids": [],
+        "actifs": 0,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": false
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "evenements": [
+        {
+          "type": "touchstart",
+          "f": 4,
+          "r": 123.39999997615814,
+          "estampille": 108.10000002384186,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 100,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchmove",
+          "f": 5,
+          "r": 153.60000002384186,
+          "estampille": 124.30000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchstart",
+          "f": 7,
+          "r": 171.19999998807907,
+          "estampille": 154.10000002384186,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [
+            1,
+            2
+          ],
+          "actifs": 2,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchmove",
+          "f": 8,
+          "r": 203.19999998807907,
+          "estampille": 172,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [
+            1,
+            2
+          ],
+          "actifs": 2,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 10,
+          "r": 221.19999998807907,
+          "estampille": 204.19999998807907,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [
+            2
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 10,
+          "r": 221.30000001192093,
+          "estampille": 204.19999998807907,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [],
+          "actifs": 0,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        }
+      ]
+    },
+    {
+      "nom": "contrat-fin-restants",
+      "attendu": "start 1, move 1, start 2, end action seul (pouce actif), end pouce",
+      "ok": false,
+      "fin": {
+        "type": "touchend",
+        "f": 10,
+        "r": 227.60000002384186,
+        "estampille": 211.30000001192093,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 2,
+            "x": 250,
+            "y": 200
+          }
+        ],
+        "ids": [],
+        "actifs": 0,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": false
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "derniere": {
+        "type": "touchend",
+        "f": 10,
+        "r": 227.60000002384186,
+        "estampille": 211.30000001192093,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 2,
+            "x": 250,
+            "y": 200
+          }
+        ],
+        "ids": [],
+        "actifs": 0,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": false
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "evenements": [
+        {
+          "type": "touchstart",
+          "f": 4,
+          "r": 126.70000004768372,
+          "estampille": 111.70000004768372,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 100,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchmove",
+          "f": 5,
+          "r": 159.9000000357628,
+          "estampille": 127.5,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchstart",
+          "f": 7,
+          "r": 176.30000001192093,
+          "estampille": 160.5,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [
+            1,
+            2
+          ],
+          "actifs": 2,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 8,
+          "r": 193,
+          "estampille": 176.80000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 160
+            }
+          ],
+          "ids": [
+            2
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchstart",
+          "f": 9,
+          "r": 210.70000004768372,
+          "estampille": 193.60000002384186,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [
+            1,
+            2
+          ],
+          "actifs": 2,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 10,
+          "r": 227.60000002384186,
+          "estampille": 211.30000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [
+            2
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 10,
+          "r": 227.60000002384186,
+          "estampille": 211.30000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [],
+          "actifs": 0,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        }
+      ]
+    },
+    {
+      "nom": "contrat-fin-leves",
+      "attendu": "start 1, move 1, start 2, end action seul (pouce actif), end pouce",
+      "ok": true,
+      "fin": {
+        "type": "touchend",
+        "f": 7,
+        "r": 179.60000002384186,
+        "estampille": 163.80000001192093,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 2,
+            "x": 250,
+            "y": 200
+          }
+        ],
+        "ids": [
+          1
+        ],
+        "actifs": 1,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": true
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "derniere": {
+        "type": "touchend",
+        "f": 10,
+        "r": 228,
+        "estampille": 211.20000004768372,
+        "fiable": true,
+        "changes": [
+          {
+            "id": 1,
+            "x": 130,
+            "y": 150
+          }
+        ],
+        "ids": [],
+        "actifs": 0,
+        "cible": "app",
+        "prevenu": true,
+        "stick": {
+          "active": false
+        },
+        "pouvoir": false,
+        "apogee": false,
+        "boost": false
+      },
+      "evenements": [
+        {
+          "type": "touchstart",
+          "f": 3,
+          "r": 113.10000002384186,
+          "estampille": 97.10000002384186,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 100,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchmove",
+          "f": 4,
+          "r": 143.70000004768372,
+          "estampille": 114,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 160
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchstart",
+          "f": 6,
+          "r": 162.9000000357628,
+          "estampille": 145.80000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [
+            1,
+            2
+          ],
+          "actifs": 2,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 7,
+          "r": 179.60000002384186,
+          "estampille": 163.80000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 2,
+              "x": 250,
+              "y": 200
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchmove",
+          "f": 8,
+          "r": 210.5,
+          "estampille": 180.30000001192093,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [
+            1
+          ],
+          "actifs": 1,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": true
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        },
+        {
+          "type": "touchend",
+          "f": 10,
+          "r": 228,
+          "estampille": 211.20000004768372,
+          "fiable": true,
+          "changes": [
+            {
+              "id": 1,
+              "x": 130,
+              "y": 150
+            }
+          ],
+          "ids": [],
+          "actifs": 0,
+          "cible": "app",
+          "prevenu": true,
+          "stick": {
+            "active": false
+          },
+          "pouvoir": false,
+          "apogee": false,
+          "boost": false
+        }
+      ]
+    },
+    {
+      "nom": "glisse-cap-moins90",
+      "attendu": "cap réel -90°, latence 1 image",
+      "ok": true,
+      "mesure": {
+        "ok": true,
+        "raison": null,
+        "images": 1,
+        "ms": 0.800000011920929,
+        "virageMs": 0.800000011920929,
+        "avant": {
+          "f": 12,
+          "r": 263.80000001192093,
+          "t": 0.1834,
+          "x": 207.47120000000012,
+          "y": 422,
+          "ang": 0,
+          "vise": 0,
+          "boost": false,
+          "etat": "etalon",
+          "paused": false,
+          "dtForce": false,
+          "hash": 2358550224,
+          "cyan": 1,
+          "W": 390,
+          "H": 844
+        },
+        "reponse": {
+          "f": 13,
+          "r": 280.80000001192093,
+          "t": 0.20000000000000004,
+          "x": 207.47120000000012,
+          "y": 420.8712,
+          "ang": -1.5707963267948966,
+          "vise": -1.5707963267948966,
+          "boost": false,
+          "etat": "etalon",
+          "paused": false,
+          "dtForce": false,
+          "hash": 2609202912,
+          "cyan": 1,
+          "W": 390,
+          "H": 844
+        },
+        "tourne": {
+          "f": 13,
+          "r": 280.80000001192093,
+          "t": 0.20000000000000004,
+          "x": 207.47120000000012,
+          "y": 420.8712,
+          "ang": -1.5707963267948966,
+          "vise": -1.5707963267948966,
+          "boost": false,
+          "etat": "etalon",
+          "paused": false,
+          "dtForce": false,
+          "hash": 2609202912,
+          "cyan": 1,
+          "W": 390,
+          "H": 844
+        }
+      },
+      "horloge": {
+        "ok": true,
+        "avance": true,
+        "mouvement": true,
+        "images": 33,
+        "ms": 528.1999999880791,
+        "tempsJeu": 0.5334,
+        "deplacement": 27.39123901396238
+      },
+      "preuve": {
+        "evenements": [
+          {
+            "type": "touchstart",
+            "f": 4,
+            "r": 130.5,
+            "estampille": 115.39999997615814,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 100,
+                "y": 180
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          },
+          {
+            "type": "touchmove",
+            "f": 5,
+            "r": 161.69999998807907,
+            "estampille": 131.19999998807907,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 130,
+                "y": 180
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          },
+          {
+            "type": "touchmove",
+            "f": 12,
+            "r": 280,
+            "estampille": 248.60000002384186,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 100,
+                "y": 150
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          }
+        ],
+        "images": [
+          {
+            "f": 2,
+            "r": 101.10000002384186,
+            "t": 0.016700000000000003,
+            "x": 196.1356,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1120282338,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 3,
+            "r": 112.60000002384186,
+            "t": 0.033400000000000006,
+            "x": 197.27120000000002,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3780202920,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 4,
+            "r": 129.5,
+            "t": 0.050100000000000006,
+            "x": 198.40680000000003,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 75522394,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 5,
+            "r": 145.89999997615814,
+            "t": 0.0668,
+            "x": 199.54240000000004,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 418488624,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 6,
+            "r": 162.5,
+            "t": 0.08339999999999999,
+            "x": 200.67120000000006,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1700972818,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 7,
+            "r": 179.30000001192093,
+            "t": 0.10010000000000001,
+            "x": 201.80680000000007,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 4250940280,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 8,
+            "r": 195.5,
+            "t": 0.1168,
+            "x": 202.94240000000008,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1808911370,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 9,
+            "r": 214.10000002384186,
+            "t": 0.1334,
+            "x": 204.0712000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1354016834,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 10,
+            "r": 229.19999998807907,
+            "t": 0.1501,
+            "x": 205.2068000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3075053640,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 11,
+            "r": 245.89999997615814,
+            "t": 0.16670000000000001,
+            "x": 206.3356000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3135564730,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 12,
+            "r": 263.80000001192093,
+            "t": 0.1834,
+            "x": 207.47120000000012,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2358550224,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 13,
+            "r": 280.80000001192093,
+            "t": 0.20000000000000004,
+            "x": 207.47120000000012,
+            "y": 420.8712,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2609202912,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 14,
+            "r": 295.69999998807907,
+            "t": 0.21680000000000005,
+            "x": 207.47120000000012,
+            "y": 419.7288,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2418359560,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 15,
+            "r": 313.30000001192093,
+            "t": 0.23340000000000002,
+            "x": 207.47120000000012,
+            "y": 418.59999999999997,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 586101232,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 16,
+            "r": 330.69999998807907,
+            "t": 0.25000000000000006,
+            "x": 207.47120000000012,
+            "y": 417.47119999999995,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1239789464,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 17,
+            "r": 345.39999997615814,
+            "t": 0.26670000000000005,
+            "x": 207.47120000000012,
+            "y": 416.33559999999994,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3412258816,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 18,
+            "r": 362.60000002384186,
+            "t": 0.28340000000000004,
+            "x": 207.47120000000012,
+            "y": 415.19999999999993,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3757792552,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 19,
+            "r": 379.19999998807907,
+            "t": 0.30000000000000004,
+            "x": 207.47120000000012,
+            "y": 414.0711999999999,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1615597840,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 20,
+            "r": 397.19999998807907,
+            "t": 0.31670000000000004,
+            "x": 207.47120000000012,
+            "y": 412.9355999999999,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3439404320,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 21,
+            "r": 414,
+            "t": 0.33340000000000003,
+            "x": 207.47120000000012,
+            "y": 411.7999999999999,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 4285901128,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 22,
+            "r": 429.19999998807907,
+            "t": 0.35000000000000003,
+            "x": 207.47120000000012,
+            "y": 410.6711999999999,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1288944688,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 23,
+            "r": 447.19999998807907,
+            "t": 0.3667,
+            "x": 207.47120000000012,
+            "y": 409.5355999999999,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2718001112,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 24,
+            "r": 463.89999997615814,
+            "t": 0.3834,
+            "x": 207.47120000000012,
+            "y": 408.39999999999986,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1579181632,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 25,
+            "r": 480.60000002384186,
+            "t": 0.4,
+            "x": 207.47120000000012,
+            "y": 407.27119999999985,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 491823464,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 26,
+            "r": 495.60000002384186,
+            "t": 0.4167,
+            "x": 207.47120000000012,
+            "y": 406.13559999999984,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 140424016,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 27,
+            "r": 512.6000000238419,
+            "t": 0.4334,
+            "x": 207.47120000000012,
+            "y": 404.99999999999983,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 87110496,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 28,
+            "r": 530.6000000238419,
+            "t": 0.44999999999999996,
+            "x": 207.47120000000012,
+            "y": 403.8711999999998,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2339947912,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 29,
+            "r": 545.5,
+            "t": 0.4667,
+            "x": 207.47120000000012,
+            "y": 402.7355999999998,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1551201904,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 30,
+            "r": 562.6000000238419,
+            "t": 0.48340000000000005,
+            "x": 207.47120000000012,
+            "y": 401.5999999999998,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2878394392,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 31,
+            "r": 580.6000000238419,
+            "t": 0.5001,
+            "x": 207.47120000000012,
+            "y": 400.4643999999998,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 55839872,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 32,
+            "r": 597.1999999880791,
+            "t": 0.5167,
+            "x": 207.47120000000012,
+            "y": 399.3355999999998,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 554341800,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 33,
+            "r": 612.6999999880791,
+            "t": 0.5334000000000001,
+            "x": 207.47120000000012,
+            "y": 398.19999999999976,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 240158096,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 34,
+            "r": 629.3000000119209,
+            "t": 0.5501,
+            "x": 207.47120000000012,
+            "y": 397.06439999999975,
+            "ang": -1.5707963267948966,
+            "vise": -1.5707963267948966,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2972526136,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          }
+        ]
+      }
+    },
+    {
+      "nom": "toucher-et-glisse-effets-connus",
+      "ok": true,
+      "effets": [
+        {
+          "action": "toucher",
+          "x": 250,
+          "y": 200
+        },
+        {
+          "action": "glisse",
+          "x": 285,
+          "y": 200
+        }
+      ]
+    },
+    {
+      "nom": "temoin-geste-ignore",
+      "attendu": "échec mesuré (aucune réponse)",
+      "ok": true,
+      "mesure": {
+        "ok": false,
+        "raison": "geste ignoré / aucune réponse observée",
+        "images": null,
+        "ms": null,
+        "virageMs": null,
+        "avant": {
+          "f": 11,
+          "r": 247.89999997615814,
+          "t": 0.16660000000000003,
+          "x": 206.32880000000011,
+          "y": 422,
+          "ang": 0,
+          "vise": 0,
+          "boost": false,
+          "etat": "etalon",
+          "paused": false,
+          "dtForce": false,
+          "hash": 3135564730,
+          "cyan": 1,
+          "W": 390,
+          "H": 844
+        },
+        "reponse": null,
+        "tourne": null
+      },
+      "horloge": {
+        "ok": true,
+        "avance": true,
+        "mouvement": true,
+        "images": 33,
+        "ms": 523.3999999761581,
+        "tempsJeu": 0.5332,
+        "deplacement": 36.25760000000025
+      },
+      "preuve": {
+        "evenements": [
+          {
+            "type": "touchstart",
+            "f": 3,
+            "r": 114.29999995231628,
+            "estampille": 99.09999996423721,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 100,
+                "y": 180
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          },
+          {
+            "type": "touchmove",
+            "f": 4,
+            "r": 147.5,
+            "estampille": 115,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 130,
+                "y": 180
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          },
+          {
+            "type": "touchmove",
+            "f": 11,
+            "r": 262.5,
+            "estampille": 231.5,
+            "fiable": true,
+            "changes": [
+              {
+                "id": 1,
+                "x": 100,
+                "y": 150
+              }
+            ],
+            "ids": [
+              1
+            ],
+            "actifs": 1,
+            "cible": "app",
+            "prevenu": true,
+            "stick": {
+              "active": true
+            },
+            "pouvoir": false,
+            "apogee": false,
+            "boost": false
+          }
+        ],
+        "images": [
+          {
+            "f": 1,
+            "r": 89.89999997615814,
+            "t": 0,
+            "x": 195,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3684295392,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 2,
+            "r": 96.69999998807907,
+            "t": 0.016599999999999993,
+            "x": 196.1288,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1120282338,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 3,
+            "r": 113.5,
+            "t": 0.0332,
+            "x": 197.25760000000002,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3780202920,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 4,
+            "r": 131.5,
+            "t": 0.049899999999999986,
+            "x": 198.39320000000004,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 75522394,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 5,
+            "r": 148.19999998807907,
+            "t": 0.0666,
+            "x": 199.52880000000005,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 418488624,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 6,
+            "r": 163.0999999642372,
+            "t": 0.0833,
+            "x": 200.66440000000006,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1700972818,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 7,
+            "r": 181,
+            "t": 0.09999999999999999,
+            "x": 201.80000000000007,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 4250940280,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 8,
+            "r": 198.19999998807907,
+            "t": 0.11660000000000001,
+            "x": 202.92880000000008,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1808911370,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 9,
+            "r": 212.89999997615814,
+            "t": 0.1332,
+            "x": 204.0576000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1354016834,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 10,
+            "r": 230.19999998807907,
+            "t": 0.1499,
+            "x": 205.1932000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3075053640,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 11,
+            "r": 247.89999997615814,
+            "t": 0.16660000000000003,
+            "x": 206.32880000000011,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3135564730,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 12,
+            "r": 263.19999998807907,
+            "t": 0.1832,
+            "x": 207.4576000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2358550224,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 13,
+            "r": 279.7999999523163,
+            "t": 0.19990000000000005,
+            "x": 208.5932000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 4130468978,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 14,
+            "r": 296.7999999523163,
+            "t": 0.21660000000000004,
+            "x": 209.72880000000012,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2954579992,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 15,
+            "r": 314.5999999642372,
+            "t": 0.23320000000000002,
+            "x": 210.8576000000001,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 249065578,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 16,
+            "r": 331.5,
+            "t": 0.24990000000000007,
+            "x": 211.99320000000012,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1869577760,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 17,
+            "r": 346.19999998807907,
+            "t": 0.26660000000000006,
+            "x": 213.12880000000013,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1487284968,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 18,
+            "r": 363.5,
+            "t": 0.28330000000000005,
+            "x": 214.26440000000014,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 859834906,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 19,
+            "r": 380.19999998807907,
+            "t": 0.29990000000000006,
+            "x": 215.39320000000015,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1240991856,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 20,
+            "r": 398.19999998807907,
+            "t": 0.31660000000000005,
+            "x": 216.52880000000016,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 262706130,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 21,
+            "r": 413,
+            "t": 0.33330000000000004,
+            "x": 217.66440000000017,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 726530232,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 22,
+            "r": 429.89999997615814,
+            "t": 0.34990000000000004,
+            "x": 218.79320000000018,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1960077514,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 23,
+            "r": 447.69999998807907,
+            "t": 0.36660000000000004,
+            "x": 219.9288000000002,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2363067840,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 24,
+            "r": 462.89999997615814,
+            "t": 0.38330000000000003,
+            "x": 221.0644000000002,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3906570632,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 25,
+            "r": 479.69999998807907,
+            "t": 0.4,
+            "x": 222.20000000000022,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2837658746,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 26,
+            "r": 497.0999999642372,
+            "t": 0.4166,
+            "x": 223.32880000000023,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1370119696,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 27,
+            "r": 513.5,
+            "t": 0.4333,
+            "x": 224.46440000000024,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 261891890,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 28,
+            "r": 531.5,
+            "t": 0.4499,
+            "x": 225.59320000000025,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 2822942040,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 29,
+            "r": 547.7999999523163,
+            "t": 0.46659999999999996,
+            "x": 226.72880000000023,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 457127210,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 30,
+            "r": 563,
+            "t": 0.4833,
+            "x": 227.86440000000024,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 3527133536,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 31,
+            "r": 581.5,
+            "t": 0.4999,
+            "x": 228.99320000000026,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 1661363298,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 32,
+            "r": 598.0999999642372,
+            "t": 0.5166,
+            "x": 230.12880000000024,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 225444570,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          },
+          {
+            "f": 33,
+            "r": 613.2999999523163,
+            "t": 0.5332,
+            "x": 231.25760000000025,
+            "y": 422,
+            "ang": 0,
+            "vise": 0,
+            "boost": false,
+            "etat": "etalon",
+            "paused": false,
+            "dtForce": false,
+            "hash": 183115696,
+            "cyan": 1,
+            "W": 390,
+            "H": 844
+          }
+        ]
+      }
+    }
+  ],
+  "erreurs": []
+}

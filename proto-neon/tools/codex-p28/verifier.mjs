@@ -1,0 +1,42 @@
+/* HORS BAC UNIQUEMENT : cd proto-neon && node tools/codex-p28/verifier.mjs
+   Un seul Chromium muet, trois profils successifs. Ce script n'est pas exécuté
+   dans le bac : ni serveur local ni lancement Chromium n'y sont autorisés. */
+import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import crypto from 'node:crypto';import assert from 'node:assert/strict';import {fileURLToPath,pathToFileURL} from 'node:url';
+import {chromium,devices} from 'playwright';import {scenario} from '../codex-p17/scenarios.mjs';import {installerTrace,observerFin} from './scenarios.mjs';import {mesurer,meta} from '../mesure/criteres/R-18-ecran-de-fin.mjs';import {Session,Resultat} from '../mesure/commun.mjs';
+assert.ok(process.argv[1]&&pathToFileURL(path.resolve(process.argv[1])).href===import.meta.url,'Lancement direct uniquement, aucun import de contrôle.');
+const ICI=path.dirname(fileURLToPath(import.meta.url)),ROOT=path.resolve(ICI,'../..'),OUT=path.join(ICI,'playwright');fs.mkdirSync(OUT,{recursive:true});
+const html=fs.readFileSync(path.join(ROOT,'index.html'),'utf8'),courant=fs.readFileSync(path.join(ROOT,'src/80-ecrans.js'),'utf8');assert.ok(html.includes(courant),'Reconstruire index.html avant le contrôle.');
+const variantes={apres:html,recu:html.replace(courant,()=>fs.readFileSync(path.join(ICI,'avant/80-ecrans.js'),'utf8')),p17:html.replace(courant,()=>fs.readFileSync(path.join(ICI,'avant/80-ecrans-p17.js'),'utf8'))};
+const resultats={dateParis:new Date().toLocaleString('fr-FR',{timeZone:'Europe/Paris'}),bundleSha256:crypto.createHash('sha256').update(html).digest('hex'),limite:'Chromium émulé ; Safari physique reste à vérifier. Comparaisons navigateur : variante écran seulement, autres sources actuelles. Les historiques complets sont mesurés en VM.',compositions:[],fins:[],r18:[]};
+const profils=[['paysage',{...devices['iPhone 13 landscape'],viewport:{width:844,height:390}}],['portrait',{...devices['iPhone 13'],viewport:{width:390,height:844}}],['bureau',{viewport:{width:1440,height:900}}]];
+const serveur=http.createServer((req,res)=>{let rel;try{rel=decodeURIComponent(new URL(req.url,'http://local').pathname);}catch{res.writeHead(400);return res.end();}const nom=rel.slice(1).replace(/\.html$/,'');if(variantes[nom]){res.writeHead(200,{'Content-Type':'text/html'});return res.end(variantes[nom]);}const f=path.resolve(ROOT,'.'+rel);if(!f.startsWith(ROOT+path.sep)||!fs.existsSync(f)||!fs.statSync(f).isFile()){res.writeHead(404);return res.end();}res.writeHead(200,{'Content-Type':({'.png':'image/png','.html':'text/html','.mp4':'video/mp4','.mp3':'audio/mpeg','.json':'application/json','.js':'text/javascript'})[path.extname(f)]||'application/octet-stream'});fs.createReadStream(f).pipe(res);});
+let nav,base;const sauver=()=>fs.writeFileSync(path.join(OUT,'resultats.json'),JSON.stringify(resultats,null,2));
+async function capturer(page,id,preuve){const data=await page.evaluate(()=>({w:__N.gfx.W,h:__N.gfx.H,px:__N.gfx.PX,buf:Array.from(__N.gfx.buf()),etat:__N.game.etat(),err:__ERR,journal:__N.journal.dump()}));const buf=Uint8Array.from(data.buf);delete data.buf;data.sha256=crypto.createHash('sha256').update(buf).digest('hex');fs.writeFileSync(path.join(OUT,id+'.buf'),buf);fs.writeFileSync(path.join(OUT,id+'.json'),JSON.stringify({id,...data,preuve},null,2));await page.screenshot({path:path.join(OUT,id+'.png')});assert.equal(data.err.count,0);return data;}
+async function pageFixe(opts,phase='apres'){const ctx=await nav.newContext(opts),page=await ctx.newPage(),erreurs=[];page.on('pageerror',e=>erreurs.push(e.message));page.on('console',m=>{if(m.type()==='error')erreurs.push(m.text());});await page.addInitScript(()=>{window.__SEED=1;window.__DT=1/60;window.requestAnimationFrame=()=>0;window.cancelAnimationFrame=()=>{};});await page.goto(`${base}/${phase}.html?journal=1`,{waitUntil:'load'});await page.evaluate(()=>__N.art.load());return {ctx,page,erreurs};}
+try{
+ await new Promise((ok,ko)=>{serveur.once('error',ko);serveur.listen(0,'127.0.0.1',ok);});base=`http://127.0.0.1:${serveur.address().port}`;nav=await chromium.launch({args:['--mute-audio']});resultats.chromium=nav.version();
+ for(const [profil,opts]of profils){
+  // Même matrice p17, avec le briefing regroupé de p24. Pixels, pas appels seuls.
+  for(const phase of ['recu','apres'])for(const nom of ['briefing','pause','fin'])for(const stade of ['zero','encours','faits','tout']){
+   const {ctx,page,erreurs}=await pageFixe(opts,phase);try{await page.evaluate(installerTrace);const r=await page.evaluate('('+scenario.toString()+')({N:__N,S:__S,...'+JSON.stringify({nom,stade,profil})+'})');delete r.tampon.data;const xs=r.lignes.filter(l=>/^\d+\/\d+$/.test(l.texte)).map(l=>l.x+l.w);r.profil=profil;r.phase=phase;r.erreursConsole=erreurs;r.ok=!r.err.count&&!erreurs.length&&!r.collisions.length&&!r.horsPalette&&!r.cyan&&xs.length===4&&xs.every(x=>x===xs[0])&&r.lignes.every(l=>l.pixels>0&&l.dansZone&&l.echelle>=2&&!['PROCHAIN','JOUR','SECTEUR','>'].includes(l.texte)&&!(/\b(DU|LE)$/.test(l.texte)))&&r.boutons.every(b=>b.wPt>=44&&b.hPt>=44)&&r.modele.barres.every(b=>b.y>=r.modele.y&&b.y+b.h<=r.modele.bas);if(phase==='apres'&&nom==='fin'){r.glyphes=await page.evaluate(observerFin);r.ok=r.ok&&r.glyphes.lignes.every(l=>l.intact&&l.dansZone);}
+ await capturer(page,`${phase}-${profil}-${nom}-${stade}`,r);resultats.compositions.push(r);}finally{await ctx.close();sauver();}
+  }
+  // Décompte au milieu des secondes : 9,8,...,0 puis expiration, sans horloge murale.
+  const {ctx,page,erreurs}=await pageFixe(opts);try{
+   await page.evaluate(installerTrace);await page.evaluate(profil=>{localStorage.clear();const N=__N,S=__S;S.jour=20261017;S.view.safe=profil==='paysage'?{l:24,r:24,t:0,b:10}:profil==='portrait'?{l:0,r:0,t:23,b:17}:{l:0,r:0,t:0,b:0};N.outils.geom();N.intro.skip();N.game.reset(1,{depart:'plongee'});N.game.dbg.scene('fin');N.ui.ouvrir('fin',{});N.ui.update(N.R.ecrans.fin.garde+.5);N.journal.actif(true);},profil);
+   for(let age=0;age<=10;age++){
+    await page.evaluate(age=>{if(age)__N.ui.update(1);__N.gfx.origin(0,0);__N.gfx.clear(0);__N.game.draw();__N.game.drawTop();__N.ui.draw();__N.gfx.present();},age);
+    const preuve=await page.evaluate(observerFin),a=await page.evaluate(()=>__N.ui.finActions());assert.equal(a.restant,Math.max(0,9-age));assert.equal(a.disponible,age<=9);assert.ok(preuve.ok);assert.ok(preuve.lignes.some(l=>l.texte==='CONTINUER ? '+a.restant&&l.intact));await capturer(page,`${profil}-fin-perdue-decompte-${a.restant}-${age}`,preuve);resultats.fins.push({profil,age,preuve});sauver();
+   }
+   await page.evaluate(()=>{const N=__N;N.game.reset(1,{depart:'plongee'});N.score.terminer(true);N.game.dbg.etat('fin');N.ui.ouvrir('fin',{victoire:true});N.ui.update(N.R.ecrans.fin.garde);N.gfx.origin(0,0);N.gfx.clear(0);N.game.draw();N.game.drawTop();N.ui.draw();N.gfx.present();});const gagne=await page.evaluate(observerFin);assert.ok(gagne.ok);assert.equal(await page.evaluate(()=>__N.ui.finActions().propose),false);await capturer(page,`${profil}-fin-gagnee`,gagne);resultats.fins.push({profil,gagne,erreurs});assert.equal(erreurs.length,0);
+  }finally{await ctx.close();sauver();}
+  // Vrai critère R-18 sans seuil modifié, vraie boucle d'images, même Chromium.
+  for(const phase of ['p17','recu','apres']){
+   const sortie=path.join(OUT,'r18-'+phase+'-'+profil);fs.mkdirSync(path.join(sortie,'captures'),{recursive:true});
+   const banc={nav,url:`${base}/${phase}.html`,opts:{},sortie,sessions:new Set(),ouvrir:async function(_demande,options){const s=new Session(this,profil,options);await s.ouvrir();this.session=s;return s;}};const r=new Resultat(meta);try{await mesurer(banc,r);const erreurs=await banc.session.bilanErreurs();resultats.r18.push({phase,profil,bilan:r.bilan(),erreurs});}finally{if(banc.session)await banc.session.fermer();}sauver();
+  }
+ }
+ resultats.ok=resultats.compositions.length===72&&resultats.compositions.every(c=>c.ok)&&resultats.fins.length===36&&resultats.r18.filter(c=>c.phase==='apres').every(c=>c.bilan.statut==='ok'&&c.erreurs.zero);if(!resultats.ok)process.exitCode=1;
+}catch(e){resultats.exception=String(e.stack||e);process.exitCode=1;}
+finally{if(nav)await nav.close();if(serveur.listening)await new Promise(r=>serveur.close(r));sauver();}
+console.log(JSON.stringify({ok:resultats.ok,exception:resultats.exception,compositions:resultats.compositions.filter(c=>c.ok).length,fins:resultats.fins.length}));

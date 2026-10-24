@@ -1,0 +1,65 @@
+<script>
+/* LA DÉMO DU VOYAGE (proto-neon/demo/index.html) — en attendant que 79-jeu.js branche N.aventure lui-même
+   (refonte/lots/demandes.md, « LE branchement qui relie tout »), cette page relie l'aventure au VRAI jeu :
+   l'ouverture du jeu → le choix ELLE / LUI → connexion → 1976 → fissure → 1982 → le vrai jeu néon (vague 1) ;
+   au début des vagues 3 et 4, l'aventure reprend la main pour les films d'époque (profondeur, warp) ; à la victoire
+   sur le CYCLOPE, pour l'espace puis 2975 (N.cosmos : l'espace profond et le vaisseau amiral), puis la fin ;
+   à la victoire, pour la fin du personnage ; quand les deux sont finis, retrouvailles et teaser SNAKE 3019.
+   Une fois l'aventure finie, elle recommence à l'écran de choix (l'autre personnage). La piste principale se tait
+   pendant le choix, 1976 et 1982, qui jouent leur propre musique. Cette page est une démonstration : le jeu
+   (index.html) n'en dépend pas. window.__demo expose l'état pour les essais. */
+(function () {
+  var N = window.__N, g = null, u0 = null, d0 = null, t0 = null;
+  var parti = false, neon = false, victoire = false, vu = {}, musiqueEteinte = false, nAventures = 0;
+  function musique(on) {
+    try {
+      if (!N.music) return;
+      if (!on && N.music.stop && !musiqueEteinte) { N.music.stop(); musiqueEteinte = true; }
+      if (on && musiqueEteinte && N.music.start) { N.music.start(); musiqueEteinte = false; }
+    } catch (e) {}
+  }
+  function lancer() {
+    parti = true; neon = false; victoire = false; vu = {}; nAventures++;
+    N.aventure.demarrer({
+      aJouer: function (info) {
+        neon = true;
+        if (info && info.premiere) { try { N.game.dbg.vague(1); } catch (e) {} }
+      },
+      surFin: function () { neon = false; parti = false; }
+    });
+  }
+  /* la main revient à l'aventure aux moments clés du vrai jeu */
+  function surveiller() {
+    var v = N.dir && N.dir.vague ? N.dir.vague() : 0, et = N.game.etat();
+    var etapes = [[3, 'profondeur'], [4, 'warp']];                 // l'espace et 2975 : à la victoire, après le CYCLOPE
+    for (var i = 0; i < etapes.length; i++) {
+      var e = etapes[i];
+      if (v >= e[0] && !vu[e[1]] && et === 'jeu') { vu[e[1]] = 1; if (N.aventure.reprendre(e[1])) { neon = false; return; } }
+    }
+    if (et === 'victoire') victoire = true;
+    if (et === 'fin' && victoire) { victoire = false; if (N.aventure.reprendre('fin')) neon = false; }
+  }
+  function brancher() {
+    g = N.game; u0 = g.update; d0 = g.draw; t0 = g.drawTop;
+    g.update = function (dt) {
+      if (!parti) lancer();
+      if (N.aventure.actif()) {
+        var et = N.aventure.etape ? N.aventure.etape() : '';
+        if (et === 'choix' || et === '1976' || et === '1982') musique(false);   // 2975 : l'aventure s'en charge (isole)
+        N.aventure.update(dt); return;
+      }
+      if (neon) { musique(true); u0.call(g, dt); surveiller(); }
+    };
+    g.draw = function () { if (N.aventure.actif() || !neon) { N.aventure.draw(); return; } d0.call(g); };
+    g.drawTop = function () { if (!N.aventure.actif() && neon) t0.call(g); };
+    /* 90-boot.js dessine lui-même l'interface (écrans, HUD, films de 60-intro) par-dessus le jeu :
+       on la tait tant que l'aventure a la main, sinon le titre « SNAKE 2975 » couvrirait 1976 et 1982 */
+    ['ui', 'hud', 'intro'].forEach(function (k) {
+      var m = N[k]; if (!m || !m.draw) return;
+      var d = m.draw; m.draw = function () { if (N.aventure.actif() || !neon) return; return d.apply(m, arguments); };
+    });
+    window.__demo = { etat: function () { return { parti: parti, neon: neon, etape: N.aventure.etape ? N.aventure.etape() : null, aventures: nAventures, jeu: N.game.etat(), vague: N.dir && N.dir.vague ? N.dir.vague() : 0 }; } };
+  }
+  if (document.readyState === 'complete') setTimeout(brancher, 30); else window.addEventListener('load', function () { setTimeout(brancher, 30); });
+})();
+</script>

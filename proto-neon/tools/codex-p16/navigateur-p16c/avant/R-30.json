@@ -1,0 +1,206 @@
+{
+ "id": "R-30",
+ "titre": "Rejouabilité",
+ "seuil": "même graine et mêmes entrées → même journal (dessiné et simulé) ; graine différente → vagues différentes",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "6 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "réinitialisation : même graine → même journal initial",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "egaux": true,
+   "premier": -1,
+   "longueurs": [
+    2,
+    2
+   ]
+  },
+  {
+   "nom": "simulé : même graine → même journal",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "entrees": 338,
+   "egaux": true,
+   "premier": -1,
+   "longueurs": [
+    338,
+    338
+   ]
+  },
+  {
+   "nom": "graine différente → apparitions différentes dans le détail",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "apparitions": [
+    34,
+    32
+   ]
+  },
+  {
+   "nom": "dessiné : même graine → même journal",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "entrees": 492,
+   "departs": [
+    {
+     "etat": "plongee",
+     "image": 0,
+     "pas": 1,
+     "temps": 0.008333333333333333
+    },
+    {
+     "etat": "plongee",
+     "image": 0,
+     "pas": 1,
+     "temps": 0.008333333333333333
+    }
+   ],
+   "fins": [
+    {
+     "etat": "jeu",
+     "t": 60.012083339440345,
+     "pas": 8329,
+     "image": 4164,
+     "score": 10070,
+     "vague": 2
+    },
+    {
+     "etat": "jeu",
+     "t": 60.012083339440345,
+     "pas": 8329,
+     "image": 4164,
+     "score": 10070,
+     "vague": 2
+    }
+   ],
+   "erreurs": [
+    {
+     "err": 0,
+     "sigs": [],
+     "console": [],
+     "pageErreurs": [],
+     "zero": true
+    },
+    {
+     "err": 0,
+     "sigs": [],
+     "console": [],
+     "pageErreurs": [],
+     "zero": true
+    }
+   ],
+   "egaux": true,
+   "premier": -1,
+   "longueurs": [
+    492,
+    492
+   ]
+  },
+  {
+   "nom": "vraies frames : dessin sans effet sur le journal de jeu",
+   "valeur": true,
+   "seuil": true,
+   "statut": "ok",
+   "entrees": [
+    427,
+    427
+   ],
+   "fins": [
+    {
+     "etat": "jeu",
+     "t": 60.012083339440345,
+     "pas": 8329,
+     "image": 4164,
+     "score": 10070,
+     "vague": 2
+    },
+    {
+     "etat": "jeu",
+     "t": 60.012083339440345,
+     "pas": 8329,
+     "image": 4164,
+     "score": 10070,
+     "vague": 2
+    }
+   ],
+   "egaux": true,
+   "premier": -1,
+   "longueurs": [
+    427,
+    427
+   ]
+  },
+  {
+   "nom": "zéro erreur pendant les rejeux",
+   "valeur": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "seuil": "tous à 0",
+   "statut": "ok"
+  },
+  {
+   "nom": "dessiné = simulé (types de jeu)",
+   "valeur": false,
+   "seuil": true,
+   "statut": "echec",
+   "diagnostic": "Défauts antérieurs : ordre cam.update différent dans dbg.simuler ; hitstopLeft fondé sur S.frame figé en simulation borne le ralenti suivant. Raccords 79-jeu/50-fx demandés séparément.",
+   "fins": [
+    {
+     "etat": "jeu",
+     "t": 60.012083339440345,
+     "pas": 8329,
+     "image": 4164,
+     "score": 10070,
+     "vague": 2
+    },
+    {
+     "etat": "jeu",
+     "t": 60.192916668700484,
+     "pas": 8191,
+     "image": 0,
+     "score": 1240,
+     "vague": 2
+    }
+   ],
+   "entrees": [
+    427,
+    320
+   ],
+   "typesDessinExclus": [
+    "hudBanniere",
+    "flash"
+   ],
+   "dessins": 65,
+   "comparaisonAvantFiltrage": {
+    "egaux": false,
+    "premier": 7,
+    "a": "[\"flash\",{\"aire\":3309,\"accepte\":true,\"_type\":\"externe\",\"_issue\":\"sous-seuil\",\"_compte\":false,\"_echelle\":1,\"_temps\":0.8166666666666662,\"_image\":49,\"_luminance\":null,\"_rouge\":null}]",
+    "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":0}]"
+   },
+   "egaux": false,
+   "premier": 19,
+   "a": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.08412205609432473}]",
+   "b": "[\"pilote\",{\"nom\":\"bon\",\"evt\":\"cap\",\"vise\":0,\"bruit\":0,\"retard\":0.08,\"cout\":-0.06543600754574878}]"
+  }
+ ],
+ "notes": [],
+ "captures": [],
+ "duree": 21.8,
+ "bundle": {
+  "url": "http://127.0.0.1:61549/proto-neon/__avant.html",
+  "empreinte": "f9dc42b3a462"
+ },
+ "date": "2026-10-18T03:10:40.099Z",
+ "dateParis": "18/10/2026 · 05 h 10"
+}

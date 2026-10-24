@@ -1,0 +1,7562 @@
+{
+  "limite": "VM sans DOM, pas une capture navigateur. Critère R-18 inchangé, complété par état/pixels/journal.",
+  "cas": [
+    {
+      "phase": "8f55a91",
+      "profil": "paysage",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 59,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 213,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "w": 422,
+        "h": 195,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        }
+      ],
+      "sourceSha256": "82bc1b384cbff5c81bff8dbf463c3dca7a5a4c3e163b2f3dbb5c5640b9434dec",
+      "ok": false
+    },
+    {
+      "phase": "8f55a91",
+      "profil": "portrait",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 512,
+              "y": 317.44,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "w": 195,
+        "h": 422,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        }
+      ],
+      "sourceSha256": "82bc1b384cbff5c81bff8dbf463c3dca7a5a4c3e163b2f3dbb5c5640b9434dec",
+      "ok": false
+    },
+    {
+      "phase": "8f55a91",
+      "profil": "bureau",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 28,
+            "y": 209,
+            "w": 150,
+            "h": 11,
+            "wPt": 600,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 182,
+            "y": 209,
+            "w": 150,
+            "h": 11,
+            "wPt": 600,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          }
+        ],
+        "w": 360,
+        "h": 225,
+        "px": 4,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "jeu"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        }
+      ],
+      "sourceSha256": "82bc1b384cbff5c81bff8dbf463c3dca7a5a4c3e163b2f3dbb5c5640b9434dec",
+      "ok": false
+    },
+    {
+      "phase": "p17",
+      "profil": "paysage",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 59,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 213,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 29,
+            "y": 5,
+            "w": 178,
+            "h": 22,
+            "wPt": 356,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 422,
+        "h": 195,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "5523a6dd4e29195cf8f85aaa95f0b79021e894ccc84e751765636867ecae4d9b",
+      "ok": false
+    },
+    {
+      "phase": "p17",
+      "profil": "portrait",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 28,
+            "w": 185,
+            "h": 22,
+            "wPt": 370,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 512,
+              "y": 317.44,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 195,
+        "h": 422,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "5523a6dd4e29195cf8f85aaa95f0b79021e894ccc84e751765636867ecae4d9b",
+      "ok": false
+    },
+    {
+      "phase": "p17",
+      "profil": "bureau",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 28,
+            "y": 198,
+            "w": 150,
+            "h": 22,
+            "wPt": 600,
+            "hPt": 88
+          },
+          {
+            "nom": "rejouer",
+            "x": 182,
+            "y": 198,
+            "w": 150,
+            "h": 22,
+            "wPt": 600,
+            "hPt": 88
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 5,
+            "w": 171,
+            "h": 22,
+            "wPt": 684,
+            "hPt": 88
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 360,
+        "h": 225,
+        "px": 4,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "5523a6dd4e29195cf8f85aaa95f0b79021e894ccc84e751765636867ecae4d9b",
+      "ok": false
+    },
+    {
+      "phase": "recu",
+      "profil": "paysage",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 59,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 213,
+            "y": 158,
+            "w": 150,
+            "h": 22,
+            "wPt": 300,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 29,
+            "y": 5,
+            "w": 178,
+            "h": 22,
+            "wPt": 356,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 422,
+        "h": 195,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "3b368f5f77e49f426ee30f4ae31fe2b0947b0bbe9b9c91ddf6998f2034f428ad",
+      "ok": false
+    },
+    {
+      "phase": "recu",
+      "profil": "portrait",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 6,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 100,
+            "y": 378,
+            "w": 90,
+            "h": 22,
+            "wPt": 180,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 28,
+            "w": 185,
+            "h": 22,
+            "wPt": 370,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 512,
+              "y": 317.44,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 195,
+        "h": 422,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "3b368f5f77e49f426ee30f4ae31fe2b0947b0bbe9b9c91ddf6998f2034f428ad",
+      "ok": false
+    },
+    {
+      "phase": "recu",
+      "profil": "bureau",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 28,
+            "y": 198,
+            "w": 150,
+            "h": 22,
+            "wPt": 600,
+            "hPt": 88
+          },
+          {
+            "nom": "rejouer",
+            "x": 182,
+            "y": 198,
+            "w": 150,
+            "h": 22,
+            "wPt": 600,
+            "hPt": 88
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 5,
+            "w": 171,
+            "h": 22,
+            "wPt": 684,
+            "hPt": 88
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 360,
+        "h": 225,
+        "px": 4,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "3b368f5f77e49f426ee30f4ae31fe2b0947b0bbe9b9c91ddf6998f2034f428ad",
+      "ok": false
+    },
+    {
+      "phase": "apres",
+      "profil": "paysage",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 47,
+            "y": 158,
+            "w": 162,
+            "h": 22,
+            "wPt": 324,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 213,
+            "y": 158,
+            "w": 162,
+            "h": 22,
+            "wPt": 324,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 29,
+            "y": 5,
+            "w": 178,
+            "h": 22,
+            "wPt": 356,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 422,
+        "h": 195,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "601db639afded635bbf4f77507bb3939d44cac4452a623178474be8187fdebad",
+      "ok": false
+    },
+    {
+      "phase": "apres",
+      "profil": "portrait",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 5,
+            "y": 352,
+            "w": 185,
+            "h": 22,
+            "wPt": 370,
+            "hPt": 44
+          },
+          {
+            "nom": "rejouer",
+            "x": 5,
+            "y": 378,
+            "w": 185,
+            "h": 22,
+            "wPt": 370,
+            "hPt": 44
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 28,
+            "w": 185,
+            "h": 22,
+            "wPt": 370,
+            "hPt": 44
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 512,
+              "y": 317.44,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 195,
+        "h": 422,
+        "px": 2,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 512,
+            "y": 317.44,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "601db639afded635bbf4f77507bb3939d44cac4452a623178474be8187fdebad",
+      "ok": false
+    },
+    {
+      "phase": "apres",
+      "profil": "bureau",
+      "meta": {
+        "id": "R-18",
+        "titre": "Écran de fin",
+        "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+        "bloquant": true
+      },
+      "mesures": [
+        {
+          "nom": "état de l’écran",
+          "valeur": "fin",
+          "seuil": "fin",
+          "ok": true
+        },
+        {
+          "nom": "cause : TIR DE TOURELLE",
+          "valeur": false,
+          "seuil": "présente",
+          "ok": false
+        },
+        {
+          "nom": "quartier : docks",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "CONTINUER ? proposé",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false
+        },
+        {
+          "nom": "progression (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "ecart (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "build (texte du bilan : TIREUSE)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "record (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "defis (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "note (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        },
+        {
+          "nom": "deblocage (mots-clés)",
+          "valeur": false,
+          "seuil": "présent",
+          "ok": false,
+          "indicatif": true
+        }
+      ],
+      "notes": [
+        "textes vus : "
+      ],
+      "pixels": {
+        "etat": "fin",
+        "lignes": [],
+        "collisions": [],
+        "obligatoires": {
+          "cause": false,
+          "quartier": false,
+          "progression": false,
+          "score": false,
+          "record": false,
+          "ecart": true,
+          "build": false,
+          "note": false,
+          "conseil": false,
+          "defis": false,
+          "energie": false,
+          "prochain": false,
+          "continuer": false
+        },
+        "compteursAlignes": true,
+        "boutons": [
+          {
+            "nom": "continuer",
+            "x": 16,
+            "y": 198,
+            "w": 162,
+            "h": 22,
+            "wPt": 648,
+            "hPt": 88
+          },
+          {
+            "nom": "rejouer",
+            "x": 182,
+            "y": 198,
+            "w": 162,
+            "h": 22,
+            "wPt": 648,
+            "hPt": 88
+          },
+          {
+            "nom": "bilan",
+            "x": 5,
+            "y": 5,
+            "w": 171,
+            "h": 22,
+            "wPt": 684,
+            "hPt": 88
+          }
+        ],
+        "err": {
+          "count": 0,
+          "sigs": {}
+        },
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "mort",
+            "d": {
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "x": 389.12,
+              "y": 256,
+              "t": 0,
+              "vague": 0,
+              "quartier": "docks",
+              "visibleDepuis": 0,
+              "teleDuree": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "coup",
+            "d": {
+              "partie": "tete",
+              "k": 0,
+              "cause": "tir",
+              "auteur": "tourelle",
+              "auteurId": null,
+              "visibleDepuis": 0,
+              "teleDuree": 0,
+              "absorbe": false
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          }
+        ],
+        "w": 360,
+        "h": 225,
+        "px": 4,
+        "horsPalette": 0,
+        "ok": false
+      },
+      "err": {
+        "count": 0,
+        "sigs": {}
+      },
+      "journal": [
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "partie",
+          "d": {
+            "graine": 1,
+            "mode": null
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "selection",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "actif",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "section",
+          "d": {
+            "nom": "briefing"
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "mort",
+          "d": {
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "x": 389.12,
+            "y": 256,
+            "t": 0,
+            "vague": 0,
+            "quartier": "docks",
+            "visibleDepuis": 0,
+            "teleDuree": 0
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "coup",
+          "d": {
+            "partie": "tete",
+            "k": 0,
+            "cause": "tir",
+            "auteur": "tourelle",
+            "auteurId": null,
+            "visibleDepuis": 0,
+            "teleDuree": 0,
+            "absorbe": false
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "bilan",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "finir",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "FINIR",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 1,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "chaine5",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "CHAÎNE ×5",
+            "etat": "rate",
+            "fait": false,
+            "prog": 1,
+            "but": 5,
+            "jour": 20261017
+          }
+        },
+        {
+          "pas": 0,
+          "t": 0,
+          "image": 0,
+          "type": "defi",
+          "d": {
+            "id": "premierJet",
+            "ok": false,
+            "prime": 0,
+            "evt": "fin",
+            "portee": "partie",
+            "nom": "PREMIER JET",
+            "etat": "rate",
+            "fait": false,
+            "prog": 0,
+            "but": 25,
+            "jour": 20261017
+          }
+        }
+      ],
+      "sourceSha256": "601db639afded635bbf4f77507bb3939d44cac4452a623178474be8187fdebad",
+      "ok": false
+    }
+  ]
+}

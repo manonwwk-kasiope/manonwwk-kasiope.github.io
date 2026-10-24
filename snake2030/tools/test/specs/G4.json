@@ -1,0 +1,27 @@
+{
+ "id": "G4",
+ "titre": "Navigation clavier de tous les écrans, focus visible, légende des touches, accessibilité des boutons",
+ "pourquoi": "Mesuré : Entrée, Espace, 1/2/3, flèches et Échap ne font rien au menu, sur les cartes, en pause (hors Échap) et à l'écran de fin ; Tab tombe sur le bouton pause caché ; 41 boutons sans aria-label ; aucune touche n'est indiquée nulle part. Sans cela le bureau reste un jeu de téléphone dans une fenêtre.",
+ "quoi": "src/26-ui.js : chaque écran .s2scr.on porte un curseur de focus .kf (bordure 2 px var(--cy), scale 1,04, transition 80 ms) déplacé par flèches et Tab ; Entrée ou Espace sur l'élément focalisé déclenche la même fonction que _uiTap (écouteur keydown Enter/Space dans _uiTap, dédoublonné par le verrou busy de 220 ms). Raccourcis directs : menu Entrée = JOUER, S = RÉGLAGES, D = DÉBLOCAGES ; cartes 1/2/3 (4 si quatre cartes) ou ←/→ + Entrée, Échap sans effet ; pause Entrée ou Échap = REPRENDRE ; fin de partie Entrée ou R = REJOUER avec verrou de 600 ms après l'affichage, Échap ou M = MENU ; réglages et déblocages Échap = RETOUR, ←/→ modifient la ligne focalisée ; depuis la pause → réglages, Échap revient à la pause et non au jeu. Les écrans non affichés reçoivent l'attribut inert (repli tabindex=−1 sur leurs boutons) ; le bouton pause a tabindex=−1 hors jeu ; les cartes deviennent des <button> ; aria-label sur », ◈, ★ et ❚❚ ; :focus-visible outline 2 px var(--cy). Légende (ligne .s2keys, 12 px) au menu et dans l'écran de pause : bureau « ↑←↓→ / ZQSD / WASD diriger · SOURIS viser · ESPACE ou clic boost · E ou clic droit pouvoir · R ou molette ultime · P / ÉCHAP pause · F plein écran » ; iPhone « Pouce gauche : diriger · » boost · ◈ pouvoir · ★ ultime ». Capuchons .s2kcap en jeu sur bureau : « ESPACE » près de la jauge BST, « E » près du bouton pouvoir du HUD, « R » près de ULT pendant les 6 premières secondes des 3 premières parties (S.stats.runs < 3), fondu 400 ms.",
+ "tests": [
+  "Bureau 1440×900 menu : press 'Enter' → S.phase === 'play' en ≤ 300 ms ; press 'S' au menu → __M.ui.screen() === 'settings' ; press 'Escape' → 'menu' ; le premier Tab au menu ne cible pas .s2pause.",
+  "S.lvlUps = 1 → phase 'cards' ; press '2' → phase 'play' et S.up[id de la 2e carte affichée] incrémenté de 1 ; nouveau cycle : press 'ArrowRight' → la 2e .s2card porte .kf (getComputedStyle borderWidth === '2px') ; press 'Enter' → sélectionnée.",
+  "En pause : press 'Enter' → S.paused === false. Mort forcée → press 'Enter' 200 ms après l'affichage → phase reste 'dead' (verrou) ; press 'Enter' 700 ms après → phase 'play' en ≤ 700 ms ; press 'M' → screen 'menu'.",
+  "Huit Tab consécutifs en jeu : document.activeElement n'est jamais dans un .s2scr sans classe .on ni sur .s2pause hors jeu ; document.querySelectorAll('#ui [aria-label]').length ≥ 4 ; chaque .s2card est un <button>.",
+  "Bureau : .s2keys visible au menu et en pause, textContent contient 'ESPACE' et 'ÉCHAP' ; iPhone : .s2keys contient 'Pouce' ; capuchons : profil vierge, .s2kcap opacity > 0,9 à t = 2 s et 0 à t = 8 s ; avec S.stats.runs = 3 jamais visibles.",
+  "NR : run.mjs nr passe."
+ ],
+ "depend_de": [
+  "G2"
+ ],
+ "effort": 2,
+ "impact": 4,
+ "propositions_source": [
+  "DESK-4",
+  "ACC-3",
+  "DESK-9",
+  "ACC-2",
+  "ACC-13",
+  "ACC-14"
+ ]
+}

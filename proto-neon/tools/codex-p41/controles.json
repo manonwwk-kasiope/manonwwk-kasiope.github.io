@@ -1,0 +1,5318 @@
+{
+  "dateParis": "18/10/2026 06:12:25",
+  "cas": [
+    {
+      "version": "avant",
+      "profil": "paysage",
+      "priseMain": {
+        "images": 170,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": null,
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "avant",
+      "profil": "portrait",
+      "priseMain": {
+        "images": 170,
+        "avant": {
+          "x": 512,
+          "y": 316.87333333333333,
+          "ang": -1.5707963267948966,
+          "vit": 68
+        },
+        "apres": {
+          "x": 511.9125403906481,
+          "y": 315.7437567394401,
+          "ang": -1.6738266298251996,
+          "vit": 68
+        },
+        "deplacement": 1.13295739758364,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": null,
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 317.44,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 30,
+              "y": 56,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 315.74,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 317.44,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "avant",
+      "profil": "bureau",
+      "priseMain": {
+        "images": 170,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": null,
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 6016,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "plein",
+              "_compte": true,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "section",
+            "d": {
+              "nom": "briefing"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "apres",
+      "profil": "paysage",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.68666666666667,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "apres",
+      "profil": "portrait",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 512,
+          "y": 316.87333333333333,
+          "ang": -1.5707963267948966,
+          "vit": 68
+        },
+        "apres": {
+          "x": 511.9125403906481,
+          "y": 315.7437567394401,
+          "ang": -1.6738266298251996,
+          "vit": 68
+        },
+        "deplacement": 1.13295739758364,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 317.44,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 30,
+              "y": 56,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 315.74,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 30,
+              "y": 56,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 316.87333333333333,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "apres",
+      "profil": "bureau",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 6016,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "plein",
+              "_compte": true,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 6016,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "plein",
+              "_compte": true,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.68666666666667,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "p38+p41",
+      "profil": "paysage",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 144,
+              "y": 120,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.68666666666667,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "p38+p41",
+      "profil": "portrait",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 512,
+          "y": 316.87333333333333,
+          "ang": -1.5707963267948966,
+          "vit": 68
+        },
+        "apres": {
+          "x": 511.9125403906481,
+          "y": 315.7437567394401,
+          "ang": -1.6738266298251996,
+          "vit": 68
+        },
+        "deplacement": 1.13295739758364,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 317.44,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 30,
+              "y": 56,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 315.74,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 3309,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "sous-seuil",
+              "_compte": false,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 30,
+              "y": 56,
+              "w": 135,
+              "h": 69,
+              "echelle": 3,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 512,
+              "y": 316.87333333333333,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    },
+    {
+      "version": "p38+p41",
+      "profil": "bureau",
+      "priseMain": {
+        "images": 1,
+        "avant": {
+          "x": 389.68666666666667,
+          "y": 256,
+          "ang": 0,
+          "vit": 68
+        },
+        "apres": {
+          "x": 390.81624326055993,
+          "y": 255.91254039064805,
+          "ang": -0.10303030303030303,
+          "vit": 68
+        },
+        "deplacement": 1.1329573975836422,
+        "virage": -0.10303030303030304,
+        "etat": "jeu",
+        "vivant": true,
+        "err": 0
+      },
+      "films": {
+        "entree": "rival",
+        "avantGarde": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.025,
+          "u": 0.025,
+          "guard": true,
+          "armed": false,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "pret": {
+          "mode": "interlude",
+          "etape": "rival",
+          "t": 0.3250000000000002,
+          "u": 0.3250000000000002,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": true,
+          "phase": "intro"
+        },
+        "apresGeste": {
+          "mode": null,
+          "etape": null,
+          "t": 0.33333333333333354,
+          "u": 0.33333333333333354,
+          "guard": false,
+          "armed": true,
+          "typed": 0,
+          "busy": false,
+          "phase": "play"
+        },
+        "secondeDemande": null,
+        "nouvellePartie": "rival",
+        "err": 0,
+        "erreurs": {},
+        "journal": [
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "partie",
+            "d": {
+              "graine": 1,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "demarrage",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "section",
+            "d": {
+              "nom": "jeu"
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 0,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.12,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "flash",
+            "d": {
+              "aire": 6016,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "plein",
+              "_compte": true,
+              "_echelle": 1,
+              "_temps": 0.008333333333333333,
+              "_image": 21,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 42,
+            "t": 0.008333333333333333,
+            "image": 21,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.016666666666666666,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 44,
+            "t": 0.025,
+            "image": 22,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 390.82,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "bilan",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "rate",
+              "fait": false,
+              "prog": 1,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 46,
+            "t": 0.041666666666666664,
+            "image": 23,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "fin",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "rate",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "partie",
+            "d": {
+              "graine": 2,
+              "mode": null
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "finir",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "FINIR",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 1,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "chaine5",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "CHAÎNE ×5",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 5,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "premierJet",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "partie",
+              "nom": "PREMIER JET",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 25,
+              "jour": 20261017
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "defi",
+            "d": {
+              "id": "v1Lasso",
+              "ok": false,
+              "prime": 0,
+              "evt": "selection",
+              "portee": "vague",
+              "nom": "2 LASSO",
+              "etat": "actif",
+              "fait": false,
+              "prog": 0,
+              "but": 2,
+              "vague": 1
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "hudBanniereAdmise",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "etat": "fin",
+              "vague": 0,
+              "temps": 0
+            }
+          },
+          {
+            "pas": 0,
+            "t": 0,
+            "image": 64,
+            "type": "vague",
+            "d": {
+              "n": 1,
+              "etape": "vague",
+              "evt": "entree",
+              "nom": "ÉVEIL",
+              "quartier": "docks"
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "flash",
+            "d": {
+              "aire": 6016,
+              "accepte": true,
+              "_type": "externe",
+              "_issue": "plein",
+              "_compte": true,
+              "_echelle": 1,
+              "_temps": 0.049999999999999996,
+              "_image": 64,
+              "_luminance": null,
+              "_rouge": null
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "hudBanniere",
+            "d": {
+              "texte": "VAGUE 1 / ÉVEIL",
+              "cyclope": false,
+              "temps": 0.008333333333333333,
+              "x": 92,
+              "y": 132,
+              "w": 176,
+              "h": 87,
+              "echelle": 4,
+              "lignes": [
+                "VAGUE 1",
+                "ÉVEIL"
+              ]
+            }
+          },
+          {
+            "pas": 1,
+            "t": 0.008333333333333333,
+            "image": 64,
+            "type": "portail",
+            "d": {
+              "type": "rival",
+              "x": 389.68666666666667,
+              "y": 256,
+              "dur": 0.6,
+              "elite": false
+            }
+          }
+        ]
+      },
+      "erreursConsole": []
+    }
+  ]
+}

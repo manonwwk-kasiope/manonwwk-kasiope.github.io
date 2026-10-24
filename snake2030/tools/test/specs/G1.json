@@ -1,0 +1,22 @@
+{
+ "id": "G1",
+ "titre": "Fondations : gel du brouilleur corrigé, frame() en quarantaine, batterie de non-régression",
+ "pourquoi": "Reproduit en direct (rp-jam.mjs) : un brouilleur sur la tête lève 51 à 77 exceptions par 2 s, l'image et les collisions sautent (494 exceptions sur une partie de 10 min, niveaux 3+, toutes plateformes). Et aucun objectif ne peut être validé sans une batterie stable : les scripts diag.mjs, son-ios.mjs et rail2.mjs cités comme références n'existent pas dans le scratchpad, il faut les créer à partir de lib.mjs, harness.mjs, rp-lib.mjs et rails2.mjs qui, eux, existent et fonctionnent.",
+ "quoi": "1) src/23-weapons.js ligne 1170 : remplacer `_wpnUpTail && _wpnUpTail(dt); return;` par `var L = _wpnL('tailLaser'); if (L) _wpnUpTail(dt, L); return;` ; _wpnTailPush et _wpnUpTail retournent immédiatement si L est absent. 2) src/90-boot.js frame() : chaque étape (keyboardInput, updateSnake, levels.update, updateEnemies — try/catch par ennemi —, weapons.update, phases.update, auraTick, sonicTick, poolsTick, collide, railLate, updateCam, render, hud) dans un try/catch ; une entité dont update ou draw lève est marquée dead et retirée à l'image suivante ; l'erreur est journalisée une fois par signature (message + première ligne de pile) dans window.__ERR = {count, sigs:{}} ; render() et hud() s'exécutent quoi qu'il arrive. 3) Créer snake2030/tools/test/ (hors du bundle) : lib.mjs commune (launchDesktop(w,h,opts), launchPhone(), clickButton, state, sonde d'images, pilote clavier auto, doigt via CDP Input.dispatchTouchEvent, repris de scratchpad lib.mjs/harness.mjs/rp-lib.mjs) ; diag.mjs = partie réelle de 90 s en bureau 1440×900 (pilote clavier) puis iPhone 13 paysage (doigt), journal temps d'image (p50/p95/p99/part > 33 ms), pageerror, console.error, __ERR.count, S.pxEff, captures à 2/15/40/80 s ; son-ios.mjs = iPhone : après JOUER, audio.playing() non nul en ≤ 2 s, RMS du tap 'tout' ≥ −40 dBFS entre 3 et 6 s, puis visibilitychange hidden → visible + REPRENDRE → AudioContext.state === 'running' et RMS ≥ −40 dBFS en ≤ 2 s ; rail2.mjs = copie de scratchpad rails2.mjs (20 virages ortho + 20 diag) ; jam.mjs = copie de rp-jam.mjs ; god10.mjs = partie « dieu » 10 min bureau niveaux 1→6 (S.snake.ghost/invuln = 1e9) comptant pageerror et __ERR.count ; run.mjs nr lance diag + son-ios + rail2, écrit tools/test/baseline.json (part > 33 ms et p99 par profil, médiane rail2 ortho) à la première exécution, et sort avec un code non nul si un seuil échoue. Invocation : `NODE_PATH=/opt/node22/lib/node_modules /opt/node22/bin/node tools/test/run.mjs nr` (serveur http-server -p 8112 lancé si absent). Les scripts du scratchpad cités par les objectifs suivants (en-sim, sim-lib, av-*, rp-*, dive-head, probe-feel, desktop-feel, iphone-feel, acc-cvd, en-lab2/4, en-bossfx, med-desk, med-feel) sont copiés dans tools/test/ par l'objectif qui les utilise. Seuils NR repris par tous les objectifs : 0 pageerror, 0 console.error, __ERR.count === 0 ; iPhone p99 ≤ 33 ms ; bureau (Chromium headless sans GPU) : part > 33 ms ≤ base + 3 points et p99 ≤ 1,1 × base jusqu'à G13, puis p99 ≤ 33 ms ; rail2 ortho : médiane ≤ base jusqu'à G5, puis seuils de G5 ; son-ios : seuils ci-dessus.",
+ "tests": [
+  "jam.mjs (bureau 1440×900 et iPhone 13 paysage), brouilleur et traqueur collés à la tête 5 s, avec S.up.tailLaser = 0 puis 2 : 0 pageerror (aujourd'hui 51 à 77 par 2 s), fillRect ≥ 55 appels/s pendant le brouillage, isJammed() vrai sur ≥ 90 % des images, lenLost ≥ 1 (les collisions tournent), 5 captures espacées de 400 ms toutes différentes (md5).",
+  "rp-robust2.mjs : injection d'un ennemi dont update lève à chaque image → l'ennemi disparaît de S.enemies en ≤ 2 images, fillRect ≥ 55/s, S.cam bouge, __ERR.count === 1 après 2 s (pas 120).",
+  "god10.mjs : 0 pageerror et __ERR.count === 0 sur 10 min niveaux 1→6 (aujourd'hui 494 exceptions).",
+  "run.mjs nr : écrit baseline.json et sort 0 ; relancé, part > 33 ms identique à ±1 point par profil, iPhone p99 ≤ 33 ms, son-ios passe, rail2 ortho médiane ∈ [50 ; 70] images (valeur mesurée 61, non encore corrigée).",
+  "Le bundle index.html rebâti par `node build.mjs` ne contient aucun fichier de tools/test/ (grep 'tools/test' vide) et pèse ≤ 470 Ko."
+ ],
+ "depend_de": [],
+ "effort": 2,
+ "impact": 5,
+ "propositions_source": [
+  "ROB-1",
+  "ENN-1",
+  "PROG-14",
+  "ROB-10"
+ ]
+}

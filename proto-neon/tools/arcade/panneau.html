@@ -1,0 +1,88 @@
+<script>
+/* page d'essai de l'époque 1982 : le jeu principal reste à l'arrêt, N.arcade prend la main sur la boucle.
+   ?pilote=1 : le pilote automatique du banc (tools/arcade/banc.mjs) tient le manche.
+   window.__ARCADE_MES : le comptage des couleurs du tampon, une image sur six, par phase. */
+(function () {
+  var N = window.__N, q = location.search || '';
+  var PILOTE = /[?&]pilote=1\b/.test(q);
+  var MES = window.__ARCADE_MES = { echantillons: 0, max: {}, couleurs: {}, hors4: 0, images: 0 };
+
+  /* le pilote : la cellule (ou la cellule d'or), la soucoupe ou la formation en face ; il simule l'arc réel du
+     serpent (virage borné) pour chaque cap candidat et garde le plus proche du cap voulu qui reste loin des murs et
+     des dangers pendant 0,7 s */
+  function pilote() {
+    var st = N.arcade.state(); if (st.phase !== 'jeu') return;
+    var h = st.tete, A = st.arene, cap = st.cap, cx = (A.x0 + A.x1) / 2, cy = (A.y0 + A.y1) / 2, tgt = null;
+    var bb = st.formation && st.formation.boite;
+    if (st.dore) tgt = st.dore;
+    else if (st.soucoupe) {
+      var s = st.soucoupe, sx = s.x + s.w / 2, sy = s.y + 3;
+      if (h[1] - sy > 18 && Math.abs(h[0] - sx) < 24) tgt = { x: sx + (s.etat === 'vole' ? 5 : 0), y: sy };
+      else tgt = { x: sx, y: Math.min(A.y1 - 12, sy + 32) };
+    } else if (st.food && (!bb || Math.hypot(st.food.x - h[0], st.food.y - h[1]) < 50)) tgt = st.food;
+    else if (bb) {
+      var fx = (bb.x0 + bb.x1) / 2, fy = Math.min(A.y1 - 12, bb.y1 + 28);
+      tgt = (Math.abs(h[0] - fx) < 18 && h[1] > bb.y1 + 14) ? { x: fx, y: bb.y1 } : { x: fx, y: fy };
+    } else if (st.food) tgt = st.food;
+    var want = tgt ? Math.atan2(tgt.y - h[1], tgt.x - h[0]) : cap, dangers = [];
+    function voir(px, py, r, vx, vy) { dangers.push({ x: px, y: py, r: r, vx: vx || 0, vy: vy || 0 }); }
+    st.bombes.forEach(function (b) { voir(b.x + 1, b.y + 1, 6, 0, 28); });
+    st.fleches.forEach(function (f) {
+      if (f.etat === 'fonce') voir(f.x, f.y, 8, f.dx * 105, f.dy * 105);
+      else for (var k = 0; k < 10; k++) voir(f.x + f.dx * k * 7, f.y + f.dy * k * 7, 7);
+    });
+    if (bb) voir((bb.x0 + bb.x1) / 2, (bb.y0 + bb.y1) / 2, 0, 0, 0), dangers[dangers.length - 1].boite = bb;
+    if (st.soucoupe) voir(st.soucoupe.x + 8, st.soucoupe.y + 3, 15, st.soucoupe.vx, st.soucoupe.vy);
+    var v = st.vitesse, w = 4.2 * v / 46;
+    function survie(a) {
+      var x = h[0], y = h[1], c = cap, dt = 0.05, sens = st.sens;
+      for (var t = dt; t <= 0.8; t += dt) {
+        var d = a - c; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+        if (Math.abs(d) > 2.9) d = sens * Math.abs(d); else if (Math.abs(d) > 0.02) sens = d > 0 ? 1 : -1;
+        c += Math.max(-w * dt, Math.min(w * dt, d)); x += Math.cos(c) * v * dt; y += Math.sin(c) * v * dt;
+        if (x < A.x0 + 4 || x > A.x1 - 5 || y < A.y0 + 4 || y > A.y1 - 5) return t;
+        for (var i = 0; i < dangers.length; i++) {
+          var q = dangers[i];
+          if (q.boite) { if (x > q.boite.x0 - 6 && x < q.boite.x1 + 6 && y > q.boite.y0 - 6 && y < q.boite.y1 + 7) return t; continue; }
+          if (Math.hypot(q.x + q.vx * t - x, q.y + q.vy * t - y) < q.r) return t;
+        }
+      }
+      return 1;
+    }
+    var best = null, bs = -1;
+    for (var k = -12; k <= 12; k++) {
+      var a = cap + k * 0.26, sv = survie(a), ec = Math.abs(Math.atan2(Math.sin(want - a), Math.cos(want - a)));
+      var score = sv * 10 - ec;
+      if (score > bs) { bs = score; best = a; }
+    }
+    if (survie(want) >= 1) best = want;
+    var I = N.S.input; I.x = Math.cos(best); I.y = Math.sin(best); I.mag = 1;
+  }
+  function mesurer() {
+    MES.images++;
+    if (MES.images % 6) return;
+    var B = N.gfx.buf(), vu = new Uint8Array(16), n = 0, ph = N.arcade.phase();
+    for (var i = 0; i < B.length; i++) vu[B[i]] = 1;
+    var l = []; for (var c = 0; c < 16; c++) if (vu[c]) { n++; l.push(c); }
+    MES.echantillons++;
+    MES.max[ph] = Math.max(MES.max[ph] || 0, n);
+    var u = MES.couleurs[ph] || (MES.couleurs[ph] = []); l.forEach(function (c) { if (u.indexOf(c) < 0) u.push(c); });
+    if (ph !== 'passage' && ph !== 'fini' && n > 4) MES.hors4++;
+  }
+  function lancer() {
+    var S = N.S; S.phase = 'arcade';
+    N.arcade.start({ graine: window.__SEED || 1982, surFin: function () { window.__ARCADE_FINI = true; window.__ARCADE_FIN_T = N.arcade.state().t; } });
+    var g = N.game, u0 = g.update, d0 = g.draw, t0 = g.drawTop;
+    g.update = function (dt) { if (N.arcade.actif()) { if (PILOTE) pilote(); N.arcade.update(dt); } else u0.call(g, dt); };
+    g.draw = function () { if (N.arcade.actif() || N.arcade.phase() === 'fini' && !window.__ARCADE_RENDU) { N.arcade.draw(); mesurer(); } else d0.call(g); };
+    g.drawTop = function () { if (!N.arcade.actif()) t0.call(g); };
+    /* 90-boot.js dessine l'interface lui-même (le titre « SNAKE 2975 » de l'écran de démarrage) : tue pendant 1982 */
+    ['ui', 'hud', 'intro'].forEach(function (k) {
+      var m = N[k]; if (!m || !m.draw) return;
+      var d = m.draw; m.draw = function () { if (N.arcade.actif()) return; return d.apply(m, arguments); };
+    });
+    window.addEventListener('keydown', function (e) { if (e.code === 'KeyN') N.arcade.skip(); });
+  }
+  if (document.readyState === 'complete') setTimeout(lancer, 50); else window.addEventListener('load', function () { setTimeout(lancer, 50); });
+})();
+</script>

@@ -1,0 +1,652 @@
+{
+ "id": "R-03",
+ "titre": "Cyan réservé",
+ "seuil": "cyan hors codes 1-4 du masque < 0,5 %",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "70 ok, 3 en échec, 0 indicatives hors cible, 2 non mesurables",
+ "mesures": [
+  {
+   "nom": "paysage calme",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004095272815651962,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage montee",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0044233807266982625,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage chaos",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0048851622311337954,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage colosse",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005006683679669462,
+   "etat": "boss"
+  },
+  {
+   "nom": "paysage charge",
+   "valeur": 0.00024,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.009867541621096123,
+   "etat": "boss"
+  },
+  {
+   "nom": "paysage v5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.02807145461173897,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage boss3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005006683679669462,
+   "etat": "boss"
+  },
+  {
+   "nom": "paysage travelling",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004143881395066229,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage convoi",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004228946409041196,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage lasso6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.010791104629967189,
+   "etat": "jeu"
+  },
+  {
+   "nom": "mort",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : la scène mortTir n’a pas mené à l’état mort en 8 s"
+  },
+  {
+   "nom": "paysage vol",
+   "valeur": 0.03432,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 0.03537489366873253,
+   "etat": "vol"
+  },
+  {
+   "nom": "paysage inversion",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004241098553894762,
+   "etat": "jeu"
+  },
+  {
+   "nom": "paysage cartes",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0001093693036820999,
+   "etat": "cartes"
+  },
+  {
+   "nom": "paysage vol t=0",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.003985903511969863,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=0.1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004362620002430429,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=0.4",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005565682342933528,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=0.5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005529225908372828,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005553530198079961,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=2",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0049337708105480615,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004775792927451695,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=3.6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005529225908372828,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=3.9",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0013974966581601653,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol t=0 seconde entrée",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0013974966581601653,
+   "horsPalette": 0
+  },
+  {
+   "nom": "paysage vol erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "portrait calme",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004083120670798396,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait montee",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004228946409041196,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait chaos",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004751488637744562,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait colosse",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0047271843480374285,
+   "etat": "boss"
+  },
+  {
+   "nom": "portrait charge",
+   "valeur": 0.00021,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.009685259448292623,
+   "etat": "boss"
+  },
+  {
+   "nom": "portrait v5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.015992222627293717,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait boss3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005602138777494227,
+   "etat": "boss"
+  },
+  {
+   "nom": "portrait travelling",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004143881395066229,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait convoi",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004204642119334062,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait lasso6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.010657431036577956,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait mort",
+   "valeur": 0.00141,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.009782476607121157,
+   "etat": "mort"
+  },
+  {
+   "nom": "portrait vol",
+   "valeur": 0.03788,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 0.03900838497994896,
+   "etat": "vol"
+  },
+  {
+   "nom": "portrait inversion",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004095272815651962,
+   "etat": "jeu"
+  },
+  {
+   "nom": "portrait cartes",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0020780167699598977,
+   "etat": "cartes"
+  },
+  {
+   "nom": "portrait vol t=0",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.003985903511969863,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=0.1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004484141450966096,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=0.4",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005602138777494227,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=0.5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005589986632640661,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005541378053226394,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=2",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005067444403937295,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004897314375987362,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=3.6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005602138777494227,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=3.9",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0014218009478672985,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol t=0 seconde entrée",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0014218009478672985,
+   "horsPalette": 0
+  },
+  {
+   "nom": "portrait vol erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "bureau calme",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004160493827160494,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau montee",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004493827160493827,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau chaos",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004962962962962963,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau colosse",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.00508641975308642,
+   "etat": "boss"
+  },
+  {
+   "nom": "bureau charge",
+   "valeur": 0.00027,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.009370370370370371,
+   "etat": "boss"
+  },
+  {
+   "nom": "bureau v5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.02548148148148148,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau boss3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004691358024691358,
+   "etat": "boss"
+  },
+  {
+   "nom": "bureau travelling",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004209876543209877,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau convoi",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004296296296296296,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau lasso6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.010962962962962963,
+   "etat": "jeu"
+  },
+  {
+   "nom": "mort",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : la scène mortTir n’a pas mené à l’état mort en 8 s"
+  },
+  {
+   "nom": "bureau vol",
+   "valeur": 0.0428,
+   "seuil": 0.005,
+   "statut": "echec",
+   "cyanTotal": 0.04385185185185185,
+   "etat": "vol"
+  },
+  {
+   "nom": "bureau inversion",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004185185185185185,
+   "etat": "jeu"
+  },
+  {
+   "nom": "bureau cartes",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0013580246913580246,
+   "etat": "cartes"
+  },
+  {
+   "nom": "bureau vol t=0",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004049382716049383,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=0.1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.00454320987654321,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=0.4",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005666666666666667,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=0.5",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005629629629629629,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=1",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005592592592592593,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=2",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.00508641975308642,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=3",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.004851851851851852,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=3.6",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.005666666666666667,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=3.9",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0014320987654320987,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol t=0 seconde entrée",
+   "valeur": 0,
+   "seuil": 0.005,
+   "statut": "ok",
+   "cyanTotal": 0.0014320987654320987,
+   "horsPalette": 0
+  },
+  {
+   "nom": "bureau vol erreurs",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  }
+ ],
+ "notes": [
+  "paysage : pire image 3.43 %",
+  "portrait : pire image 3.79 %",
+  "bureau : pire image 4.28 %"
+ ],
+ "captures": [
+  "tools/codex-p22/navigateur/raccords/captures/R-03-calme-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-montee-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-chaos-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-colosse-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-charge-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-v5-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-boss3-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-travelling-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-convoi-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-lasso6-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-vol-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-inversion-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-cartes-paysage-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-calme-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-montee-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-chaos-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-colosse-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-charge-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-v5-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-boss3-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-travelling-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-convoi-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-lasso6-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-mort-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-vol-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-inversion-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-cartes-portrait-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-calme-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-montee-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-chaos-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-colosse-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-charge-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-v5-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-boss3-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-travelling-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-convoi-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-lasso6-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-vol-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-inversion-bureau-tampon.png",
+  "tools/codex-p22/navigateur/raccords/captures/R-03-cartes-bureau-tampon.png"
+ ],
+ "duree": 56,
+ "bundle": {
+  "url": "http://127.0.0.1:59559/raccords/index.html",
+  "empreinte": "16adc61a28b5ebad5554609835142a0644abc4ca3ff6c608be33a59d2ad58ae3"
+ },
+ "date": "2026-10-18T02:46:30.006Z",
+ "dateParis": "18/10/2026 · 04 h 46"
+}

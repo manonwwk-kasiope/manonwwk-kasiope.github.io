@@ -1,0 +1,103 @@
+{
+ "id": "R-18",
+ "titre": "Écran de fin",
+ "seuil": "cause, quartier, progression, écart, build, record, défis, note, conseil, prochain déblocage, CONTINUER",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "11 ok, 1 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "état de l’écran",
+   "valeur": "fin",
+   "seuil": "fin",
+   "statut": "ok"
+  },
+  {
+   "nom": "cause : TIR DE TOURELLE",
+   "valeur": true,
+   "seuil": "présente",
+   "statut": "ok"
+  },
+  {
+   "nom": "quartier : docks",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok"
+  },
+  {
+   "nom": "CONTINUER ? proposé",
+   "valeur": false,
+   "seuil": "présent",
+   "statut": "echec"
+  },
+  {
+   "nom": "progression (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "ecart (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "build (texte du bilan : TIREUSE)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "record (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "defis (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "note (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "conseil (texte du bilan : PRENDS LA TOURELLE DE CÔTÉ)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  },
+  {
+   "nom": "deblocage (mots-clés)",
+   "valeur": true,
+   "seuil": "présent",
+   "statut": "ok",
+   "indicatif": true
+  }
+ ],
+ "notes": [
+  "textes vus : SIGNAL PERDU | REJOUER | DÉTRUITE PAR | TIR DE TOURELLE | VAGUE 0 · LES DOCKS · 0:00 | SECTEUR 0 % | SCORE  | 0000000 | RECORD 0000000 | TIREUSE | I | DÉTRUITS | 0 | CHAÎNE MAX | NOTE | D | ✗ DIX KILLS EN CHAÎNE | 0/10 | COUPES | PRENDS LA TOURELLE DE CÔTÉ | ÉNERGIE +0 | PROCHAIN : RALENTI DANS 300"
+ ],
+ "captures": [
+  "tools/mesure/diagnostic/navigateur/captures/R-18-fin-paysage.png"
+ ],
+ "duree": 2.4,
+ "bundle": {
+  "url": "http://127.0.0.1:52326/proto-neon/index.html",
+  "empreinte": "48eb65bbca77"
+ },
+ "date": "2026-10-17T23:09:14.467Z",
+ "dateParis": "18/10/2026 · 01 h 09"
+}

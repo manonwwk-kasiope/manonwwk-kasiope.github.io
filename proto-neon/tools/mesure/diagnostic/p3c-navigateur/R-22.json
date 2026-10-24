@@ -1,0 +1,922 @@
+{
+ "id": "R-22",
+ "titre": "Commandes",
+ "seuil": "J-01 à J-06 ; 1 image de latence ; accélération droit devant ; gestes 20/20",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "8 ok, 2 en échec, 0 indicatives hors cible, 0 non mesurables",
+ "mesures": [
+  {
+   "nom": "J-01 : manche flottant, cap vers le haut depuis les quatre quarts",
+   "valeur": 4,
+   "seuil": "4 sur 4",
+   "statut": "ok"
+  },
+  {
+   "nom": "J-02 : dérive du cap 2 s après le relâcher (°)",
+   "valeur": 0,
+   "seuil": "≤ 2",
+   "statut": "ok"
+  },
+  {
+   "nom": "J-03 : pouce immobile 3 s, dérive du cap visé (°)",
+   "valeur": 0,
+   "seuil": "< 2",
+   "statut": "ok"
+  },
+  {
+   "nom": "J-05 : latence toucher → cap visé (images, pire cas)",
+   "valeur": 1,
+   "seuil": "≤ 1",
+   "statut": "ok",
+   "essais": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  {
+   "nom": "J-06 : virage de 90° (s, pire cas)",
+   "valeur": 0.3118,
+   "seuil": "≤ 0,35",
+   "statut": "echec",
+   "essais": [
+    0.26080000001192094,
+    0.2772999999523163,
+    0.2545999999642372,
+    0.31180000001192093,
+    0.2617999999523163,
+    0.31069999998807907,
+    0.244,
+    0.27840000003576276,
+    0.26189999997615815,
+    null
+   ]
+  },
+  {
+   "nom": "accélération par la poussée droit devant (S.player.boost)",
+   "valeur": false,
+   "seuil": true,
+   "statut": "echec"
+  },
+  {
+   "nom": "coupure de l’accélération en virage de 50°",
+   "valeur": false,
+   "seuil": false,
+   "statut": "ok"
+  },
+  {
+   "nom": "20 touchers → pouvoirs",
+   "valeur": 20,
+   "seuil": 20,
+   "statut": "ok",
+   "actions": {
+    "pouvoir": 20
+   },
+   "entrees": [
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 40846.80000001192,
+     "t1": 40946.5,
+     "x": 253,
+     "y": 59,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 37.324999999998525,
+     "image": 2447,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 41263.19999998808,
+     "t1": 41364.89999997616,
+     "x": 287,
+     "y": 94,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 37.324999999998525,
+     "image": 2472,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 41681,
+     "t1": 41780.80000001192,
+     "x": 321,
+     "y": 70,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 37.416666666665186,
+     "image": 2497,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 42095.89999997616,
+     "t1": 42196.10000002384,
+     "x": 270,
+     "y": 105,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 37.83333333333183,
+     "image": 2522,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 42513.39999997616,
+     "t1": 42613,
+     "x": 304,
+     "y": 82,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 38.24999999999847,
+     "image": 2547,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 42929.60000002384,
+     "t1": 43030.10000002384,
+     "x": 253,
+     "y": 59,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 38.4754166680063,
+     "image": 2572,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 43346.39999997616,
+     "t1": 43447,
+     "x": 287,
+     "y": 94,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 38.7929166687017,
+     "image": 2597,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 43762.89999997616,
+     "t1": 43862.89999997616,
+     "x": 321,
+     "y": 70,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 39.20958333536834,
+     "image": 2622,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 44179.5,
+     "t1": 44279.10000002384,
+     "x": 270,
+     "y": 105,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 39.626250002034986,
+     "image": 2647,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 44596.60000002384,
+     "t1": 44696.60000002384,
+     "x": 304,
+     "y": 82,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 40.04291666870163,
+     "image": 2672,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 45012.69999998808,
+     "t1": 45113,
+     "x": 253,
+     "y": 59,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 40.45958333536827,
+     "image": 2697,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 45429.69999998808,
+     "t1": 45529.30000001192,
+     "x": 287,
+     "y": 94,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 40.876250002034915,
+     "image": 2722,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 45846.39999997616,
+     "t1": 45946.30000001192,
+     "x": 321,
+     "y": 70,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 41.29291666870156,
+     "image": 2747,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 46264.39999997616,
+     "t1": 46364.30000001192,
+     "x": 270,
+     "y": 105,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 41.7095833353682,
+     "image": 2772,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 46680,
+     "t1": 46780.69999998808,
+     "x": 304,
+     "y": 82,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 42.126250002034844,
+     "image": 2797,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 47097.60000002384,
+     "t1": 47198.5,
+     "x": 253,
+     "y": 59,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 42.54291666870149,
+     "image": 2822,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 47514.30000001192,
+     "t1": 47614.19999998808,
+     "x": 287,
+     "y": 94,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 42.95958333536813,
+     "image": 2847,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 47929.89999997616,
+     "t1": 48031,
+     "x": 321,
+     "y": 70,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 43.37625000203477,
+     "image": 2872,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 48347.5,
+     "t1": 48447,
+     "x": 270,
+     "y": 105,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 43.792916668701416,
+     "image": 2897,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "toucher",
+     "doigt": "action",
+     "t0": 48763.39999997616,
+     "t1": 48862.10000002384,
+     "x": 304,
+     "y": 82,
+     "dx": 0,
+     "dy": 0,
+     "action": "pouvoir",
+     "t": 44.20958333536806,
+     "image": 2922,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    }
+   ],
+   "source": "S.input.gestes + impulsions avant update ; sortie S.player après update"
+  },
+  {
+   "nom": "20 glissés → APOGÉE",
+   "valeur": 20,
+   "seuil": 20,
+   "statut": "ok",
+   "actions": {
+    "apogee": 20
+   },
+   "entrees": [
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 50062.10000002384,
+     "t1": 50241.89999997616,
+     "x": 253,
+     "y": 59,
+     "dx": 30.000030517578125,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 45.57625000203465,
+     "image": 3004,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 50878.69999998808,
+     "t1": 51074.69999998808,
+     "x": 287,
+     "y": 94,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 46.409583335367934,
+     "image": 3054,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 51712.80000001192,
+     "t1": 51874.89999997616,
+     "x": 321,
+     "y": 70,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 47.20958333536789,
+     "image": 3102,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 52479.10000002384,
+     "t1": 52641.60000002384,
+     "x": 270,
+     "y": 105,
+     "dx": 30,
+     "dy": -8.571441650390625,
+     "action": "apogee",
+     "t": 47.97625000203451,
+     "image": 3148,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 53263.5,
+     "t1": 53457.5,
+     "x": 304,
+     "y": 82,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 48.79291666870113,
+     "image": 3197,
+     "sortie": {
+      "boost": false,
+      "apogee": 22,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 54063.19999998808,
+     "t1": 54224.10000002384,
+     "x": 253,
+     "y": 59,
+     "dx": 30.000030517578125,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 49.49291666870109,
+     "image": 3243,
+     "sortie": {
+      "boost": false,
+      "apogee": 28,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 54862.80000001192,
+     "t1": 55041.89999997616,
+     "x": 287,
+     "y": 94,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 50.27625000203438,
+     "image": 3292,
+     "sortie": {
+      "boost": false,
+      "apogee": 32,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 55679.30000001192,
+     "t1": 55857.80000001192,
+     "x": 321,
+     "y": 70,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 51.05958333536767,
+     "image": 3341,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 56461.80000001192,
+     "t1": 56606.69999998808,
+     "x": 270,
+     "y": 105,
+     "dx": 30,
+     "dy": -8.571441650390625,
+     "action": "apogee",
+     "t": 51.80958333536763,
+     "image": 3386,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 57196.30000001192,
+     "t1": 57373.39999997616,
+     "x": 304,
+     "y": 82,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 52.57625000203425,
+     "image": 3432,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 57995.69999998808,
+     "t1": 58174.39999997616,
+     "x": 253,
+     "y": 59,
+     "dx": 30.000030517578125,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 53.376250002034205,
+     "image": 3480,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 58796.19999998808,
+     "t1": 58975.10000002384,
+     "x": 287,
+     "y": 94,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 54.17625000203416,
+     "image": 3528,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 59612.39999997616,
+     "t1": 59791,
+     "x": 321,
+     "y": 70,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 54.99291666870078,
+     "image": 3577,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": false,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 60412.80000001192,
+     "t1": 60591.69999998808,
+     "x": 270,
+     "y": 105,
+     "dx": 30,
+     "dy": -8.571441650390625,
+     "action": "apogee",
+     "t": 55.74291666870074,
+     "image": 3625,
+     "sortie": {
+      "boost": false,
+      "apogee": 34,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 61229,
+     "t1": 61391.10000002384,
+     "x": 304,
+     "y": 82,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 56.3254166699922,
+     "image": 3673,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 62012.60000002384,
+     "t1": 62190.5,
+     "x": 253,
+     "y": 59,
+     "dx": 30.000030517578125,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 56.84041667058825,
+     "image": 3721,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 62829.10000002384,
+     "t1": 63006.80000001192,
+     "x": 287,
+     "y": 94,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 57.507083337254876,
+     "image": 3770,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 63628.69999998808,
+     "t1": 63790.39999997616,
+     "x": 321,
+     "y": 70,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 58.290416670588165,
+     "image": 3817,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 64428.5,
+     "t1": 64608.30000001192,
+     "x": 270,
+     "y": 105,
+     "dx": 30,
+     "dy": -8.571441650390625,
+     "action": "apogee",
+     "t": 59.107083337254785,
+     "image": 3866,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    },
+    {
+     "genre": "glisse",
+     "doigt": "action",
+     "t0": 65244.39999997616,
+     "t1": 65424.89999997616,
+     "x": 304,
+     "y": 82,
+     "dx": 30,
+     "dy": -8.571426391601562,
+     "action": "apogee",
+     "t": 59.923750003921405,
+     "image": 3915,
+     "sortie": {
+      "boost": false,
+      "apogee": 36,
+      "pouvoirPret": true,
+      "etat": "vivant"
+     }
+    }
+   ],
+   "source": "S.input.gestes + impulsions avant update ; sortie S.player après update"
+  },
+  {
+   "nom": "20 appuis de 0,5 s → accélérations de 0,32 s ± 1 image",
+   "valeur": 20,
+   "seuil": 20,
+   "statut": "ok",
+   "durees": [
+    0.367,
+    0.384,
+    0.349,
+    0.349,
+    0.351,
+    0.35,
+    0.349,
+    0.35,
+    0.349,
+    0.35,
+    0.351,
+    0.351,
+    0.35,
+    0.349,
+    0.349,
+    0.35,
+    0.351,
+    0.351,
+    0.351,
+    0.351
+   ],
+   "appuis": [
+    0.549,
+    0.569,
+    0.535,
+    0.531,
+    0.535,
+    0.533,
+    0.535,
+    0.533,
+    0.533,
+    0.532,
+    0.534,
+    0.535,
+    0.534,
+    0.535,
+    0.533,
+    0.531,
+    0.534,
+    0.535,
+    0.534,
+    0.534
+   ],
+   "actions": {
+    "boost": 20
+   }
+  }
+ ],
+ "notes": [
+  "J-04 (origine qui suit, doigt propriétaire) est couvert par R-33 (recentrages) ; J-07 au sens du § 0.3 par R-23."
+ ],
+ "captures": [],
+ "duree": 84.4,
+ "bundle": {
+  "url": "http://127.0.0.1:62346/proto-neon/index.html",
+  "empreinte": "7fc90b5a2166"
+ },
+ "date": "2026-10-18T00:14:16.652Z",
+ "dateParis": "18/10/2026 · 02 h 14"
+}

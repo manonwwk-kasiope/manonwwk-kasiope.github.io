@@ -1,0 +1,427 @@
+{
+  "etat": "jeu",
+  "ecran": {
+    "nom": "briefing",
+    "depuis": 0.45,
+    "cartes": [],
+    "niveaux": {},
+    "choix": 0,
+    "pret": true,
+    "retour": {
+      "nom": "briefing",
+      "x": 29,
+      "y": 5,
+      "w": 364,
+      "bas": 180,
+      "port": false,
+      "lignes": [
+        {
+          "texte": "OBJECTIFS",
+          "x": 29,
+          "y": 5,
+          "w": 106,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "FINIR",
+          "x": 29,
+          "y": 23,
+          "w": 58,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "2 DÉFIS",
+          "x": 29,
+          "y": 41,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "ÉNERGIE 180",
+          "x": 29,
+          "y": 67,
+          "w": 130,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "STYLES +170",
+          "x": 29,
+          "y": 85,
+          "w": 130,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "DÉFIS DU JOUR",
+          "x": 215,
+          "y": 5,
+          "w": 154,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "·",
+          "x": 215,
+          "y": 23,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "FINIR",
+          "x": 233,
+          "y": 23,
+          "w": 58,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "0/1",
+          "x": 359,
+          "y": 23,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 13
+        },
+        {
+          "texte": "·",
+          "x": 215,
+          "y": 41,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "1ER JET",
+          "x": 233,
+          "y": 41,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "0/25",
+          "x": 347,
+          "y": 41,
+          "w": 46,
+          "h": 14,
+          "echelle": 2,
+          "encre": 13
+        },
+        {
+          "texte": "·",
+          "x": 215,
+          "y": 59,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "INTACT",
+          "x": 233,
+          "y": 59,
+          "w": 70,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "0/2",
+          "x": 359,
+          "y": 59,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 13
+        },
+        {
+          "texte": "VAGUE 4",
+          "x": 215,
+          "y": 81,
+          "w": 82,
+          "h": 14,
+          "echelle": 2,
+          "encre": 9
+        },
+        {
+          "texte": "·",
+          "x": 215,
+          "y": 99,
+          "w": 10,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "BROYÉS",
+          "x": 233,
+          "y": 99,
+          "w": 70,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        },
+        {
+          "texte": "0/3",
+          "x": 359,
+          "y": 99,
+          "w": 34,
+          "h": 14,
+          "echelle": 2,
+          "encre": 13
+        },
+        {
+          "texte": "DÉPART AUTO",
+          "x": 215,
+          "y": 125,
+          "w": 130,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        }
+      ],
+      "barres": [
+        {
+          "x": 29,
+          "y": 103,
+          "w": 178,
+          "h": 3,
+          "part": 0
+        }
+      ],
+      "actions": null,
+      "debloques": []
+    }
+  },
+  "w": 422,
+  "h": 195,
+  "px": 2,
+  "palette": [
+    "#0d0221",
+    "#190b28",
+    "#241734",
+    "#541388",
+    "#2d1b69",
+    "#ff2a6d",
+    "#ff8fab",
+    "#05d9e8",
+    "#d1f7ff",
+    "#ff9e00",
+    "#ffd319",
+    "#ff5714",
+    "#fffce8",
+    "#8a8fa3",
+    "#8b0f3a",
+    "#01012b"
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansFilet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS FILET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansCoupe",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS COUPE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 1,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "section",
+      "d": {
+        "nom": "jeu"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "v4Broie",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "BROIE 3 ENNEMIS",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 3,
+        "vague": 4
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "vague",
+      "d": {
+        "n": 4,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ESSAIM",
+        "quartier": "tours"
+      }
+    }
+  ],
+  "son": {
+    "global": false,
+    "musique": true,
+    "effets": true
+  },
+  "tete": {
+    "x": 389.12,
+    "y": 256,
+    "ang": 0,
+    "vit": 68
+  },
+  "sha256": "50d4b97bcc165d9dc9fb56d1b806ba713b5ceaf2d04d0b3ec2d2aad3292df743",
+  "horsPalette": 0
+}

@@ -1,0 +1,496 @@
+{
+  "dateParis": "18/10/2026 03:32:45",
+  "limite": "Handlers et frame réels en VM ; ni navigation, ni zoom, ni sélection système mesurés.",
+  "conforme": false,
+  "cas": [
+    {
+      "profil": "paysage",
+      "nom": "toucher-179ms-9pt",
+      "attendu": "toucher",
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 439,
+            "duree": 0.179,
+            "deplacement": 9,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "deplacement-10pt-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "glisse-24pt-219ms",
+      "attendu": "glisse",
+      "obtenu": [
+        "glisse"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 479,
+            "duree": 0.219,
+            "deplacement": 24,
+            "action": "apogee"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "glisse-24pt-220ms-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "aller-retour-12pt",
+      "attendu": null,
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 350,
+            "duree": 0.09,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "cancel-70ms",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "deplacement-tardif-30pt",
+      "attendu": null,
+      "obtenu": [
+        "tenu"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 490,
+            "duree": 0.23,
+            "deplacement": 30,
+            "action": "boost"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "paysage",
+      "nom": "recentrages-120s",
+      "poses": 86,
+      "courts": 21,
+      "autres": 6,
+      "dureeMs": 121358.02683441434,
+      "actionsParasites": 0,
+      "imagesBoost": 0,
+      "conforme": true,
+      "journal": [],
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "toucher-179ms-9pt",
+      "attendu": "toucher",
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 439,
+            "duree": 0.179,
+            "deplacement": 9,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "deplacement-10pt-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "glisse-24pt-219ms",
+      "attendu": "glisse",
+      "obtenu": [
+        "glisse"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 479,
+            "duree": 0.219,
+            "deplacement": 24,
+            "action": "apogee"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "glisse-24pt-220ms-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "aller-retour-12pt",
+      "attendu": null,
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 350,
+            "duree": 0.09,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "cancel-70ms",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "deplacement-tardif-30pt",
+      "attendu": null,
+      "obtenu": [
+        "tenu"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 490,
+            "duree": 0.23,
+            "deplacement": 30,
+            "action": "boost"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "portrait",
+      "nom": "recentrages-120s",
+      "poses": 86,
+      "courts": 21,
+      "autres": 6,
+      "dureeMs": 121358.02683441434,
+      "actionsParasites": 0,
+      "imagesBoost": 0,
+      "conforme": true,
+      "journal": [],
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "toucher-179ms-9pt",
+      "attendu": "toucher",
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 439,
+            "duree": 0.179,
+            "deplacement": 9,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "deplacement-10pt-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "glisse-24pt-219ms",
+      "attendu": "glisse",
+      "obtenu": [
+        "glisse"
+      ],
+      "conforme": true,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "glisse",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 479,
+            "duree": 0.219,
+            "deplacement": 24.000000000000114,
+            "action": "apogee"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "glisse-24pt-220ms-exclu",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "aller-retour-12pt",
+      "attendu": null,
+      "obtenu": [
+        "toucher"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "toucher",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 350,
+            "duree": 0.09,
+            "deplacement": 0,
+            "action": "pouvoir"
+          }
+        }
+      ],
+      "pouvoir": "actif",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "cancel-70ms",
+      "attendu": null,
+      "obtenu": [],
+      "conforme": true,
+      "journal": [],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "deplacement-tardif-30pt",
+      "attendu": null,
+      "obtenu": [
+        "tenu"
+      ],
+      "conforme": false,
+      "journal": [
+        {
+          "pas": 32,
+          "t": 0.26666666666666666,
+          "image": 16,
+          "type": "geste",
+          "d": {
+            "genre": "tenu",
+            "doigt": "action",
+            "t0": 260,
+            "t1": 490,
+            "duree": 0.23,
+            "deplacement": 30.000000000000114,
+            "action": "boost"
+          }
+        }
+      ],
+      "pouvoir": "pret",
+      "err": 0,
+      "erreurs": []
+    },
+    {
+      "profil": "bureau",
+      "nom": "recentrages-120s",
+      "poses": 86,
+      "courts": 21,
+      "autres": 6,
+      "dureeMs": 121358.02683441434,
+      "actionsParasites": 0,
+      "imagesBoost": 0,
+      "conforme": true,
+      "journal": [],
+      "err": 0,
+      "erreurs": []
+    }
+  ]
+}

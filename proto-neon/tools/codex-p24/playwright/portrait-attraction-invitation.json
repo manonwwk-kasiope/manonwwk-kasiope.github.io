@@ -1,0 +1,3438 @@
+{
+  "etat": "attraction",
+  "ecran": {
+    "nom": "attraction",
+    "depuis": 31.008333333332214,
+    "cartes": [],
+    "niveaux": {},
+    "choix": 0,
+    "pret": true,
+    "retour": {
+      "nom": "attraction",
+      "volet": "invitation",
+      "t": 31.008333333332214,
+      "lignes": [
+        {
+          "texte": "DÉMO",
+          "x": 5,
+          "y": 5,
+          "w": 46,
+          "h": 14,
+          "echelle": 2,
+          "encre": 10
+        },
+        {
+          "texte": "TOUCHE L'ÉCRAN",
+          "x": 5,
+          "y": 403,
+          "w": 166,
+          "h": 14,
+          "echelle": 2,
+          "encre": 12
+        }
+      ]
+    }
+  },
+  "w": 195,
+  "h": 422,
+  "px": 2,
+  "palette": [
+    "#0d0221",
+    "#190b28",
+    "#241734",
+    "#541388",
+    "#2d1b69",
+    "#ff2a6d",
+    "#ff8fab",
+    "#05d9e8",
+    "#d1f7ff",
+    "#ff9e00",
+    "#ffd319",
+    "#ff5714",
+    "#fffce8",
+    "#8a8fa3",
+    "#8b0f3a",
+    "#01012b"
+  ],
+  "err": {
+    "count": 0,
+    "sigs": {}
+  },
+  "journal": [
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "partie",
+      "d": {
+        "graine": 2084,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansFilet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS FILET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 0,
+      "type": "defi",
+      "d": {
+        "id": "sansCoupe",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "SANS COUPE",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "jour": 20261018
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 5,
+      "type": "partie",
+      "d": {
+        "graine": 17,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 5,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 5,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 5,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 5,
+      "type": "section",
+      "d": {
+        "nom": "titre"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "section",
+      "d": {
+        "nom": "attraction"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "niveau"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 0,
+        "_image": 905,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 905,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0,
+        "x": 30,
+        "y": 56,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 906,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 31,
+      "t": 0.2583333333333333,
+      "image": 921,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0.508333333333334,
+      "image": 934,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 91,
+      "t": 0.7583333333333331,
+      "image": 949,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 121,
+      "t": 1.0083333333333322,
+      "image": 964,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 151,
+      "t": 1.2583333333333313,
+      "image": 979,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 181,
+      "t": 1.5083333333333304,
+      "image": 994,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 211,
+      "t": 1.7583333333333295,
+      "image": 1009,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 241,
+      "t": 2.008333333333329,
+      "image": 1024,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 271,
+      "t": 2.258333333333328,
+      "image": 1039,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -0.3797674041536141
+      }
+    },
+    {
+      "pas": 301,
+      "t": 2.508333333333327,
+      "image": 1054,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 331,
+      "t": 2.758333333333326,
+      "image": 1069,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 361,
+      "t": 3.0083333333333253,
+      "image": 1084,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 391,
+      "t": 3.2583333333333244,
+      "image": 1099,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 421,
+      "t": 3.5083333333333235,
+      "image": 1114,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 451,
+      "t": 3.7583333333333226,
+      "image": 1129,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 2.3307111111102468
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 1138,
+      "type": "apparition",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "x": 333.0855857631076,
+        "y": 87.56584107121287,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 181.9827485867675
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 1138,
+      "type": "apparition",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "x": 333.8419093261473,
+        "y": 101.54539666743949,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 184.55749431959603
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 1138,
+      "type": "apparition",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "x": 334.598232889187,
+        "y": 115.52495226366611,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 188.14148037012149
+      }
+    },
+    {
+      "pas": 481,
+      "t": 4.008333333333322,
+      "image": 1144,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.8797932657906435,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -2.6845318899921704
+      }
+    },
+    {
+      "pas": 511,
+      "t": 4.258333333333335,
+      "image": 1159,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.8797932657906435,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -11.038397230234633
+      }
+    },
+    {
+      "pas": 541,
+      "t": 4.508333333333347,
+      "image": 1174,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -20.401205668322874
+      }
+    },
+    {
+      "pas": 571,
+      "t": 4.7583333333333595,
+      "image": 1189,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.5707963267948966,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.365632518125288
+      }
+    },
+    {
+      "pas": 586,
+      "t": 4.883333333333366,
+      "image": 1196,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 1204,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.00882319415708
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 1213,
+      "type": "apparition",
+      "d": {
+        "id": 8,
+        "type": "fleche",
+        "x": 612.769031250928,
+        "y": 216.63688126127366,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 187.45700795617083
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 1213,
+      "type": "apparition",
+      "d": {
+        "id": 9,
+        "type": "fleche",
+        "x": 622.8595949264709,
+        "y": 206.9322161609307,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 188.9081815711823
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 1213,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "fleche",
+        "x": 632.9501586020137,
+        "y": 197.22755106058773,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 191.37521338245887
+      }
+    },
+    {
+      "pas": 631,
+      "t": 5.258333333333384,
+      "image": 1219,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -26.249445876546964
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 1234,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.14111389397631
+      }
+    },
+    {
+      "pas": 691,
+      "t": 5.758333333333409,
+      "image": 1249,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0.5235987755982988,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -37.63918279709221
+      }
+    },
+    {
+      "pas": 704,
+      "t": 5.866666666666748,
+      "image": 1255,
+      "type": "apparition",
+      "d": {
+        "id": 5,
+        "type": "fleche",
+        "x": 375.58349643302586,
+        "y": 254.95522386264278,
+        "elite": false,
+        "vue": {
+          "x": 408,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 476,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 172.96304727807455
+      }
+    },
+    {
+      "pas": 710,
+      "t": 5.9166666666667505,
+      "image": 1258,
+      "type": "armement",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.966666666666753,
+      "image": 1261,
+      "type": "apparition",
+      "d": {
+        "id": 6,
+        "type": "fleche",
+        "x": 382.5,
+        "y": 277,
+        "elite": false,
+        "vue": {
+          "x": 415,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 483,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 186.16513674156863
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.966666666666753,
+      "image": 1261,
+      "type": "apparition",
+      "d": {
+        "id": 7,
+        "type": "fleche",
+        "x": 382.5,
+        "y": 293,
+        "elite": false,
+        "vue": {
+          "x": 415,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 483,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 198.72457241737843
+      }
+    },
+    {
+      "pas": 721,
+      "t": 6.008333333333422,
+      "image": 1264,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 39.855689182182616
+      }
+    },
+    {
+      "pas": 751,
+      "t": 6.258333333333434,
+      "image": 1279,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -48.753540199034894
+      }
+    },
+    {
+      "pas": 757,
+      "t": 6.308333333333437,
+      "image": 1282,
+      "type": "flash",
+      "d": {
+        "aire": 941.5738668573276,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 6.300000000000103,
+        "_image": 1282,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 757,
+      "t": 6.308333333333437,
+      "image": 1282,
+      "type": "kill",
+      "d": {
+        "id": 9,
+        "type": "fleche",
+        "x": 585.1581269625259,
+        "y": 181.5797543640556,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 77.54092617142044,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 781,
+      "t": 6.4750000000001116,
+      "image": 1294,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.759586531581287,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -40.66641878086317
+      }
+    },
+    {
+      "pas": 811,
+      "t": 6.725000000000124,
+      "image": 1309,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -37.86580269006768
+      }
+    },
+    {
+      "pas": 823,
+      "t": 6.825000000000129,
+      "image": 1315,
+      "type": "armement",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 841,
+      "t": 6.975000000000136,
+      "image": 1324,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -31.794870669203615
+      }
+    },
+    {
+      "pas": 871,
+      "t": 7.225000000000149,
+      "image": 1339,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -29.51880332749143
+      }
+    },
+    {
+      "pas": 901,
+      "t": 7.475000000000161,
+      "image": 1354,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -28.31382851043959
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 1364,
+      "type": "apparition",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 733.5659904769611,
+        "y": 326.1245553843374,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 300.1233448216279
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 1364,
+      "type": "apparition",
+      "d": {
+        "id": 13,
+        "type": "fleche",
+        "x": 738.1312886818778,
+        "y": 309.1080146469176,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 288.0044013699142
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 1364,
+      "type": "apparition",
+      "d": {
+        "id": 14,
+        "type": "fleche",
+        "x": 748.7846106682525,
+        "y": 300.02469308183885,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 286.4716084950631
+      }
+    },
+    {
+      "pas": 931,
+      "t": 7.725000000000174,
+      "image": 1369,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -28.862050453051086
+      }
+    },
+    {
+      "pas": 932,
+      "t": 7.7333333333335075,
+      "image": 1369,
+      "type": "armement",
+      "d": {
+        "id": 8,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 961,
+      "t": 7.975000000000186,
+      "image": 1384,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -24.243484676317532
+      }
+    },
+    {
+      "pas": 991,
+      "t": 8.225000000000174,
+      "image": 1399,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -21.568165294507676
+      }
+    },
+    {
+      "pas": 1021,
+      "t": 8.47500000000016,
+      "image": 1414,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -25.673435197075783
+      }
+    },
+    {
+      "pas": 1051,
+      "t": 8.725000000000145,
+      "image": 1429,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -22.187359820981143
+      }
+    },
+    {
+      "pas": 1056,
+      "t": 8.76666666666681,
+      "image": 1431,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1081,
+      "t": 8.975000000000131,
+      "image": 1444,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -19.31636827844862
+      }
+    },
+    {
+      "pas": 1111,
+      "t": 9.225000000000117,
+      "image": 1459,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -17.582640202318306
+      }
+    },
+    {
+      "pas": 1141,
+      "t": 9.475000000000103,
+      "image": 1474,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -16.98053368098423
+      }
+    },
+    {
+      "pas": 1165,
+      "t": 9.675000000000091,
+      "image": 1486,
+      "type": "armement",
+      "d": {
+        "id": 10,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1171,
+      "t": 9.725000000000088,
+      "image": 1489,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -22.589414325753577
+      }
+    },
+    {
+      "pas": 1201,
+      "t": 9.975000000000074,
+      "image": 1504,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -39.611249087478285
+      }
+    },
+    {
+      "pas": 1204,
+      "t": 10.000000000000073,
+      "image": 1505,
+      "type": "flash",
+      "d": {
+        "aire": 2000,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 10.000000000000073,
+        "_image": 1505,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 1204,
+      "t": 10.000000000000073,
+      "image": 1505,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "FILE",
+        "cyclope": false,
+        "temps": 10.000000000000073,
+        "x": 46,
+        "y": 368,
+        "w": 104,
+        "h": 48,
+        "echelle": 4,
+        "lignes": [
+          "FILE"
+        ]
+      }
+    },
+    {
+      "pas": 1231,
+      "t": 10.22500000000006,
+      "image": 1519,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -66.01102385293831
+      }
+    },
+    {
+      "pas": 1261,
+      "t": 10.475000000000046,
+      "image": 1534,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -87.07984529819994
+      }
+    },
+    {
+      "pas": 1289,
+      "t": 10.708333333333366,
+      "image": 1548,
+      "type": "armement",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1291,
+      "t": 10.725000000000032,
+      "image": 1549,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -85.79712882809919
+      }
+    },
+    {
+      "pas": 1321,
+      "t": 10.975000000000017,
+      "image": 1564,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -57.94375246211961
+      }
+    },
+    {
+      "pas": 1351,
+      "t": 11.225000000000003,
+      "image": 1579,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -29.731614124546095
+      }
+    },
+    {
+      "pas": 1381,
+      "t": 11.474999999999989,
+      "image": 1594,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -21.47152399350938
+      }
+    },
+    {
+      "pas": 1411,
+      "t": 11.724999999999975,
+      "image": 1609,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -26.43689447273263
+      }
+    },
+    {
+      "pas": 1413,
+      "t": 11.74166666666664,
+      "image": 1610,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1441,
+      "t": 11.97499999999996,
+      "image": 1624,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -39.72062030693157
+      }
+    },
+    {
+      "pas": 1471,
+      "t": 12.224999999999946,
+      "image": 1639,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -51.411208656305355
+      }
+    },
+    {
+      "pas": 1501,
+      "t": 12.474999999999932,
+      "image": 1654,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -63.65004499730212
+      }
+    },
+    {
+      "pas": 1531,
+      "t": 12.724999999999918,
+      "image": 1669,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.6179938779914944,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -75.54125242997677
+      }
+    },
+    {
+      "pas": 1537,
+      "t": 12.774999999999915,
+      "image": 1672,
+      "type": "armement",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1561,
+      "t": 12.974999999999904,
+      "image": 1684,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.6179938779914944,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -73.1948859474092
+      }
+    },
+    {
+      "pas": 1591,
+      "t": 13.22499999999989,
+      "image": 1699,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.141592653589793,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -77.16357717488107
+      }
+    },
+    {
+      "pas": 1621,
+      "t": 13.474999999999875,
+      "image": 1714,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.665191429188092,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -88.41070921624146
+      }
+    },
+    {
+      "pas": 1651,
+      "t": 13.724999999999861,
+      "image": 1729,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.665191429188092,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -97.84963535541182
+      }
+    },
+    {
+      "pas": 1661,
+      "t": 13.80833333333319,
+      "image": 1734,
+      "type": "armement",
+      "d": {
+        "id": 5,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1681,
+      "t": 13.974999999999847,
+      "image": 1744,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -105.23289940321854
+      }
+    },
+    {
+      "pas": 1711,
+      "t": 14.224999999999833,
+      "image": 1759,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -111.94098744189752
+      }
+    },
+    {
+      "pas": 1741,
+      "t": 14.474999999999818,
+      "image": 1774,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -111.93918999913515
+      }
+    },
+    {
+      "pas": 1753,
+      "t": 14.574999999999813,
+      "image": 1780,
+      "type": "ramassage",
+      "d": {
+        "type": "cellule",
+        "x": 511.54298840014104,
+        "y": 240.29878188188712,
+        "valeur": 1
+      }
+    },
+    {
+      "pas": 1771,
+      "t": 14.724999999999804,
+      "image": 1789,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -95.0840786846955
+      }
+    },
+    {
+      "pas": 1785,
+      "t": 14.841666666666464,
+      "image": 1796,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1801,
+      "t": 14.97499999999979,
+      "image": 1804,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -96.84817650094676
+      }
+    },
+    {
+      "pas": 1831,
+      "t": 15.224999999999776,
+      "image": 1819,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -90.54852631734082
+      }
+    },
+    {
+      "pas": 1861,
+      "t": 15.474999999999762,
+      "image": 1834,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -95.56929671249806
+      }
+    },
+    {
+      "pas": 1891,
+      "t": 15.724999999999747,
+      "image": 1849,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": -1.2532581572572037,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -94.02842642294199
+      }
+    },
+    {
+      "pas": 1909,
+      "t": 15.874999999999739,
+      "image": 1858,
+      "type": "armement",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1921,
+      "t": 15.974999999999733,
+      "image": 1864,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.6179938779914944,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -16.634168451140507
+      }
+    },
+    {
+      "pas": 1951,
+      "t": 16.22499999999972,
+      "image": 1879,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -82.24415270654839
+      }
+    },
+    {
+      "pas": 1981,
+      "t": 16.474999999999707,
+      "image": 1894,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -85.68854174030729
+      }
+    },
+    {
+      "pas": 2011,
+      "t": 16.724999999999692,
+      "image": 1909,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -81.75728292308182
+      }
+    },
+    {
+      "pas": 2033,
+      "t": 16.908333333333015,
+      "image": 1920,
+      "type": "armement",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 2041,
+      "t": 16.974999999999678,
+      "image": 1924,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -77.81239268896431
+      }
+    },
+    {
+      "pas": 2071,
+      "t": 17.224999999999664,
+      "image": 1939,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0.2617993877991494,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -73.48630534959179
+      }
+    },
+    {
+      "pas": 2101,
+      "t": 17.47499999999965,
+      "image": 1954,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0.2617993877991494,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -71.2300975871188
+      }
+    },
+    {
+      "pas": 2131,
+      "t": 17.724999999999635,
+      "image": 1969,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -75.16178897678515
+      }
+    },
+    {
+      "pas": 2157,
+      "t": 17.94166666666629,
+      "image": 1982,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 2161,
+      "t": 17.97499999999962,
+      "image": 1984,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -80.29499691040746
+      }
+    },
+    {
+      "pas": 2191,
+      "t": 18.224999999999607,
+      "image": 1999,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -83.62888907948151
+      }
+    },
+    {
+      "pas": 2221,
+      "t": 18.474999999999593,
+      "image": 2014,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.1887902047863905,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -83.763686717923
+      }
+    },
+    {
+      "pas": 2251,
+      "t": 18.72499999999958,
+      "image": 2029,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.926990816987241,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -89.32506818481903
+      }
+    },
+    {
+      "pas": 2281,
+      "t": 18.974999999999564,
+      "image": 2044,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.665191429188092,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -87.94182843877977
+      }
+    },
+    {
+      "pas": 2281,
+      "t": 18.974999999999564,
+      "image": 2044,
+      "type": "armement",
+      "d": {
+        "id": 5,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 2311,
+      "t": 19.22499999999955,
+      "image": 2059,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.4033920413889427,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -84.54315197540585
+      }
+    },
+    {
+      "pas": 2341,
+      "t": 19.474999999999536,
+      "image": 2074,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.4033920413889427,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -84.99153762935902
+      }
+    },
+    {
+      "pas": 2371,
+      "t": 19.724999999999522,
+      "image": 2089,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.141592653589793,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -93.62223758503842
+      }
+    },
+    {
+      "pas": 2401,
+      "t": 19.974999999999508,
+      "image": 2104,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 3.141592653589793,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -93.265430366012
+      }
+    },
+    {
+      "pas": 2405,
+      "t": 20.00833333333284,
+      "image": 2106,
+      "type": "armement",
+      "d": {
+        "id": 6,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "partie",
+      "d": {
+        "graine": 2975,
+        "mode": null
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "defi",
+      "d": {
+        "id": "finir",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "FINIR",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 1,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "defi",
+      "d": {
+        "id": "chaine5",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "CHAÎNE ×5",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 5,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "defi",
+      "d": {
+        "id": "premierJet",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "partie",
+        "nom": "PREMIER JET",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 25,
+        "jour": 20261017
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "defi",
+      "d": {
+        "id": "v1Lasso",
+        "ok": false,
+        "prime": 0,
+        "evt": "selection",
+        "portee": "vague",
+        "nom": "2 LASSO",
+        "etat": "actif",
+        "fait": false,
+        "prog": 0,
+        "but": 2,
+        "vague": 1
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "vague",
+      "d": {
+        "n": 1,
+        "etape": "vague",
+        "evt": "entree",
+        "nom": "ÉVEIL",
+        "quartier": "docks"
+      }
+    },
+    {
+      "pas": 0,
+      "t": 0,
+      "image": 2106,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "niveau"
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 2106,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 2106,
+      "type": "flash",
+      "d": {
+        "aire": 3309,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 20.016666666666172,
+        "_image": 2106,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 1,
+      "t": 0.008333333333333333,
+      "image": 2106,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "VAGUE 1 / ÉVEIL",
+        "cyclope": false,
+        "temps": 0.008333333333333333,
+        "x": 30,
+        "y": 56,
+        "w": 135,
+        "h": 69,
+        "echelle": 3,
+        "lignes": [
+          "VAGUE 1",
+          "ÉVEIL"
+        ]
+      }
+    },
+    {
+      "pas": 31,
+      "t": 0.2583333333333333,
+      "image": 2121,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 61,
+      "t": 0.508333333333334,
+      "image": 2136,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 91,
+      "t": 0.7583333333333331,
+      "image": 2151,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 121,
+      "t": 1.0083333333333322,
+      "image": 2166,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 151,
+      "t": 1.2583333333333313,
+      "image": 2182,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 181,
+      "t": 1.5083333333333304,
+      "image": 2196,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 211,
+      "t": 1.7583333333333295,
+      "image": 2212,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 241,
+      "t": 2.008333333333329,
+      "image": 2226,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 271,
+      "t": 2.258333333333328,
+      "image": 2241,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -0.3797674041536141
+      }
+    },
+    {
+      "pas": 301,
+      "t": 2.508333333333327,
+      "image": 2256,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 331,
+      "t": 2.758333333333326,
+      "image": 2272,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 361,
+      "t": 3.0083333333333253,
+      "image": 2287,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 391,
+      "t": 3.2583333333333244,
+      "image": 2302,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 421,
+      "t": 3.5083333333333235,
+      "image": 2317,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 0
+      }
+    },
+    {
+      "pas": 451,
+      "t": 3.7583333333333226,
+      "image": 2332,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 4.71238898038469,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 2.3307111111102468
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 2341,
+      "type": "apparition",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "x": 333.0855857631076,
+        "y": 87.56584107121287,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 181.9827485867675
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 2341,
+      "type": "apparition",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "x": 333.8419093261473,
+        "y": 101.54539666743949,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 184.55749431959603
+      }
+    },
+    {
+      "pas": 470,
+      "t": 3.9166666666666554,
+      "image": 2341,
+      "type": "apparition",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "x": 334.598232889187,
+        "y": 115.52495226366611,
+        "elite": false,
+        "vue": {
+          "x": 413,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 389,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 188.14148037012149
+      }
+    },
+    {
+      "pas": 481,
+      "t": 4.008333333333322,
+      "image": 2347,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.8797932657906435,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -2.6845318899921704
+      }
+    },
+    {
+      "pas": 511,
+      "t": 4.258333333333335,
+      "image": 2362,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.8797932657906435,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -11.038397230234633
+      }
+    },
+    {
+      "pas": 541,
+      "t": 4.508333333333347,
+      "image": 2377,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -20.401205668322874
+      }
+    },
+    {
+      "pas": 571,
+      "t": 4.7583333333333595,
+      "image": 2392,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.5707963267948966,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.365632518125288
+      }
+    },
+    {
+      "pas": 586,
+      "t": 4.883333333333366,
+      "image": 2399,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 601,
+      "t": 5.008333333333372,
+      "image": 2407,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.00882319415708
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 2416,
+      "type": "apparition",
+      "d": {
+        "id": 8,
+        "type": "fleche",
+        "x": 612.769031250928,
+        "y": 216.63688126127366,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 187.45700795617083
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 2416,
+      "type": "apparition",
+      "d": {
+        "id": 9,
+        "type": "fleche",
+        "x": 622.8595949264709,
+        "y": 206.9322161609307,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 188.9081815711823
+      }
+    },
+    {
+      "pas": 619,
+      "t": 5.158333333333379,
+      "image": 2416,
+      "type": "apparition",
+      "d": {
+        "id": 10,
+        "type": "fleche",
+        "x": 632.9501586020137,
+        "y": 197.22755106058773,
+        "elite": false,
+        "vue": {
+          "x": 378,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 398,
+          "y": 60,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 191.37521338245887
+      }
+    },
+    {
+      "pas": 631,
+      "t": 5.258333333333384,
+      "image": 2422,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -26.249445876546964
+      }
+    },
+    {
+      "pas": 661,
+      "t": 5.508333333333397,
+      "image": 2437,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.3089969389957472,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -30.14111389397631
+      }
+    },
+    {
+      "pas": 691,
+      "t": 5.758333333333409,
+      "image": 2452,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0.5235987755982988,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -37.63918279709221
+      }
+    },
+    {
+      "pas": 704,
+      "t": 5.866666666666748,
+      "image": 2458,
+      "type": "apparition",
+      "d": {
+        "id": 5,
+        "type": "fleche",
+        "x": 375.58349643302586,
+        "y": 254.95522386264278,
+        "elite": false,
+        "vue": {
+          "x": 408,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 476,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 172.96304727807455
+      }
+    },
+    {
+      "pas": 710,
+      "t": 5.9166666666667505,
+      "image": 2461,
+      "type": "armement",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.966666666666753,
+      "image": 2464,
+      "type": "apparition",
+      "d": {
+        "id": 6,
+        "type": "fleche",
+        "x": 382.5,
+        "y": 277,
+        "elite": false,
+        "vue": {
+          "x": 415,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 483,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 186.16513674156863
+      }
+    },
+    {
+      "pas": 716,
+      "t": 5.966666666666753,
+      "image": 2464,
+      "type": "apparition",
+      "d": {
+        "id": 7,
+        "type": "fleche",
+        "x": 382.5,
+        "y": 293,
+        "elite": false,
+        "vue": {
+          "x": 415,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 483,
+          "y": 23,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 198.72457241737843
+      }
+    },
+    {
+      "pas": 721,
+      "t": 6.008333333333422,
+      "image": 2467,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 0,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": 39.855689182182616
+      }
+    },
+    {
+      "pas": 751,
+      "t": 6.258333333333434,
+      "image": 2482,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -48.753540199034894
+      }
+    },
+    {
+      "pas": 757,
+      "t": 6.308333333333437,
+      "image": 2485,
+      "type": "flash",
+      "d": {
+        "aire": 941.5738668573276,
+        "accepte": true,
+        "_type": "explosion",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 26.30833333333248,
+        "_image": 2485,
+        "_luminance": 0.9670000076293945,
+        "_rouge": true
+      }
+    },
+    {
+      "pas": 757,
+      "t": 6.308333333333437,
+      "image": 2485,
+      "type": "kill",
+      "d": {
+        "id": 9,
+        "type": "fleche",
+        "x": 585.1581269625259,
+        "y": 181.5797543640556,
+        "elite": false,
+        "boss": false,
+        "base": 50,
+        "src": {
+          "genre": "arme",
+          "type": "canon",
+          "id": -1
+        },
+        "distTete": 77.54092617142044,
+        "gen": 0
+      }
+    },
+    {
+      "pas": 781,
+      "t": 6.4750000000001116,
+      "image": 2497,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.759586531581287,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -40.66641878086317
+      }
+    },
+    {
+      "pas": 811,
+      "t": 6.725000000000124,
+      "image": 2512,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -37.86580269006768
+      }
+    },
+    {
+      "pas": 823,
+      "t": 6.825000000000129,
+      "image": 2518,
+      "type": "armement",
+      "d": {
+        "id": 4,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 841,
+      "t": 6.975000000000136,
+      "image": 2527,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -31.794870669203615
+      }
+    },
+    {
+      "pas": 871,
+      "t": 7.225000000000149,
+      "image": 2542,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -29.51880332749143
+      }
+    },
+    {
+      "pas": 901,
+      "t": 7.475000000000161,
+      "image": 2557,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 5.235987755982989,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -28.31382851043959
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 2567,
+      "type": "apparition",
+      "d": {
+        "id": 12,
+        "type": "fleche",
+        "x": 733.5659904769611,
+        "y": 326.1245553843374,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 300.1233448216279
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 2567,
+      "type": "apparition",
+      "d": {
+        "id": 13,
+        "type": "fleche",
+        "x": 738.1312886818778,
+        "y": 309.1080146469176,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 288.0044013699142
+      }
+    },
+    {
+      "pas": 922,
+      "t": 7.65000000000017,
+      "image": 2567,
+      "type": "apparition",
+      "d": {
+        "id": 14,
+        "type": "fleche",
+        "x": 748.7846106682525,
+        "y": 300.02469308183885,
+        "elite": false,
+        "vue": {
+          "x": 492,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "anticipee": {
+          "x": 531,
+          "y": -16,
+          "w": 195,
+          "h": 422
+        },
+        "distTete": 286.4716084950631
+      }
+    },
+    {
+      "pas": 931,
+      "t": 7.725000000000174,
+      "image": 2572,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -28.862050453051086
+      }
+    },
+    {
+      "pas": 932,
+      "t": 7.7333333333335075,
+      "image": 2572,
+      "type": "armement",
+      "d": {
+        "id": 8,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 961,
+      "t": 7.975000000000186,
+      "image": 2587,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -24.243484676317532
+      }
+    },
+    {
+      "pas": 991,
+      "t": 8.225000000000174,
+      "image": 2602,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -21.568165294507676
+      }
+    },
+    {
+      "pas": 1021,
+      "t": 8.47500000000016,
+      "image": 2617,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 6.021385919380436,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -25.673435197075783
+      }
+    },
+    {
+      "pas": 1051,
+      "t": 8.725000000000145,
+      "image": 2632,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -22.187359820981143
+      }
+    },
+    {
+      "pas": 1056,
+      "t": 8.76666666666681,
+      "image": 2634,
+      "type": "armement",
+      "d": {
+        "id": 2,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1081,
+      "t": 8.975000000000131,
+      "image": 2647,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -19.31636827844862
+      }
+    },
+    {
+      "pas": 1111,
+      "t": 9.225000000000117,
+      "image": 2662,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -17.582640202318306
+      }
+    },
+    {
+      "pas": 1141,
+      "t": 9.475000000000103,
+      "image": 2677,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.0471975511965976,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -16.98053368098423
+      }
+    },
+    {
+      "pas": 1165,
+      "t": 9.675000000000091,
+      "image": 2689,
+      "type": "armement",
+      "d": {
+        "id": 10,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1171,
+      "t": 9.725000000000088,
+      "image": 2692,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 1.832595714594046,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -22.589414325753577
+      }
+    },
+    {
+      "pas": 1201,
+      "t": 9.975000000000074,
+      "image": 2707,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -39.611249087478285
+      }
+    },
+    {
+      "pas": 1206,
+      "t": 10.016666666666739,
+      "image": 2709,
+      "type": "flash",
+      "d": {
+        "aire": 2000,
+        "accepte": true,
+        "_type": "externe",
+        "_issue": "sous-seuil",
+        "_compte": false,
+        "_echelle": 1,
+        "_temps": 30.024999999998936,
+        "_image": 2709,
+        "_luminance": null,
+        "_rouge": null
+      }
+    },
+    {
+      "pas": 1206,
+      "t": 10.016666666666739,
+      "image": 2709,
+      "type": "hudBanniere",
+      "d": {
+        "texte": "FILE",
+        "cyclope": false,
+        "temps": 10.016666666666739,
+        "x": 46,
+        "y": 368,
+        "w": 104,
+        "h": 48,
+        "echelle": 4,
+        "lignes": [
+          "FILE"
+        ]
+      }
+    },
+    {
+      "pas": 1231,
+      "t": 10.22500000000006,
+      "image": 2722,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -66.01102385293831
+      }
+    },
+    {
+      "pas": 1261,
+      "t": 10.475000000000046,
+      "image": 2737,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.356194490192345,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -87.07984529819994
+      }
+    },
+    {
+      "pas": 1289,
+      "t": 10.708333333333366,
+      "image": 2751,
+      "type": "armement",
+      "d": {
+        "id": 3,
+        "type": "fleche",
+        "forme": "ligne",
+        "total": 0.6,
+        "cible": "tete",
+        "shown": true,
+        "rallonge": false
+      }
+    },
+    {
+      "pas": 1291,
+      "t": 10.725000000000032,
+      "image": 2752,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -85.79712882809919
+      }
+    },
+    {
+      "pas": 1321,
+      "t": 10.975000000000017,
+      "image": 2767,
+      "type": "pilote",
+      "d": {
+        "nom": "bon",
+        "evt": "cap",
+        "vise": 2.0943951023931953,
+        "bruit": 0,
+        "retard": 0.08,
+        "cout": -57.94375246211961
+      }
+    }
+  ],
+  "son": {
+    "global": true,
+    "musique": true,
+    "effets": true
+  },
+  "tete": {
+    "x": 645.4353851701155,
+    "y": 160.7304947728077,
+    "ang": 2.0943951023931957,
+    "vit": 68
+  },
+  "sha256": "64330c09c58dd805da6d5e14257ddf7f30f1a4490b6b82cd18083fa208f05be2",
+  "horsPalette": 0,
+  "preuve": {
+    "etat": "attraction",
+    "volet": "invitation",
+    "lignes": [
+      {
+        "texte": "DÉMO",
+        "pixels": 280,
+        "dansZone": true
+      },
+      {
+        "texte": "TOUCHE L'ÉCRAN",
+        "pixels": 748,
+        "dansZone": true
+      }
+    ],
+    "err": 0
+  }
+}

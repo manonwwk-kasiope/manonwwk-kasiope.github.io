@@ -1,0 +1,295 @@
+{
+ "id": "R-11",
+ "titre": "Lumière, et décor qui se tait par la forme",
+ "seuil": "lumière globale indicative (SORTIE.md) ; décor 18-28 % ; vide < 30 % ; cyan décor 0 ; magenta décor < 0,5 % ; gaine 100 %",
+ "bloquant": true,
+ "statut": "echec",
+ "resume": "16 ok, 5 en échec, 14 indicatives hors cible, 4 non mesurables",
+ "mesures": [
+  {
+   "nom": "partie à t = 1 s (calme) : pixels lumineux",
+   "valeur": 0.15882,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie à t = 1 s (calme) : luminance moyenne",
+   "valeur": 0.07082,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie à t = 1 s (calme) : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "partie à t = 1 s (calme) : décor seul, cyan et magenta du décor, gaine",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : N.game.dbg.masque() ne publie aucun propriétaire (tous les codes à 0)"
+  },
+  {
+   "nom": "scène calme : pixels lumineux",
+   "valeur": 0.15476,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène calme : luminance moyenne",
+   "valeur": 0.07122,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène calme : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène calme : décor seul lumineux (code 8)",
+   "valeur": 0.11405,
+   "seuil": [
+    0.18,
+    0.28
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "scène calme : cyan dans le décor (pixels)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "scène calme : magenta et rose pâle du décor",
+   "valeur": 0,
+   "seuil": "< 0.005",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène calme : gaine dirigée (vraie menace ajoutée)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "bord": 35,
+   "gaine": 35,
+   "id": 1
+  },
+  {
+   "nom": "scène montee : pixels lumineux",
+   "valeur": 0.15363,
+   "seuil": "≥ 0.28",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène montee : luminance moyenne",
+   "valeur": 0.07041,
+   "seuil": "≥ 0.085",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène montee : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène montee : décor seul lumineux (code 8)",
+   "valeur": 0.11112,
+   "seuil": [
+    0.18,
+    0.28
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "scène montee : cyan dans le décor (pixels)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "scène montee : magenta et rose pâle du décor",
+   "valeur": 0,
+   "seuil": "< 0.005",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène montee : gaine dirigée (vraie menace ajoutée)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "bord": 37,
+   "gaine": 37,
+   "id": 2
+  },
+  {
+   "nom": "scène chaos : pixels lumineux",
+   "valeur": 0.15081,
+   "seuil": "≥ 0.32",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène chaos : luminance moyenne",
+   "valeur": 0.06896,
+   "seuil": "≥ 0.095",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène chaos : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène chaos : décor seul lumineux (code 8)",
+   "valeur": 0.10911,
+   "seuil": [
+    0.18,
+    0.28
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "scène chaos : cyan dans le décor (pixels)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "scène chaos : magenta et rose pâle du décor",
+   "valeur": 0,
+   "seuil": "< 0.005",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène chaos : gaine dirigée (vraie menace ajoutée)",
+   "valeur": 1,
+   "seuil": 1,
+   "statut": "ok",
+   "bord": 35,
+   "gaine": 35,
+   "id": 3
+  },
+  {
+   "nom": "scène colosse : pixels lumineux",
+   "valeur": 0.13849,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène colosse : luminance moyenne",
+   "valeur": 0.06118,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "scène colosse : vide",
+   "valeur": 0,
+   "seuil": "< 0.3",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène colosse : décor seul lumineux (code 8)",
+   "valeur": 0.10921,
+   "seuil": [
+    0.18,
+    0.28
+   ],
+   "statut": "echec"
+  },
+  {
+   "nom": "scène colosse : cyan dans le décor (pixels)",
+   "valeur": 0,
+   "seuil": 0,
+   "statut": "ok"
+  },
+  {
+   "nom": "scène colosse : magenta et rose pâle du décor",
+   "valeur": 0,
+   "seuil": "< 0.005",
+   "statut": "ok"
+  },
+  {
+   "nom": "scène colosse : gaine des menaces (pixels de bord en nuit profonde)",
+   "valeur": 0.7086,
+   "seuil": 1,
+   "statut": "echec",
+   "bord": 1081
+  },
+  {
+   "nom": "part lumineuse à t = 30 s ≥ SNAKE 2030",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : SNAKE 2030 injoignable (http://127.0.0.1:57725/snake2030/index.html)"
+  },
+  {
+   "nom": "partie du pilote bon, état calme : pixels lumineux (médiane de 10)",
+   "valeur": 0.14202,
+   "seuil": "≥ 0.25",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie du pilote bon, état calme : luminance moyenne (médiane)",
+   "valeur": 0.05799,
+   "seuil": "≥ 0.075",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie du pilote bon, état montee : pixels lumineux (médiane de 10)",
+   "valeur": 0.16159,
+   "seuil": "≥ 0.28",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie du pilote bon, état montee : luminance moyenne (médiane)",
+   "valeur": 0.06782,
+   "seuil": "≥ 0.085",
+   "statut": "hors-cible",
+   "indicatif": true
+  },
+  {
+   "nom": "partie du pilote bon, état chaos",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : état jamais atteint pendant la partie"
+  },
+  {
+   "nom": "partie du pilote bon, état colosse",
+   "statut": "non-mesurable",
+   "raison": "non mesurable : état jamais atteint pendant la partie"
+  }
+ ],
+ "notes": [
+  "scène calme : aucun ennemi dans l’image ambiante ; gaine mesurée dans le cas dirigé ci-dessous",
+  "scène montee : aucun ennemi dans l’image ambiante ; gaine mesurée dans le cas dirigé ci-dessous",
+  "scène chaos : aucun ennemi dans l’image ambiante ; gaine mesurée dans le cas dirigé ci-dessous"
+ ],
+ "captures": [
+  "tools/codex-p23/navigateur/criteres-avant/captures/R-11-calme-paysage-tampon.png",
+  "tools/codex-p23/navigateur/criteres-avant/captures/R-11-montee-paysage-tampon.png",
+  "tools/codex-p23/navigateur/criteres-avant/captures/R-11-chaos-paysage-tampon.png",
+  "tools/codex-p23/navigateur/criteres-avant/captures/R-11-colosse-paysage-tampon.png",
+  "tools/codex-p23/navigateur/criteres-avant/captures/R-11-t30-paysage.png"
+ ],
+ "duree": 313.4,
+ "bundle": {
+  "url": "http://127.0.0.1:57725/index.html",
+  "empreinte": "f97dc30990d1"
+ },
+ "date": "2026-10-18T02:04:49.406Z",
+ "dateParis": "18/10/2026 · 04 h 04"
+}
