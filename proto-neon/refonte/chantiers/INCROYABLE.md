@@ -281,3 +281,13 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - **Paysage, 21 h 25–22 h 04** (`codex-f5/proto-neon/tools/codex-f3/navigateur/resultats.json`) : 11 parties (dieu/1, bon/1 à 10), **0 erreur, 0 indice hors palette, R-14 trop = 0**, 9 en V5, 2 finies en V4. R-13 et R-33 ok, préavis ok, films R-13 ok. Cadence : **2 à 2,5 min par partie**, contre 12 à 15 min sur f5 sans pf1 et 1 à 1,5 min sur f4b (horodatages des reçus).
 - **Arrêt** : `Fixture WARP : transport V4 non établi`. Le morceau `voix-machine` est annulé deux fois pour « muet (sonde 0.00000) » (`30-music.js:2436`). f4b échouait au même endroit (délai dépassé) : défaut du banc d'abord suspecté (lancement `--mute-audio`), panne réelle non écartée. Le portrait et le bureau n'ont jamais tourné en Chrome, car le banc s'arrête à la première erreur.
 - **codex-wx1 (22 h 10)** : défaut du jeu ou artefact ? Script de diagnostic Chrome muet ; le banc poursuit les autres profils après une erreur. **Candidate assemblée** dans `codex-cand` : f5 + pf1 + fv1 (`fidele` par défaut) + tc1, build 0. Elle attend dv1.
+
+## dv1 livré : plus aucune vague sans fin — 24/10/2026 · 22 h 15 (Paris)
+
+- **dv1** (`codex-dv1/proto-neon/tools/codex-dv1/rapport.md`, 21 h 37) :
+  - campagne de 210 parties : **210 fins, 0 arrêt à la borne** (avant : 4) ; victoires **68 → 74** ; vague la plus longue **384,5 → 58,8 s** ;
+  - durées médianes inchangées : V4 56,02 → 56,02 s, V5 58,02 → 58,03 s ;
+  - mécanisme : l'élite du pic seule peut dépasser d'une place le plafond souple, le plafond dur reste à 40 ; sortie temporelle `N.R.dv1.dureesMax` = 35,5 / 50 / 56 / 68 / 70 s, sur un temps permis, et pic abandonné et journalisé s'il ne peut être placé ; larves de ruche bornées par le plafond de vague ;
+  - 7 victoires perdues, 6 imputées au plafond des larves et 1 au pic avec les larves, par ablation ; 13 victoires gagnées.
+- **Candidate complète** (`codex-cand`) : f5 + pf1 + fv1 + tc1 + dv1. Le bloc N.R de dv1 a été posé à la main (conflit de contexte avec le bloc fv1). Provenance contrôlée fichier par fichier ; build 0.
+- **codex-jdv1 (22 h 15)** : juge indépendant. Relit le code, rejoue les canaris sur la candidate, vérifie sur 40 parties l'équivalence avec `apres.json` et compte les victoires par pilote.
