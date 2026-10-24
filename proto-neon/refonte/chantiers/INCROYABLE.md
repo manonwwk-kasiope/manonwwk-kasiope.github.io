@@ -237,3 +237,9 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 ## Ordre de la propriétaire — 24/10/2026 · 15 h 38 (Paris)
 
 « Oui, lance la prise d'étalonnage complète dans Chrome (instrument et bruts du jury) dès que f4b est vérifié et intégré. » Portée : une prise `banc.mjs --serie etalonnage --valider-instrument` (instrument son-image avec témoins corrigés + bruts du jury), sur la build f4b intégrée, après sa vérification Chrome et sa relecture adverse (rv2). Seuils inchangés ; un Chrome muet à la fois.
+
+## f4b : Chrome paysage propre, relecture adverse rv2 à traiter — 24/10/2026 · 16 h 00 (Paris)
+
+- **Chrome (15 h 35–15 h 48), profil paysage** : 11 parties, **0 erreur, 0 pixel cyan hors provenance, 0 couleur hors palette** ; arrêt ensuite sur un module de vérifieur absent (`tools/codex-f3/etalon-i1b.mjs`, recopié de codex-f2, identique à la dépendance attendue) ; relance à 15 h 50.
+- **rv2 (Codex, lecture seule, 15 h 52)** : les dix défauts rv1 sont corrigés dans leurs scénarios (30/30). Mais **un bloquant** : la garde R-13 s'applique avant le CRT, dont la secousse et le zoom peuvent créer des paires (cas construit : 0 paire/s dans le tampon, 8/s en sortie, 94,7 % de l'écran). **Quatre majeurs** : préavis crédité sur une image ensuite retenue (0,51 s présentées au lieu de 0,75 s) ; pause du menu qui annule le WARP et vide la jauge ; masque cyan qui attribue tout le décor d'un panneau à la joueuse (canari de 800 px accepté) ; vérifieur Chrome sans `H-catalogue.mjs`.
+- **codex-f5 (16 h 00)** : corrige ces cinq points sur la fusion f4b (contrôle avant/après pour chacun, batterie VM complète). La prise d'étalonnage ordonnée par la propriétaire attend f5 vérifié et intégré : f4b n'est pas intégré.
