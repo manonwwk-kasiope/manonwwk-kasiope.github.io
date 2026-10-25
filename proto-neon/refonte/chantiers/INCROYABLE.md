@@ -371,3 +371,9 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - **Films avec la variante `fidele` : ÉCHEC R-13 dans Chrome.** 33 films sur 50 dépassent 3 flashs/s en paysage (jusqu'à 17/s, plongee-lui), 20 sur 50 en portrait, aucun au bureau. Avec `ff1` (Chrome sur f5) : 0. La VM de fv1 et le juge jfv1 ne reproduisaient pas la lecture vidéo de Chrome. **La candidate repasse à `ff1` à 02 h 25** (photosensibilité, invariant de la propriétaire). **fv2 (02 h 30)** : cause de l'écart VM/Chrome, correction ou abandon de `fidele`, vérifieur Chrome des 50 films.
 - **WARP** : la reprise après pause est conforme ; écart de la salve à la grille **15,5 ms pour une tolérance de 12 ms** en paysage et en portrait. À remesurer sur la musique Suno (mu1).
 - **Clavier au bureau** : délai de 6 s dépassé dans `clavierReel`, probablement dû à la lenteur du rendu au bureau (hypothèse ; à confirmer).
+
+### 25/10/2026 · 02 h 47 — fv2, tu1, mu2, mem1
+- **fv2 (films)** : cause de l'écart Chrome trouvée. La garde mémorisait ses alternances d'un film à l'autre, alors que le compteur R-13 repartait de zéro à chaque clip. Reproduit en VM, sans Chrome : 3/s, puis 15/s, puis 3/s (`codex-fv1/.../fv2/diagnostic-vm.json`). Le correctif local ramène les films à 3/s, mais la fidélité baisse : 84 à 99 % de pixels identiques, contre 95 à 99,9 % avant. **ff1 reste en production.** Le banc Chrome de fv2 (200 lectures) est en file.
+- **tu1 (tutoriel)** : premier passage Chrome en échec. Le vérifieur restait bloqué : `waitForFunction` interroge rAF, que le banc remplace. Correctif d'une ligne (`polling:20`), remis en file. Les 7 étapes ont été capturées en paysage avant le blocage.
+- **mu2** lancé : corrige les défauts Chrome de mu1 (saut de grille de 0,264 s, retard maximal de 275 ms, fixtures V4 et V5, borne de 540 s).
+- **mem1** lancé : `Array buffer allocation failed` dans `fx.drawTele`, avec le pilote tourneur, avant comme après mu1.
