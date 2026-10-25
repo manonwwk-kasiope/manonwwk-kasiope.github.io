@@ -358,3 +358,9 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - READY! et alertes anciennes pendant la mort : absents ; victoire sans cause de mort en vue courte ; conseil VOLEUR présent ; 24 comparaisons de score, vies et pertes identiques.
   - Seule preuve manquante : la traînée du RIVAL en portrait, que la scène posée à la main n'a pas fait apparaître.
 - **jan1 (02 h 05)** : juge sur des **parties réelles** (méthode imposée après les échecs des scènes posées à la main) : 80 parties identiques, masquage mesuré sur 20 parties dans trois formats, RIVAL en portrait, annonces reportées, bilans.
+- **sf1 livré (01 h 59)** (`codex-sf1/proto-neon/tools/codex-sf1/rapport.md`) :
+  - nouveau `src/32-sfx.js` qui reprend `N.music.sfx` par l'interface publique ;
+  - 51 recettes et 12 variantes : couches, FM, transitoires, échos stéréo courts ; kills en pile pentatonique ; plafond de 48 sources ; quantification sur le temps quand l'attente est ≤ 60 ms ; passe-haut 350 Hz ;
+  - 68 noms d'effets recensés, 0 sans recette ; **80/80 parties identiques**, 11 contrats du graphe audio passés, build 0 ;
+  - **raccords restants**, à faire après le jugement de mu1 : bus maître commun et tonalité courante dans `30-music.js` (zone de mu1), délégation des sons privés de 66, 67 et 69, déclaration dans le contrat du socle.
+  - Mesure audio Chrome en file (rendu hors ligne, aucun son sur les haut-parleurs).
