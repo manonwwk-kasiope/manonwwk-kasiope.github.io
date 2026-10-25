@@ -364,3 +364,10 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
   - 68 noms d'effets recensés, 0 sans recette ; **80/80 parties identiques**, 11 contrats du graphe audio passés, build 0 ;
   - **raccords restants**, à faire après le jugement de mu1 : bus maître commun et tonalité courante dans `30-music.js` (zone de mu1), délégation des sons privés de 66, 67 et 69, déclaration dans le contrat du socle.
   - Mesure audio Chrome en file (rendu hors ligne, aucun son sur les haut-parleurs).
+
+## Chrome sur la candidate complète — 25/10/2026 · 02 h 30 (Paris)
+
+- **22 h 20 → 02 h 20, trois profils, 33 parties** (`codex-cand/proto-neon/tools/codex-f3/navigateur/resultats.json`) : **0 erreur, 0 indice hors palette, R-14 trop = 0**, R-13 de jeu ok, R-33 ok en paysage et en portrait ; 29 parties finies en V5. Bureau à 11–13 min par partie (rendu sans GPU, hypothèse).
+- **Films avec la variante `fidele` : ÉCHEC R-13 dans Chrome.** 33 films sur 50 dépassent 3 flashs/s en paysage (jusqu'à 17/s, plongee-lui), 20 sur 50 en portrait, aucun au bureau. Avec `ff1` (Chrome sur f5) : 0. La VM de fv1 et le juge jfv1 ne reproduisaient pas la lecture vidéo de Chrome. **La candidate repasse à `ff1` à 02 h 25** (photosensibilité, invariant de la propriétaire). **fv2 (02 h 30)** : cause de l'écart VM/Chrome, correction ou abandon de `fidele`, vérifieur Chrome des 50 films.
+- **WARP** : la reprise après pause est conforme ; écart de la salve à la grille **15,5 ms pour une tolérance de 12 ms** en paysage et en portrait. À remesurer sur la musique Suno (mu1).
+- **Clavier au bureau** : délai de 6 s dépassé dans `clavierReel`, probablement dû à la lenteur du rendu au bureau (hypothèse ; à confirmer).
