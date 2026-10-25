@@ -397,3 +397,15 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - **jtu1 (juge tutoriel) : À CORRIGER.** Un E immédiat fait expirer le WARP. tu2 s'est arrêté à tort, sur des erreurs de syntaxe dans ses propres scripts. **tu3** est relancé avec une règle d'arrêt précisée et le banc d'origine.
 - **cr1 (temps morts)** : aucune fenêtre de 4 s ou plus sur les 80 premiers parcours. Un seul candidat de 5,0 s (expert/3301, V2), sans HUD dans le tampon mesuré. **Lot clos sans modification** : le défaut n'est pas établi, je ne relance pas de passe.
 - **fv2 (films)** : mis de côté, ff1 reste en production.
+
+### 25/10/2026 · 09 h 45 (heure d'hiver) — verdicts, intégration int1, mu6 lancé
+
+- **eq1 dans Chrome (07 h 35 → 09 h 10)** : **18/18 cas conformes**, 3 profils × humain/bon × graines 1–3, 0 erreur, audio muet, vagues bornées. Victoires humain 4/9, bon 6/9 (`codex-eq1/proto-neon/tools/codex-eq1/chrome.json`). Juge jeq1 en cours.
+- **jmu5 : À CORRIGER** (`etudes/jmu5/rapport.md`). 80/80 fins, demi-temps 0,5 et salves ≤ 11,9 ms. Mais les cinq époques du voyage (terminal, arcade, grille, cosmos, thèmes) arrêtent Suno et jouent leurs synthés ; `N.music.epoque` n'a aucun appelant. **mu6 lancé à 09 h 42** sur une copie de l'intégration.
+- **Chrome mu4/mu5 (09 h 10 → 09 h 16)** : arrêt sur `Array buffer allocation failed` dans `commencerTele` (tourneur 1 et 2). C'est le défaut mémoire déjà corrigé par mem1, absent de la copie mu3 : à revérifier sur l'intégration, pas sur mu.
+- **jtu3 : À CORRIGER**. E immédiat 7/7 et 40/40 parties identiques, mais le gain LASSO reste affiché aux étapes suivantes, et les consignes MORSURE et VISE sont ambiguës. **tu4** a corrigé les trois points. Ses preuves s'arrêtent sur l'étalonnage de son propre détecteur (instrument, pas jeu) : **tu5** est lancé.
+- **sf4 livré (09 h 31)** : cinq sorties privées passent par le maître ; silences −∞ dBFS après mute du thème et stop du terminal (avant −14,2 / −16,3) ; 45 sources au plus ; sources déconnectées ; 80/80 parties identiques. **jsf4** (contre-juge) lancé, contrôle Chrome en file.
+- **ca3** : `visibles.mjs` échoue en paysage agrandi (texte lu ≠ texte attendu, pixels complets). **ca4** diagnostique : instrument ou vrai défaut.
+- **int1 (09 h 35)** : fusion à trois voies de mu3→mu5, sf1→sf4 et tu3 sur eq1 (qui contient candidate, dv2, ff1, mem1, mu2, bo2, eq1). Build 0, patch vérifié à l'octet. Ses 80 parties tournent sur la seconde voie VM.
+- **Seconde voie VM** (`/private/tmp/snake-vm2.lock`) ouverte à 09 h 34 : an2 tient la première depuis 07 h 07. Pas de troisième voie, la mémoire libre est à 29 %.
+- Note : toujours **7,5/10** (étalonnage du 24/10, jury non validé). Le jury ne repassera que sur l'intégration complète vérifiée dans Chrome.
