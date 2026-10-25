@@ -426,3 +426,11 @@ Durée écoulée : 13 h 25. **Quota Claude : 90 % de la semaine** (remise 24/10 
 - Cheffe : bruitages rendus au terminal (`mange`, `mort`, `boum`, comme l'arcade), build 0 ; chaîne complète relancée (VM puis Chrome) : `codex-int3/reprendre.mjs --chrome`.
 - Jury : `jy1.patch` appliqué dans `codex-jury` ; instrument validé (muet, oracle, statique) ; étalonnage : 8 parties prises, aventure complète en échec d'outil (brut > limite de chaîne V8) → Codex jy3 en cours.
 - Note : 7,5/10 (étalonnage du 24/10), inchangée tant que le jury n'est pas rejoué.
+
+## Point 25/10/2026 · 22 h 10 (Paris)
+- Jeu (int2, cheffe) : bruitages du 1976 rendus (`bip` à la pomme, `degat` à la mort, `impactBoss` à la fissure), sondes de niveau branchées sur le maître (int3), gains du tutoriel vidés à chaque changement d'exercice (`N.hud.viderGains`, diagnostic tu6 : 569 px de gains anciens à l'entrée MUR).
+- Preuves int2 acquises avant ce dernier correctif : 80/80 fins, 0 erreur ; contrats et voyages mu6 conformes (Suno dans chaque époque, sorties 8 → 1 vers le maître) ; bo3 conforme (comparaison de la partie, mesure d'affichage `pixelsVisibles` d'an2 exclue et publiée à part) ; tu4-succès conforme. sf5 en **réserve** (9/9 cas « après » conformes, témoin négatif non discriminant sous Suno).
+- Outils corrigés : modèle audio (paramètres, int3), script des annonces, test sf5 (demi-temps porté par le débit Suno), ablation des gains (tu6), banc du jury (brut en flux, jy3 ; dossiers de performance séparés).
+- Jury : témoin désynchronisé refait (jy4), **instrument validé pour la première fois** : perteSync 0,956 (≥ 0,2), positif 0,97, ratio audio 0. Prise refaite seule sur la machine : la précédente, simultanée aux 80 parties, avait des trous de capture vidéo.
+- Chaîne complète d'int2 relancée sur les sources finales, puis étalonnage du jury seul, puis jurés (5 Codex + 5 Claude, deux passes).
+- Note : 7,5/10 (étalonnage du 24/10) tant que le jury n'est pas rejoué.
