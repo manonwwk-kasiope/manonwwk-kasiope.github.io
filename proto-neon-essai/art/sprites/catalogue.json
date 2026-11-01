@@ -1,0 +1,830 @@
+{
+ "format": "planche PNG indexée : colonnes = images, rangées = directions ; index 0 transparent ; palette dans l ordre de 00-pal.js",
+ "genere": "node tools/sprites2/genere.mjs",
+ "sprites": {
+  "dard": {
+   "fichier": "dard.png",
+   "w": 15,
+   "h": 15,
+   "cx": 7,
+   "cy": 7,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "DARD, le coupeur : deux fourches avant ouvertes (l inverse de la flèche), tuyère qui crache ; cœur sang"
+  },
+  "larve": {
+   "fichier": "larve.png",
+   "w": 9,
+   "h": 9,
+   "cx": 4,
+   "cy": 4,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "LARVE, la nuée : éclat à mandibles et pattes qui grouillent ; mord la queue"
+  },
+  "traqueur": {
+   "fichier": "traqueur.png",
+   "w": 15,
+   "h": 15,
+   "cx": 7,
+   "cy": 7,
+   "dirs": 1,
+   "images": 4,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "TRAQUEUR : petit disque tout en œil fendu (os, pupille verticale), halo de 8 tirets qui tourne (4 images, 1/8 de tour)"
+  },
+  "lame": {
+   "fichier": "lame.png",
+   "w": 15,
+   "h": 15,
+   "cx": 7,
+   "cy": 7,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "LAME au repos : trois lames repliées en crochets autour d un noyau sombre"
+  },
+  "lame:deployee": {
+   "fichier": "lame-deployee.png",
+   "w": 21,
+   "h": 21,
+   "cx": 10,
+   "cy": 10,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "LAME déployée : trois faux qui fauchent large ; la direction fait tourner la faux"
+  },
+  "ruche": {
+   "fichier": "ruche.png",
+   "w": 23,
+   "h": 23,
+   "cx": 11,
+   "cy": 11,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RUCHE, pétales fermés : un bouton rond de six pétales magenta"
+  },
+  "ruche:p1": {
+   "fichier": "ruche-p1.png",
+   "w": 23,
+   "h": 23,
+   "cx": 11,
+   "cy": 11,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RUCHE, pétales mi-ouverts (0,7 s d ouverture) : le cœur alvéolé paraît"
+  },
+  "ruche:p2": {
+   "fichier": "ruche-p2.png",
+   "w": 23,
+   "h": 23,
+   "cx": 11,
+   "cy": 11,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RUCHE, pétales ouverts : le cœur blanchit, la couvée part"
+  },
+  "ruche:elite": {
+   "fichier": "ruche-elite.png",
+   "w": 25,
+   "h": 25,
+   "cx": 12,
+   "cy": 12,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RUCHE INSTABLE : pétales sang à nervure de brasier, six épines, cœur brasier et jaune qui bat"
+  },
+  "ruche:elite:p2": {
+   "fichier": "ruche-elite-p2.png",
+   "w": 25,
+   "h": 25,
+   "cx": 12,
+   "cy": 12,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "RUCHE INSTABLE, pétales ouverts (couvée)"
+  },
+  "rival": {
+   "fichier": "rival.png",
+   "w": 11,
+   "h": 11,
+   "cx": 5,
+   "cy": 5,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RIVAL, tête : mâchoires en V qui claquent, deux yeux os ; il porte la couronne"
+  },
+  "rival:coupe": {
+   "fichier": "rival-coupe.png",
+   "w": 11,
+   "h": 11,
+   "cx": 5,
+   "cy": 5,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "RIVAL, coupe-route annoncé 0,5 s : la tête passe au rose pâle (télégraphe)"
+  },
+  "rival:perle": {
+   "fichier": "rival-perle.png",
+   "w": 7,
+   "h": 7,
+   "cx": 3,
+   "cy": 3,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "RIVAL, perle du corps : sang à cœur magenta, éclat rose pâle qui coule (image = indice + compteur)"
+  },
+  "planeur": {
+   "fichier": "planeur.png",
+   "w": 9,
+   "h": 9,
+   "cx": 4,
+   "cy": 4,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "PLANEUR : aile en chevron ouvert, rose pâle et sang, bouts d aile qui clignotent"
+  },
+  "fleche:elite": {
+   "fichier": "fleche-elite.png",
+   "w": 19,
+   "h": 19,
+   "cx": 9,
+   "cy": 9,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "FLÈCHE BLINDÉE : la flèche à 19 px, cinq pattes, visière, plaques de sang à rivets rose pâle"
+  },
+  "fleche:elite:nue": {
+   "fichier": "fleche-elite-nue.png",
+   "w": 19,
+   "h": 19,
+   "cx": 9,
+   "cy": 9,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "FLÈCHE BLINDÉE sans ses plaques (après 50 % des PV) : alvéoles sombres, pattes qui trottinent vite"
+  },
+  "couronne": {
+   "fichier": "couronne.png",
+   "w": 23,
+   "h": 23,
+   "cx": 11,
+   "cy": 11,
+   "dirs": 1,
+   "images": 4,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "couronne des élites (et du RIVAL) : 12 tirets rose pâle qui tournent ; posée SOUS le sprite, centrée"
+  },
+  "plaque": {
+   "fichier": "plaque.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "plaque de BLINDÉ : sang à rivet rose pâle, arête haute magenta ; 2 à 4 par ennemi, puis débris 3 s au sol"
+  },
+  "plaque:debris": {
+   "fichier": "plaque-debris.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 4,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "éclats de plaque qui restent au sol 3 s (quatre formes, à tirer par ennemi)"
+  },
+  "instable": {
+   "fichier": "instable.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 4,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "marque INSTABLE : cœur de brasier qui bat (4 images : repos, montée, éclat, retombée), posé au centre"
+  },
+  "wagon": {
+   "fichier": "wagon.png",
+   "w": 18,
+   "h": 14,
+   "cx": 8,
+   "cy": 6,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "wagon de convoi vers la droite : caisse sang, arêtes magenta, nervures, feux qui alternent"
+  },
+  "wagon:tete": {
+   "fichier": "wagon-tete.png",
+   "w": 18,
+   "h": 14,
+   "cx": 8,
+   "cy": 6,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "wagon de tête vers la droite : museau rose pâle qui pulse (sous 3 Hz), phares os"
+  },
+  "wagon:g": {
+   "fichier": "wagon-g.png",
+   "w": 18,
+   "h": 14,
+   "cx": 8,
+   "cy": 6,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "wagon roulant vers la gauche (miroir exact)"
+  },
+  "wagon:tete:g": {
+   "fichier": "wagon-tete-g.png",
+   "w": 18,
+   "h": 14,
+   "cx": 8,
+   "cy": 6,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "wagon de tête roulant vers la gauche (miroir exact)"
+  },
+  "portail": {
+   "fichier": "portail.png",
+   "w": 7,
+   "h": 7,
+   "cx": 3,
+   "cy": 3,
+   "dirs": 16,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "chevron de portail : magenta à pointe rose pâle, pointe vers l apparition ; porte la mini-silhouette à côté"
+  },
+  "portail:double": {
+   "fichier": "portail-double.png",
+   "w": 11,
+   "h": 11,
+   "cx": 5,
+   "cy": 5,
+   "dirs": 16,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "chevron double : portail d élite (et marqueur permanent de l élite et du RIVAL)"
+  },
+  "portail:triple": {
+   "fichier": "portail-triple.png",
+   "w": 13,
+   "h": 13,
+   "cx": 6,
+   "cy": 6,
+   "dirs": 16,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "chevron triple : portail du CYCLOPE, annoncé 1,4 s avant (et son marqueur hors champ)"
+  },
+  "portail:sol": {
+   "fichier": "portail-sol.png",
+   "w": 15,
+   "h": 15,
+   "cx": 7,
+   "cy": 7,
+   "dirs": 1,
+   "images": 6,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "portail au point d apparition : anneau qui s ouvre en 600 ms (6 images de 100 ms), éclat os à la fin"
+  },
+  "portail:sol:elite": {
+   "fichier": "portail-sol-elite.png",
+   "w": 21,
+   "h": 21,
+   "cx": 10,
+   "cy": 10,
+   "dirs": 1,
+   "images": 6,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "portail d élite, même rythme, plus grand"
+  },
+  "mini:fleche": {
+   "fichier": "mini-fleche.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette fleche (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:dard": {
+   "fichier": "mini-dard.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette dard (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:larve": {
+   "fichier": "mini-larve.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette larve (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:mine": {
+   "fichier": "mini-mine.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette mine (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:tourelle": {
+   "fichier": "mini-tourelle.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette tourelle (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:lame": {
+   "fichier": "mini-lame.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette lame (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:ruche": {
+   "fichier": "mini-ruche.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette ruche (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:sentinelle": {
+   "fichier": "mini-sentinelle.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette sentinelle (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:rival": {
+   "fichier": "mini-rival.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette rival (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:planeur": {
+   "fichier": "mini-planeur.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette planeur (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:traqueur": {
+   "fichier": "mini-traqueur.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette traqueur (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:cyclope": {
+   "fichier": "mini-cyclope.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette cyclope (5 × 5, rose pâle, sans contour)"
+  },
+  "mini:convoi": {
+   "fichier": "mini-convoi.png",
+   "w": 5,
+   "h": 5,
+   "cx": 2,
+   "cy": 2,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6a",
+   "catalogue": true,
+   "role": "mini-silhouette convoi (5 × 5, rose pâle, sans contour)"
+  },
+  "marque:mine": {
+   "fichier": "marque-mine.png",
+   "w": 7,
+   "h": 7,
+   "cx": 3,
+   "cy": 3,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "marqueur de mine armée hors champ, de près : rond à cœur qui clignote (2 Hz : image = cycle)"
+  },
+  "marque:mine:loin": {
+   "fichier": "marque-mine-loin.png",
+   "w": 3,
+   "h": 3,
+   "cx": 1,
+   "cy": 1,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "marqueur de mine, de loin (3 px)"
+  },
+  "marque:pastille": {
+   "fichier": "marque-pastille.png",
+   "w": 7,
+   "h": 7,
+   "cx": 3,
+   "cy": 3,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "marqueur de la PASTILLE hors champ, de près : étoile jaune (cœur os qui bat à 2 Hz)"
+  },
+  "marque:pastille:loin": {
+   "fichier": "marque-pastille-loin.png",
+   "w": 3,
+   "h": 3,
+   "cx": 1,
+   "cy": 1,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6a",
+   "catalogue": false,
+   "role": "marqueur de la PASTILLE, de loin (3 px)"
+  },
+  "colosse:tronc": {
+   "fichier": "colosse-tronc.png",
+   "w": 96,
+   "h": 96,
+   "cx": 47,
+   "cy": 47,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "tronc du CYCLOPE (phases 1 et 2) : épaulières à lames dorsales, poitrine, cœur qui respire, gantelets, jambes ; alvéoles de machinerie sous les 6 plaques ; douilles des poignets",
+   "points": {
+    "tete": [
+     28,
+     -32
+    ],
+    "oeil": [
+     48,
+     -15
+    ],
+    "poignets": [
+     [
+      13,
+      84
+     ],
+     [
+      81,
+      84
+     ]
+    ],
+    "plaques": [
+     [
+      12,
+      13
+     ],
+     [
+      72,
+      13
+     ],
+     [
+      32,
+      18
+     ],
+     [
+      52,
+      18
+     ],
+     [
+      27,
+      63
+     ],
+     [
+      57,
+      63
+     ]
+    ],
+    "coeur": [
+     47,
+     26
+    ]
+   }
+  },
+  "colosse:tronc:colere": {
+   "fichier": "colosse-tronc-colere.png",
+   "w": 96,
+   "h": 96,
+   "cx": 47,
+   "cy": 47,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "tronc en phase 3, LA COLÈRE : fissures de brasier, évents et alvéoles chauffés à blanc, cœur jaune"
+  },
+  "colosse:tete": {
+   "fichier": "colosse-tete.png",
+   "w": 40,
+   "h": 32,
+   "cx": 20,
+   "cy": 17,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "tête à œil unique : cornes, crête, casque, pommettes, menton ; orbite vide (l œil se pose en (20, 17)) ; éclats aux cornes",
+   "points": {
+    "oeil": [
+     20,
+     17
+    ],
+    "ancreTronc": [
+     -28,
+     32
+    ]
+   }
+  },
+  "colosse:oeil": {
+   "fichier": "colosse-oeil.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "œil ouvert (point faible) : amande de brasier, iris jaune, pupille os ; image 1 = la lame de lumière s allonge"
+  },
+  "colosse:oeilFerme": {
+   "fichier": "colosse-oeilFerme.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "œil fermé : volets blindés magenta et sang, joint sombre ; les tirs ricochent"
+  },
+  "colosse:oeil:vise": {
+   "fichier": "colosse-oeil-vise.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "l œil vise (RAYON BALAYANT, 0,9 s) : iris rose pâle, pupille qui se fixe en fente"
+  },
+  "colosse:oeil:charge": {
+   "fichier": "colosse-oeil-charge.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "l œil se charge (SALVE RADIALE, 0,8 s) : os et jaune, image 1 à blanc"
+  },
+  "colosse:oeil:colere": {
+   "fichier": "colosse-oeil-colere.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "œil enragé (LE CYCLOPE S EMBALLE, et phase 3) : l iris passe au brasier"
+  },
+  "colosse:oeil:mort": {
+   "fichier": "colosse-oeil-mort.png",
+   "w": 14,
+   "h": 10,
+   "cx": 6,
+   "cy": 4,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6b",
+   "catalogue": false,
+   "role": "œil éteint, pour la carcasse"
+  },
+  "colosse:main": {
+   "fichier": "colosse-main.png",
+   "w": 24,
+   "h": 24,
+   "cx": 11,
+   "cy": 11,
+   "dirs": 16,
+   "images": 2,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "main-lame : image 0 griffes écartées (direction 4 : elle pend au poignet), image 1 griffes serrées en lame (charge) ; même main à gauche et à droite"
+  },
+  "colosse:plaque": {
+   "fichier": "colosse-plaque.png",
+   "w": 12,
+   "h": 12,
+   "cx": 5,
+   "cy": 5,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "plaque d armure (×6) : posée sur les alvéoles du tronc en phase 1, tombe en phase 2 et reste au sol (remappage SOL)"
+  },
+  "colosse:carcasse": {
+   "fichier": "colosse-carcasse.png",
+   "w": 96,
+   "h": 64,
+   "cx": 47,
+   "cy": 40,
+   "dirs": 1,
+   "images": 1,
+   "lot": "6b",
+   "catalogue": true,
+   "role": "carcasse : le colosse à genoux dans les gravats, tête tombée, œil éteint, armure refroidie, braises ; tombe dans le plan des structures en 3 s"
+  },
+  "colosse:assemblage": {
+   "role": "assemblage du CYCLOPE (96 × 128), coordonnées dans ce cadre ; origine = coin haut gauche du sprite posé",
+   "w": 96,
+   "h": 128,
+   "tete": [
+    28,
+    0
+   ],
+   "tronc": [
+    0,
+    32
+   ],
+   "oeilCentre": [
+    48,
+    17
+   ],
+   "oeil": [
+    42,
+    13
+   ],
+   "mains": [
+    [
+     2,
+     105
+    ],
+    [
+     70,
+     105
+    ]
+   ],
+   "mainDirection": 4,
+   "plaques": [
+    [
+     12,
+     45
+    ],
+    [
+     72,
+     45
+    ],
+    [
+     32,
+     50
+    ],
+    [
+     52,
+     50
+    ],
+    [
+     27,
+     95
+    ],
+    [
+     57,
+     95
+    ]
+   ],
+   "ordre": "tronc, tête, œil, mains, plaques (du fond vers l avant)",
+   "zonesFrappables": {
+    "oeil": "rayon 6 autour de (48, 17), seulement œil ouvert",
+    "mains": "rayon 10 autour du centre de chaque main"
+   },
+   "remappages": {
+    "SOL": "plaques tombées : magenta -> sang, rose pâle -> magenta, sang -> nuit",
+    "OMBRE": "arrivée du plan P5 au plateau (sang -> magenta) : magenta -> sang, rose pâle -> sang, sang -> nuit, brasier/jaune/os gardés",
+    "PROIE": "sans objet (le CYCLOPE n est jamais une proie)"
+   }
+  }
+ }
+}

@@ -1,0 +1,787 @@
+{
+ "source": "snake2030/neonvelocity-2.mp3",
+ "titre": "Neon Velocity",
+ "bpm": 143.759,
+ "bpmPlan": 144.6,
+ "dureeMesure": 1.66947,
+ "dureeTemps": 0.41737,
+ "premiereMesure": 0.00978,
+ "tempoConstant": true,
+ "derivePct": 0.0058,
+ "deriveMaxMs": 27.8,
+ "residuReperesMs": 7.6,
+ "mesures": 164,
+ "tonalite": {
+  "tonique": "ré",
+  "mode": "majeur",
+  "r": 0.71
+ },
+ "tonaliteAlternatives": [
+  {
+   "tonique": "ré",
+   "mode": "mineur",
+   "r": 0.61
+  },
+  {
+   "tonique": "la",
+   "mode": "majeur",
+   "r": 0.53
+  },
+  {
+   "tonique": "sol",
+   "mode": "majeur",
+   "r": 0.442
+  }
+ ],
+ "chroma": [
+  0.0401,
+  0.1513,
+  0.194,
+  0.0093,
+  0.1019,
+  0.0907,
+  0.07,
+  0.1129,
+  0.0526,
+  0.1124,
+  0.0147,
+  0.0501
+ ],
+ "sections": [
+  {
+   "nom": "INTRO",
+   "de": 1,
+   "a": 10,
+   "temps": [
+    0,
+    40
+   ]
+  },
+  {
+   "nom": "PLATEAU",
+   "de": 11,
+   "a": 70,
+   "temps": [
+    40,
+    280
+   ]
+  },
+  {
+   "nom": "PONT",
+   "de": 71,
+   "a": 71,
+   "temps": [
+    280,
+    284
+   ]
+  },
+  {
+   "nom": "RESPIRATION",
+   "de": 72,
+   "a": 102.5,
+   "temps": [
+    284,
+    410
+   ]
+  },
+  {
+   "nom": "RETOUR",
+   "de": 104,
+   "a": 153,
+   "temps": [
+    410,
+    610
+   ]
+  },
+  {
+   "nom": "OUTRO",
+   "de": 154,
+   "a": 164.5,
+   "temps": [
+    610,
+    656
+   ]
+  }
+ ],
+ "pont": {
+  "mesure": 71,
+  "bloc": "RESPIRATION"
+ },
+ "boucles": {
+  "intro": {
+   "de": 3,
+   "a": 10,
+   "temps": [
+    8,
+    40
+   ]
+  },
+  "boss": {
+   "de": 136,
+   "a": 151
+  }
+ },
+ "attaqueFenetre": [
+  0,
+  0.3
+ ],
+ "attaqueMarge": 0.07,
+ "format": {
+  "codec": "mp3",
+  "kbps": 112,
+  "hz": 44100,
+  "canaux": 2,
+  "pochette": false
+ },
+ "niveauMesure": [
+  -23.9,
+  -24.2,
+  -23.3,
+  -23.1,
+  -25.9,
+  -23.5,
+  -23.4,
+  -22.1,
+  -23.4,
+  -25,
+  -11.1,
+  -11.7,
+  -12.1,
+  -12,
+  -12,
+  -11.1,
+  -11.3,
+  -11.7,
+  -11.9,
+  -11.7,
+  -11.3,
+  -11.8,
+  -11.9,
+  -11.9,
+  -11.9,
+  -11,
+  -11.6,
+  -11.6,
+  -11.9,
+  -11.7,
+  -11.2,
+  -11.5,
+  -11.5,
+  -11.5,
+  -11.1,
+  -11.1,
+  -11.6,
+  -12,
+  -11.7,
+  -11.8,
+  -12.7,
+  -13.7,
+  -13.2,
+  -12.9,
+  -13.3,
+  -11.3,
+  -11.8,
+  -11.9,
+  -13,
+  -13,
+  -12.3,
+  -13,
+  -13.2,
+  -12.9,
+  -13.2,
+  -11.4,
+  -11.8,
+  -12.3,
+  -12.8,
+  -12.7,
+  -11.1,
+  -11.8,
+  -11.7,
+  -11.6,
+  -11.6,
+  -10.9,
+  -11.8,
+  -11.9,
+  -11.8,
+  -11.6,
+  -23.8,
+  -28.5,
+  -21.5,
+  -21.5,
+  -21.8,
+  -20.3,
+  -22,
+  -18.9,
+  -19.5,
+  -20.4,
+  -19.1,
+  -19.5,
+  -18.6,
+  -19,
+  -19.5,
+  -17.9,
+  -19.4,
+  -18.1,
+  -17.9,
+  -19.5,
+  -18.4,
+  -18.8,
+  -20,
+  -21.3,
+  -21,
+  -20.5,
+  -22,
+  -20.2,
+  -20.1,
+  -20.8,
+  -19.9,
+  -18.9,
+  -13.5,
+  -11.5,
+  -11.5,
+  -11.1,
+  -11.5,
+  -11.6,
+  -11.6,
+  -11.3,
+  -11.7,
+  -11.9,
+  -12.1,
+  -12.1,
+  -12.2,
+  -11.8,
+  -12.3,
+  -11.8,
+  -11.8,
+  -11.5,
+  -11.4,
+  -11.9,
+  -12.7,
+  -13.9,
+  -14.1,
+  -12.2,
+  -13.8,
+  -13,
+  -12.3,
+  -12.9,
+  -12.4,
+  -13.4,
+  -12.5,
+  -11.6,
+  -11.5,
+  -11.2,
+  -11.4,
+  -11.3,
+  -11.3,
+  -11.1,
+  -11.3,
+  -11.2,
+  -11.5,
+  -11.7,
+  -12.1,
+  -11.5,
+  -12.2,
+  -11.5,
+  -11.3,
+  -11.2,
+  -11.2,
+  -11.6,
+  -13.1,
+  -22.8,
+  -22.9,
+  -18.2,
+  -19.5,
+  -19.3,
+  -19.9,
+  -21.6,
+  -20.3,
+  -19.2,
+  -18.7,
+  -18.4
+ ],
+ "blocs": [
+  {
+   "fichier": "nv-01.mp3",
+   "section": "INTRO",
+   "court": false,
+   "mesures": [
+    1,
+    10
+   ],
+   "temps": [
+    0,
+    40
+   ],
+   "nMesures": 10,
+   "avant": 0,
+   "apres": 1,
+   "coeurDeb": 0,
+   "coeurFin": 16.69465,
+   "duree": 18.36412,
+   "dureeMesure": 1.66947,
+   "niveau": -23.7,
+   "attaque": 0.2574,
+   "octets": 258193
+  },
+  {
+   "fichier": "nv-02.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    11,
+    18
+   ],
+   "temps": [
+    40,
+    72
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.6,
+   "attaque": 0.014,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-03.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    19,
+    26
+   ],
+   "temps": [
+    72,
+    104
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.7,
+   "attaque": 0.2295,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-04.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    27,
+    34
+   ],
+   "temps": [
+    104,
+    136
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.6,
+   "attaque": 0.2085,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-05.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    35,
+    42
+   ],
+   "temps": [
+    136,
+    168
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.9,
+   "attaque": 0.1157,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-06.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    43,
+    50
+   ],
+   "temps": [
+    168,
+    200
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -12.5,
+   "attaque": 0.0589,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-07.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    51,
+    58
+   ],
+   "temps": [
+    200,
+    232
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -12.5,
+   "attaque": 0.0249,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-08.mp3",
+   "section": "PLATEAU",
+   "court": false,
+   "mesures": [
+    59,
+    66
+   ],
+   "temps": [
+    232,
+    264
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.8,
+   "attaque": 0.2275,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-09.mp3",
+   "section": "PLATEAU",
+   "court": true,
+   "mesures": [
+    67,
+    70
+   ],
+   "temps": [
+    264,
+    280
+   ],
+   "nMesures": 4,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 8.34733,
+   "duree": 10.01679,
+   "dureeMesure": 1.66947,
+   "niveau": -11.8,
+   "attaque": 0.1626,
+   "octets": 141165
+  },
+  {
+   "fichier": "nv-10.mp3",
+   "section": "RESPIRATION",
+   "court": false,
+   "mesures": [
+    72,
+    79
+   ],
+   "temps": [
+    284,
+    316
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -21.1,
+   "attaque": 0.1866,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-11.mp3",
+   "section": "RESPIRATION",
+   "court": false,
+   "mesures": [
+    80,
+    87
+   ],
+   "temps": [
+    316,
+    348
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -19.1,
+   "attaque": 0.1317,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-12.mp3",
+   "section": "RESPIRATION",
+   "court": false,
+   "mesures": [
+    88,
+    95
+   ],
+   "temps": [
+    348,
+    380
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -19.2,
+   "attaque": 0.1976,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-13.mp3",
+   "section": "RESPIRATION",
+   "court": true,
+   "mesures": [
+    96,
+    102.5
+   ],
+   "temps": [
+    380,
+    410
+   ],
+   "nMesures": 7.5,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 14.19045,
+   "duree": 15.85992,
+   "dureeMesure": 1.66947,
+   "niveau": -20.1,
+   "attaque": 0.005,
+   "octets": 223085
+  },
+  {
+   "fichier": "nv-14.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    104,
+    111
+   ],
+   "temps": [
+    410,
+    442
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.5,
+   "attaque": 0.018,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-15.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    112,
+    119
+   ],
+   "temps": [
+    442,
+    474
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.9,
+   "attaque": 0.2415,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-16.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    120,
+    127
+   ],
+   "temps": [
+    474,
+    506
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -12.6,
+   "attaque": 0.2385,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-17.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    128,
+    135
+   ],
+   "temps": [
+    506,
+    538
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -12.4,
+   "attaque": 0.1257,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-18.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    136,
+    143
+   ],
+   "temps": [
+    538,
+    570
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.3,
+   "attaque": 0.1427,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-19.mp3",
+   "section": "RETOUR",
+   "court": false,
+   "mesures": [
+    144,
+    151
+   ],
+   "temps": [
+    570,
+    602
+   ],
+   "nMesures": 8,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 15.02519,
+   "duree": 16.69465,
+   "dureeMesure": 1.66947,
+   "niveau": -11.6,
+   "attaque": 0.0359,
+   "octets": 234788
+  },
+  {
+   "fichier": "nv-20.mp3",
+   "section": "RETOUR",
+   "court": true,
+   "mesures": [
+    152,
+    153
+   ],
+   "temps": [
+    602,
+    610
+   ],
+   "nMesures": 2,
+   "avant": 1,
+   "apres": 1,
+   "coeurDeb": 1.66947,
+   "coeurFin": 5.0084,
+   "duree": 6.67786,
+   "dureeMesure": 1.66947,
+   "niveau": -11.5,
+   "attaque": 0.2454,
+   "octets": 94353
+  },
+  {
+   "fichier": "nv-21.mp3",
+   "section": "OUTRO",
+   "court": false,
+   "mesures": [
+    154,
+    164.5
+   ],
+   "temps": [
+    610,
+    656
+   ],
+   "nMesures": 11.5,
+   "avant": 1,
+   "apres": 0.702,
+   "coeurDeb": 1.66947,
+   "coeurFin": 20.86832,
+   "duree": 22.03974,
+   "dureeMesure": 1.66947,
+   "niveau": -19.5,
+   "attaque": 0.0369,
+   "octets": 309393
+  }
+ ]
+}
