@@ -1,0 +1,18 @@
+dialog.snake-archives{color-scheme:dark;color:#eff5f6;background:#101827f5;border:1px solid #667983;border-radius:18px;box-shadow:0 12px 60px #0009;width:min(840px,94vw);max-height:92dvh;overflow:auto;margin:auto;padding:clamp(12px,3vmin,24px);font:500 17px/1.35 "Avenir Next",system-ui,sans-serif}
+.snake-archives::backdrop{background:#050918b8;backdrop-filter:blur(7px)}
+.snake-archives header,.archives-outils,.archives-outils form,.archives-commandes{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.snake-archives header{justify-content:space-between;position:sticky;top:-1px;background:#101827;z-index:1}
+.snake-archives h2{font-size:clamp(23px,5vmin,35px);letter-spacing:-.035em;margin:0}
+.snake-archives button,.snake-archives select,.snake-archives input:not([type=range]){min-height:44px;min-width:44px;padding:5px 9px;color:#eefaff;border-radius:8px;border:1px solid #677d88;background:#172837;font:inherit}
+.snake-archives :focus-visible{outline:3px solid #ffcf7c;outline-offset:2px}
+.snake-archives label{display:inline-flex;align-items:center;gap:.45em}
+.snake-archives p{margin:.5em 0}.archives-outils{margin:12px 0}
+.archives-outils input{width:11ch}.snake-archives table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.snake-archives th,.snake-archives td{text-align:left;padding:5px 4px;border-bottom:1px solid #3b4857;overflow-wrap:anywhere}
+.snake-archives th:last-child,.snake-archives td:last-child{text-align:right}.archives-moi{color:#aff9d7}
+.archives-plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.archives-plans figure{margin:0}.archives-plans figcaption{color:#b6d2dd;font-size:.9em}
+.archives-plans canvas{display:block;width:100%;border:1px solid #405260;border-radius:5px}
+.snake-archives input[type=range]{width:100%;min-height:44px;accent-color:#a2ecd3;margin:0}
+.archives-commandes{display:inline-flex;margin-right:.7em}.snake-archives output{font-size:.91em;color:#b4f2df}
+@media(max-width:480px){.archives-plans{grid-template-columns:1fr}.snake-archives{font-size:16px}}

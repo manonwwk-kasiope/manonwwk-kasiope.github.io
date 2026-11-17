@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1021">
+<title>Snake 2985 · Chambre des deux mondes</title>
+<link rel="stylesheet" href="chambre.css">
+<link rel="stylesheet" href="archives.css">
+<script src="../../forge.js" defer></script>
+<script src="../../vol-libre.js" defer></script>
+<script src="../evolution/evolution.js" defer></script>
+<script src="../moteur.js" defer></script>
+<script src="../gardiens/gardiens.js" defer></script>
+<script src="../rythme/directeur.js" defer></script>
+<script src="../mondes/mondes.js" defer></script>
+<script src="../lecture/arbitre.js" defer></script>
+<script src="../sprites/sprites.js" defer></script>
+<script src="../reprise/reprise.js" defer></script>
+<script src="impact.js" defer></script>
+<script src="indices.js" defer></script>
+<script src="pilotage.js" defer></script>
+<script src="../spectacle.js" defer></script>
+<script src="../commandes/commandes.js" defer></script>
+<script src="../../palmares.js" defer></script>
+<script src="../chrono/chrono.js" defer></script>
+<script src="archives.js" defer></script>
+<script src="../audio/pouls-data.js" defer></script>
+<script src="../audio/horloge.js" defer></script>
+<script src="../audio/priorites.js" defer></script>
+<script src="../audio/bande-campagne.js" defer></script>
+<script src="../noeud/noeud.js" defer></script>
+<script src="../equilibrage/parametres.js" defer></script>
+<script src="chambre.js" defer></script>
+</head>
+<body>
+<main id="poste">
+  <canvas id="monde" aria-label="Serpent et arène à deux plans"></canvas>
+  <header id="bandeau">
+    <strong class="marque">SNAKE <i>2985</i></strong>
+    <span id="date">1976</span><span id="niveau">1 / 10</span>
+    <button id="son" class="outil" aria-label="Activer le son" aria-pressed="false">Son</button><output id="points" aria-label="Score">000000</output><button id="pause" class="outil" aria-label="Pause">Ⅱ</button>
+  </header>
+  <aside id="lecture" data-tone="normal"><span id="message" role="status"></span><span id="partenaire"></span></aside>
+  <section id="pouces" aria-label="Pilotage panoramique">
+    <div id="stick" aria-label="Manche de pilotage"><span></span><small>Cap</small></div>
+    <div id="actions"><button id="plan" aria-label="Changer de plan">⇅ <span>Plan 1</span></button><button id="nova">✷ <span>Nova</span></button></div>
+  </section>
+  <section id="rideau" role="dialog" aria-modal="true" aria-labelledby="titre">
+    <article>
+      <div id="wordmark" aria-label="Snake 2985">SNAKE <em>2985</em></div>
+      <span class="etiquette" id="rang">1976 · Le Terminal</span>
+      <h1 id="titre">Arme ton serpent.</h1><p id="explication"></p><div id="options"></div>
+      <div id="validations"></div>
+    </article>
+  </section>
+</main>
+<section id="vertical"><strong>SNAKE <i>2985</i></strong><h2>Tourne ton téléphone.</h2><p>Les deux plans se traversent en paysage.</p></section>
+</body>
+</html>

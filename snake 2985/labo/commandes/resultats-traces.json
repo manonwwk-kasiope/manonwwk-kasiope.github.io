@@ -1,0 +1,96 @@
+{
+  "gestures": [
+    {
+      "mode": "stick",
+      "hz": 60,
+      "turnMs": 50,
+      "aimMs": 33.33,
+      "novaHoldMs": 280,
+      "events": 18
+    },
+    {
+      "mode": "swipe",
+      "hz": 60,
+      "turnMs": 83.33333333333333,
+      "aimMs": 16.67,
+      "novaHoldMs": 280,
+      "events": 19
+    },
+    {
+      "mode": "stick",
+      "hz": 120,
+      "turnMs": 50,
+      "aimMs": 33.33,
+      "novaHoldMs": 280,
+      "events": 31
+    },
+    {
+      "mode": "swipe",
+      "hz": 120,
+      "turnMs": 75,
+      "aimMs": 8.33,
+      "novaHoldMs": 280,
+      "events": 34
+    }
+  ],
+  "turnBuffer": [
+    [
+      187,
+      false
+    ],
+    [
+      188,
+      true
+    ],
+    [
+      189,
+      true
+    ],
+    [
+      189.5,
+      false
+    ],
+    [
+      190,
+      {
+        "x": 0,
+        "y": 1
+      }
+    ],
+    [
+      380,
+      {
+        "x": -1,
+        "y": 0
+      }
+    ],
+    [
+      570,
+      {
+        "x": -1,
+        "y": 0
+      }
+    ]
+  ],
+  "simultaneous": [
+    {
+      "type": "aim",
+      "angle": 0.7853981633974483,
+      "t": 20
+    },
+    {
+      "type": "aim",
+      "angle": -1.5707963267948966,
+      "t": 110
+    },
+    {
+      "type": "nova",
+      "t": 281
+    },
+    {
+      "type": "aim",
+      "angle": 0,
+      "t": 282
+    }
+  ]
+}

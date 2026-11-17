@@ -1,0 +1,20 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SNAKE 2985 · laboratoire de projection</title><style>*{box-sizing:border-box}body{margin:0;background:#11172b}canvas{width:100vw;height:100vh;display:block}</style>
+<canvas aria-label="Projection du laboratoire"></canvas><script src="spectacle.js"></script><script>
+'use strict';
+const seg=[[11,11],[10,11],[9,11],[8,11],[8,10],[8,9],[7,9],[6,9],[5,9],[4,9],[4,8],[4,7],[3,7]];
+function scene(mode){
+  const plane=mode==='sol'||mode==='fini'?0:1;
+  const snake=seg.map(([x,y],i)=>({x,y,plane:mode==='bascule'&&i>0?0:plane}));
+  const s={year:1985,plane,snake,previousSnake:snake,direction:{x:1,y:0},progress:1,cells:[{x:14,y:11,plane:0},{x:6,y:5,plane:1,bonus:true},{x:29,y:14,plane:0}],drones:[{x:18,y:6,plane:0,next:{x:17,y:6}},{x:23,y:13,plane:1,next:{x:22,y:13}}],flightGate:{x:14,y:4,plane},forge:{orbits:[{x:10,y:13,plane,kind:'orbit'}],projectiles:[{x:16,y:11,plane,kind:'prism'}]}};
+  if(mode==='bascule')s.planeShift={from:0,to:1,remaining:.175,total:.35};
+  if(mode==='vol'){s.flightGate=null;s.flight={angle:-.43,targetAngle:-.43,total:8,remaining:7.3,passed:0,goal:3,rings:[{x:15,y:9,radius:1.05,heading:-.43},{x:22,y:4,radius:1.05,heading:-.6}]};s.snake=s.snake.map((p,i)=>({...p,x:12-i*.67,y:10+i*.28+Math.sin(i*.3)*.45}));}
+  if(mode==='sol'||mode==='fini'||mode==='bascule'){
+    const tiles=[];for(let x=18;x<33;x++)for(let y=6;y<=9;y++)if(y===7||x===26||x===27)tiles.push({x,y,plane});
+    s.boss={x:27,y:6,plane,lane:0,hp:32,maxHp:44,next:{x:26,y:6},attack:{phase:mode==='fini'?'active':'warning',tiles,plane}};
+  }
+  return s;
+}
+window.scene=scene;
+const params=new URLSearchParams(location.search);SnakeSpectacle.draw(document.querySelector('canvas'),scene(params.get('scene')||'sol'),2,false,params.get('methode')||'direct');
+</script></html>

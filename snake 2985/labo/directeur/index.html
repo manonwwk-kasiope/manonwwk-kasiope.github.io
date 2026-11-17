@@ -1,0 +1,10 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Snake 2985 · Séquences</title>
+<style>
+*{box-sizing:border-box}body{margin:auto;max-width:760px;padding:14px;background:#0c081a;color:#f7f2ff;font:17px system-ui}h1{font-size:clamp(22px,4vw,33px);margin:.3em 0}nav,footer,section{display:flex;gap:6px;align-items:center;flex-wrap:wrap}button,select{font:inherit;min-height:44px;color:inherit;background:#291b3c;border:1px solid #76578c;border-radius:11px;padding:5px 12px}button[aria-pressed=true]{border-color:#60f6de;background:#14463f}canvas{width:100%;display:block;background:#10091f;border-radius:16px;touch-action:none;margin:8px 0}output{margin-left:auto;font-variant-numeric:tabular-nums}details{margin-top:12px;line-height:1.5}summary{cursor:pointer}#action{background:#502454;flex:1}select{max-width:100%}
+</style><h1>Snake 2985 · Studio des séquences</h1>
+<nav aria-label="Scènes"><button data-s="gare">Gare orbitale</button><button data-s="mue">Mue croisée</button><button data-s="colosse">Colosse</button></nav>
+<canvas width="720" height="460" aria-label="Deux plateaux superposés. Déplacez le serpent par glissement ou avec les flèches."></canvas>
+<section><button id="action">Changer de plan ⤴</button><button id="reset">Rejouer</button><output id="score"></output></section>
+<footer><label>Prise <select id="prise"></select></label><output id="status"></output></footer>
+<details><summary>Commandes et règles</summary><p>Glissez dans l’arène ou utilisez les flèches. Espace ou « Changer de plan » prépare le saut au prochain battement du cercle blanc. Le serpent plein est sur votre plan, le contour indique sa projection.</p><p id="aide"></p></details>
+<script src="sequences.js"></script><script src="prises.js"></script><script src="studio.js"></script></html>

@@ -1,0 +1,12 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Dernière trajectoire · Snake 2985</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{font:17px system-ui;color:#eff8f1;background:#09131d;padding:0 max(6px,env(safe-area-inset-left)) env(safe-area-inset-bottom);display:flex;flex-direction:column}header{display:flex;justify-content:space-between;padding:3px 5px;gap:12px}main{display:flex;gap:8px;align-items:center;flex:1;min-height:0}canvas{touch-action:none;background:#112532;flex:1;width:0;min-width:0;max-height:100%;object-fit:contain}aside{width:clamp(180px,35vw,320px);max-height:100%;overflow:auto}button,select,input{min-height:44px;min-width:44px;font:inherit;touch-action:manipulation;color:inherit;accent-color:#a7f9d2}button,select{border:1px solid #457181;background:#163243;border-radius:10px;padding:3px 8px}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid white}button:active{background:#315369}p{margin:4px 0;font-size:15px}label{display:block;font-size:15px}#slider{width:100%;margin:0}#review div,#actions{display:flex;gap:4px;flex-wrap:wrap}#time{font-variant-numeric:tabular-nums}#cause{color:#ffbc96}select{max-width:100%}button:disabled{opacity:.55}[hidden]{display:none!important}
+</style>
+<header><b>Dernière trajectoire</b><output id="hud"></output></header>
+<main><canvas id="view" width="720" height="360" aria-label="Arène à deux plans. La trajectoire du serpent et les dangers sont enregistrés."></canvas><aside>
+<section id="live"><p>Trace un virage sur la grille ou utilise les flèches. Les croix annoncent la prochaine case d’un drone.</p><div id="actions"><button id="shift">Plan ⇄</button><button id="nova">Nova</button></div></section>
+<section id="review" hidden><strong id="cause"></strong><p id="lesson"></p>
+<label for="slider">Avant l’impact · <output id="time"></output></label><input id="slider" type="range" step="1">
+<div><button id="back" aria-label="Reculer de 250 millisecondes">−¼ s</button><button id="play">Lire</button><button id="next" aria-label="Avancer de 250 millisecondes">+¼ s</button></div>
+<label for="era">Prochain départ</label><div><select id="era"></select><button id="retry">Rejouer</button></div></section>
+</aside></main><script src="../moteur.js"></script><script src="reprise.js"></script><script src="demo.js"></script></html>

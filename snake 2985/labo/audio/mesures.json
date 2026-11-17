@@ -1,0 +1,225 @@
+{
+  "sources": {
+    "neonvelocity-2": {
+      "start_s": 16.7,
+      "rate": 1,
+      "sha256": "66c4943111a16a0bcf9924a5cf0acafb7ffecbb1517409abc352cff52fb003b6"
+    },
+    "electro-tension-t106": {
+      "start_s": 46.57,
+      "rate": 1.18,
+      "sha256": "2afdb292071ef0bf632d9fb43818936730449bd84f903bcbbd6e06378bd1f122"
+    },
+    "electro-titan-t112": {
+      "start_s": 20.86,
+      "rate": 1.055,
+      "sha256": "47afaca3079552b91f5b6436aa000e8247aae82d5883a6a3bc123e8bf547b3a9"
+    },
+    "voix-machine-t106": {
+      "start_s": 29.4,
+      "rate": 1.09,
+      "sha256": "b4003c74dbdde451d68fff16b1927cff2ce69b1817d68550b898a953cd9aeb9b"
+    },
+    "voix-plus-vite-t108": {
+      "start_s": 30.42,
+      "rate": 1.08,
+      "sha256": "45d59303f7cecba5205cf7c1514861e0d61976764d145cc46038d4ef84fa7d49"
+    }
+  },
+  "tests": {
+    "A_stereo": {
+      "correct": 180,
+      "n": 180,
+      "feature_margin_min_db": 3.1266344226751954,
+      "feature_margin_median_db": 9.937807391982021,
+      "fx_over_music_650_3000_p10_db": 6.34938523821816,
+      "peak_raw_dbfs": -0.2741816516623765,
+      "clipping_raw_samples": 0
+    },
+    "A_mono_mobile": {
+      "correct": 180,
+      "n": 180,
+      "feature_margin_min_db": 2.9871498246506825,
+      "feature_margin_median_db": 10.346965090808364,
+      "fx_over_music_650_3000_p10_db": 6.983579342390655,
+      "peak_raw_dbfs": -0.2741816516623765,
+      "clipping_raw_samples": 0
+    },
+    "A_mono_etroit": {
+      "correct": 177,
+      "n": 180,
+      "feature_margin_min_db": -0.5925516065996383,
+      "feature_margin_median_db": 7.8466023544851975,
+      "fx_over_music_650_3000_p10_db": 6.999342383771431,
+      "peak_raw_dbfs": -0.2741816516623765,
+      "clipping_raw_samples": 0
+    },
+    "B_stereo": {
+      "correct": 180,
+      "n": 180,
+      "feature_margin_min_db": 19.591466047401557,
+      "feature_margin_median_db": 34.87641094152151,
+      "fx_over_music_650_3000_p10_db": 6.537292210653144,
+      "peak_raw_dbfs": -3.8455582320804593,
+      "clipping_raw_samples": 0
+    },
+    "B_mono_mobile": {
+      "correct": 180,
+      "n": 180,
+      "feature_margin_min_db": 19.577822785278077,
+      "feature_margin_median_db": 36.338668016938776,
+      "fx_over_music_650_3000_p10_db": 7.096867654558505,
+      "peak_raw_dbfs": -3.8455582320804593,
+      "clipping_raw_samples": 0
+    },
+    "B_mono_etroit": {
+      "correct": 180,
+      "n": 180,
+      "feature_margin_min_db": 19.847404937748667,
+      "feature_margin_median_db": 36.26599264634216,
+      "fx_over_music_650_3000_p10_db": 7.286388086811492,
+      "peak_raw_dbfs": -3.8455582320804593,
+      "clipping_raw_samples": 0
+    }
+  },
+  "files": {
+    "plans-A-stereo.wav": {
+      "duration_s": 6.0,
+      "sample_peak_dbfs": -11.229863708029198,
+      "rms_dbfs": -29.19233585860531
+    },
+    "plans-A-mono_mobile.wav": {
+      "duration_s": 6.0,
+      "sample_peak_dbfs": -12.917964346668136,
+      "rms_dbfs": -31.908780119615688
+    },
+    "plans-B-stereo.wav": {
+      "duration_s": 6.0,
+      "sample_peak_dbfs": -15.560034061042394,
+      "rms_dbfs": -30.176199118723655
+    },
+    "plans-B-mono_mobile.wav": {
+      "duration_s": 6.0,
+      "sample_peak_dbfs": -16.083160783907843,
+      "rms_dbfs": -33.02044102494324
+    },
+    "forge-neuf-recettes.wav": {
+      "duration_s": 12.0,
+      "sample_peak_dbfs": -13.272096667305913,
+      "rms_dbfs": -28.360991206595607
+    },
+    "vol-gorge-quatre-epoques.wav": {
+      "duration_s": 12.0,
+      "sample_peak_dbfs": -11.70136083334037,
+      "rms_dbfs": -28.59875385611589
+    }
+  },
+  "catalogue": [
+    [
+      0.15,
+      "orbit",
+      "echo"
+    ],
+    [
+      1.43,
+      "orbit",
+      "chain"
+    ],
+    [
+      2.71,
+      "orbit",
+      "blast"
+    ],
+    [
+      3.99,
+      "prism",
+      "echo"
+    ],
+    [
+      5.27,
+      "prism",
+      "chain"
+    ],
+    [
+      6.55,
+      "prism",
+      "blast"
+    ],
+    [
+      7.83,
+      "well",
+      "echo"
+    ],
+    [
+      9.11,
+      "well",
+      "chain"
+    ],
+    [
+      10.39,
+      "well",
+      "blast"
+    ]
+  ],
+  "forge_mono": {
+    "tir": {
+      "labels": [
+        "orbit",
+        "prism",
+        "well"
+      ],
+      "confusion": [
+        [
+          90,
+          0,
+          0
+        ],
+        [
+          0,
+          90,
+          0
+        ],
+        [
+          0,
+          0,
+          90
+        ]
+      ],
+      "fx_over_music_p10_db": 3.1296994386962407
+    },
+    "impact": {
+      "labels": [
+        "echo",
+        "chain",
+        "blast"
+      ],
+      "confusion": [
+        [
+          90,
+          0,
+          0
+        ],
+        [
+          0,
+          90,
+          0
+        ],
+        [
+          0,
+          0,
+          90
+        ]
+      ],
+      "fx_over_music_p10_db": -0.4758791013112894
+    }
+  },
+  "stress": {
+    "raw_hits": 152,
+    "audible_hits": 19,
+    "shots": 8,
+    "window_s": 6.3,
+    "raw_peak_dbfs": -1.4690384908070828,
+    "clipping_raw_samples": 0,
+    "duty_fx_over_minus45_dbfs": 0.7111111111111111
+  }
+}
