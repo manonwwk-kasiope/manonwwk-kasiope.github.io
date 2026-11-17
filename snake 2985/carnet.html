@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5ed">
+<title>SNAKE 2985 — Carnet de jeu</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper: #f7f5ed;
+  --ink: #162723;
+  --muted: #4b5952;
+  --line: #c5c9bb;
+  --accent: #8e391f;
+  --wash: #f3e4d3;
+  --display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 17px/1.52 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+body[data-piste="1"] { --accent: #695017; --wash: #f1e8cd; }
+body[data-piste="2"] { --accent: #34577c; --wash: #e1e9e9; }
+main, header, footer { width: min(1120px, 91%); margin-inline: auto; }
+header { padding: clamp(18px, 3vw, 38px) 0 clamp(18px, 3vw, 34px); }
+.mast { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--ink); padding-bottom:12px; }
+.mast b, .number-label, label, h3, summary {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.mast b { font-size: .83rem; letter-spacing: .06em; text-transform: uppercase; }
+.mast a, footer a { color: var(--ink); text-underline-offset: 4px; }
+.mast a { display:inline-flex; align-items:center; min-height:44px; font-size:.94rem; }
+h1, h2, p { margin: 0; }
+h1, h2 { font-family:var(--display); font-weight:500; }
+h1 { font-size:clamp(54px, 8.5vw, 118px); line-height:1; letter-spacing:-.067em; white-space:nowrap; }
+h1 i { color:var(--accent); font-weight:400; }
+.intro { display:flex; align-items:flex-end; justify-content:space-between; gap:2rem; padding-top:clamp(22px,3vw,40px); }
+.intro p { max-width:33ch; margin-bottom:.2em; color:var(--muted); text-wrap:pretty; }
+#serpents2975 { background:#fffdf7; border:1px solid var(--line); border-radius:24px; overflow:hidden; }
+.picker { display:flex; align-items:center; flex-wrap:wrap; gap:12px 20px; padding:14px clamp(16px,3vw,34px); border-bottom:1px solid var(--line); }
+.picker label { font-weight:650; }
+select, button { font:inherit; min-height:46px; }
+select { padding:6px 38px 6px 14px; border-radius:8px; color:var(--ink); background:#f5f3eb; border:1px solid #73796b; cursor:pointer; }
+.layout { display:grid; grid-template-columns: minmax(0, 1.55fr) minmax(270px, 1fr); }
+figure { margin:0; display:flex; flex-direction:column; min-width:0; background:#101d23; color:#f3f4e6; }
+.stage { display:grid; align-items:center; margin:auto 0; }
+canvas { display:block; width:100%; height:auto; aspect-ratio: 760 / 320; }
+figcaption { background:#17282a; border-top:1px solid #425355; padding:14px clamp(15px,2vw,25px); display:flex; align-items:center; flex-wrap:wrap; gap:10px 16px; min-height:78px; }
+figcaption button { flex:none; background:#fff8e7; color:#112724; border:0; border-radius:24px; padding:8px 20px; font-weight:700; cursor:pointer; }
+figcaption button:active { transform:translateY(1px); }
+figcaption span { flex:1 1 150px; line-height:1.35; }
+.notes { padding:clamp(18px, 2.8vw, 38px); }
+.notes article[hidden] { display:none; }
+.notes article { animation:appear .28s ease-out both; }
+.notes .genre { color:var(--accent); font-weight:650; }
+.notes h2 { margin:4px 0 12px; font-size:clamp(32px,3.3vw,49px); line-height:1.02; letter-spacing:-.046em; text-wrap:balance; }
+.notes p { text-wrap:pretty; }
+dl { margin:18px 0 0; }
+dt { display:inline; font-weight:700; color:var(--ink); }
+dd { display:inline; margin:0; color:var(--muted); }
+dl div { border-top:1px solid var(--line); padding-top:9px; margin-top:9px; }
+#ecoute { margin-top:22px; }
+#ecoute audio { max-width:100%; vertical-align:middle; }
+details { margin:24px 0; border-block:1px solid var(--line); }
+summary { display:list-item; cursor:pointer; padding:14px 0; font-weight:650; }
+details p { max-width:83ch; color:var(--muted); padding:0 0 18px; }
+footer { padding:4px 0 max(26px,env(safe-area-inset-bottom)); color:var(--muted); font-size:.88rem; }
+button:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible { outline:3px solid #0283a5; outline-offset:3px; }
+@keyframes appear { from { transform:translateY(4px); opacity:.5; } to { transform:translateY(0); opacity:1; } }
+@media(max-width:850px) { .layout { grid-template-columns:minmax(0,1.2fr) minmax(250px,1fr); } .intro p { max-width:29ch; } }
+@media(max-width:690px) {
+  main,header,footer { width:min(94%,620px); }
+  .intro { display:block; }
+  .intro p { max-width:46ch; margin-top:10px; }
+  .layout { display:flex; flex-direction:column; }
+  .picker { padding:10px 14px; justify-content:space-between; }
+  #serpents2975 { border-radius:18px; }
+  .notes { padding:18px; }
+  figcaption { min-height:68px; }
+}
+@media(max-width:360px) { .picker { gap:6px; } select { padding-right:16px; } }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; scroll-behavior:auto!important; transition:none!important; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="mast"><b>Carnet de jeu</b><a href="#ecoute">Les musiques ↓</a></div>
+  <div class="intro"><h1>SNAKE <i>2985</i></h1><p>Un serpent qui traverse l’univers. Trois façons de jouer avec la trace que laisse son corps.</p></div>
+</header>
+<main>
+<section id="serpents2975" aria-label="Trois propositions de jeu">
+  <div class="picker">
+    <label for="piste">Explorer une piste</label>
+    <select id="piste">
+      <option value="0">Brise-Orbite</option>
+      <option value="1">Le Dernier Convoi</option>
+      <option value="2">Les Deux Rives</option>
+    </select>
+  </div>
+  <div class="layout">
+    <figure>
+      <div class="stage"><canvas width="760" height="320" role="img" aria-label="Croquis animé du geste de jeu">Les gestes du serpent sont également décrits dans la fiche de chaque jeu.</canvas></div>
+      <figcaption><button type="button">Essayer le geste</button><span aria-live="polite"></span></figcaption>
+    </figure>
+    <div class="notes">
+      <article data-fiche>
+        <p class="genre">Duel orbital</p>
+        <h2>Brise-Orbite</h2>
+        <p>Tu rampes sur le dos d’un animal-machine grand comme une lune. Ses plaques de cuirasse se soulèvent à chaque respiration. Pour passer sous ses côtes, tu dois arracher une attache avec ton propre corps.</p>
+        <dl>
+          <div><dt>Ton choix.</dt> <dd>Refermer ta boucle sur l’attache extérieure te laisse de la place pour fuir. Si tu plonges plus loin, la prise intérieure ouvre un passage direct, mais la plaque peut se rabattre sur ta queue.</dd></div>
+          <div><dt>À l’image.</dt> <dd>Une BD spatiale à l’encre noire, avec des plaques d’ivoire et des rivets vermillon. Quand tu tires, les anneaux de ton corps se tendent l’un après l’autre, puis le métal cède.</dd></div>
+          <div><dt>Dans le morceau.</dt> <dd>Le break retient le souffle de la bête. Au retour de la basse, ses côtes se ferment. Tu peux aussi lire ce mouvement à l’écran.</dd></div>
+        </dl>
+      </article>
+      <article data-fiche hidden>
+        <p class="genre">Sauvetage en fuite</p>
+        <h2>Le Dernier Convoi</h2>
+        <p>Une gare orbitale se vide de son air. Les capsules de rescapés s’accrochent une à une à ta queue. Une main apparaît au hublot du dernier quai, alors que ton convoi est déjà engagé vers la sortie.</p>
+        <dl>
+          <div><dt>Ton choix.</dt> <dd>Faire demi-tour pour récupérer cette capsule rallonge le convoi. Au retour, le nez peut franchir le sas et le dernier wagon rester du mauvais côté. Qui ramènes-tu à bord&nbsp;?</dd></div>
+          <div><dt>À l’image.</dt> <dd>Une gare jaune safran sous un ciel d’encre, dessinée en coupe. Les attelages prennent du jeu dans les virages et chaque hublot éclairé te montre qui est encore derrière toi.</dd></div>
+          <div><dt>Dans le morceau.</dt> <dd>La montée accompagne la fermeture progressive du sas. À la dernière mesure, la lumière du quai s’éteint et tu vois les capsules qui ont rejoint le refuge.</dd></div>
+        </dl>
+      </article>
+      <article data-fiche hidden>
+        <p class="genre">Énigme en duo, jouée en solo</p>
+        <h2>Les Deux Rives</h2>
+        <p>Une ville existe sur deux planètes à la fois. Tu traces un trajet avec le premier serpent. Sur l’autre rive, son écho refait chacun de tes virages pendant que tu guides le second vers lui.</p>
+        <dl>
+          <div><dt>Ton choix.</dt> <dd>Couper droit te mène vite au rendez-vous. Décrire une boucle autour du treuil maintient le pont ouvert juste assez longtemps pour faire passer ton autre serpent.</dd></div>
+          <div><dt>À l’image.</dt> <dd>La ville submergée est peinte à l’encre outremer, sa jumelle gravée sur cuivre. Par transparence, tu vois la silhouette de ton autre pilote bouger sous la chaussée.</dd></div>
+          <div><dt>Dans le morceau.</dt> <dd>Le break passe le relais entre les mondes. Tu reconnais la reprise qui t’attend au bout du pont. La rencontre des deux têtes dépend du trajet que tu as dessiné.</dd></div>
+        </dl>
+      </article>
+    </div>
+  </div>
+</section>
+<div id="ecoute"></div>
+<details>
+  <summary>D’où part SNAKE 2985&nbsp;?</summary>
+  <p>Dans SNAKE 2975, un vieux terminal ouvre un voyage qui finit contre une armada spatiale. Le serpent grandit avec les cellules, tire automatiquement dans les arènes et peut déjà entourer un ennemi au lasso. Les vols, le verrouillage de cibles et les changements d’époque apportent de la variété. Mon impression à la lecture du jeu est que ces séquences se disputent l’attention. Chacune des pistes ci-dessus donne à la trajectoire du corps un rôle décisif du début à la fin.</p>
+</details>
+</main>
+<footer>SNAKE 2985 · Propositions de refonte</footer>
+<script>
+  const choix = document.getElementById('piste');
+  const fiches = document.querySelectorAll('[data-fiche]');
+  function afficherFiche() {
+    document.body.dataset.piste = String(choix.selectedIndex);
+    fiches.forEach((fiche, index) => { fiche.hidden = index !== choix.selectedIndex; });
+  }
+  choix.addEventListener('change', afficherFiche);
+  afficherFiche();
+</script>
+<script src="croquis.js"></script>
+<script src="ecoute.js"></script>
+</body>
+</html>
