@@ -59,6 +59,7 @@
   }
   function display(next) {
     mode = next;
+    document.body.dataset.mode = next;
     pointer = null;
     for (const [key, panel] of Object.entries(panels)) panel.hidden = key !== next;
     ui.overlay.hidden = next === 'playing';
@@ -73,6 +74,7 @@
     document.body.classList.toggle('cible', target !== null);
     attemptId = globalThis.crypto?.randomUUID?.() || (Date.now().toString(36) + Math.random().toString(36).slice(2));
     game = engine.create(Math.random, epoch);
+    ui['score-caption'].dataset.year = String(game.year);
     const echoMessage = echo.begin(game.year,{timejump:jumping});
     echo.update(game);
     audio.setMuted(muted);

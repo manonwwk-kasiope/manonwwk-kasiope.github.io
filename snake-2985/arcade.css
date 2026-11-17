@@ -38,7 +38,7 @@ h1 em { color:#ff9873; background:linear-gradient(#ffe7a8,#ff876c 57%,#fc5d95);b
 .epoque span {color:#ffbc89;text-align:right}
 .field {isolation:isolate;position:relative;overflow:hidden;aspect-ratio:2;background:#100f20;border:1px solid #916483;
   border-radius:10px;box-shadow:0 0 0 3px #180e20,0 0 0 4px #483249,0 12px 56px #080611}
-canvas {width:100%;height:100%;display:block;touch-action:none}
+canvas {width:100%;height:auto;aspect-ratio:2;display:block;touch-action:none}
 .overlay {position:absolute;inset:0;display:flex;align-items:flex-end;pointer-events:none;background:linear-gradient(0deg,#110a1beb,transparent 57%)}
 .overlay.center {align-items:center;justify-content:center;background:#10091bc4;overflow-y:auto;pointer-events:auto}
 .panel {padding:clamp(12px,2.4vw,30px);width:100%;pointer-events:auto}
@@ -129,3 +129,28 @@ th {color:#dfcce4}td:last-child,th:last-child{text-align:right}
  #manche b{font-weight:500;margin:4px 0}#manche small{font-size:.7rem;margin-top:6px}
 }
 .switches button,.liens button,.direction button {min-width:44px}
+/* Safari's landscape toolbars can leave a very wide, shallow viewport. Place the
+   controls by the player's thumbs and give the board all available vertical space. */
+@media(any-pointer:coarse) and (orientation:landscape) and (min-aspect-ratio:12/5) and (max-height:480px){
+ body[data-mode=playing] .cabinet{
+   display:grid;height:100dvh;min-height:0;
+   grid-template-columns:minmax(70px,1fr) minmax(0,min(calc(100% - 154px),calc((100dvh - 6px - env(safe-area-inset-top) - env(safe-area-inset-bottom))*2))) minmax(70px,1fr);
+   grid-template-rows:auto minmax(0,1fr) auto;column-gap:4px;row-gap:0;align-content:stretch
+ }
+ body[data-mode=playing] :is(.console,.machine,.commandes){display:contents}
+ body[data-mode=playing] :is(.masthead,.liens,.epoque,.direction){display:none}
+ body[data-mode=playing] .field{grid-column:2;grid-row:1/4;width:100%;align-self:center;justify-self:center}
+ body[data-mode=playing] .dashboard{grid-column:1;grid-row:1/3;display:grid;align-self:start;justify-self:center;padding:.4em 0}
+ body[data-mode=playing] :is(.scores,.loadout){display:grid;justify-content:start;gap:4px}
+ body[data-mode=playing] .scores div:first-child,body[data-mode=playing] .loadout div:nth-child(2){display:grid}
+ body[data-mode=playing] #score-caption::before{content:attr(data-year) " · ";color:var(--aqua)}
+ body[data-mode=playing] .scores div:nth-child(2),body[data-mode=playing] .loadout div:first-child{display:none}
+ body[data-mode=playing].cible .scores div:nth-child(2){display:grid}
+ body[data-mode=playing] #manche{display:flex;position:static;grid-column:1;grid-row:3;width:100%;height:clamp(45px,30dvh,95px);align-self:end}
+ body[data-mode=playing] .switches{grid-column:3;grid-row:1/3;display:grid;align-self:start;justify-self:center;gap:2px}
+ body[data-mode=playing] .switches button{min-height:44px;padding:0 .35rem}
+ body[data-mode=playing] #nova{grid-column:3;grid-row:3;align-self:end;justify-self:center;margin:0;min-height:48px}
+ body[data-mode=playing] .epoque:has(#menace:not(:empty)){display:contents}
+ body[data-mode=playing] .epoque :is(strong,#annonce){display:none}
+ body[data-mode=playing] .epoque #menace{grid-column:1;grid-row:2;align-self:center;max-width:98px;padding:2px;text-align:center;font-size:.68rem}
+}
