@@ -267,10 +267,10 @@
   }
   for (const surface of [ui.arene, ui.manche]) {
     surface.addEventListener('pointerdown', beginSwipe);
-    surface.addEventListener('pointermove', swipe);
-    surface.addEventListener('pointerup', event => { swipe(event); if (event.pointerId === pointer?.id) pointer = null; });
-    surface.addEventListener('pointercancel', event => { if (event.pointerId === pointer?.id) pointer = null; });
   }
+  document.addEventListener('pointermove', swipe);
+  document.addEventListener('pointerup', event => { swipe(event); if (event.pointerId === pointer?.id) pointer = null; });
+  document.addEventListener('pointercancel', event => { if (event.pointerId === pointer?.id) pointer = null; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { saveRecord(); pause(); } });
   portraitPhone.addEventListener('change', orientation);
   window.addEventListener('pagehide', () => { saveRecord(); pause(); });

@@ -3,7 +3,7 @@
 // Bump the version for each release with changed precached content.
 const scope = new URL(self.registration.scope);
 const prefix = "snake2985:" + scope.pathname + ":";
-const version = prefix + "20261117-3";
+const version = prefix + "20261117-4";
 const audioFiles = [
   "audio/neonvelocity-2.mp3",
   "audio/electro-tension-t106.mp3",
