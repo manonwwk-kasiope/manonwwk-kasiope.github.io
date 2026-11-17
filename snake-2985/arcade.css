@@ -131,7 +131,7 @@ th {color:#dfcce4}td:last-child,th:last-child{text-align:right}
 .switches button,.liens button,.direction button {min-width:44px}
 /* Safari's landscape toolbars can leave a very wide, shallow viewport. Place the
    controls by the player's thumbs and give the board all available vertical space. */
-@media(any-pointer:coarse) and (orientation:landscape) and (min-aspect-ratio:12/5) and (max-height:480px){
+@media(any-pointer:coarse) and (orientation:landscape) and (min-aspect-ratio:19/10) and (max-height:480px){
  body[data-mode=playing] .cabinet{
    display:grid;height:100dvh;min-height:0;
    grid-template-columns:minmax(70px,1fr) minmax(0,min(calc(100% - 154px),calc((100dvh - 6px - env(safe-area-inset-top) - env(safe-area-inset-bottom))*2))) minmax(70px,1fr);

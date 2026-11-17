@@ -113,6 +113,10 @@
   </dialog>
   <script>
     if (window.isSecureContext && location.protocol !== 'file:' && 'serviceWorker' in navigator) {
+      const previousEdition = Boolean(navigator.serviceWorker.controller);
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (previousEdition && document.body.dataset.mode === 'home' && !document.querySelector('dialog[open]')) location.reload();
+      }, {once:true});
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {}));
     }
   </script>

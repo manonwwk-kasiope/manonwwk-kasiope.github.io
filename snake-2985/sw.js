@@ -3,7 +3,7 @@
 // Bump the version for each release with changed precached content.
 const scope = new URL(self.registration.scope);
 const prefix = "snake2985:" + scope.pathname + ":";
-const version = prefix + "20261117-5";
+const version = prefix + "20261117-6";
 const audioFiles = [
   "audio/neonvelocity-2.mp3",
   "audio/electro-tension-t106.mp3",
@@ -26,6 +26,9 @@ self.addEventListener("install", (event) => {
     const cache = await caches.open(version);
     // addAll validates every full response before committing the batch.
     await cache.addAll(Array.from(urls, (url) => new Request(url, { cache: "reload" })));
+    // Each game loads its scripts at startup and the music paths are stable.
+    // Existing runs can finish while new navigations pick up this release.
+    await self.skipWaiting();
   })());
 });
 
