@@ -16,3 +16,9 @@
 @media(prefers-reduced-motion:reduce){.voyage-carte *{scroll-behavior:auto;animation:none;transition:none}}
 
 .vc-date[data-locked=true] .vc-mini{filter:saturate(.48)}.vc-date[data-locked=true] .vc-num small::after{content:" · ◇";color:#c7a59d}
+
+.vc-extrait{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#090f1d}
+.vc-horizon:has(.vc-extrait:not([hidden])) h3{opacity:0}
+.voyage-carte .vc-apercu{position:absolute;top:3px;right:3px;min-height:44px;border:0;background:transparent;padding:0 7px;color:white;font-size:13px;font-weight:700;text-shadow:0 1px 4px #000,0 0 6px black}
+.vc-apercu::before{content:"▶";display:inline-grid;place-items:center;margin-right:5px;width:23px;height:23px;background:#122235eb;border:1px solid #adcccf;border-radius:50%;font-size:10px}
+.vc-apercu[aria-pressed=true]::before{content:"■"}

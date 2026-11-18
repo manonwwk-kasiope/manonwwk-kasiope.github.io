@@ -5,6 +5,8 @@
     const info=rows.find(row=>row.year===year);
     if (!info) throw new RangeError('Époque inconnue');
     const {loopStart:start,loopEnd:end,rate,attackOffset,bars}=info;
+    // Avance d'affichage mesurée sur les transitoires PCM, en secondes à vitesse de jeu.
+    const visualLead=({1985:.004,1995:.003})[year]??0;
     const wrap=x=>start+((x-start)%(end-start)+(end-start))%(end-start);
     let position=start,lastWall=null,wasPlaying=true;
     function sample({now,mediaTime,playing=true,audible=true,playbackRate=rate}) {
@@ -15,7 +17,7 @@
       if (source==='media') position=wrap(mediaTime);
       else if (playing && wasPlaying) position=wrap(position+elapsed*playbackRate);
       wasPlaying=playing;
-      const time=wrap(position-attackOffset);
+      const time=wrap(position-attackOffset+visualLead*playbackRate);
       let b=bars.findIndex(x=>x>time+1e-8)-1;
       if (b<0) b=bars.length-2;
       const span=bars[b+1]-bars[b];
@@ -25,7 +27,7 @@
       return {source,mediaTime:position,bar:b,beat:Math.floor(quarter),phase,
         pulse:Math.exp(-phase*7),playing,bpm:240*playbackRate/span};
     }
-    return {sample,track:info.track,loopStart:start,loopEnd:end,rate};
+    return {sample,track:info.track,loopStart:start,loopEnd:end,rate,visualLead};
   }
   const api={create};
   if(typeof module==='object' && module.exports) module.exports=api;

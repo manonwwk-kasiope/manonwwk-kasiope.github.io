@@ -3,6 +3,7 @@
   const years=[1976,1985,1995,2185,2985],key='snake2985.voyage.v1';
   const script=typeof document==='undefined'?null:document.currentScript;
   const assets=script?.src?new URL(script.dataset?.musicRoot?'.':'../bifurcation/',script.src).href:'../bifurcation/';
+  const extraitBase=script?.src?new URL(script.dataset?.musicRoot?'.':'../apercus/',script.src).href:'';
   const fmt=new Intl.NumberFormat('fr-FR');
   let cache={last:null,seen:[]},active=null;
   function stored(){
@@ -51,7 +52,11 @@
     const nav=el('div','vc-ligne',dlg);nav.setAttribute('role','tablist');nav.setAttribute('aria-label','Époques');
     const panel=el('section','vc-panel',dlg);panel.id='voyage-detail';panel.setAttribute('role','tabpanel');
     const hero=el('div','vc-horizon',panel),image=el('img','',hero);image.alt='';
+    const reel=el('canvas','vc-extrait',hero);reel.hidden=true;reel.setAttribute('aria-hidden','true');
     const place=el('h3','',hero);
+    const play=el('button','vc-apercu',hero);play.type='button';
+    const preview=window.SnakeApercus?.mount(reel,play,{reduced:options.reduced});
+    if(!preview)play.hidden=true;
     const side=el('div','vc-fiche',panel), arsenal=el('p','vc-arsenal',side),history=el('p','vc-historique',side);
     const guard=el('p','vc-gardien',side);
     const launch=el('button','vc-depart',side);launch.type='button';
@@ -59,6 +64,7 @@
     const name=y=>eras.find(e=>e.year===y);
     function paint(y,focus=false){
       if(!years.includes(y)||!name(y))return;
+      if(!closed)preview?.select(y,(options.previewBase??extraitBase)+'apercu-'+y+'.webp');
       selected=y;const model=name(y),r=eligible.info.get(y),allowed=eligible.open.has(y);
       for(const tab of buttons){
         const on=tab.year===y;tab.node.tabIndex=on?0:-1;tab.node.setAttribute('aria-selected',String(on));
@@ -84,7 +90,7 @@
       tab.addEventListener('click',()=>paint(y,true));buttons.push({year:y,node:tab});
     }
     function finish(){
-      if(closed)return;closed=true;active=null;
+      if(closed)return;closed=true;active=null;preview?.destroy();
       if(dlg.open)dlg.close();dlg.remove();if(before?.isConnected!==false)before?.focus?.();
     }
     launch.addEventListener('click',()=>{

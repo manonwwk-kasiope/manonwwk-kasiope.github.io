@@ -12,9 +12,11 @@
 <script src="../../vol-libre.js" defer></script>
 <script src="../evolution/evolution.js" defer></script>
 <script src="../moteur.js" defer></script>
+<script src="../singularite/singularite.js" defer></script>
 <script src="../gardiens/gardiens.js" defer></script>
 <script src="../surf-boss/surf.js" defer></script>
 <script src="../rythme/directeur.js" defer></script>
+<script src="../quantification/quantification.js" defer></script>
 <script src="../mondes/mondes.js" defer></script>
 <script src="../initiation/initiation.js" defer></script>
 <script src="../lecture/arbitre.js" defer></script>
@@ -31,7 +33,10 @@
 <script src="matieres.js" defer></script>
 <script src="../endurance/phosphore/lisibilite.js" defer></script>
 <script src="../locomotion/locomotion.js" defer></script>
+<script src="../camera/camera.js" defer></script>
+<script src="../perception/marquage.js" defer></script>
 <script src="../spectacle.js" defer></script>
+<script src="../gestes/actions.js" defer></script>
 <script src="../commandes/commandes.js" defer></script>
 <script src="../../palmares.js" defer></script>
 <script src="../chrono/chrono.js" defer></script>
@@ -50,19 +55,28 @@
 <link rel="stylesheet" href="../instruments/instruments.css">
 <script src="../instruments/instruments.js" defer></script>
 <link rel="stylesheet" href="../carte/carte.css">
+<script src="../apercus/lecteur.js" defer></script>
 <script src="../carte/carte.js" defer></script>
 <script src="passage.js" defer></script>
 <script src="guide.js" defer></script>
+<link rel="stylesheet" href="../epilogue/epilogue.css">
+<script src="../epilogue/epilogue.js" defer></script>
+<link rel="stylesheet" href="../orientation/orientation.css">
+<script src="../orientation/orientation.js" defer></script>
+<script src="../difficulte/relance.js" defer></script>
+<script src="../veille-rendu/veille.js" defer></script>
 <script src="chambre.js" defer></script>
 </head>
 <body>
 <main id="poste">
   <canvas id="monde" aria-label="Serpent et arène à deux plans"></canvas>
   <header id="bandeau">
-    <strong class="marque">SNAKE <i>2985</i></strong>
+    <strong class="marque">SNAKE</strong>
     <span id="date">1976</span><span id="niveau">1 / 10</span>
+    <button id="turbo" class="outil" aria-label="Activer le turbo" aria-pressed="false">Turbo</button>
     <button id="son" class="outil" aria-label="Activer le son" aria-pressed="false">Son</button><output id="points" aria-label="Score">000000</output><button id="pause" class="outil" aria-label="Pause">Ⅱ</button>
   </header>
+  <aside id="duel" hidden><strong id="nom-garde"></strong><span id="etat-garde"></span><div id="integrite" role="meter" aria-label="Vie du gardien" aria-valuemin="0" aria-valuemax="100"><i></i></div></aside>
   <aside id="lecture" data-tone="normal"><span id="message" role="status"></span><span id="partenaire"></span></aside>
   <section id="pouces" aria-label="Pilotage panoramique">
     <div id="stick" aria-label="Manche de pilotage"><span></span><small>Cap</small></div>
@@ -81,6 +95,13 @@
     </article>
   </section>
 </main>
-<section id="vertical"><strong>SNAKE <i>2985</i></strong><h2>Tourne ton téléphone.</h2><p>Les deux plans se traversent en paysage.</p></section>
+<dialog id="vertical" aria-labelledby="vertical-titre" aria-describedby="vertical-date">
+  <img class="rotation-jaquette" src="jaquette.webp" alt="" width="1921" height="819">
+  <div class="rotation-legende">
+    <span class="rotation-geste" aria-hidden="true"></span>
+    <p id="vertical-date"></p>
+    <h2 id="vertical-titre" tabindex="-1" autofocus>Passe en paysage.</h2>
+  </div>
+</dialog>
 </body>
 </html>

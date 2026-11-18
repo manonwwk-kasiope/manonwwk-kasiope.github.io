@@ -1,0 +1,19 @@
+.vic-epilogue{height:100%;min-height:0;box-sizing:border-box;display:flex;flex-flow:column;gap:clamp(4px,1.3vh,11px);padding:clamp(8px,2vh,20px) clamp(12px,2.2vw,28px);overflow:auto;background:linear-gradient(118deg,#15132a,#101c2b 72%,#222333);color:#faf4de;border-radius:inherit;font-family:inherit}
+.vic-head,.vic-actions,.vic-gestures{display:flex;align-items:center;gap:12px}
+.vic-head{justify-content:space-between}.vic-title{color:inherit;margin:0;font-size:clamp(21px,3.3vw,42px);line-height:1.05}
+.vic-score{display:grid;text-align:right;flex-shrink:0}.vic-score strong{font-size:clamp(18px,2.7vw,30px);font-variant-numeric:tabular-nums;line-height:1.1}.vic-record{font-size:clamp(12px,1.5vw,16px);color:#d2dcd2}
+.vic-route{position:relative;isolation:isolate;display:flex;list-style:none;margin:0;padding:0;flex:1 1 auto;min-height:48px;overflow:hidden;border-radius:8px;background:#171d2b}
+.vic-stop{position:relative;overflow:hidden;flex:1;--tint:#8bcf75;border-bottom:3px solid var(--tint)}
+.vic-stop[data-year="1985"]{--tint:#e889cb}.vic-stop[data-year="1995"]{--tint:#f8b566}.vic-stop[data-year="2185"]{--tint:#82d4e9}.vic-stop[data-year="2985"]{--tint:#cab2ff}
+.vic-stop+.vic-stop{border-left:1px solid #e3e1db4f}.vic-land{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;animation:vic-arrive .55s backwards;animation-delay:var(--delay)}
+.vic-date{position:absolute;bottom:5px;left:6px;color:#fff;background:#10101edb;padding:1px 5px;border-radius:4px;font-weight:700}
+.vic-gestures{flex-wrap:wrap;list-style:none;padding:0;margin:0;gap:4px 18px;font-size:clamp(13px,1.65vw,17px);color:#e6e4da}
+.vic-gestures li::before{content:'◇';color:#f2ca7e;margin-right:5px}
+.vic-actions{justify-content:flex-end;flex-wrap:wrap;gap:6px;margin-top:auto}
+.vic-actions button{min-height:44px;padding:4px 12px;cursor:pointer;color:#f1eef9;background:#27283d;border:1px solid #788294;border-radius:8px;font:inherit;font-size:clamp(14px,1.7vw,18px)}
+.vic-actions .vic-primary{color:#162126;background:#b6f3d9;border-color:#d5ffe9;font-weight:700}.vic-actions button:focus-visible{outline:3px solid #ffcf79;outline-offset:-3px}
+@keyframes vic-arrive{from{opacity:.45;transform:translateX(5px)}to{opacity:1;transform:translateX(0)}}
+.vic-epilogue[data-reduced="true"] .vic-land{animation:none}
+@media(prefers-reduced-motion:reduce){.vic-land{animation:none}}
+@media(max-height:310px){.vic-epilogue{gap:4px;padding:6px 10px}.vic-actions button{padding-inline:9px}.vic-head{gap:5px}}
+.vic-epilogue{border-top:2px solid transparent;background:linear-gradient(118deg,#15132a,#101c2b 72%,#222333) padding-box,linear-gradient(90deg,#91c96b,#df91c3,#eab079,#8bccdb,#c3a8ec) border-box}

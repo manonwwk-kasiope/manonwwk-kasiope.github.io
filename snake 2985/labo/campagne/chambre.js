@@ -13,8 +13,17 @@
   const portrait = matchMedia('(orientation:portrait) and (any-pointer:coarse)');
   let state = arcade.create();
   let screen = 'prep', clock = null, selected = {core: 'orbit', mod: 'blast'};
+  let tripStorage;
+  try{tripStorage=window.sessionStorage;}catch{}
+  let voyage=SnakeEpilogue.create(tripStorage,true);
   let hints=SnakeLecture.create(), nextHint=0,menuFinal=null;
   let activeFlight = false, pointer = null, held = new Set(), until = 0, target = null;
+  const veille=SnakeVeille.create(frame,()=>{
+    if(screen==='play'||(screen==='prep'&&!ui.passage.hidden))return 0;
+    if((screen==='prep'||screen==='upgrade')&&banc.animated&&!calm.matches)return 40;
+    return null;
+  });
+  const banc=SnakeVeille.preview(SnakeBanc,veille.wake);
   const directions = {ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
   const controls = LabControls.createInput(action => {
     if (screen !== 'play') return;
@@ -27,7 +36,8 @@
       state.snake[0],state.plane,angle,field.clientWidth/renderer.width,field.clientHeight/renderer.height);
     SnakeFlight.aim(state,cap.x,cap.y);
   }
-  function menaces(s,dt){SnakeEquilibre.tick(s,dt,SnakeGardiens.tick);}
+  function defense(s,dt){SnakeEquilibre.tick(s,dt,SnakeGardiens.tick);}
+  function menaces(s,dt){SnakeSingularite.tick(s,dt,defense);}
   const text = (node, value) => { if (node.textContent !== value) node.textContent = value; };
   function button(parent, label, callback, primary = false) {
     const el = document.createElement('button');
@@ -48,7 +58,7 @@
     ui.bifurcation.hidden=page!=='end';ui.carte.hidden=page!=='prep';
     ui.rideau.setAttribute('aria-labelledby',page==='end'?'issue-partie':'titre');
     if(page!=='prep')SnakePassage.stop(ui.passage);
-    SnakeBanc.stop();screen=page; document.body.dataset.screen=page;
+    banc.stop();screen=page; document.body.dataset.screen=page;
     resetTouch(); ui.rideau.hidden=page==='play';
     ui.bandeau.inert=ui.pouces.inert=page!=='play';
     ui.pouces.hidden=page!=='play';
@@ -59,11 +69,14 @@
     }
     if(page==='pause'||page==='upgrade')audio.pause();
     if(page==='play')audio.resume();
-    clock=null;
+    clock=null;veille.wake();
   }
-  function preparation(epoch=0) {
+  function preparation(epoch=0,resume=false) {
     audio.stop();
-    state=arcade.create(Math.random,epoch);SnakeCarte.visit(state.year);SnakeMatieres.load(state.year); state.director=SnakeDirector.create();state.initiation=SnakeInitiation.create('facultatif',0); archives.newRun(state); hints=SnakeLecture.create();nextHint=0; activeFlight=false;
+    state=arcade.create(Math.random,epoch);SnakeCarte.visit(state.year);
+    const session=state;
+    SnakeMatieres.load(session.year).then(ready=>{if(ready&&state===session)veille.wake();});
+    state.director=SnakeDirector.create();state.initiation=SnakeInitiation.create('facultatif',0); archives.newRun(state,{resume}); hints=SnakeLecture.create();nextHint=0; activeFlight=false;
     controls.configure({mode:'stick',flying:false});
     show('prep','Arme ton serpent.');
     ui.rang.textContent=state.year+' · '+({1976:'2 bits',1985:'4 bits',1995:'8 bits',2185:'16 bits',2985:'32 bits'})[state.year]+' · '+arcade.eras[epoch].name;
@@ -79,16 +92,16 @@
       ui.titre.textContent=forge.name(selected.core,selected.mod);
       ui.explication.textContent=forge.cores.find(c=>c.id===selected.core).description+' '+forge.mods.find(m=>m.id===selected.mod).description;
       SnakeForge.equip(state,selected.core,selected.mod);
-      if(preview)SnakeBanc.select(ui.vitrine,state.year,selected.core,selected.mod,calm.matches);
+      if(preview)banc.select(ui.vitrine,state.year,selected.core,selected.mod,calm.matches);
     };
     choice('core',forge.cores,'Noyau'); choice('mod',forge.mods,'Catalyseur'); update();
     const launch=(sound)=>{
-      audio.start(state.year);
+      SnakeEpilogue.start(voyage,state);audio.start(state.year);
       if(sound)void audio.setMuted(false);
       show('play');note('Prends la cellule devant toi.',3.2);
     };
     button(ui.validations,'Jouer en silence',()=>launch(false),true);
-    button(ui.validations,'Avec musique',()=>launch(true));
+    if(!audio.muteLocked)button(ui.validations,'Avec musique',()=>launch(true));
     const discover=button(ui.options,'Parcours découverte',()=>{
       if(SnakeInitiation.prepare(state.initiation)){
         discover.setAttribute('aria-pressed','true');discover.textContent='Parcours découverte activé';
@@ -120,16 +133,18 @@
     turbo.setAttribute('aria-pressed',String(state.turbo));
     button(ui.validations,'Palmarès',archives.openHall);
     button(ui.validations,'Pilotage',()=>SnakeGuide.open(state,arcade.eras[state.eraIndex]));
-    volumeControl('Musique',audio.musicLevel,'music');volumeControl('Bruitages',audio.fxLevel,'fx');
+    if(!audio.muteLocked){
+      volumeControl('Musique',audio.musicLevel,'music');volumeControl('Bruitages',audio.fxLevel,'fx');
+    }
     const motion=document.createElement('label'),check=document.createElement('input');
     check.type='checkbox';check.checked=manualCalm||systemMotion.matches;check.disabled=systemMotion.matches;
-    check.addEventListener('change',()=>{manualCalm=check.checked;try{localStorage.setItem('snake2985.calme',manualCalm?'1':'0');}catch{}});
+    check.addEventListener('change',()=>{manualCalm=check.checked;banc.motion(calm.matches);veille.wake();try{localStorage.setItem('snake2985.calme',manualCalm?'1':'0');}catch{}});
     motion.className='option-calme';motion.append(check,'Réduire les secousses et les glitches');ui.options.append(motion);
   }
   function upgrade() {
     if(SnakeAtelier.available(state)){
       show('upgrade','Atelier satellite','Garde ta recette ou remplace son cœur.');
-      SnakeAtelier.mount(ui.options,state,{forge,banc:SnakeBanc,archives,reduced:calm.matches,onDone(receipt){
+      SnakeAtelier.mount(ui.options,state,{forge,banc,archives,reduced:calm.matches,onDone(receipt){
         selected={core:receipt.core,mod:receipt.mod};upgrade();
       }});
       return;
@@ -148,22 +163,31 @@
   }
   function finish() {
     const dead=state.status==='dead', era=state.eraIndex;
-    archives.end(state);audio.finish(state.status);
+    const entry=archives.end(state),bilan=SnakeEpilogue.finish(voyage,state,entry,SnakePalmares);
+    audio.finish(state.status);
     show('end',dead?'Signal perdu.':'Gardien vaincu.',(dead?(archives.death(state)?.tip||state.cause)+' · ':'')+state.score+' points en '+state.year+'.');
+    const depart=({year,cycle})=>{
+      target=cycle?null:state.score;
+      if(cycle){archives.abandon();voyage=SnakeEpilogue.create(tripStorage);}
+      else archives.jump(state,year);
+      SnakePassage.start(ui.passage,ui.monde,state.year,year,calm.matches);
+      preparation(arcade.eras.findIndex(e=>e.year===year));
+    };
+    const retry=()=>{archives.abandon();target=state.score;preparation(era);};
+    if(bilan){
+      menuFinal=SnakeEpilogue.mount(ui.bifurcation,bilan,{
+        onHall:archives.openHall,onRetry:retry,onCycle:()=>depart({year:1976,cycle:true})
+      },{reduced:calm.matches});
+      menuFinal.focus();return;
+    }
     const records={};
     for(const row of SnakePalmares.list())records[row.year]=Math.max(records[row.year]||0,row.score);
     menuFinal=SnakeBifurcation.mount(ui.bifurcation,{
       year:state.year,status:state.status,score:state.score,records,cause:dead?state.cause:'',
-      boss:state.boss?.name||'',...archives.bande(state)
+      boss:state.boss?.name||(dead?'':arcade.eras[era].bosses[1]),...archives.bande(state)
     },{
-      onJump:({year,cycle})=>{
-        target=cycle?null:state.score;if(!cycle)archives.jump(state);
-        const departure=state.year;
-        SnakePassage.start(ui.passage,ui.monde,departure,year,calm.matches);
-        preparation(arcade.eras.findIndex(e=>e.year===year));
-      },
-      onRetry:()=>{target=state.score;preparation(era);},
-      onReview:archives.openReplay
+      onJump:depart,onRetry:retry,
+      onReview:()=>archives.openReplay(()=>calm.matches)
     });
     const title=menuFinal.root.querySelector('.bf-title');title.id='issue-partie';
     const row=document.createElement('div');row.className='titre-saut';title.replaceWith(row);row.append(title);
@@ -172,9 +196,13 @@
   }
   function events() {
     SnakeMondeVivant.observe(state);
-    const batch=state.events.splice(0);audio.events(batch);
+    const batch=state.events.splice(0);SnakeEpilogue.observe(voyage,state,batch);audio.events(batch);
     for(const e of batch){
       SnakeImpact.event(state,e);SnakeMondeVivant.observe(state,e);
+      if(!calm.matches)SnakeCameraMusicale.cue(state,e,state.beat);
+      if(e.type==='singularitySplit')note(e.beacons.length?'Relie les deux balises ou esquive la salve.':'Esquive la salve, puis riposte.',2.4,true);
+      if(e.type==='singularityBeacon')note('Une balise reliée · Change de plan !',2,true);
+      if(e.type==='singularityOpen')note(e.route==='balises'?'Salve désarmée · Frappe le cœur !':'Ouverture · Riposte !',1.8,true);
       if(e.type==='novaOverload')note(SnakeSurcharges.read(state).name,1.6);
       if(e.type==='surfGate')note('Onde du gardien · Rejoins son bord',1.7,true);
       if(e.type==='surfStart')note('Suis la crête · Impulsion sur la salve',2);
@@ -194,8 +222,37 @@
     if(state.status==='upgrade')upgrade();
     if(['cleared','won','dead'].includes(state.status))finish();
   }
+  function syncGuardian(){
+    const b=state.boss,approaching=!b&&state.nearBoss>=.70;
+    ui.duel.hidden=screen!=='play'||(!b&&!approaching);
+    if(ui.duel.hidden)return;
+    const names=arcade.eras[state.eraIndex].bosses;
+    const target=state.nextBossKind==='final'?10:5;
+    const cells=Math.max(1,(target-state.difficulty)*state.sectorGoal-state.sectorCells);
+    text(ui['nom-garde'],b?b.name:names[target===10?1:0]);
+    const split=b&&SnakeSingularite.read(state);
+    const defenseText=split?.phase==='split'?(split.points.length?'Balise '+(split.index+1)+'/2 · ou esquive':'Esquive la salve'):(b?.weak?'Cœur ouvert':'Bouclier actif');
+    text(ui['etat-garde'],b?defenseText:'À '+cells+(cells===1?' cellule':' cellules'));
+    ui.integrite.hidden=!b;
+    if(b){
+      const pct=Math.ceil(100*b.hp/b.maxHp),str=String(pct);
+      if(ui.integrite.getAttribute('aria-valuenow')!==str){
+        ui.integrite.setAttribute('aria-valuenow',str);ui.integrite.firstElementChild.style.width=pct+'%';
+      }
+      ui.duel.dataset.weak=b.weak?'yes':'no';
+    }
+  }
+  function toggleTurbo(){
+    if(screen==='play'&&arcade.turbo(state,!state.turbo))note(state.turbo?'Turbo · Score doublé':'Vitesse normale',1.2);
+  }
   function sync() {
-    ui.son.setAttribute('aria-pressed',String(!audio.muted));ui.son.setAttribute('aria-label',audio.muted?'Activer le son':'Couper le son');
+    syncGuardian();text(ui.son,audio.muted?'Muet':'Son');
+    const speed=state.turbo?'true':'false';
+    if(ui.turbo.getAttribute('aria-pressed')!==speed){
+      ui.turbo.setAttribute('aria-pressed',speed);ui.turbo.setAttribute('aria-label',state.turbo?'Désactiver le turbo':'Activer le turbo');
+      text(ui.turbo,state.turbo?'Turbo ×2':'Turbo');
+    }
+    ui.son.disabled=audio.muteLocked;ui.son.setAttribute('aria-pressed',String(!audio.muted));ui.son.setAttribute('aria-label',audio.muteLocked?'Son verrouillé par le lien':audio.muted?'Activer le son':'Couper le son');
     text(ui.date,String(state.year));text(ui.niveau,state.difficulty+' / 10');
     text(ui.points,String(state.score).padStart(6,'0'));
     const surf=SnakeSurf.read(state);ui.surf.hidden=!(surf?.pulse||surf?.accessible);
@@ -238,16 +295,17 @@
   }
   ui.carte.addEventListener('click',()=>{
     if(screen!=='prep')return;
-    SnakeCarte.open({year:state.year,eras:arcade.eras,records:SnakePalmares.list()},({year,record})=>{
-      target=record;SnakePassage.start(ui.passage,ui.monde,state.year,year,calm.matches);
+    SnakeCarte.open({reduced:()=>calm.matches,year:state.year,eras:arcade.eras,records:SnakePalmares.list()},({year,record})=>{
+      archives.abandon();target=record;SnakePassage.start(ui.passage,ui.monde,state.year,year,calm.matches);
       preparation(arcade.eras.findIndex(era=>era.year===year));
     });
   });
-  ui.pause.addEventListener('click',pause);
-  ui.son.addEventListener('click',()=>{if(screen==='play')void audio.setMuted(!audio.muted);});
-  ui.plan.addEventListener('click',()=>action('plane'));
-  ui.nova.addEventListener('click',()=>action('nova'));
-  ui.surf.addEventListener('click',()=>action('surf'));
+  SnakeGestes.bind(ui.turbo,toggleTurbo);
+  SnakeGestes.bind(ui.pause,pause);
+  SnakeGestes.bind(ui.son,()=>{if(screen==='play')void audio.setMuted(!audio.muted);});
+  SnakeGestes.bind(ui.plan,()=>action('plane'));
+  SnakeGestes.bind(ui.nova,()=>action('nova'));
+  SnakeGestes.bind(ui.surf,()=>action('surf'));
   function touch(phase,e){
     if(screen!=='play')return;
     if(phase==='down'){
@@ -270,7 +328,7 @@
     if(screen!=='play')return;
     if(e.key==='Escape'||e.code==='KeyP'){e.preventDefault();pause();return}
     if(e.code==='KeyF'){e.preventDefault();if(!e.repeat)action('surf');return;}
-    if(e.code==='KeyT'){e.preventDefault();if(!e.repeat){arcade.turbo(state,!state.turbo);note(state.turbo?'Turbo · Points doublés':'Vitesse normale');}return}
+    if(e.code==='KeyT'){e.preventDefault();if(!e.repeat)toggleTurbo();return}
     if(e.code==='KeyX'||e.code==='Space'){e.preventDefault();if(!e.repeat)action(e.code==='KeyX'?'plane':'nova');return}
     if(!directions[e.key])return;
     e.preventDefault();held.add(e.key);
@@ -279,25 +337,26 @@
   document.addEventListener('keyup',e=>held.delete(e.key));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
   window.addEventListener('blur',()=>{if(screen==='play')pause()});
-  portrait.addEventListener('change',()=>{if(portrait.matches)pause()});
-  function frame(now) {
-    const dt=clock===null?0:Math.min(.08,(now-clock)/1000);clock=now;
+  systemMotion.addEventListener('change',()=>{banc.motion(calm.matches);veille.wake();});
+  function frame(now,repaint,resumed) {
+    const dt=clock===null||resumed?0:Math.min(.08,(now-clock)/1000);clock=now;
     if(screen==='play'){
       if(state.flight && held.size){
         let x=0,y=0; for(const key of held){x+=directions[key][0];y+=directions[key][1];}
         if(x||y)aimOnScreen(Math.atan2(y,x));
       }
       if(['boss','recovery'].includes(state.director.phase))state.spawnClock=Math.max(.15,state.spawnClock);
+      SnakeRelance.before(state);
       SnakeEcologie.tick(state,dt,menaces);
       const encounter=SnakeDirector.tick(state.director,state,dt);
-      state.score+=encounter.points;
+      state.score+=encounter.points;SnakeEpilogue.observe(voyage,state,encounter.events);
       for(const cue of encounter.events){
         audio.encounter(cue);
         if(cue.type==='open')note(SnakeIndices.labels[cue.kind]||'Rejoins la balise.',1.8);
         if(cue.type==='score')note('Trajectoire réussie · +'+cue.points);
       }
       audio.scene(state.year,state.difficulty,state.nearBoss,state.boss?.kind);
-      state.musicPulse=audio.pulse().pulse;
+      state.beat=audio.pulse();state.musicPulse=state.beat.pulse;
       SnakeInitiation.update(state.initiation,state,dt,state.events);
       state.aide=SnakeInitiation.cue(state.initiation,state);
       archives.tick(state);events();
@@ -306,14 +365,17 @@
       if(calm.matches&&!ui.passage.hidden)SnakePassage.stop(ui.passage);
       else SnakePassage.draw(ui.passage,now);
     }
-    if(screen==='prep'||screen==='upgrade')SnakeBanc.frame(now);
+    if(screen==='prep'||screen==='upgrade')banc.frame(now);
     const frameKey=screen==='prep'?screen+'-'+state.year+'-'+SnakeMatieres.ready(state.year):screen;
-    if(screen==='play'||ui.monde.dataset.frame!==frameKey){
+    if(repaint||screen==='play'||ui.monde.dataset.frame!==frameKey){
       SnakeSpectacle.draw(ui.monde,state,state.elapsed,calm.matches);
       ui.monde.dataset.frame=frameKey;
     }
-    requestAnimationFrame(frame);
   }
-  preparation(arcade.eras.findIndex(era=>era.year===SnakeCarte.resume(SnakePalmares.list())));
-  requestAnimationFrame(frame);
+  preparation(arcade.eras.findIndex(era=>era.year===(archives.resumeYear()??SnakeCarte.resume(SnakePalmares.list()))),true);
+  SnakeOrientation.mount(ui.vertical,{
+    query:portrait,year:()=>state.year,screen:()=>screen,pause,calm:()=>calm.matches,
+    primary:()=>ui.validations.querySelector('button.action')||ui.validations.querySelector('button')
+  });
+  veille.wake();
 })();

@@ -1,0 +1,1725 @@
+{
+  "version": "140.0.7339.16",
+  "cases": [
+    {
+      "mode": "grille",
+      "checks": [
+        {
+          "label": "capture du manche",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.016666666666666663,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 9,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(20px, 0px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "nova du second doigt",
+          "ok": false,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.016666666666666663,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 9,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(20px, 0px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "bascule du second doigt",
+          "ok": false,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.016666666666666663,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 9,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(20px, 0px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "virage après libération du seul doigt droit",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.33333333333333326,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 8,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(0px, -20px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "deux contacts natifs et levée indépendante",
+          "ok": true,
+          "data": {
+            "count": 2,
+            "releases": 2
+          }
+        },
+        {
+          "label": "interruption tactile et capture libérée",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.33333333333333326,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 8,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "",
+            "captures": [],
+            "contacts": 0
+          }
+        },
+        {
+          "label": "pause du second pouce",
+          "ok": false,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.33333333333333326,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 8,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(18px, 0px)",
+            "captures": [
+              6
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "pause et temps figé",
+          "ok": true,
+          "data": {
+            "screen": "pause",
+            "elapsed": 0.33333333333333326,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 8,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "",
+            "captures": [],
+            "contacts": 0
+          }
+        },
+        {
+          "label": "nouveau doigt après reprise",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.34999999999999987,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 8,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(18px, 0px)",
+            "captures": [
+              10
+            ],
+            "contacts": 1
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "touchstart",
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "pointerup",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "touchend",
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 2,
+          "kind": "touch",
+          "primary": false,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 345
+        },
+        {
+          "type": "pointerdown",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 63.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 63.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerdown",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointerdown",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 328.5
+        },
+        {
+          "type": "pointercancel",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 42.5,
+          "y": 328.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 42.5,
+          "y": 328.5
+        },
+        {
+          "type": "touchcancel",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerdown",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchstart",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "pointerup",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchend",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointerup",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchend",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchstart",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "pointerup",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchend",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 8,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 22
+        },
+        {
+          "type": "pointerdown",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "touchstart",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "pointerup",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "touchend",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 86,
+          "y": 293
+        },
+        {
+          "type": "pointerdown",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerup",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchend",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        }
+      ]
+    },
+    {
+      "mode": "vol",
+      "checks": [
+        {
+          "label": "capture du manche",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 0.016666666666666663,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 9,
+              "y": 9,
+              "plane": 0
+            },
+            "flight": false,
+            "year": 1976,
+            "transform": "translate(20px, 0px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "premier portail, même doigt",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -0.020037243928181597,
+            "year": 1976,
+            "transform": "translate(20px, 0px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "cap écran -90°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.001
+          }
+        },
+        {
+          "label": "cap écran -45°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.005
+          }
+        },
+        {
+          "label": "cap écran 0°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0
+          }
+        },
+        {
+          "label": "cap écran 45°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.006
+          }
+        },
+        {
+          "label": "cap écran 90°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.001
+          }
+        },
+        {
+          "label": "cap écran 135°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.005
+          }
+        },
+        {
+          "label": "cap écran 180°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0
+          }
+        },
+        {
+          "label": "cap écran -135°",
+          "ok": true,
+          "data": {
+            "erreurDeg": 0.006
+          }
+        },
+        {
+          "label": "nova en vol à deux doigts",
+          "ok": false,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -2.261331789232146,
+            "year": 1976,
+            "transform": "translate(-14.1421px, -14.1421px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "plan tenu pendant le vol",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -2.261331789232146,
+            "year": 1976,
+            "transform": "translate(-14.1421px, -14.1421px)",
+            "captures": [
+              3
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "deux contacts natifs et levée indépendante",
+          "ok": true,
+          "data": {
+            "count": 2,
+            "releases": 2
+          }
+        },
+        {
+          "label": "interruption tactile et capture libérée",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -2.261331789232146,
+            "year": 1976,
+            "transform": "",
+            "captures": [],
+            "contacts": 0
+          }
+        },
+        {
+          "label": "pause du second pouce",
+          "ok": false,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -0.0182118404762185,
+            "year": 1976,
+            "transform": "translate(18px, 0px)",
+            "captures": [
+              6
+            ],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "pause et temps figé",
+          "ok": true,
+          "data": {
+            "screen": "pause",
+            "elapsed": 1.7499999999999953,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.176247573448183,
+              "y": 9.036341914606032,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -0.0182118404762185,
+            "year": 1976,
+            "transform": "",
+            "captures": [],
+            "contacts": 0
+          }
+        },
+        {
+          "label": "nouveau doigt après reprise",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.766666666666662,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.26530365658774,
+              "y": 9.049342455204037,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -0.01895992548612605,
+            "year": 1976,
+            "transform": "translate(18px, 0px)",
+            "captures": [
+              10
+            ],
+            "contacts": 1
+          }
+        }
+      ],
+      "events": [
+        {
+          "type": "pointerdown",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "touchstart",
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 1,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "pointerup",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 2,
+          "kind": "touch",
+          "primary": true,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 344.875
+        },
+        {
+          "type": "touchend",
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 2,
+          "kind": "touch",
+          "primary": false,
+          "target": "Jouer en silence",
+          "trusted": true,
+          "contacts": 0,
+          "x": 106,
+          "y": 345
+        },
+        {
+          "type": "pointerdown",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 63.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 63.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 326.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 59.47056198120117,
+          "y": 333.5294494628906
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 66.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 59.47056198120117,
+          "y": 367.4705505371094
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 374.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 25.529438018798828,
+          "y": 367.4705505371094
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 18.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 25.529438018798828,
+          "y": 333.5294494628906
+        },
+        {
+          "type": "pointerdown",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 4,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointerdown",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 5,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointercancel",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 25.529438018798828,
+          "y": 333.5294494628906
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 3,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 25.529438018798828,
+          "y": 333.5294494628906
+        },
+        {
+          "type": "touchcancel",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerdown",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchstart",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "pointerup",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchend",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointerup",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchend",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchstart",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "pointerup",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 21.5
+        },
+        {
+          "type": "touchend",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 8,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 0,
+          "x": 818,
+          "y": 22
+        },
+        {
+          "type": "pointerdown",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "touchstart",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "pointerup",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 292.84375
+        },
+        {
+          "type": "touchend",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 86,
+          "y": 293
+        },
+        {
+          "type": "pointerdown",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerup",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchend",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        }
+      ]
+    }
+  ],
+  "pageErrors": [],
+  "failures": [
+    "grille / nova du second doigt",
+    "grille / bascule du second doigt",
+    "grille / pause du second pouce",
+    "vol / nova en vol à deux doigts",
+    "vol / pause du second pouce"
+  ]
+}

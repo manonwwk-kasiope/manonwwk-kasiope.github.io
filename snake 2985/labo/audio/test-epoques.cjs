@@ -6,7 +6,7 @@ const {bed,run,sequence,Context,percentile}=require('./test-priorites.cjs');
 const rows=require('./pouls.json');
 const summary=[], preview=[],dry=[];
 for(const row of rows) {
-  const c=clock(rows,row.year), media=row.bars[2]+row.attackOffset;
+  const c=clock(rows,row.year), media=row.bars[2]+row.attackOffset-c.visualLead*row.rate;
   const first=c.sample({now:13,mediaTime:media});
   assert(first.phase<1e-6 && first.pulse>.999);
   const silent=c.sample({now:13.1,audible:false});

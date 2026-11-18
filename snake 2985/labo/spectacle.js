@@ -22,6 +22,8 @@
     const cam={yaw,tilt:reduced?.61:.61+.16*Math.abs(transition)+.13*flight,
       bank:reduced?0:.013+.034*transition+.022*flight*Math.sin(s.flight?.angle||0),
       level:reduced?.5:level,look,transition,zoom:1};
+    const movement=window.SnakeCameraMusicale?.offsets(s,t,reduced);
+    if(movement){cam.yaw+=movement.yaw;cam.tilt+=movement.tilt;cam.bank+=movement.bank;}
     const motion=window.SnakeImpact?.sample(s,t,reduced);
     if(motion){cam.bank+=motion.roll;cam.dx=motion.x;cam.dy=motion.y;cam.music=motion;}
     const limits=[0,1].flatMap(z=>[[-.5,-.5],[35.5,-.5],[35.5,17.5],[-.5,17.5]].map(([x,y])=>project(cam,x,y,z)));
@@ -394,6 +396,7 @@
       if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
       else weapons(c,s,cam,z);
       window.SnakeSurchargeFX?.draw(c,s,cam,z,time,reduced,project);
+      if(s.year===2985&&s.boss?.kind==='final')window.SnakeSingularite?.draw(c,s,cam,z,time,reduced,project);
       if(s.year!==1976||!window.SnakePhosphore){
         if(s.ecologie?.wave)mask(c,cam,s.ecologie.wave,z);
         if(s.boss?.attack)mask(c,cam,s.boss.attack,z);
@@ -428,6 +431,7 @@
       window.SnakeIndices?.draw(c,s,cam,s.plane??0,true);c.restore();
     }
     window.SnakeArchives?.draw(surface,s,reduced);
+    window.SnakeMarquage?.drawDiscovery(c,s,cam,project);
     if(points.length)serpent(c,s,cam,points,points[0].plane,true);
     window.SnakeMondes?.finish?.(surface,s.year,canvas);
   }

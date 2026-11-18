@@ -102,3 +102,23 @@ Le lecteur consomme `audio.events(batch)` avec les événements de l’image. Il
 La comparaison utilise les véritables événements de tir et de contact du module de surcharges. Sur douze graines et quatre passages de MP3 par année, un essai place volontairement une sur-nova sur chaque annonce de boss. Les 480 sur-novas, 480 annonces de boss et 240 traversées prévues démarrent dans le budget de huit voix. La perte maximale de rapport de puissance entre une annonce et le reste du mix, par rapport à la même rafale sans surcharge, atteint 0,116 dB. Aucun échantillon du mix mono ne dépasse la pleine échelle. À palette fixée, la corrélation normalisée absolue des motifs mono alignés reste inférieure à 0,038 pour toutes les paires. L’essai ne mesure pas la reconnaissance par des joueurs. [Mesures par année et graine](mesures-surnovas.json) · [Banc avec le module de surcharge réel](test-surnovas.cjs)
 
 Le saut temporel du menu reste silencieux. Au moment du choix, la fin de campagne a déjà fermé le transport et imposé le réarmement manuel du son.
+
+## Lien muet de validation et précision de la pulsation visuelle
+
+Mis à jour le 18/11/2026 à 01 h 21 (Paris).
+
+Avec `?muet=1` dans l’URL de la page, la banque de campagne verrouille la sortie pour la durée de ce chargement. Même un clic sur le bouton Son ou le démarrage avec musique ne peut créer de contexte, décoder une piste ou faire sonner un effet. La grille visuelle continue sur son horloge de repli. Le verrou est exposé par `audio.muteLocked` et `audio.status.muteLocked`. Il appartient à l’URL et ne modifie aucune préférence persistée. Si plusieurs paramètres `muet` sont présents, une valeur `1` suffit.
+
+Dans la préparation de la chambre, conditionner le bouton « Avec musique » par `!audio.muteLocked`. En jeu, utiliser `ui.son.disabled=audio.muteLocked` et le libellé « Son verrouillé par le lien » lorsque le verrou est actif. Le blocage audio est effectif indépendamment de ces deux adaptations d’interface. Les treize tests du lecteur passent, dont la séquence de gestes de validation sur les cinq années avec zéro appel aux constructeurs sonores et zéro chargement de piste. [Test des gestes sur URL publique](test-bande-campagne.cjs)
+
+**Calage des images.** Un second détecteur de transitoires analyse le PCM FFmpeg en fenêtres de 40 ms, espacées de 4 ms. Il repère l’attaque la plus forte dans ±65 ms de chaque noire. L’instant cible inclut les 6 ms de décalage relevés précédemment entre le fichier décodé et la destination numérique WebKit. L’animation est échantillonnée à 60 et 120 Hz, avec huit phases d’alignement d’image pour chacun. Une correction bornée à ±12 ms est ajustée sur la première moitié et sélectionnée sur le quart suivant, avec amélioration médiane exigée supérieure à 1 ms et tolérance de dégradation du 90e percentile limitée à 1 ms. Les valeurs publiées ci-dessous proviennent du dernier quart, réservé au contrôle final.
+
+| Année | Avance visuelle retenue | Erreur absolue médiane avant / après | 90e percentile avant / après |
+|---|---:|---:|---:|
+| 1976 | 0 ms | 31,13 / 31,13 ms | 58,14 / 58,14 ms |
+| 1985 | 4 ms | 5,83 / 4,35 ms | 15,00 / 11,48 ms |
+| 1995 | 3 ms | 13,42 / 10,40 ms | 24,10 / 20,82 ms |
+| 2185 | 0 ms | 5,56 / 5,56 ms | 13,58 / 13,58 ms |
+| 2985 | 0 ms | 4,19 / 4,19 ms | 10,86 / 10,86 ms |
+
+Le test Node parcourt toutes les boucles et confirme l’image de franchissement de chaque noire au moyen de la véritable horloge JavaScript. Les ajustements portent uniquement sur les phases visuelles. Le tempo, les MP3, la vitesse et les boucles audio restent ceux du jeu. Il s’agit d’une estimation de synchronisation numérique ; la latence de dalle, la sortie acoustique et les images réellement manquées sur un téléphone requièrent une mesure sur appareil. [Mesures et fractions réservées](calage-visuel.json) · [Détection audio](calage-visuel.py) · [Simulation des images](test-calage-visuel.cjs)

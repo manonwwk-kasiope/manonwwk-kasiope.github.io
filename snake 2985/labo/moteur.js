@@ -298,7 +298,9 @@
   function hurtBoss(s, amount, weapon) {
     const boss = s.boss;
     if (!boss) return;
-    const damage = boss.weak ? amount * 2 : Math.max(1, Math.floor(amount * .45));
+    const scaled = boss.weak ? amount * 2 : Math.max(1, Math.floor(amount * .45));
+    const damage = window.SnakeSingularite?.damage(s, boss, scaled) ?? scaled;
+    if (damage <= 0) return;
     boss.hp = Math.max(0, boss.hp - damage);
     effect(s, 'bossHit', boss, .18, 1.2);
     announce(s, 'bossHit', { kind: boss.kind, weapon, damage, hp: boss.hp, heart: boss.weak, shield: !boss.weak });

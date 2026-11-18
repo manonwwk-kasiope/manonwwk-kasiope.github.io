@@ -1,0 +1,59 @@
+dialog#vertical {
+  --accent: #9df5bb;
+  --tint: #315f55;
+  border: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  overflow: auto;
+  isolation: isolate;
+  background: #0a1020;
+  color: #fff9ee;
+  font-family: inherit;
+  text-align: left;
+}
+dialog#vertical[open] {display: grid; align-items: end}
+dialog#vertical:not([open]) {display: none}
+@media (orientation:portrait) and (any-pointer:coarse) {
+  dialog#vertical:not([open]):not([data-ready]) {display: grid; align-items: end; z-index: 1000}
+}
+#vertical::backdrop {background: #0a1020}
+#vertical[data-year="1985"] {--accent: #9eeaff; --tint: #243681}
+#vertical[data-year="1995"] {--accent: #ffdb83; --tint: #863f21}
+#vertical[data-year="2185"] {--accent: #f6b5fb; --tint: #782768}
+#vertical[data-year="2985"] {--accent: #bcd6ff; --tint: #394c80}
+#vertical .rotation-jaquette {
+  position: absolute; inset: 0; width: 100%; height: 78%;
+  object-fit: cover; object-position: 84% 39%; z-index: -2;
+}
+#vertical::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(0deg,#0a1020 18%,rgba(10,16,32,.98) 26%,transparent 68%),
+    linear-gradient(155deg,var(--tint) -45%,transparent 46%);
+}
+#vertical .rotation-legende {
+  padding: 24px max(26px,env(safe-area-inset-right)) max(9vh,env(safe-area-inset-bottom)) max(26px,env(safe-area-inset-left));
+  width: min(100%,35rem); box-sizing: border-box; margin-inline: auto;
+}
+#vertical .rotation-geste {
+  display: block; width: 44px; height: 27px; box-sizing: border-box;
+  border: 2px solid var(--accent); border-radius: 6px; position: relative;
+  margin: 0 0 26px 3px; transform-origin: 48% 50%;
+}
+#vertical .rotation-geste::after {
+  content: ""; position: absolute; right: 3px; top: 7px; height: 9px; border-right: 2px solid var(--accent);
+}
+@keyframes snake-tourner {from {transform: rotate(-88deg)} to {transform: rotate(0)}}
+@media(prefers-reduced-motion:no-preference){
+  #vertical[open]:not([data-calm]) .rotation-geste {animation: snake-tourner .85s cubic-bezier(.3,.1,.2,1) both}
+}
+#vertical .rotation-legende p {margin: 0 0 7px; color: var(--accent); font: 700 17px/1.2 ui-monospace,monospace}
+#vertical .rotation-legende h2 {margin: 0; font: 800 clamp(30px,8vw,60px)/1.03 system-ui,sans-serif; letter-spacing: -.045em; color: #fff9ee}
+#vertical .rotation-legende h2:focus {outline: none}

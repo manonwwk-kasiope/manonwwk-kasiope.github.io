@@ -195,3 +195,27 @@ test('surcharge et nova ordinaires dans une même image, toutes les années et l
     a.stop();count=e.started.length;a.events([nova,overload]);assert.equal(e.started.length,count);
   }
 });
+
+test('URL publique muet=1 : zéro constructeur audio, décodage ou requête MP3 après les gestes',async()=>{
+  for(const href of ['https://jeu.invalid/?muet=1','https://jeu.invalid/SNAKE/?muet=0&muet=1#carte']){
+    const forbidden=[];
+    const blocked=name=>function(){forbidden.push(name);throw Error(name);};
+    const doc=Object.assign(new Events(),{currentScript:{src:'https://jeu.invalid/js/bande-campagne.js'}});
+    let time=0;
+    const env={location:{href},document:doc,performance:{now:()=>time},URL,
+      AudioContext:blocked('AudioContext'),webkitAudioContext:blocked('webkitAudioContext'),
+      Audio:blocked('Audio'),fetch:blocked('fetch'),addEventListener(){},removeEventListener(){}};
+    for(const file of ['pouls-data.js','horloge.js','priorites.js','bande-campagne.js'])
+      vm.runInNewContext(fs.readFileSync(path.join(__dirname,file),'utf8'),env);
+    const a=env.SnakeCampagneSon;assert.equal(a.muteLocked,true);
+    for(const row of rows){
+      a.start(row.year);assert.equal(await a.setMuted(false),false);
+      const first=a.pulse();time+=120;assert.notEqual(a.pulse().phase,first.phase);
+      a.setVolumes({music:1,fx:1});a.events([{type:'boss'},{type:'novaOverload',year:row.year}]);a.scene(row.year,10,1,'final');
+      a.pause();await a.resume();doc.hidden=true;doc.emit('visibilitychange');
+      doc.hidden=false;doc.emit('visibilitychange');await a.setMuted(false);
+      assert(!a.finish('won'));assert(a.muted);assert(!a.status.playingMusic);
+    }
+    a.dispose();assert.deepEqual(forbidden,[]);
+  }
+});

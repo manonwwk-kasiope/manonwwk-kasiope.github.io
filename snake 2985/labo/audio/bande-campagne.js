@@ -36,7 +36,7 @@
     };
   }
   function create({rows,clock,synth,makeContext,bytes,prepare=async()=>[],now,storage,
-    doc,page,onError=()=>{}}) {
+    doc,page,mutedByUrl=false,onError=()=>{}}) {
     const years=rows.map(r=>r.year), positions={};
     let musicLevel=.82,fxLevel=.72;
     try {
@@ -52,7 +52,7 @@
     let decodeQueue=Promise.resolve(),wasRunning=false,ending=false,prizeAt=-Infinity;
     const normalize=v=>years.includes(v)?v:years[Math.max(0,Math.min(years.length-1,Math.trunc(Number(v))||0))];
     const running=()=>active && !paused && !hidden && !closed;
-    const allowed=()=>running() && !muted;
+    const allowed=()=>!mutedByUrl && running() && !muted;
     const wrap=(r,t)=>r.loopStart+((t-r.loopStart)%(r.loopEnd-r.loopStart)+(r.loopEnd-r.loopStart))%(r.loopEnd-r.loopStart);
     function save() {
       try {storage?.setItem(prefs,JSON.stringify({music:musicLevel,fx:fxLevel,positions}));} catch {}
@@ -174,7 +174,7 @@
     function setMuted(value) {
       if(closed) return Promise.resolve(false);
       remember();
-      if(value || hidden || !active) {muted=true;silence();return Promise.resolve(false);}
+      if(mutedByUrl || value || hidden || !active) {muted=true;silence();return Promise.resolve(false);}
       muted=false;return arm();
     }
     function pause() {
@@ -262,8 +262,8 @@
     return {start,stop,finish,pause,resume,scene,event,events,encounter,setMuted,setVolumes,pulse,beat:()=>pulse().phase,
       sector:n=>scene(row.year,n,clamp((Number(n)-1)/9),boss),
       prepareOffline:()=>prepare(rows),dispose,
-      get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},
-      get status(){return {year:row.year,track:row.track,active,paused,hidden,muted,ending,playingMusic:Boolean(source && allowed() && musicLevel),error};}};
+      get muteLocked(){return mutedByUrl;},get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},
+      get status(){return {year:row.year,track:row.track,active,paused,hidden,muted,muteLocked:mutedByUrl,ending,playingMusic:Boolean(source && allowed() && musicLevel),error};}};
   }
   if(typeof module==='object' && module.exports) module.exports={create,offlineFiles};
   else {
@@ -274,6 +274,7 @@
     let storage;try{storage=env.localStorage;} catch {}
     env.SnakeCampagneSon=create({rows:env.SnakeCampagnePulseData,clock:env.SnakePulse,synth:env.SnakeAudioPriority,
       makeContext:()=>new (env.AudioContext||env.webkitAudioContext)(),bytes:files.bytes,prepare:files.prepare,
+      mutedByUrl:new URL(env.location?.href || base).searchParams.getAll('muet').includes('1'),
       now:()=>env.performance.now()/1000,storage,doc,page:env});
   }
 })();

@@ -1,0 +1,4018 @@
+{
+  "metadata": {
+    "elapsedSeconds": 24.643,
+    "renderedSeconds": 24.162300000000005,
+    "frames": 1450,
+    "blocks": 10,
+    "errors": [],
+    "audioAttempts": 0,
+    "gc": [
+      {
+        "pass": 0,
+        "gcBefore": {
+          "usedSize": 2922764,
+          "totalSize": 7602176,
+          "embedderHeapUsedSize": 3718912,
+          "backingStorageSize": 711066
+        },
+        "gcAfter": {
+          "usedSize": 2049468,
+          "totalSize": 2621440,
+          "embedderHeapUsedSize": 366384,
+          "backingStorageSize": 711066
+        },
+        "date": "2026-11-17T23:14:19.027Z"
+      }
+    ],
+    "peakHeap": 3192192,
+    "peakBacking": 57112986,
+    "peakDocuments": 3,
+    "peakNodes": 34,
+    "peakListeners": 0
+  },
+  "encounters": {
+    "flightFrames": 359,
+    "bossFrames": 365,
+    "warningFrames": 365,
+    "shiftFrames": 364,
+    "resets": 0
+  },
+  "overall": {
+    "dpr2": {
+      "frames": 725,
+      "rafHz": 60.018505705925996,
+      "js": {
+        "p50": 9.3,
+        "p95": 11.5,
+        "p99": 12.7,
+        "max": 27.6,
+        "over25": 1,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 457420.8,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1377971.2,
+      "counts": {
+        "newCanvas": 7,
+        "widthReset": 11,
+        "heightReset": 11,
+        "reads": 580,
+        "bytesRead": 331630080,
+        "imageCopies": 2175,
+        "copySourcePixels": 999029120,
+        "copyTargetPixels": 999029120
+      }
+    },
+    "logique": {
+      "frames": 725,
+      "rafHz": 60.003000150007495,
+      "js": {
+        "p50": 2.1,
+        "p95": 3.8,
+        "p99": 5.4,
+        "max": 10.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 457420.8,
+      "copiesPerFrame": 2.2,
+      "copySourcePixelsPerFrame": 601267.2,
+      "counts": {
+        "newCanvas": 6,
+        "widthReset": 10,
+        "heightReset": 10,
+        "reads": 580,
+        "bytesRead": 331630080,
+        "imageCopies": 1595,
+        "copySourcePixels": 435918720,
+        "copyTargetPixels": 916121600
+      }
+    }
+  },
+  "byYear": [
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "frames": 145,
+      "rafHz": 60.080106809078764,
+      "js": {
+        "p50": 8.9,
+        "p95": 10.7,
+        "p99": 12.7,
+        "max": 20.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 37862400,
+        "imageCopies": 435,
+        "copySourcePixels": 211491200,
+        "copyTargetPixels": 211491200
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 1.3,
+        "p95": 1.8,
+        "p99": 3.8,
+        "max": 8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 37862400,
+        "imageCopies": 290,
+        "copySourcePixels": 70713600,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 9.6,
+        "p95": 11.6,
+        "p99": 12.6,
+        "max": 27.6,
+        "over25": 1,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 59299200,
+        "imageCopies": 725,
+        "copySourcePixels": 263621600,
+        "copyTargetPixels": 263621600
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 2.1,
+        "p95": 2.8,
+        "p99": 5.4,
+        "max": 10.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 59299200,
+        "imageCopies": 580,
+        "copySourcePixels": 122844000,
+        "copyTargetPixels": 248796800
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "frames": 145,
+      "rafHz": 60.00500041670139,
+      "js": {
+        "p50": 10.1,
+        "p95": 11.5,
+        "p99": 14.1,
+        "max": 17.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 83018880,
+        "imageCopies": 435,
+        "copySourcePixels": 222780320,
+        "copyTargetPixels": 222780320
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 3,
+        "p95": 4.1,
+        "p99": 7,
+        "max": 10.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 83018880,
+        "imageCopies": 290,
+        "copySourcePixels": 82002720,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 10.9,
+        "p95": 11.8,
+        "p99": 12.7,
+        "max": 18,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 151449600,
+        "imageCopies": 435,
+        "copySourcePixels": 239888000,
+        "copyTargetPixels": 239888000
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "frames": 145,
+      "rafHz": 60.00500041670139,
+      "js": {
+        "p50": 3.5,
+        "p95": 4.5,
+        "p99": 7.7,
+        "max": 10.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 151449600,
+        "imageCopies": 290,
+        "copySourcePixels": 99110400,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.5,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 145,
+        "copySourcePixels": 61248000,
+        "copyTargetPixels": 61248000
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 1.2,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 145,
+        "copySourcePixels": 61248000,
+        "copyTargetPixels": 61248000
+      }
+    }
+  ],
+  "byPhase": [
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.606060606060595,
+      "js": {
+        "p50": 9,
+        "p95": 20.5,
+        "p99": 20.5,
+        "max": 20.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 19,
+        "bytesRead": 4961280,
+        "imageCopies": 57,
+        "copySourcePixels": 27712640,
+        "copyTargetPixels": 27712640
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 8.6,
+        "p95": 9.4,
+        "p99": 9.4,
+        "max": 9.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 9.4,
+        "p95": 10,
+        "p99": 10,
+        "max": 10,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 59.98000666444518,
+      "js": {
+        "p50": 8.1,
+        "p95": 8.9,
+        "p99": 8.9,
+        "max": 8.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 9.6,
+        "p95": 10.7,
+        "p99": 10.7,
+        "max": 10.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 7.6,
+        "p95": 8.9,
+        "p99": 8.9,
+        "max": 8.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10.1,
+        "p95": 11.2,
+        "p99": 11.2,
+        "max": 11.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 7.6,
+        "p95": 8.3,
+        "p99": 8.3,
+        "max": 8.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 54,
+        "copySourcePixels": 26254080,
+        "copyTargetPixels": 26254080
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 1.4,
+        "p95": 8,
+        "p99": 8,
+        "max": 8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.3,
+        "p95": 3.8,
+        "p99": 3.8,
+        "max": 3.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.4,
+        "p95": 1.7,
+        "p99": 1.7,
+        "max": 1.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.2,
+        "p95": 1.4,
+        "p99": 1.4,
+        "max": 1.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 1.1,
+        "p95": 1.3,
+        "p99": 1.3,
+        "max": 1.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 4961280,
+        "imageCopies": 38,
+        "copySourcePixels": 9265920,
+        "copyTargetPixels": 26472320
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.3,
+        "p95": 1.6,
+        "p99": 1.6,
+        "max": 1.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.4,
+        "p95": 1.5,
+        "p99": 1.5,
+        "max": 1.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 1.4,
+        "p95": 2,
+        "p99": 2,
+        "max": 2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 4700160,
+        "imageCopies": 36,
+        "copySourcePixels": 8778240,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 59.98588567395906,
+      "js": {
+        "p50": 10.4,
+        "p95": 27.6,
+        "p99": 27.6,
+        "max": 27.6,
+        "over25": 1,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 90,
+        "copySourcePixels": 32725440,
+        "copyTargetPixels": 32725440
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 17,
+      "rafHz": 59.98588567395906,
+      "js": {
+        "p50": 8.6,
+        "p95": 10.6,
+        "p99": 10.6,
+        "max": 10.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 17,
+        "bytesRead": 6952320,
+        "imageCopies": 85,
+        "copySourcePixels": 30907360,
+        "copyTargetPixels": 30907360
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 8.6,
+        "p95": 9.6,
+        "p99": 9.6,
+        "max": 9.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 90,
+        "copySourcePixels": 32725440,
+        "copyTargetPixels": 32725440
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 10.1,
+        "p95": 10.4,
+        "p99": 10.4,
+        "max": 10.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 7770240,
+        "imageCopies": 95,
+        "copySourcePixels": 34543520,
+        "copyTargetPixels": 34543520
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 59.98000666444518,
+      "js": {
+        "p50": 8.1,
+        "p95": 8.3,
+        "p99": 8.3,
+        "max": 8.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 90,
+        "copySourcePixels": 32725440,
+        "copyTargetPixels": 32725440
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 17,
+      "rafHz": 59.98588567395906,
+      "js": {
+        "p50": 10.5,
+        "p95": 12.4,
+        "p99": 12.4,
+        "max": 12.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 17,
+        "bytesRead": 6952320,
+        "imageCopies": 85,
+        "copySourcePixels": 30907360,
+        "copyTargetPixels": 30907360
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.031595576619274,
+      "js": {
+        "p50": 9.4,
+        "p95": 9.7,
+        "p99": 9.7,
+        "max": 9.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 7770240,
+        "imageCopies": 95,
+        "copySourcePixels": 34543520,
+        "copyTargetPixels": 34543520
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 11.4,
+        "p95": 12.6,
+        "p99": 12.6,
+        "max": 12.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 7770240,
+        "imageCopies": 95,
+        "copySourcePixels": 34543520,
+        "copyTargetPixels": 34543520
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 2.1,
+        "p95": 10.8,
+        "p99": 10.8,
+        "max": 10.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 72,
+        "copySourcePixels": 15249600,
+        "copyTargetPixels": 30885120
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 59.98000666444518,
+      "js": {
+        "p50": 1.9,
+        "p95": 2.1,
+        "p99": 2.1,
+        "max": 2.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 72,
+        "copySourcePixels": 15249600,
+        "copyTargetPixels": 30885120
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 2.1,
+        "p95": 3.1,
+        "p99": 3.1,
+        "max": 3.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 7770240,
+        "imageCopies": 76,
+        "copySourcePixels": 16096800,
+        "copyTargetPixels": 32600960
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.1,
+        "p95": 2.2,
+        "p99": 2.2,
+        "max": 2.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 72,
+        "copySourcePixels": 15249600,
+        "copyTargetPixels": 30885120
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 17,
+      "rafHz": 59.98588567395906,
+      "js": {
+        "p50": 1.9,
+        "p95": 3,
+        "p99": 3,
+        "max": 3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 17,
+        "bytesRead": 6952320,
+        "imageCopies": 68,
+        "copySourcePixels": 14402400,
+        "copyTargetPixels": 29169280
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.2,
+        "p95": 5.4,
+        "p99": 5.4,
+        "max": 5.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 72,
+        "copySourcePixels": 15249600,
+        "copyTargetPixels": 30885120
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 2.7,
+        "p95": 3.5,
+        "p99": 3.5,
+        "max": 3.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 7361280,
+        "imageCopies": 72,
+        "copySourcePixels": 15249600,
+        "copyTargetPixels": 30885120
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 2.2,
+        "p95": 4.8,
+        "p99": 4.8,
+        "max": 4.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 7770240,
+        "imageCopies": 76,
+        "copySourcePixels": 16096800,
+        "copyTargetPixels": 32600960
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.02824858757062,
+      "js": {
+        "p50": 10.2,
+        "p95": 17.4,
+        "p99": 17.4,
+        "max": 17.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10,
+        "p95": 11.6,
+        "p99": 11.6,
+        "max": 11.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 59.99368487527628,
+      "js": {
+        "p50": 10.2,
+        "p95": 10.7,
+        "p99": 10.7,
+        "max": 10.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 10878336,
+        "imageCopies": 57,
+        "copySourcePixels": 29191904,
+        "copyTargetPixels": 29191904
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 9.8,
+        "p95": 10.2,
+        "p99": 10.2,
+        "max": 10.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 8.8,
+        "p95": 9.4,
+        "p99": 9.4,
+        "max": 9.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10.1,
+        "p95": 10.2,
+        "p99": 10.2,
+        "max": 10.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10.9,
+        "p95": 12.6,
+        "p99": 12.6,
+        "max": 12.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 11.4,
+        "p95": 11.6,
+        "p99": 11.6,
+        "max": 11.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 54,
+        "copySourcePixels": 27655488,
+        "copyTargetPixels": 27655488
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 3.2,
+        "p95": 10.1,
+        "p99": 10.1,
+        "max": 10.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 36,
+        "copySourcePixels": 10179648,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.4,
+        "p95": 2.6,
+        "p99": 2.6,
+        "max": 2.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 36,
+        "copySourcePixels": 10179648,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 3.2,
+        "p95": 5.1,
+        "p99": 5.1,
+        "max": 5.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 36,
+        "copySourcePixels": 10179648,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.9,
+        "p95": 3.3,
+        "p99": 3.3,
+        "max": 3.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 36,
+        "copySourcePixels": 10179648,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.8,
+        "p95": 3.2,
+        "p99": 3.2,
+        "max": 3.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 10305792,
+        "imageCopies": 36,
+        "copySourcePixels": 10179648,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 17,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 3.1,
+        "p95": 3.3,
+        "p99": 3.3,
+        "max": 3.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 17,
+        "bytesRead": 9733248,
+        "imageCopies": 34,
+        "copySourcePixels": 9614112,
+        "copyTargetPixels": 23685760
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 3,
+        "p95": 4,
+        "p99": 4,
+        "max": 4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 10878336,
+        "imageCopies": 38,
+        "copySourcePixels": 10745184,
+        "copyTargetPixels": 26472320
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 59.99368487527628,
+      "js": {
+        "p50": 3.8,
+        "p95": 5.3,
+        "p99": 5.3,
+        "max": 5.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 10878336,
+        "imageCopies": 38,
+        "copySourcePixels": 10745184,
+        "copyTargetPixels": 26472320
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 11.1,
+        "p95": 18,
+        "p99": 18,
+        "max": 18,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 8.8,
+        "p95": 11.4,
+        "p99": 11.4,
+        "max": 11.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 11.3,
+        "p95": 12.7,
+        "p99": 12.7,
+        "max": 12.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10.7,
+        "p95": 11.8,
+        "p99": 11.8,
+        "max": 11.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 11.1,
+        "p95": 11.6,
+        "p99": 11.6,
+        "max": 11.6,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 19,
+        "bytesRead": 19845120,
+        "imageCopies": 57,
+        "copySourcePixels": 31433600,
+        "copyTargetPixels": 31433600
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 10.9,
+        "p95": 11.8,
+        "p99": 11.8,
+        "max": 11.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 8.9,
+        "p95": 9.4,
+        "p99": 9.4,
+        "max": 9.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 11.2,
+        "p95": 12.3,
+        "p99": 12.3,
+        "max": 12.3,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 54,
+        "copySourcePixels": 29779200,
+        "copyTargetPixels": 29779200
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 3.6,
+        "p95": 10.9,
+        "p99": 10.9,
+        "max": 10.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 19,
+        "bytesRead": 19845120,
+        "imageCopies": 38,
+        "copySourcePixels": 12986880,
+        "copyTargetPixels": 26472320
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 3.5,
+        "p95": 4.4,
+        "p99": 4.4,
+        "max": 4.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 3.4,
+        "p95": 4.4,
+        "p99": 4.4,
+        "max": 4.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 3.5,
+        "p95": 3.8,
+        "p99": 3.8,
+        "max": 3.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 2.7,
+        "p95": 3.4,
+        "p99": 3.4,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 59.98000666444518,
+      "js": {
+        "p50": 3.6,
+        "p95": 7.7,
+        "p99": 7.7,
+        "max": 7.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 3.7,
+        "p95": 4.7,
+        "p99": 4.7,
+        "max": 4.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60.02000666888963,
+      "js": {
+        "p50": 3.7,
+        "p95": 5.2,
+        "p99": 5.2,
+        "max": 5.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 18,
+        "bytesRead": 18800640,
+        "imageCopies": 36,
+        "copySourcePixels": 12303360,
+        "copyTargetPixels": 25079040
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 0.3,
+        "p95": 3.4,
+        "p99": 3.4,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 19,
+        "copySourcePixels": 8025600,
+        "copyTargetPixels": 8025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.5,
+        "p99": 0.5,
+        "max": 0.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 19,
+        "copySourcePixels": 8025600,
+        "copyTargetPixels": 8025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 17,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 17,
+        "copySourcePixels": 7180800,
+        "copyTargetPixels": 7180800
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 17,
+      "rafHz": 59.98588567395906,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.5,
+        "p99": 0.5,
+        "max": 0.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 17,
+        "copySourcePixels": 7180800,
+        "copyTargetPixels": 7180800
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 19,
+      "rafHz": 59.99368487527628,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 19,
+        "copySourcePixels": 8025600,
+        "copyTargetPixels": 8025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60.007059654076954,
+      "js": {
+        "p50": 0.3,
+        "p95": 3.4,
+        "p99": 3.4,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "sol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 1.2,
+        "p99": 1.2,
+        "max": 1.2,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "plan",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": false,
+      "frames": 19,
+      "rafHz": 60.012634238787115,
+      "js": {
+        "p50": 0.2,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 19,
+        "copySourcePixels": 8025600,
+        "copyTargetPixels": 8025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "vol",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": false,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "phase": "boss",
+      "reduced": true,
+      "frames": 18,
+      "rafHz": 60,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.4,
+        "max": 0.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.7,
+        "max": 16.7,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 0,
+        "widthReset": 0,
+        "heightReset": 0,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 18,
+        "copySourcePixels": 7603200,
+        "copyTargetPixels": 7603200
+      }
+    }
+  ],
+  "byViewport": [
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.080106809078764,
+      "js": {
+        "p50": 8.9,
+        "p95": 10.7,
+        "p99": 12.7,
+        "max": 20.5,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1458560,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 37862400,
+        "imageCopies": 435,
+        "copySourcePixels": 211491200,
+        "copyTargetPixels": 211491200
+      }
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 1.3,
+        "p95": 1.8,
+        "p99": 3.8,
+        "max": 8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 261120,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 487680,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 37862400,
+        "imageCopies": 290,
+        "copySourcePixels": 70713600,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 9.6,
+        "p95": 11.6,
+        "p99": 12.6,
+        "max": 27.6,
+        "over25": 1,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 5,
+      "copySourcePixelsPerFrame": 1818080,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 59299200,
+        "imageCopies": 725,
+        "copySourcePixels": 263621600,
+        "copyTargetPixels": 263621600
+      }
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 2.1,
+        "p95": 2.8,
+        "p99": 5.4,
+        "max": 10.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 408960,
+      "copiesPerFrame": 4,
+      "copySourcePixelsPerFrame": 847200,
+      "counts": {
+        "newCanvas": 2,
+        "widthReset": 3,
+        "heightReset": 3,
+        "reads": 145,
+        "bytesRead": 59299200,
+        "imageCopies": 580,
+        "copySourcePixels": 122844000,
+        "copyTargetPixels": 248796800
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.00500041670139,
+      "js": {
+        "p50": 10.1,
+        "p95": 11.5,
+        "p99": 14.1,
+        "max": 17.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1536416,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 83018880,
+        "imageCopies": 435,
+        "copySourcePixels": 222780320,
+        "copyTargetPixels": 222780320
+      }
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 3,
+        "p95": 4.1,
+        "p99": 7,
+        "max": 10.1,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 572544,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 565536,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 83018880,
+        "imageCopies": 290,
+        "copySourcePixels": 82002720,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 10.9,
+        "p95": 11.8,
+        "p99": 12.7,
+        "max": 18,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 3,
+      "copySourcePixelsPerFrame": 1654400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 151449600,
+        "imageCopies": 435,
+        "copySourcePixels": 239888000,
+        "copyTargetPixels": 239888000
+      }
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.00500041670139,
+      "js": {
+        "p50": 3.5,
+        "p95": 4.5,
+        "p99": 7.7,
+        "max": 10.9,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 1044480,
+      "copiesPerFrame": 2,
+      "copySourcePixelsPerFrame": 683520,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 2,
+        "heightReset": 2,
+        "reads": 145,
+        "bytesRead": 151449600,
+        "imageCopies": 290,
+        "copySourcePixels": 99110400,
+        "copyTargetPixels": 202025600
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 0.5,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.8,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 145,
+        "copySourcePixels": 61248000,
+        "copyTargetPixels": 61248000
+      }
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "width": 740,
+      "frames": 145,
+      "rafHz": 60.002500104171006,
+      "js": {
+        "p50": 0.3,
+        "p95": 0.4,
+        "p99": 1.2,
+        "max": 3.4,
+        "over25": 0,
+        "over50": 0
+      },
+      "rAF": {
+        "p50": 16.7,
+        "p95": 16.7,
+        "p99": 16.8,
+        "max": 16.8,
+        "over25": 0,
+        "over50": 0
+      },
+      "readBytesPerFrame": 0,
+      "copiesPerFrame": 1,
+      "copySourcePixelsPerFrame": 422400,
+      "counts": {
+        "newCanvas": 1,
+        "widthReset": 1,
+        "heightReset": 1,
+        "reads": 0,
+        "bytesRead": 0,
+        "imageCopies": 145,
+        "copySourcePixels": 61248000,
+        "copyTargetPixels": 61248000
+      }
+    }
+  ],
+  "paired": [
+    {
+      "pass": 0,
+      "year": 1976,
+      "medianDelta": 7.6000000000000005,
+      "p95Delta": 8.899999999999999,
+      "logicalToBaseline": 0.14606741573033707,
+      "missesDelta": 0
+    },
+    {
+      "pass": 0,
+      "year": 1985,
+      "medianDelta": 7.5,
+      "p95Delta": 8.8,
+      "logicalToBaseline": 0.21875000000000003,
+      "missesDelta": 0
+    },
+    {
+      "pass": 0,
+      "year": 1995,
+      "medianDelta": 7.1,
+      "p95Delta": 7.4,
+      "logicalToBaseline": 0.297029702970297,
+      "missesDelta": 0
+    },
+    {
+      "pass": 0,
+      "year": 2185,
+      "medianDelta": 7.4,
+      "p95Delta": 7.300000000000001,
+      "logicalToBaseline": 0.3211009174311926,
+      "missesDelta": 0
+    },
+    {
+      "pass": 0,
+      "year": 2985,
+      "medianDelta": 0,
+      "p95Delta": 0,
+      "logicalToBaseline": 1,
+      "missesDelta": 0
+    }
+  ],
+  "first": [
+    {
+      "year": 1976,
+      "mode": "dpr2",
+      "firstVisit": {
+        "js": 20.5,
+        "counts": {
+          "newCanvas": 2,
+          "widthReset": 3,
+          "heightReset": 3,
+          "reads": 1,
+          "bytesRead": 261120,
+          "imageCopies": 3,
+          "copySourcePixels": 1458560,
+          "copyTargetPixels": 1458560
+        },
+        "heap": 2368005
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 1976,
+      "mode": "logique",
+      "firstVisit": {
+        "js": 8,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 2,
+          "heightReset": 2,
+          "reads": 1,
+          "bytesRead": 261120,
+          "imageCopies": 2,
+          "copySourcePixels": 487680,
+          "copyTargetPixels": 1393280
+        },
+        "heap": 40574184
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 1985,
+      "mode": "dpr2",
+      "firstVisit": {
+        "js": 27.600000000558794,
+        "counts": {
+          "newCanvas": 2,
+          "widthReset": 3,
+          "heightReset": 3,
+          "reads": 1,
+          "bytesRead": 408960,
+          "imageCopies": 5,
+          "copySourcePixels": 1818080,
+          "copyTargetPixels": 1818080
+        },
+        "heap": 15357872
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 1985,
+      "mode": "logique",
+      "firstVisit": {
+        "js": 10.799999999813735,
+        "counts": {
+          "newCanvas": 2,
+          "widthReset": 3,
+          "heightReset": 3,
+          "reads": 1,
+          "bytesRead": 408960,
+          "imageCopies": 4,
+          "copySourcePixels": 847200,
+          "copyTargetPixels": 1715840
+        },
+        "heap": 20099525
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 1995,
+      "mode": "dpr2",
+      "firstVisit": {
+        "js": 17.40000000037253,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 2,
+          "heightReset": 2,
+          "reads": 1,
+          "bytesRead": 572544,
+          "imageCopies": 3,
+          "copySourcePixels": 1536416,
+          "copyTargetPixels": 1536416
+        },
+        "heap": 11180314
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 1995,
+      "mode": "logique",
+      "firstVisit": {
+        "js": 10.100000000558794,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 2,
+          "heightReset": 2,
+          "reads": 1,
+          "bytesRead": 572544,
+          "imageCopies": 2,
+          "copySourcePixels": 565536,
+          "copyTargetPixels": 1393280
+        },
+        "heap": 28275918
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 2185,
+      "mode": "dpr2",
+      "firstVisit": {
+        "js": 18,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 2,
+          "heightReset": 2,
+          "reads": 1,
+          "bytesRead": 1044480,
+          "imageCopies": 3,
+          "copySourcePixels": 1654400,
+          "copyTargetPixels": 1654400
+        },
+        "heap": 42929028
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 2185,
+      "mode": "logique",
+      "firstVisit": {
+        "js": 10.900000000372529,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 2,
+          "heightReset": 2,
+          "reads": 1,
+          "bytesRead": 1044480,
+          "imageCopies": 2,
+          "copySourcePixels": 683520,
+          "copyTargetPixels": 1393280
+        },
+        "heap": 47778558
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 2985,
+      "mode": "dpr2",
+      "firstVisit": {
+        "js": 3.400000000372529,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 1,
+          "heightReset": 1,
+          "reads": 0,
+          "bytesRead": 0,
+          "imageCopies": 1,
+          "copySourcePixels": 422400,
+          "copyTargetPixels": 422400
+        },
+        "heap": 60134094
+      },
+      "afterTenChanges": null
+    },
+    {
+      "year": 2985,
+      "mode": "logique",
+      "firstVisit": {
+        "js": 3.3999999994412065,
+        "counts": {
+          "newCanvas": 1,
+          "widthReset": 1,
+          "heightReset": 1,
+          "reads": 0,
+          "bytesRead": 0,
+          "imageCopies": 1,
+          "copySourcePixels": 422400,
+          "copyTargetPixels": 422400
+        },
+        "heap": 60234594
+      },
+      "afterTenChanges": null
+    }
+  ]
+}

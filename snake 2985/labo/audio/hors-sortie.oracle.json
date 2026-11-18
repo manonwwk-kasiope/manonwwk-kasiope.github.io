@@ -1,0 +1,100 @@
+{
+  "rate": 24000,
+  "guardSelfTest": {
+    "blocked": 9,
+    "offlineConstructorIntact": true
+  },
+  "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers",
+  "playwright": "1.55.0",
+  "available": true,
+  "tolerances": {
+    "decoderCorrelationMin": 0.75,
+    "decoderAlignmentSearchMs": 55,
+    "decoderRmsDeltaMaxDb": 2,
+    "playerCorrelationMin": 0.85,
+    "playerRmsDeltaMaxDb": 2,
+    "musicRmsMin": 0.002,
+    "fxDifferenceRmsMin": 0.0008,
+    "baselineDifferenceRmsMax": 0.00001,
+    "postStopRmsMax": 0.00001,
+    "tailMaxMs": 40,
+    "peakLimit": 1
+  },
+  "files": [
+    {
+      "year": 1976,
+      "mp3Sha256": "66c4943111a16a0bcf9924a5cf0acafb7ffecbb1517409abc352cff52fb003b6",
+      "pcmSha256": "08b575be94644be31ae92e5e8cf2664b1f72f39689566ec4092ffcd194dc84ee",
+      "channels": [
+        {
+          "rms": 0.2559884254055635,
+          "peak": 0.6134427785873413
+        },
+        {
+          "rms": 0.25446159934281243,
+          "peak": 0.6264739036560059
+        }
+      ]
+    },
+    {
+      "year": 1985,
+      "mp3Sha256": "2afdb292071ef0bf632d9fb43818936730449bd84f903bcbbd6e06378bd1f122",
+      "pcmSha256": "391193c073d3d8592e743b87ef47ac53a932a6fab193f962f434d50a8fd39ecc",
+      "channels": [
+        {
+          "rms": 0.18537624725823146,
+          "peak": 0.3510298430919647
+        },
+        {
+          "rms": 0.18520317476405573,
+          "peak": 0.3506588935852051
+        }
+      ]
+    },
+    {
+      "year": 1995,
+      "mp3Sha256": "47afaca3079552b91f5b6436aa000e8247aae82d5883a6a3bc123e8bf547b3a9",
+      "pcmSha256": "ac85dd3f907360f9a61671b7cf6386f2c2d3671c4ab28a4ca0988ec39ad414a6",
+      "channels": [
+        {
+          "rms": 0.1307839640047173,
+          "peak": 0.3626278340816498
+        },
+        {
+          "rms": 0.13161797031056302,
+          "peak": 0.37910574674606323
+        }
+      ]
+    },
+    {
+      "year": 2185,
+      "mp3Sha256": "b4003c74dbdde451d68fff16b1927cff2ce69b1817d68550b898a953cd9aeb9b",
+      "pcmSha256": "2e27cf0c0e140e072e8ab15cdfe6f76a531082d2c40eaec4eff1715489a9f05a",
+      "channels": [
+        {
+          "rms": 0.17675499287080934,
+          "peak": 0.4008966386318207
+        },
+        {
+          "rms": 0.1809677223118271,
+          "peak": 0.3760216236114502
+        }
+      ]
+    },
+    {
+      "year": 2985,
+      "mp3Sha256": "45d59303f7cecba5205cf7c1514861e0d61976764d145cc46038d4ef84fa7d49",
+      "pcmSha256": "43b31300755dd55a750a96e5b93d50adf422d341c109a20263721ac57059a147",
+      "channels": [
+        {
+          "rms": 0.08934997835692725,
+          "peak": 0.36986440420150757
+        },
+        {
+          "rms": 0.09540014612608591,
+          "peak": 0.3441060483455658
+        }
+      ]
+    }
+  ]
+}

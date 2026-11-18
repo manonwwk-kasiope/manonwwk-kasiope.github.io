@@ -47,10 +47,12 @@ for(const n of originals){fs.mkdirSync(path.dirname(path.join(dest,n)),{recursiv
 fs.copyFileSync(path.join(lab,'jaquette.webp'),path.join(dest,'jaquette.webp'));
 const cards=[1976,1985,1995,2185,2985].map(year=>'paysage-'+year+'.webp');
 for(const file of cards)fs.copyFileSync(path.join(root,'labo/bifurcation',file),path.join(dest,file));
+const previews=[1976,1985,1995,2185,2985].map(year=>'apercu-'+year+'.webp');
+for(const file of previews)fs.copyFileSync(path.join(root,'labo/apercus',file),path.join(dest,file));
 const plates=fs.readdirSync(path.join(lab,'decors'),{recursive:true}).filter(name=>name.endsWith('.webp')).sort().map(name=>'decors/'+name);
 fs.mkdirSync(path.join(dest,'decors'),{recursive:true});
 for(const file of plates){fs.mkdirSync(path.dirname(path.join(dest,file)),{recursive:true});fs.copyFileSync(path.join(lab,file),path.join(dest,file));}
-const files=[...plates,...cards,'index.html','arcade.js','arcade.css','jaquette.webp',...originals];
+const files=[...plates,...cards,...previews,'index.html','arcade.js','arcade.css','jaquette.webp',...originals];
 const assetEdition=hash(files);
 const template=read(__dirname,'sw-source.js');
 if(!template.includes('__GAME_FILES__')||!template.includes('__EDITION__'))throw new Error('Gabarit du worker incompatible.');

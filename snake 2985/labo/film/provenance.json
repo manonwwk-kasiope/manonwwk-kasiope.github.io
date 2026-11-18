@@ -1,0 +1,5427 @@
+{
+  "seed": 298501,
+  "fps": 30,
+  "frames": 900,
+  "sourceHashes": {
+    "/labo/campagne/index.html": "8cbc6727bbe2f9ec962fd672704600f2c55ea2670ba13cfe9120fb3a087d27d2",
+    "/labo/campagne/chambre.css": "92f664d0c3f9583990e2ac6bbefad4ab5ba3a19519bdf3054cd17318bfdc74f5",
+    "/forge.js": "9059f1daee061dd68d7885d0196f72dccf2ef39a2e916abeb103ad83351cc11c",
+    "/labo/campagne/archives.css": "e5f0382abb85964f825d204ed14b7bf67d77cc1da390db4ddcdf809f1bcfbf4a",
+    "/labo/gardiens/gardiens.js": "1ece0928ac4f3534e2ab7a7551101c23ad24fdb4c5c1ed5582cdccaec21c00e8",
+    "/labo/surf-boss/surf.js": "300b28cf96ff0d58f27bf41d7c3198058bff02542296d8bb8b19130f57926061",
+    "/labo/bifurcation/bifurcation.css": "4488469852391b9441ac49644c15abd976e3515362fb0c57b6825c2879dcabfa",
+    "/labo/rythme/directeur.js": "367be2b27359287f99d08f1274a2c056316942cb8a8f1360b6714a637316169c",
+    "/labo/quantification/quantification.js": "71d9a6113b8d7b5e5f4716cc4d01573de81304535466edac6d262e2f7b568a53",
+    "/labo/mondes/mondes.js": "e483e5d463c743c30473d5faf72121e965f4f3511b44a9aa88a7b41f6ffb35f2",
+    "/vol-libre.js": "7e4be75ad67073b0e2d0cd04867ce50f20931a447cbbf710300e1e3342be7533",
+    "/labo/initiation/initiation.js": "a971547445702bb3fbcba08cd17d2f590ed8f6c41a578c5a1f9978883e362f5b",
+    "/labo/lecture/arbitre.js": "c67da4766f962c73424397b8699c58a4db5d4dd7a965a1ac59e9e72f361dc9e4",
+    "/labo/sprites/sprites.js": "6d6a30c6a5d5b5a9e0b0c73e76ade509391f9bd559d8ee6493d3be1217601dba",
+    "/labo/reprise/reprise.js": "02e3c679862fa7620b2c70d46a47278d170918b9eb0ef95249429b573f134f88",
+    "/labo/evolution/evolution.js": "8185f75382b50d73b7d9c7c3ba545a3d0d83d8b8f9d7e45837f64e1aefb3f662",
+    "/labo/campagne/impact.js": "22451cdcf9101dd25f095000bb8b0e1f287548bae056bcf202383671eff7e006",
+    "/labo/campagne/indices.js": "c1d3dff5e0c1634aa89f9b5bdc69056f011f5aa7ea341fdbb650fe93f1178245",
+    "/labo/campagne/pilotage.js": "29b371e40906598ea229a2344c53bf44b7ea79172c71e3277ef7ebf1dacf0736",
+    "/labo/artillerie/artillerie.js": "c5398a4b412e3b6f58edc632552bf9b15390b590db0b0ab0cc63a3dd57cc57e6",
+    "/labo/surcharges/surcharges.js": "6d8c2c9ae72b4ab3ca0abee7937dd379bb39415bd46777d767fd692188825920",
+    "/labo/moteur.js": "84b50bc57070c4557e5eb767ec123c4a5f9c86bb745763ee3de2da7d2649a218",
+    "/labo/surcharges/effets.js": "6a9d70f5f373a0c01af7cdafc00d4cce3c7da01f859cdb6d5b04e61f2d1e30fd",
+    "/labo/animation-boss/animation.js": "d0e90a7e06fabc3ae02c08c693a3faacdad90033ce1edf93df5c33dcf7d3a7e3",
+    "/labo/monde-vivant/monde.js": "48fc9d4185d88c9713476b50e706b1e0b0d35798a19b064dc36b11f4f208f79f",
+    "/labo/campagne/matieres.js": "5876238ab581cf3a777f1dc6eb22b4192e703bfd453a0d4eed00a0efe5ea7c2f",
+    "/labo/endurance/phosphore/lisibilite.js": "cb1de4c470f8dfc0342cc808e8f13284da3831c540c5e621737b6b9a8e7e29d4",
+    "/labo/locomotion/locomotion.js": "30128018e28574b41a7e37dd54ebe7b09041af46bf250ffa7bad821f102229c2",
+    "/labo/camera/camera.js": "0b4b9fb5a99acaddd1271253cc8d4f6cb6e52e62970c4465112dd0b2d1d5a908",
+    "/labo/perception/marquage.js": "5f21d58c8d6a96af6dceded7a17a04676c5f0adb33862b50f50eb98e8df9e562",
+    "/labo/spectacle.js": "9622ed5c499052c635b632f839bcaf9a575a829cc8111b9714cdee0169cef367",
+    "/labo/gestes/actions.js": "8c5bbfb12c857979d5acd04abd2db7f5dd6e805423a64d151135f54ee3998cdb",
+    "/labo/commandes/commandes.js": "fdeb921cea3749cf2bfa5bd5855e99faad672b79ca8ee3cb6a7cb271ebd94329",
+    "/palmares.js": "0a27dbfff50acafa13e3d3113e91334a385007ea22c9c65b42753dc2fd6733bf",
+    "/labo/chrono/chrono.js": "d386bf35b08877ae83b0c72694d46b6c7892d4221c4e9c215f852fda024452cb",
+    "/labo/bifurcation/bifurcation.js": "5f349c2ed66f58da5873fda6035b94d09ca10ce7be1776140965bf1369b8362c",
+    "/labo/campagne/archives.js": "f67bf0ebd7ff1d173b3e23d90a7d3d01834da65eba719217cceb55d0b87cfa1f",
+    "/labo/audio/pouls-data.js": "14e34a9e7c774b8fa58dc9cdcd8449e16d7566de0a1ee83358c830c41422f0de",
+    "/labo/audio/horloge.js": "2e17192845e02ee00afe440ccf63984ca7bc41be3c8b4fd519eaaf9cc357a034",
+    "/labo/audio/priorites.js": "d2934a5c3e35e17a6b8bb720606516ead536c299ce9e3bbb2f1eddf3311189e8",
+    "/labo/audio/bande-campagne.js": "7b93c6433af8ffea94af55e17fd55c3b1c696a80312241eede8c690a1c9a3ab7",
+    "/labo/noeud/noeud.js": "d8e795df56ef1755bcd9375c2bf64d8543b6bbca7a1a046f828d100b53ba9287",
+    "/labo/ecologie/ecologie.js": "c8f2aaca59fba05677fd872d235b862b50b2a6c801ea227a9d77bbe051c6139f",
+    "/labo/equilibrage/parametres.js": "b52caa2fe97c67d65ec999d67df859efec29ab89e23a3aa750d8e8efebdc259c",
+    "/labo/atelier/atelier.css": "796756947801826bccc9b47d19e03b886626aae09f303646421df2773dda332a",
+    "/labo/campagne/banc.js": "675dd22104d53355ff4b0090419d4447677aafad4a5f85e763d8c66a697c8586",
+    "/labo/instruments/instruments.css": "31113872c4ab4922c3dd1528414e769a3c4d5d2b4c4e8554af008de98f1f1700",
+    "/labo/instruments/instruments.js": "902975a89bf6f0ea4dc647cb95ad103349e391be921b19c13d44fea29527decd",
+    "/labo/carte/carte.css": "79c3fe03b588109bce84f9044659dd1cd66a1d44469c5fd07526996ce7cb3aa8",
+    "/labo/atelier/atelier.js": "8173e1094441393ee17d913bb7aad096da74dcec97caeec2b0de74a855cd6f92",
+    "/labo/campagne/passage.js": "dac9fefdf3f171252ca5f404f91dce929ae79dc1ec0bc6bfbd0ca1701ceaa333",
+    "/labo/campagne/guide.js": "c271242ffc697eba3e9d0cb0ceba600789ba219c6f6a3dfb857e92e1182cd3a6",
+    "/labo/campagne/chambre.js": "9bd8d7fe8ed57e7b5fd9cc5a716f80b5f9e8bb12cbf104ee6fc2d33e37cc70d5",
+    "/labo/carte/carte.js": "3a4f8f5c3962212a8b7644d1e9c687a1dd446bea92ca9487f24cd059aee94a10",
+    "/labo/campagne/jaquette.webp": "c8ad5c06de5ed52e165d839a11b49eb01dcd653826467de463d8051f5f41dd58",
+    "/labo/bifurcation/paysage-1985.webp": "164787d50f2823d465463c112218e7dcbb2983ba5d584e038ed5d5b7cb1f6eb8",
+    "/labo/campagne/decors/circuit-antenne.webp": "8500e5bafec5a74f89c7d989f6da980efd4249fc8f72aa0450563b3faf2fb7b1",
+    "/labo/bifurcation/paysage-1995.webp": "ef1d914c81421ef61702446786121c1364ad049594d904e69ecf83c4e1f64142",
+    "/labo/campagne/decors/quai-verriere.webp": "cd0e6b37c5ab53818aafeab0b695df1de53d75f7ce8be2503edd04645f3ff81a",
+    "/labo/bifurcation/paysage-2185.webp": "2a919dce17f585c3ac1fec49daa130f82c3ee9d45b8030512b2928e84ff2e796",
+    "/labo/campagne/decors/chantier-orbital.webp": "4f2bc5854c5a2506761b92ef1a72b83e871c1f5e6c929fac0ff858b50ab91967",
+    "/labo/bifurcation/paysage-2985.webp": "f04b6a8af4f20d0eead3b526f1407265b5ce51c79030291e59cb127d0d804322",
+    "/labo/campagne/decors/etoile-effondree.webp": "d4468ef26b80a28e474e792b6d03f9a00d056a8263c4e250da88933dda64febc",
+    "/labo/bifurcation/paysage-1976.webp": "3f0c020fa0e3052f6e2cc085d71e5712244aa59e3d9fbadf968e051db4d256b7"
+  },
+  "clips": [
+    {
+      "year": 1976,
+      "attempt": 1,
+      "from": 0.1333333333333333,
+      "to": 6.099999999999984,
+      "frames": 180,
+      "phases": [
+        "grille"
+      ],
+      "planes": [
+        0
+      ],
+      "beatFrames": 180,
+      "decorReady": true,
+      "events": [
+        {
+          "year": 1976,
+          "t": 1.000000000000001,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 1976,
+          "t": 1.000000000000001,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 2.466666666666663,
+          "type": "evolutionTrigger",
+          "x": 9,
+          "y": 11,
+          "plane": 0,
+          "dx": 0,
+          "dy": 1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 0,
+          "kind": "relay",
+          "life": 1.533333333333342,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": false,
+          "found": 0
+        },
+        {
+          "year": 1976,
+          "t": 2.6999999999999953,
+          "type": "cell",
+          "x": 9,
+          "y": 12,
+          "plane": 0,
+          "eaten": 2
+        },
+        {
+          "year": 1976,
+          "t": 2.6999999999999953,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 1976,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.432,
+          "tiles": 15,
+          "opening": 13
+        },
+        {
+          "year": 1976,
+          "t": 4.533333333333323,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 4.966666666666654,
+          "type": "cell",
+          "x": 7,
+          "y": 4,
+          "plane": 0,
+          "eaten": 3
+        }
+      ]
+    },
+    {
+      "year": 1985,
+      "attempt": 1,
+      "from": 21.83333333333291,
+      "to": 27.7999999999986,
+      "frames": 180,
+      "phases": [
+        "Le Magnétron",
+        "grille"
+      ],
+      "planes": [
+        1,
+        0
+      ],
+      "beatFrames": 180,
+      "decorReady": true,
+      "events": [
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "cell",
+          "x": 11,
+          "y": 8,
+          "plane": 0,
+          "eaten": 8
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "boss",
+          "name": "Le Magnétron",
+          "kind": "mid"
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "guardianWarning",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "beat": 1,
+          "beats": 2,
+          "hint": "Les deux pôles ferment leurs mâchoires. Sors du couloir."
+        },
+        {
+          "year": 1985,
+          "t": 21.83333333333291,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 22.16666666666619,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 4,
+          "seconds": 1.528,
+          "tiles": 95,
+          "opening": 18
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "nova",
+          "x": 13,
+          "y": 8,
+          "plane": 1,
+          "radius": 7.48
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "novaOverload",
+          "signature": "ricochet",
+          "x": 13,
+          "y": 8,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 4,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 23.09999999999937,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 23.466666666665976,
+          "type": "guardianWarning",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "beat": 2,
+          "beats": 2,
+          "hint": "Les deux pôles ferment leurs mâchoires. Sors du couloir."
+        },
+        {
+          "year": 1985,
+          "t": 24.3333333333325,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 24.699999999999108,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 1985,
+          "t": 24.699999999999108,
+          "type": "guardianCounter",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "seconds": 2.8
+        },
+        {
+          "year": 1985,
+          "t": 24.733333333332435,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 27.066666666665387,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 5,
+          "seconds": 1.528,
+          "tiles": 13,
+          "opening": 18
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "bossDefeated",
+          "name": "Le Magnétron",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "prism",
+          "mod": "chain",
+          "changed": false,
+          "elapsed": 27.49999999999865
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "nova",
+          "x": 27,
+          "y": 5,
+          "plane": 0,
+          "radius": 7.48
+        },
+        {
+          "year": 1985,
+          "t": 27.533333333331978,
+          "type": "ecoCancel",
+          "role": "equarrisseur",
+          "serial": 5,
+          "plane": 0
+        }
+      ]
+    },
+    {
+      "year": 1995,
+      "attempt": 1,
+      "from": 30.64999999999577,
+      "to": 36.6166666666621,
+      "frames": 180,
+      "phases": [
+        "Le Signal fantôme",
+        "grille"
+      ],
+      "planes": [
+        1,
+        0
+      ],
+      "beatFrames": 180,
+      "decorReady": true,
+      "events": [
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "cell",
+          "x": 15,
+          "y": 2,
+          "plane": 1,
+          "eaten": 8
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "boss",
+          "name": "Le Signal fantôme",
+          "kind": "mid"
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "guardianWarning",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "beat": 1,
+          "beats": 2,
+          "hint": "Les feux échangent les voies rouges. Coupe entre deux signaux verts."
+        },
+        {
+          "year": 1995,
+          "t": 30.683333333329102,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 30.84999999999576,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 5,
+          "seconds": 1.528,
+          "tiles": 48,
+          "opening": 18
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "nova",
+          "x": 17,
+          "y": 2,
+          "plane": 0,
+          "radius": 8.68
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "novaOverload",
+          "signature": "train",
+          "x": 17,
+          "y": 2,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 5,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 31.98333333332903,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 32.349999999995674,
+          "type": "guardianWarning",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "beat": 2,
+          "beats": 2,
+          "hint": "Les feux échangent les voies rouges. Coupe entre deux signaux verts."
+        },
+        {
+          "year": 1995,
+          "t": 33.18333333332896,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 33.549999999995606,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 1995,
+          "t": 33.549999999995606,
+          "type": "guardianCounter",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "seconds": 3.1
+        },
+        {
+          "year": 1995,
+          "t": 33.68333333332893,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 35.91666666666214,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 0,
+          "serial": 6,
+          "seconds": 1.528,
+          "tiles": 109,
+          "opening": 19
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "bossDefeated",
+          "name": "Le Signal fantôme",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "well",
+          "mod": "chain",
+          "changed": true,
+          "elapsed": 35.94999999999547
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 1995,
+          "t": 35.9833333333288,
+          "type": "ecoCancel",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 0
+        }
+      ]
+    },
+    {
+      "year": 2185,
+      "attempt": 1,
+      "from": 1.5999999999999992,
+      "to": 7.566666666666645,
+      "frames": 180,
+      "phases": [
+        "vol",
+        "grille"
+      ],
+      "planes": [
+        0,
+        1
+      ],
+      "beatFrames": 180,
+      "decorReady": true,
+      "events": [
+        {
+          "year": 2185,
+          "t": 1.5999999999999992,
+          "type": "flightStart",
+          "x": 16,
+          "y": 9,
+          "plane": 0,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 2.5666666666666624,
+          "type": "flightRing",
+          "x": 21.8624381736957,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.28,
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 3.599999999999992,
+          "type": "flightCrash",
+          "x": 25.476394301010043,
+          "y": 7.610890870254298,
+          "plane": 0,
+          "cause": "Drone"
+        },
+        {
+          "year": 2185,
+          "t": 3.599999999999992,
+          "type": "flightEnd",
+          "x": 25,
+          "y": 7,
+          "plane": 0,
+          "success": false,
+          "points": 0,
+          "cause": "Drone",
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 3.6333333333333253,
+          "type": "nova",
+          "x": 25,
+          "y": 7,
+          "plane": 0,
+          "radius": 7.71
+        },
+        {
+          "year": 2185,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.4,
+          "tiles": 21,
+          "opening": 13
+        },
+        {
+          "year": 2185,
+          "t": 4.766666666666655,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 5.933333333333318,
+          "type": "ecoActive",
+          "role": "sentinelle",
+          "serial": 1
+        },
+        {
+          "year": 2185,
+          "t": 7.066666666666647,
+          "type": "ecoEvade",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        }
+      ]
+    },
+    {
+      "year": 2985,
+      "attempt": 1,
+      "from": 39.93333333332834,
+      "to": 45.88333333332421,
+      "frames": 180,
+      "phases": [
+        "grille",
+        "La Singularité"
+      ],
+      "planes": [
+        0,
+        1
+      ],
+      "beatFrames": 180,
+      "decorReady": true,
+      "events": [
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "cell",
+          "x": 4,
+          "y": 9,
+          "plane": 0,
+          "eaten": 18
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "boss",
+          "name": "La Singularité",
+          "kind": "final"
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "beat": 1,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "surfGate",
+          "plane": 0,
+          "x": 5,
+          "y": 11
+        },
+        {
+          "year": 2985,
+          "t": 40.16666666666151,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 40.966666666660956,
+          "type": "nova",
+          "x": 10,
+          "y": 9,
+          "plane": 1,
+          "radius": 19.08
+        },
+        {
+          "year": 2985,
+          "t": 40.966666666660956,
+          "type": "novaOverload",
+          "signature": "echo",
+          "x": 10,
+          "y": 9,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 41.29999999999406,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 41.73333333332709,
+          "type": "riftOpen",
+          "x": 10,
+          "y": 7,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 41.73333333332709,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 1,
+          "beat": 2,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 41.79999999999371,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 42.36666666665998,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 42.79999999999301,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "beat": 3,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 42.89999999999294,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 43.06666666665949,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.688,
+          "tiles": 147,
+          "opening": 27
+        },
+        {
+          "year": 2985,
+          "t": 43.133333333326114,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 43.433333333325905,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 43.866666666658936,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 2985,
+          "t": 43.866666666658936,
+          "type": "guardianCounter",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "seconds": 3.6
+        },
+        {
+          "year": 2985,
+          "t": 43.96666666665887,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 45.866666666657544,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 8,
+          "seconds": 1.688,
+          "tiles": 77,
+          "opening": 27
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "bossDefeated",
+          "name": "La Singularité",
+          "kind": "final",
+          "weapon": "rail"
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "bonus",
+          "name": "Double signature",
+          "points": 2000
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "win",
+          "eraIndex": 4
+        }
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "year": 1976,
+      "attempt": 1,
+      "status": "cleared",
+      "t": 47.7333333333319,
+      "score": 21025,
+      "cause": "",
+      "events": [
+        {
+          "year": 1976,
+          "t": 1.000000000000001,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 1976,
+          "t": 1.000000000000001,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 2.466666666666663,
+          "type": "evolutionTrigger",
+          "x": 9,
+          "y": 11,
+          "plane": 0,
+          "dx": 0,
+          "dy": 1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 0,
+          "kind": "relay",
+          "life": 1.533333333333342,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": false,
+          "found": 0
+        },
+        {
+          "year": 1976,
+          "t": 2.6999999999999953,
+          "type": "cell",
+          "x": 9,
+          "y": 12,
+          "plane": 0,
+          "eaten": 2
+        },
+        {
+          "year": 1976,
+          "t": 2.6999999999999953,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 1976,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.432,
+          "tiles": 15,
+          "opening": 13
+        },
+        {
+          "year": 1976,
+          "t": 4.533333333333323,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 4.966666666666654,
+          "type": "cell",
+          "x": 7,
+          "y": 4,
+          "plane": 0,
+          "eaten": 3
+        },
+        {
+          "year": 1976,
+          "t": 7.449999999999979,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 4
+        },
+        {
+          "year": 1976,
+          "t": 7.449999999999979,
+          "type": "sector",
+          "sector": 3,
+          "difficulty": 3
+        },
+        {
+          "year": 1976,
+          "t": 7.449999999999979,
+          "type": "upgrade",
+          "id": "arc",
+          "level": 1
+        },
+        {
+          "year": 1976,
+          "t": 9.583333333333385,
+          "type": "cell",
+          "x": 11,
+          "y": 17,
+          "plane": 0,
+          "eaten": 5
+        },
+        {
+          "year": 1976,
+          "t": 10.716666666666775,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 2,
+          "seconds": 1.464,
+          "tiles": 25,
+          "opening": 15
+        },
+        {
+          "year": 1976,
+          "t": 10.88333333333345,
+          "type": "nova",
+          "x": 17,
+          "y": 17,
+          "plane": 0,
+          "radius": 5.55
+        },
+        {
+          "year": 1976,
+          "t": 10.88333333333345,
+          "type": "novaOverload",
+          "signature": "comb",
+          "x": 17,
+          "y": 17,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 10.88333333333345,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 2,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 13.61666666666692,
+          "type": "cell",
+          "x": 27,
+          "y": 14,
+          "plane": 0,
+          "eaten": 6
+        },
+        {
+          "year": 1976,
+          "t": 13.61666666666692,
+          "type": "sector",
+          "sector": 4,
+          "difficulty": 4
+        },
+        {
+          "year": 1976,
+          "t": 14.383333333333624,
+          "type": "cell",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "eaten": 7
+        },
+        {
+          "year": 1976,
+          "t": 16.183333333333692,
+          "type": "cell",
+          "x": 27,
+          "y": 5,
+          "plane": 0,
+          "eaten": 8
+        },
+        {
+          "year": 1976,
+          "t": 16.183333333333692,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 1976,
+          "t": 16.183333333333692,
+          "type": "boss",
+          "name": "Le Registre",
+          "kind": "mid"
+        },
+        {
+          "year": 1976,
+          "t": 16.183333333333692,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Balayage binaire"
+        },
+        {
+          "year": 1976,
+          "t": 16.183333333333692,
+          "type": "guardianWarning",
+          "signature": "Balayage binaire",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Décale ta route d’une ligne."
+        },
+        {
+          "year": 1976,
+          "t": 16.216666666667024,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 16.616666666667,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 0,
+          "serial": 3,
+          "seconds": 1.528,
+          "tiles": 105,
+          "opening": 18
+        },
+        {
+          "year": 1976,
+          "t": 17.616666666666944,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Balayage binaire"
+        },
+        {
+          "year": 1976,
+          "t": 17.95000000000026,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 1976,
+          "t": 17.95000000000026,
+          "type": "guardianCounter",
+          "signature": "Balayage binaire",
+          "plane": 0,
+          "seconds": 2.9
+        },
+        {
+          "year": 1976,
+          "t": 18.150000000000247,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 3
+        },
+        {
+          "year": 1976,
+          "t": 18.816666666666876,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 19.016666666666865,
+          "type": "nova",
+          "x": 12,
+          "y": 5,
+          "plane": 0,
+          "radius": 6.48
+        },
+        {
+          "year": 1976,
+          "t": 19.016666666666865,
+          "type": "novaOverload",
+          "signature": "comb",
+          "x": 12,
+          "y": 5,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 19.250000000000185,
+          "type": "novaOverloadHit",
+          "signature": "comb",
+          "x": 9,
+          "y": 3,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 19.5833333333335,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 3,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 19.70000000000016,
+          "type": "bossDefeated",
+          "name": "Le Registre",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 1976,
+          "t": 19.70000000000016,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "well",
+          "mod": "chain",
+          "changed": true,
+          "elapsed": 19.70000000000016
+        },
+        {
+          "year": 1976,
+          "t": 19.70000000000016,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 1976,
+          "t": 21.400000000000063,
+          "type": "flightStart",
+          "x": 16,
+          "y": 9,
+          "plane": 0,
+          "goal": 3
+        },
+        {
+          "year": 1976,
+          "t": 22.366666666666674,
+          "type": "flightRing",
+          "x": 14.314230543758907,
+          "y": 14.862438173695704,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 1.8507963267948966,
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 1976,
+          "t": 23.43333333333328,
+          "type": "flightRing",
+          "x": 20.372951985746933,
+          "y": 14.153993053453839,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": -0.11640122440170109,
+          "passed": 2,
+          "goal": 3
+        },
+        {
+          "year": 1976,
+          "t": 24.59999999999988,
+          "type": "flightRing",
+          "x": 26.43167342773496,
+          "y": 14.862438173695706,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.1164012244017012,
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 1976,
+          "t": 24.59999999999988,
+          "type": "flightEnd",
+          "x": 26,
+          "y": 14,
+          "plane": 0,
+          "success": true,
+          "points": 1625,
+          "cause": "Slalom réussi",
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 1976,
+          "t": 24.59999999999988,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 4,
+          "seconds": 1.528,
+          "tiles": 40,
+          "opening": 17
+        },
+        {
+          "year": 1976,
+          "t": 24.633333333333212,
+          "type": "nova",
+          "x": 26,
+          "y": 14,
+          "plane": 0,
+          "radius": 6.48
+        },
+        {
+          "year": 1976,
+          "t": 24.633333333333212,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 4,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 26.099999999999795,
+          "type": "cell",
+          "x": 20,
+          "y": 14,
+          "plane": 0,
+          "eaten": 9
+        },
+        {
+          "year": 1976,
+          "t": 27.199999999999733,
+          "type": "cell",
+          "x": 16,
+          "y": 16,
+          "plane": 0,
+          "eaten": 10
+        },
+        {
+          "year": 1976,
+          "t": 27.199999999999733,
+          "type": "sector",
+          "sector": 6,
+          "difficulty": 6
+        },
+        {
+          "year": 1976,
+          "t": 29.966666666666242,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 5,
+          "seconds": 1.5599999999999998,
+          "tiles": 31,
+          "opening": 20
+        },
+        {
+          "year": 1976,
+          "t": 30.899999999999523,
+          "type": "cell",
+          "x": 34,
+          "y": 13,
+          "plane": 0,
+          "eaten": 11
+        },
+        {
+          "year": 1976,
+          "t": 30.899999999999523,
+          "type": "flightGate",
+          "x": 34,
+          "y": 10,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 31.53333333333282,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 5
+        },
+        {
+          "year": 1976,
+          "t": 33.01666666666607,
+          "type": "cell",
+          "x": 30,
+          "y": 5,
+          "plane": 0,
+          "eaten": 12
+        },
+        {
+          "year": 1976,
+          "t": 33.01666666666607,
+          "type": "sector",
+          "sector": 7,
+          "difficulty": 7
+        },
+        {
+          "year": 1976,
+          "t": 33.01666666666607,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 1
+        },
+        {
+          "year": 1976,
+          "t": 33.0499999999994,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 5,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 33.883333333332686,
+          "type": "cell",
+          "x": 32,
+          "y": 2,
+          "plane": 0,
+          "eaten": 13
+        },
+        {
+          "year": 1976,
+          "t": 34.216666666666,
+          "type": "cell",
+          "x": 32,
+          "y": 0,
+          "plane": 0,
+          "eaten": 14
+        },
+        {
+          "year": 1976,
+          "t": 34.216666666666,
+          "type": "sector",
+          "sector": 8,
+          "difficulty": 8
+        },
+        {
+          "year": 1976,
+          "t": 35.016666666665955,
+          "type": "nova",
+          "x": 27,
+          "y": 0,
+          "plane": 0,
+          "radius": 10.59
+        },
+        {
+          "year": 1976,
+          "t": 35.016666666665955,
+          "type": "novaOverload",
+          "signature": "comb",
+          "x": 27,
+          "y": 0,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 36.74999999999919,
+          "type": "cell",
+          "x": 18,
+          "y": 2,
+          "plane": 0,
+          "eaten": 15
+        },
+        {
+          "year": 1976,
+          "t": 37.083333333332504,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 6,
+          "seconds": 1.6239999999999999,
+          "tiles": 78,
+          "opening": 22
+        },
+        {
+          "year": 1976,
+          "t": 37.84999999999913,
+          "type": "cell",
+          "x": 16,
+          "y": 7,
+          "plane": 0,
+          "eaten": 16
+        },
+        {
+          "year": 1976,
+          "t": 37.84999999999913,
+          "type": "sector",
+          "sector": 9,
+          "difficulty": 9
+        },
+        {
+          "year": 1976,
+          "t": 37.84999999999913,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 2
+        },
+        {
+          "year": 1976,
+          "t": 38.716666666665745,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 6
+        },
+        {
+          "year": 1976,
+          "t": 40.149999999999,
+          "type": "cell",
+          "x": 6,
+          "y": 12,
+          "plane": 0,
+          "eaten": 17
+        },
+        {
+          "year": 1976,
+          "t": 40.349999999998985,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 42.11666666666555,
+          "type": "cell",
+          "x": 1,
+          "y": 4,
+          "plane": 0,
+          "eaten": 18
+        },
+        {
+          "year": 1976,
+          "t": 42.11666666666555,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 1976,
+          "t": 42.11666666666555,
+          "type": "boss",
+          "name": "Le Mainframe",
+          "kind": "final"
+        },
+        {
+          "year": 1976,
+          "t": 42.11666666666555,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Banques de mémoire"
+        },
+        {
+          "year": 1976,
+          "t": 42.11666666666555,
+          "type": "guardianWarning",
+          "signature": "Banques de mémoire",
+          "plane": 0,
+          "beat": 1,
+          "beats": 2,
+          "hint": "La copie de la bande frappe l’autre plan."
+        },
+        {
+          "year": 1976,
+          "t": 42.14999999999888,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 43.383333333332146,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Banques de mémoire"
+        },
+        {
+          "year": 1976,
+          "t": 43.51666666666547,
+          "type": "ecoWarning",
+          "role": "portier",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.688,
+          "tiles": 83,
+          "opening": 26
+        },
+        {
+          "year": 1976,
+          "t": 43.5499999999988,
+          "type": "ecoKill",
+          "role": "portier",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 43.71666666666546,
+          "type": "riftOpen",
+          "x": 11,
+          "y": 1,
+          "plane": 1
+        },
+        {
+          "year": 1976,
+          "t": 43.71666666666546,
+          "type": "guardianWarning",
+          "signature": "Banques de mémoire",
+          "plane": 1,
+          "beat": 2,
+          "beats": 2,
+          "hint": "La copie de la bande frappe l’autre plan."
+        },
+        {
+          "year": 1976,
+          "t": 43.74999999999879,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 44.58333333333208,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Banques de mémoire"
+        },
+        {
+          "year": 1976,
+          "t": 44.61666666666541,
+          "type": "nova",
+          "x": 18,
+          "y": 4,
+          "plane": 0,
+          "radius": 14.08
+        },
+        {
+          "year": 1976,
+          "t": 44.61666666666541,
+          "type": "novaOverload",
+          "signature": "comb",
+          "x": 18,
+          "y": 4,
+          "plane": 0
+        },
+        {
+          "year": 1976,
+          "t": 44.91666666666539,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 1976,
+          "t": 44.91666666666539,
+          "type": "guardianCounter",
+          "signature": "Banques de mémoire",
+          "plane": 0,
+          "seconds": 3.3
+        },
+        {
+          "year": 1976,
+          "t": 46.28333333333198,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 8,
+          "seconds": 1.688,
+          "tiles": 35,
+          "opening": 26
+        },
+        {
+          "year": 1976,
+          "t": 47.7333333333319,
+          "type": "bossDefeated",
+          "name": "Le Mainframe",
+          "kind": "final",
+          "weapon": "arc"
+        },
+        {
+          "year": 1976,
+          "t": 47.7333333333319,
+          "type": "clear",
+          "eraIndex": 0
+        }
+      ],
+      "audio": {
+        "media": 0,
+        "context": 0
+      }
+    },
+    {
+      "year": 1985,
+      "attempt": 1,
+      "status": "cleared",
+      "t": 53.8166666666587,
+      "score": 24600,
+      "cause": "",
+      "events": [
+        {
+          "year": 1985,
+          "t": 0.733333333333334,
+          "type": "evolutionTrigger",
+          "x": 10,
+          "y": 9,
+          "plane": 0,
+          "dx": 1,
+          "dy": 0,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.2666666666666693,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 0.966666666666668,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 1985,
+          "t": 0.966666666666668,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 3.5333333333333257,
+          "type": "cell",
+          "x": 7,
+          "y": 4,
+          "plane": 0,
+          "eaten": 2
+        },
+        {
+          "year": 1985,
+          "t": 3.5333333333333257,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 1985,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.432,
+          "tiles": 6,
+          "opening": 14
+        },
+        {
+          "year": 1985,
+          "t": 4.633333333333322,
+          "type": "nova",
+          "x": 3,
+          "y": 5,
+          "plane": 0,
+          "radius": 5.62
+        },
+        {
+          "year": 1985,
+          "t": 4.633333333333322,
+          "type": "novaOverload",
+          "signature": "ricochet",
+          "x": 3,
+          "y": 5,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 4.633333333333322,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 5.933333333333318,
+          "type": "cell",
+          "x": 3,
+          "y": 11,
+          "plane": 0,
+          "eaten": 3
+        },
+        {
+          "year": 1985,
+          "t": 5.933333333333318,
+          "type": "evolutionTrigger",
+          "x": 3,
+          "y": 9,
+          "plane": 0,
+          "dx": 0,
+          "dy": 1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.5166666666666684,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 10.500000000000101,
+          "type": "cell",
+          "x": 23,
+          "y": 12,
+          "plane": 0,
+          "eaten": 4
+        },
+        {
+          "year": 1985,
+          "t": 10.500000000000101,
+          "type": "sector",
+          "sector": 3,
+          "difficulty": 3
+        },
+        {
+          "year": 1985,
+          "t": 10.500000000000101,
+          "type": "upgrade",
+          "id": "arc",
+          "level": 1
+        },
+        {
+          "year": 1985,
+          "t": 10.800000000000116,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 2,
+          "seconds": 1.464,
+          "tiles": 50,
+          "opening": 15
+        },
+        {
+          "year": 1985,
+          "t": 10.933333333333456,
+          "type": "cell",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "eaten": 5
+        },
+        {
+          "year": 1985,
+          "t": 10.966666666666791,
+          "type": "nova",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "radius": 6.55
+        },
+        {
+          "year": 1985,
+          "t": 10.966666666666791,
+          "type": "novaOverload",
+          "signature": "ricochet",
+          "x": 25,
+          "y": 12,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 10.966666666666791,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 2,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 11.333333333333476,
+          "type": "evolutionTrigger",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "dx": 1,
+          "dy": 0,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.566666666666668,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 13.56666666666692,
+          "type": "cell",
+          "x": 24,
+          "y": 0,
+          "plane": 0,
+          "eaten": 6
+        },
+        {
+          "year": 1985,
+          "t": 13.56666666666692,
+          "type": "sector",
+          "sector": 4,
+          "difficulty": 4
+        },
+        {
+          "year": 1985,
+          "t": 16.700000000000333,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 3,
+          "seconds": 1.496,
+          "tiles": 22,
+          "opening": 17
+        },
+        {
+          "year": 1985,
+          "t": 16.83333333333366,
+          "type": "evolutionTrigger",
+          "x": 35,
+          "y": 4,
+          "plane": 0,
+          "dx": 0,
+          "dy": 1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.5166666666666684,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 1
+        },
+        {
+          "year": 1985,
+          "t": 16.83333333333366,
+          "type": "evolutionHit",
+          "core": "prism",
+          "mod": "chain",
+          "plane": 0,
+          "x": 34,
+          "y": 10
+        },
+        {
+          "year": 1985,
+          "t": 16.83333333333366,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 3,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 17.033333333333648,
+          "type": "cell",
+          "x": 35,
+          "y": 7,
+          "plane": 0,
+          "eaten": 7
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "cell",
+          "x": 11,
+          "y": 8,
+          "plane": 0,
+          "eaten": 8
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "boss",
+          "name": "Le Magnétron",
+          "kind": "mid"
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 21.79999999999958,
+          "type": "guardianWarning",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "beat": 1,
+          "beats": 2,
+          "hint": "Les deux pôles ferment leurs mâchoires. Sors du couloir."
+        },
+        {
+          "year": 1985,
+          "t": 21.83333333333291,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 22.16666666666619,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 4,
+          "seconds": 1.528,
+          "tiles": 95,
+          "opening": 18
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "nova",
+          "x": 13,
+          "y": 8,
+          "plane": 1,
+          "radius": 7.48
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "novaOverload",
+          "signature": "ricochet",
+          "x": 13,
+          "y": 8,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 22.199999999999516,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 4,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 23.09999999999937,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 23.466666666665976,
+          "type": "guardianWarning",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "beat": 2,
+          "beats": 2,
+          "hint": "Les deux pôles ferment leurs mâchoires. Sors du couloir."
+        },
+        {
+          "year": 1985,
+          "t": 24.3333333333325,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Pôles jumeaux"
+        },
+        {
+          "year": 1985,
+          "t": 24.699999999999108,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 1985,
+          "t": 24.699999999999108,
+          "type": "guardianCounter",
+          "signature": "Pôles jumeaux",
+          "plane": 0,
+          "seconds": 2.8
+        },
+        {
+          "year": 1985,
+          "t": 24.733333333332435,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 27.066666666665387,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 5,
+          "seconds": 1.528,
+          "tiles": 13,
+          "opening": 18
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "bossDefeated",
+          "name": "Le Magnétron",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "prism",
+          "mod": "chain",
+          "changed": false,
+          "elapsed": 27.49999999999865
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 1985,
+          "t": 27.49999999999865,
+          "type": "nova",
+          "x": 27,
+          "y": 5,
+          "plane": 0,
+          "radius": 7.48
+        },
+        {
+          "year": 1985,
+          "t": 27.533333333331978,
+          "type": "ecoCancel",
+          "role": "equarrisseur",
+          "serial": 5,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 29.133333333331716,
+          "type": "cell",
+          "x": 21,
+          "y": 2,
+          "plane": 0,
+          "eaten": 9
+        },
+        {
+          "year": 1985,
+          "t": 31.499999999997996,
+          "type": "cell",
+          "x": 10,
+          "y": 4,
+          "plane": 0,
+          "eaten": 10
+        },
+        {
+          "year": 1985,
+          "t": 31.499999999997996,
+          "type": "sector",
+          "sector": 6,
+          "difficulty": 6
+        },
+        {
+          "year": 1985,
+          "t": 32.33333333333116,
+          "type": "cell",
+          "x": 10,
+          "y": 9,
+          "plane": 0,
+          "eaten": 11
+        },
+        {
+          "year": 1985,
+          "t": 32.39999999999781,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 6,
+          "seconds": 1.5599999999999998,
+          "tiles": 70,
+          "opening": 20
+        },
+        {
+          "year": 1985,
+          "t": 33.69999999999746,
+          "type": "cell",
+          "x": 12,
+          "y": 15,
+          "plane": 0,
+          "eaten": 12
+        },
+        {
+          "year": 1985,
+          "t": 33.69999999999746,
+          "type": "sector",
+          "sector": 7,
+          "difficulty": 7
+        },
+        {
+          "year": 1985,
+          "t": 33.69999999999746,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 1
+        },
+        {
+          "year": 1985,
+          "t": 33.99999999999738,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 6
+        },
+        {
+          "year": 1985,
+          "t": 35.33333333333035,
+          "type": "cell",
+          "x": 9,
+          "y": 8,
+          "plane": 0,
+          "eaten": 13
+        },
+        {
+          "year": 1985,
+          "t": 35.46666666666365,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 35.99999999999684,
+          "type": "cell",
+          "x": 7,
+          "y": 6,
+          "plane": 0,
+          "eaten": 14
+        },
+        {
+          "year": 1985,
+          "t": 35.99999999999684,
+          "type": "sector",
+          "sector": 8,
+          "difficulty": 8
+        },
+        {
+          "year": 1985,
+          "t": 38.63333333332946,
+          "type": "evolutionTrigger",
+          "x": 22,
+          "y": 6,
+          "plane": 0,
+          "dx": 1,
+          "dy": 0,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.5333333333334034,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 39.06666666666268,
+          "type": "cell",
+          "x": 25,
+          "y": 4,
+          "plane": 0,
+          "eaten": 15
+        },
+        {
+          "year": 1985,
+          "t": 39.49999999999589,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.6239999999999999,
+          "tiles": 70,
+          "opening": 23
+        },
+        {
+          "year": 1985,
+          "t": 41.0833333333288,
+          "type": "cell",
+          "x": 30,
+          "y": 12,
+          "plane": 0,
+          "eaten": 16
+        },
+        {
+          "year": 1985,
+          "t": 41.0833333333288,
+          "type": "sector",
+          "sector": 9,
+          "difficulty": 9
+        },
+        {
+          "year": 1985,
+          "t": 41.0833333333288,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 2
+        },
+        {
+          "year": 1985,
+          "t": 41.14999999999545,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 7
+        },
+        {
+          "year": 1985,
+          "t": 42.28333333332848,
+          "type": "cell",
+          "x": 35,
+          "y": 15,
+          "plane": 0,
+          "eaten": 17
+        },
+        {
+          "year": 1985,
+          "t": 42.78333333332834,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 44.08333333332799,
+          "type": "evolutionTrigger",
+          "x": 25,
+          "y": 15,
+          "plane": 0,
+          "dx": -1,
+          "dy": 0,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.550000000000065,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 45.84999999999418,
+          "type": "cell",
+          "x": 19,
+          "y": 7,
+          "plane": 0,
+          "eaten": 18
+        },
+        {
+          "year": 1985,
+          "t": 45.84999999999418,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 1985,
+          "t": 45.84999999999418,
+          "type": "boss",
+          "name": "Le Cyclope",
+          "kind": "final"
+        },
+        {
+          "year": 1985,
+          "t": 45.84999999999418,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Visée en croix"
+        },
+        {
+          "year": 1985,
+          "t": 45.84999999999418,
+          "type": "guardianWarning",
+          "signature": "Visée en croix",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Les axes convergent devant ta tête. Coupe en diagonale ou change de plan."
+        },
+        {
+          "year": 1985,
+          "t": 45.883333333327506,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 45.949999999994155,
+          "type": "ecoWarning",
+          "role": "portier",
+          "plane": 1,
+          "serial": 8,
+          "seconds": 1.688,
+          "tiles": 83,
+          "opening": 26
+        },
+        {
+          "year": 1985,
+          "t": 46.016666666660804,
+          "type": "nova",
+          "x": 18,
+          "y": 7,
+          "plane": 1,
+          "radius": 15.08
+        },
+        {
+          "year": 1985,
+          "t": 46.016666666660804,
+          "type": "novaOverload",
+          "signature": "ricochet",
+          "x": 18,
+          "y": 7,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 46.016666666660804,
+          "type": "ecoKill",
+          "role": "portier",
+          "serial": 8,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 46.84999999999391,
+          "type": "cell",
+          "x": 12,
+          "y": 7,
+          "plane": 1,
+          "eaten": 19
+        },
+        {
+          "year": 1985,
+          "t": 47.21666666666048,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Visée en croix"
+        },
+        {
+          "year": 1985,
+          "t": 47.58333333332705,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 1985,
+          "t": 47.58333333332705,
+          "type": "riftOpen",
+          "x": 6,
+          "y": 2,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 47.58333333332705,
+          "type": "guardianCounter",
+          "signature": "Visée en croix",
+          "plane": 0,
+          "seconds": 2.8
+        },
+        {
+          "year": 1985,
+          "t": 47.716666666660345,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 48.7499999999934,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 9,
+          "seconds": 1.688,
+          "tiles": 14,
+          "opening": 26
+        },
+        {
+          "year": 1985,
+          "t": 48.84999999999337,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 49.416666666659886,
+          "type": "evolutionTrigger",
+          "x": 8,
+          "y": 17,
+          "plane": 1,
+          "dx": 0,
+          "dy": 1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 1,
+          "kind": "coil",
+          "life": 3.650000000000055,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 1985,
+          "t": 49.58333333332651,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 50.416666666659616,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Visée en croix"
+        },
+        {
+          "year": 1985,
+          "t": 50.416666666659616,
+          "type": "guardianWarning",
+          "signature": "Visée en croix",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Les axes convergent devant ta tête. Coupe en diagonale ou change de plan."
+        },
+        {
+          "year": 1985,
+          "t": 50.44999999999294,
+          "type": "ecoActive",
+          "role": "sentinelle",
+          "serial": 9
+        },
+        {
+          "year": 1985,
+          "t": 50.58333333332624,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1985,
+          "t": 51.78333333332591,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Visée en croix"
+        },
+        {
+          "year": 1985,
+          "t": 52.14999999999248,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 1985,
+          "t": 52.14999999999248,
+          "type": "guardianCounter",
+          "signature": "Visée en croix",
+          "plane": 0,
+          "seconds": 2.8
+        },
+        {
+          "year": 1985,
+          "t": 52.183333333325805,
+          "type": "ecoEvade",
+          "role": "sentinelle",
+          "serial": 9,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 52.28333333332578,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1985,
+          "t": 53.8166666666587,
+          "type": "cell",
+          "x": 7,
+          "y": 13,
+          "plane": 0,
+          "eaten": 20
+        },
+        {
+          "year": 1985,
+          "t": 53.8166666666587,
+          "type": "nova",
+          "x": 7,
+          "y": 13,
+          "plane": 0,
+          "radius": 15.7
+        },
+        {
+          "year": 1985,
+          "t": 53.8166666666587,
+          "type": "bossDefeated",
+          "name": "Le Cyclope",
+          "kind": "final",
+          "weapon": "nova"
+        },
+        {
+          "year": 1985,
+          "t": 53.8166666666587,
+          "type": "bonus",
+          "name": "Double signature",
+          "points": 2000
+        },
+        {
+          "year": 1985,
+          "t": 53.8166666666587,
+          "type": "clear",
+          "eraIndex": 1
+        }
+      ],
+      "audio": {
+        "media": 0,
+        "context": 0
+      }
+    },
+    {
+      "year": 1995,
+      "attempt": 1,
+      "status": "cleared",
+      "t": 70.38333333332685,
+      "score": 32650,
+      "cause": "",
+      "events": [
+        {
+          "year": 1995,
+          "t": 0.9333333333331985,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 1995,
+          "t": 0.9333333333331985,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 1.633333333333094,
+          "type": "flightStart",
+          "x": 16,
+          "y": 9,
+          "plane": 0,
+          "goal": 3
+        },
+        {
+          "year": 1995,
+          "t": 2.5999999999996155,
+          "type": "flightRing",
+          "x": 21.8624381736957,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.28,
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 1995,
+          "t": 3.7333333333327787,
+          "type": "flightRing",
+          "x": 26.755222296789885,
+          "y": 7.042877263930501,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": -0.64,
+          "passed": 2,
+          "goal": 3
+        },
+        {
+          "year": 1995,
+          "t": 4.833333333332625,
+          "type": "flightRing",
+          "x": 31.64800641988407,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.64,
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 1995,
+          "t": 4.833333333332625,
+          "type": "flightEnd",
+          "x": 31,
+          "y": 10,
+          "plane": 0,
+          "success": true,
+          "points": 325,
+          "cause": "Slalom réussi",
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 1995,
+          "t": 4.833333333332625,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.4,
+          "tiles": 9,
+          "opening": 13
+        },
+        {
+          "year": 1995,
+          "t": 4.866666666665954,
+          "type": "nova",
+          "x": 31,
+          "y": 10,
+          "plane": 0,
+          "radius": 6.51
+        },
+        {
+          "year": 1995,
+          "t": 4.866666666665954,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 6.666666666665708,
+          "type": "cell",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "eaten": 2
+        },
+        {
+          "year": 1995,
+          "t": 6.666666666665708,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 1995,
+          "t": 8.599999999998792,
+          "type": "cell",
+          "x": 21,
+          "y": 7,
+          "plane": 0,
+          "eaten": 3
+        },
+        {
+          "year": 1995,
+          "t": 11.466666666665143,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 2,
+          "seconds": 1.432,
+          "tiles": 15,
+          "opening": 14
+        },
+        {
+          "year": 1995,
+          "t": 11.5833333333318,
+          "type": "cell",
+          "x": 33,
+          "y": 5,
+          "plane": 0,
+          "eaten": 4
+        },
+        {
+          "year": 1995,
+          "t": 11.5833333333318,
+          "type": "sector",
+          "sector": 3,
+          "difficulty": 3
+        },
+        {
+          "year": 1995,
+          "t": 11.5833333333318,
+          "type": "upgrade",
+          "id": "arc",
+          "level": 1
+        },
+        {
+          "year": 1995,
+          "t": 11.5833333333318,
+          "type": "nova",
+          "x": 33,
+          "y": 5,
+          "plane": 0,
+          "radius": 7.44
+        },
+        {
+          "year": 1995,
+          "t": 11.5833333333318,
+          "type": "novaOverload",
+          "signature": "train",
+          "x": 33,
+          "y": 5,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 11.616666666665129,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 2,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 14.583333333331469,
+          "type": "cell",
+          "x": 26,
+          "y": 13,
+          "plane": 0,
+          "eaten": 5
+        },
+        {
+          "year": 1995,
+          "t": 14.583333333331469,
+          "type": "flightGate",
+          "x": 26,
+          "y": 16,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 17.34999999999776,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 3,
+          "seconds": 1.464,
+          "tiles": 36,
+          "opening": 16
+        },
+        {
+          "year": 1995,
+          "t": 17.416666666664415,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 18.816666666664187,
+          "type": "ecoActive",
+          "role": "sentinelle",
+          "serial": 3
+        },
+        {
+          "year": 1995,
+          "t": 18.983333333330826,
+          "type": "cell",
+          "x": 12,
+          "y": 7,
+          "plane": 1,
+          "eaten": 6
+        },
+        {
+          "year": 1995,
+          "t": 18.983333333330826,
+          "type": "sector",
+          "sector": 4,
+          "difficulty": 4
+        },
+        {
+          "year": 1995,
+          "t": 20.116666666663974,
+          "type": "ecoEvade",
+          "role": "sentinelle",
+          "serial": 3,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 24.649999999996567,
+          "type": "cell",
+          "x": 35,
+          "y": 14,
+          "plane": 1,
+          "eaten": 7
+        },
+        {
+          "year": 1995,
+          "t": 25.416666666663108,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 1,
+          "serial": 4,
+          "seconds": 1.496,
+          "tiles": 45,
+          "opening": 17
+        },
+        {
+          "year": 1995,
+          "t": 25.51666666666309,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 4,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "cell",
+          "x": 15,
+          "y": 2,
+          "plane": 1,
+          "eaten": 8
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "boss",
+          "name": "Le Signal fantôme",
+          "kind": "mid"
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 30.64999999999577,
+          "type": "guardianWarning",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "beat": 1,
+          "beats": 2,
+          "hint": "Les feux échangent les voies rouges. Coupe entre deux signaux verts."
+        },
+        {
+          "year": 1995,
+          "t": 30.683333333329102,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 30.84999999999576,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 5,
+          "seconds": 1.528,
+          "tiles": 48,
+          "opening": 18
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "nova",
+          "x": 17,
+          "y": 2,
+          "plane": 0,
+          "radius": 8.68
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "novaOverload",
+          "signature": "train",
+          "x": 17,
+          "y": 2,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 31.049999999995748,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 5,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 31.98333333332903,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 32.349999999995674,
+          "type": "guardianWarning",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "beat": 2,
+          "beats": 2,
+          "hint": "Les feux échangent les voies rouges. Coupe entre deux signaux verts."
+        },
+        {
+          "year": 1995,
+          "t": 33.18333333332896,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 1,
+          "pattern": "Feux de triage"
+        },
+        {
+          "year": 1995,
+          "t": 33.549999999995606,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 1995,
+          "t": 33.549999999995606,
+          "type": "guardianCounter",
+          "signature": "Feux de triage",
+          "plane": 1,
+          "seconds": 3.1
+        },
+        {
+          "year": 1995,
+          "t": 33.68333333332893,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 35.91666666666214,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 0,
+          "serial": 6,
+          "seconds": 1.528,
+          "tiles": 109,
+          "opening": 19
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "bossDefeated",
+          "name": "Le Signal fantôme",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "well",
+          "mod": "chain",
+          "changed": true,
+          "elapsed": 35.94999999999547
+        },
+        {
+          "year": 1995,
+          "t": 35.94999999999547,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 1995,
+          "t": 35.9833333333288,
+          "type": "ecoCancel",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 38.08333333332868,
+          "type": "cell",
+          "x": 29,
+          "y": 5,
+          "plane": 1,
+          "eaten": 9
+        },
+        {
+          "year": 1995,
+          "t": 40.84999999999519,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.528,
+          "tiles": 35,
+          "opening": 19
+        },
+        {
+          "year": 1995,
+          "t": 40.949999999995185,
+          "type": "nova",
+          "x": 18,
+          "y": 10,
+          "plane": 1,
+          "radius": 8.99
+        },
+        {
+          "year": 1995,
+          "t": 40.949999999995185,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 41.44999999999516,
+          "type": "cell",
+          "x": 18,
+          "y": 13,
+          "plane": 1,
+          "eaten": 10
+        },
+        {
+          "year": 1995,
+          "t": 41.44999999999516,
+          "type": "sector",
+          "sector": 6,
+          "difficulty": 6
+        },
+        {
+          "year": 1995,
+          "t": 44.98333333332829,
+          "type": "cell",
+          "x": 1,
+          "y": 9,
+          "plane": 1,
+          "eaten": 11
+        },
+        {
+          "year": 1995,
+          "t": 45.816666666661575,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 1,
+          "serial": 8,
+          "seconds": 1.5599999999999998,
+          "tiles": 84,
+          "opening": 21
+        },
+        {
+          "year": 1995,
+          "t": 45.91666666666157,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 8,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 50.19999999999466,
+          "type": "cell",
+          "x": 32,
+          "y": 9,
+          "plane": 1,
+          "eaten": 12
+        },
+        {
+          "year": 1995,
+          "t": 50.19999999999466,
+          "type": "sector",
+          "sector": 7,
+          "difficulty": 7
+        },
+        {
+          "year": 1995,
+          "t": 50.19999999999466,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 1
+        },
+        {
+          "year": 1995,
+          "t": 50.36666666666132,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 9,
+          "seconds": 1.5919999999999999,
+          "tiles": 30,
+          "opening": 21
+        },
+        {
+          "year": 1995,
+          "t": 50.39999999999465,
+          "type": "nova",
+          "x": 32,
+          "y": 10,
+          "plane": 1,
+          "radius": 12.17
+        },
+        {
+          "year": 1995,
+          "t": 50.39999999999465,
+          "type": "novaOverload",
+          "signature": "train",
+          "x": 32,
+          "y": 10,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 50.39999999999465,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 9,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 54.19999999999443,
+          "type": "cell",
+          "x": 14,
+          "y": 16,
+          "plane": 1,
+          "eaten": 13
+        },
+        {
+          "year": 1995,
+          "t": 54.43333333332775,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 1,
+          "serial": 10,
+          "seconds": 1.5919999999999999,
+          "tiles": 60,
+          "opening": 21
+        },
+        {
+          "year": 1995,
+          "t": 54.466666666661084,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 10,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 55.166666666661044,
+          "type": "cell",
+          "x": 12,
+          "y": 12,
+          "plane": 1,
+          "eaten": 14
+        },
+        {
+          "year": 1995,
+          "t": 55.166666666661044,
+          "type": "sector",
+          "sector": 8,
+          "difficulty": 8
+        },
+        {
+          "year": 1995,
+          "t": 58.49999999999419,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 0,
+          "serial": 11,
+          "seconds": 1.6239999999999999,
+          "tiles": 63,
+          "opening": 23
+        },
+        {
+          "year": 1995,
+          "t": 58.699999999994176,
+          "type": "cell",
+          "x": 29,
+          "y": 12,
+          "plane": 1,
+          "eaten": 15
+        },
+        {
+          "year": 1995,
+          "t": 60.13333333332743,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 11
+        },
+        {
+          "year": 1995,
+          "t": 60.966666666660714,
+          "type": "cell",
+          "x": 17,
+          "y": 15,
+          "plane": 1,
+          "eaten": 16
+        },
+        {
+          "year": 1995,
+          "t": 60.966666666660714,
+          "type": "sector",
+          "sector": 9,
+          "difficulty": 9
+        },
+        {
+          "year": 1995,
+          "t": 60.966666666660714,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 2
+        },
+        {
+          "year": 1995,
+          "t": 61.76666666666067,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 11,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 62.166666666660646,
+          "type": "cell",
+          "x": 11,
+          "y": 13,
+          "plane": 1,
+          "eaten": 17
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "cell",
+          "x": 9,
+          "y": 1,
+          "plane": 1,
+          "eaten": 18
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "boss",
+          "name": "La Locomotive Spectre",
+          "kind": "final"
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Convoi spectral"
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "guardianWarning",
+          "signature": "Convoi spectral",
+          "plane": 1,
+          "beat": 1,
+          "beats": 3,
+          "hint": "Le train traverse trois voies. Passe entre les wagons ou plonge sous le convoi."
+        },
+        {
+          "year": 1995,
+          "t": 64.19999999999386,
+          "type": "surfGate",
+          "plane": 1,
+          "x": 11,
+          "y": 1
+        },
+        {
+          "year": 1995,
+          "t": 64.2333333333272,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 64.33333333332719,
+          "type": "cell",
+          "x": 10,
+          "y": 1,
+          "plane": 0,
+          "eaten": 19
+        },
+        {
+          "year": 1995,
+          "t": 64.93333333332716,
+          "type": "ecoWarning",
+          "role": "portier",
+          "plane": 0,
+          "serial": 12,
+          "seconds": 1.688,
+          "tiles": 83,
+          "opening": 26
+        },
+        {
+          "year": 1995,
+          "t": 65.06666666666048,
+          "type": "nova",
+          "x": 15,
+          "y": 1,
+          "plane": 0,
+          "radius": 16.59
+        },
+        {
+          "year": 1995,
+          "t": 65.06666666666048,
+          "type": "novaOverload",
+          "signature": "train",
+          "x": 15,
+          "y": 1,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 65.06666666666048,
+          "type": "ecoKill",
+          "role": "portier",
+          "serial": 12,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 65.53333333332712,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Convoi spectral"
+        },
+        {
+          "year": 1995,
+          "t": 65.89999999999377,
+          "type": "riftOpen",
+          "x": 24,
+          "y": 2,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 65.89999999999377,
+          "type": "guardianWarning",
+          "signature": "Convoi spectral",
+          "plane": 1,
+          "beat": 2,
+          "beats": 3,
+          "hint": "Le train traverse trois voies. Passe entre les wagons ou plonge sous le convoi."
+        },
+        {
+          "year": 1995,
+          "t": 66.66666666666039,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Convoi spectral"
+        },
+        {
+          "year": 1995,
+          "t": 67.03333333332704,
+          "type": "guardianWarning",
+          "signature": "Convoi spectral",
+          "plane": 1,
+          "beat": 3,
+          "beats": 3,
+          "hint": "Le train traverse trois voies. Passe entre les wagons ou plonge sous le convoi."
+        },
+        {
+          "year": 1995,
+          "t": 67.79999999999366,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Convoi spectral"
+        },
+        {
+          "year": 1995,
+          "t": 67.79999999999366,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 13,
+          "seconds": 1.688,
+          "tiles": 70,
+          "opening": 26
+        },
+        {
+          "year": 1995,
+          "t": 67.86666666666032,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 13,
+          "plane": 0
+        },
+        {
+          "year": 1995,
+          "t": 68.1666666666603,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 1995,
+          "t": 68.1666666666603,
+          "type": "guardianCounter",
+          "signature": "Convoi spectral",
+          "plane": 1,
+          "seconds": 3.35
+        },
+        {
+          "year": 1995,
+          "t": 68.33333333332696,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 1995,
+          "t": 70.38333333332685,
+          "type": "bossDefeated",
+          "name": "La Locomotive Spectre",
+          "kind": "final",
+          "weapon": "rail"
+        },
+        {
+          "year": 1995,
+          "t": 70.38333333332685,
+          "type": "bonus",
+          "name": "Double signature",
+          "points": 2000
+        },
+        {
+          "year": 1995,
+          "t": 70.38333333332685,
+          "type": "clear",
+          "eraIndex": 2
+        }
+      ],
+      "audio": {
+        "media": 0,
+        "context": 0
+      }
+    },
+    {
+      "year": 2185,
+      "attempt": 1,
+      "status": "cleared",
+      "t": 55.366666666664806,
+      "score": 20775,
+      "cause": "",
+      "events": [
+        {
+          "year": 2185,
+          "t": 0.9000000000000011,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 2185,
+          "t": 0.9000000000000011,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 1.5999999999999992,
+          "type": "flightStart",
+          "x": 16,
+          "y": 9,
+          "plane": 0,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 2.5666666666666624,
+          "type": "flightRing",
+          "x": 21.8624381736957,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.28,
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 3.599999999999992,
+          "type": "flightCrash",
+          "x": 25.476394301010043,
+          "y": 7.610890870254298,
+          "plane": 0,
+          "cause": "Drone"
+        },
+        {
+          "year": 2185,
+          "t": 3.599999999999992,
+          "type": "flightEnd",
+          "x": 25,
+          "y": 7,
+          "plane": 0,
+          "success": false,
+          "points": 0,
+          "cause": "Drone",
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 2185,
+          "t": 3.6333333333333253,
+          "type": "nova",
+          "x": 25,
+          "y": 7,
+          "plane": 0,
+          "radius": 7.71
+        },
+        {
+          "year": 2185,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.4,
+          "tiles": 21,
+          "opening": 13
+        },
+        {
+          "year": 2185,
+          "t": 4.766666666666655,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 5.933333333333318,
+          "type": "ecoActive",
+          "role": "sentinelle",
+          "serial": 1
+        },
+        {
+          "year": 2185,
+          "t": 7.066666666666647,
+          "type": "ecoEvade",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 8.766666666666682,
+          "type": "cell",
+          "x": 12,
+          "y": 7,
+          "plane": 1,
+          "eaten": 2
+        },
+        {
+          "year": 2185,
+          "t": 8.766666666666682,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 2185,
+          "t": 12.5000000000002,
+          "type": "cell",
+          "x": 26,
+          "y": 11,
+          "plane": 1,
+          "eaten": 3
+        },
+        {
+          "year": 2185,
+          "t": 13.666666666666925,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 2,
+          "seconds": 1.432,
+          "tiles": 45,
+          "opening": 15
+        },
+        {
+          "year": 2185,
+          "t": 13.800000000000265,
+          "type": "nova",
+          "x": 20,
+          "y": 11,
+          "plane": 1,
+          "radius": 8.33
+        },
+        {
+          "year": 2185,
+          "t": 13.800000000000265,
+          "type": "novaOverload",
+          "signature": "moons",
+          "x": 20,
+          "y": 11,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 13.800000000000265,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 2,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 16.066666666667036,
+          "type": "cell",
+          "x": 19,
+          "y": 1,
+          "plane": 1,
+          "eaten": 4
+        },
+        {
+          "year": 2185,
+          "t": 16.066666666667036,
+          "type": "sector",
+          "sector": 3,
+          "difficulty": 3
+        },
+        {
+          "year": 2185,
+          "t": 16.066666666667036,
+          "type": "upgrade",
+          "id": "arc",
+          "level": 1
+        },
+        {
+          "year": 2185,
+          "t": 19.966666666666814,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 3,
+          "seconds": 1.464,
+          "tiles": 15,
+          "opening": 16
+        },
+        {
+          "year": 2185,
+          "t": 20.033333333333477,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 21.00000000000009,
+          "type": "cell",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "eaten": 5
+        },
+        {
+          "year": 2185,
+          "t": 21.00000000000009,
+          "type": "flightGate",
+          "x": 25,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 21.433333333333398,
+          "type": "ecoActive",
+          "role": "sentinelle",
+          "serial": 3
+        },
+        {
+          "year": 2185,
+          "t": 22.733333333333324,
+          "type": "ecoEvade",
+          "role": "sentinelle",
+          "serial": 3,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 23.1333333333333,
+          "type": "cell",
+          "x": 19,
+          "y": 17,
+          "plane": 0,
+          "eaten": 6
+        },
+        {
+          "year": 2185,
+          "t": 23.1333333333333,
+          "type": "sector",
+          "sector": 4,
+          "difficulty": 4
+        },
+        {
+          "year": 2185,
+          "t": 25.366666666666507,
+          "type": "cell",
+          "x": 7,
+          "y": 17,
+          "plane": 0,
+          "eaten": 7
+        },
+        {
+          "year": 2185,
+          "t": 27.199999999999736,
+          "type": "cell",
+          "x": 10,
+          "y": 10,
+          "plane": 0,
+          "eaten": 8
+        },
+        {
+          "year": 2185,
+          "t": 27.199999999999736,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 2185,
+          "t": 27.199999999999736,
+          "type": "boss",
+          "name": "Le Pulsar",
+          "kind": "mid"
+        },
+        {
+          "year": 2185,
+          "t": 27.199999999999736,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Anneau de pulsar"
+        },
+        {
+          "year": 2185,
+          "t": 27.199999999999736,
+          "type": "guardianWarning",
+          "signature": "Anneau de pulsar",
+          "plane": 0,
+          "beat": 1,
+          "beats": 2,
+          "hint": "Deux anneaux successifs s’éloignent du point marqué."
+        },
+        {
+          "year": 2185,
+          "t": 27.233333333333068,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 28.433333333333,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Anneau de pulsar"
+        },
+        {
+          "year": 2185,
+          "t": 28.46666666666633,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 4,
+          "seconds": 1.528,
+          "tiles": 85,
+          "opening": 19
+        },
+        {
+          "year": 2185,
+          "t": 28.63333333333299,
+          "type": "nova",
+          "x": 18,
+          "y": 10,
+          "plane": 1,
+          "radius": 9.88
+        },
+        {
+          "year": 2185,
+          "t": 28.63333333333299,
+          "type": "novaOverload",
+          "signature": "moons",
+          "x": 18,
+          "y": 10,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 28.63333333333299,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 4,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 28.799999999999645,
+          "type": "guardianWarning",
+          "signature": "Anneau de pulsar",
+          "plane": 0,
+          "beat": 2,
+          "beats": 2,
+          "hint": "Deux anneaux successifs s’éloignent du point marqué."
+        },
+        {
+          "year": 2185,
+          "t": 29.56666666666627,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Anneau de pulsar"
+        },
+        {
+          "year": 2185,
+          "t": 29.966666666666246,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 2185,
+          "t": 29.966666666666246,
+          "type": "guardianCounter",
+          "signature": "Anneau de pulsar",
+          "plane": 0,
+          "seconds": 2.5
+        },
+        {
+          "year": 2185,
+          "t": 30.03333333333291,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 32.29999999999945,
+          "type": "bossDefeated",
+          "name": "Le Pulsar",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 2185,
+          "t": 32.29999999999945,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "prism",
+          "mod": "chain",
+          "changed": false,
+          "elapsed": 32.29999999999945
+        },
+        {
+          "year": 2185,
+          "t": 32.29999999999945,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 2185,
+          "t": 33.49999999999938,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 5,
+          "seconds": 1.528,
+          "tiles": 36,
+          "opening": 19
+        },
+        {
+          "year": 2185,
+          "t": 33.566666666666045,
+          "type": "nova",
+          "x": 17,
+          "y": 17,
+          "plane": 0,
+          "radius": 9.88
+        },
+        {
+          "year": 2185,
+          "t": 33.566666666666045,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 5,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 35.26666666666595,
+          "type": "cell",
+          "x": 13,
+          "y": 11,
+          "plane": 0,
+          "eaten": 9
+        },
+        {
+          "year": 2185,
+          "t": 37.533333333332486,
+          "type": "cell",
+          "x": 7,
+          "y": 4,
+          "plane": 0,
+          "eaten": 10
+        },
+        {
+          "year": 2185,
+          "t": 37.533333333332486,
+          "type": "sector",
+          "sector": 6,
+          "difficulty": 6
+        },
+        {
+          "year": 2185,
+          "t": 38.199999999999115,
+          "type": "cell",
+          "x": 8,
+          "y": 1,
+          "plane": 0,
+          "eaten": 11
+        },
+        {
+          "year": 2185,
+          "t": 38.433333333332435,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 6,
+          "seconds": 1.5599999999999998,
+          "tiles": 59,
+          "opening": 20
+        },
+        {
+          "year": 2185,
+          "t": 39.99999999999901,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 6
+        },
+        {
+          "year": 2185,
+          "t": 40.68333333333231,
+          "type": "cell",
+          "x": 22,
+          "y": 2,
+          "plane": 0,
+          "eaten": 12
+        },
+        {
+          "year": 2185,
+          "t": 40.68333333333231,
+          "type": "sector",
+          "sector": 7,
+          "difficulty": 7
+        },
+        {
+          "year": 2185,
+          "t": 40.68333333333231,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 1
+        },
+        {
+          "year": 2185,
+          "t": 41.51666666666559,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 42.749999999998856,
+          "type": "cell",
+          "x": 28,
+          "y": 9,
+          "plane": 0,
+          "eaten": 13
+        },
+        {
+          "year": 2185,
+          "t": 43.38333333333215,
+          "type": "cell",
+          "x": 30,
+          "y": 11,
+          "plane": 0,
+          "eaten": 14
+        },
+        {
+          "year": 2185,
+          "t": 43.38333333333215,
+          "type": "sector",
+          "sector": 8,
+          "difficulty": 8
+        },
+        {
+          "year": 2185,
+          "t": 44.44999999999876,
+          "type": "cell",
+          "x": 35,
+          "y": 13,
+          "plane": 0,
+          "eaten": 15
+        },
+        {
+          "year": 2185,
+          "t": 45.5499999999987,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.6239999999999999,
+          "tiles": 126,
+          "opening": 23
+        },
+        {
+          "year": 2185,
+          "t": 46.533333333331974,
+          "type": "cell",
+          "x": 24,
+          "y": 10,
+          "plane": 0,
+          "eaten": 16
+        },
+        {
+          "year": 2185,
+          "t": 46.533333333331974,
+          "type": "sector",
+          "sector": 9,
+          "difficulty": 9
+        },
+        {
+          "year": 2185,
+          "t": 46.533333333331974,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 2
+        },
+        {
+          "year": 2185,
+          "t": 47.1999999999986,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 7
+        },
+        {
+          "year": 2185,
+          "t": 47.99999999999856,
+          "type": "cell",
+          "x": 34,
+          "y": 10,
+          "plane": 0,
+          "eaten": 17
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "cell",
+          "x": 31,
+          "y": 12,
+          "plane": 0,
+          "eaten": 18
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "boss",
+          "name": "L’Éclipse",
+          "kind": "final"
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Portes gravitationnelles"
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "guardianWarning",
+          "signature": "Portes gravitationnelles",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Cherche les ouvertures opposées des deux portes."
+        },
+        {
+          "year": 2185,
+          "t": 48.73333333333185,
+          "type": "ecoCancel",
+          "role": "sillage",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 48.76666666666518,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 50.033333333331775,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Portes gravitationnelles"
+        },
+        {
+          "year": 2185,
+          "t": 50.43333333333175,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 2185,
+          "t": 50.43333333333175,
+          "type": "riftOpen",
+          "x": 20,
+          "y": 15,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 50.43333333333175,
+          "type": "guardianCounter",
+          "signature": "Portes gravitationnelles",
+          "plane": 0,
+          "seconds": 3
+        },
+        {
+          "year": 2185,
+          "t": 50.56666666666508,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 50.83333333333173,
+          "type": "nova",
+          "x": 16,
+          "y": 12,
+          "plane": 0,
+          "radius": 17.48
+        },
+        {
+          "year": 2185,
+          "t": 50.83333333333173,
+          "type": "novaOverload",
+          "signature": "moons",
+          "x": 16,
+          "y": 12,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 51.46666666666503,
+          "type": "ecoWarning",
+          "role": "portier",
+          "plane": 0,
+          "serial": 8,
+          "seconds": 1.688,
+          "tiles": 82,
+          "opening": 27
+        },
+        {
+          "year": 2185,
+          "t": 51.53333333333169,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 53.16666666666493,
+          "type": "ecoActive",
+          "role": "portier",
+          "serial": 8
+        },
+        {
+          "year": 2185,
+          "t": 53.19999999999826,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 53.266666666664925,
+          "type": "ecoKill",
+          "role": "portier",
+          "serial": 8,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 53.43333333333158,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Portes gravitationnelles"
+        },
+        {
+          "year": 2185,
+          "t": 53.43333333333158,
+          "type": "guardianWarning",
+          "signature": "Portes gravitationnelles",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Cherche les ouvertures opposées des deux portes."
+        },
+        {
+          "year": 2185,
+          "t": 53.89999999999822,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2185,
+          "t": 53.99999999999822,
+          "type": "ecoAbsorb",
+          "cause": "Ta propre queue",
+          "lost": 2,
+          "remaining": 21
+        },
+        {
+          "year": 2185,
+          "t": 54.76666666666484,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Portes gravitationnelles"
+        },
+        {
+          "year": 2185,
+          "t": 55.16666666666482,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 2185,
+          "t": 55.16666666666482,
+          "type": "guardianCounter",
+          "signature": "Portes gravitationnelles",
+          "plane": 0,
+          "seconds": 3
+        },
+        {
+          "year": 2185,
+          "t": 55.29999999999814,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2185,
+          "t": 55.366666666664806,
+          "type": "bossDefeated",
+          "name": "L’Éclipse",
+          "kind": "final",
+          "weapon": "arc"
+        },
+        {
+          "year": 2185,
+          "t": 55.366666666664806,
+          "type": "clear",
+          "eraIndex": 3
+        }
+      ],
+      "audio": {
+        "media": 0,
+        "context": 0
+      }
+    },
+    {
+      "year": 2985,
+      "attempt": 1,
+      "status": "won",
+      "t": 45.88333333332421,
+      "score": 24400,
+      "cause": "",
+      "events": [
+        {
+          "year": 2985,
+          "t": 0.8666666666666677,
+          "type": "cell",
+          "x": 13,
+          "y": 9,
+          "plane": 0,
+          "eaten": 1
+        },
+        {
+          "year": 2985,
+          "t": 0.8666666666666677,
+          "type": "flightGate",
+          "x": 16,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 2.5999999999999956,
+          "type": "evolutionTrigger",
+          "x": 11,
+          "y": 9,
+          "plane": 0,
+          "dx": 1,
+          "dy": 0,
+          "core": "prism",
+          "mod": "chain",
+          "era": 4,
+          "kind": "shadow",
+          "life": 1.4000000000000092,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 2985,
+          "t": 3.2333333333333267,
+          "type": "cell",
+          "x": 7,
+          "y": 4,
+          "plane": 0,
+          "eaten": 2
+        },
+        {
+          "year": 2985,
+          "t": 3.2333333333333267,
+          "type": "sector",
+          "sector": 2,
+          "difficulty": 2
+        },
+        {
+          "year": 2985,
+          "t": 4.533333333333323,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 0,
+          "serial": 1,
+          "seconds": 1.432,
+          "tiles": 45,
+          "opening": 15
+        },
+        {
+          "year": 2985,
+          "t": 4.666666666666655,
+          "type": "nova",
+          "x": 14,
+          "y": 4,
+          "plane": 0,
+          "radius": 9.62
+        },
+        {
+          "year": 2985,
+          "t": 4.666666666666655,
+          "type": "novaOverload",
+          "signature": "echo",
+          "x": 14,
+          "y": 4,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 4.666666666666655,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 1,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 5.366666666666653,
+          "type": "novaOverloadHit",
+          "signature": "echo",
+          "x": 18,
+          "y": 4,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 7.233333333333313,
+          "type": "cell",
+          "x": 24,
+          "y": 7,
+          "plane": 0,
+          "eaten": 3
+        },
+        {
+          "year": 2985,
+          "t": 8.633333333333342,
+          "type": "cell",
+          "x": 17,
+          "y": 7,
+          "plane": 0,
+          "eaten": 4
+        },
+        {
+          "year": 2985,
+          "t": 8.633333333333342,
+          "type": "sector",
+          "sector": 3,
+          "difficulty": 3
+        },
+        {
+          "year": 2985,
+          "t": 8.633333333333342,
+          "type": "upgrade",
+          "id": "arc",
+          "level": 1
+        },
+        {
+          "year": 2985,
+          "t": 10.833333333333451,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 2,
+          "seconds": 1.464,
+          "tiles": 24,
+          "opening": 17
+        },
+        {
+          "year": 2985,
+          "t": 11.100000000000131,
+          "type": "cell",
+          "x": 25,
+          "y": 12,
+          "plane": 0,
+          "eaten": 5
+        },
+        {
+          "year": 2985,
+          "t": 11.100000000000131,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 2,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 13.36666666666691,
+          "type": "cell",
+          "x": 24,
+          "y": 3,
+          "plane": 0,
+          "eaten": 6
+        },
+        {
+          "year": 2985,
+          "t": 13.36666666666691,
+          "type": "sector",
+          "sector": 4,
+          "difficulty": 4
+        },
+        {
+          "year": 2985,
+          "t": 13.733333333333595,
+          "type": "evolutionTrigger",
+          "x": 24,
+          "y": 5,
+          "plane": 0,
+          "dx": 0,
+          "dy": -1,
+          "core": "prism",
+          "mod": "chain",
+          "era": 4,
+          "kind": "shadow",
+          "life": 3.0000000000000036,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 2985,
+          "t": 14.76666666666698,
+          "type": "cell",
+          "x": 31,
+          "y": 2,
+          "plane": 0,
+          "eaten": 7
+        },
+        {
+          "year": 2985,
+          "t": 16.733333333333665,
+          "type": "cell",
+          "x": 34,
+          "y": 10,
+          "plane": 0,
+          "eaten": 8
+        },
+        {
+          "year": 2985,
+          "t": 16.733333333333665,
+          "type": "sector",
+          "sector": 5,
+          "difficulty": 5
+        },
+        {
+          "year": 2985,
+          "t": 16.733333333333665,
+          "type": "boss",
+          "name": "Le Dévoreur",
+          "kind": "mid"
+        },
+        {
+          "year": 2985,
+          "t": 16.733333333333665,
+          "type": "bossAttack",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Prisme diagonal"
+        },
+        {
+          "year": 2985,
+          "t": 16.733333333333665,
+          "type": "guardianWarning",
+          "signature": "Prisme diagonal",
+          "plane": 0,
+          "beat": 1,
+          "beats": 1,
+          "hint": "Les obliques se croisent devant toi. Trouve leur intervalle."
+        },
+        {
+          "year": 2985,
+          "t": 16.766666666666996,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 16.86666666666699,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 0,
+          "serial": 3,
+          "seconds": 1.528,
+          "tiles": 56,
+          "opening": 20
+        },
+        {
+          "year": 2985,
+          "t": 17.866666666666934,
+          "type": "bossVolley",
+          "kind": "mid",
+          "plane": 0,
+          "pattern": "Prisme diagonal"
+        },
+        {
+          "year": 2985,
+          "t": 18.300000000000242,
+          "type": "recover",
+          "kind": "mid"
+        },
+        {
+          "year": 2985,
+          "t": 18.300000000000242,
+          "type": "guardianCounter",
+          "signature": "Prisme diagonal",
+          "plane": 0,
+          "seconds": 2.8
+        },
+        {
+          "year": 2985,
+          "t": 18.400000000000237,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 3
+        },
+        {
+          "year": 2985,
+          "t": 18.4666666666669,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 18.4666666666669,
+          "type": "ecoKill",
+          "role": "sillage",
+          "serial": 3,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 20.30000000000013,
+          "type": "nova",
+          "x": 13,
+          "y": 10,
+          "plane": 0,
+          "radius": 11.48
+        },
+        {
+          "year": 2985,
+          "t": 20.30000000000013,
+          "type": "novaOverload",
+          "signature": "echo",
+          "x": 13,
+          "y": 10,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 20.616666666666777,
+          "type": "bossDefeated",
+          "name": "Le Dévoreur",
+          "kind": "mid",
+          "weapon": "arc"
+        },
+        {
+          "year": 2985,
+          "t": 20.616666666666777,
+          "type": "workshopRecipe",
+          "sector": 5,
+          "from": "prism",
+          "core": "well",
+          "mod": "chain",
+          "changed": true,
+          "elapsed": 20.616666666666777
+        },
+        {
+          "year": 2985,
+          "t": 20.616666666666777,
+          "type": "upgrade",
+          "id": "rail",
+          "level": 1
+        },
+        {
+          "year": 2985,
+          "t": 22.150000000000023,
+          "type": "cell",
+          "x": 7,
+          "y": 11,
+          "plane": 0,
+          "eaten": 9
+        },
+        {
+          "year": 2985,
+          "t": 22.51666666666667,
+          "type": "evolutionTrigger",
+          "x": 7,
+          "y": 11,
+          "plane": 0,
+          "dx": 0,
+          "dy": 1,
+          "core": "well",
+          "mod": "chain",
+          "era": 4,
+          "kind": "shadow",
+          "life": 3.316666666666669,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 2985,
+          "t": 23.649999999999938,
+          "type": "cell",
+          "x": 0,
+          "y": 9,
+          "plane": 0,
+          "eaten": 10
+        },
+        {
+          "year": 2985,
+          "t": 23.649999999999938,
+          "type": "sector",
+          "sector": 6,
+          "difficulty": 6
+        },
+        {
+          "year": 2985,
+          "t": 23.816666666666595,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 4,
+          "seconds": 1.5599999999999998,
+          "tiles": 84,
+          "opening": 21
+        },
+        {
+          "year": 2985,
+          "t": 23.849999999999927,
+          "type": "nova",
+          "x": 1,
+          "y": 9,
+          "plane": 0,
+          "radius": 12.1
+        },
+        {
+          "year": 2985,
+          "t": 23.849999999999927,
+          "type": "novaOverload",
+          "signature": "echo",
+          "x": 1,
+          "y": 9,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 23.849999999999927,
+          "type": "ecoKill",
+          "role": "equarrisseur",
+          "serial": 4,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 26.21666666666646,
+          "type": "flightStart",
+          "x": 16,
+          "y": 9,
+          "plane": 0,
+          "goal": 3
+        },
+        {
+          "year": 2985,
+          "t": 27.216666666666402,
+          "type": "flightRing",
+          "x": 21.8624381736957,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.28,
+          "passed": 1,
+          "goal": 3
+        },
+        {
+          "year": 2985,
+          "t": 28.283333333333008,
+          "type": "flightRing",
+          "x": 26.755222296789885,
+          "y": 7.042877263930501,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": -0.64,
+          "passed": 2,
+          "goal": 3
+        },
+        {
+          "year": 2985,
+          "t": 29.416666666666277,
+          "type": "flightRing",
+          "x": 31.64800641988407,
+          "y": 10.685769456241093,
+          "plane": 0,
+          "radius": 1.05,
+          "heading": 0.64,
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 2985,
+          "t": 29.416666666666277,
+          "type": "flightEnd",
+          "x": 30,
+          "y": 10,
+          "plane": 0,
+          "success": true,
+          "points": 1950,
+          "cause": "Slalom réussi",
+          "passed": 3,
+          "goal": 3
+        },
+        {
+          "year": 2985,
+          "t": 29.416666666666277,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 5,
+          "seconds": 1.5599999999999998,
+          "tiles": 63,
+          "opening": 20
+        },
+        {
+          "year": 2985,
+          "t": 29.583333333332934,
+          "type": "cell",
+          "x": 31,
+          "y": 10,
+          "plane": 0,
+          "eaten": 11
+        },
+        {
+          "year": 2985,
+          "t": 29.783333333332923,
+          "type": "evolutionTrigger",
+          "x": 31.04050075423786,
+          "y": 9.437821210472457,
+          "plane": 0,
+          "dx": 0.998937599012877,
+          "dy": 0.046083329723321936,
+          "core": "well",
+          "mod": "chain",
+          "era": 4,
+          "kind": "shadow",
+          "life": 3.283333333333336,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 2985,
+          "t": 30.699999999999537,
+          "type": "cell",
+          "x": 25,
+          "y": 11,
+          "plane": 0,
+          "eaten": 12
+        },
+        {
+          "year": 2985,
+          "t": 30.699999999999537,
+          "type": "sector",
+          "sector": 7,
+          "difficulty": 7
+        },
+        {
+          "year": 2985,
+          "t": 30.699999999999537,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 1
+        },
+        {
+          "year": 2985,
+          "t": 30.99999999999952,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 5
+        },
+        {
+          "year": 2985,
+          "t": 31.033333333332852,
+          "type": "cell",
+          "x": 26,
+          "y": 12,
+          "plane": 0,
+          "eaten": 13
+        },
+        {
+          "year": 2985,
+          "t": 31.033333333332852,
+          "type": "flightGate",
+          "x": 29,
+          "y": 12,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 31.9333333333328,
+          "type": "cell",
+          "x": 27,
+          "y": 17,
+          "plane": 0,
+          "eaten": 14
+        },
+        {
+          "year": 2985,
+          "t": 31.9333333333328,
+          "type": "sector",
+          "sector": 8,
+          "difficulty": 8
+        },
+        {
+          "year": 2985,
+          "t": 32.49999999999944,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 5,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 33.26666666666606,
+          "type": "cell",
+          "x": 19,
+          "y": 16,
+          "plane": 0,
+          "eaten": 15
+        },
+        {
+          "year": 2985,
+          "t": 35.599999999998026,
+          "type": "cell",
+          "x": 19,
+          "y": 0,
+          "plane": 0,
+          "eaten": 16
+        },
+        {
+          "year": 2985,
+          "t": 35.599999999998026,
+          "type": "sector",
+          "sector": 9,
+          "difficulty": 9
+        },
+        {
+          "year": 2985,
+          "t": 35.599999999998026,
+          "type": "upgrade",
+          "id": "nova",
+          "level": 2
+        },
+        {
+          "year": 2985,
+          "t": 36.09999999999768,
+          "type": "ecoWarning",
+          "role": "sillage",
+          "plane": 1,
+          "serial": 6,
+          "seconds": 1.656,
+          "tiles": 62,
+          "opening": 26
+        },
+        {
+          "year": 2985,
+          "t": 36.89999999999712,
+          "type": "evolutionTrigger",
+          "x": 13,
+          "y": 0,
+          "plane": 0,
+          "dx": -1,
+          "dy": 0,
+          "core": "well",
+          "mod": "chain",
+          "era": 4,
+          "kind": "shadow",
+          "life": 3.383333333333707,
+          "maxLife": 4,
+          "radius": 1,
+          "entered": true,
+          "found": 0
+        },
+        {
+          "year": 2985,
+          "t": 37.766666666663184,
+          "type": "ecoActive",
+          "role": "sillage",
+          "serial": 6
+        },
+        {
+          "year": 2985,
+          "t": 38.43333333332939,
+          "type": "cell",
+          "x": 12,
+          "y": 13,
+          "plane": 0,
+          "eaten": 17
+        },
+        {
+          "year": 2985,
+          "t": 39.43333333332869,
+          "type": "ecoEvade",
+          "role": "sillage",
+          "serial": 6,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "cell",
+          "x": 4,
+          "y": 9,
+          "plane": 0,
+          "eaten": 18
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "sector",
+          "sector": 10,
+          "difficulty": 10
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "boss",
+          "name": "La Singularité",
+          "kind": "final"
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "bossAttack",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "beat": 1,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 40.1333333333282,
+          "type": "surfGate",
+          "plane": 0,
+          "x": 5,
+          "y": 11
+        },
+        {
+          "year": 2985,
+          "t": 40.16666666666151,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 40.966666666660956,
+          "type": "nova",
+          "x": 10,
+          "y": 9,
+          "plane": 1,
+          "radius": 19.08
+        },
+        {
+          "year": 2985,
+          "t": 40.966666666660956,
+          "type": "novaOverload",
+          "signature": "echo",
+          "x": 10,
+          "y": 9,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 41.29999999999406,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 41.73333333332709,
+          "type": "riftOpen",
+          "x": 10,
+          "y": 7,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 41.73333333332709,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 1,
+          "beat": 2,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 41.79999999999371,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 42.36666666665998,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 1,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 42.79999999999301,
+          "type": "guardianWarning",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "beat": 3,
+          "beats": 3,
+          "hint": "Les trois contours se resserrent en alternant les plans."
+        },
+        {
+          "year": 2985,
+          "t": 42.89999999999294,
+          "type": "planeShift",
+          "from": 0,
+          "to": 1,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 43.06666666665949,
+          "type": "ecoWarning",
+          "role": "sentinelle",
+          "plane": 1,
+          "serial": 7,
+          "seconds": 1.688,
+          "tiles": 147,
+          "opening": 27
+        },
+        {
+          "year": 2985,
+          "t": 43.133333333326114,
+          "type": "ecoKill",
+          "role": "sentinelle",
+          "serial": 7,
+          "plane": 1
+        },
+        {
+          "year": 2985,
+          "t": 43.433333333325905,
+          "type": "bossVolley",
+          "kind": "final",
+          "plane": 0,
+          "pattern": "Effondrement fractal"
+        },
+        {
+          "year": 2985,
+          "t": 43.866666666658936,
+          "type": "recover",
+          "kind": "final"
+        },
+        {
+          "year": 2985,
+          "t": 43.866666666658936,
+          "type": "guardianCounter",
+          "signature": "Effondrement fractal",
+          "plane": 0,
+          "seconds": 3.6
+        },
+        {
+          "year": 2985,
+          "t": 43.96666666665887,
+          "type": "planeShift",
+          "from": 1,
+          "to": 0,
+          "plane": 0
+        },
+        {
+          "year": 2985,
+          "t": 45.866666666657544,
+          "type": "ecoWarning",
+          "role": "equarrisseur",
+          "plane": 0,
+          "serial": 8,
+          "seconds": 1.688,
+          "tiles": 77,
+          "opening": 27
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "bossDefeated",
+          "name": "La Singularité",
+          "kind": "final",
+          "weapon": "rail"
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "bonus",
+          "name": "Double signature",
+          "points": 2000
+        },
+        {
+          "year": 2985,
+          "t": 45.88333333332421,
+          "type": "win",
+          "eraIndex": 4
+        }
+      ],
+      "audio": {
+        "media": 0,
+        "context": 0
+      }
+    }
+  ],
+  "errors": []
+}

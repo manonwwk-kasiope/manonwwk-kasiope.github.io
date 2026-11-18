@@ -342,20 +342,25 @@
       c.drawImage(canvas,0,0,w,h);
     }
     c.save();c.setTransform(1,0,0,1,0,0);
-    const img=c.getImageData(0,0,w,h),buf=img.data,packed=new Uint32Array(buf.buffer,buf.byteOffset,w*h);
+    const img=c.getImageData(0,0,w,h),buf=img.data;
     const table=f.palette?lut(year):null;
-    for(let y=0,i=0;y<h;y++)for(let x=0;x<w;x++,i++){
-      const j=i*4,d=bayer[(y%4)*4+x%4]*(f.bits===8?.75:.55),r=buf[j],g=buf[j+1],b=buf[j+2];
-      if(table){
-        const rr=Math.min(255,Math.max(0,r+d))>>3,gg=Math.min(255,Math.max(0,g+d))>>3,bb=Math.min(255,Math.max(0,b+d))>>3;
-        packed[i]=table[rr*1024+gg*32+bb];
-      }else if(f.bits===8){
-        // RGB332 exact, arrondi au niveau le plus proche avec trame ordonnée.
-        const ri=Math.min(7,Math.max(0,Math.round((r+d)*7/255))),gi=Math.min(7,Math.max(0,Math.round((g+d)*7/255))),bi=Math.min(3,Math.max(0,Math.round((b+d*1.6)*3/255)));
-        buf[j]=ri*255/7;buf[j+1]=gi*255/7;buf[j+2]=bi*85;
-      }else{
-        const ri=r>>3,gi=g>>2,bi=b>>3;
-        buf[j]=(ri<<3)|(ri>>2);buf[j+1]=(gi<<2)|(gi>>4);buf[j+2]=(bi<<3)|(bi>>2);
+    if(window.SnakeQuantification){
+      window.SnakeQuantification.convert(buf,w,h,f.bits,table);
+    }else{
+      const packed=new Uint32Array(buf.buffer,buf.byteOffset,w*h);
+      for(let y=0,i=0;y<h;y++)for(let x=0;x<w;x++,i++){
+        const j=i*4,d=bayer[(y%4)*4+x%4]*(f.bits===8?.75:.55),r=buf[j],g=buf[j+1],b=buf[j+2];
+        if(table){
+          const rr=Math.min(255,Math.max(0,r+d))>>3,gg=Math.min(255,Math.max(0,g+d))>>3,bb=Math.min(255,Math.max(0,b+d))>>3;
+          packed[i]=table[rr*1024+gg*32+bb];
+        }else if(f.bits===8){
+          // RGB332 exact, arrondi au niveau le plus proche avec trame ordonnée.
+          const ri=Math.min(7,Math.max(0,Math.round((r+d)*7/255))),gi=Math.min(7,Math.max(0,Math.round((g+d)*7/255))),bi=Math.min(3,Math.max(0,Math.round((b+d*1.6)*3/255)));
+          buf[j]=ri*255/7;buf[j+1]=gi*255/7;buf[j+2]=bi*85;
+        }else{
+          const ri=r>>3,gi=g>>2,bi=b>>3;
+          buf[j]=(ri<<3)|(ri>>2);buf[j+1]=(gi<<2)|(gi>>4);buf[j+2]=(bi<<3)|(bi>>2);
+        }
       }
     }
     c.putImageData(img,0,0);c.restore();

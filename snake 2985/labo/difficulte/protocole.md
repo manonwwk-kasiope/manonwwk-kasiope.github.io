@@ -1,0 +1,5 @@
+# Mesure par cran
+
+Deux séries appariées sont réservées avant les parties : réglage 83 011 + 113i (12 graines), vérification 191 021 + 113i (24 graines). Chacune couvre les cinq dates et deux profils. Les deux conditions utilisent les mêmes graines du moteur et des erreurs de commande. Profil expert identique au pilote de recette ; profil habitué avec observation retardée de 0,19 s, horizon six cases et erreur de direction de 1,2 % des commandes au sol.
+
+Comparer le témoin à une relance unique des menaces d’écologie à l’entrée des crans 7, 8 et 9. Préserver les duels, les quatre secondes qui suivent le mini-boss, l’approche télégraphiée, la sécurité initiale, le vol et les chemins certifiés. Pour retenir la proposition : hausse d’au moins cinq points de la part des crans 7–9 comportant une annonce, survie experte au maximum trois points sous le témoin, aucune activation ajoutée par le correctif en période protégée. Publier les dates/crans qui reculent, les crans atteints et la fréquence des fins avant la première salve. Une baisse d’exposition et une baisse de mortalité ont des significations distinctes.

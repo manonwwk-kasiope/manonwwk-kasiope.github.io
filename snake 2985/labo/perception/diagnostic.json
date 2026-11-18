@@ -1,0 +1,48 @@
+{
+  "nearest_objects": {
+    "head": {
+      "correct": 46,
+      "drone": 4,
+      "gardien": 18,
+      "cellule hors plan": 1,
+      "autre": 4,
+      "cellule du plan": 1,
+      "masque": 1
+    },
+    "basehead": {
+      "correct": 67,
+      "drone": 1,
+      "autre": 5,
+      "silence": 2
+    },
+    "target": {
+      "cellule hors plan": 3,
+      "silence": 46,
+      "correct": 11,
+      "cellule du plan": 15
+    },
+    "basetarget": {
+      "corps": 3,
+      "silence": 30,
+      "autre": 8,
+      "drone": 1,
+      "masque": 1,
+      "orbite": 5,
+      "correct": 11,
+      "cellule du plan": 16
+    }
+  },
+  "projection": {
+    "cell_targets": 65,
+    "rank_inversions": 0,
+    "overlaps_same_body": 7,
+    "bad_cell_on_correct_head": 14
+  },
+  "cell_when_collectable": {
+    "n": 40,
+    "positives": 35,
+    "tp": 9,
+    "fp": 13,
+    "fn": 26
+  }
+}

@@ -5,6 +5,28 @@
   let storage=null;
   try { storage=window.localStorage; } catch { /* La session reste jouable en mémoire. */ }
   const archive=chrono.archive(storage);
+  const routeKey='snake2985.chrono.saut.v1';
+  let session=null, activeAttempt=null;
+  try {session=window.sessionStorage;} catch { /* L’onglet conserve son choix en mémoire. */ }
+  function abandon(){
+    pending=null;
+    if(activeAttempt){activeAttempt.source=null;activeAttempt.rival=null;}
+    try{session?.removeItem(routeKey);}catch{}
+  }
+  function storedRoute(){
+    try{
+      const raw=session?.getItem(routeKey);
+      if(!raw||raw.length>9000)return null;
+      const data=JSON.parse(raw);
+      if(data?.v!==1||!years.includes(data.year))return null;
+      const clip=chrono.open(data.record);
+      return clip&&chrono.futureYears(clip.year).includes(data.year)?{year:data.year,record:data.record,clip}:null;
+    }catch{return null;}
+  }
+  function saveRoute(route){
+    try{session?.setItem(routeKey,JSON.stringify({v:1,year:route.year,record:route.record}));}catch{}
+  }
+  function resumeYear(){return storedRoute()?.year??null;}
   let latest=null, pending=null, dialog=null, focusBefore=null, animation=null, sequence=0;
   const fmt=n=>n.toLocaleString('fr-FR');
   const clock=t=>(t/1000).toFixed(2).replace('.',',')+' s';
@@ -12,13 +34,17 @@
   function button(parent,text,callback) {
     const b=elem('button',text);b.type='button';b.addEventListener('click',callback);parent.append(b);return b;
   }
-  function newRun(s) {
+  function newRun(s,{resume=false}={}) {
     if(attempts.has(s)) return attempts.get(s).id;
-    const source=pending;pending=null;
-    const rival=source && chrono.challenge(source,s);
+    const route=pending||(resume?storedRoute():null);
+    pending=null;
+    const source=route&&(route.year===null||route.year===s.year)?route.clip:null;
+    const rival=source&&chrono.challenge(source,s);
+    if(rival && route.year===null)saveRoute({...route,year:s.year});
+    if(!rival)abandon();
     const id=window.crypto?.randomUUID?.() || 'arc-'+Date.now().toString(36)+'-'+(++sequence)+'-'+Math.random().toString(36).slice(2);
-    const a={id,source:rival?source:null,rival,rec:chrono.recorder(),review:reprise.create(),row:null,clip:null};
-    attempts.set(s,a);tick(s);return id;
+    const a={id,source:rival?source:null,rival,rec:chrono.recorder(),review:reprise.create(),row:null,clip:null,record:null};
+    attempts.set(s,a);activeAttempt=a;tick(s);return id;
   }
   function tick(s) {
     const a=attempts.get(s);
@@ -33,14 +59,19 @@
     a.row=hall.record({id:a.id,year:s.year,name:hall.getName(),difficulty:s.difficulty,score:s.score,status:s.status});
     if(s.status==='dead'){
       const encoded=chrono.finish(a.rec,s);
-      if(encoded){a.clip=chrono.open(encoded);archive.save(encoded);}
+      if(encoded){a.record=encoded;a.clip=chrono.open(encoded);archive.save(encoded);}
     }
+    if(a===activeAttempt&&a.source)abandon();
     latest=a;return a.row;
   }
-  function jump(s) {
+  function jump(s,year=null) {
     const a=s?attempts.get(s):latest;
-    pending=a?.row?.status==='dead'?a.clip:null;
-    return !!pending;
+    abandon();
+    if(a?.row?.status!=='dead'||!a.clip||!a.record)return false;
+    if(year!==null&&!chrono.futureYears(a.clip.year).includes(year))return false;
+    pending={clip:a.clip,record:a.record,year};
+    if(year!==null)saveRoute(pending);
+    return true;
   }
   function offer(s) {
     const c=attempts.get(s)?.rival;
@@ -146,7 +177,7 @@
       ctx.lineWidth=2;ctx.strokeStyle='#fff';ctx.strokeRect(x*n+1,y*n+1,10,10);
     }
   }
-  function openReplay() {
+  function openReplay(getReduced) {
     if(!latest?.review.death)return false;
     const review=latest.review,{start,end}=review.bounds(),death=review.death;
     const body=panel('Dernière trajectoire'),tip=elem('p',death.cause+' · '+death.tip);
@@ -169,7 +200,7 @@
       status.textContent=when+' · plan '+(f.plane+1)+' · '+(f.flight?'vol':'grille')+' · case '+(Math.round(f.x)+1)+', '+(Math.round(f.y)+1);
       slider.setAttribute('aria-valuetext',status.textContent);
     };
-    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced=Boolean(window.matchMedia('(prefers-reduced-motion: reduce)').matches || (typeof getReduced==='function' && getReduced()));
     let play;
     const pause=()=>{stop();previous=null;play.textContent=reduced?'Image suivante':'Lire';};
     const advance=now=>{
@@ -215,5 +246,5 @@
       if(before){c.fillStyle='#ffc89d';c.fillRect(xs(before)-2,ys(before)-2,4,4);}
     }};
   }
-  window.SnakeArchives=Object.freeze({newRun,tick,end,jump,offer,wager,label,draw,openHall,openReplay,bande,death:s=>attempts.get(s)?.review?.death});
+  window.SnakeArchives=Object.freeze({newRun,tick,end,jump,resumeYear,abandon,offer,wager,label,draw,openHall,openReplay,bande,death:s=>attempts.get(s)?.review?.death});
 })();
