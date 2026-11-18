@@ -1,6 +1,6 @@
 # Livrer SNAKE 2985 · campagne panoramique
 
-18/11/2026 · 01 h 52 (Paris), mis à jour à 02 h 34
+18/11/2026 · 01 h 52 (Paris), mis à jour à 02 h 51
 
 La campagne comprend **1976, 1985, 1995, 2185 et 2985**. La page source est [la chambre](../labo/campagne/index.html). L’assembleur en tire un dossier autonome destiné à `/snake-2985/`. Pour une vérification silencieuse, ouvrir la page avec `?muet=1` dès la première navigation.
 
@@ -50,7 +50,7 @@ La borne publiée est accessible dans [Safari en mode silencieux](https://manonw
 |---|---|---|
 | Identité de l’édition | Date et heure de Paris, SHA du commit publié, `edition` du worker, comparaison SHA-256 des fichiers HTTP avec le dossier préparé | 18/11/2026 · 02 h 47, Paris. Commit 3c0ceefe2d65b4a9b51bb38b574831e494f353df. Worker 17e8f3871350afe6. Les 28 fichiers HTTP et ceux du sous-dossier local ont les mêmes octets. [Empreintes](recette-http.json) |
 | Médias et hors-ligne | Cinq MP3 complets vérifiés ; une plage d’octets demandée sur chacun renvoie 206 avec le bon contenu. Après installation du worker, la page redémarre hors ligne. | Les cinq requêtes partielles ont renvoyé le statut 206 et les bons octets. Après mise en cache des 27 actifs, Chromium a ouvert la borne publique hors ligne, joué puis fait pause. [Redémarrage sans réseau](hors-ligne-public.json) |
-| Safari public | URL avec `?muet=1`, paysage, jeu, pause/reprise, palmarès et passage en 1995. Préciser modèle, version iOS, appareil physique ou simulateur, résultat XCTest et emplacement des captures. | À renseigner |
+| Safari public | URL avec `?muet=1`, paysage, jeu, pause/reprise, palmarès et passage en 1995. Préciser modèle, version iOS, appareil physique ou simulateur, résultat XCTest et emplacement des captures. | iPhone 17 simulé, iOS 27.2. L’ancien cache a montré l’accueil quatre dates au premier chargement et installé le nouveau worker. À la deuxième ouverture du même lien, cinq dates, partie en 1976, pause et palmarès pendant rotation, reprise, défaite, revue et saut en 1995 réussis. HTML, JS, CSS et worker du cache vérifiés. [Reçu Safari public](../labo/qa-ios/recette-publique.json) |
 | Retour arrière | Identifier le commit de livraison et la révision publique précédente. En cas de retrait, rétablir uniquement `/snake-2985/` depuis celle-ci et vérifier l’édition servie. | Révision précédente edc50ef75809cd069fc8c66d8fb2c91ac5033f2d. Le diff inverse a restitué exactement son arbre Git dans un index isolé. [Vérification](retour-arriere.json) |
 
 ## Témoin historique à quatre époques
