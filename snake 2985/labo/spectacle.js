@@ -207,6 +207,17 @@
       c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);
     }
     c.strokeStyle=active?'#fff3b6':'#ffb195';c.lineWidth=1.4;c.stroke();
+    if(active && cam.year!==1976){
+      // Une croix marque l'impact effectif ; l'annonce conserve sa diagonale.
+      c.beginPath();
+      for(const p of tiles){
+        if((p.plane??attack.plane??0)!==z)continue;
+        const a=project(cam,p.x-.29,p.y-.27,z),b=project(cam,p.x+.29,p.y+.27,z);
+        c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);
+      }
+      c.strokeStyle='#272333';c.lineWidth=3.3;c.stroke();
+      c.strokeStyle='#ffefbe';c.lineWidth=1.8;c.stroke();
+    }
   }
   function cell(c,cam,p,z){
     if(window.SnakeSprites){
@@ -394,6 +405,7 @@
       }
       const selected=z===(s.plane||0);floorGrid(c,cam,z,selected,method);
       c.save();c.globalAlpha=selected?1:.47;
+      window.SnakeMarquage?.drawDepth?.(c,s,cam,z,project);
       window.SnakeVirages?.draw(c,s,cam,z,project);
       if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
       else weapons(c,s,cam,z);

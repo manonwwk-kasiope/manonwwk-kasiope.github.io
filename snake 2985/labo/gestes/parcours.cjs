@@ -1,7 +1,8 @@
 'use strict';
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const {chromium}=require('playwright'),doigts=require('./doigts.cjs');
-const root=path.resolve(__dirname,'../..');
+const dist=process.env.CAMPAGNE_DIST;
+const root=dist?path.resolve(dist):path.resolve(__dirname,'../..');
 function installedShell(){
   const pkg=require.resolve('playwright-core/package.json'),manifest=require(path.join(path.dirname(pkg),'browsers.json'));
   const revision=manifest.browsers.find(b=>b.name==='chromium-headless-shell').revision;
@@ -74,7 +75,7 @@ async function run(){
       const entry={mode,checks:[],events:[]};result.cases.push(entry);
       function check(label,okay,data){entry.checks.push({label,ok:!!okay,data});if(!okay)result.failures.push(mode+' / '+label);}
       try{
-        await page.goto(origin+'/labo/campagne/index.html',{waitUntil:'load'});await step();
+        await page.goto(origin+(dist?'/index.html?muet=1':'/labo/campagne/index.html'),{waitUntil:'load'});await step();
         const muted=await page.evaluate(()=>{const a=document.createElement('audio');return a.muted&&a.volume===0&&window.AudioContext===undefined;});assert(muted);
         await touch.tap(3,await centre(page.getByRole('button',{name:'Jouer en silence'})));await step(2);
         assert.equal((await snap()).screen,'play');

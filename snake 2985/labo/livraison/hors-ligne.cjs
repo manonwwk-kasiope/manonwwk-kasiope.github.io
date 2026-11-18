@@ -219,6 +219,19 @@ async function incrementalCheck(all,fixtures){
   assert((await db.keys()).includes(foreignName));
   report.incremental=phase;
 }
+async function awaitEdition(page,edition){
+  const deadline=Date.now()+45000;
+  while(Date.now()<deadline){
+    const active=await page.evaluate(async edition=>{
+      const names=(await caches.keys()).filter(name=>name.startsWith('snake2985:'+location.pathname.replace(/[^/]*$/,'')+':'));
+      const registration=await navigator.serviceWorker.getRegistration();
+      return !!navigator.serviceWorker.controller && names.length===1 && names[0].endsWith(edition) && registration?.active?.state==='activated';
+    },edition).catch(()=>false);
+    if(active)return;
+    await new Promise(resolve=>setTimeout(resolve,50));
+  }
+  throw Error('Édition non activée : '+edition);
+}
 async function incrementalBrowser(fixtures,all){
   const {chromium}=require('playwright');
   const executable=process.env.SNAKE_HEADLESS_SHELL||path.join(os.homedir(),'Library/Caches/ms-playwright/chromium_headless_shell-1187/chrome-mac/headless_shell');
@@ -236,7 +249,7 @@ async function incrementalBrowser(fixtures,all){
         if(first)await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'});
         else await (await navigator.serviceWorker.ready).update();
       },first);first=false;
-      await page.waitForFunction(async edition=>{const names=await caches.keys();return !!navigator.serviceWorker.controller&&names.length===1&&names[0].endsWith(edition)&&!!(await navigator.serviceWorker.ready).active;},edition,{timeout:45000});
+      await awaitEdition(page,edition);
       const metrics=summarize(meter);
       assert.deepEqual(metrics.files.slice().sort(),expected.slice().sort());
       observations[label]={requests:metrics.requests,bytes:metrics.bytes,workerBytes:meter.filter(row=>row.file==='sw.js').reduce((n,row)=>n+row.bytes,0)};
@@ -275,8 +288,7 @@ async function browserCheck(all,media,build){
     directory=bundle;
     // L'ancienne page peut se recharger sur controllerchange ; le processus d'actualisation lui survit.
     await page.evaluate(()=>{navigator.serviceWorker.ready.then(r=>r.update());});
-    await page.waitForFunction(async edition=>(await caches.keys()).some(k=>k.endsWith(edition)) &&
-      !(await caches.keys()).some(k=>k.endsWith('20261117-6')),build.edition,{timeout:45000});
+    await awaitEdition(page,build.edition);
     await page.goto(scope);await ready(page);await page.waitForFunction(()=>window.SnakeArcade?.eras.length===5);
     await context.close();context=null;
     // Même origine et même stockage, processus entièrement redémarré, réseau indisponible.

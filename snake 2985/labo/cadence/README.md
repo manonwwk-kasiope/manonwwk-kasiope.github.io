@@ -56,3 +56,19 @@ Le fichier `cadence.js` est autonome. L'approche reprend le principe d’accumul
 4. La tolérance de demi-quantum (0,05 ms) compense l’arrondi des timestamps de ce banc. Le crédit reste signé pour éviter la dérive sur les sessions longues.
 
 **Vérifier localement** avec `node mesure.cjs`, `node virage.cjs` et `node --test cadence.test.cjs`. Le premier conserve le fichier de commandes enregistré. L'option `--enregistrer` recrée les trois prises en utilisant le moteur présent sur disque. Le module reste dans le laboratoire ; le temps d'image sur téléphone, le coût du pipeline réel et le confort d'un joueur restent à vérifier avant un éventuel déploiement.
+
+## Rejeu dans la chambre WebKit
+
+**18/11/2026 · 02 h 02, Paris.** WebKit 26.0 a exécuté la chambre de campagne, son canvas et ses gestionnaires de commandes en 568 × 300, avec mouvements réduits et verrou muet activé avant le chargement. Une horloge pilotée distribue les images à 30, 60, 120 Hz ou à intervalles irréguliers. Les chiffres mesurent la reproductibilité de la simulation. La fréquence physique d’un écran, la latence matérielle et la caméra en animation complète restent hors de cette mesure.
+
+| Trace enregistrée | Commandes par rejeu | Observations par seconde, nombre total | Résultat aux quatre cadences avec la boucle intégrée |
+| --- | ---: | ---: | --- |
+| Grille 1976 | 6 | 9 | Mort, 125 points |
+| Vol 2985 | 47 | 9 | Mort, 550 points |
+| Campagne 1995 | 562 | 64 | Victoire, 29 950 points |
+
+Les 24 exécutions utilisent les trois mêmes enregistrements de commandes, chacun joué huit fois. Pour chaque geste, le banc vérifie la réception d’un événement DOM de confiance à la date prévue, avec la touche ou les coordonnées attendues. Les relevés de physique à chaque seconde et au terme de chaque trace concordent dans les neuf comparaisons à leur référence de 60 Hz. Le témoin à pas variable diverge dans les neuf comparaisons. Sur la campagne 1995, il termine à 1 700 points par mort à 30 Hz, et poursuit la partie à 10 350, 23 750 et 10 100 points respectivement à 60 Hz, 120 Hz et en cadence irrégulière.
+
+La première passe détectait deux divergences sur la campagne 1995 dès la deuxième seconde. L’angle et la position de la tête différaient entre des parties qui terminaient sur le même score. Le passage du contrôleur grille au contrôleur de vol se faisait au dessin. La chambre le fait désormais après les événements de chaque pas physique. Les mêmes commandes enregistrées ont permis de vérifier la correction.
+
+Reproduction depuis ce répertoire avec `node --test webkit-preflight.test.cjs`, puis `node webkit.cjs` pendant un créneau navigateur. Le lanceur échoue si les états divergent, si une commande manque ou si le verrou muet échoue. Les fichiers `webkit-commandes.json`, `webkit-avant.json` et `webkit-resultats.json` contiennent respectivement les traces physiques, les écarts avant correction et les résultats vérifiés.

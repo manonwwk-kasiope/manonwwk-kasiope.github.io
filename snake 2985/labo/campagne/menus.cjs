@@ -1,16 +1,17 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {webkit,devices}=require('playwright');
-const root=path.resolve(__dirname,'../..');
-const origin='http://campagne.test',start=origin+'/labo/campagne/index.html';
+const dist=process.env.CAMPAGNE_DIST;
+const root=dist?path.resolve(dist):path.resolve(__dirname,'../..');
+const origin='http://campagne.test',start=origin+(dist?'/index.html':'/labo/campagne/index.html');
 (async()=>{
   const browser=await webkit.launch({headless:true}),measures=[];
   try{
     for(const [width,height] of [[568,275],[874,292],[844,390]]){
-      const ctx=await browser.newContext({...devices['iPhone 13 landscape'],viewport:{width,height},reducedMotion:'reduce'});
+      const ctx=await browser.newContext({...devices['iPhone 13 landscape'],viewport:{width,height},reducedMotion:'reduce',serviceWorkers:'block'});
       await ctx.route('**/*',route=>{
         const u=new URL(route.request().url());
-        if(u.origin!==origin)return route.abort();
+        if(u.origin!==origin||u.pathname.endsWith('.mp3'))return route.abort();
         const name=path.resolve(root,'.'+decodeURIComponent(u.pathname));
         return name.startsWith(root+path.sep)&&fs.existsSync(name)?route.fulfill({path:name}):route.abort();
       });

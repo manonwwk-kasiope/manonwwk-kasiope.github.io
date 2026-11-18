@@ -298,6 +298,8 @@
         text(ui.message,cue.kind==='target' && state.aide?.text?state.aide.text:cue.text);
       }
     }else if(screen!=='play'){text(ui.message,'');ui['compte-contrat'].hidden=true;}
+  }
+  function syncFlightControls(){
     if(Boolean(state.flight)!==activeFlight) {
       activeFlight=Boolean(state.flight); controls.configure({flying:activeFlight,angle:state.flight?.angle||0});
       if(pointer){
@@ -359,24 +361,25 @@
   window.addEventListener('blur',()=>{if(screen==='play')pause()});
   systemMotion.addEventListener('change',()=>{banc.motion(calm.matches);veille.wake();});
   function simuler(dt){
-      if(state.flight && held.size){
-        let x=0,y=0; for(const key of held){x+=directions[key][0];y+=directions[key][1];}
-        if(x||y)aimOnScreen(Math.atan2(y,x));
-      }
-      if(['boss','recovery'].includes(state.director.phase))state.spawnClock=Math.max(.15,state.spawnClock);
-      SnakeRelance.before(state);
-      SnakeEcologie.tick(state,dt,menaces);
-      const encounter=SnakeDirector.tick(state.director,state,dt);
-      state.score+=encounter.points;SnakeEpilogue.observe(voyage,state,encounter.events);
-      for(const cue of encounter.events){
-        audio.encounter(cue);
-        if(cue.type==='open')note(SnakeIndices.labels[cue.kind]||'Rejoins la balise.',1.8);
-        if(cue.type==='score')note('Trajectoire réussie · +'+cue.points);
-      }
-      SnakeInitiation.update(state.initiation,state,dt,state.events);
-      state.aide=SnakeInitiation.cue(state.initiation,state);
-      archives.tick(state);events();
-      return screen==='play'&&state.status==='playing';
+    if(state.flight && held.size){
+      let x=0,y=0; for(const key of held){x+=directions[key][0];y+=directions[key][1];}
+      if(x||y)aimOnScreen(Math.atan2(y,x));
+    }
+    if(['boss','recovery'].includes(state.director.phase))state.spawnClock=Math.max(.15,state.spawnClock);
+    SnakeRelance.before(state);
+    SnakeEcologie.tick(state,dt,menaces);
+    const encounter=SnakeDirector.tick(state.director,state,dt);
+    state.score+=encounter.points;SnakeEpilogue.observe(voyage,state,encounter.events);
+    for(const cue of encounter.events){
+      audio.encounter(cue);
+      if(cue.type==='open')note(SnakeIndices.labels[cue.kind]||'Rejoins la balise.',1.8);
+      if(cue.type==='score')note('Trajectoire réussie · +'+cue.points);
+    }
+    SnakeInitiation.update(state.initiation,state,dt,state.events);
+    state.aide=SnakeInitiation.cue(state.initiation,state);
+    archives.tick(state);events();
+    syncFlightControls();
+    return screen==='play'&&state.status==='playing';
   }
   function frame(now,repaint,resumed){
     if(screen==='play'){

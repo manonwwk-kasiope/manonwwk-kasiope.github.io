@@ -2,9 +2,14 @@
 // The film camera only reads the live game; all mutations below concern recording buffers.
 function filmCamera(){
  const f=window.cinema={state:null,logs:[],tracks:{},seed:298501,t:0};
+ f.fixedSteps={60:0,120:0};
  const watch=(key,wrap)=>{
    let obj;Object.defineProperty(window,key,{get:()=>obj,set:v=>{obj=wrap(v);}});
  };
+ watch('SnakeCadence',v=>({...v,create(simulate,hz){return v.create(dt=>{
+   const rate=Math.round(1/dt);if(!Object.hasOwn(f.fixedSteps,rate))throw Error('Cadence imprévue '+rate);
+   f.fixedSteps[rate]++;return simulate(dt);
+ },hz);}}));
  Math.random=()=>((f.seed=(Math.imul(f.seed,1664525)+1013904223)>>>0)/4294967296);
  watch('SnakeArcade',v=>({...v,create(...args){const s=v.create(...args);f.state=s;return s;}}));
  watch('SnakeMondeVivant',v=>({...v,observe(s,e){if(e?.type&&!['shot','kill','forgeShot','forgeHit','bossHit'].includes(e.type))

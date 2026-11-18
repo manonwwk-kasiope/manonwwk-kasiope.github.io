@@ -13,5 +13,5 @@ assert games, 'Jeu paysage autonome absent'
 r=games[-1];width,height=r['size'];x,y,w,h=r['arena']
 assert sorted(r['screen'])==sorted([width,height]),r
 assert w>=width*.98 and h>=height*.98,r
-assert any(r.get('page')=='pause' and r['standalone'] for r in rows)
+assert any(r.get('page')=='pause' and r['standalone'] and r['size']==[width,height] for r in rows)
 print(json.dumps(r,ensure_ascii=False,indent=2))

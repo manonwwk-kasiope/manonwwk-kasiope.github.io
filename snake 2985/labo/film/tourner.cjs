@@ -65,7 +65,9 @@ async function main(){
    assert(complete);
   }
   assert.deepEqual(errors,[]);assert.equal(ids,900);
-  fs.writeFileSync(path.join(__dirname,'provenance.json'),JSON.stringify({seed:298501,fps:30,frames:ids,sourceHashes:hashes,clips,runs,errors},null,2));
+  const fixedSteps=await p.evaluate(()=>cinema.fixedSteps);
+  assert(fixedSteps[60]>0&&fixedSteps[120]>0&&hashes['/labo/cadence/cadence.js']);
+  fs.writeFileSync(path.join(tmp,'provenance.json'),JSON.stringify({seed:298501,fps:30,frames:ids,sourceHashes:hashes,fixedSteps,clips,runs,errors},null,2));
   fs.writeFileSync(path.join(tmp,'SUCCES'),'900 images');
   console.log('Pellicule '+tmp);
  }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}

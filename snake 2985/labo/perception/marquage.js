@@ -62,5 +62,51 @@
     // Reuse the guide's existing collectible so two cues cannot indicate competing goals.
     draw(c,s,cam,project,{time:cam.time,reduced:cam.reduced,cellOnly:true,preferred:hint.at});
   }
-  const api={choose,draw,drawDiscovery};if(typeof module==='object')module.exports=api;else root.SnakeMarquage=api;
+  // Petit repère de niveau à droite ou à gauche de la cellule de l'autre grille.
+  // Le triangle indique l'altitude de l'objet ; le trait horizontal est son palier.
+  function drawDepth(c,s,cam,z,project){
+    if(z===(s.plane??0)||s.flight||!s.cells?.some(p=>(p.plane??0)===z))return;
+    const blocked=[];
+    function actor(p,r,layer=p?.plane??0){
+      if(!p||!Number.isFinite(p.x)||!Number.isFinite(p.y))return;
+      const q=project(cam,p.x,p.y,layer),size=r*q.k*cam.zoom;
+      blocked.push({x:q.x-size,y:q.y-size,w:size*2,h:size*2,source:p});
+    }
+    for(const p of s.cells)actor(p,10);
+    for(const p of s.snake||[])actor(p,15);
+    for(const p of s.previousSnake||[])actor(p,15);
+    for(const p of s.drones||[])actor(p,13);
+    actor(s.boss,36);actor(s.flightGate,20);actor(s.rift,17);actor(s.aide?.at,17);
+    if(s.shiftMode==='portal')for(const g of s.planeGates||[]){actor(g,15,0);actor(g,15,1);}
+    for(const a of [s.boss?.attack,s.ecologie?.wave]){
+      if(!a)continue;
+      const cover=(x,y,plane)=>{
+        const corners=[project(cam,x-.5,y-.5,plane),project(cam,x+.5,y-.5,plane),
+          project(cam,x+.5,y+.5,plane),project(cam,x-.5,y+.5,plane)];
+        const xs=corners.map(p=>p.x),ys=corners.map(p=>p.y);
+        const left=Math.min(...xs)-3,top=Math.min(...ys)-3;
+        blocked.push({x:left,y:top,w:Math.max(...xs)+3-left,h:Math.max(...ys)+3-top});
+      };
+      if(a.tiles?.length){for(const p of a.tiles)cover(p.x,p.y,p.plane??a.plane??0);}
+      else for(const k of a.danger||a.mask||[])cover(k%(s.width||36),Math.floor(k/(s.width||36)),a.plane??0);
+    }
+    c.save();c.lineJoin='round';c.lineCap='round';c.globalAlpha=1;
+    for(const p of s.cells){
+      if((p.plane??0)!==z)continue;
+      const q=project(cam,p.x,p.y,z),u=Math.max(.78,Math.min(1.25,q.k*cam.zoom)),dir=z?-1:1;
+      if(blocked.some(b=>b.source!==p&&q.x+2*u>=b.x&&q.x-2*u<=b.x+b.w&&q.y+2*u>=b.y&&q.y-2*u<=b.y+b.h))continue;
+      for(const side of [1,-1]){
+        if((side===1&&p.x>=s.width-1)||(side===-1&&p.x<=0))continue;
+        const x=q.x+side*13*u,y=q.y;
+        if(blocked.some(b=>b.source!==p&&x+6*u>=b.x&&x-6*u<=b.x+b.w&&y+7*u>=b.y&&y-7*u<=b.y+b.h))continue;
+        c.beginPath();c.moveTo(x-3.6*u,y-dir*3.5*u);c.lineTo(x+3.6*u,y-dir*3.5*u);
+        c.moveTo(x-3.8*u,y-dir*.4*u);c.lineTo(x,y+dir*4*u);c.lineTo(x+3.8*u,y-dir*.4*u);
+        c.strokeStyle='#17232c';c.lineWidth=4.6*u;c.stroke();
+        c.strokeStyle=s.year===1976?'#dcf1ab':'#dce8de';c.lineWidth=2.2*u;c.stroke();
+        blocked.push({x:x-6*u,y:y-7*u,w:12*u,h:14*u});break;
+      }
+    }
+    c.restore();
+  }
+  const api={choose,draw,drawDiscovery,drawDepth};if(typeof module==='object')module.exports=api;else root.SnakeMarquage=api;
 })(typeof window!=='undefined'?window:globalThis);
