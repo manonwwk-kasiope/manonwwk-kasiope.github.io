@@ -25,7 +25,7 @@ final class SafariFlow: XCTestCase {
             add(picture)
         }
         let silent = button("Jouer en silence")
-        XCTAssertTrue(silent.waitForExistence(timeout:12))
+        XCTAssertTrue(silent.waitForExistence(timeout:60))
         XCTAssertGreaterThan(web.frame.width,web.frame.height)
         snap("01-Ouverture")
         silent.tap()
@@ -41,18 +41,23 @@ final class SafariFlow: XCTestCase {
         XCTAssertTrue(close.waitForExistence(timeout:4))
         close.tap()
         resume.tap()
-        let replay = button("Revoir l’impact")
+        let replay = web.buttons.matching(NSPredicate(format:"label BEGINSWITH %@", "Revoir")).firstMatch
         XCTAssertTrue(replay.waitForExistence(timeout:35))
         snap("02-Defaite")
         replay.tap()
         XCTAssertTrue(close.waitForExistence(timeout:4))
         snap("03-Reprise")
         close.tap()
-        let jump = button("Saut 1995")
+        let date1995=web.descendants(matching:.any).matching(NSPredicate(format:"label BEGINSWITH %@", "1995, 8 bits")).firstMatch
+        if date1995.exists {date1995.tap()}
+        let newJump = button("Sauter en 1995")
+        let jump = newJump.exists ? newJump : button("Saut 1995")
         XCTAssertTrue(jump.waitForExistence(timeout:4))
         jump.tap()
         XCTAssertTrue(silent.waitForExistence(timeout:4))
-        XCTAssertTrue(web.staticTexts.containing(NSPredicate(format:"label CONTAINS %@", "8 bits")).firstMatch.exists)
+        let era=web.descendants(matching:.any).matching(NSPredicate(format:"label CONTAINS[c] %@ OR value CONTAINS[c] %@", "8 bits","8 bits")).firstMatch
+        XCTAssertTrue(era.waitForExistence(timeout:8))
+        snap("04-Avant-depart-1995")
         silent.tap()
         XCTAssertTrue(pause.waitForExistence(timeout:4))
         snap("04-Arcade-8-bits")

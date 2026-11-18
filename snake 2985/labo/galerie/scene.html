@@ -1,0 +1,11 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Snake 2985 · galerie de jeu</title><style>*{margin:0}html,body,canvas{width:100%;height:100%;display:block;background:#0e1020}</style><canvas id="scene"></canvas>
+<script src="../../forge.js"></script><script src="../../vol-libre.js"></script><script src="../moteur.js"></script><script src="../gardiens/gardiens.js"></script><script src="../rythme/directeur.js"></script><script src="../mondes/mondes.js"></script><script src="../sprites/sprites.js"></script><script src="../campagne/impact.js"></script><script src="../campagne/indices.js"></script><script src="../artillerie/artillerie.js"></script><script src="../endurance/phosphore/lisibilite.js"></script><script src="../campagne/matieres.js"></script><script src="../locomotion/locomotion.js"></script><script src="../animation-boss/animation.js"></script><script src="../spectacle.js"></script><script src="replay.js"></script><script>
+const {s,t}=SnakeGalerie.make(+new URLSearchParams(location.search).get('year'));
+(async()=>{
+  const loaded=await SnakeMatieres.load(s.year);
+  if(s.year!==1976 && !loaded)throw new Error('Décor peint indisponible pour '+s.year);
+  SnakeSpectacle.draw(document.querySelector('canvas'),s,t,false,'direct');
+  window.frameFacts=SnakeGalerie.facts(s);
+})();
+</script></html>

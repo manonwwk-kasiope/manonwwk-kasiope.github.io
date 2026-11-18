@@ -7,30 +7,52 @@
 <title>Snake 2985 · Chambre des deux mondes</title>
 <link rel="stylesheet" href="chambre.css">
 <link rel="stylesheet" href="archives.css">
+<link rel="stylesheet" href="../bifurcation/bifurcation.css">
 <script src="../../forge.js" defer></script>
 <script src="../../vol-libre.js" defer></script>
 <script src="../evolution/evolution.js" defer></script>
 <script src="../moteur.js" defer></script>
 <script src="../gardiens/gardiens.js" defer></script>
+<script src="../surf-boss/surf.js" defer></script>
 <script src="../rythme/directeur.js" defer></script>
 <script src="../mondes/mondes.js" defer></script>
+<script src="../initiation/initiation.js" defer></script>
 <script src="../lecture/arbitre.js" defer></script>
 <script src="../sprites/sprites.js" defer></script>
 <script src="../reprise/reprise.js" defer></script>
 <script src="impact.js" defer></script>
 <script src="indices.js" defer></script>
 <script src="pilotage.js" defer></script>
+<script src="../artillerie/artillerie.js" defer></script>
+<script src="../surcharges/surcharges.js" defer></script>
+<script src="../surcharges/effets.js" defer></script>
+<script src="../animation-boss/animation.js" defer></script>
+<script src="../monde-vivant/monde.js" defer></script>
+<script src="matieres.js" defer></script>
+<script src="../endurance/phosphore/lisibilite.js" defer></script>
+<script src="../locomotion/locomotion.js" defer></script>
 <script src="../spectacle.js" defer></script>
 <script src="../commandes/commandes.js" defer></script>
 <script src="../../palmares.js" defer></script>
 <script src="../chrono/chrono.js" defer></script>
+<script src="../bifurcation/bifurcation.js" defer></script>
 <script src="archives.js" defer></script>
 <script src="../audio/pouls-data.js" defer></script>
 <script src="../audio/horloge.js" defer></script>
 <script src="../audio/priorites.js" defer></script>
 <script src="../audio/bande-campagne.js" defer></script>
 <script src="../noeud/noeud.js" defer></script>
+<script src="../ecologie/ecologie.js" defer></script>
 <script src="../equilibrage/parametres.js" defer></script>
+<link rel="stylesheet" href="../atelier/atelier.css">
+<script src="../atelier/atelier.js" defer></script>
+<script src="banc.js" defer></script>
+<link rel="stylesheet" href="../instruments/instruments.css">
+<script src="../instruments/instruments.js" defer></script>
+<link rel="stylesheet" href="../carte/carte.css">
+<script src="../carte/carte.js" defer></script>
+<script src="passage.js" defer></script>
+<script src="guide.js" defer></script>
 <script src="chambre.js" defer></script>
 </head>
 <body>
@@ -44,9 +66,13 @@
   <aside id="lecture" data-tone="normal"><span id="message" role="status"></span><span id="partenaire"></span></aside>
   <section id="pouces" aria-label="Pilotage panoramique">
     <div id="stick" aria-label="Manche de pilotage"><span></span><small>Cap</small></div>
-    <div id="actions"><button id="plan" aria-label="Changer de plan">⇅ <span>Plan 1</span></button><button id="nova">✷ <span>Nova</span></button></div>
+    <div id="actions"><button id="surf" hidden>Surfer</button><button id="plan" aria-label="Changer de plan">⇅ <span>Plan 1</span></button><button id="nova" aria-label="Déclencher la nova"><b aria-hidden="true">✷</b> Nova <span>100 %</span></button></div>
   </section>
   <section id="rideau" role="dialog" aria-modal="true" aria-labelledby="titre">
+    <canvas id="vitrine" width="690" height="288" aria-label="Projection de la recette sur des drones" hidden></canvas>
+    <button id="carte" type="button" aria-label="Carte des époques">Époques</button>
+    <canvas id="passage" aria-hidden="true" hidden></canvas>
+    <div id="bifurcation" hidden></div>
     <article>
       <div id="wordmark" aria-label="Snake 2985">SNAKE <em>2985</em></div>
       <span class="etiquette" id="rang">1976 · Le Terminal</span>

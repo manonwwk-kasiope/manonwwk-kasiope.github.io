@@ -27,6 +27,8 @@
       if(at(next))beacon(next,'⋄',o.phase==='active'?'#cbebff':'#9fbbd2');
       if(at(o.train))beacon(o.train,'≡','#ffcf80');
     }
+    if(s.aide?.marks?.[0] && at(s.aide.marks[0]))SnakeInitiation.drawFork(c,s.aide,project,'#c8efd2');
+    if(s.aide && at(s.aide.at) && s.initiation?.prepared)beacon(s.aide.at,'⌁','#b1ffe1');
     for(const m of s.evolution?.marks||[]){
       if(!at(m))continue;
       if(m.first&&!m.entered){beacon(m.first,'1','#ffda92');line(m.first,m,'#ffda92',1,true);}

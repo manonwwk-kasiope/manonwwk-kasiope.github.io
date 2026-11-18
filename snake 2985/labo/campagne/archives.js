@@ -196,5 +196,24 @@
     slider.addEventListener('input',()=>{pause();paint(Number(slider.value));});
     body.append(tip,views,slider,controls,status);paint(end);return true;
   }
-  window.SnakeArchives=Object.freeze({newRun,tick,end,jump,offer,wager,label,draw,openHall,openReplay,death:s=>attempts.get(s)?.review?.death});
+  function bande(s){
+    const review=attempts.get(s)?.review, range=review?.bounds();
+    if(!review?.death||!range)return {};
+    return {durationMs:Math.round(range.end-range.start),drawReview(canvas){
+      const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+      c.fillStyle='#0b1422';c.fillRect(0,0,w,h);
+      c.strokeStyle='#445168';c.beginPath();c.moveTo(w/2,0);c.lineTo(w/2,h);c.stroke();
+      const xs=p=>5+p.plane*w/2+p.x/35*(w/2-10),ys=p=>4+p.y/17*(h-8);
+      let before=null;
+      for(let t=range.start;t<=range.end+49;t+=50){
+        const p=review.frameAt(Math.min(range.end,t));
+        if(before && p.plane===before.plane){
+          c.strokeStyle=p.plane?'#b6b6ff':'#94f5ca';c.lineWidth=2;c.beginPath();c.moveTo(xs(before),ys(before));c.lineTo(xs(p),ys(p));c.stroke();
+        }
+        before=p;
+      }
+      if(before){c.fillStyle='#ffc89d';c.fillRect(xs(before)-2,ys(before)-2,4,4);}
+    }};
+  }
+  window.SnakeArchives=Object.freeze({newRun,tick,end,jump,offer,wager,label,draw,openHall,openReplay,bande,death:s=>attempts.get(s)?.review?.death});
 })();

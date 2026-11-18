@@ -1,0 +1,137 @@
+--- a/snake 2985/labo/spectacle.js
++++ b/snake 2985/labo/spectacle.js
+@@ -278,10 +278,12 @@
+         shape(c,[p,prev],null,'#4ea9ad',7.3*unit);
+         shape(c,[p,prev],null,'#c4f8df',1.6*unit);
+       }
++      if(i===0&&!headOnly)continue;
+       const h=s.snake[i];
+       const next=i?points[i-1]:project(cam,h.x+look.x,h.y+look.y,z);
+       const origin=i?p:project(cam,h.x,h.y,z);
+       const angle=Math.atan2(next.y-origin.y,next.x-origin.x);
++      if(i===0&&s.year===1976)window.SnakePhosphore?.headHalo(c,p,angle,unit);
+       if(window.SnakeSprites){
+         SnakeSprites.draw(c,i?'body':'head',s.year,{x:p.x,y:p.y,angle,unit,plane:z,time:cam.time,reduced:cam.reduced});
+         continue;
+@@ -336,13 +338,26 @@
+       symbol(c,cam,p,z,()=>{oval(c,0,0,p.kind==='shard'?2.6:4.1,p.kind==='well'?2.1:3.2,p.kind==='orbit'?'#fff1a0':'#e1beff','#615180',1);});
+     }
+   }
++  const logicalBuffers=new WeakMap();
+   function draw(canvas,s,t=0,reduced=false,method='direct'){
+     if(!canvas||!s)return;
+     if(!s.snake)return window.SnakeRendu?.draw(canvas,s,t,reduced);
+     const dpr=Math.min(2,window.devicePixelRatio||1);
+     const w=Math.round((canvas.clientWidth||W)*dpr),h=Math.round((canvas.clientHeight||H)*dpr);
+     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+-    const c=canvas.getContext('2d');c.setTransform(w/W,0,0,h/H,0,0);c.lineJoin='round';c.lineCap='round';
++    let surface=canvas;
++    if(window.SnakeMondes&&(s.year===1985||s.year===2185)){
++      surface=logicalBuffers.get(canvas);
++      if(!surface){
++        surface=document.createElement('canvas');
++        surface.getContext('2d',{willReadFrequently:true});
++        logicalBuffers.set(canvas,surface);
++      }
++      const lw=Math.min(w,SnakeMondes.formats[s.year].width),lh=Math.max(1,Math.round(lw*h/w));
++      if(surface.width!==lw)surface.width=lw;
++      if(surface.height!==lh)surface.height=lh;
++    }
++    const c=surface.getContext('2d');c.setTransform(surface.width/W,0,0,surface.height/H,0,0);c.lineJoin='round';c.lineCap='round';
+     const time=reduced?0:t,cam=camera(s,time,reduced);
+     cam.year=s.year;cam.viewportWidth=canvas.clientWidth||W;cam.reduced=reduced;cam.time=time;cam.nearBoss=s.boss?1:(s.nearBoss||0);
+     if(!window.SnakeMatieres?.draw(c,s.year,time,cam,reduced)){
+@@ -359,8 +374,10 @@
+       c.save();c.globalAlpha=selected?1:.47;
+       if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
+       else weapons(c,s,cam,z);
+-      if(s.ecologie?.wave)mask(c,cam,s.ecologie.wave,z);
+-      if(s.boss?.attack)mask(c,cam,s.boss.attack,z);
++      if(s.year!==1976||!window.SnakePhosphore){
++        if(s.ecologie?.wave)mask(c,cam,s.ecologie.wave,z);
++        if(s.boss?.attack)mask(c,cam,s.boss.attack,z);
++      }
+       if(s.shiftMode==='portal')for(const p of s.planeGates||[])gate(c,cam,p,z,time,false,true);
+       if(s.rift&&(s.rift.plane??0)===z)gate(c,cam,s.rift,z,time,false);
+       if(s.flightGate&&(s.flightGate.plane??s.plane??0)===z)gate(c,cam,s.flightGate,z,time,true);
+@@ -372,14 +389,21 @@
+       for(const p of s.cells||[])if((p.plane??0)===z)cell(c,cam,p,z);
+       for(const p of s.drones||[])if((p.plane??0)===z)sentinel(c,cam,p,z,time,false);
+       if(s.boss&&(s.boss.plane??0)===z)sentinel(c,cam,s.boss,z,time,true);
+-      window.SnakeIndices?.draw(c,s,cam,z,selected);
++      if(s.year===1976&&!selected)window.SnakePhosphore?.draw(c,s,cam,project,z);
++      if(s.year!==1976||!selected)window.SnakeIndices?.draw(c,s,cam,z,selected);
+       serpent(c,s,cam,points,z);c.restore();
+     }
+     if(window.SnakeKnot)SnakeKnot.draw(c,s,(p,z)=>project(cam,p.x,p.y,z));
+     window.SnakeSurf?.draw(canvas,s,reduced);
+-    window.SnakeArchives?.draw(canvas,s,reduced);
+-    if(s.plane===0)serpent(c,s,cam,points,0,true);
+-    window.SnakeMondes?.finish?.(canvas,s.year);
++    if(s.year===1976){
++      window.SnakePhosphore?.draw(c,s,cam,project,s.plane??0);
++      c.save();
++      if(s.boss?.attack||s.ecologie?.wave)c.globalAlpha=.48;
++      window.SnakeIndices?.draw(c,s,cam,s.plane??0,true);c.restore();
++    }
++    window.SnakeArchives?.draw(surface,s,reduced);
++    if(points.length)serpent(c,s,cam,points,points[0].plane,true);
++    window.SnakeMondes?.finish?.(surface,s.year,canvas);
+   }
+   window.SnakeSpectacle=Object.freeze({draw,camera,project,tile,width:W,height:H});
+ })();
+--- a/snake 2985/labo/mondes/mondes.js
++++ b/snake 2985/labo/mondes/mondes.js
+@@ -314,14 +314,23 @@
+     palettesRGB.set(year,table);return table;
+   }
+   const bayer=[-6,2,-4,4,6,-2,8,0,-3,5,-5,3,9,1,7,-1];
+-  function finish(canvas,year){
++  function finish(canvas,year,destination=canvas){
+     const f=formats[year];if(!f||f.bits===32)return;
+     const w=Math.min(canvas.width,f.width),h=Math.max(1,Math.round(w*canvas.height/canvas.width));
+-    let stage=stages.get(canvas);
+-    if(!stage){const el=document.createElement('canvas');stage={el,ctx:el.getContext('2d',{willReadFrequently:true})};stages.set(canvas,stage);}
+-    if(stage.el.width!==w||stage.el.height!==h){stage.el.width=w;stage.el.height=h;}
+-    const c=stage.ctx;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';
+-    c.drawImage(canvas,0,0,w,h);
++    const direct=canvas!==destination;
++    let stage=direct?{el:canvas,ctx:canvas.getContext('2d')}:stages.get(canvas);
++    if(!stage){
++      const el=document.createElement('canvas');
++      stage={el,ctx:el.getContext('2d',{willReadFrequently:true})};
++      stages.set(canvas,stage);
++    }
++    const c=stage.ctx;
++    if(!direct){
++      if(stage.el.width!==w||stage.el.height!==h){stage.el.width=w;stage.el.height=h;}
++      c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';
++      c.drawImage(canvas,0,0,w,h);
++    }
++    c.save();c.setTransform(1,0,0,1,0,0);
+     const img=c.getImageData(0,0,w,h),buf=img.data,packed=new Uint32Array(buf.buffer,buf.byteOffset,w*h);
+     const table=f.palette?lut(year):null;
+     for(let y=0,i=0;y<h;y++)for(let x=0;x<w;x++,i++){
+@@ -338,9 +347,9 @@
+         buf[j]=(ri<<3)|(ri>>2);buf[j+1]=(gi<<2)|(gi>>4);buf[j+2]=(bi<<3)|(bi>>2);
+       }
+     }
+-    c.putImageData(img,0,0);
+-    const out=canvas.getContext('2d');out.save();out.setTransform(1,0,0,1,0,0);out.imageSmoothingEnabled=false;
+-    out.drawImage(stage.el,0,0,canvas.width,canvas.height);out.restore();
++    c.putImageData(img,0,0);c.restore();
++    const out=destination.getContext('2d');out.save();out.setTransform(1,0,0,1,0,0);out.imageSmoothingEnabled=false;
++    out.drawImage(stage.el,0,0,destination.width,destination.height);out.restore();
+   }
+   function draw(c,year,t=0,cam={},reduce=false){
+     const fn={1976:terminal,1985:city,1995:railway,2185:orbit,2985:abyss}[year]||city;
+--- a/snake 2985/labo/campagne/index.html
++++ b/snake 2985/labo/campagne/index.html
+@@ -28,6 +28,7 @@
+ <script src="matieres.js" defer></script>
+ <script src="../endurance/phosphore/lisibilite.js" defer></script>
+ <script src="../locomotion/locomotion.js" defer></script>
++<script src="../endurance/phosphore/lisibilite.js" defer></script>
+ <script src="../spectacle.js" defer></script>
+ <script src="../commandes/commandes.js" defer></script>
+ <script src="../../palmares.js" defer></script>

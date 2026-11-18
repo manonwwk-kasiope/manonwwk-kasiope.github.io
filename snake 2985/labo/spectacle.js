@@ -209,7 +209,7 @@
   function cell(c,cam,p,z){
     if(window.SnakeSprites){
       const a=project(cam,p.x,p.y,z);
-      SnakeSprites.draw(c,'cell',cam.year,{x:a.x,y:a.y,unit:a.k*cam.zoom,plane:z,bonus:p.bonus,reduced:cam.reduced,time:cam.time});
+      SnakeSprites.draw(c,'cell',cam.year,{x:a.x,y:a.y,unit:a.k*cam.zoom,plane:z,bonus:p.bonus,reduced:cam.reduced,time:cam.time,viewportWidth:cam.viewportWidth});
       return;
     }
     symbol(c,cam,p,z,()=>{
@@ -229,7 +229,14 @@
     }
     if(window.SnakeSprites){
       const a=project(cam,p.x,p.y,z),unit=a.k*cam.zoom;
-      SnakeSprites.draw(c,boss?'boss':'drone',cam.year,{x:a.x,y:a.y,unit,plane:z,kind:p.kind,time:t,reduced:cam.reduced});
+      const options={x:a.x,y:a.y,unit,plane:z,kind:p.kind,time:t,reduced:cam.reduced,viewportWidth:cam.viewportWidth};
+      let pose;
+      if(boss && window.SnakeBossAnimation){
+        options.footprint=tile(cam,p.x,p.y,z,1.5);
+        pose=SnakeBossAnimation.before(c,cam.year,p,options);
+      }
+      SnakeSprites.draw(c,boss?'boss':'drone',cam.year,pose?.sprite||options);
+      if(pose)SnakeBossAnimation.after(c,pose);
       if(p.warmup>0)oval(c,a.x,a.y,10*unit,7*unit,null,'#ffabad',1);
       if(boss){
         const half=18*unit;
@@ -264,19 +271,23 @@
     const look=s.flight?{x:Math.cos(s.flight.angle),y:Math.sin(s.flight.angle)}:s.direction||{x:1,y:0};
     for(let i=headOnly?0:points.length-1;i>=0;i--){
       const p=points[i];if(p.plane!==z)continue;
-      const prev=headOnly?null:points[i+1],unit=p.k*cam.zoom;
+      const adjacent=points[i+1];
+      const crossing=window.SnakeLocomotion&&adjacent&&p.plane!==adjacent.plane;
+      const prev=headOnly||crossing?null:adjacent,unit=p.k*cam.zoom*(p.scale??1);
       if(prev&&window.SnakeSprites)SnakeSprites.link(c,s.year,p,prev,unit);
       else if(prev&&i+1<points.length){
         shape(c,[p,prev],null,'#0a1828',11*unit);
         shape(c,[p,prev],null,'#4ea9ad',7.3*unit);
         shape(c,[p,prev],null,'#c4f8df',1.6*unit);
       }
+      if(i===0&&!headOnly)continue;
       const h=s.snake[i];
       const next=i?points[i-1]:project(cam,h.x+look.x,h.y+look.y,z);
       const origin=i?p:project(cam,h.x,h.y,z);
-      const angle=Math.atan2(next.y-origin.y,next.x-origin.x);
+      const angle=p.angle??Math.atan2(next.y-origin.y,next.x-origin.x);
+      if(i===0&&s.year===1976)window.SnakePhosphore?.headHalo(c,p,angle,unit);
       if(window.SnakeSprites){
-        SnakeSprites.draw(c,i?'body':'head',s.year,{x:p.x,y:p.y,angle,unit,plane:z,time:cam.time,reduced:cam.reduced});
+        SnakeSprites.draw(c,i?'body':'head',s.year,{x:p.x,y:p.y,angle,unit,plane:z,time:cam.time,reduced:cam.reduced,viewportWidth:cam.viewportWidth});
         continue;
       }
       c.save();c.translate(p.x,p.y);c.rotate(angle);c.scale(unit,unit);
@@ -290,6 +301,20 @@
         path(c,[[0,-3],[3,0],[0,3]],null,'#c8f5e6',1.2);
       }
       c.restore();
+    }
+  }
+  function flightApproach(c,cam,goal,head,z){
+    const dx=goal.x-head.x,dy=goal.y-head.y,distance=Math.hypot(dx,dy);
+    if(distance<1.4)return;
+    const ux=dx/distance,uy=dy/distance,r=goal.radius||1;
+    // Les chevrons sont au sol, centrés sur le vrai disque de passage.
+    // Ils restent à l'extérieur du disque et laissent la tête libre à courte distance.
+    for(const length of [r+.45,r+1.18]){
+      if(length>distance-.45)continue;
+      const x=goal.x-ux*length,y=goal.y-uy*length;
+      const points=[[x-ux*.28-uy*.34,y-uy*.28+ux*.34],[x,y],
+        [x-ux*.28+uy*.34,y-uy*.28-ux*.34]].map(([a,b])=>project(cam,a,b,z));
+      shape(c,points,null,'#0e1926',4);shape(c,points,null,'#f7edb3',1.8);
     }
   }
   function gate(c,cam,p,z,t,flight,next=false){
@@ -329,44 +354,82 @@
       symbol(c,cam,p,z,()=>{oval(c,0,0,p.kind==='shard'?2.6:4.1,p.kind==='well'?2.1:3.2,p.kind==='orbit'?'#fff1a0':'#e1beff','#615180',1);});
     }
   }
+  const logicalBuffers=new WeakMap();
   function draw(canvas,s,t=0,reduced=false,method='direct'){
     if(!canvas||!s)return;
     if(!s.snake)return window.SnakeRendu?.draw(canvas,s,t,reduced);
     const dpr=Math.min(2,window.devicePixelRatio||1);
     const w=Math.round((canvas.clientWidth||W)*dpr),h=Math.round((canvas.clientHeight||H)*dpr);
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
-    const c=canvas.getContext('2d');c.setTransform(w/W,0,0,h/H,0,0);c.lineJoin='round';c.lineCap='round';
+    let surface=canvas;
+    if(window.SnakeMondes?.formats?.[s.year]&&(s.year===1985||s.year===2185)){
+      surface=logicalBuffers.get(canvas);
+      if(!surface){
+        surface=document.createElement('canvas');
+        surface.getContext('2d',{willReadFrequently:true});
+        logicalBuffers.set(canvas,surface);
+      }
+      const lw=Math.min(w,SnakeMondes.formats[s.year].width),lh=Math.max(1,Math.round(lw*h/w));
+      if(surface.width!==lw)surface.width=lw;
+      if(surface.height!==lh)surface.height=lh;
+    }
+    const c=surface.getContext('2d');c.setTransform(surface.width/W,0,0,surface.height/H,0,0);c.lineJoin='round';c.lineCap='round';
     const time=reduced?0:t,cam=camera(s,time,reduced);
-    cam.year=s.year;cam.reduced=reduced;cam.time=time;cam.nearBoss=s.boss?1:(s.nearBoss||0);
-    if(window.SnakeMondes)window.SnakeMondes.draw(c,s.year,time,cam,reduced);
-    else world(c,s,time,cam);
+    cam.year=s.year;cam.viewportWidth=canvas.clientWidth||W;cam.reduced=reduced;cam.time=time;cam.nearBoss=s.boss?1:(s.nearBoss||0);
+    if(!window.SnakeMatieres?.draw(c,s.year,time,cam,reduced)){
+      if(window.SnakeMondes)window.SnakeMondes.draw(c,s.year,time,cam,reduced);
+      else world(c,s,time,cam);
+    }
+    window.SnakeMondeVivant?.draw(c,s,cam,time,reduced);
     if(cam.music)SnakeImpact.skyline(c,cam.music,time,s.year);
-    const points=snakePoints(s,cam,reduced);
+    const projected=snakePoints(s,cam,reduced);
+    const locomotion=window.SnakeLocomotion;
+    const points=locomotion?.transform(s,cam,projected,time,reduced,project,'joint')??projected;
     for(let z=0;z<=1;z++){
       if(z)for(const x of [-.5,35.5])for(const y of [-.5,8.5,17.5]){
         shape(c,[project(cam,x,y,0),project(cam,x,y,1)],null,'#7491a779',2.5);
       }
       const selected=z===(s.plane||0);floorGrid(c,cam,z,selected,method);
       c.save();c.globalAlpha=selected?1:.47;
-      if(s.boss?.attack)mask(c,cam,s.boss.attack,z);
+      if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
+      else weapons(c,s,cam,z);
+      window.SnakeSurchargeFX?.draw(c,s,cam,z,time,reduced,project);
+      if(s.year!==1976||!window.SnakePhosphore){
+        if(s.ecologie?.wave)mask(c,cam,s.ecologie.wave,z);
+        if(s.boss?.attack)mask(c,cam,s.boss.attack,z);
+      }
       if(s.shiftMode==='portal')for(const p of s.planeGates||[])gate(c,cam,p,z,time,false,true);
       if(s.rift&&(s.rift.plane??0)===z)gate(c,cam,s.rift,z,time,false);
       if(s.flightGate&&(s.flightGate.plane??s.plane??0)===z)gate(c,cam,s.flightGate,z,time,true);
       if(s.flight&&z===(s.plane||0)){
         const rings=s.flight.rings||[],idx=s.flight.passed||0;
         if(rings[idx+1])gate(c,cam,rings[idx+1],z,time,true,true);
-        if(rings[idx])gate(c,cam,rings[idx],z,time,true);
+        if(rings[idx]){
+          flightApproach(c,cam,rings[idx],s.snake[0],z);
+          gate(c,cam,rings[idx],z,time,true);
+        }
       }
       for(const p of s.cells||[])if((p.plane??0)===z)cell(c,cam,p,z);
       for(const p of s.drones||[])if((p.plane??0)===z)sentinel(c,cam,p,z,time,false);
       if(s.boss&&(s.boss.plane??0)===z)sentinel(c,cam,s.boss,z,time,true);
-      window.SnakeIndices?.draw(c,s,cam,z,selected);
-      weapons(c,s,cam,z);serpent(c,s,cam,points,z);c.restore();
+      if(s.year===1976&&!selected)window.SnakePhosphore?.draw(c,s,cam,project,z);
+      if(s.year!==1976||!selected)window.SnakeIndices?.draw(c,s,cam,z,selected);
+      locomotion?.overlay(c,s,cam,points,z,time,reduced,project,'links');
+      serpent(c,s,cam,points,z);
+      locomotion?.overlay(c,s,cam,points,z,time,reduced,project,'pulse');
+      c.restore();
     }
-    if(s.plane===0)serpent(c,s,cam,points,0,true);
     if(window.SnakeKnot)SnakeKnot.draw(c,s,(p,z)=>project(cam,p.x,p.y,z));
-    window.SnakeArchives?.draw(canvas,s,reduced);
-    window.SnakeMondes?.finish?.(canvas,s.year);
+    window.SnakeSurf?.draw(surface,s,reduced);
+    if(s.year===1976){
+      window.SnakePhosphore?.draw(c,s,cam,project,s.plane??0);
+      c.save();
+      if(s.boss?.attack||s.ecologie?.wave)c.globalAlpha=.48;
+      window.SnakeIndices?.draw(c,s,cam,s.plane??0,true);c.restore();
+    }
+    window.SnakeArchives?.draw(surface,s,reduced);
+    if(points.length)serpent(c,s,cam,points,points[0].plane,true);
+    window.SnakeMondes?.finish?.(surface,s.year,canvas);
   }
   window.SnakeSpectacle=Object.freeze({draw,camera,project,tile,width:W,height:H});
 })();

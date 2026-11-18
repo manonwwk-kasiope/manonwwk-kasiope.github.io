@@ -1,0 +1,263 @@
+{
+  "boss": [
+    {
+      "year": 1976,
+      "entry": [
+        "cell",
+        "sector",
+        "boss",
+        "bossAttack",
+        "flightGate",
+        "guardianWarning"
+      ],
+      "audible": [
+        "cell",
+        "boss",
+        "flightGate",
+        "guardianWarning"
+      ],
+      "finish": [
+        "nova",
+        "bossHit",
+        "bossDefeated",
+        "clear"
+      ],
+      "warningOverRestDb": -15.66236568052981,
+      "rawWarningOverRestDb": -15.864802154486554,
+      "peakMixDbfs": -4.403228038218396,
+      "voices": 4
+    },
+    {
+      "year": 1985,
+      "entry": [
+        "cell",
+        "sector",
+        "boss",
+        "bossAttack",
+        "guardianWarning"
+      ],
+      "audible": [
+        "cell",
+        "boss",
+        "guardianWarning"
+      ],
+      "finish": [
+        "nova",
+        "bossHit",
+        "bossDefeated",
+        "clear"
+      ],
+      "warningOverRestDb": -11.740158394579172,
+      "rawWarningOverRestDb": -12.242161282913603,
+      "peakMixDbfs": -7.214918079513295,
+      "voices": 3
+    },
+    {
+      "year": 1995,
+      "entry": [
+        "cell",
+        "sector",
+        "boss",
+        "bossAttack",
+        "flightGate",
+        "guardianWarning",
+        "surfGate"
+      ],
+      "audible": [
+        "cell",
+        "boss",
+        "flightGate",
+        "guardianWarning",
+        "surfGate"
+      ],
+      "finish": [
+        "nova",
+        "bossHit",
+        "bossDefeated",
+        "clear"
+      ],
+      "warningOverRestDb": -10.925602991328148,
+      "rawWarningOverRestDb": -11.433619987835762,
+      "peakMixDbfs": -7.488610459481919,
+      "voices": 5
+    },
+    {
+      "year": 2185,
+      "entry": [
+        "cell",
+        "sector",
+        "boss",
+        "bossAttack",
+        "flightGate",
+        "guardianWarning"
+      ],
+      "audible": [
+        "cell",
+        "boss",
+        "flightGate",
+        "guardianWarning"
+      ],
+      "finish": [
+        "nova",
+        "bossHit",
+        "bossDefeated",
+        "clear"
+      ],
+      "warningOverRestDb": -12.689981231200935,
+      "rawWarningOverRestDb": -13.103390230597292,
+      "peakMixDbfs": -7.7333163853713245,
+      "voices": 4
+    },
+    {
+      "year": 2985,
+      "entry": [
+        "cell",
+        "sector",
+        "boss",
+        "bossAttack",
+        "flightGate",
+        "guardianWarning",
+        "surfGate"
+      ],
+      "audible": [
+        "cell",
+        "boss",
+        "flightGate",
+        "guardianWarning",
+        "surfGate"
+      ],
+      "finish": [
+        "nova",
+        "bossHit",
+        "bossDefeated",
+        "win"
+      ],
+      "warningOverRestDb": -7.827516816633171,
+      "rawWarningOverRestDb": -9.064240287911208,
+      "peakMixDbfs": -8.418197774389622,
+      "voices": 5
+    }
+  ],
+  "ecology": [
+    {
+      "type": "ecoWarning",
+      "role": "sentinelle",
+      "plane": 0,
+      "serial": 1,
+      "seconds": 1.656,
+      "tiles": 161,
+      "opening": 17
+    },
+    {
+      "type": "ecoWarning",
+      "role": "equarrisseur",
+      "plane": 0,
+      "serial": 1,
+      "seconds": 1.656,
+      "tiles": 105,
+      "opening": 17
+    },
+    {
+      "type": "ecoWarning",
+      "role": "sillage",
+      "plane": 1,
+      "serial": 1,
+      "seconds": 1.656,
+      "tiles": 135,
+      "opening": 17
+    },
+    {
+      "type": "ecoWarning",
+      "role": "portier",
+      "plane": 0,
+      "serial": 1,
+      "seconds": 1.656,
+      "tiles": 83,
+      "opening": 17
+    }
+  ],
+  "surf": [
+    {
+      "year": 1995,
+      "events": [
+        "surfGate",
+        "surfGate",
+        "surfStart",
+        "surfPulse",
+        "surfEnd",
+        "surfGate"
+      ],
+      "hitFrame": [
+        "surfEnd",
+        "bossHit",
+        "surfGate"
+      ],
+      "audible": [
+        "surfEnd",
+        "bossHit",
+        "surfGate"
+      ]
+    },
+    {
+      "year": 2985,
+      "events": [
+        "surfGate",
+        "surfGate",
+        "surfStart",
+        "surfPulse",
+        "surfEnd"
+      ],
+      "hitFrame": [
+        "surfEnd",
+        "bossHit"
+      ],
+      "audible": [
+        "surfEnd",
+        "bossHit"
+      ]
+    }
+  ],
+  "knot": [
+    {
+      "type": "kill",
+      "id": 100,
+      "x": 16,
+      "y": 11
+    },
+    {
+      "type": "knotClosed",
+      "x": 14,
+      "y": 9,
+      "plane": 0,
+      "area": 20,
+      "mode": "exact"
+    }
+  ],
+  "signatures": [
+    {
+      "year": 1976,
+      "uniquePcm": 21,
+      "count": 21
+    },
+    {
+      "year": 1985,
+      "uniquePcm": 21,
+      "count": 21
+    },
+    {
+      "year": 1995,
+      "uniquePcm": 21,
+      "count": 21
+    },
+    {
+      "year": 2185,
+      "uniquePcm": 21,
+      "count": 21
+    },
+    {
+      "year": 2985,
+      "uniquePcm": 21,
+      "count": 21
+    }
+  ]
+}

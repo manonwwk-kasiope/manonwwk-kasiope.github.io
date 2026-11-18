@@ -1,0 +1,16 @@
+.sat-atelier{display:grid;grid-template-columns:minmax(130px,.78fr) minmax(275px,1.4fr);gap:clamp(8px,2vw,20px);align-items:center;width:100%;color:#f8f5e9;font-family:inherit}
+.sat-apercu{overflow:hidden;border:1px solid #577984;border-radius:12px;background:#0c1222}
+.sat-apercu canvas{display:block;width:100%;height:auto;aspect-ratio:460/192}
+.sat-reglage{min-width:0;display:grid;gap:6px}
+.sat-recette{font-size:clamp(17px,2.5vw,23px);line-height:1.1}
+.sat-effet,.sat-mod,.sat-mode span{color:#c5d8de;font-size:14px;line-height:1.22}
+.sat-choix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.sat-atelier button{font:inherit;color:inherit;cursor:pointer;min-height:44px;min-width:44px;border-radius:8px;border:1px solid #5d7c88;background:#172938;padding:4px 6px}
+.sat-atelier .sat-mode{display:grid;text-align:left;align-content:center;min-height:48px;line-height:1.1}
+.sat-mode span{font-size:12px}.sat-mode strong{font-size:15px}
+.sat-mode[aria-pressed="true"]{border:2px solid #93f7da;background:#204147;padding:3px 5px}
+.sat-action{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sat-atelier .sat-confirmer{background:#9cead4;color:#10232b;border-color:#b5ffe5;font-weight:700}
+.sat-atelier button:focus-visible{outline:3px solid #ffe39a;outline-offset:2px}
+@media(max-width:510px){.sat-atelier{grid-template-columns:1fr}.sat-apercu canvas{max-height:90px;object-fit:contain}}
+@media(prefers-reduced-motion:reduce){.sat-atelier *{animation:none;transition:none}}

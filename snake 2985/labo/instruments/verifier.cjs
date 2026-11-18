@@ -1,0 +1,34 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {sync}=require('./instruments.js'),css=fs.readFileSync(path.join(__dirname,'instruments.css'),'utf8');
+const results={};
+let writes=0;
+const node=()=>({dataset:{},style:{setProperty(k,v){writes++;this[k]=v;}},attrs:{},firstChild:{nodeType:3,nodeValue:'✷ '},setAttribute(k,v){writes++;this.attrs[k]=v;},hasAttribute(k){return k==='data-start-instrument'&&Object.hasOwn(this.dataset,'startInstrument');},removeAttribute(k){if(k==='data-start-instrument')delete this.dataset.startInstrument;}});
+const dom={poste:node(),niveau:node(),nova:node()},doc={getElementById:k=>dom[k]};
+const s={year:1976,difficulty:1,sectorCells:0,sectorGoal:2,novaCharge:1,status:'playing'};
+sync(s,'prep',false,doc);assert(!dom.poste.hasAttribute('data-start-instrument'));
+sync(s,'play',false,doc);assert(dom.poste.hasAttribute('data-start-instrument'));assert.equal(dom.nova.attrs['aria-label'],'Nova prête');
+const prior=writes;sync(s,'play',false,doc);assert.equal(writes,prior);
+sync(s,'pause',false,doc);sync(s,'play',false,doc);assert(!dom.poste.hasAttribute('data-start-instrument'));
+sync(s,'prep',false,doc);sync(s,'play',true,doc);assert(!dom.poste.hasAttribute('data-start-instrument'));
+sync(s,'prep',false,doc);sync(s,'play',false,doc);sync(s,'play',true,doc);assert(!dom.poste.hasAttribute('data-start-instrument'));
+assert.equal(dom.nova.firstChild.nodeValue,'Nova ');
+const normal=(r,g,b)=>[r,g,b].map(v=>(v/=255)<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+const Y=hex=>normal(...[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
+const contrast=(a,b)=>{const u=Y(a),v=Y(b);return (Math.max(u,v)+.05)/(Math.min(u,v)+.05);};
+for(const year of [1976,1985,1995,2185,2985]){
+ s.year=year;s.novaCharge=.634;s.difficulty=3;s.sectorCells=1;
+ sync(s,'play',false,doc);assert.equal(dom.poste.dataset.instrument,String(year));assert.equal(dom.niveau.style['--avance'],'25%');assert.equal(dom.nova.style['--charge'],'63%');
+ const attrs=css.match(new RegExp('^#poste\\[data-instrument="'+year+'"\\] \\{([^}]+)\\}','m'))[1];
+ const color=k=>attrs.match(new RegExp('--inst-'+k+':(#[0-9a-f]{6})'))[1];
+ const ratios={text:contrast(color('texte'),color('fond')),accent:contrast(color('accent'),color('fond')),second:contrast(color('second'),color('fond')),rail:contrast(color('accent'),color('piste')),novaRail:contrast(color('second'),color('piste')),contour:contrast(color('bord'),color('fond'))};
+ for(const [k,v] of Object.entries(ratios))assert(v>=(['contour','rail','novaRail'].includes(k)?3:4.5),year+' '+k+' '+v);
+ results[year]=ratios;
+}
+s.difficulty=5;s.boss={hp:16,maxHp:32};sync(s,'play',false,doc);assert.equal(dom.niveau.attrs['aria-valuenow'],'45');
+s.novaCharge=-1;s.status='won';sync(s,'end',false,doc);assert.equal(dom.niveau.attrs['aria-valuenow'],'100');assert.equal(dom.nova.style['--charge'],'0%');
+assert(!/addEventListener|setTimeout|requestAnimationFrame|pointerCapture/.test(fs.readFileSync(path.join(__dirname,'instruments.js'),'utf8')));
+assert(css.includes('min-width:44px;min-height:44px')&&css.includes('min-width:50px;min-height:48px'));
+assert(css.includes('prefers-reduced-motion:no-preference')&&!css.includes('#stick{'));
+fs.writeFileSync(path.join(__dirname,'contrastes.json'),JSON.stringify(results,null,2)+'\n');
+console.log(results);

@@ -38,6 +38,11 @@
       return null;
     }
     if(next.x<0||next.x>=s.width||next.y<0||next.y>=s.height)return ['Bord devant',h];
+    const wave=s.ecologie?.wave;
+    if(wave && wave.plane===s.plane && (wave.phase==='active'||wave.remaining<=.65)){
+      if(wave.mask.has(h.y*s.width+h.x)||wave.mask.has(next.y*s.width+next.x))
+        return [wave.name+' · Sors des cases marquées',next];
+    }
     const growing=s.cells.some(p=>same(p,next));
     if(s.snake.slice(0,growing?s.snake.length:-1).some(p=>same(p,next)))return ['Évite ta queue',next];
     const b=s.boss;

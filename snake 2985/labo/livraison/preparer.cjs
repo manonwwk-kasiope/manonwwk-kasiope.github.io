@@ -25,7 +25,7 @@ store('arcade.css',styles.map(name=>read(lab,name)).join('\n'));
 const stamp=hash(['arcade.js','arcade.css']);
 html=html.replace('Snake 2985 · Chambre des deux mondes','SNAKE 2985 · Arcade synthwave').replace('</head>',`
 <link rel="manifest" href="./app.webmanifest">
-<link rel="icon" href="icone.svg" type="image/svg+xml">
+<link rel="icon" href="icone-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -42,13 +42,19 @@ if(window.isSecureContext && location.protocol!=='file:' && 'serviceWorker' in n
 </script>
 </body>`);
 store('index.html',html);
-const originals=['app.webmanifest','apple-touch-icon.png','icone.svg','icone-192.png','icone-512.png',...audio];
-for(const n of originals){fs.mkdirSync(path.dirname(path.join(dest,n)),{recursive:true});fs.copyFileSync(path.join(root,n),path.join(dest,n));}
+const originals=['app.webmanifest','apple-touch-icon.png','icone-192.png','icone-512.png',...audio];
+for(const n of originals){fs.mkdirSync(path.dirname(path.join(dest,n)),{recursive:true});fs.copyFileSync(n.endsWith('.png')?path.join(lab,'icones',n):path.join(root,n),path.join(dest,n));}
 fs.copyFileSync(path.join(lab,'jaquette.webp'),path.join(dest,'jaquette.webp'));
-const files=['index.html','arcade.js','arcade.css','jaquette.webp',...originals];
-const edition=hash(files);
-const worker=read(root,'sw.js').replace(/const version = prefix \+ "[^"]+";/,'const version = prefix + "'+edition+'";')
- .replace(/const gameFiles = \[[\s\S]*?\n\];/,'const gameFiles = '+JSON.stringify(files,null,2)+';');
-if(!worker.includes(edition)||!worker.includes('"jaquette.webp"'))throw new Error('Gabarit du worker incompatible.');
-store('sw.js',worker);
+const cards=[1976,1985,1995,2185,2985].map(year=>'paysage-'+year+'.webp');
+for(const file of cards)fs.copyFileSync(path.join(root,'labo/bifurcation',file),path.join(dest,file));
+const plates=fs.readdirSync(path.join(lab,'decors'),{recursive:true}).filter(name=>name.endsWith('.webp')).sort().map(name=>'decors/'+name);
+fs.mkdirSync(path.join(dest,'decors'),{recursive:true});
+for(const file of plates){fs.mkdirSync(path.dirname(path.join(dest,file)),{recursive:true});fs.copyFileSync(path.join(lab,file),path.join(dest,file));}
+const files=[...plates,...cards,'index.html','arcade.js','arcade.css','jaquette.webp',...originals];
+const assetEdition=hash(files);
+const template=read(__dirname,'sw-source.js');
+if(!template.includes('__GAME_FILES__')||!template.includes('__EDITION__'))throw new Error('Gabarit du worker incompatible.');
+const worker=template.replace('__GAME_FILES__',JSON.stringify(files,null,2));
+const edition=crypto.createHash('sha256').update(assetEdition).update(worker).digest('hex').slice(0,16);
+store('sw.js',worker.replace('__EDITION__',edition));
 console.log(JSON.stringify({edition,files:files.length+1,scripts:js.length,audio:audio.length,dest}));

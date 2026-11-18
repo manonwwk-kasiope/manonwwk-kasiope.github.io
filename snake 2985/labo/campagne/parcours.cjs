@@ -27,7 +27,10 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
       page.on('pageerror',e=>errors.push(e.message));
       await page.goto(url);
       const run=n=>page.evaluate(n=>advance(n),n);
-      const press=selector=>page.locator(selector).first().evaluate(b=>b.click());
+      const press=async selector=>{
+        const box=await page.locator(selector).first().boundingBox();
+        assert.ok(box,selector);await page.touchscreen.tap(box.x+box.width/2,box.y+box.height/2);
+      };
       await run(1);
       assert.deepEqual(errors,[]);
       async function checkTargets(){
@@ -61,10 +64,16 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
         await run(16);
       }
       assert.equal(await page.locator('body').getAttribute('data-screen'),'end');
-      const years=await page.locator('#validations button').allTextContents();
-      assert.deepEqual(years,['Saut 1985','Saut 1995','Saut 2185','Saut 2985','Rejouer']);
+      const years=await page.locator('[role=radio]').allTextContents();
+      assert.deepEqual(years.map(s=>Number(s.match(/\d{4}/)[0])),[1985,1995,2185,2985]);
       await checkTargets();
-      await press('#validations button:nth-child(2)');await run(1);
+      await press('.bf-review');
+      assert.equal(await page.locator('dialog[open]').count(),1);await press('dialog[open] header button');
+      await press('.titre-saut button');
+      assert.equal(await page.locator('dialog[open]').count(),1);
+      const filters=await page.locator('dialog[open] select option').allTextContents();
+      assert.ok(filters.includes('1995'));await press('dialog[open] header button');
+      await press('[role=radio]:nth-child(2)');await press('.bf-launch');await run(1);
       assert.equal(await page.evaluate(()=>observed.year),1995);
       assert.match(await page.locator('#rang').textContent(),/8 bits/);
       assert.deepEqual(errors,[]);

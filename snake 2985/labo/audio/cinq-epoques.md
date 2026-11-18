@@ -60,3 +60,45 @@ Mis à jour le 18/11/2026 à 00 h 17 (Paris).
 **Hors ligne.** Sur une origine HTTP locale ou HTTPS, `await prepareOffline()` vérifie la présence des cinq MP3 dans CacheStorage, en utilisant aussi le cache du jeu quand il existe. Il renvoie les cinq noms après vérification. Cette opération charge les fichiers sans créer de contexte audio. Les réglages et positions sont enregistrés aux transitions et toutes les cinq secondes de progression observée. Pour rouvrir la chambre entièrement sans connexion, son hôte doit également avoir mis en cache sa page et les quatre scripts ci-dessus. Une URL `file://` dépend des restrictions d’accès local du navigateur. Le bouton Son demeure nécessaire après un rechargement.
 
 **Vérification.** Huit tests automatisés couvrent notamment le passage des cinq musiques, la restauration des positions, les dix couples gardien/prime, la course entre changement d’année et décodage, les interruptions, les gardes de visibilité, les volumes et la réutilisation des cinq MP3 complets après coupure simulée du réseau. Les appels Web Audio utilisent des sources simulées. Les durées des cinq fichiers ont été contrôlées avec FFprobe et dépassent leur borne de boucle. Les trois bancs se reproduisent sans périphérique avec `node --test test-bande-campagne.cjs`, `node test-epoques.cjs` et `node test-priorites.cjs`. Le décodage navigateur, le comportement audio d’iOS et le résultat perçu sur l’appareil restent à vérifier. [Tests du lecteur](test-bande-campagne.cjs)
+
+## Gestes de campagne et ponctuation de fin
+
+Mis à jour le 18/11/2026 à 00 h 49 (Paris).
+
+Les cinq palettes disposent d’un son distinct pour le verrou de sentinelle, la coupe de l’équarrisseur, le sillage et le portier. Le sacrifice de deux anneaux produit deux chutes. Le nœud ferme une phrase sur sa hauteur de départ. Le surf porte la poussée vers le médium aigu ; une réception réussie se pose sur deux hauteurs, une sortie manquée descend. Le contact avec un bouclier produit une attaque courte, le cœur un double impact grave et aigu, le piqué du surf une remontée plus longue. Le noyau et le modificateur continuent d’identifier les tirs et impacts forgés. La marque évoluée a son propre déclenchement et son propre contact. Les cinq contrats possèdent un appel d’ouverture différent. [Synthèse et répartiteur](priorites.js)
+
+La chambre alimente le son depuis deux files. Les événements de simulation passent par `audio.event(e)` dans la boucle de `state.events`. Les événements portés uniquement par `SnakeDirector.tick(...).events` passent par `audio.encounter(cue)` dans la boucle du directeur. Les étapes utiles du contrat reçoivent un retour sonore. Le simple retrait d’une offre ou d’une menace reste silencieux. Le moteur d’écologie peut retirer un événement de mort avant de publier `ecoAbsorb` : transmettre la file après la résolution du pas conserve le son de survie.
+
+**Raccord de fin.** Dans `finish()` de la chambre, utiliser `archives.end(state); audio.finish(state.status);`. L’événement `death`, `clear` ou `win` termine aussi le transport. Un second appel de fin dans la même image est inoffensif. La musique et les autres effets s’arrêtent immédiatement. Une seule source joue la ponctuation, puis ferme le gain maître à sa fin naturelle. Une victoire accompagnant la prime du gardien final enchaîne les deux motifs dans cette source. Pour annuler sur départ anticipé de l’écran de résultat, appeler `audio.stop()` à la navigation vers une autre activité. Pause, mute, redémarrage, page masquée et interruption du contexte annulent aussi cette source. Le lecteur reste silencieux si la fin survient avant l’activation manuelle. [Lecteur](bande-campagne.js)
+
+**Mesures sur les vraies files.** Le banc entre dans le combat par un vrai ramassage de secteur, puis appelle la nova sur un gardien ramené à un point de vie pour obtenir sa séquence terminale. Il rejoue deux parcours de surf guidés et un circuit de queue, et fait proposer les quatre rôles par le module d’écologie. Le gardien, son alerte précise et les gestes de surf restent audibles au sens technique : leur source est toujours planifiée à la fin de la même image. Le doublon générique `bossAttack` cède sa place à `guardianWarning`. En 1995 et 2985, les retours `surfEnd` et `bossHit` au cœur coexistent réellement lors de la réception. Le nœud ferme une surface de 20 cases sur le parcours testé et suit le `kill` du drone.
+
+| Année | Effets simultanés rendus à l’entrée | Alerte / reste du mix | Gain sur le brut | Crête, MP3 compris |
+|---|---:|---:|---:|---:|
+| 1976 | 4 | −15,66 dB | +0,20 dB | −4,40 dBFS |
+| 1985 | 3 | −11,74 dB | +0,50 dB | −7,21 dBFS |
+| 1995 | 5 | −10,93 dB | +0,51 dB | −7,49 dBFS |
+| 2185 | 4 | −12,69 dB | +0,41 dB | −7,73 dBFS |
+| 2985 | 5 | −7,83 dB | +1,24 dB | −8,42 dBFS |
+
+Le rapport de puissance mono est mesuré sur la durée du motif prioritaire avec le MP3 de l’année. Les cinq mesures restent sous la pleine échelle avant le compresseur. Sur ce passage de 1976, la musique et les autres gestes dominent encore nettement l’alerte en puissance large bande. Les empreintes PCM diffèrent pour les 21 gestes vérifiés dans chacune des cinq années. Une empreinte différente et une source admise ne mesurent pas la perception du joueur. Les onze tests du lecteur vérifient aussi l’arrêt immédiat, l’unicité du motif final et la neutralisation des callbacks périmés. [Banc sur événements réels](test-gestes.cjs) · [Files, voix et mesures](mesures-gestes.json) · [Tests de fin et d’annulation](test-bande-campagne.cjs)
+
+## Les cinq sur-novas
+
+Mis à jour le 18/11/2026 à 00 h 55 (Paris).
+
+[Écoute manuelle des cinq signatures](surnovas-cinq-epoques.wav). Chaque année occupe deux secondes sur son propre MP3. Le fichier mono affiche −26,1 LUFS intégrés et −10,0 dBTP sur la mesure FFmpeg.
+
+| Année | Ponctuation | Durée du motif | Crête maximale du mix testé |
+|---|---|---:|---:|
+| 1976 | Peigne carré en cinq dents, avec une dent manquante entre les deux groupes | 341 ms | −2,52 dBFS |
+| 1985 | Quatre rebonds de plus en plus graves, de gauche à droite puis de droite à gauche | 779 ms | −6,20 dBFS |
+| 1995 | Cinq paires d’essieux accélèrent sous un sifflet qui descend le long du convoi | 896 ms | −6,50 dBFS |
+| 2185 | Deux lignes FM en sens opposés se rejoignent à 600 Hz | 850 ms | −5,40 dBFS |
+| 2985 | Appel et réplique sur le plan avant, réponse dans le grave à 550 ms sur le plan arrière | 930 ms | −6,03 dBFS |
+
+Le lecteur consomme `audio.events(batch)` avec les événements de l’image. Il repère `novaOverload` et retire du routage sonore la seule `nova` native associée sur la même case et le même plan. Les visuels reçoivent toujours le lot entier. Une recette inconnue conserve la nova ordinaire. Les `novaOverloadHit` voisins sont regroupés sur 110 ms. Le motif emprunte le bus des actions, soumis à l’atténuation des menaces. La synthèse plafonne son amplitude à 0,34 par canal ; le banc le contrôle à 12, 24, 44,1 et 48 kHz.
+
+La comparaison utilise les véritables événements de tir et de contact du module de surcharges. Sur douze graines et quatre passages de MP3 par année, un essai place volontairement une sur-nova sur chaque annonce de boss. Les 480 sur-novas, 480 annonces de boss et 240 traversées prévues démarrent dans le budget de huit voix. La perte maximale de rapport de puissance entre une annonce et le reste du mix, par rapport à la même rafale sans surcharge, atteint 0,116 dB. Aucun échantillon du mix mono ne dépasse la pleine échelle. À palette fixée, la corrélation normalisée absolue des motifs mono alignés reste inférieure à 0,038 pour toutes les paires. L’essai ne mesure pas la reconnaissance par des joueurs. [Mesures par année et graine](mesures-surnovas.json) · [Banc avec le module de surcharge réel](test-surnovas.cjs)
+
+Le saut temporel du menu reste silencieux. Au moment du choix, la fin de campagne a déjà fermé le transport et imposé le réarmement manuel du son.

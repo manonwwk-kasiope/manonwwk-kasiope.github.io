@@ -1,0 +1,18 @@
+.voyage-carte{--vc-ink:#f8f5eb;box-sizing:border-box;width:min(850px,calc(100dvw - 16px));max-width:none;max-height:calc(100dvh - 10px);padding:8px 12px 10px;margin:auto;border:1px solid #65828e;border-radius:15px;background:#122031;color:var(--vc-ink);font-family:inherit;font-size:17px;line-height:1.25;overflow:auto}
+.voyage-carte *{box-sizing:border-box}.voyage-carte::backdrop{background:#07101ae8}
+.vc-top,.vc-num,.vc-ligne{display:flex}.vc-top{align-items:center;justify-content:space-between}.vc-top h2{font-size:clamp(18px,3vw,26px);margin:0}
+.voyage-carte button{appearance:none;font:inherit;color:inherit;cursor:pointer;min-height:44px;min-width:44px;border:1px solid #627d8b;border-radius:8px;background:#1b3041}
+.voyage-carte button:focus-visible{outline:3px solid #ffde8a;outline-offset:-3px}.vc-fermer{padding:4px 12px}
+.vc-ligne{margin:5px 0 7px;gap:6px}.vc-date{flex:1;min-width:0!important;display:flex;align-items:center;gap:6px;overflow:hidden;padding:3px 5px}
+.vc-date[aria-selected=true]{box-shadow:inset 0 -3px #98f5d7;background:#25404c}
+.vc-mini{width:37%;height:37px;object-fit:cover;border-radius:4px}.vc-num{flex-direction:column;align-items:start}.vc-num strong{font-size:clamp(15px,2.5vw,20px)}.vc-num small{font-size:12px;color:#c4d5de}
+.vc-panel{display:grid;grid-template-columns:minmax(140px,.87fr) minmax(200px,1.13fr);gap:12px}.vc-horizon{position:relative;min-width:0;overflow:hidden;border-radius:8px;background:#132634;min-height:108px}
+.vc-horizon img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vc-horizon h3{position:absolute;inset:auto 0 0;margin:0;padding:20px 8px 5px;background:linear-gradient(transparent,#101827e8 60%);font-size:17px;color:#fff}
+.vc-fiche{display:grid;align-content:center;gap:4px}.vc-fiche p{margin:0}.vc-arsenal{font-size:clamp(14px,2.25vw,17px);font-weight:650}.vc-historique,.vc-gardien{font-size:clamp(12px,1.9vw,15px);color:#c3d7df}.vc-depart{width:100%;margin-top:2px;background:#9beacb!important;color:#142a30!important;font-weight:700!important}
+.vc-depart:disabled{background:#293846!important;color:#c4d2d8!important;cursor:default}
+@media(max-height:300px){.voyage-carte{padding:4px 8px 6px}.vc-top h2{font-size:19px}.vc-ligne{margin:3px 0 5px}.vc-panel{gap:9px}.vc-horizon{min-height:103px}.vc-fiche{gap:2px}}
+@media(max-width:440px){.vc-date{padding:3px;justify-content:center}.vc-mini{display:none}.vc-panel{grid-template-columns:1fr}.vc-horizon{min-height:85px}}
+@media(prefers-reduced-motion:reduce){.voyage-carte *{scroll-behavior:auto;animation:none;transition:none}}
+
+.vc-date[data-locked=true] .vc-mini{filter:saturate(.48)}.vc-date[data-locked=true] .vc-num small::after{content:" · ◇";color:#c7a59d}

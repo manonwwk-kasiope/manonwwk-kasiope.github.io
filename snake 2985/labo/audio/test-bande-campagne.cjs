@@ -141,3 +141,57 @@ test('scripts classiques et données disponibles sans fetch du JSON',()=>{
   env.SnakeCampagneSon.start(1995);assert.equal(env.SnakeCampagneSon.status.track,rows[2].track);
   assert(env.SnakeCampagneSon.muted);
 });
+
+test('fin de partie sur la même image : une seule queue audible et fermeture naturelle',async()=>{
+  for(const [status,type] of [['dead','death'],['cleared','clear'],['won','win']]) {
+    const e=environment(),a=e.audio;a.start(2985);await a.setMuted(false);
+    a.event({type:'bossHit',heart:true});a.event({type:'bossDefeated',kind:'final'});
+    assert(a.event({type}));a.finish(status);
+    const tail=e.started.at(-1);
+    assert(a.status.ending && !a.status.active && !a.status.playingMusic);
+    assert.equal(e.started.filter(s=>!s.stopped).length,1);
+    assert.equal(e.gains[0].gain.value,1);assert(!a.event('shot'));
+    assert(tail.buffer.duration>=(type==='death'?.27:.66));tail.onended();
+    assert.equal(e.gains[0].gain.value,0);assert(!a.status.ending);
+  }
+});
+test('annulation immédiate de la queue de fin et protection contre un callback périmé',async()=>{
+  for(const how of ['stop','mute','pause','hidden','interrupted','dispose','restart']) {
+    const e=environment(),a=e.audio;a.start(0);await a.setMuted(false);
+    assert(a.finish('dead'));const tail=e.started.at(-1),late=tail.onended;
+    if(how==='mute')await a.setMuted(true);
+    else if(how==='hidden'){e.doc.hidden=true;e.doc.emit('visibilitychange');}
+    else if(how==='interrupted'){e.ctx.state='interrupted';e.ctx.onstatechange();}
+    else if(how==='restart'){a.start(1);await a.setMuted(false);}
+    else a[how]();
+    assert(tail.stopped);assert(!a.status.ending);late();
+    assert.equal(e.gains[0].gain.value,how==='restart'?1:0);
+  }
+  const e=environment();e.audio.start();assert(!e.audio.finish('won'));assert.equal(e.contexts,0);
+});
+test('contrats reliés au directeur et transitions silencieuses',async()=>{
+  const e=environment(),a=e.audio;a.start(1995);await a.setMuted(false);
+  for(const type of ['open','aiguille','branche','score']) {e.advance(1);assert(a.encounter({type,kind:'aiguillage'}));}
+  for(const type of ['close','bossBreath']) assert(!a.encounter({type,kind:'aiguillage'}));
+});
+
+test('surcharge et nova ordinaires dans une même image, toutes les années et les deux ordres',async()=>{
+  const signatures=['comb','ricochet','train','moons','echo'];
+  for(const [i,row] of rows.entries()) {
+    const e=environment(),a=e.audio;a.start(row.year);await a.setMuted(false);
+    const overload={type:'novaOverload',year:row.year,signature:signatures[i],x:4,y:7,plane:0};
+    const nova={type:'nova',x:4,y:7,plane:0},other={...nova,x:12};
+    for(const batch of [[nova,overload],[overload,nova],[other,nova,overload]]) {
+      const count=e.started.length;a.events(batch);
+      assert.equal(e.started.length-count,batch.includes(other)?2:1);
+      assert(e.started.slice(count).some(s=>s.buffer.duration>.30));
+      e.advance(1);
+    }
+    let count=e.started.length;
+    a.events([nova,{...overload,year:1234}]);assert.equal(e.started.length-count,1);
+    e.advance(1);count=e.started.length;
+    a.events([nova,overload,{type:'guardianWarning'},...Array(4).fill({type:'novaOverloadHit'})]);
+    assert.equal(e.started.length-count,3);
+    a.stop();count=e.started.length;a.events([nova,overload]);assert.equal(e.started.length,count);
+  }
+});

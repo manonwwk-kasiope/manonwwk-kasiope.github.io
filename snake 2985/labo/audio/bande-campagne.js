@@ -49,7 +49,7 @@
     let row=rows[0],pulseClock=clock.create(rows,row.year),ctx,master,musicBus,fxBus,fx;
     let source=null,sourceWhen=0,sourcePosition=0,pressure=0,boss=null,token=0;
     let decoded=null,loading=null,error=null,checkpointAt=-Infinity;
-    let decodeQueue=Promise.resolve(),wasRunning=false;
+    let decodeQueue=Promise.resolve(),wasRunning=false,ending=false,prizeAt=-Infinity;
     const normalize=v=>years.includes(v)?v:years[Math.max(0,Math.min(years.length-1,Math.trunc(Number(v))||0))];
     const running=()=>active && !paused && !hidden && !closed;
     const allowed=()=>running() && !muted;
@@ -86,7 +86,7 @@
       gain(fxBus,.32*fxLevel);
     }
     function silence() {
-      ++token;gain(master,0);
+      ++token;ending=false;prizeAt=-Infinity;gain(master,0);
       if(source) {
         const old=source;source=null;old.onended=null;
         try {old.stop();} catch {} old.disconnect();
@@ -106,7 +106,7 @@
       fx=synth.create(ctx,fxBus,{year:row.year,limit:8});
       ctx.onstatechange=()=>{
         if(ctx.state==='running') wasRunning=true;
-        if(active && !muted && (ctx.state==='interrupted' || (ctx.state==='suspended' && wasRunning))) guard();
+        if(((active && !muted) || ending) && (ctx.state==='interrupted' || (ctx.state==='suspended' && wasRunning))) guard();
       };
     }
     async function bufferFor(r) {
@@ -178,6 +178,7 @@
       muted=false;return arm();
     }
     function pause() {
+      if(ending) {silence();return;}
       if(!active || paused) return;
       remember();paused=true;silence();anchor(positions[row.year]);
     }
@@ -208,11 +209,48 @@
     function event(info) {
       if(!allowed() || !fxLevel || ctx?.state!=='running') return false;
       if(typeof info==='string') info={type:info};
+      if(['win','clear','death'].includes(info?.type)) return finish(info.type);
+      if(info?.type==='bossDefeated' && info.kind==='final') prizeAt=ctx.currentTime;
       return Boolean(fx?.play(info));
+    }
+    function events(batch) {
+      if(!Array.isArray(batch) || !allowed()) return;
+      const omit=new Set();
+      for(let i=0;i<batch.length;i++) {
+        const surge=batch[i];
+        if(surge.type!=='novaOverload' || !fx?.handles(surge)) continue;
+        // Le moteur émet sa nova avant la surcharge ; les dommages natifs peuvent les séparer.
+        const fits=(other,j)=>other.type==='nova' && !omit.has(j) &&
+          ['plane','x','y'].every(k=>other[k]==null || surge[k]==null || other[k]===surge[k]);
+        let paired=-1;
+        for(let j=i-1;j>=0;j--) if(fits(batch[j],j)) {paired=j;break;}
+        if(paired<0) paired=batch.findIndex(fits);
+        if(paired>=0) omit.add(paired);
+      }
+      for(let i=0;i<batch.length;i++) if(!omit.has(i)) event(batch[i]);
     }
     function stop() {
       remember();silence();active=false;paused=false;muted=true;pressure=0;boss=null;
       anchor(positions[row.year]??row.loopStart);
+    }
+    function finish(status) {
+      const type=({dead:'death',death:'death',won:'win',win:'win',cleared:'clear',clear:'clear'})[status];
+      if(!type || !active) return false;
+      const permitted=allowed() && fxLevel>0 && ctx?.state==='running';
+      const withPrize=type!=='death' && ctx && ctx.currentTime-prizeAt<=.035;
+      stop();
+      if(!permitted) return false;
+      // Le transport est arrêté ; seule cette source peut traverser le gain maître.
+      const id=token;
+      ending=true;gain(master,1);
+      const done=()=>{if(id===token) {ending=false;gain(master,0);}};
+      if(!fx.play({type,withPrize},done)) {done();return false;}
+      return true;
+    }
+    function encounter(cue) {
+      const type=({open:'contractOpen',capture:'contractStep',aiguille:'contractStep',branche:'contractStep',
+        double:'contractStep',liaison:'contractStep',score:'contractScore'})[cue?.type];
+      return type?event({type,kind:cue.kind}):false;
     }
     function dispose() {
       if(closed) return;
@@ -221,11 +259,11 @@
       doc?.removeEventListener('visibilitychange',visibility);
       page?.removeEventListener('pagehide',leaving);page?.removeEventListener('pageshow',returning);
     }
-    return {start,stop,pause,resume,scene,event,setMuted,setVolumes,pulse,beat:()=>pulse().phase,
+    return {start,stop,finish,pause,resume,scene,event,events,encounter,setMuted,setVolumes,pulse,beat:()=>pulse().phase,
       sector:n=>scene(row.year,n,clamp((Number(n)-1)/9),boss),
       prepareOffline:()=>prepare(rows),dispose,
       get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},
-      get status(){return {year:row.year,track:row.track,active,paused,hidden,muted,playingMusic:Boolean(source && allowed() && musicLevel),error};}};
+      get status(){return {year:row.year,track:row.track,active,paused,hidden,muted,ending,playingMusic:Boolean(source && allowed() && musicLevel),error};}};
   }
   if(typeof module==='object' && module.exports) module.exports={create,offlineFiles};
   else {

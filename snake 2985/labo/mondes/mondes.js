@@ -98,6 +98,9 @@
       }
     });
     repeat(c,skyline,t*3+cam.look*4);
+    cityTraffic(c,t,cam,boss);
+  }
+  function cityTraffic(c,t,cam,boss){
     line(c,[[0,132],[W,146]],'#29263b',6);line(c,[[0,130],[W,144]],'#cf96a0',1);
     for(let i=-1;i<6;i++){
       const x=i*203-wrap(t*7+cam.look*6,203),y=130+x*.0145;
@@ -123,6 +126,11 @@
       poly(c,[[11,-44],[22,-51],[35,-52],[40,-49],[36,-44],[24,-41]],'#534656','#c4969b',1);
       line(c,[[27,-49],[36,-50]],'#ffe3af',1.6);line(c,[[-15,-49],[-14,-58],[-8,-60]],'#c2949b',1.1);
       c.restore();
+    }
+    for(let i=0;i<13;i++){
+      const dir=i%2?1:-1,x=wrap(i*77+t*dir*(17+i%5*3),W+24)-12,y=132+x*.0145+(dir>0?2:-1);
+      line(c,[[x-4,y],[x+4,y]],dir>0?'#ffb7a9':'#98e2e2',1.4);
+      rect(c,x+dir*4,y-1,1.6,1.4,'#fff1c1');
     }
     for(let i=0;i<42;i++){
       const xx=wrap(i*331-t*31,W), yy=wrap(i*57+t*95,171);
@@ -260,6 +268,9 @@
       for(let x=0;x<W;x+=23){rect(g,x,151,11,2,'#827479');rect(g,x+3,156,7,1,'#a29386');}
       for(let y=185;y<440;y+=22){rect(g,0,y,W,2,'#403646');}
     }),0,0);
+    railTraffic(c,t,cam,boss);
+  }
+  function railTraffic(c,t,cam,boss){
     for(let j=-1;j<4;j++){
       const x=j*300-wrap(t*9+cam.look*4,300);
       rect(c,x+4,35,3,101,'#424251');rect(c,x,35,64,4,'#615461');rect(c,x+58,39,2,8,'#655764');
@@ -314,14 +325,23 @@
     palettesRGB.set(year,table);return table;
   }
   const bayer=[-6,2,-4,4,6,-2,8,0,-3,5,-5,3,9,1,7,-1];
-  function finish(canvas,year){
+  function finish(canvas,year,destination=canvas){
     const f=formats[year];if(!f||f.bits===32)return;
     const w=Math.min(canvas.width,f.width),h=Math.max(1,Math.round(w*canvas.height/canvas.width));
-    let stage=stages.get(canvas);
-    if(!stage){const el=document.createElement('canvas');stage={el,ctx:el.getContext('2d',{willReadFrequently:true})};stages.set(canvas,stage);}
-    if(stage.el.width!==w||stage.el.height!==h){stage.el.width=w;stage.el.height=h;}
-    const c=stage.ctx;c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';
-    c.drawImage(canvas,0,0,w,h);
+    const direct=canvas!==destination;
+    let stage=direct?{el:canvas,ctx:canvas.getContext('2d')}:stages.get(canvas);
+    if(!stage){
+      const el=document.createElement('canvas');
+      stage={el,ctx:el.getContext('2d',{willReadFrequently:true})};
+      stages.set(canvas,stage);
+    }
+    const c=stage.ctx;
+    if(!direct){
+      if(stage.el.width!==w||stage.el.height!==h){stage.el.width=w;stage.el.height=h;}
+      c.imageSmoothingEnabled=true;c.imageSmoothingQuality='low';
+      c.drawImage(canvas,0,0,w,h);
+    }
+    c.save();c.setTransform(1,0,0,1,0,0);
     const img=c.getImageData(0,0,w,h),buf=img.data,packed=new Uint32Array(buf.buffer,buf.byteOffset,w*h);
     const table=f.palette?lut(year):null;
     for(let y=0,i=0;y<h;y++)for(let x=0;x<w;x++,i++){
@@ -338,14 +358,22 @@
         buf[j]=(ri<<3)|(ri>>2);buf[j+1]=(gi<<2)|(gi>>4);buf[j+2]=(bi<<3)|(bi>>2);
       }
     }
-    c.putImageData(img,0,0);
-    const out=canvas.getContext('2d');out.save();out.setTransform(1,0,0,1,0,0);out.imageSmoothingEnabled=false;
-    out.drawImage(stage.el,0,0,canvas.width,canvas.height);out.restore();
+    c.putImageData(img,0,0);c.restore();
+    const out=destination.getContext('2d');out.save();out.setTransform(1,0,0,1,0,0);out.imageSmoothingEnabled=false;
+    out.drawImage(stage.el,0,0,destination.width,destination.height);out.restore();
   }
   function draw(c,year,t=0,cam={},reduce=false){
     const fn={1976:terminal,1985:city,1995:railway,2185:orbit,2985:abyss}[year]||city;
-    const boss=Math.max(0,Math.min(1,cam.nearBoss||0));
+    const boss=clamp01(cam.nearBoss||0);
     c.save();c.lineCap='round';c.lineJoin='round';fn(c,reduce?0:t,{look:reduce?0:cam.look||0},boss);c.restore();
   }
-  window.SnakeMondes=Object.freeze({draw,finish,formats});
+  function traffic(c,year,t=0,cam={},reduce=false){
+    const render=year===1985?cityTraffic:year===1995?railTraffic:null;
+    if(!render)return false;
+    c.save();c.lineCap='round';c.lineJoin='round';
+    render(c,reduce?0:t,{look:reduce?0:cam.look||0},clamp01(cam.nearBoss||0));
+    c.restore();return true;
+  }
+  function clamp01(n){return Math.max(0,Math.min(1,n));}
+  window.SnakeMondes=Object.freeze({draw,finish,formats,traffic});
 })();

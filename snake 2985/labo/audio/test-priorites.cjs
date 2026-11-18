@@ -113,7 +113,8 @@ function run(events,mode,music,{year=null,fxGain=.72,pcm=false}={}) {
   for(const source of ctx.sources) {
     const a=source.buffer.getChannelData(0), b=source.buffer.getChannelData(1);
     const at=Math.round(source.at*rate), sig=new Float32Array(a.length), env=gains.get(source.bus);
-    for(let i=0;i<a.length && at+i<samples;i++) {
+    const length=source.stopped===undefined?a.length:Math.min(a.length,Math.max(0,Math.round((source.stopped-source.at)*rate)));
+    for(let i=0;i<length && at+i<samples;i++) {
       sig[i]=fxGain*(a[i]+b[i])*.5*env[at+i];audio[at+i]+=sig[i];
     }
     if(source.cue.critical) stems.set(source.cue,{sig,at});
@@ -134,7 +135,9 @@ function run(events,mode,music,{year=null,fxGain=.72,pcm=false}={}) {
     if(Math.abs(x)>=1) clip++;
     if(Math.abs(x)*trim>=1) clippedAfterTrim++;
   }
-  return {sent,score,peak,clip,clippedAfterTrim,voices:mixer.stats.peakVoices,...(pcm?{audio}:{})};
+  const overloads=ctx.sources.filter(s=>s.cue.type==='novaOverload' &&
+    (s.stopped===undefined || s.stopped-s.at>.02)).length;
+  return {sent,score,peak,clip,clippedAfterTrim,overloads,voices:mixer.stats.peakVoices,...(pcm?{audio}:{})};
 }
 const percentile=(x,p)=>x.slice().sort((a,b)=>a-b)[Math.floor((x.length-1)*p)];
 module.exports={bed,run,sequence,Context,percentile};

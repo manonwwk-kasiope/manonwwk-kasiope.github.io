@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   const clamp=(v)=>Math.max(0,Math.min(1,v));
-  const force={nova:.8,knotClosed:.95,bossVolley:.85,bossDefeated:1,flightStart:.45,flightEnd:.35,planeShift:.34,bossHit:.22,kill:.14};
+  const force={nova:.8,novaOverload:1,knotClosed:.95,bossVolley:.85,bossDefeated:1,flightStart:.45,flightEnd:.35,planeShift:.34,bossHit:.22,kill:.14};
   function event(s,e) {
     const weight=force[e.type];
     if(!weight)return;
