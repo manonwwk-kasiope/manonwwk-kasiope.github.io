@@ -1,6 +1,6 @@
 # Livrer SNAKE 2985 · campagne panoramique
 
-18/11/2026 · 01 h 52 (Paris)
+18/11/2026 · 01 h 52 (Paris), mis à jour à 02 h 34
 
 La campagne comprend **1976, 1985, 1995, 2185 et 2985**. La page source est [la chambre](../labo/campagne/index.html). L’assembleur en tire un dossier autonome destiné à `/snake-2985/`. Pour une vérification silencieuse, ouvrir la page avec `?muet=1` dès la première navigation.
 
@@ -21,7 +21,7 @@ Pendant un créneau navigateur, enchaîner ces parcours silencieux. Les deux pre
 
 ```sh
 node "$jeu/labo/livraison/interface.cjs" "$dist"
-CAMPAGNE_DIST="$dist" CAMPAGNE_PASSE="livraison-$(date +%Y%m%d-%H%M%S)" node "$jeu/labo/bout-en-bout/recette.cjs"
+CAMPAGNE_DIST="$dist" CAMPAGNE_MOUVEMENT=normal CAMPAGNE_PASSE="livraison-$(date +%Y%m%d-%H%M%S)" node "$jeu/labo/bout-en-bout/recette.cjs"
 node "$jeu/labo/livraison/hors-ligne.cjs" --browser --browser-reuse
 ```
 
@@ -31,10 +31,14 @@ Le premier parcours doit ouvrir les cinq aperçus, maintenir les dates verrouill
 
 | Portée | Résultat observé |
 |---|---|
-| Campagne jouée en WebKit | Les cinq années ont été gagnées, les dix boss vaincus et les cinq scores signés conservés après rechargement. Le nouveau cycle repart réellement en 1976. [Rapport](../labo/bout-en-bout/rapport.md) · [Résultat de la passe 02](../labo/bout-en-bout/preuves/passe-02/resultat.json) |
+| Campagne jouée en WebKit | Les cinq années ont été gagnées, les dix boss vaincus et les cinq scores signés conservés après rechargement. Le nouveau cycle repart réellement en 1976. [Rapport](../labo/bout-en-bout/rapport.md) · [Édition de livraison 17e8f3871350afe6, caméra animée](../labo/bout-en-bout/preuves/passe-05/resultat.json) · [Mouvement réduit au départ, passe 03](../labo/bout-en-bout/preuves/passe-03/resultat.json) |
 | Safari standard, iPhone 17 simulé, iOS 27.2 | L’édition locale `64449e40c5ded7cc` passe le départ silencieux, la pause, le palmarès, la défaite, le rejeu de la trajectoire et l’entrée en 1995. L’édition `e3ea0cc4b6a226bc` a aussi été ouverte depuis l’écran d’accueil en mode app web. [Parcours XCTest](../labo/qa-ios/recette.json) · [Preuve en mode autonome](../labo/plein-ecran-ios/preuve.json) |
 | Migration et PWA | Le banc Node conserve les scores et les échos des quatre dates historiques, puis ajoute 1995. Le reçu Chromium couvre un redémarrage hors ligne et les réponses partielles des médias. Chaque reçu nomme l’édition testée. [Migration et mises à jour interrompues](../labo/livraison/hors-ligne-maj-node.json) · [Essai Chromium](../labo/livraison/hors-ligne-chromium.json) |
 | Audio | WebKit a décodé les cinq MP3 et rendu les deux canaux en mémoire. Le verrou URL est testé au niveau du lecteur, y compris après une tentative d’activation. [Rendu hors sortie](../labo/audio/hors-sortie.webkit.json) · [Test du lecteur](../labo/audio/test-bande-campagne.cjs) |
+
+Les cinq bandes de la carte proviennent des parties filmées sur le même code. Les deux assemblages de la distribution sont identiques octet par octet. Les 45 tirs de forge ont une signature sonore distincte en mono et les trois catalyseurs d’un même noyau ont des formes propres dès le départ. [Film muet](../labo/film/Snake-2985-cinq-epoques.mp4) · [Migration et cache de l’édition](../labo/livraison/hors-ligne-final.json) · [Timbres](../labo/audio/FORGE45.md) · [Motifs à l’écran](../labo/bouche/rapport.md)
+
+Les tirs de Nova sur l’accent et hors accent ont été comparés par dix appuis tactiles sur la borne. La capture du pouce se libère à la rotation. Trois trajectoires ont été comparées en caméra animée à 30, 60, 120 Hz et à cadence irrégulière. Les neuf contre-épreuves gardent les mêmes états physiques et scores. [Tirs](../labo/synchro-nova/borne.json) · [Gestes](../labo/gestes/mesures.json) · [Cadences](../labo/cadence/webkit-anime-resultats.json) · [Tests de logique](recette-logique.json)
 
 ## Recette finale sur l’URL publique · à compléter
 

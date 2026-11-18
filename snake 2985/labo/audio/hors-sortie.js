@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const rate=24000, quantum=128/rate, duration=300*quantum;
-  const at={attack:40*quantum,surge:105*quantum,hit:113*quantum,volley:170*quantum,stop:240*quantum};
+  const at={attack:40*quantum,surge:105*quantum,hit:113*quantum,volley:170*quantum,forge:205*quantum,stop:240*quantum};
   function stats(ch,a,b) {
     let sum=0,peak=0,clipped=0;
     const first=Math.round(a*rate),last=Math.min(ch.length,Math.round(b*rate));
@@ -22,13 +22,13 @@
     return best;
   }
   function fromBase64(s) {return Uint8Array.from(atob(s),c=>c.charCodeAt(0));}
-  async function evaluateTrack({row,mp3,reference,signature}) {
+  async function evaluateTrack({row,mp3,reference,signature,shot}) {
     if(!window.__offlineGuards) throw Error('Gardes manquantes');
     const Offline=window.OfflineAudioContext || window.webkitOfflineAudioContext;
     if(!Offline) throw Error('OfflineAudioContext absent');
     const encoded=fromBase64(mp3);const ff=new Float32Array(fromBase64(reference).buffer);
     let decoded=null,decodes=0;
-    async function render(full) {
+    async function render(full,historical=false) {
       const native=new Offline(2,Math.round(duration*rate),rate);
       const timed=typeof native.suspend==='function' && typeof native.resume==='function';
       let planningTime=0,nodes=0,master;
@@ -64,6 +64,7 @@
       function step(kind) {
         if(kind==='stop'){player.pause();return;}
         if(!full)return;
+        if(kind==='forge')player.events([historical?{...shot,mod:undefined}:shot],{width:30});
         if(kind==='attack')player.event({type:'bossAttack',kind:'final'});
         if(kind==='surge')player.events([{type:'nova',x:2,y:3,plane:0},
           {type:'novaOverload',year:row.year,signature,x:2,y:3,plane:0}]);
@@ -83,7 +84,7 @@
       }
       return {buffer,nodes,sources,mode:timed?'suspensions natives':'arrêts natifs programmés',status:player.status};
     }
-    const music=await render(false), mix=await render(true),channels=[];
+    const music=await render(false), mix=await render(true),legacy=await render(true,true),channels=[];
     for(let ch=0;ch<2;ch++){
       const referenceChannel=decoded.getChannelData(ch),bed=music.buffer.getChannelData(ch),full=mix.buffer.getChannelData(ch);
       const delta=full.map((v,i)=>v-bed[i]);
@@ -99,10 +100,12 @@
         hits:[.61,.68],volley:[.925,1.02],after:[at.stop+.04,duration-.01]}))windows[key]=stats(delta,...range);
       // Dernier échantillon au-dessus de −80 dBFS après le front d’arrêt.
       let last=-1;for(let i=Math.round(at.stop*rate);i<full.length;i++)if(Math.abs(full[i])>1e-4)last=i;
-      channels.push({oracle,musicMatch,music:rmsMusic,windows,output:stats(full,0,duration),
+      const legacyChannel=legacy.buffer.getChannelData(ch);
+      const catalyst=stats(full.map((v,i)=>v-legacyChannel[i]),at.forge+.012,at.forge+.13);
+      channels.push({catalyst,oracle,musicMatch,music:rmsMusic,windows,output:stats(full,0,duration),
         afterStop:stats(full,at.stop+.04,duration-.01),tailMs:last<0?0:(last/rate-at.stop)*1000});
     }
-    return {year:row.year,track:row.track,nativeType:decoded.constructor.name,rate:decoded.sampleRate,channelsDecoded:decoded.numberOfChannels,
+    return {year:row.year,shot,track:row.track,nativeType:decoded.constructor.name,rate:decoded.sampleRate,channelsDecoded:decoded.numberOfChannels,
       decodedDuration:decoded.duration,decodes,mode:mix.mode,sourceCount:mix.sources.length,nodes:mix.nodes,
       musicSources:music.sources,mixSources:mix.sources,status:mix.status,channels};
   }

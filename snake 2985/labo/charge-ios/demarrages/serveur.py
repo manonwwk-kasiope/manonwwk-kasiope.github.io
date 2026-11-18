@@ -24,6 +24,6 @@ class Handler(SimpleHTTPRequestHandler):
     size=int(self.headers.get('Content-Length',0))
     if not 0<size<32768:return self.send_error(413)
     print(json.dumps(json.loads(self.rfile.read(size))),flush=True);self.send_response(204);self.end_headers()
-server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,directory=str(folder)))
+server=ThreadingHTTPServer(('127.0.0.1',int(sys.argv[2]) if len(sys.argv)>2 else 0),partial(Handler,directory=str(folder)))
 print('http://127.0.0.1:'+str(server.server_port)+'/?muet=1',flush=True)
 server.serve_forever()

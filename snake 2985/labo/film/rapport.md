@@ -1,6 +1,6 @@
 # SNAKE 2985 · cinq époques
 
-18/11/2026 · 02 h 18 · Paris
+18/11/2026 · 02 h 30 · Paris
 
 Film panoramique de 30 secondes, 1000 × 460, 30 images par seconde. Une seule piste H.264, zéro piste audio. Taille : 10.98 Mo.
 

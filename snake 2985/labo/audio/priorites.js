@@ -78,6 +78,17 @@
     flightEnd: [note(0,860,710,.18,.23)],
     flightCrash: [note(0,580,215,.14,.29)]
   };
+  // Le départ conserve le geste du noyau. Chaque catalyseur ponctue la première
+  // fraction de seconde dans le même tampon, sans prolonger la voix.
+  const launches = {
+    echo: [note(0,1240,970,.043,.20),note(.071,1240,970,.043,.14)],
+    chain: [note(0,1020,1390,.043,.22),note(.033,1390,1910,.067,.23)],
+    blast: [note(0,485,155,.130,.31)]
+  };
+  for(const core of ['orbit','prism','well']) {
+    for(const [mod,accent] of Object.entries(launches))
+      timbres[core+'-'+mod]=[...timbres[core],...accent];
+  }
   // Prime du gardien et résolution chantent dans une même source à la fin de campagne.
   for(const outcome of ['clear','win']) {
     const cadence=timbres[outcome].map(n=>({...n,at:n.at+.40}));
@@ -103,7 +114,10 @@
       case 'novaOverload': return ({1976:'overloadComb',1985:'overloadRicochet',1995:'overloadTrain',
         2185:'overloadMoons',2985:'overloadEcho'})[info.year];
       case 'novaOverloadHit': return 'overloadHit';
-      case 'forgeShot': return ['orbit','prism','well'].includes(info.core) && info.core;
+      case 'forgeShot': {
+        if(!['orbit','prism','well'].includes(info.core)) return false;
+        return Object.hasOwn(launches,info.mod)?info.core+'-'+info.mod:info.core;
+      }
       case 'forgeHit': return ['chain','echo','blast'].includes(info.mod) && info.mod;
       case 'planeShift': return info.to === 1 ? 'far' : 'near';
       default: return Object.hasOwn(timbres,info.type) && /^(flight|boss)/.test(info.type) && info.type;

@@ -1,0 +1,165 @@
+{
+  "edition": "17e8f3871350afe6",
+  "emittedFiles": 28,
+  "buildsByteIdentical": true,
+  "legacyReuse": {
+    "requests": 21,
+    "bytes": 3105160,
+    "files": [
+      "index.html",
+      "arcade.js",
+      "arcade.css",
+      "decors/chantier-orbital.webp",
+      "decors/circuit-antenne.webp",
+      "decors/etoile-effondree.webp",
+      "decors/quai-verriere.webp",
+      "paysage-1976.webp",
+      "paysage-1985.webp",
+      "paysage-1995.webp",
+      "paysage-2185.webp",
+      "paysage-2985.webp",
+      "apercu-1976.webp",
+      "apercu-1985.webp",
+      "apercu-1995.webp",
+      "apercu-2185.webp",
+      "apercu-2985.webp",
+      "jaquette.webp",
+      "apple-touch-icon.png",
+      "icone-192.png",
+      "icone-512.png"
+    ]
+  },
+  "paintedPlates": [
+    {
+      "name": "decors/chantier-orbital.webp",
+      "bytes": 71956,
+      "coldFull200": true,
+      "ranges206": 4
+    },
+    {
+      "name": "decors/circuit-antenne.webp",
+      "bytes": 64582,
+      "coldFull200": true,
+      "ranges206": 4
+    },
+    {
+      "name": "decors/etoile-effondree.webp",
+      "bytes": 113466,
+      "coldFull200": true,
+      "ranges206": 4
+    },
+    {
+      "name": "decors/quai-verriere.webp",
+      "bytes": 98810,
+      "coldFull200": true,
+      "ranges206": 4
+    }
+  ],
+  "migration": {
+    "years": [
+      1976,
+      1985,
+      2185,
+      2985
+    ],
+    "records": 4,
+    "ghosts": 4,
+    "additional1995": 1,
+    "cachedFiles": 27,
+    "networkCallsCold": 0,
+    "images": 15,
+    "audio": 5,
+    "verified206": 80
+  },
+  "firstInstall": {
+    "missingMedia": 2,
+    "illustration": "SVG de repli",
+    "absentAudio": 503,
+    "repaired": 2,
+    "missingCore": "installation refusée sans cache résiduel"
+  },
+  "update": {
+    "failedUpdate": "ancienne version toujours servie",
+    "activated": "nouvelle version seule pour cette portée",
+    "otherScope": "préservé"
+  },
+  "incremental": {
+    "premiere": {
+      "requests": 27,
+      "bytes": 20317948
+    },
+    "javascript": {
+      "requests": 2,
+      "bytes": 414136
+    },
+    "coupure": {
+      "requests": 2,
+      "bytes": 295656
+    },
+    "reseauCorrompu": {
+      "requests": 2,
+      "bytes": 3460487
+    },
+    "mediaEtCacheCorrompu": {
+      "requests": 2,
+      "bytes": 3460487
+    },
+    "retourEditionPrecedente": {
+      "requests": 1,
+      "bytes": 3164831
+    },
+    "mediaSeul": {
+      "requests": 1,
+      "bytes": 3164831
+    }
+  },
+  "incrementalChromium": {
+    "premiere": {
+      "requests": 27,
+      "bytes": 20317948,
+      "workerBytes": 7967
+    },
+    "javascript": {
+      "requests": 2,
+      "bytes": 414136,
+      "workerBytes": 7967
+    },
+    "media": {
+      "requests": 1,
+      "bytes": 3164831,
+      "workerBytes": 7967
+    },
+    "rollback": {
+      "requests": 1,
+      "bytes": 3164831,
+      "workerBytes": 7967
+    }
+  },
+  "chromium": {
+    "updated": true,
+    "coldRestart": true,
+    "cachedVerified": 27,
+    "ranges": 20,
+    "scores": [
+      [
+        1976,
+        21736
+      ],
+      [
+        1985,
+        21835
+      ],
+      [
+        2185,
+        24035
+      ],
+      [
+        2985,
+        32835
+      ]
+    ],
+    "legacyGhosts": 4,
+    "serviceWorkerResponses": 52,
+    "firstInstall": "noyau hors ligne, dessin de repli, puis deux médias réparés"
+  }
+}

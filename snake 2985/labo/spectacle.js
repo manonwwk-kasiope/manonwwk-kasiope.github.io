@@ -409,6 +409,7 @@
       window.SnakeVirages?.draw(c,s,cam,z,project);
       if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
       else weapons(c,s,cam,z);
+      window.SnakeBouche?.draw(c,s,cam,z,reduced,project);
       window.SnakeSurchargeFX?.draw(c,s,cam,z,time,reduced,project);
       if(s.year===2985&&s.boss?.kind==='final')window.SnakeSingularite?.draw(c,s,cam,z,time,reduced,project);
       if(s.year!==1976||!window.SnakePhosphore){

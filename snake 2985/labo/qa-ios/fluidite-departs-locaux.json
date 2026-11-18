@@ -1,0 +1,92 @@
+{
+  "dateParis": "18/11/2026 · 02 h 26",
+  "edition": "271669921f6c49f3",
+  "origine": "loopback ?muet=1",
+  "app": "com.apple.mobilesafari, iPhone 17 simulé, iOS 27.2",
+  "viewport_css": [
+    874,
+    292
+  ],
+  "controles": "Jouer en silence, bifurcation et nouveau cycle par touchers XCTest ; état moteur intact",
+  "son": "garde avant scripts, aucune tentative de lecture ou de contexte, aucune requête MP3",
+  "unite": "millisecondes entre callbacks rAF du jeu",
+  "seances": [
+    {
+      "ordre": "1976 puis 2985",
+      "cache": "origine neuve, bundle HTTP 200",
+      "mesures_ms": [
+        {
+          "annee": 1976,
+          "intervalles": 104,
+          "fenetre": 2006,
+          "clic_premier_rappel": 37,
+          "p50": 17.0,
+          "p95": 31,
+          "max": 92,
+          "plus_de_50": 2
+        },
+        {
+          "annee": 2985,
+          "intervalles": 117,
+          "fenetre": 2004,
+          "clic_premier_rappel": 8,
+          "p50": 17,
+          "p95": 19,
+          "max": 37,
+          "plus_de_50": 0
+        }
+      ]
+    },
+    {
+      "ordre": "2985, 1976, 2985, 1976",
+      "cache": "simulateur redémarré, origine conservée, bundle/CSS/jaquette HTTP 304",
+      "mesures_ms": [
+        {
+          "annee": 2985,
+          "intervalles": 89,
+          "fenetre": 2004,
+          "clic_premier_rappel": 34,
+          "p50": 17,
+          "p95": 50,
+          "max": 108,
+          "plus_de_50": 4
+        },
+        {
+          "annee": 1976,
+          "intervalles": 112,
+          "fenetre": 2000,
+          "clic_premier_rappel": 15,
+          "p50": 17.0,
+          "p95": 21,
+          "max": 83,
+          "plus_de_50": 1
+        },
+        {
+          "annee": 2985,
+          "intervalles": 121,
+          "fenetre": 2015,
+          "clic_premier_rappel": 15,
+          "p50": 17,
+          "p95": 17,
+          "max": 25,
+          "plus_de_50": 0
+        },
+        {
+          "annee": 1976,
+          "intervalles": 117,
+          "fenetre": 2001,
+          "clic_premier_rappel": 9,
+          "p50": 17,
+          "p95": 19,
+          "max": 52,
+          "plus_de_50": 1
+        }
+      ]
+    }
+  ],
+  "limites": "Deux processus, six fenêtres de deux secondes sous simulateur ; les timestamps rAF ne mesurent pas la présentation des pixels sur appareil physique. Les deux maxima au premier intervalle ne suffisent pas à en attribuer la cause.",
+  "brut": [
+    "../charge-ios/demarrages/mesures.jsonl",
+    "../charge-ios/demarrages/reprises.jsonl"
+  ]
+}

@@ -17,6 +17,12 @@ function oracle(row){
   assert(channels.every(c=>c.rms>.005 && c.peak>.02));
   return {raw,report:{year:row.year,mp3Sha256:sha(fs.readFileSync(file)),pcmSha256:sha(raw),channels}};
 }
+function actualForgeShot(core,mod){
+  const forge=require('../../forge.js'),s={status:'playing',width:30,height:20,snake:[{x:8,y:8}],direction:{x:1,y:0}};
+  forge.init(s,{core,mod});const events=[];
+  forge.update(s,1/120,{plane:()=>0,targets:()=>[],emit:(type,info)=>events.push({type,...info})});
+  const shot=events.find(e=>e.type==='forgeShot');assert(shot && shot.mod===mod);return shot;
+}
 function guards(){
   const forbidden=[];
   const deny=name=>function(){forbidden.push(name);throw Error(name+' désactivé');};
@@ -48,7 +54,7 @@ function validate(r){
   const errors=[];
   function ok(value,text){if(!value)errors.push(text);}
   ok(r.nativeType==='AudioBuffer'&&r.decodes===1&&r.channelsDecoded===2&&r.rate===rate,'Décodage stéréo natif');
-  ok(r.sourceCount===5&&r.musicSources.length===1,'Une musique et quatre effets après regroupement');
+  ok(r.sourceCount===6&&r.musicSources.length===1,'Une musique et cinq effets après regroupement');
   ok(r.status.paused===true&&r.status.playingMusic===false,'Transport arrêté');
   r.channels.forEach((c,i)=>{
     const label=' canal '+i;
@@ -56,6 +62,7 @@ function validate(r){
     ok(c.musicMatch.correlation>=.85&&Math.abs(c.musicMatch.rmsDeltaDb)<=2&&c.music.rms>.002,'Passage MP3 dans le graphe'+label);
     ok(c.windows.before.rms<1e-5,'Silence du résidu avant évènement'+label);
     for(const k of ['boss','surge','hits','volley'])ok(c.windows[k].rms>.0008,'Énergie différentielle '+k+label);
+    ok(c.catalyst.rms>.0008,'Catalyseur vs même noyau historique'+label);
     ok(c.afterStop.rms<1e-5&&c.tailMs<=40,'Interruption'+label);
     ok(c.output.peak<1 && !c.output.clipped,'Marge de crête'+label);
   });
@@ -83,7 +90,7 @@ async function main(){
         const player=fs.readFileSync(path.join(base,'bande-campagne.js'),'utf8');
         await page.addScriptTag({content:'{const module={exports:{}};\n'+player+'\nwindow.__playerFactory=module.exports;}'});
         await page.addScriptTag({content:fs.readFileSync(path.join(base,'hors-sortie.js'),'utf8')});
-        const data={row,signature:['comb','ricochet','train','moons','echo'][i],reference:refs[i].raw.toString('base64'),
+        const data={row,shot:actualForgeShot(['orbit','prism','well','well','orbit'][i],['echo','chain','blast','chain','blast'][i]),signature:['comb','ricochet','train','moons','echo'][i],reference:refs[i].raw.toString('base64'),
           mp3:fs.readFileSync(path.join(base,'../../audio',row.track)).toString('base64')};
         const actual=await page.evaluate(async data=>{
           let timer;

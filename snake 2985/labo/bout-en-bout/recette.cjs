@@ -31,6 +31,8 @@ function instrument(){
 }
 async function main(){
  const distribution=process.env.CAMPAGNE_DIST?path.resolve(process.env.CAMPAGNE_DIST):null;
+ const edition=distribution?fs.readFileSync(path.join(distribution,'sw.js'),'utf8').match(/const version = prefix \+ "([a-f0-9]{16})";/)?.[1]:null;
+ if(distribution)assert(edition,'Version du paquet absente du service worker');
  const served=distribution||root;
  const server=http.createServer((req,res)=>{
    const requestPath=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
@@ -179,7 +181,7 @@ async function main(){
  await p.reload({waitUntil:'networkidle'});await run(.02);await click(p.getByRole('button',{name:'Palmarès',exact:true}));await take('palmares-recharge');
  const persisted=await p.evaluate(()=>SnakePalmares.list());assert.deepEqual(persisted,last.hall);
  assert.deepEqual(errors,[]);
- log({type:'validation',upgradeCount,...last,persisted:true});fs.writeFileSync(path.join(folder,'resultat.json'),JSON.stringify({mouvement,years,upgradeCount,changed,kept,epilogueMeasurements,last,persisted,errors},null,2));
+ log({type:'validation',upgradeCount,...last,persisted:true});fs.writeFileSync(path.join(folder,'resultat.json'),JSON.stringify({edition,mouvement,years,upgradeCount,changed,kept,epilogueMeasurements,last,persisted,errors},null,2));
  console.log('5 époques terminées, dix boss, nouveau cycle et scores signés persistants.');
  }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}
 }

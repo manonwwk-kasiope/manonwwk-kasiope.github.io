@@ -19,14 +19,21 @@ final class SafariFlow:XCTestCase {
             let target=node(pattern)
             XCTAssertTrue(target.waitForExistence(timeout:35),pattern);target.tap()
         }
-        for year in [1976,2985] {
+        XCTAssertTrue(node("Jouer en silence").waitForExistence(timeout:55))
+        let first = node("2985 · .*").exists ? 2985 : 1976
+        let other = first == 1976 ? 2985 : 1976
+        let years = [first,other,first,other]
+        for (index,year) in years.enumerated() {
             XCTAssertTrue(node(String(year)+" · .*").waitForExistence(timeout:30))
             XCTAssertFalse(node("Avec musique").exists)
             press("Jouer en silence")
             // Aucun instantané, geste ou sondage d’accessibilité pendant la fenêtre de mesure.
             try await Task.sleep(for:.seconds(4))
+            if index == years.count-1 { break }
             if year==1976 {
                 press("2985, 32 bits,.*");press("Sauter en 2985")
+            } else {
+                press("Repartir en 1976")
             }
         }
     }

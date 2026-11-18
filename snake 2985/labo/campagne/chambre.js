@@ -207,6 +207,7 @@
     const batch=state.events.splice(0);SnakeEpilogue.observe(voyage,state,batch);audio.events(batch,state,stamp/1000);
     for(const e of batch){
       SnakeImpact.event(state,e);SnakeMondeVivant.observe(state,e);
+      if(e.type==='forgeShot')SnakeBouche.event(state,e);
       if(!calm.matches)SnakeCameraMusicale.cue(state,e,state.beat);
       if(e.type==='singularitySplit')note(e.beacons.length?'Relie les deux balises ou esquive la salve.':'Esquive la salve, puis riposte.',2.4,true);
       if(e.type==='singularityBeacon')note('Une balise reliée · Change de plan !',2,true);

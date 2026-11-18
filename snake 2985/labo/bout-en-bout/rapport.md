@@ -1,6 +1,6 @@
 # Recette des cinq campagnes intégrées
 
-18/11/2026 · 02 h 14 · Paris
+18/11/2026 · 02 h 32 · Paris
 
 Les cinq campagnes sont terminées depuis un profil WebKit neuf. Les dix boss ont été vaincus dans l’ordre, les cinq scores signés depuis le palmarès restent identiques après rechargement. Après la victoire en 2985, le bouton de nouveau cycle a ouvert 1976 et la nouvelle partie a effectivement avancé de plus de 0,5 seconde.
 
@@ -20,4 +20,4 @@ WebKit headless, viewport 854 × 393, caméra animée dès la préparation et pe
 
 Le panorama de victoire présente les cinq dates parcourues. Les trois actions restent visibles en 854 × 393 et en 568 × 275. Le banc a vérifié les cinq entrées animées décalées, leur suppression en mouvement réduit et le retour du focus après signature.
 
-Preuves de cette passe dans `preuves/passe-04`. Une nouvelle exécution demande un nom de passe libre pour conserver les captures existantes.
+Preuves de cette passe dans `preuves/passe-05`. Une nouvelle exécution demande un nom de passe libre pour conserver les captures existantes.
