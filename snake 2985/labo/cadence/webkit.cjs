@@ -2,7 +2,17 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),crypto=require('node:crypto'),assert=require('node:assert/strict');
 const {webkit}=require('playwright'),instrument=require('./webkit-page.js');
 const {timeline,tempos}=require('./mesure.cjs');
-const root=path.resolve(__dirname,'../..');
+const bundle=process.env.CADENCE_BUNDLE;
+const root=bundle?path.resolve(bundle):path.resolve(__dirname,'../..');
+let edition=null;
+if(bundle){
+ const worker=fs.readFileSync(path.join(root,'sw.js'),'utf8');
+ edition=worker.match(/const version = prefix \+ "([a-f0-9]{16})"/)[1];
+ const digest=v=>crypto.createHash('sha256').update(v).digest('hex');
+ assert.equal(digest(worker.replace(edition,'__EDITION__')).slice(0,16),edition);
+ const entries=JSON.parse(worker.match(/const gameHashes = (\{[\s\S]*?\});/)[1]);
+ for(const [file,expected] of Object.entries(entries))assert.equal(digest(fs.readFileSync(path.join(root,file))),expected,file);
+}
 const source=fs.readFileSync(path.join(__dirname,'../equilibrage/pilotes.cjs'),'utf8');
 const pilot=fs.readFileSync(path.join(__dirname,'../bout-en-bout/pilote.js'),'utf8');
 const silence=fs.readFileSync(path.join(__dirname,'../charge-ios/silence.js'),'utf8');
@@ -10,8 +20,8 @@ const files=Object.keys(tempos);
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const motion=process.env.CADENCE_MOTION||'reduce';
 assert(['normal','reduce'].includes(motion),'CADENCE_MOTION doit valoir normal ou reduce');
-const report=motion==='normal'?'webkit-anime-resultats.json':'webkit-resultats.json';
-const room='/labo/campagne/index.html?muet=1';
+const report=edition?`webkit-${edition}-${motion}.json`:motion==='normal'?'webkit-anime-resultats.json':'webkit-resultats.json';
+const room=bundle?'/index.html?muet=1':'/labo/campagne/index.html?muet=1';
 function serve(){
  const types={'.html':'text/html','.js':'text/javascript','.webp':'image/webp','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
  return http.createServer((req,res)=>{
@@ -104,7 +114,7 @@ async function main(){
       const ref=i<0?base.finalState:base.samples[i],other=i<0?r.finalState:r.samples[i];
       r.result.divergence={seconde:i<0?'finale':i+1,fields:Object.fromEntries(Object.keys(ref).filter(k=>hash(ref[k])!==hash(other[k])).map(k=>[k,[ref[k],other[k]]]))};
     }
-    fs.writeFileSync(path.join(__dirname,report),JSON.stringify({version:browser.version(),motion,results},null,2)+'\n');
+    fs.writeFileSync(path.join(__dirname,report),JSON.stringify({version:browser.version(),edition,motion,results},null,2)+'\n');
    }
   }
  }finally{if(browser)await browser.close();await new Promise(r=>host.close(r));}

@@ -1,124 +1,66 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0714">
-  <title>SNAKE 2985 · Arcade synthwave</title>
-  <link rel="manifest" href="./app.webmanifest">
-  <link rel="icon" href="./icone.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="stylesheet" href="arcade.css">
-  <script src="moteur.js" defer></script>
-  <script src="rendu.js" defer></script>
-  <script src="bande-son.js" defer></script>
-  <script src="palmares.js" defer></script>
-  <script src="fantome.js" defer></script>
-  <script src="attracteur.js" defer></script>
-  <script src="console.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1021">
+<title>SNAKE 2985 · Arcade synthwave</title>
+
+<link rel="manifest" href="./app.webmanifest">
+<link rel="icon" href="icone-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="arcade.css?v=9f4e8acf7fa5028b">
+<script defer src="arcade.js?v=9f4e8acf7fa5028b" data-music-root="audio/"></script>
 </head>
 <body>
-  <main class="cabinet">
-    <aside class="console">
-      <header class="masthead">
-        <span class="emblem" aria-hidden="true"><i></i><i></i><i></i></span>
-        <h1>SNAKE <em>2985</em></h1>
-      </header>
-      <p class="pitch">De 1976 à 2985, avale les cellules et traverse le temps à coups de canon.</p>
-      <div class="dashboard">
-        <section class="scores" aria-label="Scores de la partie">
-          <div><span id="score-caption">Score</span><strong id="score">000000</strong></div>
-          <div><span id="record-label">Record local</span><b id="record">000000</b></div>
-        </section>
-        <section class="loadout" aria-label="État du serpent">
-          <div><span>Époque</span><strong id="annee">1976</strong></div>
-          <div><span>Difficulté</span><strong id="difficulte">1/10</strong></div>
-          <div><span>Longueur</span><strong id="longueur">—</strong></div>
-        </section>
-      </div>
-      <div class="liens"><button type="button" class="hall-link" id="ouvrir-palmares" aria-label="Hall of Fame">Hall<span class="nom-long"> of Fame ↗</span></button><button type="button" class="hall-link" id="ouvrir-options">Réglages</button></div>
-      <div class="arsenal" aria-label="Armement"><h2>Arsenal</h2><p id="armement"></p></div>
-      <div class="manual">
-        <p><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> Diriger</p>
-        <p><kbd>Espace</kbd> Nova <kbd>T</kbd> Turbo <kbd>P</kbd> Pause</p>
-      </div>
-      <div class="switches">
-        <button type="button" id="turbo" aria-pressed="false" disabled>Turbo ×2</button>
-        <button type="button" id="son" aria-pressed="false">Son coupé</button>
-        <button type="button" id="pause" disabled>Pause</button>
-      </div>
-    </aside>
-    <section class="machine" aria-label="Borne de jeu">
-      <div class="epoque"><strong id="nom-epoque">1976</strong><p id="annonce" role="status" aria-live="polite"></p><span id="menace"></span></div>
-      <div class="field" id="terrain">
-        <canvas id="arene" width="720" height="360" aria-label="Arène panoramique de Snake. Utilise les flèches ou glisse sur le terrain pour tourner.">Le jeu nécessite un navigateur compatible avec Canvas.</canvas>
-        <div class="overlay" id="overlay">
-          <div id="accueil" class="panel">
-            <h2>Prochaine escale, 1976.</h2>
-            <p><span class="tactile">Glisse pour tourner.</span><span class="clavier">Tourne avec les flèches.</span> Avale les cellules dorées. Les gardiens attaquent aux difficultés 5 et 10. Si tu meurs, saute vers le futur.</p>
-            <div class="actions"><button type="button" id="jouer" class="primary">Jouer avec la musique</button><button type="button" id="silence">Jouer en silence</button></div>
-          </div>
-          <div id="interruption" class="panel" hidden><h2>Pause</h2><button type="button" class="primary" id="reprendre">Reprendre</button></div>
-          <div id="atelier" class="panel" hidden><h2>Arme ton serpent.</h2><p id="upgrade-label">Choisis une amélioration.</p><div id="choix"></div></div>
-          <div id="fin" class="panel" hidden>
-            <h2 id="verdict">Partie terminée</h2><p id="bilan"></p>
-            <div class="signature"><label for="pseudo">Pilote</label><input id="pseudo" maxlength="18" autocomplete="off" spellcheck="false"><button type="button" id="signer">Signer</button></div>
-            <div id="portail"><label for="destination" id="destination-label">Saut vers</label><select id="destination"></select><button type="button" class="primary" id="sauter">Se téléporter</button></div>
-            <div class="actions"><button type="button" id="rejouer">Rejouer</button><button type="button" id="voir-palmares">Hall of Fame</button></div>
-          </div>
-        </div>
-      </div>
-      <div class="commandes">
-        <div id="manche" aria-hidden="true"><span>↑</span><b>↔</b><span>↓</span><small>Glisse</small></div>
-        <div class="direction" aria-label="Directions">
-          <button type="button" data-dx="0" data-dy="-1" aria-label="Haut">↑</button>
-          <button type="button" data-dx="-1" data-dy="0" aria-label="Gauche">←</button>
-          <button type="button" data-dx="0" data-dy="1" aria-label="Bas">↓</button>
-          <button type="button" data-dx="1" data-dy="0" aria-label="Droite">→</button>
-        </div>
-        <button type="button" id="nova" disabled><span>Déclencher la nova</span><b id="charge">100 %</b></button>
-      </div>
-    </section>
-  </main>
-  <section id="rotation" aria-label="Jouer en paysage">
-    <svg viewBox="0 0 90 74" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3">
-      <rect x="19" y="26" width="63" height="36" rx="7"/><path d="M11 40C8 24 19 10 38 9m-6-6 8 6-8 7M26 40v9"/>
-    </svg>
-    <h2>Tourne ton téléphone.</h2>
-    <p>L’arène se joue en paysage. Les deux flancs du serpent doivent rester visibles.</p>
-    <button type="button" id="hall-portrait">Hall of Fame</button>
+<main id="poste">
+  <canvas id="monde" aria-label="Serpent et arène à deux plans"></canvas>
+  <header id="bandeau">
+    <strong class="marque">SNAKE</strong>
+    <span id="date">1976</span><span id="niveau">1 / 10</span>
+    <button id="turbo" class="outil" aria-label="Activer le turbo" aria-pressed="false">Turbo</button>
+    <button id="son" class="outil" aria-label="Activer le son" aria-pressed="false">Son</button><output id="points" aria-label="Score">000000</output><button id="pause" class="outil" aria-label="Pause">Ⅱ</button>
+  </header>
+  <aside id="duel" hidden><strong id="nom-garde"></strong><span id="etat-garde"></span><div id="integrite" role="meter" aria-label="Vie du gardien" aria-valuemin="0" aria-valuemax="100"><i></i></div></aside>
+  <aside id="lecture" data-tone="normal"><span class="indication"><span id="message" role="status"></span><span id="compte-contrat" aria-hidden="true" hidden></span></span><span id="partenaire"></span></aside>
+  <section id="pouces" aria-label="Pilotage panoramique">
+    <div id="stick" aria-label="Manche de pilotage"><span></span><small>Cap</small></div>
+    <div id="actions"><button id="surf" hidden>Surfer</button><button id="plan" aria-label="Changer de plan">⇅ <span>Plan 1</span></button><button id="nova" aria-label="Déclencher la nova"><b aria-hidden="true">✷</b> Nova <span>100 %</span></button></div>
   </section>
-  <dialog id="palmares" aria-labelledby="titre-palmares">
-    <div class="dialog-title"><h2 id="titre-palmares">Hall of Fame</h2><button id="fermer-palmares" type="button" autofocus>Fermer</button></div>
-    <div class="hall-filter"><label for="filtre-annee">Époque</label> <select id="filtre-annee"></select></div>
-    <p class="hall-note">Scores enregistrés sur cet appareil.</p>
-    <table><thead><tr><th scope="col">Rang</th><th scope="col">Pilote</th><th scope="col">Époque</th><th scope="col">Niv.</th><th scope="col">Score</th></tr></thead><tbody id="classement"></tbody></table>
-    <p id="vide">Ta première partie ouvrira le classement.</p>
-  </dialog>
-  <dialog id="options" aria-labelledby="titre-options">
-    <div class="dialog-title"><h2 id="titre-options">Réglages</h2><button type="button" id="fermer-options" autofocus>Fermer</button></div>
-    <div class="reglages">
-      <label>Musique <output id="musique-val"></output><input type="range" id="musique-volume" min="0" max="100"></label>
-      <label>Bruitages <output id="fx-val"></output><input type="range" id="fx-volume" min="0" max="100"></label>
-      <label><input type="checkbox" id="echo-actif"> Afficher mon écho temporel</label>
-      <label><input type="checkbox" id="calme"> Réduire les secousses et les glitches</label>
-    </div>
-    <details class="guide"><summary>Comment survivre aux quatre époques</summary>
-      <p>Glisse sur la grille ou utilise les flèches. Avale les cellules dorées pour grandir. Chaque paire fait monter la difficulté, jusqu’au cran 10. Le turbo double les points mais réduit ton temps de réaction.</p>
-      <p>Le canon tire devant la tête. L’arc amélioré frappe près du corps. La nova détruit les drones à portée et se recharge plus vite si tu manges.</p>
-      <p>Au cran 5, puis au cran 10, un gardien entre dans l’arène. Sors des cases hachurées avant le tir. Profite de son point faible après sa salve. Une défaite t’ouvre les dates futures.</p>
-    </details>
-  </dialog>
-  <script>
-    if (window.isSecureContext && location.protocol !== 'file:' && 'serviceWorker' in navigator) {
-      const previousEdition = Boolean(navigator.serviceWorker.controller);
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (previousEdition && document.body.dataset.mode === 'home' && !document.querySelector('dialog[open]')) location.reload();
-      }, {once:true});
-      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {}));
-    }
-  </script>
+  <section id="rideau" role="dialog" aria-modal="true" aria-labelledby="titre">
+    <canvas id="vitrine" width="690" height="288" aria-label="Projection de la recette sur des drones" hidden></canvas>
+    <nav id="acces-borne" aria-label="Affichage et époques">
+      <button id="immersif" type="button" aria-label="Plein écran" hidden><span aria-hidden="true">⛶</span></button>
+      <button id="carte" type="button" aria-label="Carte des époques">Époques</button>
+    </nav>
+    <canvas id="passage" aria-hidden="true" hidden></canvas>
+    <div id="bifurcation" hidden></div>
+    <article>
+      <div id="wordmark" aria-label="Snake 2985">SNAKE <em>2985</em></div>
+      <span class="etiquette" id="rang">1976 · Le Terminal</span>
+      <h1 id="titre">Arme ton serpent.</h1><p id="explication"></p><div id="options"></div>
+      <div id="validations"></div>
+    </article>
+  </section>
+</main>
+<dialog id="vertical" aria-labelledby="vertical-titre" aria-describedby="vertical-date">
+  <img class="rotation-jaquette" src="jaquette.webp" alt="" width="1921" height="819">
+  <div class="rotation-legende">
+    <span class="rotation-geste" aria-hidden="true"></span>
+    <p id="vertical-date"></p>
+    <h2 id="vertical-titre" tabindex="-1" autofocus>Passe en paysage.</h2>
+  </div>
+</dialog>
+<script>
+if(window.isSecureContext && location.protocol!=='file:' && 'serviceWorker' in navigator){
+  const replacing=Boolean(navigator.serviceWorker.controller);
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(replacing && document.body.dataset.screen==='prep' && !document.querySelector('dialog[open]'))location.reload();
+  },{once:true});
+  addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{}));
+}
+</script>
 </body>
 </html>

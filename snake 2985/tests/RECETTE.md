@@ -38,18 +38,20 @@ Le premier parcours doit ouvrir les cinq aperçus, maintenir les dates verrouill
 
 Les cinq bandes de la carte proviennent des parties filmées sur le même code. Les deux assemblages de la distribution sont identiques octet par octet. Les 45 tirs de forge ont une signature sonore distincte en mono et les trois catalyseurs d’un même noyau ont des formes propres dès le départ. [Film muet](../labo/film/Snake-2985-cinq-epoques.mp4) · [Migration et cache de l’édition](../labo/livraison/hors-ligne-final.json) · [Timbres](../labo/audio/FORGE45.md) · [Motifs à l’écran](../labo/bouche/rapport.md)
 
+Le pilote du banc de forge a joué trois graines pour chaque recette de départ et chaque année. Chacun des 45 couples a franchi les deux boss avec le même équipement à l’atelier dans au moins deux des trois parties. Le relevé garde aussi les douze défaites. [Banc des 135 parties](../labo/banc-evolue/campagnes.json)
+
 Les tirs de Nova sur l’accent et hors accent ont été comparés par dix appuis tactiles sur la borne. La capture du pouce se libère à la rotation. Trois trajectoires ont été comparées en caméra animée à 30, 60, 120 Hz et à cadence irrégulière. Les neuf contre-épreuves gardent les mêmes états physiques et scores. [Tirs](../labo/synchro-nova/borne.json) · [Gestes](../labo/gestes/mesures.json) · [Cadences](../labo/cadence/webkit-anime-resultats.json) · [Tests de logique](recette-logique.json)
 
-## Recette finale sur l’URL publique · à compléter
+## Recette de publication
 
-Cible de contrôle : [ouvrir la campagne publique en silence](https://manonwwk-kasiope.github.io/snake-2985/?muet=1). Reporter les reçus de la révision effectivement servie dans les cases suivantes. Les essais Safari locaux ci-dessus ont été conduits sur simulateur.
+La borne publiée est accessible dans [Safari en mode silencieux](https://manonwwk-kasiope.github.io/snake-2985/?muet=1). Le relevé de quota à 02 h 46, heure de Paris, a déclenché la publication à 10 % restants.
 
 | Contrôle | Attendu | Reçu final |
 |---|---|---|
-| Identité de l’édition | Date et heure de Paris, SHA du commit publié, `edition` du worker, comparaison SHA-256 des fichiers HTTP avec le dossier préparé | À renseigner |
-| Médias et hors-ligne | Cinq MP3 complets vérifiés ; une plage d’octets demandée sur chacun renvoie 206 avec le bon contenu. Après installation du worker, la page redémarre hors ligne. | À renseigner |
+| Identité de l’édition | Date et heure de Paris, SHA du commit publié, `edition` du worker, comparaison SHA-256 des fichiers HTTP avec le dossier préparé | 18/11/2026 · 02 h 47, Paris. Commit 3c0ceefe2d65b4a9b51bb38b574831e494f353df. Worker 17e8f3871350afe6. Les 28 fichiers HTTP et ceux du sous-dossier local ont les mêmes octets. [Empreintes](recette-http.json) |
+| Médias et hors-ligne | Cinq MP3 complets vérifiés ; une plage d’octets demandée sur chacun renvoie 206 avec le bon contenu. Après installation du worker, la page redémarre hors ligne. | Les cinq requêtes partielles ont renvoyé le statut 206 et les bons octets. Après mise en cache des 27 actifs, Chromium a ouvert la borne publique hors ligne, joué puis fait pause. [Redémarrage sans réseau](hors-ligne-public.json) |
 | Safari public | URL avec `?muet=1`, paysage, jeu, pause/reprise, palmarès et passage en 1995. Préciser modèle, version iOS, appareil physique ou simulateur, résultat XCTest et emplacement des captures. | À renseigner |
-| Retour arrière | Identifier le commit de livraison et la révision publique précédente. En cas de retrait, rétablir uniquement `/snake-2985/` depuis celle-ci et vérifier l’édition servie. | À renseigner |
+| Retour arrière | Identifier le commit de livraison et la révision publique précédente. En cas de retrait, rétablir uniquement `/snake-2985/` depuis celle-ci et vérifier l’édition servie. | Révision précédente edc50ef75809cd069fc8c66d8fb2c91ac5033f2d. Le diff inverse a restitué exactement son arbre Git dans un index isolé. [Vérification](retour-arriere.json) |
 
 ## Témoin historique à quatre époques
 
