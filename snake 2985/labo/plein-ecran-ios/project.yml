@@ -1,0 +1,26 @@
+name: AccueilArcadeTests
+options:
+  bundleIdPrefix: org.localqa.s2985
+  deploymentTarget:
+    iOS: "18.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    GENERATE_INFOPLIST_FILE: YES
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  AccueilArcadeTests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [Tests]
+    settings:
+      base:
+        CODE_SIGNING_ALLOWED: NO
+        PRODUCT_BUNDLE_IDENTIFIER: org.localqa.s2985.accueil
+schemes:
+  AccueilArcadeTests:
+    build:
+      targets:
+        AccueilArcadeTests: [test]
+    test:
+      targets: [AccueilArcadeTests]

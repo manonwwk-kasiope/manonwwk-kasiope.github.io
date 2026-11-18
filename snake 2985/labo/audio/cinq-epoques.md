@@ -122,3 +122,23 @@ Dans la préparation de la chambre, conditionner le bouton « Avec musique » pa
 | 2985 | 0 ms | 4,19 / 4,19 ms | 10,86 / 10,86 ms |
 
 Le test Node parcourt toutes les boucles et confirme l’image de franchissement de chaque noire au moyen de la véritable horloge JavaScript. Les ajustements portent uniquement sur les phases visuelles. Le tempo, les MP3, la vitesse et les boucles audio restent ceux du jeu. Il s’agit d’une estimation de synchronisation numérique ; la latence de dalle, la sortie acoustique et les images réellement manquées sur un téléphone requièrent une mesure sur appareil. [Mesures et fractions réservées](calage-visuel.json) · [Détection audio](calage-visuel.py) · [Simulation des images](test-calage-visuel.cjs)
+
+## Placement stéréo des armes
+
+Mis à jour le 18/11/2026 à 01 h 32 (Paris).
+
+[Comparaison manuelle · six secondes](panorama-comparaison.wav). Les trois tirs de prisme sur *Titan* gardent leur mix d’origine pendant la première moitié. Dans la seconde moitié, les mêmes tirs apparaissent à gauche, au centre et à droite sur le même passage musical. Le WAV mesure −28,8 LUFS intégrés et −19,7 dBTP.
+
+Le lecteur reçoit `audio.events(batch,state)`. Les coordonnées émises déterminent la position des tirs, des impacts de forge et des sur-novas. Si elle manque, l’origine d’un tir ou d’une nova peut être tirée de la tête du serpent. Le contact avec le boss prend sa position courante ou celle du dernier impact terminal récent. Une coordonnée inconnue conserve le mix original. Toutes les positions sont rapportées à `state.width-1` et limitées aux bords du terrain. Les annonces de gardien, de plan et de danger écologique reçoivent le même signal sur les deux canaux. Le curseur de pause « Stéréo des tirs » règle l’intensité entre 0 et 1 et conserve le choix au rechargement.
+
+Le procédé garde exactement la composante centrale (G+D)/2 à la précision du PCM flottant. Il ajuste la composante latérale, avec un plafond de 0,34 par canal pour les sur-novas. Au centre de l’arène, chaque arme conserve son timbre initial. Les sources réutilisent le budget et les deux bus précédents. Le cache des positions contient au plus douze tampons ; il se vide au changement d’année ou à la destruction. Aucune voix additionnelle et aucun nœud spatial par tir.
+
+| Époque | Rapport droite/gauche médian, arme au bord gauche | Au bord droit | Crête stéréo avec volumes au maximum, avant compresseur |
+|---|---:|---:|---:|
+| 1976 | −6,55 dB | +6,55 dB | −3,94 dBFS |
+| 1985 | −6,55 dB | +6,55 dB | −6,05 dBFS |
+| 1995 | −6,55 dB | +6,55 dB | −5,24 dBFS |
+| 2185 | −6,55 dB | +6,55 dB | −5,36 dBFS |
+| 2985 | −6,49 dB | +6,49 dB | −5,90 dBFS |
+
+Le banc place quatorze sons d’armes dans chaque époque et vérifie séparément gauche, centre, droite, position réduite et coordonnées manquantes. Sur le moteur réel, le prisme tiré de la case 6 frappe en case 8 ; tir et impact favorisent le canal gauche. Depuis la case 29, ces deux événements favorisent le canal droit et l’impact est bel et bien situé en case 27. Quarante rafales sont mixées avec les cinq vrais MP3 stéréo. Les 480 signaux prioritaires attendus démarrent dans le budget de huit voix. La différence maximale entre les deux mixes rabattus en mono vaut 5,96 × 10⁻⁸ de pleine échelle. Le banc contrôle les crêtes avant compresseur et la fermeture des voix. Les haut-parleurs du téléphone et la localisation perçue n’ont pas été testés. [Mesures par son, époque et graine](panorama-mesures.json) · [Banc Node/PCM](test-panorama.cjs)

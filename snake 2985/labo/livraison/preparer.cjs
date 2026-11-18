@@ -53,10 +53,5 @@ const plates=fs.readdirSync(path.join(lab,'decors'),{recursive:true}).filter(nam
 fs.mkdirSync(path.join(dest,'decors'),{recursive:true});
 for(const file of plates){fs.mkdirSync(path.dirname(path.join(dest,file)),{recursive:true});fs.copyFileSync(path.join(lab,file),path.join(dest,file));}
 const files=[...plates,...cards,...previews,'index.html','arcade.js','arcade.css','jaquette.webp',...originals];
-const assetEdition=hash(files);
-const template=read(__dirname,'sw-source.js');
-if(!template.includes('__GAME_FILES__')||!template.includes('__EDITION__'))throw new Error('Gabarit du worker incompatible.');
-const worker=template.replace('__GAME_FILES__',JSON.stringify(files,null,2));
-const edition=crypto.createHash('sha256').update(assetEdition).update(worker).digest('hex').slice(0,16);
-store('sw.js',worker.replace('__EDITION__',edition));
+const edition=require('./worker-build.cjs')(dest,files);
 console.log(JSON.stringify({edition,files:files.length+1,scripts:js.length,audio:audio.length,dest}));

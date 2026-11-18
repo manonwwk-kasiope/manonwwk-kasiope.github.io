@@ -7,7 +7,7 @@
   const eras = [
     { year: 1976, name: 'Le Terminal', weapons: ['Bit perforant', 'Relais à étincelle', 'Impulsion cathodique'], bosses: ['Le Registre', 'Le Mainframe'], railRange: 12, railPower: 1, lanes: 0, arcRange: 2.7, chains: 0, blast: 4, blastPower: 3 },
     { year: 1985, name: 'Le Circuit néon', weapons: ['Canon photonique', 'Bobine Tesla', 'Onde chromatique'], bosses: ['Le Magnétron', 'Le Cyclope'], railRange: 18, railPower: 2, lanes: 0, arcRange: 3.3, chains: 0, blast: 5, blastPower: 5 },
-    { year: 1995, name: 'La Gare autoroutière', weapons: ['Canon à pixels', 'Aiguillage électrique', 'Onde bitume'], bosses: ['Le Signal fantôme', 'La Locomotive Spectre'], railRange: 23, railPower: 3, lanes: 1, arcRange: 4.0, chains: 1, blast: 6.2, blastPower: 7 },
+    { year: 1995, name: 'La Gare de verre', weapons: ['Canon à pixels', 'Aiguillage électrique', 'Onde bitume'], bosses: ['Le Signal fantôme', 'La Locomotive Spectre'], railRange: 23, railPower: 3, lanes: 1, arcRange: 4.0, chains: 1, blast: 6.2, blastPower: 7 },
     { year: 2185, name: 'La Ceinture orbitale', weapons: ['Lance héliosphère', 'Foudre orbitale', 'Puits de gravité'], bosses: ['Le Pulsar', 'L’Éclipse'], railRange: 28, railPower: 4, lanes: 1, arcRange: 4.7, chains: 2, blast: 7.4, blastPower: 10 },
     { year: 2985, name: 'Le Cœur galactique', weapons: ['Faisceau quasar', 'Réseau de pulsars', 'Supernova stellaire'], bosses: ['Le Dévoreur', 'La Singularité'], railRange: 36, railPower: 5, lanes: 2, arcRange: 5.7, chains: 3, blast: 9, blastPower: 14 },
   ];

@@ -18,6 +18,7 @@ function instrument(){
  bindReadOnly('SnakeMondeVivant',v=>({...v,observe(s,event){if(event&&['boss','bossDefeated','sector','workshopRecipe','death','flightStart','flightEnd','upgrade','clear','win'].includes(event.type))p.events.push({year:s.year,t:s.elapsed,...event});return v.observe(s,event);}}));
  bindReadOnly('SnakeSpectacle',v=>({...v,draw(...args){p.draws++;return v.draw(...args);}}));
  let clock=10,cursor=0,callbacks=new Map();
+        Object.defineProperty(performance,'now',{value:()=>clock});
  window.requestAnimationFrame=fn=>{callbacks.set(++cursor,fn);return cursor;};
  window.cancelAnimationFrame=id=>callbacks.delete(id);
  p.run=function(dt){
@@ -26,16 +27,21 @@ function instrument(){
  };
 }
 async function main(){
+ const distribution=process.env.CAMPAGNE_DIST?path.resolve(process.env.CAMPAGNE_DIST):null;
+ const served=distribution||root;
  const server=http.createServer((req,res)=>{
-   const filename=path.resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));
-   if(!filename.startsWith(root+path.sep)||!fs.existsSync(filename)||!fs.statSync(filename).isFile()){res.writeHead(404);res.end();return;}
+   const requestPath=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+   if(distribution&&!requestPath.startsWith('/borne/')){res.writeHead(404).end();return;}
+   const relative=distribution?requestPath.slice(6):requestPath;
+   const filename=path.resolve(served,'.'+(relative==='/'?'/index.html':relative));
+   if(!filename.startsWith(served+path.sep)||!fs.existsSync(filename)||!fs.statSync(filename).isFile()){res.writeHead(404);res.end();return;}
    const type={'.html':'text/html','.js':'application/javascript','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml'};
    res.setHeader('content-type',type[path.extname(filename)]||'application/octet-stream');
    res.setHeader('Content-Security-Policy',"media-src 'none'; object-src 'none'");
    fs.createReadStream(filename).pipe(res);
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
- const url='http://127.0.0.1:'+server.address().port+'/labo/campagne/index.html';
+ const url='http://127.0.0.1:'+server.address().port+(distribution?'/borne/index.html?muet=1':'/labo/campagne/index.html');
  let browser;
  try{
  browser=await webkit.launch({headless:true});const c=await browser.newContext({viewport:{width:854,height:393},reducedMotion:'reduce',serviceWorkers:'block'});

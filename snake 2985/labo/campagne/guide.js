@@ -42,7 +42,7 @@
       }else{
         card('Prends les cellules','Fais glisser le pouce gauche dans la direction du virage. Deux cellules te font avancer d’un cran.','head');
         card('Change de plan','Touche Plan du pouce droit pour passer au-dessus ou au-dessous des obstacles. Le reste du corps te suit.');
-        card('Déclenche la nova','Ta forge tire seule. À pleine charge, touche Nova pour frapper les ennemis autour de la tête, sur ton plan.');
+        card('Déclenche la nova','Ta forge tire seule. À pleine charge, touche Nova pour frapper autour de ta tête sur ton plan. Si ♪ s’allume au moment du tir, tu récupères 6 % de charge, même son coupé.');
         card('Quitte la grille','Traverse le portail. Garde le pouce sur le manche pour courber ta trajectoire et enfiler les anneaux.');
       }
     }

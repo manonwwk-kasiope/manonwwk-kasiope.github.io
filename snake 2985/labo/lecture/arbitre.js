@@ -68,7 +68,13 @@
       if(o && texts[o.kind]){
         const i=Math.min(o.step,texts[o.kind].length-1);
         const at=o.kind==='convoi'?o.anchors[1]:o.anchors[i];
-        add('target',texts[o.kind][i],at);
+        let label=texts[o.kind][i];
+        if(o.kind==='aiguillage'&&i===0&&o.anchors.length===6){
+          const [, , , ,start,end]=o.anchors;
+          const deltaX=start.x-end.x,deltaY=start.y-end.y;
+          label+=' '+(Math.abs(deltaX)>Math.abs(deltaY)?deltaX>0?'→':'←':deltaY>0?'↓':'↑');
+        }
+        add('target',label,at);
       }else{
         const cells=s.cells.filter(p=>p.plane===s.plane);
         const nearest=cells.reduce((best,p)=>!best||Math.hypot(h.x-p.x,h.y-p.y)<Math.hypot(h.x-best.x,h.y-best.y)?p:best,null);

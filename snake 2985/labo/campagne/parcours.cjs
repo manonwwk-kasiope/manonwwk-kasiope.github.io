@@ -19,6 +19,7 @@ const url=pathToFileURL(path.join(__dirname,'index.html')).href;
           api={...v,create(...args){const s=create(...args);window.observed=s;return s;}};
         }});
         let time=1,callbacks=[];
+        Object.defineProperty(performance,'now',{value:()=>time});
         window.requestAnimationFrame=fn=>{callbacks.push(fn);return callbacks.length;};
         window.advance=n=>{for(let k=0;k<n;k++){const q=callbacks;callbacks=[];time+=40;for(const fn of q)fn(time);}};
         let seed=3163;Math.random=()=>((seed=(1664525*seed+1013904223)>>>0)/4294967296);

@@ -97,10 +97,15 @@ body[data-screen=prep] #poste[data-instrument="2985"] #rang{color:#dfc1ff}
 @media(prefers-reduced-motion:reduce){#passage{display:none}}
 #nova[data-charged="yes"]{outline:2px solid var(--inst-second,#ffd190);outline-offset:1px}#nova[data-charged="yes"] span{font-size:10px}
 
-#carte{position:absolute;top:max(7px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:1;background:#0f1827e8;border-color:#759caa;color:#d9f1ed}
+#acces-borne{position:absolute;top:max(7px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));z-index:1;display:flex;align-items:center;gap:5px}
+#acces-borne button{min-width:44px;background:#0f1827e8;border-color:#759caa;color:#d9f1ed}
 
 #turbo{margin-left:auto;font-size:.88em}#turbo[aria-pressed=true]{background:#593b25;color:#ffe3a7}
 #son{margin-left:0}
-#duel{position:absolute;left:50%;top:clamp(44px,9vh,62px);transform:translateX(-50%);display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:8px;row-gap:3px;padding:4px 10px;background:#0e1425e8;color:#ffceae;border:1px solid #ca947e;border-radius:0 0 6px 6px;pointer-events:none;white-space:nowrap;font-size:clamp(12px,2.7vmin,16px)}
+#duel{position:absolute;left:50%;top:calc(max(48px,min(9vh,60px)) + env(safe-area-inset-top,0px));transform:translateX(-50%);display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:8px;row-gap:3px;padding:4px 10px;background:#0e1425e8;color:#ffceae;border:1px solid #ca947e;border-radius:0 0 6px 6px;pointer-events:none;white-space:nowrap;font-size:clamp(12px,2.7vmin,16px)}
 #duel strong{font-weight:750}#etat-garde{color:#d8dcdf;font-size:.86em}#integrite{grid-column:1/-1;background:#543a4c;height:3px}
 #integrite i{display:block;background:#f6ad98;height:100%}#duel[data-weak=yes] #integrite i{background:#cbf4ab}
+
+#immersif span{font:700 24px/1 system-ui}.immersion-aide{max-width:min(550px,94vw)}.immersion-aide li{margin:.4em 0}
+
+.indication{display:flex;align-items:center;gap:3px}#compte-contrat{font-size:.85em;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;padding:2px 4px;border-radius:4px;background:#172236e6;color:#ffe6b2}

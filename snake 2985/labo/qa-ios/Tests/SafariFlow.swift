@@ -26,7 +26,7 @@ final class SafariFlow: XCTestCase {
             web.descendants(matching: .button).matching(identifier: name).firstMatch
         }
         func named(_ name: String, prefix: Bool = false) -> XCUIElement {
-            let predicate = NSPredicate(format: prefix ? "label BEGINSWITH %@" : "label == %@", name)
+            let predicate = NSPredicate(format: prefix ? "label BEGINSWITH[c] %@" : "label ==[c] %@", name)
             return web.descendants(matching: .any).matching(predicate).firstMatch
         }
         func snap(_ name: String) {
@@ -52,6 +52,7 @@ final class SafariFlow: XCTestCase {
         let atlas = button("Carte des époques")
         XCTAssertTrue(atlas.waitForExistence(timeout: 12))
         requireGeometry(landscape: true)
+        let startedIn1976 = named("1976 · 2 bits", prefix: true).exists
         atlas.tap()
         let years = [1976, 1985, 1995, 2185, 2985]
         for (i, year) in years.enumerated() {
@@ -60,19 +61,29 @@ final class SafariFlow: XCTestCase {
         }
         snap("02-Carte-cinq-epoques")
         // Any prior profile can resume in the future. Use the same visible controls as its player.
-        named("1976, 2 bits,", prefix: true).tap()
-        let prepare = button("Préparer 1976 à zéro point")
-        XCTAssertTrue(prepare.waitForExistence(timeout: 8))
-        XCTAssertTrue(prepare.isEnabled)
-        prepare.tap()
+        if startedIn1976 {
+            button("Fermer").tap()
+        } else {
+            let prepare = button("Préparer 1976 à zéro point")
+            if !prepare.exists {
+                let date = web.descendants(matching: .any).matching(NSPredicate(format:
+                    "label BEGINSWITH[c] %@ AND NOT (label CONTAINS[c] %@)", "1976, 2 bits, accessible", "tableau")).allElementsBoundByIndex
+                    .filter { $0.isHittable }.min { $0.frame.width * $0.frame.height < $1.frame.width * $1.frame.height }
+                try XCTUnwrap(date, "Onglet individuel 1976").tap()
+            }
+            XCTAssertTrue(prepare.waitForExistence(timeout: 8))
+            XCTAssertTrue(prepare.isEnabled)
+            prepare.tap()
+        }
         let silent = button("Jouer en silence")
         XCTAssertTrue(silent.waitForExistence(timeout: 10))
         XCTAssertTrue(named("1976 · 2 bits", prefix: true).waitForExistence(timeout: 5))
         XCTAssertFalse(button("Avec musique").exists)
         silent.tap()
-        let pause = button("Pause"), locked = button("Son verrouillé par le lien")
+        let pause = button("Pause"), locked = named("Son verrouillé par le lien")
         XCTAssertTrue(locked.waitForExistence(timeout: 5))
         XCTAssertFalse(locked.isEnabled)
+        XCTAssertEqual(locked.value as? String, "0")
         pause.tap()
         let resume = button("Reprendre")
         XCTAssertTrue(resume.waitForExistence(timeout: 6))
@@ -114,6 +125,7 @@ final class SafariFlow: XCTestCase {
         silent.tap()
         XCTAssertTrue(locked.waitForExistence(timeout: 5))
         XCTAssertFalse(locked.isEnabled)
+        XCTAssertEqual(locked.value as? String, "0")
         snap("09-Jeu-1995-verrouille")
         pause.tap()
         XCTAssertTrue(resume.waitForExistence(timeout: 6))

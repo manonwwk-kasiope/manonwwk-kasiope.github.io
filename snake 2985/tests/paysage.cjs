@@ -6,9 +6,9 @@ const { pathToFileURL } = require('node:url');
 const { test } = require('node:test');
 const { webkit, devices } = require('playwright');
 
-const url = process.env.SNAKE_URL || pathToFileURL(path.join(__dirname, '..', 'index.html')).href;
+const url = process.env.SNAKE_URL || pathToFileURL(path.join(__dirname, '../labo/livraison/temoin-4-epoques', 'index.html')).href;
 
-test('Safari tactile : orientation, géométrie, commandes et sauvegarde', async () => {
+test('Témoin de migration quatre époques · Safari tactile, commandes et sauvegarde', async () => {
   const browser = await webkit.launch({ headless: true });
   try {
     for (const [width, height] of [[568, 320], [852, 275]]) {
@@ -19,6 +19,9 @@ test('Safari tactile : orientation, géométrie, commandes et sauvegarde', async
         // Ce test prend uniquement le départ silencieux. Aucune piste ne doit démarrer.
         await context.addInitScript(() => {
           window.lectures = 0;
+          Object.defineProperty(HTMLMediaElement.prototype,'muted',{get:()=>true,set(){}});
+          Object.defineProperty(HTMLMediaElement.prototype,'volume',{get:()=>0,set(){}});
+          window.AudioContext=window.webkitAudioContext=undefined;
           HTMLMediaElement.prototype.play = function () {
             this.muted = true;
             this.volume = 0;

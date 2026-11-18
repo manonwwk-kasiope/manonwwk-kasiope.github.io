@@ -22,6 +22,16 @@
       if(o.kind==='aiguillage' && route.length===6){
         const [a,b,d,exit,train,last]=route;
         if(at(train)&&at(last))line(train,last,'#ffaa92',2.5);
+        if(o.step===0&&at(a)){
+          const dx=Math.sign(train.x-last.x),dy=Math.sign(train.y-last.y);
+          const point=(forward,side)=>({x:a.x+dx*forward-dy*side,y:a.y+dy*forward+dx*side});
+          for(const back of [-1.34,-.84]){
+            const tip=point(back+.32,0);
+            for(const side of [-.30,.30]){
+              line(point(back,side),tip,'#292a42',4.3);line(point(back,side),tip,'#ffdd98',2.2);
+            }
+          }
+        }
         if(at(a)&&at(b)){line(a,b,'#ffdf96',1.5,true);line(b,d,'#ffdf96',1.5,true);line(a,exit,'#9bd9d5',1);}
       }else for(let i=1;i<route.length;i++)if(at(route[i-1])&&at(route[i]))line(route[i-1],route[i],'#9ebae2',1,true);
       if(at(next))beacon(next,'⋄',o.phase==='active'?'#cbebff':'#9fbbd2');

@@ -3,13 +3,10 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),os=require('node:os'),path=require('node:path');
 const {createCanvas,loadImage}=require(require.resolve('@napi-rs/canvas',{paths:[path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules')]}));
 const source=fs.readFileSync(path.join(__dirname,'reference.cjs'),'utf8');
-const start=source.indexOf('    const img=c.getImageData'),end=source.indexOf('    c.putImageData(img',start);assert(start>0&&end>start);
-const first=source.slice(start,source.indexOf('    for(let y=0,i=0;',start));
-const hook=first.replace(/,packed=new Uint32Array\([^;]+/,'')+"    SnakeQuantification.convert(buf,w,h,f.bits,table);\n";
 function world(src){
-  const sandbox=vm.createContext({module:{exports:{}},document:{createElement:()=>createCanvas(1,1)},SnakeQuantification:require('./quantification.js')});sandbox.window=sandbox;vm.runInContext(src,sandbox);return sandbox.module.exports;
+  const sandbox=vm.createContext({module:{exports:{}},document:{createElement:()=>createCanvas(1,1)},SnakeQuantification:require('./quantification.js')});sandbox.window=sandbox;vm.runInContext(src,sandbox);return sandbox.SnakeMondes||sandbox.module.exports;
 }
-const old=world(source),newWorld=world(source.slice(0,start)+hook+source.slice(end));
+const old=world(source),newWorld=world(fs.readFileSync(path.join(__dirname,'../mondes/mondes.js'),'utf8'));
 async function main(){
   let passed=0;
   for(const y of [1976,1985,1995,2185,2985])for(const screen of [568,740]){

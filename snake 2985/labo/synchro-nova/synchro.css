@@ -1,0 +1,6 @@
+#nova{position:relative}
+#actions #nova>.nova-sync-cue{position:absolute;top:1px;right:1px;display:inline-grid;place-items:center;min-width:13px;font:700 13px/1 system-ui,sans-serif;color:#b6d1de;border:1px solid transparent;border-radius:4px;pointer-events:none}
+.nova-sync-cue[data-cue=off]{visibility:hidden}
+.nova-sync-cue[data-cue=approach]{border-color:#9cbcc8}
+.nova-sync-cue[data-cue=hit]{color:#172331;background:#ffe2a0;border-color:#fff3c8}
+@media(prefers-reduced-motion:reduce){.nova-sync-cue[data-cue=approach]{visibility:hidden}}

@@ -99,12 +99,17 @@
     ctx.restore();
   }
   function stop() {if(animation!==null)cancelAnimationFrame(animation);animation=null;}
+  let refreshOpenHall=null,detachReplay=null;
+  window.addEventListener('storage',event=>{
+    if(dialog?.open && (!event.key || event.key.startsWith('snake2985.hall.tentative.')))refreshOpenHall?.();
+  });
   function panel(title) {
+    refreshOpenHall=null;detachReplay?.();detachReplay=null;
     stop();
     if(!dialog){
       dialog=elem('dialog');dialog.className='snake-archives';
       dialog.setAttribute('aria-labelledby','archives-titre');
-      dialog.addEventListener('close',()=>{stop();focusBefore?.focus?.();});
+      dialog.addEventListener('close',()=>{stop();detachReplay?.();detachReplay=null;refreshOpenHall=null;focusBefore?.focus?.();});
       dialog.addEventListener('keydown',e=>e.stopPropagation());
       document.body.append(dialog);
     }
@@ -117,8 +122,8 @@
   function openHall() {
     const body=panel('Palmarès'),bar=elem('div');bar.className='archives-outils';
     const label=elem('label','Époque'),select=elem('select');
-    const listYears=[...new Set([...years,...hall.list().map(r=>r.year)])].sort((a,b)=>a-b);
-    for(const year of ['',...listYears]){const op=elem('option',String(year||'Toutes les époques'));op.value=String(year);select.append(op);}
+    const pageSize=12;
+    let page=0,records=[],filtered=[],personal=null,yearOptions='';
     label.append(select);bar.append(label);
     if(latest?.row){
       const form=elem('form'),signature=elem('label','Signature'),input=elem('input');
@@ -128,7 +133,7 @@
       const status=elem('output');form.append(status);
       form.addEventListener('submit',e=>{e.preventDefault();
         const signed=hall.setName(latest.id,input.value);latest.row.name=signed;input.value=signed;
-        status.textContent='Signé '+signed;refresh();
+        status.textContent='Signé '+signed;refresh();goToAttempt();
       });
       bar.append(form);
     }
@@ -138,17 +143,65 @@
     }
     thead.append(row);table.append(thead,rows);
     const empty=elem('p','Aucune tentative dans cette époque.');
-    function refresh(){
-      const records=hall.list(select.value);
-      rows.replaceChildren();empty.hidden=records.length>0;
-      for(const [i,r] of records.entries()){
-        const tr=elem('tr');if(r.id===latest?.id)tr.className='archives-moi';
-        for(const val of [i+1,r.name,r.year,r.difficulty+'/10'+(r.cleared?' ✓':''),fmt(r.score)])tr.append(elem('td',String(val)));
-        rows.append(tr);
-      }
+    const summary=elem('p'),nav=elem('nav'),pageInfo=elem('output');
+    summary.className='archives-resultat';summary.setAttribute('aria-live','polite');
+    nav.className='archives-pages';nav.setAttribute('aria-label','Pages du palmarès');
+    const prev=button(nav,'Précédente',()=>{page--;paint();});
+    pageInfo.setAttribute('aria-live','polite');nav.append(pageInfo);
+    const next=button(nav,'Suivante',()=>{page++;paint();});
+    const mine=button(nav,'Voir mon rang',goToAttempt);
+    const card=window.SnakeCartouches&&button(nav,'Carte souvenir',()=>window.SnakeCartouches.open(personal,card));
+    function goToAttempt(){
+      if(!personal)return;
+      if(select.value && Number(select.value)!==personal.year)select.value=String(personal.year);
+      filter();
+      page=Math.floor(filtered.findIndex(r=>r.id===personal.id)/pageSize);paint();
     }
-    select.addEventListener('change',refresh);
-    body.append(bar,table,empty);refresh();
+    function filter(){filtered=select.value?records.filter(r=>r.year===Number(select.value)):records;}
+    function paint(){
+      const pages=Math.max(1,Math.ceil(filtered.length/pageSize));
+      page=Math.max(0,Math.min(page,pages-1));
+      prev.disabled=page===0;next.disabled=page===pages-1;
+      prev.hidden=next.hidden=pages===1;
+      pageInfo.textContent=filtered.length?'Page '+fmt(page+1)+' sur '+fmt(pages):'';
+      mine.hidden=!personal;
+      if(card)card.hidden=!window.SnakeCartouches.compatible(personal);
+      empty.hidden=filtered.length>0;table.hidden=!filtered.length;
+      const visible=filtered.slice(page*pageSize,(page+1)*pageSize);
+      rows.replaceChildren(...visible.map((r,i)=>{
+        const tr=elem('tr');
+        if(r.id===personal?.id){tr.className='archives-moi';tr.setAttribute('aria-current','true');}
+        for(const val of [page*pageSize+i+1,r.name,r.year,r.difficulty+'/10'+(r.cleared?' ✓':''),fmt(r.score)])tr.append(elem('td',String(val)));
+        return tr;
+      }));
+    }
+    function refresh(){
+      records=hall.list();
+      const values=[...new Set([...years,...records.map(r=>r.year)])].sort((a,b)=>a-b);
+      if(values.join(',')!==yearOptions){
+        const keep=select.value;yearOptions=values.join(',');
+        select.replaceChildren(...['',...values].map(year=>{
+          const op=elem('option',String(year||'Toutes les époques'));op.value=String(year);return op;
+        }));
+        select.value=values.includes(Number(keep))?keep:'';
+      }
+      personal=latest?records.find(r=>r.id===latest.id):records.reduce((last,r)=>!last||r.endedAt>last.endedAt?r:last,null);
+      summary.hidden=!personal;
+      if(personal){
+        const epoch=records.filter(r=>r.year===personal.year),rival=epoch.find(r=>r.id!==personal.id);
+        const gap=personal.score-(rival?.score??0);
+        const comparison=!rival?'Premier record de cette époque.':gap===0?'Record d’époque égalé.':
+          gap>0?'Record d’époque battu de '+fmt(gap)+' pts.':'À '+fmt(-gap)+' pts du record d’époque.';
+        summary.textContent='Dernière tentative · '+personal.year+' · '+fmt(personal.score)+' pts. Rang époque '+
+          fmt(epoch.indexOf(personal)+1)+' / '+fmt(epoch.length)+' · Rang général '+
+          fmt(records.indexOf(personal)+1)+' / '+fmt(records.length)+'. '+comparison;
+      }
+      filter();paint();
+    }
+    select.addEventListener('change',()=>{page=0;filter();paint();});
+    body.append(bar,summary,nav,table,empty);
+    refreshOpenHall=refresh;refresh();
+
   }
   const masks=reprise.flags;
   function board(canvas,frame,plane,impact) {
@@ -200,16 +253,17 @@
       status.textContent=when+' · plan '+(f.plane+1)+' · '+(f.flight?'vol':'grille')+' · case '+(Math.round(f.x)+1)+', '+(Math.round(f.y)+1);
       slider.setAttribute('aria-valuetext',status.textContent);
     };
-    const reduced=Boolean(window.matchMedia('(prefers-reduced-motion: reduce)').matches || (typeof getReduced==='function' && getReduced()));
+    const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduced=()=>preference.matches||(typeof getReduced==='function'&&getReduced());
     let play;
-    const pause=()=>{stop();previous=null;play.textContent=reduced?'Image suivante':'Lire';};
+    const pause=()=>{stop();previous=null;play.textContent=reduced()?'Image suivante':'Lire';};
     const advance=now=>{
       if(previous!==null)paint(t+Math.max(0,now-previous));previous=now;
       if(t>=end){pause();return;}animation=requestAnimationFrame(advance);
     };
     button(controls,'− 0,25 s',()=>{pause();paint(t-250);});
-    play=button(controls,reduced?'Image suivante':'Lire',()=>{
-      if(reduced){
+    play=button(controls,reduced()?'Image suivante':'Lire',()=>{
+      if(reduced()){
         if(t>=end)paint(start);
         else {
           const current=review.frameAt(t).t;
@@ -225,6 +279,14 @@
     });
     button(controls,'+ 0,25 s',()=>{pause();paint(t+250);});
     slider.addEventListener('input',()=>{pause();paint(Number(slider.value));});
+    const visible=()=>{if(document.hidden)pause();};
+    const cover=e=>{if(e.target!==dialog&&e.target.tagName==='DIALOG'&&e.target.open)pause();};
+    document.addEventListener?.('visibilitychange',visible);document.addEventListener?.('toggle',cover,true);
+    preference.addEventListener?.('change',pause);
+    detachReplay=()=>{
+      document.removeEventListener?.('visibilitychange',visible);document.removeEventListener?.('toggle',cover,true);
+      preference.removeEventListener?.('change',pause);
+    };
     body.append(tip,views,slider,controls,status);paint(end);return true;
   }
   function bande(s){

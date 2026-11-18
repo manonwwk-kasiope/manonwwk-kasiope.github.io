@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   const years=[1976,1985,1995,2185,2985];
-  const defaults={1976:'Le Terminal',1985:'Le Circuit néon',1995:'La Gare autoroutière',2185:'La Ceinture orbitale',2985:'Le Cœur galactique'};
+  const defaults={1976:'Le Terminal',1985:'Le Circuit néon',1995:'La Gare de verre',2185:'La Ceinture orbitale',2985:'Le Cœur galactique'};
   const src=typeof document!=='undefined'?document.currentScript?.src:null;
   const base=src?new URL(src.endsWith('/epilogue/epilogue.js')?'../bifurcation/':'.',src).href:'';
   const fmt=new Intl.NumberFormat('fr-FR');

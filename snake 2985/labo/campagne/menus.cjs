@@ -20,6 +20,7 @@ const origin='http://campagne.test',start=origin+'/labo/campagne/index.html';
         Object.defineProperty(HTMLMediaElement.prototype,'volume',{get:()=>0,set:()=>{}});
         window.AudioContext=window.webkitAudioContext=undefined;
         let jobs=[],now=1;
+        Object.defineProperty(performance,'now',{value:()=>now});
         window.requestAnimationFrame=fn=>{jobs.push(fn);return jobs.length;};
         window.step=n=>{for(let i=0;i<n;i++){const list=jobs;jobs=[];now+=40;for(const f of list)f(now);}};
         let seed=3671;Math.random=()=>((seed=Math.imul(seed,1664525)+1013904223>>>0)/4294967296);
@@ -42,7 +43,16 @@ const origin='http://campagne.test',start=origin+'/labo/campagne/index.html';
       assert.deepEqual(inaccessible,[],JSON.stringify({width,height,inaccessible}));
       await touch(btn('Carte des époques'));const modal=p.locator('dialog.voyage-carte');
       assert.equal(await modal.isVisible(),true);
-      const tabs=modal.getByRole('tab');assert.equal(await tabs.count(),5);
+      const unsafe=[];
+      for(const [lo,hi,bottom] of [[47,8,21],[8,47,21],[47,47,21]]){
+        await p.evaluate(([lo,hi,bottom])=>{const style=document.documentElement.style;
+          for(const [edge,n] of [['gauche',lo],['droite',hi],['bas',bottom]])style.setProperty('--borne-'+edge,n+'px');
+        },[lo,hi,bottom]);
+        const bounds=await modal.boundingBox();
+        if(bounds.x<lo-.5||bounds.x+bounds.width>width-hi+.5||bounds.y+bounds.height>height-bottom+.5)unsafe.push({lo,hi,bottom,bounds});
+      }
+      await p.evaluate(()=>{for(const edge of ['gauche','droite','bas'])document.documentElement.style.removeProperty('--borne-'+edge);});
+      assert.deepEqual(unsafe,[]);const tabs=modal.getByRole('tab');assert.equal(await tabs.count(),5);
       await touch(tabs.nth(4));assert.equal(await modal.locator('.vc-depart').isDisabled(),true);
       await p.waitForFunction(()=>document.querySelector('.vc-horizon img').naturalWidth>0,undefined,{polling:25});
       const preview=modal.locator('.vc-apercu');
@@ -88,7 +98,7 @@ const origin='http://campagne.test',start=origin+'/labo/campagne/index.html';
       assert.equal(await btn('Avec musique').count(),0);await touch(btn('Jouer en silence'));await step(1);
       assert.equal(await p.locator('#son').isDisabled(),true);
       assert.equal(await p.evaluate(()=>window.soundAttempts),0);assert.deepEqual(errors,[]);
-      measures.push({width,height,startTargets:targets.length,cardTargets:cardBounds.length,lockedAtStart:true,remembered1995:true,visited2985:true,actualPreviewFramesChanged:true,challengeRestored:true,rotationPaused:true,hallPreserved:true,mutedURL:true,errors});
+      measures.push({width,height,startTargets:targets.length,cardTargets:cardBounds.length,lockedAtStart:true,remembered1995:true,visited2985:true,actualPreviewFramesChanged:true,challengeRestored:true,rotationPaused:true,hallPreserved:true,mutedURL:true,simulatedSafeAreas:3,errors});
       if(process.env.SNAKE_CAPTURE_DIR)await p.screenshot({path:path.join(process.env.SNAKE_CAPTURE_DIR,'campagne-2985-'+width+'.png')});
       await ctx.close();
     }

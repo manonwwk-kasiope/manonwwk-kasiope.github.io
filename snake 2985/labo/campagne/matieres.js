@@ -13,14 +13,17 @@
     const img=new Image(),item={img,ready:false,pending:null};
     img.crossOrigin='anonymous';img.decoding='async';
     item.pending=new Promise(resolve=>{
+      const fail=()=>{if(loaded.get(year)===item)loaded.delete(year);resolve(false);};
       img.onload=()=>{
         try{
+          // Le worker peut fournir une carte de remplacement si la peinture est absente.
+          if(img.width<900||img.height<400){fail();return;}
           const probe=document.createElement('canvas');probe.width=1;probe.height=1;
           const c=probe.getContext('2d');c.drawImage(img,0,0,1,1);c.getImageData(0,0,1,1);
           item.ready=true;resolve(true);
-        }catch{resolve(false);}
+        }catch{fail();}
       };
-      img.onerror=()=>resolve(false);
+      img.onerror=fail;
     });
     loaded.set(year,item);img.src=url.href;
     return item.pending;

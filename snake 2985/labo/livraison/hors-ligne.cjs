@@ -4,15 +4,29 @@ const {once}=require('node:events'),{execFileSync}=require('node:child_process')
 const project=path.resolve(__dirname,'../..'),old=path.join(__dirname,'temoin-4-epoques'),tmp=fs.mkdtempSync(path.join(os.tmpdir(),'snake-offline-')),bundle=path.join(tmp,'edition');
 const report={};const mime={'.html':'text/html','.css':'text/css','.js':'application/javascript','.mp3':'audio/mpeg','.webp':'image/webp','.png':'image/png','.webmanifest':'application/manifest+json'};
 let directory=old,missing=new Set(),offline=false,requests=0,scope,denySockets=false;
+let meter=null,disconnectFile=null;
 const server=http.createServer((req,res)=>{
-  if(denySockets){req.socket.destroy();return;}
+
   const url=new URL(req.url,'http://127.0.0.1'),file=decodeURIComponent(url.pathname.slice('/arcade/'.length))||'index.html';
   if(!url.pathname.startsWith('/arcade/')||!file.split('/').every(part=>part!=='.'&&part!=='..'&&part!=='')){res.writeHead(400).end();return;}
+  if(meter)meter.push({file,bytes:0});
+  if(denySockets){req.socket.destroy();return;}
+  if(file==='probe.html'){res.writeHead(200,{'Content-Type':'text/html'}).end('<!doctype html><title>Test de cache</title>');return;}
   if(missing.has(file)||!fs.existsSync(path.join(directory,file))||!fs.statSync(path.join(directory,file)).isFile()){res.writeHead(404).end();return;}
   const data=fs.readFileSync(path.join(directory,file));
+  if(meter)meter[meter.length-1].bytes=data.length;
   res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','Content-Length':data.length,'ETag':'"'+data.length+'"'});res.end(data);
 });
-async function net(req){requests++;if(offline)throw new TypeError('offline');return fetch(req);}
+async function net(req){
+  requests++;
+  const name=new URL(typeof req==='string'?req:req.url).pathname.slice('/arcade/'.length);
+  if(disconnectFile===name){
+    if(meter)meter.push({file:name,bytes:0});
+    throw new TypeError('Connexion interrompue');
+  }
+  if(offline)throw new TypeError('offline');
+  return fetch(req);
+}
 class Buckets{
   constructor(data=new Map()){this.data=data;}
   async keys(){return [...this.data.keys()];}
@@ -31,7 +45,7 @@ function worker(code,caches){
   const handlers={},lifecycle={waiting:false,claimed:false};
   const self={registration:{scope},async skipWaiting(){lifecycle.waiting=true;},clients:{async claim(){lifecycle.claimed=true;}},
     addEventListener(type,fn){handlers[type]=fn;}};
-  vm.runInNewContext(code,{self,caches,fetch:net,Request,Response,Headers,URL,Set},{filename:'sw.js'});
+  vm.runInNewContext(code,{self,caches,fetch:net,Request,Response,Headers,URL,Set,crypto:require("node:crypto").webcrypto},{filename:'sw.js'});
   const signal=type=>new Promise((resolve,reject)=>{handlers[type]({waitUntil:p=>Promise.resolve(p).then(resolve,reject)});});
   return {lifecycle,signal,async serve(name,headers={}){const request=new Request(new URL(name,scope),{headers});let p;
     handlers.fetch({request,respondWith:r=>{p=r;}});return p||net(request);}};
@@ -79,9 +93,9 @@ async function main(){
   }
   const originalValues=new Map(storage);
   directory=bundle;const sw=await (await net(scope+'sw.js')).text(),candidate=worker(sw,db),blocked='audio/electro-titan-t112.mp3';
-  missing.add(blocked);await assert.rejects(candidate.signal('install'));
+  missing.add('apercu-2985.webp');await assert.rejects(candidate.signal('install'));
   assert.equal(candidate.lifecycle.waiting,false);assert.match(await (await previous.serve('./')).text(),/moteur\.js/);
-  missing.clear();await candidate.signal('install');await candidate.signal('activate');assert(candidate.lifecycle.claimed);
+  missing.clear();meter=[];await candidate.signal('install');report.legacyReuse=summarize(meter);meter=null;await candidate.signal('activate');assert(candidate.lifecycle.claimed);
   const cacheKeys=await db.keys();assert(cacheKeys.includes('cache-autre-jeu'));assert.equal(cacheKeys.filter(n=>n.startsWith('snake2985:')).length,1);
   // Un nouveau contexte et des caches restaurés du disque représentent une reprise à froid.
   const checkpoint=path.join(tmp,'cache.bin');fs.writeFileSync(checkpoint,v8.serialize(db.data));
@@ -109,8 +123,10 @@ async function main(){
   assert.equal(requests,initialRequests);
   const plates=fs.readdirSync(path.join(project,'labo/campagne/decors'),{recursive:true}).filter(f=>f.endsWith('.webp')).sort().map(f=>'decors/'+f);
   for(const f of ['decors/chantier-orbital.webp','decors/circuit-antenne.webp','decors/quai-verriere.webp','decors/etoile-effondree.webp'])assert(plates.includes(f));
-  const literalAllowlist=JSON.parse(sw.match(/const gameFiles = (\[[\s\S]*?\]);/)[1]);
+  const literalAllowlist=Object.keys(JSON.parse(sw.match(/const gameHashes = (\{[\s\S]*?\});/)[1]));
   for(const f of plates)assert(media.includes(f) && literalAllowlist.includes(f));
+  for(const year of [1976,1985,1995,2185,2985])assert(literalAllowlist.includes('apercu-'+year+'.webp'));
+  assert.equal(report.legacyReuse.files.filter(name=>name.endsWith('.mp3')).length,0);
   report.paintedPlates=plates.map(name=>({name,bytes:fs.statSync(path.join(bundle,name)).size,coldFull200:true,ranges206:4}));
   report.migration={years:before,records:4,ghosts:4,additional1995:hall.list(1995).length,cachedFiles:all.length,networkCallsCold:0,
     images:media.filter(f=>f.endsWith('.webp')).length,audio:media.filter(f=>f.endsWith('.mp3')).length,verified206:media.length*4};
@@ -127,8 +143,107 @@ async function main(){
   await assert.rejects(broken.signal('install'));assert(!broken.lifecycle.waiting);assert.equal((await failedDb.keys()).length,0);
   report.firstInstall={missingMedia:2,illustration:'SVG de repli',absentAudio:503,repaired:2,missingCore:'installation refusée sans cache résiduel'};
   report.update={failedUpdate:'ancienne version toujours servie',activated:'nouvelle version seule pour cette portée',otherScope:'préservé'};
+  missing.clear();offline=false;
+  const fixtures=makeEditions(all);
+  await incrementalCheck(all,fixtures);
+  if(process.argv.includes('--browser-reuse'))await incrementalBrowser(fixtures,all);
+  directory=bundle;
   if(process.argv.includes('--browser'))await browserCheck(all,media,build);
   console.log(JSON.stringify(report,null,2));
+}
+function summarize(records){
+  const assets=records.filter(row=>!['sw.js','probe.html','favicon.ico'].includes(row.file));
+  return {requests:assets.length,bytes:assets.reduce((sum,row)=>sum+row.bytes,0),files:assets.map(row=>row.file)};
+}
+function makeEditions(all){
+  const buildWorker=require('./worker-build.cjs');
+  const js=path.join(tmp,'modif-js'),media=path.join(tmp,'modif-media');
+  fs.cpSync(bundle,js,{recursive:true});
+  fs.appendFileSync(path.join(js,'arcade.js'),'\n/* Édition de vérification */\n');
+  const stamp=require('node:crypto').createHash('sha256');
+  for(const f of ['arcade.js','arcade.css'])stamp.update(f).update(fs.readFileSync(path.join(js,f)));
+  const token=stamp.digest('hex').slice(0,16);
+  const html=path.join(js,'index.html');
+  fs.writeFileSync(html,fs.readFileSync(html,'utf8').replace(/(arcade\.(?:css|js)\?v=)[a-f0-9]+/g,(_,prefix)=>prefix+token));
+  // Conserver l'ordre du manifeste de la distribution témoin.
+  const names=Object.keys(JSON.parse(fs.readFileSync(path.join(bundle,'sw.js'),'utf8').match(/const gameHashes = (\{[\s\S]*?\});/)[1]));
+  assert.deepEqual([...names].sort(),[...all].sort());
+  buildWorker(js,names);
+  fs.cpSync(js,media,{recursive:true});
+  const mp3=names.find(n=>n.endsWith('.mp3')),file=path.join(media,mp3),original=fs.readFileSync(file);
+  original[original.length-1]^=1;fs.writeFileSync(file,original);buildWorker(media,names);
+  return {js,media,mp3};
+}
+async function incrementalCheck(all,fixtures){
+  const db=new Buckets(),phase={};
+  // Un cache d'un autre montage du même jeu ne doit ni fournir des actifs ni être nettoyé.
+  const foreignName='snake2985:/autre/:legacy',foreign=await db.open(foreignName);
+  await foreign.put(new URL('arcade.js',scope).href,new Response(fs.readFileSync(path.join(bundle,'arcade.js'))));
+
+  async function install(dir,label,expected,fail=false){
+    directory=dir;meter=[];
+    const code=fs.readFileSync(path.join(dir,'sw.js'),'utf8'),candidate=worker(code,db);
+    try{
+      if(fail){
+        const oldKeys=await db.keys();
+        await assert.rejects(candidate.signal('install'));assert.deepEqual(await db.keys(),oldKeys);assert(!candidate.lifecycle.waiting);
+      }else{
+        await candidate.signal('install');await candidate.signal('activate');
+      }
+      const m=summarize(meter);assert.deepEqual(m.files.slice().sort(),expected.slice().sort(),label);
+      phase[label]={requests:m.requests,bytes:m.bytes};
+    }finally{meter=null;}
+    return candidate;
+  }
+  await install(bundle,'premiere',all);
+  assert.equal(phase.premiere.bytes,all.reduce((n,file)=>n+fs.statSync(path.join(bundle,file)).size,0));
+  const changed=['arcade.js','index.html'];
+  const oldMusic=fs.readFileSync(path.join(bundle,fixtures.mp3));
+  const script=await install(fixtures.js,'javascript',changed);
+  // Cache corrompu à longueur inchangée, dont les éventuelles métadonnées sont intactes.
+  const key=new URL('apercu-1995.webp',scope).href;
+  const active=await db.open((await db.keys()).find(name=>name!==foreignName)),bad=await bytes(await active.match(key));
+  bad[bad.length-1]^=1;await active.put(key,new Response(bad,{headers:{'Content-Type':'image/webp'}}));
+  disconnectFile=fixtures.mp3;
+  await install(fixtures.media,'coupure',[fixtures.mp3,'apercu-1995.webp'],true);
+  assert.deepEqual(await bytes(await script.serve(fixtures.mp3)),oldMusic);disconnectFile=null;
+  const target=path.join(fixtures.media,fixtures.mp3),correct=fs.readFileSync(target);
+  fs.writeFileSync(target,oldMusic);
+  try{await install(fixtures.media,'reseauCorrompu',[fixtures.mp3,'apercu-1995.webp'],true);}
+  finally{fs.writeFileSync(target,correct);}
+  await install(fixtures.media,'mediaEtCacheCorrompu',[fixtures.mp3,'apercu-1995.webp']);
+  const rollback=await install(fixtures.js,'retourEditionPrecedente',[fixtures.mp3]);
+  assert.deepEqual(await bytes(await rollback.serve(fixtures.mp3)),oldMusic);
+  const last=await install(fixtures.media,'mediaSeul',[fixtures.mp3]);
+  for(const name of all)assert.deepEqual(await bytes(await last.serve(name)),fs.readFileSync(path.join(fixtures.media,name)));
+  assert((await db.keys()).includes(foreignName));
+  report.incremental=phase;
+}
+async function incrementalBrowser(fixtures,all){
+  const {chromium}=require('playwright');
+  const executable=process.env.SNAKE_HEADLESS_SHELL||path.join(os.homedir(),'Library/Caches/ms-playwright/chromium_headless_shell-1187/chrome-mac/headless_shell');
+  assert.equal(path.basename(executable),'headless_shell');
+  const browser=await chromium.launch({executablePath:executable,headless:true,args:['--mute-audio','--autoplay-policy=user-gesture-required']});
+  try{
+    const page=await browser.newPage();
+    await page.addInitScript(()=>{Object.defineProperty(HTMLMediaElement.prototype,'play',{value:()=>Promise.resolve()});});
+    directory=bundle;await page.goto(scope+'probe.html');
+    let first=true;const observations={};
+    for(const [label,dir,expected] of [['premiere',bundle,all],['javascript',fixtures.js,['arcade.js','index.html']],['media',fixtures.media,[fixtures.mp3]],['rollback',fixtures.js,[fixtures.mp3]]]){
+      directory=dir;meter=[];
+      const edition=fs.readFileSync(path.join(dir,'sw.js'),'utf8').match(/const version = prefix \+ "([0-9a-f]+)"/)[1];
+      await page.evaluate(async first=>{
+        if(first)await navigator.serviceWorker.register('sw.js',{updateViaCache:'none'});
+        else await (await navigator.serviceWorker.ready).update();
+      },first);first=false;
+      await page.waitForFunction(async edition=>{const names=await caches.keys();return !!navigator.serviceWorker.controller&&names.length===1&&names[0].endsWith(edition)&&!!(await navigator.serviceWorker.ready).active;},edition,{timeout:45000});
+      const metrics=summarize(meter);
+      assert.deepEqual(metrics.files.slice().sort(),expected.slice().sort());
+      observations[label]={requests:metrics.requests,bytes:metrics.bytes,workerBytes:meter.filter(row=>row.file==='sw.js').reduce((n,row)=>n+row.bytes,0)};
+      meter=null;
+    }
+    report.incrementalChromium=observations;
+  }finally{meter=null;await browser.close();}
 }
 async function browserCheck(all,media,build){
   const {chromium}=require('playwright');

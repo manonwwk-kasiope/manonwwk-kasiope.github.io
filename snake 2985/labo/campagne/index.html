@@ -28,6 +28,9 @@
 <script src="../artillerie/artillerie.js" defer></script>
 <script src="../surcharges/surcharges.js" defer></script>
 <script src="../surcharges/effets.js" defer></script>
+<link rel="stylesheet" href="../synchro-nova/synchro.css">
+<script src="../synchro-nova/accents.js" defer></script>
+<script src="../synchro-nova/synchro.js" defer></script>
 <script src="../animation-boss/animation.js" defer></script>
 <script src="../monde-vivant/monde.js" defer></script>
 <script src="matieres.js" defer></script>
@@ -35,12 +38,15 @@
 <script src="../locomotion/locomotion.js" defer></script>
 <script src="../camera/camera.js" defer></script>
 <script src="../perception/marquage.js" defer></script>
+<script src="../virages/virages.js" defer></script>
+<script src="../presage/presage.js" defer></script>
 <script src="../spectacle.js" defer></script>
 <script src="../gestes/actions.js" defer></script>
 <script src="../commandes/commandes.js" defer></script>
 <script src="../../palmares.js" defer></script>
 <script src="../chrono/chrono.js" defer></script>
 <script src="../bifurcation/bifurcation.js" defer></script>
+<script src="../cartouches/cartouches.js" defer></script>
 <script src="archives.js" defer></script>
 <script src="../audio/pouls-data.js" defer></script>
 <script src="../audio/horloge.js" defer></script>
@@ -62,8 +68,11 @@
 <link rel="stylesheet" href="../epilogue/epilogue.css">
 <script src="../epilogue/epilogue.js" defer></script>
 <link rel="stylesheet" href="../orientation/orientation.css">
+<script src="../immersion/ecran.js" defer></script>
 <script src="../orientation/orientation.js" defer></script>
+<script src="../revanche/revanche.js" defer></script>
 <script src="../difficulte/relance.js" defer></script>
+<script src="../cadence/cadence.js" defer></script>
 <script src="../veille-rendu/veille.js" defer></script>
 <script src="chambre.js" defer></script>
 </head>
@@ -77,14 +86,17 @@
     <button id="son" class="outil" aria-label="Activer le son" aria-pressed="false">Son</button><output id="points" aria-label="Score">000000</output><button id="pause" class="outil" aria-label="Pause">Ⅱ</button>
   </header>
   <aside id="duel" hidden><strong id="nom-garde"></strong><span id="etat-garde"></span><div id="integrite" role="meter" aria-label="Vie du gardien" aria-valuemin="0" aria-valuemax="100"><i></i></div></aside>
-  <aside id="lecture" data-tone="normal"><span id="message" role="status"></span><span id="partenaire"></span></aside>
+  <aside id="lecture" data-tone="normal"><span class="indication"><span id="message" role="status"></span><span id="compte-contrat" aria-hidden="true" hidden></span></span><span id="partenaire"></span></aside>
   <section id="pouces" aria-label="Pilotage panoramique">
     <div id="stick" aria-label="Manche de pilotage"><span></span><small>Cap</small></div>
     <div id="actions"><button id="surf" hidden>Surfer</button><button id="plan" aria-label="Changer de plan">⇅ <span>Plan 1</span></button><button id="nova" aria-label="Déclencher la nova"><b aria-hidden="true">✷</b> Nova <span>100 %</span></button></div>
   </section>
   <section id="rideau" role="dialog" aria-modal="true" aria-labelledby="titre">
     <canvas id="vitrine" width="690" height="288" aria-label="Projection de la recette sur des drones" hidden></canvas>
-    <button id="carte" type="button" aria-label="Carte des époques">Époques</button>
+    <nav id="acces-borne" aria-label="Affichage et époques">
+      <button id="immersif" type="button" aria-label="Plein écran" hidden><span aria-hidden="true">⛶</span></button>
+      <button id="carte" type="button" aria-label="Carte des époques">Époques</button>
+    </nav>
     <canvas id="passage" aria-hidden="true" hidden></canvas>
     <div id="bifurcation" hidden></div>
     <article>

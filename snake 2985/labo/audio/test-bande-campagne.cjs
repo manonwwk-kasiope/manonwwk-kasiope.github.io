@@ -219,3 +219,14 @@ test('URL publique muet=1 : zéro constructeur audio, décodage ou requête MP3 
     a.dispose();assert.deepEqual(forbidden,[]);
   }
 });
+
+test('la banque route un tir dans l’arène, respecte le réglage de placement et le restaure',async()=>{
+  const e=environment(),a=e.audio;a.start(1995);await a.setMuted(false);
+  const arena={width:36,snake:[{x:0}]},shot={type:'shot',kind:'rail'};
+  const amplitude=buffer=>{let result=0;for(let i=0;i<buffer.getChannelData(0).length;i++)
+    result+=buffer.getChannelData(0)[i]**2-buffer.getChannelData(1)[i]**2;return result;};
+  a.events([shot],arena);assert(amplitude(e.started.at(-1).buffer)>1);
+  e.advance(1);a.setVolumes({space:0});a.events([shot],arena);assert(Math.abs(amplitude(e.started.at(-1).buffer))<.01);
+  a.dispose();const restored=environment({storage:e.storage});assert.equal(restored.audio.spaceLevel,0);
+  restored.audio.dispose();
+});

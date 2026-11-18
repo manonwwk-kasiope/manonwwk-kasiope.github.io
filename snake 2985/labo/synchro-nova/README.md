@@ -1,0 +1,9 @@
+# Nova en rythme
+
+Charger `accents.js`, puis `synchro.js` et la feuille `synchro.css`. Au geste volontaire qui lançait la Nova, appeler `SnakeSynchroNova.fire(state, audio.pulse(), arcade.fire)`. Le troisième argument est le tir natif après installation des surcharges. Pour le bouton existant, appeler `SnakeSynchroNova.paint(ui.nova, state, state.beat, calm.matches)` à la mise à jour du HUD. Le symbole ♪ précède l’accent de 320 ms et devient plein dans la fenêtre de tir. En mouvement réduit, seule la marque pleine apparaît. Le crédit se lit sur la jauge native. L’événement facultatif `novaSync` contient l’année et le crédit appliqué.
+
+Les 128 accents proviennent des attaques mesurées dans le PCM des cinq bandes-son. Le script `accents.py` documente la sélection et les empreintes sont inscrites dans `accents.js`. En jeu le transport média et le transport silencieux utilisent les mêmes positions dans le morceau. La fenêtre de ±80 ms est exprimée en temps réel après correction de la vitesse propre à l’époque.
+
+Chaque tir accepté dans la fenêtre rend six points de pourcentage de jauge. Deux crédits doivent être espacés de quatre secondes de jeu. La dépense native a lieu dans le même appel et les dégâts restent déterminés par le moteur. Avec une recharge linéaire, réussir chaque accent réduit au maximum de 6 % la recharge qui suit.
+
+Depuis la racine du jeu, `node --test labo/synchro-nova/essais.cjs` contrôle le moteur et le HUD. `node labo/synchro-nova/mesures.cjs` reproduit l’essai de tolérance. Les tirs visés suivent une hypothèse de latence moyenne de +20 ms et d’écart-type de 45 ms. Selon l’année, ±80 ms accepte 88,43 à 90,97 % de ces tirs et 9,36 à 10,46 % des tirs uniformément aléatoires. À ±45 ms ces intervalles valent 58,33 à 64,35 % et 5,26 à 6,14 %. La comparaison des deux horloges porte sur 36 000 positions. La lisibilité au doigt reste à évaluer en partie humaine.

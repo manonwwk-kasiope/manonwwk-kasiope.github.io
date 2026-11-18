@@ -384,6 +384,7 @@
     }
     window.SnakeMondeVivant?.draw(c,s,cam,time,reduced);
     if(cam.music)SnakeImpact.skyline(c,cam.music,time,s.year);
+    window.SnakePresage?.draw(c,s,cam,reduced);
     const projected=snakePoints(s,cam,reduced);
     const locomotion=window.SnakeLocomotion;
     const points=locomotion?.transform(s,cam,projected,time,reduced,project,'joint')??projected;
@@ -393,6 +394,7 @@
       }
       const selected=z===(s.plane||0);floorGrid(c,cam,z,selected,method);
       c.save();c.globalAlpha=selected?1:.47;
+      window.SnakeVirages?.draw(c,s,cam,z,project);
       if(window.SnakeArtillerie)SnakeArtillerie.draw(c,s,cam,z,time,reduced,project);
       else weapons(c,s,cam,z);
       window.SnakeSurchargeFX?.draw(c,s,cam,z,time,reduced,project);

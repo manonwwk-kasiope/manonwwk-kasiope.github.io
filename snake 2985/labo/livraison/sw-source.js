@@ -4,31 +4,55 @@
 const scope = new URL(self.registration.scope);
 const prefix = "snake2985:" + scope.pathname + ":";
 const version = prefix + "__EDITION__";
-const gameFiles = __GAME_FILES__;
+const gameHashes = __GAME_HASHES__;
 const index = new URL("index.html", scope).href;
-const urls = new Set(gameFiles.map((name) => new URL(name, scope).href));
+const checksums = new Map(Object.entries(gameHashes).map(([name, hash]) => [new URL(name, scope).href, hash]));
 const coreUrls = new Set(["index.html","arcade.js","arcade.css","app.webmanifest"].map(name => new URL(name, scope).href));
+
+async function valid(response, url) {
+  if (!response || response.status !== 200 || response.headers.has("Content-Range")) return false;
+  const digest = await crypto.subtle.digest("SHA-256", await response.clone().arrayBuffer());
+  const hex = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+  return checksums.get(url) === hex;
+}
+
+async function download(url) {
+  const response = await fetch(new Request(url, { cache: "reload", redirect: "error" }));
+  if (!await valid(response, url)) throw Error("Ressource absente ou contenu différent : " + url);
+  return response;
+}
+
+async function copyOrFetch(cache, url, oldCaches) {
+  for (const oldCache of oldCaches) {
+    let candidate;
+    try {
+      candidate = await oldCache.match(url);
+      if (!await valid(candidate, url)) continue;
+    } catch {
+      continue;
+    }
+    await cache.put(url, candidate);
+    return;
+  }
+  await cache.put(url, await download(url));
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
+    const previous = (await caches.keys()).filter(name => name.startsWith(prefix) && name !== version);
+    const oldCaches = await Promise.all(previous.map(name => caches.open(name)));
     const cache = await caches.open(version);
-    // addAll validates every full response before committing the batch.
-
-    const prior = (await caches.keys()).some(name => name.startsWith(prefix) && name !== version);
-    const request = url => new Request(url, {cache:"reload"});
     try {
-      await cache.addAll(Array.from(prior ? urls : coreUrls, request));
+      for (const url of coreUrls) await copyOrFetch(cache, url, oldCaches);
+      for (const url of checksums.keys()) {
+        if (coreUrls.has(url)) continue;
+        try { await copyOrFetch(cache, url, oldCaches); }
+        catch (error) { if (previous.length) throw error; }
+      }
     } catch (error) {
       await caches.delete(version);
       throw error;
     }
-    if (!prior) {
-      for (const url of urls) if (!coreUrls.has(url)) {
-        try { await cache.addAll([request(url)]); } catch { /* Retenter à la prochaine demande. */ }
-      }
-    }
-    // Each game loads its scripts at startup and the music paths are stable.
-    // Existing runs can finish while new navigations pick up this release.
     await self.skipWaiting();
   })());
 });
@@ -77,7 +101,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   url.search = "";
   const key = url.href === scope.href ? index : url.href;
-  if (!urls.has(key)) return;
+  if (!checksums.has(key)) return;
   event.respondWith((async () => {
     const cache = await caches.open(version);
     const stored = await cache.match(key);
@@ -86,8 +110,7 @@ self.addEventListener("fetch", (event) => {
     if (!full) {
       try {
         // Un téléchargement complet répare aussi le cache lors d'une demande Range.
-        full = await fetch(new Request(key, {cache:"reload"}));
-        if (full.status !== 200) throw new Error("Ressource indisponible");
+        full = await download(key);
         try { await cache.put(key, full.clone()); } catch { /* Continuer en réseau si le stockage est plein. */ }
       } catch {
         if (new URL(key).pathname.endsWith(".webp")) {

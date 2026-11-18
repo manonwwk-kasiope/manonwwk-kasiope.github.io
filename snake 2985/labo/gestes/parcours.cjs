@@ -22,6 +22,7 @@ function instrumentation(){
   HTMLMediaElement.prototype.play=function(){return Promise.resolve();};
   window.AudioContext=window.webkitAudioContext=undefined;
   let frame,state,time=0;
+        Object.defineProperty(performance,'now',{value:()=>time});
   const native=window.requestAnimationFrame.bind(window);
   window.requestAnimationFrame=cb=>cb.name==='frame'?(frame=cb,314159):native(cb);
   let ecology;

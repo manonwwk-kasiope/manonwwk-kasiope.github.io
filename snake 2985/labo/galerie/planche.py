@@ -6,7 +6,7 @@ W=1680; margin=48; gap=24; half=(W-2*margin-gap)//2
 scenes=[
  (1976,2,'Le Terminal','La tête phosphorescente approche de la cellule.'),
  (1985,4,'Le Circuit néon','Le serpent monte sur le second plan.'),
- (1995,8,'La Gare autoroutière','L’express passe au-dessus de l’aiguillage.'),
+ (1995,8,'La Gare de verre','L’express passe au-dessus de l’aiguillage.'),
  (2185,16,'La Ceinture orbitale','Le vaisseau quitte la grille et vise le premier anneau.'),
  (2985,32,'Le Cœur galactique','Face à La Singularité, le puits de gravité et la nova se déploient.')]
 fontdir=Path('/System/Library/Fonts/Supplemental')

@@ -31,7 +31,7 @@
   --inst-forme:22px;--inst-rail:12px;--inst-entry:inst-eclipse;--inst-menotte:linear-gradient(transparent,transparent);
 }
 body[data-screen="play"] #poste[data-instrument] #bandeau {
-  box-sizing:border-box;height:max(44px,min(9vh,60px));padding-bottom:0;
+  box-sizing:border-box;height:calc(max(48px,min(9vh,60px)) + env(safe-area-inset-top,0px));padding-top:env(safe-area-inset-top,0px);padding-bottom:0;
   gap:clamp(4px,1.25vw,18px);background:var(--inst-fond);color:var(--inst-texte);
   border-bottom:1px solid var(--inst-bord);text-shadow:none;font-size:17px;line-height:1.05;
 }

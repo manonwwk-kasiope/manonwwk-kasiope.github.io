@@ -38,11 +38,12 @@
   function create({rows,clock,synth,makeContext,bytes,prepare=async()=>[],now,storage,
     doc,page,mutedByUrl=false,onError=()=>{}}) {
     const years=rows.map(r=>r.year), positions={};
-    let musicLevel=.82,fxLevel=.72;
+    let musicLevel=.82,fxLevel=.72,spaceLevel=1;
     try {
       const saved=JSON.parse(storage?.getItem(prefs)||'{}');
       if(Number.isFinite(saved.music)) musicLevel=clamp(saved.music);
       if(Number.isFinite(saved.fx)) fxLevel=clamp(saved.fx);
+      if(Number.isFinite(saved.space)) spaceLevel=clamp(saved.space);
       for(const year of years) if(Number.isFinite(saved.positions?.[year])) positions[year]=saved.positions[year];
     } catch {}
     let active=false,paused=false,muted=true,hidden=Boolean(doc?.hidden),closed=false;
@@ -55,7 +56,7 @@
     const allowed=()=>!mutedByUrl && running() && !muted;
     const wrap=(r,t)=>r.loopStart+((t-r.loopStart)%(r.loopEnd-r.loopStart)+(r.loopEnd-r.loopStart))%(r.loopEnd-r.loopStart);
     function save() {
-      try {storage?.setItem(prefs,JSON.stringify({music:musicLevel,fx:fxLevel,positions}));} catch {}
+      try {storage?.setItem(prefs,JSON.stringify({music:musicLevel,fx:fxLevel,space:spaceLevel,positions}));} catch {}
     }
     function pulse() {
       const read=Boolean(source && allowed() && ctx?.state==='running');
@@ -199,21 +200,22 @@
     function returning() {hidden=Boolean(doc?.hidden);anchor(positions[row.year]??row.loopStart);}
     doc?.addEventListener('visibilitychange',visibility);
     page?.addEventListener('pagehide',leaving);page?.addEventListener('pageshow',returning);
-    function setVolumes({music,fx:value}={}) {
+    function setVolumes({music,fx:value,space}={}) {
       if(closed) return;
       if(Number.isFinite(music)) musicLevel=clamp(music);
       if(Number.isFinite(value)) fxLevel=clamp(value);
+      if(Number.isFinite(space)) spaceLevel=clamp(space);
       levels();save();
       if(musicLevel && allowed() && !source) void arm();
     }
-    function event(info) {
+    function event(info,arena) {
       if(!allowed() || !fxLevel || ctx?.state!=='running') return false;
       if(typeof info==='string') info={type:info};
       if(['win','clear','death'].includes(info?.type)) return finish(info.type);
       if(info?.type==='bossDefeated' && info.kind==='final') prizeAt=ctx.currentTime;
-      return Boolean(fx?.play(info));
+      return Boolean(fx?.play(info,undefined,arena,spaceLevel));
     }
-    function events(batch) {
+    function events(batch,arena) {
       if(!Array.isArray(batch) || !allowed()) return;
       const omit=new Set();
       for(let i=0;i<batch.length;i++) {
@@ -227,7 +229,7 @@
         if(paired<0) paired=batch.findIndex(fits);
         if(paired>=0) omit.add(paired);
       }
-      for(let i=0;i<batch.length;i++) if(!omit.has(i)) event(batch[i]);
+      for(let i=0;i<batch.length;i++) if(!omit.has(i)) event(batch[i],arena);
     }
     function stop() {
       remember();silence();active=false;paused=false;muted=true;pressure=0;boss=null;
@@ -262,7 +264,7 @@
     return {start,stop,finish,pause,resume,scene,event,events,encounter,setMuted,setVolumes,pulse,beat:()=>pulse().phase,
       sector:n=>scene(row.year,n,clamp((Number(n)-1)/9),boss),
       prepareOffline:()=>prepare(rows),dispose,
-      get muteLocked(){return mutedByUrl;},get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},
+      get muteLocked(){return mutedByUrl;},get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},get spaceLevel(){return spaceLevel;},
       get status(){return {year:row.year,track:row.track,active,paused,hidden,muted,muteLocked:mutedByUrl,ending,playingMusic:Boolean(source && allowed() && musicLevel),error};}};
   }
   if(typeof module==='object' && module.exports) module.exports={create,offlineFiles};

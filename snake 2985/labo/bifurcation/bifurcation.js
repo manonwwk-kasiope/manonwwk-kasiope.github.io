@@ -3,7 +3,7 @@
   const chronology=[
     {year:1976,bits:2,place:'Le Terminal'},
     {year:1985,bits:4,place:'Le Circuit néon'},
-    {year:1995,bits:8,place:'La Gare autoroutière'},
+    {year:1995,bits:8,place:'La Gare de verre'},
     {year:2185,bits:16,place:'La Ceinture orbitale'},
     {year:2985,bits:32,place:'Le Cœur galactique'}
   ];
@@ -45,6 +45,7 @@
     });
     review.disabled=duration===0;
     const retry=button(info,'bf-retry','Rejouer '+summary.year,()=>commit('retry'));
+    retry.title='Retente cette époque avec les mêmes placements de départ.';
     const choose=tag(root,'section','bf-choice');
     tag(choose,'h2','bf-title',choices[0].cycle?'Nouveau cycle':dead?'Choisir le prochain saut':'Prochaine époque');
     const visual=variant==='wheel'?tag(choose,'div','bf-panorama'):null;

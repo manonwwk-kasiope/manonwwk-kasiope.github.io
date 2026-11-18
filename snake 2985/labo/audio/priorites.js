@@ -166,11 +166,15 @@
     if (!Number.isInteger(limit) || limit<4 || !['priority','fifo','raw'].includes(mode))
       throw new RangeError('Budget minimal de quatre voix et mode de mix valide requis');
     if (year!==null && !years.includes(year)) throw new RangeError('Époque inconnue');
-    const buffers=new Map(), voices=new Set(), lastHit=new Map();
+    const buffers=new Map(), placements=new Map(), voices=new Set(), lastHit=new Map();
+    const localWeapons=new Set(['shot','nova','forgeShot','forgeHit','evolutionHit','evolutionTrigger',
+      'novaOverload','novaOverloadHit','bossHit']);
+    const centeredCues=new Set(['boss','bossAttack','bossVolley','guardianWarning','guardianCounter','planeShift','ecoWarning','ecoActive']);
     const foreground=context.createGain(), action=context.createGain();
     foreground.connect(output); action.connect(output);
     let closed=false, duckEnd=0;
-    const stats={accepted:0,coalesced:0,rejected:0,peakVoices:0};
+    const stats={accepted:0,coalesced:0,rejected:0,peakVoices:0,
+      get activeVoices(){return voices.size;},get cachedPlacements(){return placements.size;}};
     const rank={novaOverload:2,guardianWarning:4,guardianCounter:4,bossDefeated:4,ecoWarning:3,ecoAbsorb:4,ecoActive:2,
       knotClosed:3,surfPulse:4,surfStart:3,surfEnd:3,bossHit:2,contractScore:2,evolutionTrigger:2};
     function overloadCeiling(buffer) {
@@ -182,7 +186,42 @@
         for(let i=0;i<left.length;i++) {left[i]*=attenuation;right[i]*=attenuation;}
       }
     }
-    function play(info,onEnded) {
+    // Pour chaque échantillon : M=(G+D)/2 reste identique ; seule la composante latérale varie.
+    // Les tampons déplacés sont partagés entre voix et bornés à douze entrées.
+    function place(original,key,info,arena,strength) {
+      if(!arena || !Number.isFinite(arena.width) || arena.width<=1) return original;
+      const centered=centeredCues.has(info.type);
+      if(!centered && (!strength || !localWeapons.has(info.type))) return original;
+      let x=info.x;
+      if(!Number.isFinite(x)) {
+        if(info.type==='bossHit') x=arena.boss?.x ??
+          (info.hp===0?arena.effects?.findLast(e=>e.kind==='bossHit' && e.maxLife-e.life<.10)?.x:undefined);
+        else if(info.type==='shot' || info.type==='nova' || info.type==='novaOverload') x=arena.snake?.[0]?.x;
+      }
+      if(centered) x=(arena.width-1)*.5;
+      if(!Number.isFinite(x)) return original;
+      const position=Math.max(-1,Math.min(1,2*x/(arena.width-1)-1));
+      const amount=Number.isFinite(strength)?Math.max(0,Math.min(1,strength)):0;
+      const step=Math.round(position*amount*12);
+      if(!step && !centered) return original;
+      const cacheKey=key+'/'+(centered?'center':step);
+      if(placements.has(cacheKey)) {
+        const hit=placements.get(cacheKey);placements.delete(cacheKey);placements.set(cacheKey,hit);return hit;
+      }
+      const left=original.getChannelData(0),right=original.getChannelData(1);
+      const result=context.createBuffer(2,left.length,context.sampleRate);
+      const outL=result.getChannelData(0),outR=result.getChannelData(1),p=step/12;
+      const width=centered?0:1-.5*Math.abs(p),offset=.36*p,ceiling=info.type==='novaOverload'?.34:.95;
+      for(let i=0;i<left.length;i++) {
+        const mid=(left[i]+right[i])*.5;
+        const side=(left[i]-right[i])*.5*width - offset*mid;
+        const room=Math.max(0,ceiling-Math.abs(mid)),limited=Math.max(-room,Math.min(room,side));
+        outL[i]=mid+limited;outR[i]=mid-limited;
+      }
+      if(placements.size>=12) placements.delete(placements.keys().next().value);
+      placements.set(cacheKey,result);return result;
+    }
+    function play(info,onEnded,arena,spatialStrength=1) {
       if (closed || !info) return false;
       const key=timbre(info);
       if (!key) return false;
@@ -213,7 +252,7 @@
         buffers.set(paletteKey,buffer);
       }
       const source=context.createBufferSource();
-      source.buffer=buffers.get(paletteKey);
+      source.buffer=place(buffers.get(paletteKey),paletteKey,info,arena,spatialStrength);
       source.connect(lead?foreground:action);
       const end=now+source.buffer.duration, voice={source,end,group,priority};
       source.onended=()=>{voices.delete(voice);source.disconnect();onEnded?.();};
@@ -236,10 +275,11 @@
     }
     function dispose() {
       if (closed) return;
-      stop(); action.disconnect(); foreground.disconnect(); buffers.clear(); closed=true;
+      stop(); action.disconnect(); foreground.disconnect(); buffers.clear(); placements.clear(); closed=true;
     }
     function setYear(next) {
       if (!years.includes(next)) throw new RangeError('Époque inconnue');
+      if(year!==next) placements.clear();
       year=next;
     }
     return {setYear,handles:info=>Boolean(info && timbre(info)),play,stop,dispose,stats};

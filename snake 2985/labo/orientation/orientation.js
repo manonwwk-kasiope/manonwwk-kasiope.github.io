@@ -2,6 +2,23 @@
   'use strict';
   const bits = {1976: 2, 1985: 4, 1995: 8, 2185: 16, 2985: 32};
 
+  function query(win){
+    const pointer=win.matchMedia('(any-pointer:coarse)');
+    const media=win.matchMedia('(orientation:portrait)');
+    const portrait=()=>pointer.matches && (win.innerWidth&&win.innerHeight?win.innerHeight>win.innerWidth:media.matches);
+    let last=portrait();
+    const events=new win.EventTarget();
+    function refresh(){
+      const next=portrait();if(next===last)return;
+      last=next;events.dispatchEvent(new win.Event('change'));
+    }
+    win.addEventListener('resize',refresh);
+    win.addEventListener('orientationchange',refresh);
+    win.visualViewport?.addEventListener('resize',refresh);
+    pointer.addEventListener('change',refresh);media.addEventListener('change',refresh);
+    return {get matches(){return portrait();},addEventListener:(...args)=>events.addEventListener(...args),
+      removeEventListener:(...args)=>events.removeEventListener(...args)};
+  }
   function mount(dialog, {query, year, screen, pause, primary, calm = () => false}) {
     const doc = dialog.ownerDocument;
     const date = dialog.querySelector('#vertical-date');
@@ -42,6 +59,6 @@
     dialog.dataset.ready = '';
     return {refresh};
   }
-  root.SnakeOrientation = Object.freeze({mount});
+  root.SnakeOrientation = Object.freeze({mount,query});
   if (typeof module === 'object' && module.exports) module.exports = root.SnakeOrientation;
 })(globalThis);

@@ -22,3 +22,11 @@
 .voyage-carte .vc-apercu{position:absolute;top:3px;right:3px;min-height:44px;border:0;background:transparent;padding:0 7px;color:white;font-size:13px;font-weight:700;text-shadow:0 1px 4px #000,0 0 6px black}
 .vc-apercu::before{content:"▶";display:inline-grid;place-items:center;margin-right:5px;width:23px;height:23px;background:#122235eb;border:1px solid #adcccf;border-radius:50%;font-size:10px}
 .vc-apercu[aria-pressed=true]::before{content:"■"}
+
+/* Le dialogue est centré dans le rectangle utilisable en présence de l’encoche. */
+:root{--borne-gauche:max(8px,env(safe-area-inset-left,0px));--borne-droite:max(8px,env(safe-area-inset-right,0px));--borne-haut:max(5px,env(safe-area-inset-top,0px));--borne-bas:max(5px,env(safe-area-inset-bottom,0px))}
+dialog.voyage-carte,dialog.snake-archives{
+  inset:var(--borne-haut) var(--borne-droite) var(--borne-bas) var(--borne-gauche);
+  max-inline-size:calc(100dvw - var(--borne-gauche) - var(--borne-droite));
+  max-block-size:calc(100dvh - var(--borne-haut) - var(--borne-bas));
+}

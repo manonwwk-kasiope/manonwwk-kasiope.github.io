@@ -16,3 +16,11 @@ dialog.snake-archives{color-scheme:dark;color:#eff5f6;background:#101827f5;borde
 .snake-archives input[type=range]{width:100%;min-height:44px;accent-color:#a2ecd3;margin:0}
 .archives-commandes{display:inline-flex;margin-right:.7em}.snake-archives output{font-size:.91em;color:#b4f2df}
 @media(max-width:480px){.archives-plans{grid-template-columns:1fr}.snake-archives{font-size:16px}}
+.snake-archives .archives-resultat{padding:.7em .85em;border-inline-start:3px solid #91deba;background:#172b32;border-radius:4px;color:#ddfbed;font-variant-numeric:tabular-nums}
+.archives-pages{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:.65em 0}
+.archives-pages output{color:#e0e9ed}
+.archives-pages button:disabled{opacity:.55}
+.snake-archives .archives-moi{background:#18372e;font-weight:700}
+.snake-cartouche canvas{display:block;width:100%;height:auto;margin:1em 0;border-radius:5px}
+.snake-cartouche a[download]{display:inline-flex;min-height:44px;align-items:center;padding:.3em .85em;background:#b3f4d9;color:#092b27;border-radius:8px;font-weight:700;text-decoration:none}
+.snake-cartouche a[hidden]{display:none}
