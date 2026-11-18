@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   // Les objets tactiques doivent passer par la même matrice de projection que les cases mortelles.
-  const labels={convoi:'Prends le sillage du convoi',mue:'Laisse ta mue au socle',surf:'Attrape la vague',relais:'Relie les deux plans',aiguillage:'Double le train',express:'Double le train'};
+  const labels={convoi:'Passe au ◇ après le convoi',mue:'Sur le ◇, touche Plan',surf:'Attrape la vague',relais:'Sur le ◇, touche Plan',aiguillage:'Double le train',express:'Double le train'};
   function draw(c,s,cam,z,selected) {
     const project=(p)=>SnakeSpectacle.project(cam,p.x,p.y,z);
     const at=p=>p && (p.plane??0)===z;
@@ -18,7 +18,7 @@
     c.save();c.globalAlpha*=selected?1:.55;
     const o=s.director?.offer;
     if(o){
-      const route=o.anchors||[],next=route[Math.min(o.step||0,route.length-1)];
+      const route=o.anchors||[],next=o.kind==='convoi'?route[1]:route[Math.min(o.step||0,route.length-1)];
       if(o.kind==='aiguillage' && route.length===6){
         const [a,b,d,exit,train,last]=route;
         if(at(train)&&at(last))line(train,last,'#ffaa92',2.5);

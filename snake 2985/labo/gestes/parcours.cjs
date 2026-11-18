@@ -102,7 +102,25 @@ async function run(){
               const err=Math.abs(Math.atan2(Math.sin(actual-a),Math.cos(actual-a)))*180/Math.PI;
               check('cap écran '+deg+'°',err<3,{erreurDeg:+err.toFixed(3)});
             }
-            await touch.tap(2,await centre(loc('nova')));const nova=await snap();check('nova en vol à deux doigts',nova.charge<.1&&nova.captures.length===1,nova);
+            const avantRotation=await snap();
+            await page.setViewportSize({width:393,height:852});
+            await loc('vertical').waitFor({state:'visible',timeout:3000});
+            const portrait=await snap();
+            check('rotation en portrait, manche relâché immédiatement',portrait.screen==='pause'&&!portrait.captures.length&&!portrait.transform,{avantRotation,portrait});
+            await step(60);
+            const repos=await snap();
+            check('vol figé en portrait',repos.flight&&repos.elapsed===avantRotation.elapsed&&repos.charge===avantRotation.charge&&repos.xy.x===avantRotation.xy.x&&repos.xy.y===avantRotation.xy.y,repos);
+            await touch.up(1);
+            await page.setViewportSize({width:852,height:393});
+            await loc('vertical').waitFor({state:'hidden',timeout:3000});
+            const paysage=await snap();
+            check('paysage en pause, aucun contact résiduel',paysage.screen==='pause'&&!paysage.contacts&&!paysage.captures.length,paysage);
+            await touch.tap(3,await centre(page.getByRole('button',{name:'Reprendre'})));await step(2);
+            const origine=await centre(loc('stick'));
+            await touch.down(1,origine.x,origine.y);await touch.move(1,origine.x,origine.y-24);
+            const reprise=await snap(),angle=await page.evaluate(()=>gesturesProbe.angle());
+            check('nouveau cap en vol après rotation',reprise.flight&&reprise.elapsed>repos.elapsed&&reprise.captures.length===1&&Math.abs(angle+Math.PI/2)<Math.PI/60,{reprise,angle});
+            await touch.tap(2,await centre(loc('nova')));const nova=await snap();check('nova en vol à deux doigts après rotation',nova.charge<.1&&nova.captures.length===1,nova);
             await touch.tap(2,await centre(loc('plan')));const layer=await snap();check('plan tenu pendant le vol',layer.flight&&layer.plane===entryFlight.plane&&layer.captures.length===1,layer);
           }
         }

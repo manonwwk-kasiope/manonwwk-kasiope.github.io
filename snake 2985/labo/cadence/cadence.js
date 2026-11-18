@@ -20,7 +20,7 @@
       // quantum of signed debt to avoid losing a full display refresh to a 0.03 ms roundoff.
       for(let ms=period();credit+.0500001>=ms;ms=period()){
         credit-=ms;count++;
-        if(simulate(ms/1000)===false || generation!==token){if(generation===token)reset(now);break;}
+        if(simulate(ms/1000, now-credit)===false || generation!==token){if(generation===token)reset(now);break;}
       }
       return count;
     }

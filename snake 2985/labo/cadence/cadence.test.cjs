@@ -27,3 +27,13 @@ test('trois parties enregistrées gardent leur état en mode mixte lors des 12 r
    }
  }
 });
+test('les repères musicaux de chaque pas sont indépendants des instants de dessin',()=>{
+  function run(frameHz){
+    const stamps=[];
+    const cadencer=cad.create((dt,at)=>{stamps.push(Math.round(at*1000));},()=>stamps.length<6?60:120);
+    cadencer.reset(5000);
+    for(let i=1;i<=frameHz;i++)cadencer.advance(5000+1000*i/frameHz);
+    return stamps;
+  }
+  assert.deepEqual(run(30),run(120));assert.deepEqual(run(60),run(120));
+});

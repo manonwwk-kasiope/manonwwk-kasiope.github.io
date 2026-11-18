@@ -82,7 +82,7 @@ const origin='http://campagne.test',start=origin+(dist?'/index.html':'/labo/camp
       await touch(btn('Jouer en silence'));await step(3);
       await p.setViewportSize({width:height,height:width});
       try{await p.waitForFunction(()=>document.getElementById('vertical').open,undefined,{polling:25,timeout:3500});}
-      catch(error){throw Error(JSON.stringify(await p.evaluate(()=>({url:location.href,viewport:[innerWidth,innerHeight,visualViewport.width,visualViewport.height],portrait:matchMedia('(orientation:portrait) and (any-pointer:coarse)').matches,dialog:document.getElementById('vertical').outerHTML.slice(0,180),screen:document.body.dataset.screen})))+' '+errors+' '+error);}
+      catch(error){throw Error(JSON.stringify(await p.evaluate(()=>({url:location.href,viewport:[innerWidth,innerHeight,visualViewport.width,visualViewport.height],portrait:matchMedia('(orientation:portrait)').matches,dialog:document.getElementById('vertical').outerHTML.slice(0,180),screen:document.body.dataset.screen})))+' '+errors+' '+error);}
       assert.equal(await screen(),'pause');
       await p.setViewportSize({width,height});
       await p.waitForFunction(()=>!document.getElementById('vertical').open,undefined,{polling:25});

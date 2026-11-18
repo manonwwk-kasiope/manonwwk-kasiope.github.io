@@ -230,3 +230,30 @@ test('la banque route un tir dans l’arène, respecte le réglage de placement 
   a.dispose();const restored=environment({storage:e.storage});assert.equal(restored.audio.spaceLevel,0);
   restored.audio.dispose();
 });
+test('le pas physique retrouve le battement entre deux images sans déplacer la lecture',async()=>{
+  for(const row of rows)for(const audible of [false,true]){
+    const e=environment(),audio=e.audio;audio.start(row.year);
+    if(audible)await audio.setMuted(false);
+    const duration=(row.loopEnd-row.loopStart)/row.rate;
+    e.advance(duration-.015);
+    const reference=audio.pulse();
+    e.advance(.035);
+    const actual=audio.pulseAt(duration-.015),after=audio.pulse();
+    assert.equal(actual.bar,reference.bar);assert.equal(actual.beat,reference.beat);
+    assert.ok(Math.abs(actual.phase-reference.phase)<1e-9);
+    assert.ok(after.mediaTime<reference.mediaTime,'boucle musicale traversée');
+    assert.equal(e.contexts,Number(audible));
+    audio.pause();const paused=audio.pulse();e.advance(2);
+    assert.equal(audio.pulseAt(duration).mediaTime,paused.mediaTime);
+  }
+});
+test('l’atelier ouvert entre deux images suspend le morceau au même instant physique',async()=>{
+  for(const audible of [false,true]){
+    const e=environment(),a=e.audio;a.start(1995);
+    if(audible)await a.setMuted(false);
+    e.advance(1.5);const before=a.pulse();
+    e.advance(.029);a.pause(1.5);e.advance(3);
+    assert.ok(Math.abs(a.pulse().mediaTime-before.mediaTime)<1e-9);
+    await a.resume();assert.ok(Math.abs(a.pulse().phase-before.phase)<1e-9);
+  }
+});

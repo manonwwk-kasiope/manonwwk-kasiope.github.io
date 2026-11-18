@@ -2,6 +2,9 @@
 const {webkit}=require('playwright'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../..'),out=path.join(__dirname,'preuves'),years=[1976,1985,1995,2185,2985];
 const stamp=process.env.CAMPAGNE_PASSE||'passe-01',folder=path.join(out,stamp),history=[];
+const mouvement=process.env.CAMPAGNE_MOUVEMENT||'reduit';
+assert(['normal','reduit'].includes(mouvement),'CAMPAGNE_MOUVEMENT attend normal ou reduit');
+const reducedMotion=mouvement==='normal'?'no-preference':'reduce';
 fs.mkdirSync(out,{recursive:true});
 fs.mkdirSync(folder); // Each run owns its evidence directory.
 const log=(e)=>{history.push(e);fs.appendFileSync(path.join(folder,'journal.jsonl'),JSON.stringify(e)+'\n');};
@@ -44,7 +47,7 @@ async function main(){
  const url='http://127.0.0.1:'+server.address().port+(distribution?'/borne/index.html?muet=1':'/labo/campagne/index.html');
  let browser;
  try{
- browser=await webkit.launch({headless:true});const c=await browser.newContext({viewport:{width:854,height:393},reducedMotion:'reduce',serviceWorkers:'block'});
+ browser=await webkit.launch({headless:true});const c=await browser.newContext({viewport:{width:854,height:393},reducedMotion,serviceWorkers:'block'});
  await c.route('**/*',route=>{const u=new URL(route.request().url());return u.origin===new URL(url).origin&&!u.pathname.endsWith('.mp3')?route.continue():route.abort();});
  const source=fs.readFileSync(path.join(__dirname,'../equilibrage/pilotes.cjs'),'utf8');
  const build=fs.readFileSync(path.join(__dirname,'pilote.js'),'utf8');
@@ -61,15 +64,17 @@ async function main(){
  await run(.02);
  assert.deepEqual(await p.evaluate(()=>probe.initialKeys),[]);
  let index=0,attempt=0,held=[],screen='prep',changed=false,kept=false,upgradeCount=0;
- const snapshots=new Set(),epilogueMeasurements=[];let motionRestored=false;
+ const snapshots=new Set(),epilogueMeasurements=[];let motionRestored=mouvement==='normal';
  const release=async()=>{for(const k of held)await p.keyboard.up(k);held=[];};
  while(index<years.length){
    const year=years[index];if(screen==='prep'){
+     const motion=await p.evaluate(()=>matchMedia('(prefers-reduced-motion: reduce)').matches?'reduce':'no-preference');
+     assert.equal(motion,motionRestored?'no-preference':'reduce');
      attempt++;assert(attempt<=12,'12 tentatives '+year);
      assert.equal(await p.evaluate(()=>probe.s.year),year);
      await click(p.locator('[data-id=prism]'));await click(p.locator('[data-id=chain]'));
      await click(p.getByRole('button',{name:'Jouer en silence',exact:true}));
-     log({type:'départ',year,attempt});screen='play';await run(.02);
+     log({type:'départ',year,attempt,motion});screen='play';await run(.02);
    }
    for(let n=0;screen==='play'&&n<5000;n++){
      const v=await p.evaluate(()=>{
@@ -153,7 +158,7 @@ async function main(){
        const dir=path.join(folder,'epilogue');fs.mkdirSync(dir,{recursive:true});
        await p.screenshot({path:path.join(dir,label+'.png'),timeout:10000});
      }
-     await p.setViewportSize({width:854,height:393});
+     await p.setViewportSize({width:854,height:393});await p.emulateMedia({reducedMotion});
    }else assert.equal(await p.locator('.vic-epilogue').count(),0);
    await click(p.getByRole('button',{name:won?'Signer le palmarès':'Signer · Palmarès',exact:true}));
    const signature=p.locator('dialog[open] input');
@@ -174,7 +179,7 @@ async function main(){
  await p.reload({waitUntil:'networkidle'});await run(.02);await click(p.getByRole('button',{name:'Palmarès',exact:true}));await take('palmares-recharge');
  const persisted=await p.evaluate(()=>SnakePalmares.list());assert.deepEqual(persisted,last.hall);
  assert.deepEqual(errors,[]);
- log({type:'validation',upgradeCount,...last,persisted:true});fs.writeFileSync(path.join(folder,'resultat.json'),JSON.stringify({years,upgradeCount,changed,kept,epilogueMeasurements,last,persisted,errors},null,2));
+ log({type:'validation',upgradeCount,...last,persisted:true});fs.writeFileSync(path.join(folder,'resultat.json'),JSON.stringify({mouvement,years,upgradeCount,changed,kept,epilogueMeasurements,last,persisted,errors},null,2));
  console.log('5 époques terminées, dix boss, nouveau cycle et scores signés persistants.');
  }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}
 }

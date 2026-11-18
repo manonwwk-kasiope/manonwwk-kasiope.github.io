@@ -1,0 +1,7 @@
+# Vol de 2985 joué sur les images du jeu
+
+18/11/2026 · 02 h 12 (Paris)
+
+Depuis le menu neuf, une défaite naturelle en 1976 a ouvert le choix de 2985. La partie utilise le noyau Singularité et le catalyseur Détonation. Le pilotage se fait par des touches confiées à WebKit en lisant le rendu du paquet à 874 × 402, avec des arrêts sur image entre les gestes. Le pilote n’a pas lu les coordonnées internes des anneaux. Les trois anneaux ont été franchis et l’affichage a annoncé « Slalom réussi · +325 ». Le score a ensuite atteint 950 au cran 2, avec changement de plan, Nova, turbo et accès au revoir après la défaite.
+
+Sur cette première partie, le message de contrat « Relie les deux plans » masquait la consigne de l’anneau. Le jeu garde maintenant la consigne des anneaux lorsqu’un contrat facultatif s’ouvre pendant le vol. La contre-épreuve sur l’édition e3a4d837ebade407 a montré « Anneau 1 / 3 » au même point de conduite, puis le slalom réussi sur la nouvelle prise. Les images jointes proviennent de cette contre-épreuve. Tous les contrôles se font avant branchement audio. Le temps de réaction humain et l’ergonomie d’un appareil physique restent à éprouver.

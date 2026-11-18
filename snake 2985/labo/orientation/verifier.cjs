@@ -40,7 +40,7 @@ function chamber(start, initialPortrait, year) {
   doc.body.append(options,validations);win.ui={options,validations};
   win.show=page=>{win.screen=page;options.replaceChildren();validations.replaceChildren();};
   const source=read('../campagne/chambre.js');
-  for(const [begin,end] of [['function button(','function note('],['function pause()','function upgrade()']]){
+  for(const [begin,end] of [['function button(','function note('],['function pause(','function upgrade(']]){
     const a=source.indexOf(begin),b=source.indexOf(end,a);
     assert(a>=0 && b>a);vm.runInContext(source.slice(a,b),win);
   }

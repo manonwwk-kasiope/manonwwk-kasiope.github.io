@@ -3,9 +3,8 @@
   const bits = {1976: 2, 1985: 4, 1995: 8, 2185: 16, 2985: 32};
 
   function query(win){
-    const pointer=win.matchMedia('(any-pointer:coarse)');
     const media=win.matchMedia('(orientation:portrait)');
-    const portrait=()=>pointer.matches && (win.innerWidth&&win.innerHeight?win.innerHeight>win.innerWidth:media.matches);
+    const portrait=()=>win.innerWidth&&win.innerHeight?win.innerHeight>=win.innerWidth:media.matches;
     let last=portrait();
     const events=new win.EventTarget();
     function refresh(){
@@ -15,7 +14,7 @@
     win.addEventListener('resize',refresh);
     win.addEventListener('orientationchange',refresh);
     win.visualViewport?.addEventListener('resize',refresh);
-    pointer.addEventListener('change',refresh);media.addEventListener('change',refresh);
+    media.addEventListener('change',refresh);
     return {get matches(){return portrait();},addEventListener:(...args)=>events.addEventListener(...args),
       removeEventListener:(...args)=>events.removeEventListener(...args)};
   }

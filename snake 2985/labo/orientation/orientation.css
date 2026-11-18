@@ -21,7 +21,7 @@ dialog#vertical {
 }
 dialog#vertical[open] {display: grid; align-items: end}
 dialog#vertical:not([open]) {display: none}
-@media (orientation:portrait) and (any-pointer:coarse) {
+@media (orientation:portrait) {
   dialog#vertical:not([open]):not([data-ready]) {display: grid; align-items: end; z-index: 1000}
 }
 #vertical::backdrop {background: #0a1020}

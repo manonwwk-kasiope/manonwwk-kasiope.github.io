@@ -58,21 +58,26 @@
     function save() {
       try {storage?.setItem(prefs,JSON.stringify({music:musicLevel,fx:fxLevel,space:spaceLevel,positions}));} catch {}
     }
-    function pulse() {
+    function pulse(wall=now()) {
       const read=Boolean(source && allowed() && ctx?.state==='running');
-      const sample=pulseClock.sample({now:now(),mediaTime:read?sourcePosition+(ctx.currentTime-sourceWhen)*row.rate:undefined,
+      const sample=pulseClock.sample({now:wall,mediaTime:read?sourcePosition+(ctx.currentTime-sourceWhen)*row.rate:undefined,
         audible:read,playing:running(),playbackRate:row.rate});
-      if(active && running() && now()-checkpointAt>=5) {
-        checkpointAt=now(); positions[row.year]=sample.mediaTime; save();
+      if(active && running() && wall-checkpointAt>=5) {
+        checkpointAt=wall; positions[row.year]=sample.mediaTime; save();
       }
       return sample;
+    }
+    function pulseAt(stamp) {
+      const wall=now(),sample=pulse(wall);
+      if(!sample.playing || !Number.isFinite(stamp))return sample;
+      return pulseClock.project(sample.mediaTime+(stamp-wall)*row.rate,true,sample.source);
     }
     function anchor(t) {
       pulseClock=clock.create(rows,row.year);
       pulseClock.sample({now:now(),mediaTime:wrap(row,t),audible:true,playing:running()});
     }
-    function remember() {
-      if(active) {positions[row.year]=pulse().mediaTime;save();}
+    function remember(stamp) {
+      if(active) {positions[row.year]=pulseAt(stamp).mediaTime;save();}
     }
     function gain(node,value,smooth=false) {
       if(!node) return;
@@ -178,10 +183,10 @@
       if(mutedByUrl || value || hidden || !active) {muted=true;silence();return Promise.resolve(false);}
       muted=false;return arm();
     }
-    function pause() {
+    function pause(stamp) {
       if(ending) {silence();return;}
       if(!active || paused) return;
-      remember();paused=true;silence();anchor(positions[row.year]);
+      remember(stamp);paused=true;silence();anchor(positions[row.year]);
     }
     function resume() {
       if(!active || hidden || closed || !paused) return Promise.resolve(false);
@@ -208,14 +213,14 @@
       levels();save();
       if(musicLevel && allowed() && !source) void arm();
     }
-    function event(info,arena) {
+    function event(info,arena,stamp) {
       if(!allowed() || !fxLevel || ctx?.state!=='running') return false;
       if(typeof info==='string') info={type:info};
-      if(['win','clear','death'].includes(info?.type)) return finish(info.type);
+      if(['win','clear','death'].includes(info?.type)) return finish(info.type,stamp);
       if(info?.type==='bossDefeated' && info.kind==='final') prizeAt=ctx.currentTime;
       return Boolean(fx?.play(info,undefined,arena,spaceLevel));
     }
-    function events(batch,arena) {
+    function events(batch,arena,stamp) {
       if(!Array.isArray(batch) || !allowed()) return;
       const omit=new Set();
       for(let i=0;i<batch.length;i++) {
@@ -229,18 +234,18 @@
         if(paired<0) paired=batch.findIndex(fits);
         if(paired>=0) omit.add(paired);
       }
-      for(let i=0;i<batch.length;i++) if(!omit.has(i)) event(batch[i],arena);
+      for(let i=0;i<batch.length;i++) if(!omit.has(i)) event(batch[i],arena,stamp);
     }
-    function stop() {
-      remember();silence();active=false;paused=false;muted=true;pressure=0;boss=null;
+    function stop(stamp) {
+      remember(stamp);silence();active=false;paused=false;muted=true;pressure=0;boss=null;
       anchor(positions[row.year]??row.loopStart);
     }
-    function finish(status) {
+    function finish(status,stamp) {
       const type=({dead:'death',death:'death',won:'win',win:'win',cleared:'clear',clear:'clear'})[status];
       if(!type || !active) return false;
       const permitted=allowed() && fxLevel>0 && ctx?.state==='running';
       const withPrize=type!=='death' && ctx && ctx.currentTime-prizeAt<=.035;
-      stop();
+      stop(stamp);
       if(!permitted) return false;
       // Le transport est arrêté ; seule cette source peut traverser le gain maître.
       const id=token;
@@ -261,7 +266,7 @@
       doc?.removeEventListener('visibilitychange',visibility);
       page?.removeEventListener('pagehide',leaving);page?.removeEventListener('pageshow',returning);
     }
-    return {start,stop,finish,pause,resume,scene,event,events,encounter,setMuted,setVolumes,pulse,beat:()=>pulse().phase,
+    return {start,stop,finish,pause,resume,scene,event,events,encounter,setMuted,setVolumes,pulse,pulseAt,beat:()=>pulse().phase,
       sector:n=>scene(row.year,n,clamp((Number(n)-1)/9),boss),
       prepareOffline:()=>prepare(rows),dispose,
       get muteLocked(){return mutedByUrl;},get muted(){return muted;},get musicLevel(){return musicLevel;},get fxLevel(){return fxLevel;},get spaceLevel(){return spaceLevel;},

@@ -54,7 +54,23 @@ async function run(){
     await p.locator('dialog[open]').last().getByRole('button',{name:'Fermer'}).tap();
     assert(await souvenir.evaluate(b=>document.activeElement===b));
     const muted=await p.evaluate(()=>({...silence}));assert.equal(muted.media+muted.context,0);assert.deepEqual(errors,[]);
-    console.log(JSON.stringify({epochs:evidence,lockedPreviews:true,download:download.suggestedFilename(),dimensions:[960,520],
+    await ctx.close();
+    const desk=await browser.newContext({viewport:{width:480,height:760},serviceWorkers:'block'});
+    await desk.addInitScript({content:fs.readFileSync(path.resolve(__dirname,'../charge-ios/silence.js'),'utf8')});
+    const wide=await desk.newPage();
+    wide.on('pageerror',e=>errors.push(e.message));await wide.goto(base+'?muet=1');
+    const rotation=wide.locator('#vertical[open]');
+    await rotation.waitFor();assert.equal(await wide.evaluate(()=>matchMedia('(any-pointer:coarse)').matches),false);
+    await wide.setViewportSize({width:900,height:480});await rotation.waitFor({state:'hidden'});
+    await wide.getByRole('button',{name:'Jouer en silence',exact:true}).click();
+    await wide.setViewportSize({width:560,height:560});await rotation.waitFor();
+    await wide.setViewportSize({width:900,height:480});await rotation.waitFor({state:'hidden'});
+    assert.equal(await wide.evaluate(()=>document.body.dataset.screen),'pause');
+    await wide.getByRole('button',{name:'Reprendre',exact:true}).click();
+    assert.equal(await wide.evaluate(()=>document.body.dataset.screen),'play');
+    assert.deepEqual(await wide.evaluate(()=>({...silence})),{media:0,context:0});assert.deepEqual(errors,[]);
+    await desk.close();
+    console.log(JSON.stringify({epochs:evidence,lockedPreviews:true,desktopPanorama:true,download:download.suggestedFilename(),dimensions:[960,520],
       pngBytes:bytes.length,pngSha256:crypto.createHash('sha256').update(bytes).digest('hex'),restoredFocus:true,muted,errors},null,2));
   }finally{await browser?.close();server.closeAllConnections();await new Promise(r=>server.close(r));fs.rmSync(tmp,{recursive:true,force:true});}
 }

@@ -52,10 +52,11 @@
     ui.lecture.dataset.tone=danger?'danger':'normal';
   }
   function resetTouch() {
+    if(pointer?.owner.hasPointerCapture(pointer.id))pointer.owner.releasePointerCapture(pointer.id);
     controls.reset(); pointer=null; held.clear();
     ui.stick.firstElementChild.style.transform='';
   }
-  function show(page, title = '', explanation = '') {
+  function show(page, title = '', explanation = '', stamp) {
     menuFinal?.destroy();menuFinal=null;
     ui.bifurcation.hidden=page!=='end';ui['acces-borne'].hidden=page!=='prep';
     ui.rideau.setAttribute('aria-labelledby',page==='end'?'issue-partie':'titre');
@@ -69,7 +70,7 @@
       ui.rang.textContent=state.year+' · '+arcade.eras[state.eraIndex].name;
       ui.options.replaceChildren(); ui.validations.replaceChildren();
     }
-    if(page==='pause'||page==='upgrade')audio.pause();
+    if(page==='pause'||page==='upgrade')audio.pause(stamp/1000);
     if(page==='play')audio.resume();
     ticks.reset(page==='play'?performance.now():null);veille.wake();
   }
@@ -148,15 +149,15 @@
     check.addEventListener('change',()=>{manualCalm=check.checked;banc.motion(calm.matches);veille.wake();try{localStorage.setItem('snake2985.calme',manualCalm?'1':'0');}catch{}});
     motion.className='option-calme';motion.append(check,'Réduire les secousses et les glitches');ui.options.append(motion);
   }
-  function upgrade() {
+  function upgrade(stamp) {
     if(SnakeAtelier.available(state)){
-      show('upgrade','Atelier satellite','Garde ta recette ou remplace son cœur.');
+      show('upgrade','Atelier satellite','Garde ta recette ou remplace son cœur.',stamp);
       SnakeAtelier.mount(ui.options,state,{forge,banc,archives,reduced:calm.matches,onDone(receipt){
         selected={core:receipt.core,mod:receipt.mod};upgrade();
       }});
       return;
     }
-    show('upgrade','Une arme de plus.','Choisis le système à amplifier.');
+    show('upgrade','Une arme de plus.','Choisis le système à amplifier.',stamp);
     const row=document.createElement('div');row.className='ameliorations';ui.options.append(row);
     const gains=['Étend les salves sur les lignes voisines.','Enchaîne les cibles depuis ton corps.','Agrandit l’onde et accélère sa recharge.'];
     arcade.weapons.forEach((w,i)=>{
@@ -168,10 +169,10 @@
       }
     });
   }
-  function finish() {
+  function finish(stamp) {
     const dead=state.status==='dead', era=state.eraIndex;
     const entry=archives.end(state),bilan=SnakeEpilogue.finish(voyage,state,entry,SnakePalmares);
-    audio.finish(state.status);
+    audio.finish(state.status,stamp/1000);
     show('end',dead?'Signal perdu.':'Gardien vaincu.',(dead?(archives.death(state)?.tip||state.cause)+' · ':'')+state.score+' points en '+state.year+'.');
     const depart=({year,cycle})=>{
       target=cycle?null:state.score;
@@ -201,9 +202,9 @@
     button(row,'Signer · Palmarès',archives.openHall);
     menuFinal.focus();
   }
-  function events() {
+  function events(stamp) {
     SnakeMondeVivant.observe(state);
-    const batch=state.events.splice(0);SnakeEpilogue.observe(voyage,state,batch);audio.events(batch,state);
+    const batch=state.events.splice(0);SnakeEpilogue.observe(voyage,state,batch);audio.events(batch,state,stamp/1000);
     for(const e of batch){
       SnakeImpact.event(state,e);SnakeMondeVivant.observe(state,e);
       if(!calm.matches)SnakeCameraMusicale.cue(state,e,state.beat);
@@ -230,8 +231,8 @@
       if(e.type==='guardianCounter')note('Cœur ouvert · Riposte !',e.seconds,true);
       if(e.type==='bossAttack')note(state.boss?.attack?.label||'Salve imminente',1.2,true);
     }
-    if(state.status==='upgrade')upgrade();
-    if(['cleared','won','dead'].includes(state.status))finish();
+    if(state.status==='upgrade')upgrade(stamp);
+    if(['cleared','won','dead'].includes(state.status))finish(stamp);
   }
   function syncGuardian(){
     const b=state.boss,approaching=!b&&state.nearBoss>=.70;
@@ -253,8 +254,14 @@
       ui.duel.dataset.weak=b.weak?'yes':'no';
     }
   }
+  function syncBeat(stamp){
+    state.beat=audio.pulseAt(stamp/1000);state.musicPulse=state.beat.pulse;
+  }
   function actualiseCommande(){
-    if(screen==='play')ticks.advance(performance.now());
+    if(screen==='play'){
+      const now=performance.now();ticks.advance(now);
+      if(screen==='play')syncBeat(now);
+    }
     return screen==='play';
   }
   function toggleTurbo(){
@@ -332,7 +339,7 @@
     if(!actualiseCommande())return;
     if(phase==='down'){
       if(pointer)return;
-      pointer={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY};
+      pointer={id:e.pointerId,owner:e.currentTarget,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY};
       e.currentTarget.setPointerCapture(e.pointerId);
     }
     if(!pointer||e.pointerId!==pointer.id)return;
@@ -360,7 +367,8 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
   window.addEventListener('blur',()=>{if(screen==='play')pause()});
   systemMotion.addEventListener('change',()=>{banc.motion(calm.matches);veille.wake();});
-  function simuler(dt){
+  function simuler(dt,stamp){
+    syncBeat(stamp);
     if(state.flight && held.size){
       let x=0,y=0; for(const key of held){x+=directions[key][0];y+=directions[key][1];}
       if(x||y)aimOnScreen(Math.atan2(y,x));
@@ -372,20 +380,20 @@
     state.score+=encounter.points;SnakeEpilogue.observe(voyage,state,encounter.events);
     for(const cue of encounter.events){
       audio.encounter(cue);
-      if(cue.type==='open')note(SnakeIndices.labels[cue.kind]||'Rejoins la balise.',1.8);
+      if(cue.type==='open' && !state.flight)note(SnakeIndices.labels[cue.kind]||'Rejoins la balise.',1.8);
       if(cue.type==='score')note('Trajectoire réussie · +'+cue.points);
     }
     SnakeInitiation.update(state.initiation,state,dt,state.events);
     state.aide=SnakeInitiation.cue(state.initiation,state);
-    archives.tick(state);events();
+    archives.tick(state);events(stamp);
     syncFlightControls();
     return screen==='play'&&state.status==='playing';
   }
   function frame(now,repaint,resumed){
     if(screen==='play'){
       if(resumed)ticks.reset(now);
-      state.beat=audio.pulse();state.musicPulse=state.beat.pulse;
       ticks.advance(now);
+      if(screen==='play')syncBeat(now);
       if(screen==='play')audio.scene(state.year,state.difficulty,state.nearBoss,state.boss?.kind);
     }
     sync();if(screen==='prep'){

@@ -10,8 +10,8 @@
     guardian:['1000001','1101011','1011101','1000001','0100010','0010100','0001000'],
     target:['0001000','0010100','0100010','1001001','0100010','0010100','0001000']
   };
-  const texts={convoi:['Prends le sillage'],mue:['Pose ta mue','Rejoins le relais'],surf:['Entre en vol'],
-    relais:['Pose ta mue','Rejoins le relais','Reviens au socle'],aiguillage:['Prends l’aiguille','Bifurque','Double le train']};
+  const texts={convoi:['Passe au ◇ après le convoi'],mue:['Sur le ◇, touche Plan','Rejoins le second ◇'],surf:['Entre en vol'],
+    relais:['Sur le ◇, touche Plan','Rejoins le second ◇','Reviens au premier ◇'],aiguillage:['Prends l’aiguille','Bifurque','Double le train']};
   const same=(p,q)=>p && q && p.x===q.x && p.y===q.y && (p.plane??0)===(q.plane??0);
   function threat(s){
     const h=s.snake[0],dir=s.turns[0]||s.direction,a=s.boss?.attack;

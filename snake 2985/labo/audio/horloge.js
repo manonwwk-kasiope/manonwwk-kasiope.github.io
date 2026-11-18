@@ -17,17 +17,22 @@
       if (source==='media') position=wrap(mediaTime);
       else if (playing && wasPlaying) position=wrap(position+elapsed*playbackRate);
       wasPlaying=playing;
-      const time=wrap(position-attackOffset+visualLead*playbackRate);
+      return project(position,playing,source,playbackRate);
+    }
+    // Un pas de simulation peut tomber entre deux images de l’écran.
+    function project(at,playing,source,playbackRate=rate) {
+      const mediaTime=wrap(at);
+      const time=wrap(mediaTime-attackOffset+visualLead*playbackRate);
       let b=bars.findIndex(x=>x>time+1e-8)-1;
       if (b<0) b=bars.length-2;
       const span=bars[b+1]-bars[b];
       const q=4*(time-bars[b])/span;
       const quarter=Math.abs(q-Math.round(q))<1e-7?Math.round(q):q;
       const phase=quarter-Math.floor(quarter);
-      return {source,mediaTime:position,bar:b,beat:Math.floor(quarter),phase,
+      return {source,mediaTime,bar:b,beat:Math.floor(quarter),phase,
         pulse:Math.exp(-phase*7),playing,bpm:240*playbackRate/span};
     }
-    return {sample,track:info.track,loopStart:start,loopEnd:end,rate,visualLead};
+    return {sample,project,track:info.track,loopStart:start,loopEnd:end,rate,visualLead};
   }
   const api={create};
   if(typeof module==='object' && module.exports) module.exports=api;

@@ -158,9 +158,7 @@
             "flight": false,
             "year": 1976,
             "transform": "",
-            "captures": [
-              7
-            ],
+            "captures": [],
             "contacts": 1
           }
         },
@@ -652,22 +650,21 @@
           "touches": 1
         },
         {
-          "type": "pointerup",
-          "id": 7,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 0,
-          "x": 60.5,
-          "y": 350.5
-        },
-        {
           "type": "lostpointercapture",
           "id": 7,
           "kind": "touch",
           "primary": true,
           "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerup",
+          "id": 7,
+          "kind": "touch",
+          "primary": true,
           "trusted": true,
           "contacts": 0,
           "x": 60.5,
@@ -925,13 +922,55 @@
           }
         },
         {
-          "label": "nova en vol à deux doigts",
+          "label": "rotation en portrait, manche relâché immédiatement",
           "ok": true,
           "data": {
-            "screen": "play",
+            "avantRotation": {
+              "screen": "play",
+              "elapsed": 1.7666666666666653,
+              "plane": 0,
+              "charge": 1,
+              "xy": {
+                "x": 16.264734839780296,
+                "y": 9.05213685051578,
+                "plane": 0
+              },
+              "flight": true,
+              "cap": -2.2638064079977074,
+              "year": 1976,
+              "transform": "translate(-14.1421px, -14.1421px)",
+              "captures": [
+                3
+              ],
+              "contacts": 1
+            },
+            "portrait": {
+              "screen": "pause",
+              "elapsed": 1.7666666666666653,
+              "plane": 0,
+              "charge": 1,
+              "xy": {
+                "x": 16.264734839780296,
+                "y": 9.05213685051578,
+                "plane": 0
+              },
+              "flight": true,
+              "cap": -2.2638064079977074,
+              "year": 1976,
+              "transform": "",
+              "captures": [],
+              "contacts": 1
+            }
+          }
+        },
+        {
+          "label": "vol figé en portrait",
+          "ok": true,
+          "data": {
+            "screen": "pause",
             "elapsed": 1.7666666666666653,
             "plane": 0,
-            "charge": 0,
+            "charge": 1,
             "xy": {
               "x": 16.264734839780296,
               "y": 9.05213685051578,
@@ -940,9 +979,77 @@
             "flight": true,
             "cap": -2.2638064079977074,
             "year": 1976,
-            "transform": "translate(-14.1421px, -14.1421px)",
+            "transform": "",
+            "captures": [],
+            "contacts": 1
+          }
+        },
+        {
+          "label": "paysage en pause, aucun contact résiduel",
+          "ok": true,
+          "data": {
+            "screen": "pause",
+            "elapsed": 1.7666666666666653,
+            "plane": 0,
+            "charge": 1,
+            "xy": {
+              "x": 16.264734839780296,
+              "y": 9.05213685051578,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -2.2638064079977074,
+            "year": 1976,
+            "transform": "",
+            "captures": [],
+            "contacts": 0
+          }
+        },
+        {
+          "label": "nouveau cap en vol après rotation",
+          "ok": true,
+          "data": {
+            "reprise": {
+              "screen": "play",
+              "elapsed": 1.7833333333333319,
+              "plane": 0,
+              "charge": 1,
+              "xy": {
+                "x": 16.354595536556484,
+                "y": 9.056144157309275,
+                "plane": 0
+              },
+              "flight": true,
+              "cap": -1.6364454354588762,
+              "year": 1976,
+              "transform": "translate(0px, -20px)",
+              "captures": [
+                5
+              ],
+              "contacts": 1
+            },
+            "angle": -1.5708139703176405
+          }
+        },
+        {
+          "label": "nova en vol à deux doigts après rotation",
+          "ok": true,
+          "data": {
+            "screen": "play",
+            "elapsed": 1.7833333333333319,
+            "plane": 0,
+            "charge": 0,
+            "xy": {
+              "x": 16.354595536556484,
+              "y": 9.056144157309275,
+              "plane": 0
+            },
+            "flight": true,
+            "cap": -1.6364454354588762,
+            "year": 1976,
+            "transform": "translate(0px, -20px)",
             "captures": [
-              3
+              5
             ],
             "contacts": 1
           }
@@ -952,20 +1059,20 @@
           "ok": true,
           "data": {
             "screen": "play",
-            "elapsed": 1.7666666666666653,
+            "elapsed": 1.7833333333333319,
             "plane": 0,
             "charge": 0,
             "xy": {
-              "x": 16.264734839780296,
-              "y": 9.05213685051578,
+              "x": 16.354595536556484,
+              "y": 9.056144157309275,
               "plane": 0
             },
             "flight": true,
-            "cap": -2.2638064079977074,
+            "cap": -1.6364454354588762,
             "year": 1976,
-            "transform": "translate(-14.1421px, -14.1421px)",
+            "transform": "translate(0px, -20px)",
             "captures": [
-              3
+              5
             ],
             "contacts": 1
           }
@@ -983,16 +1090,16 @@
           "ok": true,
           "data": {
             "screen": "play",
-            "elapsed": 1.7666666666666653,
+            "elapsed": 1.7833333333333319,
             "plane": 0,
             "charge": 0,
             "xy": {
-              "x": 16.264734839780296,
-              "y": 9.05213685051578,
+              "x": 16.354595536556484,
+              "y": 9.056144157309275,
               "plane": 0
             },
             "flight": true,
-            "cap": -2.2638064079977074,
+            "cap": -1.6364454354588762,
             "year": 1976,
             "transform": "",
             "captures": [],
@@ -1004,21 +1111,19 @@
           "ok": true,
           "data": {
             "screen": "pause",
-            "elapsed": 1.7666666666666653,
+            "elapsed": 1.7833333333333319,
             "plane": 0,
             "charge": 0,
             "xy": {
-              "x": 16.264734839780296,
-              "y": 9.05213685051578,
+              "x": 16.354595536556484,
+              "y": 9.056144157309275,
               "plane": 0
             },
             "flight": true,
-            "cap": -0.01648593443094664,
+            "cap": -0.015181601072896945,
             "year": 1976,
             "transform": "",
-            "captures": [
-              6
-            ],
+            "captures": [],
             "contacts": 1
           }
         },
@@ -1027,16 +1132,16 @@
           "ok": true,
           "data": {
             "screen": "pause",
-            "elapsed": 1.7666666666666653,
+            "elapsed": 1.7833333333333319,
             "plane": 0,
             "charge": 0,
             "xy": {
-              "x": 16.264734839780296,
-              "y": 9.05213685051578,
+              "x": 16.354595536556484,
+              "y": 9.056144157309275,
               "plane": 0
             },
             "flight": true,
-            "cap": -0.01648593443094664,
+            "cap": -0.015181601072896945,
             "year": 1976,
             "transform": "",
             "captures": [],
@@ -1048,20 +1153,20 @@
           "ok": true,
           "data": {
             "screen": "play",
-            "elapsed": 1.7999999999999985,
+            "elapsed": 1.816666666666665,
             "plane": 0,
             "charge": 0.002458333333333333,
             "xy": {
-              "x": 16.443634598294377,
-              "y": 9.071845960911995,
+              "x": 16.53459231599172,
+              "y": 9.057137382392135,
               "plane": 0
             },
             "flight": true,
-            "cap": -0.016241319845588027,
+            "cap": -0.012884360409922057,
             "year": 1976,
             "transform": "translate(18px, 0px)",
             "captures": [
-              9
+              11
             ],
             "contacts": 1
           }
@@ -1266,269 +1371,25 @@
           "y": 333.5294494628906
         },
         {
-          "type": "pointerdown",
-          "id": 4,
-          "kind": "touch",
-          "primary": false,
-          "target": "nova",
-          "trusted": true,
-          "contacts": 2,
-          "x": 807.6328125,
-          "y": 361
-        },
-        {
-          "type": "touchstart",
-          "target": "nova",
-          "trusted": true,
-          "contacts": 2,
-          "touches": 2
-        },
-        {
-          "type": "gotpointercapture",
-          "id": 4,
-          "kind": "touch",
-          "primary": false,
-          "target": "nova",
-          "trusted": true,
-          "contacts": 2,
-          "x": 807.6328125,
-          "y": 361
-        },
-        {
-          "type": "pointerup",
-          "id": 4,
-          "kind": "touch",
-          "primary": false,
-          "target": "nova",
-          "trusted": true,
-          "contacts": 1,
-          "x": 807.6328125,
-          "y": 361
-        },
-        {
-          "type": "lostpointercapture",
-          "id": 4,
-          "kind": "touch",
-          "primary": false,
-          "target": "nova",
-          "trusted": true,
-          "contacts": 1,
-          "x": 807.6328125,
-          "y": 361
-        },
-        {
-          "type": "touchend",
-          "target": "nova",
-          "trusted": true,
-          "contacts": 1,
-          "touches": 1
-        },
-        {
-          "type": "pointerdown",
-          "id": 5,
-          "kind": "touch",
-          "primary": false,
-          "target": "plan",
-          "trusted": true,
-          "contacts": 2,
-          "x": 734.59375,
-          "y": 361
-        },
-        {
-          "type": "touchstart",
-          "target": "plan",
-          "trusted": true,
-          "contacts": 2,
-          "touches": 2
-        },
-        {
-          "type": "gotpointercapture",
-          "id": 5,
-          "kind": "touch",
-          "primary": false,
-          "target": "plan",
-          "trusted": true,
-          "contacts": 2,
-          "x": 734.59375,
-          "y": 361
-        },
-        {
-          "type": "pointerup",
-          "id": 5,
-          "kind": "touch",
-          "primary": false,
-          "target": "plan",
-          "trusted": true,
-          "contacts": 1,
-          "x": 734.59375,
-          "y": 361
-        },
-        {
-          "type": "lostpointercapture",
-          "id": 5,
-          "kind": "touch",
-          "primary": false,
-          "target": "plan",
-          "trusted": true,
-          "contacts": 1,
-          "x": 734.59375,
-          "y": 361
-        },
-        {
-          "type": "touchend",
-          "target": "plan",
-          "trusted": true,
-          "contacts": 1,
-          "touches": 1
-        },
-        {
-          "type": "pointercancel",
-          "id": 3,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 0,
-          "x": 25.529438018798828,
-          "y": 333.5294494628906
-        },
-        {
           "type": "lostpointercapture",
           "id": 3,
           "kind": "touch",
           "primary": true,
           "target": "stick",
           "trusted": true,
-          "contacts": 0,
+          "contacts": 1,
           "x": 25.529438018798828,
           "y": 333.5294494628906
         },
         {
-          "type": "touchcancel",
-          "target": "stick",
-          "trusted": true,
-          "contacts": 0,
-          "touches": 0
-        },
-        {
-          "type": "pointerdown",
-          "id": 6,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 1,
-          "x": 42.5,
-          "y": 350.5
-        },
-        {
-          "type": "touchstart",
-          "target": "stick",
-          "trusted": true,
-          "contacts": 1,
-          "touches": 1
-        },
-        {
-          "type": "gotpointercapture",
-          "id": 6,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 1,
-          "x": 60.5,
-          "y": 350.5
-        },
-        {
-          "type": "pointermove",
-          "id": 6,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 1,
-          "x": 60.5,
-          "y": 350.5
-        },
-        {
-          "type": "pointerdown",
-          "id": 7,
-          "kind": "touch",
-          "primary": false,
-          "target": "pause",
-          "trusted": true,
-          "contacts": 2,
-          "x": 818,
-          "y": 23.5
-        },
-        {
-          "type": "touchstart",
-          "target": "pause",
-          "trusted": true,
-          "contacts": 2,
-          "touches": 2
-        },
-        {
-          "type": "gotpointercapture",
-          "id": 7,
-          "kind": "touch",
-          "primary": false,
-          "target": "pause",
-          "trusted": true,
-          "contacts": 2,
-          "x": 818,
-          "y": 23.5
-        },
-        {
           "type": "pointerup",
-          "id": 7,
-          "kind": "touch",
-          "primary": false,
-          "target": "pause",
-          "trusted": true,
-          "contacts": 1,
-          "x": 818,
-          "y": 23.5
-        },
-        {
-          "type": "lostpointercapture",
-          "id": 7,
-          "kind": "touch",
-          "primary": false,
-          "target": "pause",
-          "trusted": true,
-          "contacts": 1,
-          "x": 818,
-          "y": 23.5
-        },
-        {
-          "type": "touchend",
-          "target": "pause",
-          "trusted": true,
-          "contacts": 1,
-          "touches": 1
-        },
-        {
-          "type": "pointerup",
-          "id": 6,
+          "id": 3,
           "kind": "touch",
           "primary": true,
-          "target": "stick",
           "trusted": true,
           "contacts": 0,
-          "x": 60.5,
-          "y": 350.5
-        },
-        {
-          "type": "lostpointercapture",
-          "id": 6,
-          "kind": "touch",
-          "primary": true,
-          "target": "stick",
-          "trusted": true,
-          "contacts": 0,
-          "x": 60.5,
-          "y": 350.5
+          "x": 25.529438018798828,
+          "y": 333.5294494628906
         },
         {
           "type": "touchend",
@@ -1539,7 +1400,7 @@
         },
         {
           "type": "pointerdown",
-          "id": 8,
+          "id": 4,
           "kind": "touch",
           "primary": true,
           "target": "Reprendre",
@@ -1557,7 +1418,7 @@
         },
         {
           "type": "gotpointercapture",
-          "id": 8,
+          "id": 4,
           "kind": "touch",
           "primary": true,
           "target": "Reprendre",
@@ -1568,7 +1429,7 @@
         },
         {
           "type": "pointerup",
-          "id": 8,
+          "id": 4,
           "kind": "touch",
           "primary": true,
           "target": "Reprendre",
@@ -1579,7 +1440,7 @@
         },
         {
           "type": "lostpointercapture",
-          "id": 8,
+          "id": 4,
           "kind": "touch",
           "primary": true,
           "target": "Reprendre",
@@ -1597,7 +1458,7 @@
         },
         {
           "type": "click",
-          "id": 8,
+          "id": 4,
           "kind": "touch",
           "primary": false,
           "target": "Reprendre",
@@ -1608,7 +1469,7 @@
         },
         {
           "type": "pointerdown",
-          "id": 9,
+          "id": 5,
           "kind": "touch",
           "primary": true,
           "target": "stick",
@@ -1626,7 +1487,192 @@
         },
         {
           "type": "gotpointercapture",
-          "id": 9,
+          "id": 5,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 326.5
+        },
+        {
+          "type": "pointermove",
+          "id": 5,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 326.5
+        },
+        {
+          "type": "pointerdown",
+          "id": 6,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 2,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 6,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 6,
+          "kind": "touch",
+          "primary": false,
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "x": 807.6328125,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "nova",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointerdown",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchstart",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 2,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "pointerup",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 7,
+          "kind": "touch",
+          "primary": false,
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "x": 734.59375,
+          "y": 361
+        },
+        {
+          "type": "touchend",
+          "target": "plan",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "pointercancel",
+          "id": 5,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 42.5,
+          "y": 326.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 5,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "x": 42.5,
+          "y": 326.5
+        },
+        {
+          "type": "touchcancel",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 8,
           "kind": "touch",
           "primary": true,
           "target": "stick",
@@ -1637,7 +1683,76 @@
         },
         {
           "type": "pointermove",
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerdown",
           "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 23.5
+        },
+        {
+          "type": "touchstart",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "touches": 2
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 2,
+          "x": 818,
+          "y": 23.5
+        },
+        {
+          "type": "pointerup",
+          "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 23.5
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 9,
+          "kind": "touch",
+          "primary": false,
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "x": 818,
+          "y": 23.5
+        },
+        {
+          "type": "touchend",
+          "target": "pause",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 8,
           "kind": "touch",
           "primary": true,
           "target": "stick",
@@ -1648,7 +1763,133 @@
         },
         {
           "type": "pointerup",
-          "id": 9,
+          "id": 8,
+          "kind": "touch",
+          "primary": true,
+          "trusted": true,
+          "contacts": 0,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchend",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "pointerdown",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 266.84375
+        },
+        {
+          "type": "touchstart",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 1,
+          "x": 85.578125,
+          "y": 266.84375
+        },
+        {
+          "type": "pointerup",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 266.84375
+        },
+        {
+          "type": "lostpointercapture",
+          "id": 10,
+          "kind": "touch",
+          "primary": true,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 85.578125,
+          "y": 266.84375
+        },
+        {
+          "type": "touchend",
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "touches": 0
+        },
+        {
+          "type": "click",
+          "id": 10,
+          "kind": "touch",
+          "primary": false,
+          "target": "Reprendre",
+          "trusted": true,
+          "contacts": 0,
+          "x": 86,
+          "y": 267
+        },
+        {
+          "type": "pointerdown",
+          "id": 11,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 42.5,
+          "y": 350.5
+        },
+        {
+          "type": "touchstart",
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "touches": 1
+        },
+        {
+          "type": "gotpointercapture",
+          "id": 11,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointermove",
+          "id": 11,
+          "kind": "touch",
+          "primary": true,
+          "target": "stick",
+          "trusted": true,
+          "contacts": 1,
+          "x": 60.5,
+          "y": 350.5
+        },
+        {
+          "type": "pointerup",
+          "id": 11,
           "kind": "touch",
           "primary": true,
           "target": "stick",
@@ -1659,7 +1900,7 @@
         },
         {
           "type": "lostpointercapture",
-          "id": 9,
+          "id": 11,
           "kind": "touch",
           "primary": true,
           "target": "stick",

@@ -19,7 +19,7 @@ function instrumentCadence(conf) {
     bind('SnakeCadence',api=>({...api,create(step){
       let last=null;
       return {reset(t=null){last=t;},advance(t){if(!p.inFrame)return 0;if(last===null){last=t;return 0;}
-        const dt=Math.max(0,Math.min(.08,(t-last)/1000));last=t;if(dt>0)step(dt);return +!!dt;}};
+        const dt=Math.max(0,Math.min(.08,(t-last)/1000));last=t;if(dt>0)step(dt,t);return +!!dt;}};
     }}));
   }
   let frames=new Map(),nextId=0;
